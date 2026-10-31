@@ -38,6 +38,7 @@ export const game = {
     onProgress?.(0.05, 'Takımadalar oluşturuluyor…');
     await tick();
     terrain.init(scene, quality);
+    terrain.localBudget = 40; // yükleme ekranında (işçi yoksa) üretime daha uzun dilimler ver
     onProgress?.(0.2, 'Okyanus dolduruluyor…');
     await tick();
     ocean.build(scene, quality);
@@ -57,6 +58,7 @@ export const game = {
     await tick();
     for (const s of this.systems) if (s.init) await s.init(scene);
     shipControl.init();
+    terrain.localBudget = 10;
     this.worldBuilt = true;
     onProgress?.(1, 'Hazır!');
   },

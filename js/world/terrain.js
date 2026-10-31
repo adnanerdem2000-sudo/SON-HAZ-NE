@@ -1,11 +1,16 @@
 import * as THREE from 'three';
 import { WORLD_SIZE, SEA_FLOOR } from './worldData.js';
 import { computeHeight, islandAt as geoIslandAt, biomeAt as geoBiomeAt, rectMayHaveLand, colorSRGB, distToCavePath as geoCave } from './geo.js';
+import { generate } from './terrainGen.js';
 
 // Bölgesel (akışlı) arazi: dünya 160 m'lik karolara bölünür; kameraya uzaklığa göre ayrıntı düzeyi (LOD)
 // seçilir ve karo geometrileri arka planda Web Worker'larda üretilir. Yakın karoların 2 m çözünürlüklü
 // yükseklik ızgarası fizik/yerleşim sorguları için önbellek olarak kullanılır; diğer yerlerde analitik
 // yükseklik fonksiyonu (geo.js) aynı sonucu verir.
+//
+// Dayanıklılık: işçi başlatılamazsa, yüklenemezse, çökerse ya da yanıt vermezse işler kaybolmaz; aynı
+// üretim kodu (terrainGen.js) ana iş parçacığında kareler arasına dilimlenerek çalışır. Hiçbir istek
+// sonsuza kadar beklemez: iş başına zaman aşımı, sınırlı yeniden deneme, açık hata ile sonlanma.
 
 export const TILE = 160;
 const HALF = WORLD_SIZE / 2;
@@ -19,6 +24,15 @@ const LODS = [
 ];
 const DEEP_VIEW = 300; // derin deniz karoları yalnızca yakında (su altı görüşü)
 const tkey = (i, j) => i * 1024 + j;
+const JOB_TIMEOUT = { tile: 20000, depth: 45000, grid: 60000 }; // ms; işçi bu sürede yanıt vermezse sağlıksız sayılır
+const READY_TIMEOUT = 8000;
+const MAX_TRIES = 3;
+const LOCAL_BUDGET_MS = 10; // ana iş parçacığı yedeğinde dilim başına üretim süresi (yükleme ekranında artırılır)
+// 0 gecikmeli makro görev: setTimeout(0) iç içe çağrılarda ≥4 ms'ye kırpılır; MessageChannel kırpılmaz
+const _mc = typeof MessageChannel !== 'undefined' ? new MessageChannel() : null;
+const _mcQueue = [];
+if (_mc) _mc.port1.onmessage = () => { const f = _mcQueue.shift(); if (f) f(); };
+const schedule = (fn) => { if (_mc) { _mcQueue.push(fn); _mc.port2.postMessage(0); } else setTimeout(fn, 0); };
 
 export function distToCavePath(x, z) { return geoCave(x, z); }
 
@@ -27,75 +41,136 @@ export const terrain = {
   tiles: new Map(),
   ready: false,
   uniforms: null,
-  workers: [],
+  workers: [],       // canlı işçi kayıtları { w, jobs: Map<id, job>, ready, dead, readyTimer }
+  fallback: false,   // işçi kalmadı: üretim ana iş parçacığında
+  failures: [],      // teşhis: işçi hataları
+  mode: '',          // test kipleri: '' | 'noworker' | 'crash' | 'badurl'
   _rid: 1,
-  _cb: new Map(),
-  _busy: 0,
+  _jobs: new Map(),  // id -> { id, msg, prio, tries, resolve, reject, timer, rec }
   _queue: [],
+  _localBusy: false,
+  localBudget: LOCAL_BUDGET_MS,
+  focus: null,       // prepare() odağı: kamera uzaktayken bile bu çevredeki karolar korunur
   _upd: 0,
   center: { x: 0, z: 0 },
 
   // ---- işçiler ----
+  _workerUrl() {
+    // Tek dosya derlemesinde bu ifade blob adresiyle değiştirilir (tools/build-single-html.mjs); import.meta burada kalmaz.
+    const url = String(new URL('./terrainWorker.js', import.meta.url));
+    if (this.mode === 'badurl') return url.replace(/terrainWorker\.js$|$/, (m) => (m ? 'terrainWorker.missing.js' : '#missing')).replace(/^(blob:.*)#missing$/, '$1-missing');
+    return url;
+  },
   _initWorkers() {
-    if (this.workers.length) return;
+    if (this.workers.length || this.mode === 'noworker') { if (this.mode === 'noworker') this._setFallback('test kipi: işçi yok'); return; }
     const n = Math.max(1, Math.min(3, (navigator.hardwareConcurrency || 2) - 1));
     for (let i = 0; i < n; i++) {
       let w;
-      try { w = new Worker(new URL('./terrainWorker.js', import.meta.url), { type: 'module' }); }
-      catch (e) { console.warn('Arazi işçisi başlatılamadı, ana iş parçacığında üretilecek', e); this.workers = []; return; }
-      w.inflight = 0;
-      w.onmessage = (e) => this._onMsg(w, e.data);
-      w.onerror = (e) => console.error('Arazi işçisi hatası', e.message || e);
-      this.workers.push(w);
+      try { w = new Worker(this._workerUrl(), { type: 'module', name: this.mode === 'crash' ? 'test-crash' : 'arazi-' + i }); }
+      catch (e) { this._setFallback('işçi oluşturulamadı: ' + (e.message || e)); return; }
+      const rec = { w, jobs: new Map(), ready: false, dead: false, i };
+      w.onmessage = (e) => this._onMsg(rec, e.data);
+      w.onerror = (e) => { e.preventDefault?.(); this._workerFailed(rec, 'hata: ' + (e.message || 'yükleme/çalışma hatası')); };
+      w.onmessageerror = () => this._workerFailed(rec, 'mesaj çözülemedi');
+      rec.readyTimer = setTimeout(() => { if (!rec.ready && !rec.dead) this._workerFailed(rec, 'hazır sinyali gelmedi'); }, READY_TIMEOUT);
+      this.workers.push(rec);
     }
   },
-  _onMsg(w, m) {
-    if (m.t === 'ready') return;
-    w.inflight = Math.max(0, w.inflight - 1);
-    const cb = this._cb.get(m.id);
-    this._cb.delete(m.id);
-    if (m.t === 'error') { console.error('Arazi işçisi:', m.msg); cb?.reject?.(new Error(m.msg)); }
-    else cb?.resolve(m);
+  _setFallback(why) {
+    if (!this.fallback) console.warn('Arazi üretimi ana iş parçacığına alındı (' + why + ')');
+    this.fallback = true;
+    this.failures.push(why);
+  },
+  // işçi öldü ya da yanıt vermiyor: sonlandır, işlerini kurtar
+  _workerFailed(rec, why) {
+    if (rec.dead) return;
+    rec.dead = true;
+    clearTimeout(rec.readyTimer);
+    this.failures.push(`işçi ${rec.i}: ${why}`);
+    console.warn(`Arazi işçisi ${rec.i} devre dışı (${why}); ${rec.jobs.size} iş yeniden kuyruğa alınıyor`);
+    try { rec.w.terminate(); } catch (e) { /* zaten kapalı */ }
+    this.workers = this.workers.filter((r) => r !== rec);
+    const jobs = [...rec.jobs.values()];
+    rec.jobs.clear();
+    for (const job of jobs) {
+      clearTimeout(job.timer); job.timer = null; job.rec = null;
+      if (job.tries >= MAX_TRIES) this._finish(job, null, new Error('Arazi işi ' + job.msg.t + ' tekrarlanan işçi hatası'));
+      else this._queue.unshift(job);
+    }
+    if (!this.workers.length) this._setFallback(why);
     this._pump();
+  },
+  _onMsg(rec, m) {
+    if (m.t === 'ready') { rec.ready = true; clearTimeout(rec.readyTimer); this._pump(); return; }
+    const job = this._jobs.get(m.id);
+    if (!job) return; // zaman aşımı/iptal sonrası geç yanıt
+    rec.jobs.delete(m.id);
+    if (m.t === 'error') { console.error('Arazi işçisi:', m.msg); this._finish(job, null, new Error(m.msg)); }
+    else this._finish(job, m, null);
+    this._pump();
+  },
+  _finish(job, result, err) {
+    if (job.timer) clearTimeout(job.timer);
+    this._jobs.delete(job.id);
+    if (err) job.reject(err); else job.resolve(result);
   },
   _request(msg, prio = 0) {
     return new Promise((resolve, reject) => {
       const id = this._rid++;
       msg.id = id;
-      this._cb.set(id, { resolve, reject });
-      this._queue.push({ msg, prio });
+      const job = { id, msg, prio, tries: 0, resolve, reject, timer: null, rec: null };
+      this._jobs.set(id, job);
+      this._queue.push(job);
       this._pump();
     });
   },
   _pump() {
     if (!this._queue.length) return;
-    if (!this.workers.length) {
-      // yedek: ana iş parçacığında (yavaş ama güvenli)
-      const job = this._queue.shift();
-      setTimeout(() => this._localJob(job.msg), 0);
-      return;
-    }
     this._queue.sort((a, b) => a.prio - b.prio);
-    for (const w of this.workers) {
-      while (w.inflight < 2 && this._queue.length) {
+    const live = this.workers.filter((r) => !r.dead);
+    if (!live.length) { this._localPump(); return; }
+    for (const rec of live) {
+      while (rec.jobs.size < 2 && this._queue.length) {
         const job = this._queue.shift();
-        w.inflight++;
-        w.postMessage(job.msg);
+        job.tries++;
+        job.rec = rec;
+        rec.jobs.set(job.id, job);
+        job.timer = setTimeout(() => this._workerFailed(rec, `${job.msg.t} işi ${JOB_TIMEOUT[job.msg.t] / 1000} sn içinde bitmedi`), JOB_TIMEOUT[job.msg.t] || 30000);
+        try { rec.w.postMessage(job.msg); }
+        catch (e) { this._workerFailed(rec, 'postMessage: ' + (e.message || e)); return; }
       }
     }
   },
-  async _localJob(msg) {
-    // işçi yoksa aynı hesap burada (yalnız acil durum)
-    const cb = this._cb.get(msg.id);
-    this._cb.delete(msg.id);
-    if (msg.t === 'tile') {
-      const n = msg.seg + 1, step = msg.size / msg.seg;
-      const heights = new Float32Array(n * n);
-      for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) heights[j * n + i] = computeHeight(msg.x0 + i * step, msg.z0 + j * step);
-      cb?.resolve({ t: 'tile', key: msg.key, seg: msg.seg, heights, local: true, maxH: Math.max(...heights), minH: Math.min(...heights) });
-    }
-    this._pump();
+  // Yedek: ana iş parçacığında, dilim başına sınırlı süreyle (üreteç ara sıra yield eder); dilim içinde birden çok iş bitebilir
+  _localPump() {
+    if (this._localBusy || !this._queue.length) return;
+    this._localBusy = true;
+    let job = null, gen = null;
+    const next = () => {
+      job = this._queue.shift() || null;
+      if (!job) return false;
+      job.tries++;
+      try { gen = generate(job.msg); return true; }
+      catch (e) { this._finish(job, null, e); return next(); }
+    };
+    if (!next()) { this._localBusy = false; return; }
+    const step = () => {
+      const t0 = performance.now();
+      try {
+        for (;;) {
+          if (!this._jobs.has(job.id)) { if (!next()) break; continue; } // iptal edildi
+          const r = gen.next();
+          if (r.done) { this._finish(job, r.value.out, null); if (!next()) break; continue; }
+          if (performance.now() - t0 > this.localBudget) { schedule(step); return; }
+        }
+      } catch (e) { this._finish(job, null, e); if (next()) { schedule(step); return; } }
+      this._localBusy = false;
+      this._pump();
+    };
+    schedule(step);
   },
+  // test/hata ayıklama: tüm işçileri öldür (kurtarma yolu sınanır)
+  killWorkers() { for (const rec of [...this.workers]) this._workerFailed(rec, 'test: işçi sonlandırıldı'); },
 
   // ---- malzeme ----
   _material() {
@@ -154,6 +229,8 @@ if (tDepth > 0.05 && uCaustic > 0.01) {
     scene.add(this.group);
     this.material = this._material();
     this.lodScale = quality === 'low' ? 0.7 : quality === 'medium' ? 0.85 : 1;
+    // test kipleri: ?terrain=noworker|crash|badurl ya da window.__DK_TERRAIN_MODE
+    try { this.mode = (typeof window !== 'undefined' && (window.__DK_TERRAIN_MODE || new URLSearchParams(location.search).get('terrain'))) || ''; } catch (e) { this.mode = ''; }
     this._initWorkers();
     this.ready = true;
   },
@@ -203,6 +280,22 @@ if (tDepth > 0.05 && uCaustic > 0.01) {
       // histerezis: yalnızca gerçekten farklıysa yeniden üret
       if (t.seg !== seg && t.pending !== seg) this._requestTile(t, seg, Math.hypot(t.x0 + TILE / 2 - cx, t.z0 + TILE / 2 - cz));
     }
+    // hazırlık odağı (ışınlanma/yükleme): kamera henüz gelmemişken bile odak çevresi istenir ve düşürülmez
+    const F = this.focus;
+    if (F && performance.now() < F.until) {
+      const fi0 = Math.max(0, Math.floor((F.x - F.r + HALF) / TILE)), fi1 = Math.min(NT - 1, Math.floor((F.x + F.r + HALF) / TILE));
+      const fj0 = Math.max(0, Math.floor((F.z - F.r + HALF) / TILE)), fj1 = Math.min(NT - 1, Math.floor((F.z + F.r + HALF) / TILE));
+      for (let j = fj0; j <= fj1; j++) for (let i = fi0; i <= fi1; i++) {
+        if (Math.hypot(-HALF + (i + 0.5) * TILE - F.x, -HALF + (j + 0.5) * TILE - F.z) > F.r) continue;
+        const seg = this._wantSeg(i, j, F.x, F.z);
+        if (!seg) continue;
+        const k = tkey(i, j);
+        want.add(k);
+        let t = this.tiles.get(k);
+        if (!t) { t = { i, j, k, x0: -HALF + i * TILE, z0: -HALF + j * TILE, seg: 0, mesh: null, heights: null, pending: 0 }; this.tiles.set(k, t); }
+        if (t.seg !== seg && t.pending !== seg) this._requestTile(t, seg, Math.hypot(t.x0 + TILE / 2 - F.x, t.z0 + TILE / 2 - F.z) - 200);
+      }
+    } else if (F) this.focus = null;
     for (const [k, t] of this.tiles) {
       if (want.has(k)) continue;
       const d = Math.hypot(t.x0 + TILE / 2 - cx, t.z0 + TILE / 2 - cz);
@@ -219,14 +312,14 @@ if (tDepth > 0.05 && uCaustic > 0.01) {
       if (t.req !== myReq || !this.tiles.has(t.k)) return;
       t.pending = 0;
       this._apply(t, m);
-    }).catch(() => { t.pending = 0; });
+    }).catch((e) => { if (t.req === myReq) t.pending = 0; this.failures.push('karo ' + t.k + ': ' + (e?.message || e)); });
   },
 
   _apply(t, m) {
+    if (!m || !m.pos) return;
     t.seg = m.seg;
     t.maxH = m.maxH; t.minH = m.minH;
     t.heights = m.heights || null;
-    if (m.local) return; // yalnız yükseklik (yedek yol)
     const g = new THREE.BufferGeometry();
     g.setAttribute('position', new THREE.BufferAttribute(m.pos, 3));
     g.setAttribute('normal', new THREE.BufferAttribute(m.nor, 3));
@@ -249,17 +342,26 @@ if (tDepth > 0.05 && uCaustic > 0.01) {
     this.tiles.delete(t.k);
   },
 
-  // Bir noktanın çevresini hazırla (yükleme ekranı / ışınlanma): yakın karolar ve okyanus derinliği
+  // Bir noktanın çevresini hazırla (yükleme ekranı / ışınlanma): yakın karolar ve okyanus derinliği.
+  // Asla asılı kalmaz: her karo isteği başarı/hata ile biter; toplam üst sınır 45 sn.
   async prepare(x, z, opts = {}) {
     if (!this.ready) return;
+    // odak: hazırlık süresince ve sonrasında 12 sn boyunca bu çevre korunur (kamera gelene kadar düşürülmez)
+    this.focus = { x, z, r: opts.radius || 700, until: performance.now() + 90000 };
     this.update(x, z, true);
+    const timers = [];
     const jobs = [];
     for (const t of this.tiles.values()) {
       const d = Math.hypot(t.x0 + TILE / 2 - x, t.z0 + TILE / 2 - z);
-      if (t.pending && d < (opts.radius || 700)) jobs.push(new Promise((res) => { const iv = setInterval(() => { if (!t.pending || !this.tiles.has(t.k)) { clearInterval(iv); res(); } }, 30); }));
+      if (t.pending && d < (opts.radius || 700)) jobs.push(new Promise((res) => { const iv = setInterval(() => { if (!t.pending || !this.tiles.has(t.k)) { clearInterval(iv); res(); } }, 30); timers.push(iv); }));
     }
     jobs.push(this.requestDepth(x, z, true));
-    await Promise.all(jobs);
+    let to;
+    const timeout = new Promise((res) => { to = setTimeout(() => { console.warn('terrain.prepare: 45 sn zaman aşımı; eksik karolar arka planda tamamlanacak'); res('timeout'); }, opts.timeout || 45000); });
+    await Promise.race([Promise.all(jobs), timeout]);
+    clearTimeout(to);
+    for (const iv of timers) clearInterval(iv);
+    if (this.focus) this.focus.until = performance.now() + 12000;
   },
 
   // ---- okyanus derinlik penceresi (kamerayla birlikte kayar) ----
@@ -270,11 +372,13 @@ if (tDepth > 0.05 && uCaustic > 0.01) {
     if (!force && w && Math.hypot(x - (w.x0 + size / 2), z - (w.z0 + size / 2)) < 520) return Promise.resolve();
     if (this._depthPending && !force) return this._depthPending;
     const x0 = Math.round((x - size / 2) / 40) * 40, z0 = Math.round((z - size / 2) / 40) * 40;
+    const seq = (this._depthSeq = (this._depthSeq || 0) + 1);
     const p = this._request({ t: 'depth', x0, z0, size, res }, force ? -1000 : 50).then((m) => {
+      if (seq !== this._depthSeq) return; // daha yeni bir pencere istendi (ışınlanma): eski yanıt yeniyi ezmesin
       this.depthWin = { x0: m.x0, z0: m.z0, size: m.size };
       this._depthPending = null;
       this.onDepth?.(m);
-    }).catch(() => { this._depthPending = null; });
+    }).catch((e) => { if (seq === this._depthSeq) this._depthPending = null; this.failures.push('derinlik: ' + (e?.message || e)); });
     this._depthPending = p;
     return p;
   },
@@ -298,7 +402,9 @@ if (tDepth > 0.05 && uCaustic > 0.01) {
       const tx = u - a, tz = v - b;
       const H = t.heights;
       const h00 = H[b * n + a], h10 = H[b * n + a + 1], h01 = H[(b + 1) * n + a], h11 = H[(b + 1) * n + a + 1];
-      return (h00 * (1 - tx) + h10 * tx) * (1 - tz) + (h01 * (1 - tx) + h11 * tx) * tz;
+      // çizilen ağla aynı üçgenleme (köşegen b–d: tx + tz = 1): dik yamaçta çizilen yüzeyle fizik yüzeyi aynıdır
+      if (tx + tz <= 1) return h00 + (h10 - h00) * tx + (h01 - h00) * tz;
+      return h11 + (h01 - h11) * (1 - tx) + (h10 - h11) * (1 - tz);
     }
     if (x < -HALF || z < -HALF || x > HALF || z > HALF) return SEA_FLOOR;
     return computeHeight(x, z);
@@ -322,6 +428,6 @@ if (tDepth > 0.05 && uCaustic > 0.01) {
   stats() {
     let meshes = 0, hires = 0, tris = 0;
     for (const t of this.tiles.values()) { if (t.mesh) { meshes++; tris += t.mesh.geometry.index.count / 3; } if (t.heights) hires++; }
-    return { tiles: this.tiles.size, meshes, hires, tris: Math.round(tris), queue: this._queue.length, workers: this.workers.length };
+    return { tiles: this.tiles.size, meshes, hires, tris: Math.round(tris), queue: this._queue.length, jobs: this._jobs.size, workers: this.workers.length, fallback: this.fallback, failures: this.failures.length, mode: this.mode };
   },
 };

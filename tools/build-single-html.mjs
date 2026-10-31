@@ -13,7 +13,7 @@ const require = createRequire(import.meta.url);
 const esbuild = require('esbuild');
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
 const OUT = process.argv[2] || join(ROOT, 'dist', 'DenizKorsanlari-SonHazine.html');
-const WORKER_CALL = "new Worker(new URL('./terrainWorker.js', import.meta.url), { type: 'module' })";
+const WORKER_URL = "new URL('./terrainWorker.js', import.meta.url)";
 
 // 'three' ve 'three/addons/*' içe aktarmaları (tarayıcıdaki importmap'in karşılığı); arazi işçisi blob adresinden başlar
 const plugin = {
@@ -23,8 +23,8 @@ const plugin = {
     b.onResolve({ filter: /^three\/addons\// }, (a) => ({ path: join(ROOT, 'vendor/three/addons', a.path.slice('three/addons/'.length)) }));
     b.onLoad({ filter: /[\\/]world[\\/]terrain\.js$/ }, (a) => {
       const src = readFileSync(a.path, 'utf8');
-      if (!src.includes(WORKER_CALL)) throw new Error('terrain.js: işçi oluşturma satırı bulunamadı');
-      return { contents: src.replace(WORKER_CALL, 'new Worker(window.__DK_WORKER_URL)'), loader: 'js' };
+      if (!src.includes(WORKER_URL)) throw new Error('terrain.js: işçi URL ifadesi bulunamadı');
+      return { contents: src.split(WORKER_URL).join('window.__DK_WORKER_URL'), loader: 'js' };
     });
   },
 };

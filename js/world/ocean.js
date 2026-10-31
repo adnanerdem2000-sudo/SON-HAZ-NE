@@ -259,6 +259,7 @@ export const ocean = {
     terrain.requestDepth(camera.position.x, camera.position.z);
     const u = this.uniforms;
     u.uTime.value = this.time;
+    u.uTide.value = this.tide; // gelgit: çizilen yüzey fizik yüksekliğiyle (heightAt) aynı seviyede
     u.uWaveScale.value = this.waveScale;
     u.uCamPos.value.copy(camera.position);
     this.mesh.position.set(Math.round(camera.position.x / 4) * 4, 0, Math.round(camera.position.z / 4) * 4);
