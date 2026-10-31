@@ -1,7 +1,11 @@
 import * as THREE from 'three';
 import { terrain } from '../world/terrain.js';
 import { ocean } from '../world/ocean.js';
+import { physics } from '../world/physics.js';
 import { clamp, damp, lerp } from '../core/util.js';
+
+const CAM_LOS = { tMin: 0.05, tMax: 1, rScale: 1 };
+const _cq = new THREE.Vector3();
 
 // Üçüncü şahıs kamera: oyuncunun arkasında, akıcı takip
 export const tpCamera = {
@@ -11,6 +15,7 @@ export const tpCamera = {
   pos: new THREE.Vector3(),
   look: new THREE.Vector3(),
   _focus: new THREE.Vector3(),
+  _col: Infinity, // çarpışma nedeniyle kısaltılmış mesafe (içeri anında, dışarı yumuşak)
   mode: 'normal',
 
   rotate(dx, dy) {
@@ -34,6 +39,18 @@ export const tpCamera = {
     const shoulder = opts.shoulder || 0;
     let p = f.clone().addScaledVector(dir, -this.dist).addScaledVector(right, shoulder);
     p.y += opts.height || 0;
+    // nesne çarpışması: baş→kamera doğrusu kaya/duvar/bina çarpıştırıcısına giriyorsa mesafe ikili aramayla kısaltılır
+    if (opts.collide !== false) {
+      const at = (d, out) => { out.copy(f).addScaledVector(dir, -d).addScaledVector(right, shoulder); out.y += opts.height || 0; return out; };
+      let hit = this.dist + 1;
+      if (physics.lineBlocked(f.x, f.y, f.z, p.x, p.y, p.z, CAM_LOS)) {
+        let lo = 0.4, hi = this.dist;
+        for (let i = 0; i < 6; i++) { const mid = (lo + hi) / 2; at(mid, _cq); if (physics.lineBlocked(f.x, f.y, f.z, _cq.x, _cq.y, _cq.z, CAM_LOS)) hi = mid; else lo = mid; }
+        hit = Math.max(0.4, lo - 0.1);
+      }
+      this._col = hit < this._col ? hit : damp(this._col, hit, 5, dt);
+      if (this._col < this.dist) at(this._col, p);
+    }
     // arazi çarpışması (kamera zeminin altına girmesin)
     const ground = terrain.heightAt(p.x, p.z);
     if (p.y < ground + 0.4) p.y = ground + 0.4;

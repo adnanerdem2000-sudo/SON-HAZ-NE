@@ -113,9 +113,9 @@ export const combat = {
       a.hitDone = true;
       this._meleeHit(p, a);
     }
-    if (a && (a.type === 'slash' || a.type === 'punch') && !a.hitDone && a.t > (a.type === 'slash' ? 0.22 : 0.18)) {
+    if (a && a.type === 'punch' && !a.hitDone && a.t > 0.18) { // ('slash' eski yol kaldırıldı: olta atışı vuruş yapmaz)
       a.hitDone = true;
-      this._meleeHit(p, a.type === 'slash' ? SWORD_MOVES[1] : FIST_MOVES[1]);
+      this._meleeHit(p, FIST_MOVES[1]);
     }
   },
 

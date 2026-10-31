@@ -20,7 +20,7 @@ export const interact = {
 
   update(dt) {
     const p = G.player;
-    if (!p || p.dead || G.uiOpen) { this.current = null; this.holdT = 0; G.emit('prompt', null); return; }
+    if (!p || p.dead || p.downed || G.uiOpen) { this.current = null; this.holdT = 0; this._armed = false; G.emit('prompt', null); return; }
     const cands = [];
     const ctx = { player: p, pos: p.pos, mode: p.mode };
     for (const fn of providers) {
@@ -42,7 +42,7 @@ export const interact = {
       if (score > bestScore) { bestScore = score; best = c; }
     }
     if (best && this.current && best.id === this.current.id) best = Object.assign(this.current, best);
-    else this.holdT = 0;
+    else { this.holdT = 0; this._armed = false; } // aday değişti: basılı tutulan E yeni hedefi istemsiz tetiklemez
     this.current = best;
     if (best && !best.disabled) {
       if (best.holdAction) {
@@ -51,7 +51,7 @@ export const interact = {
           if (!this._armed && input.pressed('etkilesim')) this._armed = true;
           if (this._armed) {
             this.holdT += dt;
-            if (this.holdT >= best.hold) { this._armed = false; this.holdT = 0; best.holdAction(p); }
+            if (this.holdT >= best.hold) { this._armed = false; this.holdT = 0; input.consume('etkilesim'); best.holdAction(p); }
           }
         } else {
           if (this._armed && this.holdT < 0.35) best.action(p);

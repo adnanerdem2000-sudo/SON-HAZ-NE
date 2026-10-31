@@ -35,7 +35,7 @@ export class Inventory {
       const s = this.stacks.find((x) => x.id === id && !x.data);
       if (s) s.n += n; else this.stacks.push({ id, n });
     } else {
-      for (let i = 0; i < (data ? 1 : n); i++) this.stacks.push({ id, n: 1, data: data ? { ...data } : undefined });
+      for (let i = 0; i < n; i++) this.stacks.push({ id, n: 1, data: data ? { ...data } : undefined }); // veri verilen n adet: n ayrı yığın
     }
     this._changed();
     return 0;

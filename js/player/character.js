@@ -687,11 +687,13 @@ export class Character {
   startRagdoll(opts = {}) {
     if (this.ragdoll) { if (opts.impulse) this.ragdoll.push(opts.impulse); return this.ragdoll; }
     if (this.held && opts.dropWeapon !== false) this.held.visible = false;
+    // noktalar önce ÖLÜM ANINDAKİ pozdan örneklenir (bind pozuna sıçrama yok), eylemler sonra durdurulur
+    const rag = new Ragdoll(this, opts);
     this.mixer.stopAllAction();
     this.current = null;
     this.upper = null; this.upperName = null;
     this.currentName = 'Ragdoll';
-    this.ragdoll = new Ragdoll(this, opts);
+    this.ragdoll = rag;
     return this.ragdoll;
   }
   stopRagdoll() {
@@ -741,8 +743,8 @@ export class Character {
     if (this.upper && this.upperOnce && !this.upperHold && this.upper.time >= this.upper.getClip().duration - 0.02) this.stopUpper(0.2);
     this.mixer.update(dt);
     if (this.shape) for (const sh of this.shape) sh.bone.scale.multiply(sh.f);
-    this.model.position.y = this.baseY;
     const o = this.overlay;
+    this.model.position.y = this.baseY + (o.lift || 0); // yüzme kaldırması burada uygulanır (her kare sıfırlanmaz)
     const B = this.bones;
     const hasPose = o.carry || o.helm || o.row || o.crouch || o.swim || o.tread || o.climb || o.fish || o.lookPitch || this.ik.handR || this.ik.handL || this.ik.ground;
     if (!hasPose) { this._torch(); return; }
@@ -825,9 +827,11 @@ export class Character {
   }
 
   _torch() {
-    if (this.held && this.heldType === 'torch') {
-      const fl = this.held.userData.flame;
-      if (fl) { fl.scale.y = 0.85 + Math.random() * 0.3; this.held.userData.light.intensity = 15 + Math.random() * 5; }
+    // sağ eldeki 'torch' eşyası ya da oyuncunun sol el meşalesi (_torchObj) titreşir
+    const t = this.held && this.heldType === 'torch' ? this.held : this._torchObj && this._torchObj.visible ? this._torchObj : null;
+    if (t) {
+      const fl = t.userData.flame;
+      if (fl) { fl.scale.y = 0.85 + Math.random() * 0.3; if (t.userData.light) t.userData.light.intensity = 15 + Math.random() * 5; }
     }
   }
 

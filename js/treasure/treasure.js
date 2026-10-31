@@ -311,6 +311,7 @@ export const treasure = {
     p.carrying = { id: c.id, tier: c.tier, speedFactor: solo ? c.T.carrySpeed : Math.min(0.9, c.T.carrySpeed + 0.4) };
     p.equipped = 'none';
     p.char.hold(null);
+    G.emit('equip', 'none'); // hotbar vurgusu güncellenir
     p.torch = false; p._syncTorch();
     if (solo && c.T.twoPlayer) G.notify(`${c.T.name} çok ağır! Tek başına çok yavaş taşırsın — bir tayfa arkadaşı yardım edebilir.`, 'info', 4500);
     audio.play('confirm', { vol: 0.4 });

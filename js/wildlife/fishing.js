@@ -120,7 +120,7 @@ export const fishing = {
     this.state = 'fly';
     this.bobber.visible = true;
     this.line.visible = true;
-    p.startAction('slash', 0.5);
+    p.startAction('throw', 0.5); // olta atışı: fırlatma animasyonu (yakın dövüş vuruşu değil)
     audio.tone(500, 0.25, 'triangle', 0.04, null, 2.5);
     G.emit('fishingHud', null);
   },
@@ -254,7 +254,8 @@ export const fishing = {
 
   _drawLine() {
     const p = G.player;
-    const tip = p.char.held?.userData?.tip ? p.char.held.localToWorld(p.char.held.userData.tip.clone()) : p.pos.clone().add(new THREE.Vector3(Math.sin(p.yaw) * 1.5, 2.4, Math.cos(p.yaw) * 1.5));
+    const rodObj = p.char.held ? (p.char.held.children[0] || p.char.held) : null; // uç noktası iç nesnenin (eğik/ötelenmiş) uzayında
+    const tip = rodObj?.userData?.tip || p.char.held?.userData?.tip ? rodObj.localToWorld((rodObj.userData.tip || p.char.held.userData.tip).clone()) : p.pos.clone().add(new THREE.Vector3(Math.sin(p.yaw) * 1.5, 2.4, Math.cos(p.yaw) * 1.5));
     const b = this.bobber.position;
     const arr = this.line.geometry.attributes.position;
     const tension = this.state === 'fight' ? this.tension : 0.1;

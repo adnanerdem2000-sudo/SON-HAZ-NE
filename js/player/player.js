@@ -16,6 +16,7 @@ import { WORLD_HALF } from '../world/archipelago.js';
 const GRAV = -22;
 const _v = new THREE.Vector3();
 const _v2 = new THREE.Vector3();
+const _ikL = new THREE.Vector3(), _ikR = new THREE.Vector3(); // IK el hedefleri (dümen/top)
 
 export const EQUIP_SLOTS = { slot0: 'none', slot1: 'sword', slot2: 'pistol', slot3: 'shovel', slot4: 'rod', slot5: 'map' };
 
@@ -95,7 +96,8 @@ export class Player {
     this.equipped = slot;
     this.aiming = false;
     if (slot === 'map') { G.emit('openTreasureMap'); this.equipped = 'none'; }
-    this.char.hold(this.equipped === 'none' || this.equipped === 'map' ? null : this.equipped);
+    if (this.mode === 'swim' || this.mode === 'climb' || this.mode === 'boat') this.char.hold(null); // çıkışta yeniden elde
+    else this.char.hold(this.equipped === 'none' || this.equipped === 'map' ? null : this.equipped);
     this._syncTorch();
     G.emit('equip', this.equipped);
   }
@@ -191,6 +193,7 @@ export class Player {
   die(cause) {
     if (this.dead || this.downed) return;
     if (this.carrying) G.emit('dropCarry', { player: this });
+    if (this.busy) this.cancelBusy();
     this.action = null;
     this.char.stopUpper(0.05);
     if (G.online && G.remotes.size > 0) {
@@ -223,7 +226,8 @@ export class Player {
     this.hp = hp; this.oxygen = 100; this.poison = 0;
     this.action = null;
     this.char.stopRagdoll();
-    if (!wasRag && (this.mode === 'ground' || this.mode === 'deck')) this.startAction('getup', 1.1);
+    if (this.busy) this.cancelBusy();
+    if (this.mode === 'ground' || this.mode === 'deck') this.startAction('getup', wasRag ? 1.3 : 1.1);
     else this.char.play('Idle', 0.2);
   }
 
@@ -275,12 +279,24 @@ export class Player {
 
   // ---- gemiye çık/in ----
   boardShip(ship, localPoint) {
+    if (this.busy) this.cancelBusy();
+    this._resetCombatFlags();
     this.ship = ship;
     this.mode = 'deck';
     this.local.copy(localPoint || ship.model.stations.ladderTop);
     this.localY = 0; this.localVy = 0;
     ship.clampDeck(this.local);
     this.vel.set(0, 0, 0);
+    this.char.overlay.lift = 0;
+    // sudan/kayıktan binişte silah ve meşale yeniden elde (görünmez silah kalmaz)
+    if (!this.carrying && this.equipped !== 'none' && this.equipped !== 'map') this.char.hold(this.equipped);
+    this._syncTorch();
+  }
+  // mod değişiminde savaş bayrakları sıfırlanır: dümen/top/kayık/yüzmede Block/Aim katmanı donmaz, dayanıklılık yenilenir
+  _resetCombatFlags() {
+    this.blocking = false; this.aiming = false; this.sprinting = false; this.blockT = 0;
+    this.char.ik.handL = this.char.ik.handR = null;
+    if (this.char.upper) this.char.stopUpper(0.1);
   }
   leaveShipToWorld(worldPos, vel) {
     this.mode = 'ground';
@@ -311,7 +327,7 @@ export class Player {
     }
     if (this.reloadT > 0) { this.reloadT -= dt; if (this.reloadT <= 0) { this.loaded = true; G.emit('sfx', { name: 'confirm', vol: 0.3 }); } }
     // zehir
-    if (this.poison > 0) { this.poison -= dt; if (!this.dead) this.hp -= dt * 2.2; if (this.hp <= 0) this.die('Zehirlendin'); }
+    if (this.poison > 0) { this.poison -= dt; if (!this.dead && !this.downed) { this.hp = Math.max(0, this.hp - dt * 2.2); if (this.hp <= 0) this.die('Zehirlendin'); } }
     // yenilenme
     if (this.lastHurt > 6 && this.hp < this.maxHp && !this.dead && this.poison <= 0) this.hp = Math.min(this.maxHp, this.hp + dt * 1.5);
     if (this.downed) {
@@ -328,13 +344,13 @@ export class Player {
     else if (this.mode === 'climb') this._updateClimb(dt);
 
     // meşgul eylem
-    if (this.busy) {
+    if (this.busy && !this.dead && !this.downed) {
       this.busy.t += dt;
       if (this.busy.t >= this.busy.dur) {
         const b = this.busy;
         this.busy = null;
         this.action = null;
-        c.play('Idle', 0.2);
+        if (!c.ragdoll) c.play('Idle', 0.2);
         b.onDone && b.onDone();
       }
     }
@@ -359,7 +375,7 @@ export class Player {
     c.overlay.swimPhase = this.swimPhase;
     c.overlay.climb = this.mode === 'climb';
     c.overlay.climbPhase = this.climbPhase || 0;
-    c.overlay.air = this.mode === 'ground' && !this.onGround && !this.action ? clamp((this.airT || 0) * 4, 0, 1) : 0;
+    c.overlay.air = (this.mode === 'ground' || this.mode === 'deck') && !this.onGround && !this.action ? clamp((this.airT || 0) * 4, 0, 1) : 0;
     c.update(dt);
   }
 
@@ -388,12 +404,17 @@ export class Player {
     return { d, mag };
   }
 
-  _speedFor(mag) {
+  _speedFor(mag, dt = 0) {
     let sp = 4.4;
+    const was = this.sprinting;
     this.sprinting = false;
-    if (input.isDown('kos') && this.stamina > 2 && !this.carrying && !this.aiming && mag > 0.3) {
+    this.staminaCd = Math.max(0, (this.staminaCd || 0) - dt);
+    // sprint histerezisi: başlamak için dayanıklılık > 15 (ve 1 sn yenilenme gecikmesi yok), sürdürmek için > 0.5
+    if (input.isDown('kos') && this.stamina > (was ? 0.5 : 15) && this.staminaCd <= 0 && !this.carrying && !this.aiming && mag > 0.3) {
       sp = 7.0; this.sprinting = true;
     }
+    if (was && !this.sprinting && this.stamina <= 0.5) this.staminaCd = 1.0;
+    if (this.sprinting && dt > 0) this.stamina = Math.max(0, this.stamina - dt * 14); // kara ve güvertede aynı tüketim
     if (this.crouch) sp = 1.7;
     if (this.aiming || this.blocking) sp = 2.0;
     if (this.carrying) sp *= this.carrying.speedFactor || 0.6;
@@ -447,7 +468,7 @@ export class Player {
       this._commonCombatInput(dt);
     }
     if (this.sprinting || this.carrying) this.crouch = false;
-    let sp = this._speedFor(mag);
+    let sp = this._speedFor(mag, dt);
     let wish = d.clone().multiplyScalar(sp);
     if (this.action?.type === 'dodge' || this.action?.type === 'roll') {
       // hızlı çıkış, yumuşak duruş
@@ -457,7 +478,6 @@ export class Player {
       // vuruşa doğru küçük atılım
       wish.add(new THREE.Vector3(Math.sin(this.yaw), 0, Math.cos(this.yaw)).multiplyScalar(this.action.lunge));
     }
-    if (this.sprinting) this.stamina = Math.max(0, this.stamina - dt * 14);
     // yönelim
     if (this.action && this.action.lockYaw !== undefined && this.action.lockYaw !== null) {
       this.yaw = dampAngle(this.yaw, this.action.lockYaw, 20, dt);
@@ -563,7 +583,7 @@ export class Player {
     if (this.action && !c.upper) { this.idleT = 0; return; }
     // üst gövde duruşu
     this._wantUpper(this.aiming ? 'Aim' : this.blocking ? 'Block' : null);
-    if (air && this.mode === 'ground') {
+    if (air && (this.mode === 'ground' || this.mode === 'deck')) {
       this.jumpAnimT = (this.jumpAnimT || 0) + dt;
       if (this.airT > 0.25 || (this.jumpAnimT > 0.35 && c.currentName === 'JumpStart')) this._wantAnim('Jump_Idle', 1, 0.15);
       return;
@@ -584,9 +604,9 @@ export class Player {
       this._wantAnim(a, clamp(hs / (a.startsWith('Strafe') ? 3.6 : 1.9), 0.5, 1.3), 0.25);
       return;
     }
-    if (this.crouch || hs < 2.6) this._wantAnim('Walk', clamp(hs / 1.9, 0.5, 1.4));
+    if (this.crouch || hs < 3.4) this._wantAnim('Walk', clamp(hs / 1.9, 0.5, 1.6));
     else if (this.sprinting && hs > 5.6) this._wantAnim('Sprint', clamp(hs / 6.6, 0.8, 1.35));
-    else this._wantAnim('Run', clamp(hs / 5.2, 0.7, 1.45));
+    else this._wantAnim('Run', clamp(hs / 5.2, 0.6, 1.45));
   }
 
   // Gemi gövdesine dışarıdan girme
@@ -609,6 +629,8 @@ export class Player {
 
   enterWater() {
     this._modeT = 0.35;
+    if (this.busy) this.cancelBusy();
+    this._resetCombatFlags();
     this.mode = 'swim';
     this.crouch = false;
     this.aiming = false;
@@ -665,7 +687,7 @@ export class Player {
     const pitch = this.swimMoving ? (this.pos.y < surfaceY - 0.6 ? 1.35 + clamp(-this.vel.y * 0.15, -0.5, 0.5) : 1.2) : 0.15;
     c.root.rotation.set(0, this.yaw, 0);
     c.model.rotation.x = damp(c.model.rotation.x, pitch, 6, dt);
-    c.model.position.y = damp(c.model.position.y, this.swimMoving ? 1.0 : 0, 6, dt);
+    c.overlay.lift = damp(c.overlay.lift || 0, this.swimMoving ? 1.0 : 0, 6, dt); // Character.update uygular
     this._wantAnim('Idle');
     // sığ suya çıkış (histerezis: giriş eşiği wh-1.35'in üstünde; mod kilidi süresince değişmez)
     if (this._modeT <= 0 && (floor > wh - 1.25 || this.pos.y - floor < 0.3 && floor > wh - 1.3)) {
@@ -677,6 +699,7 @@ export class Player {
     this.mode = 'ground';
     this.char.model.rotation.x = 0;
     this.char.model.position.y = 0;
+    this.char.overlay.lift = 0;
     this.underwater = false;
     this.oxygen = 100;
     this.pos.y = Math.max(this.pos.y, terrain.heightAt(this.pos.x, this.pos.z));
@@ -695,12 +718,18 @@ export class Player {
     }
     const { d, mag } = locked ? { d: new THREE.Vector3(), mag: 0 } : this._moveDir();
     if (!locked) { if (input.pressed('egil')) this.crouch = !this.crouch; this._commonCombatInput(dt); }
-    const sp = this._speedFor(mag);
+    const sp = this._speedFor(mag, dt);
+    // hareket vektörü (kaçınmada eylem yönü ve hızı: karadakiyle aynı eğri)
+    let mvx = d.x * sp, mvz = d.z * sp;
+    if (this.action?.type === 'dodge' || this.action?.type === 'roll') {
+      const k = clamp(1 - this.action.t / this.action.dur, 0, 1), v = 2.5 + 7.5 * k * k;
+      mvx = this.action.dir.x * v; mvz = this.action.dir.z * v;
+    }
     // dünya yönünü gemi yereline çevir
     const cy = Math.cos(-s.yaw), sy = Math.sin(-s.yaw);
-    const lx = d.x * cy + d.z * sy, lz = -d.x * sy + d.z * cy;
-    this.local.x += lx * sp * dt;
-    this.local.z += lz * sp * dt;
+    const lx = mvx * cy + mvz * sy, lz = -mvx * sy + mvz * cy;
+    this.local.x += lx * dt;
+    this.local.z += lz * dt;
     // güverte fiziği: yalpa ve baş-kıç vurmada eğime doğru hafif kayma, gemi ivmesinde atalet
     // (kontrolsüz savrulma yok: ölü bölge ve sınırlı kayma)
     if (this.localY <= 0.01) {
@@ -719,7 +748,11 @@ export class Player {
       }
     }
     // zıplama ve küpeşteden atlama
-    if (!locked && input.pressed('zipla') && this.localY <= 0.001 && !this.busy) { this.localVy = 6.5; }
+    if (!locked && input.pressed('zipla') && this.localY <= 0.001 && !this.busy && (!this.carrying || this.carrying.tier === 'small')) {
+      this.localVy = 6.5; this.jumpAnimT = 0; this.airT = 0; this.action = null;
+      if (!this.carrying) { this.char.stopUpper(0.05); this.char.play('JumpStart', 0.06, { once: true, restart: true, speed: 1.5 }); }
+      G.emit('sfx', { name: 'dash', pos: this.pos, vol: 0.25 });
+    }
     this.localVy += GRAV * dt;
     this.localY = Math.max(0, this.localY + this.localVy * dt);
     if (this.localY <= 0) this.localVy = 0;
@@ -730,7 +763,7 @@ export class Player {
       const w = s.localToWorld(new THREE.Vector3(this.local.x * 1.08, s.deckAt(this.local.x, this.local.z) + this.localY, this.local.z));
       const vel = new THREE.Vector3(d.x * 4, 3, d.z * 4).add(new THREE.Vector3(s.vx || 0, 0, s.vz || 0));
       this.leaveShipToWorld(w, vel);
-      this.fallStartY = w.y + 5; // suya düşüşte hasar yok
+      this.fallStartY = w.y; // suya düşüş zaten hasarsız; karaya/iskeleye inişte gereksiz düşme hasarı olmaz
       return;
     }
     s.clampDeck(this.local);
@@ -740,10 +773,11 @@ export class Player {
     s.localToWorld(_v, this.pos);
     // yön
     if (this.action && this.action.lockYaw !== undefined && this.action.lockYaw !== null) this.yaw = dampAngle(this.yaw, this.action.lockYaw, 20, dt);
-    else if (this.aiming || this.blocking || (this.action && ['slash', 'shoot', 'punch'].includes(this.action.type))) this.yaw = dampAngle(this.yaw, tpCamera.yaw, 16, dt);
+    else if (this.aiming || this.blocking || (this.action && ['atk', 'slash', 'shoot', 'punch'].includes(this.action.type))) this.yaw = dampAngle(this.yaw, tpCamera.yaw, 16, dt);
     else if (mag > 0.05) this._faceTowards(d, dt);
     const ws = sp;
     this.onGround = this.localY <= 0.01;
+    if (this.onGround) this.airT = 0; else this.airT = (this.airT || 0) + dt;
     this.vel.set(d.x * ws, 0, d.z * ws);
     this._locomotion(ws, dt, !this.onGround);
     if (ws > 1 && this.onGround) {
@@ -764,6 +798,12 @@ export class Player {
     _v.set(st.x, st.y, st.z);
     s.localToWorld(_v, this.pos);
     this.yaw = s.yaw;
+    // eller dümen çarkında: çark dümen açısıyla döner, eller yarı oranda izler (iki karşıt kavrama noktası)
+    const W = s.model.wheel, th = W.rotation.z * 0.5;
+    W.updateWorldMatrix(true, false);
+    this.char.ik.handL = W.localToWorld(_ikL.set(0.5 * Math.cos(-th), 0.5 * Math.sin(-th), -0.06));
+    this.char.ik.handR = W.localToWorld(_ikR.set(-0.5 * Math.cos(-th), -0.5 * Math.sin(-th), -0.06));
+    this.char.ik.w = 1;
     this._wantAnim('Idle');
   }
 
@@ -777,6 +817,11 @@ export class Player {
     _v.copy(cn.local).add(back);
     s.localToWorld(_v, this.pos);
     this.yaw = s.yaw + cn.mesh.rotation.y;
+    // eller top kundağının arkasında (tutamaklar)
+    cn.mesh.updateWorldMatrix(true, false);
+    this.char.ik.handL = cn.mesh.localToWorld(_ikL.set(0.28, 0.62, -0.5));
+    this.char.ik.handR = cn.mesh.localToWorld(_ikR.set(-0.28, 0.62, -0.5));
+    this.char.ik.w = 1;
     this._wantAnim('Idle');
   }
 
@@ -808,6 +853,8 @@ export class Player {
     }
   }
   startClimb(ship) {
+    if (this.busy) this.cancelBusy();
+    this._resetCombatFlags();
     this.ship = ship;
     this.mode = 'climb';
     this.climbT = 0;
@@ -815,6 +862,7 @@ export class Player {
     this.oxygen = 100;
     this.char.model.rotation.x = 0;
     this.char.model.position.y = 0;
+    this.char.overlay.lift = 0;
     G.emit('sfx', { name: 'step', vol: 0.3 });
   }
 
@@ -822,7 +870,7 @@ export class Player {
   netState() {
     return {
       x: +this.pos.x.toFixed(2), y: +this.pos.y.toFixed(2), z: +this.pos.z.toFixed(2), yaw: +this.yaw.toFixed(2),
-      anim: this.char.currentName, up: this.char.upperName || null, mode: this.mode, eq: this.equipped, carry: this.carrying ? this.carrying.id : null,
+      anim: this.char.currentName, up: this.char.upperName || null, loop: this.char.current ? (this.char.current.loop === THREE.LoopRepeat ? 1 : 0) : 1, mode: this.mode, eq: this.equipped, carry: this.carrying ? this.carrying.id : null,
       hp: Math.round(this.hp), torch: this.torch, down: this.downed, swimP: +(this.char.model.rotation.x).toFixed(2),
       ship: this.ship ? this.ship.id : null, lx: +this.local.x.toFixed(2), lz: +this.local.z.toFixed(2), ly: +this.localY.toFixed(2),
     };

@@ -170,6 +170,8 @@ export const shipControl = {
   },
 
   takeHelm(p, s) {
+    p._resetCombatFlags();
+    p.char.hold(null); // eller çarkta: silah elde değil (istasyon bırakılınca yeniden kuşanılır)
     p.mode = 'helm';
     p.ship = s;
     interact.locks.set(s.id + ':helm', G.myId);
@@ -177,6 +179,8 @@ export const shipControl = {
     G.notify('Dümendesin — A/D yön, W/S yelken, Boşluk yelkenleri aç/kapat, E bırak.', 'info', 4500);
   },
   takeCannon(p, s, i) {
+    p._resetCombatFlags();
+    p.char.hold(null); // eller kundakta
     p.mode = 'cannon';
     p.ship = s;
     p.cannonIndex = i;
@@ -201,6 +205,8 @@ export const shipControl = {
     }
     p.mode = 'deck';
     p.localY = 0;
+    p.char.ik.handL = p.char.ik.handR = null;
+    if (!p.carrying && p.equipped !== 'none' && p.equipped !== 'map') p.char.hold(p.equipped);
   },
   anchor(s) {
     const st = s.toggleAnchor();
@@ -221,9 +227,11 @@ export const shipControl = {
   enterBoat(p) {
     const rb = G.rowboat;
     if (p.carrying) { G.emit('stowCarryBoat', { boat: rb }); }
+    p._resetCombatFlags();
     p.mode = 'boat';
     p.ship = null;
-    p.char.model.rotation.x = 0; p.char.model.position.y = 0;
+    p.char.model.rotation.x = 0; p.char.model.position.y = 0; p.char.overlay.lift = 0;
+    p.char.hold(null); // kürek çekerken silah elde değil (çıkışta yeniden)
     p.underwater = false;
     rb.driver = G.myId;
     G.emit('boatCmd', { cmd: 'driver', who: G.myId });
@@ -246,6 +254,8 @@ export const shipControl = {
           p.mode = 'ground';
           p.pos.set(x, terrain.heightAt(x, z) + 0.1, z);
           p.vel.set(0, 0, 0);
+          if (!p.carrying && p.equipped !== 'none' && p.equipped !== 'map') p.char.hold(p.equipped);
+          p._syncTorch();
           return;
         }
       }
@@ -259,6 +269,8 @@ export const shipControl = {
   update(dt) {
     const p = G.player;
     if (!p) return;
+    // dümen/top modunda gemi batmış ya da sahneden kaldırılmışsa istasyon bırakılır (güverte mantığı denize geçirir)
+    if ((p.mode === 'helm' || p.mode === 'cannon') && p.ship && (p.ship.sunk || !p.ship.root.parent)) this.leaveStation(p);
     // gemi yangınları: alev/duman, içinde duranı yakar
     for (const s of G.ships) {
       if (!s.fires?.length || s.sunk) continue;

@@ -35,3 +35,15 @@ Her madde: dosya · ne değişti · neden · nasıl test edildi. "Test" sütunun
 | `js/ship/ship.js` | Çapa çekişi sınırlı (≤6 m/s²·dt) ve zincir 3×+40 m aşılırsa yeniden demirleme; `collideAll` tanımsız hız → 0, kütle oranı ≤1.5; kürek sandalı dünya sınırı | E-01 (kritik: hızlı yolculuk sonrası gemi 800 m/s fırlıyordu), E-05, D-18 | "Taşınan demirli gemi…", "Kinematik gemiye çarpma…" |
 | `js/main.js`, `js/game/events.js` | Hızlı yolculukta `anchorPt=null`; `raiseShip` yangın/çapa/hız sıfırlama; batık gemide düşman gemisi çift güncellenmiyor | E-01, E-11, E-12 | döngü hatasız |
 | `js/game/enemies.js` | Alay zamanlayıcısı `dt`; basamak 0.65 m (1.6 m "ışınlanma" yok); mermi görüş hattı `PROJ_LOS` | D-14, D-15, D-04 | döngü hatasız (AI testleri Aşama 5) |
+
+## Aşama 4 — Karakter hareketi, animasyon, IK, kamera
+| Dosya | Değişiklik | Neden | Test |
+|---|---|---|---|
+| `js/player/character.js` | `overlay.lift` (yüzme kaldırması) `update` içinde uygulanır; ragdoll noktaları eylemler durdurulmadan önce örneklenir; sol el meşalesi de titreşir | C01, C04, C16 | `04_karakter.js` C01; C04/C16 statik |
+| `js/player/player.js` | `_resetCombatFlags()` (mod değişiminde Block/Aim/Sprint/IK/knock sıfırlama); meşgul eylem ölüm/suya giriş/biniş/tırmanış/dirilişte iptal; zehir yerde yatanda işlemez; güvertede zıplama animasyonu + `airT` + kaçınma hareketi; sprint histerezisi ve tüketimi `_speedFor(mag, dt)` içinde; güvertede `atk` kameraya döner; küpeşte atlayışında `fallStartY`; yürüme/koşma eşiği 3.4 m/s; dalışta kuşanma; dümen/top IK el hedefleri; ağ `loop` bayrağı; biniş sonrası silah/meşale | C06, C09, C10, C11, C12, C13, C14, C15, C18, C19, C22, C24, C25, C08 | `04_karakter.js` |
+| `js/game/shipControl.js` | İstasyon alımında bayrak sıfırlama ve silah gizleme, bırakmada IK temizliği ve yeniden kuşanma; batan/kaldırılan gemide dümen/top bırakılır; kayıktan karaya çıkışta silah | C11, C12, C23 | `04_karakter.js` C08, C12, C23 |
+| `js/player/camera.js` | Baş→kamera doğrusu çarpıştırıcıya giriyorsa ikili aramayla mesafe kısaltma (içeri anında, dışarı yumuşak) | C07 | `04_karakter.js` C07 |
+| `js/wildlife/fishing.js`, `js/game/combat.js` | Olta atışı `throw`; eski `slash` vuruş dalı kaldırıldı; misina ucu iç nesne uzayından | C05, C17 | `04_karakter.js` C05 |
+| `js/game/interact.js` | Aday değişince basılı tutma kolu sıfırlanır; yerde yatan oyuncu etkileşemez; uzun basma sonrası tuş tüketilir | C20, C21 | `04_karakter.js` C21 |
+| `js/net/net.js` | Uzak oyuncuda yüzme kaldırması ve `loop` bayrağına göre tek seferlik/döngülü oynatma | C01, C25 | statik (co-op testleri Aşama 6) |
+| `js/treasure/treasure.js`, `js/player/inventory.js` | Taşıma başlarken `equip` olayı; veri verilen n adet ekleme n yığın | C26, C27 | `04_karakter.js` |

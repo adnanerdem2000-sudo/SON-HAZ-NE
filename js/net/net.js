@@ -94,7 +94,7 @@ class RemotePlayer {
     if (t.anim === 'Ragdoll') { if (!c.ragdoll) c.startRagdoll({ ground: (x, z, y) => physics.groundAt(x, z, y + 0.6) }); }
     else {
       if (c.ragdoll) c.stopRagdoll();
-      if (t.anim && c.currentName !== t.anim) c.play(t.anim, 0.15, { once: isOnce(t.anim) });
+      if (t.anim && c.currentName !== t.anim) c.play(t.anim, 0.15, { once: t.loop === 0 ? true : t.loop === 1 ? false : isOnce(t.anim) });
       if ((t.up || null) !== (c.upperName || null)) { if (t.up) c.playUpper(t.up, 0.1, { once: isOnce(t.up) }); else c.stopUpper(0.15); }
     }
     if (c.heldType !== (t.eq === 'none' || t.eq === 'map' ? null : t.eq)) c.hold(t.eq === 'none' || t.eq === 'map' ? null : t.eq);
@@ -104,6 +104,7 @@ class RemotePlayer {
     c.overlay.row = t.mode === 'boat';
     c.overlay.swimPhase = (c.overlay.swimPhase || 0) + dt * 4;
     c.model.rotation.x = t.mode === 'swim' ? damp(c.model.rotation.x, t.swimP || 0, 6, dt) : 0;
+    c.overlay.lift = t.mode === 'swim' ? damp(c.overlay.lift || 0, (t.swimP || 0) > 0.6 ? 1.0 : 0, 6, dt) : 0;
     c.update(dt);
   }
   dispose(scene) { scene.remove(this.char.root); }
