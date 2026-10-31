@@ -294,13 +294,14 @@ export class Player {
   }
   // mod değişiminde savaş bayrakları sıfırlanır: dümen/top/kayık/yüzmede Block/Aim katmanı donmaz, dayanıklılık yenilenir
   _resetCombatFlags() {
-    this.blocking = false; this.aiming = false; this.sprinting = false; this.blockT = 0;
+    this.blocking = false; this.aiming = false; this.sprinting = false; this.blockT = 0; this.knock = null;
     this.char.ik.handL = this.char.ik.handR = null;
     if (this.char.upper) this.char.stopUpper(0.1);
   }
   leaveShipToWorld(worldPos, vel) {
     this.mode = 'ground';
     this.ship = null;
+    this.knock = null; this.char.ik.handL = this.char.ik.handR = null;
     this.pos.copy(worldPos);
     this.vel.copy(vel || new THREE.Vector3());
     this.onGround = false;
@@ -317,6 +318,7 @@ export class Player {
     this.combo.grace = Math.max(0, this.combo.grace - dt);
     if (this.blocking) this.blockT += dt; else this.blockT = 0;
     this._modeT = Math.max(0, this._modeT - dt);
+    if (this.slowT > 0) this.slowT -= dt; // yakalama (Boğulmuş Denizci) yavaşlatması
     if (this.action) {
       this.action.t += dt;
       if (this.action.t >= this.action.dur) {
@@ -418,6 +420,7 @@ export class Player {
     if (this.crouch) sp = 1.7;
     if (this.aiming || this.blocking) sp = 2.0;
     if (this.carrying) sp *= this.carrying.speedFactor || 0.6;
+    if (this.slowT > 0) sp *= 0.55;
     if (this.busy) sp = 0;
     const a = this.action;
     if (a) {
@@ -724,6 +727,12 @@ export class Player {
     if (this.action?.type === 'dodge' || this.action?.type === 'roll') {
       const k = clamp(1 - this.action.t / this.action.dur, 0, 1), v = 2.5 + 7.5 * k * k;
       mvx = this.action.dir.x * v; mvz = this.action.dir.z * v;
+    }
+    // güvertede geri tepme: gemi yereline çevrilerek uygulanır ve sönümlenir (karaya inince gecikmiş sarsma yok)
+    if (this.knock) {
+      mvx += this.knock.x * 4; mvz += this.knock.z * 4;
+      this.knock.x *= Math.exp(-9 * dt); this.knock.z *= Math.exp(-9 * dt);
+      if (Math.hypot(this.knock.x, this.knock.z) < 0.1) this.knock = null;
     }
     // dünya yönünü gemi yereline çevir
     const cy = Math.cos(-s.yaw), sy = Math.sin(-s.yaw);

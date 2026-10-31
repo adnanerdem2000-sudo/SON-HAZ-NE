@@ -508,7 +508,14 @@ class SeaSerpent extends BossBase {
       const dx = goal.x - this.pos.x, dz = goal.z - this.pos.z;
       if (Math.hypot(dx, dz) > 0.5 && this.mode !== 'lineup' && this.mode !== 'spit') this.yaw = dampAngle(this.yaw, Math.atan2(dx, dz), 2.2, dt);
       const v = Math.min(sp, Math.hypot(dx, dz) * 2);
-      this.pos.x += Math.sin(this.yaw) * v * dt; this.pos.z += Math.cos(this.yaw) * v * dt;
+      // karaya oturma yok: 12 m ilerisi sığ/kara ise ±35°/±70° sapmalı yönlerden suda olanı seç, hiçbiri değilse dur
+      const ahead = (a) => terrain.heightAt(this.pos.x + Math.sin(a) * 12, this.pos.z + Math.cos(a) * 12) < ocean.tide - 3;
+      if (!ahead(this.yaw)) {
+        const alt = [this.yaw + 0.6, this.yaw - 0.6, this.yaw + 1.2, this.yaw - 1.2].find(ahead);
+        if (alt !== undefined) this.yaw = dampAngle(this.yaw, alt, 4, dt);
+      }
+      const nx = this.pos.x + Math.sin(this.yaw) * v * dt, nz = this.pos.z + Math.cos(this.yaw) * v * dt;
+      if (terrain.heightAt(nx, nz) < ocean.tide - 2) { this.pos.x = nx; this.pos.z = nz; }
     }
     this.pos.y = damp(this.pos.y, wantY, 2, dt);
     this._pose(dt);
@@ -921,7 +928,7 @@ class CursedAdmiral extends BossBase {
     this.hp = this.maxHp * 0.5;
     G.notify('Hayalet gemi bordaya yanaştı — Lanetli Amiral güverteye çıkıyor!', 'boss', 5000);
     if (!G.online || G.isHost) {
-      this.admiral = enemies.spawn('lanetli_amiral', ship.x, ship.z, { ship, lx: 0, lz: -2, role: 'patrol' });
+      this.admiral = enemies.spawn('lanetli_amiral', ship.x, ship.z, { ship, lx: 0, lz: -2, role: 'patrol', noLoot: true }); // ödül boss sonunda bir kez
       this.admiral.awareness = 1; this.admiral.target = null;
       for (const lz of [2.5, 4.5]) enemies.spawn('hayalet', ship.x, ship.z, { ship, lx: (Math.random() - 0.5) * 2, lz, role: 'patrol' });
     }
@@ -958,7 +965,10 @@ class CursedAdmiral extends BossBase {
         wantYaw = Math.atan2(tx - gs.x, tz - gs.z);
         sp = d > 70 ? 11 : 7;
         gs.yaw = dampAngle(gs.yaw, wantYaw, 0.6, dt);
-        gs.x += Math.sin(gs.yaw) * sp * dt; gs.z += Math.cos(gs.yaw) * sp * dt;
+        // hayalet gemi karaya oturmaz: 25 m ilerisi sığ/kara ise açık denize doğru sapar, bir sonraki konum karaysa durur
+        if (terrain.heightAt(gs.x + Math.sin(gs.yaw) * 25, gs.z + Math.cos(gs.yaw) * 25) > ocean.tide - 4) gs.yaw = dampAngle(gs.yaw, Math.atan2(gs.x - ship.x, gs.z - ship.z), 1.5, dt);
+        const gnx = gs.x + Math.sin(gs.yaw) * sp * dt, gnz = gs.z + Math.cos(gs.yaw) * sp * dt;
+        if (terrain.heightAt(gnx, gnz) < ocean.tide - 3) { gs.x = gnx; gs.z = gnz; }
         // yaylım ateşi: yeşil parıltı → hayalet gülleler
         this.volleyT -= dt;
         if (this.volleyT < 1.6 && !this.glow) { this.glow = true; G.notify('Hayalet gemi topları parlıyor — yaylım ateşi geliyor!', 'warn', 1500); }
@@ -989,7 +999,7 @@ class CursedAdmiral extends BossBase {
   die() {
     if (!this.alive) return;
     super.die();
-    for (const e of enemies.list) if (e.ship && e.T.faction === 'hayalet' && e.alive) e.applyDamage(9999, {});
+    for (const e of enemies.list) if (e.ship && e.T.faction === 'hayalet' && e.alive) { e.noLoot = true; e.applyDamage(9999, {}); } // temizlik: ganimet/XP yok
     G.player.inv.gold += 0;
   }
   dispose() { super.dispose(); this.gship.dispose(); }

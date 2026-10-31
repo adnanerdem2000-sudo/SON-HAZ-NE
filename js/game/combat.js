@@ -5,6 +5,7 @@ import { audio } from '../core/audio.js';
 import { effects } from './effects.js';
 import { tpCamera } from '../player/camera.js';
 import { terrain } from '../world/terrain.js';
+import { physics } from '../world/physics.js';
 import { engine } from '../core/engine.js';
 import { wrapAngle } from '../core/util.js';
 import { bodies } from '../world/bodies.js';
@@ -289,6 +290,8 @@ export const combat = {
         const q = origin.clone().addScaledVector(dir, d);
         if (q.y < terrain.heightAt(q.x, q.z) - 0.2) return null;
       }
+      // kaya/duvar/bina çarpıştırıcıları (düşmanların görüş hattıyla aynı kural)
+      if (physics.lineBlocked(origin.x, origin.y, origin.z, best.point.x, best.point.y, best.point.z, { tMin: 0.05, tMax: 0.98, rScale: 1 })) return null;
     }
     return best;
   },

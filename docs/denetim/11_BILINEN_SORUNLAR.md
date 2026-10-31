@@ -12,3 +12,5 @@
 | 8 | Kürek/sandık için el IK hedefleri yok | Açık (düşük) | Dümen ve top için eklendi (Aşama 4); kürek/sandık geometrisi için ölçüm gerekir |
 | 9 | Test ortamı: aynı bellek grubunda 16+ tarayıcı süreci çalışırken test sayfaları OOM ile öldürülüyor ("Target crashed") | Ortam | Doğrulayıcı iş akışları ile oyun testleri sırayla koşturulur; kodla ilgisi yok |
 | 10 | Yedek (işçisiz) kipte ana iş parçacığı üretimi 60 FPS'lik gerçek makinede kare süresini uzatır (dilim 10–20 ms) | Açık (tasarım) | Yalnız işçi kurulamayan ortamlar; tek dosya sürümü artık data: URL işçisiyle çalışıyor |
+| 11 | F-09 geniş engel dolaşma: yalnız statik doğrulandı | Açık (test) | Çalışma zamanı dolaşma senaryosu yazılmadı |
+| 12 | Boss savaşları (Kraken/Yılan/Taş Muhafız/Volkanik Dev/Amiral) bu ortamda uçtan uca oynanmadı | Açık (test) | Evre/ödül mantığı birim düzeyinde test edildi; tam savaş gerçek GPU'da el ile doğrulanmalı |

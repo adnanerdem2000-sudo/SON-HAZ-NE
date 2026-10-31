@@ -218,6 +218,7 @@ export class Enemy {
     this.homeR = opts.homeR || 15;
     this.group = opts.group;
     this.role = opts.role || 'patrol';
+    this.noLoot = !!opts.noLoot; // boss sahnesinin parçası: ölümünde ayrıca ganimet/XP vermez (çift ödül yok)
     const coop = G.online ? 1 + 0.35 * G.remotes.size : 1;
     this.maxHp = this.T.hp * coop * (opts.hpMul || 1);
     this.hp = this.maxHp;
@@ -399,6 +400,10 @@ export class Enemy {
     // tepki: sersemleme / sendeleme / vuruş
     const heavyHit = info.heavy || info.counter || info.finisher;
     if (info.counter || (heavyHit && !this.T.poise && !this.T.boss)) this.stun(info.counter ? 1.6 : 1.0, 'hit');
+    else if (this.state === 'stunned' || this.state === 'summon' || this.state === 'callHelp') {
+      // sersemlik hafif vuruşla kesilmez (ceza penceresi sürer); çağırma/yardım hazırlığı vuruşla bozulmaz — yalnız üst gövde tepkisi
+      this.char.playUpper('HitRecieve', 0.04, { once: true, restart: true, speed: 1.3 });
+    }
     else if (this.state !== 'attack' || !this.T.poise) {
       if (!(this.T.boss && this.state === 'attack' && Math.random() < 0.7)) {
         this._setState('hit');
@@ -452,6 +457,7 @@ export class Enemy {
 
   die(info = {}) {
     this.alive = false;
+    if (this.group) { const st = enemies.groupState[this.group]; if (st) st.killed = (st.killed || 0) + 1; }
     this._setState('dead');
     this._releaseToken();
     this.alert = 0;
@@ -473,8 +479,10 @@ export class Enemy {
     }
     if (willRise) this.reviveT = 6 + Math.random() * 4;
     else {
-      G.emit('enemyKilled', { enemy: this, type: this.type, pos: this.pos.clone(), by: info.by });
-      G.emit('loot', { pos: this.pos.clone(), table: this.T.loot, from: this.T.name });
+      if (!this.noLoot) {
+        G.emit('enemyKilled', { enemy: this, type: this.type, pos: this.pos.clone(), by: info.by });
+        G.emit('loot', { pos: this.pos.clone(), table: this.T.loot, from: this.T.name });
+      }
       // kaptan ölünce insan tayfanın morali çöker
       if (this.T.rally || this.T.callHelp && this.T.faction === 'insan') enemies.moraleShock(this);
     }
@@ -1120,7 +1128,12 @@ export class Enemy {
       this.progT = (this.progT || 0) + dt;
       this.progD = (this.progD || 0) + (before - after);
       if (this.progT > 1.2) {
-        if (this.progD < 0.35 && !this.detour) this.detour = { a: (this.detourSide = -(this.detourSide || 1)) * 1.1, t: 1.0 };
+        if (this.progD < 0.35 && !this.detour) {
+          // ilk takılmada son yön korunur; art arda ikinci takılmada ters çevrilir (zikzak yapıp pes etmez)
+          this.detourSide = this._detourStuck ? -(this.detourSide || 1) : (this.detourSide || 1);
+          this._detourStuck = true;
+          this.detour = { a: this.detourSide * 1.1, t: 1.4 };
+        } else if (this.progD >= 0.35) this._detourStuck = false;
         this.progT = 0; this.progD = 0;
       }
     }
@@ -1154,7 +1167,11 @@ export class Enemy {
 
   _place(dt) {
     if (this.ship) {
-      if (this.ship.sunk) { this.ship = null; return; }
+      if (this.ship.sunk) {
+        // gemi battı: canlı (hayalet olmayan) tayfa boğulur — ganimetsiz; deniz dibinde kalıcı düşman kalmaz
+        if (this.alive && !this.T.ghost) { this.noLoot = true; this.applyDamage(this.hp + 1, {}); }
+        this.ship = null; return;
+      }
       if (this.kb && this.state !== 'dead') {
         const cy = Math.cos(-this.ship.yaw), sy = Math.sin(-this.ship.yaw);
         this.local.x += (this.kb.x * cy + this.kb.z * sy) * dt; this.local.z += (-this.kb.x * sy + this.kb.z * cy) * dt;
@@ -1290,14 +1307,15 @@ export const enemies = {
     this.groups.push({ respawn: 300, r: 18, list: [], ...g });
   },
 
-  start() {
+  start(data) {
     for (const e of this.list) e.dispose();
     for (const s of this.shots) this.scene.remove(s.mesh);
     this.list = [];
     this.shots = [];
     this.firePools = [];
     this.tokens.clear();
-    this.groupState = {};
+    // kamp durumları kayıttan geri yüklenir (yenilenme bekleme süreleri yüklemeyle sıfırlanmaz)
+    this.groupState = data?.enemies?.groups ? JSON.parse(JSON.stringify(data.enemies.groups)) : {};
     this.wasNight = null;
     this.bossSpawned = false;
   },
@@ -1532,11 +1550,14 @@ export const enemies = {
       if (!night) st.nightDone = false;
       if (far && st.spawned) {
         const mine = this.list.filter((e) => e.group === gr.id);
-        const allDead = mine.length && mine.every((e) => !e.alive);
+        const alive = mine.filter((e) => e.alive).length, killed = st.killed || 0;
+        // cesetler listeden silinmiş olabilir: 'hepsi öldü' kararı öldürme sayacına dayanır (anında yeniden doğma yok)
+        const allDead = alive === 0 && killed > 0;
         for (const e of mine) { e.dispose(); e.removed = true; }
         this.list = this.list.filter((e) => e.group !== gr.id);
         st.spawned = false;
-        st.cooldown = allDead ? gr.respawn : 0;
+        st.cooldown = allDead ? gr.respawn : killed > 0 ? gr.respawn * 0.5 : 0;
+        st.killed = 0;
       }
     }
   },
@@ -1565,9 +1586,11 @@ export const enemies = {
     const p = G.player;
     for (const e of this.list) {
       // yapay zekâ ve animasyon ayrıntı seviyesi: uzaktakiler daha seyrek güncellenir
-      const d = p ? Math.hypot(e.pos.x - p.pos.x, e.pos.z - p.pos.z) : 0;
+      let d = p ? Math.hypot(e.pos.x - p.pos.x, e.pos.z - p.pos.z) : 0;
+      for (const r of G.remotes.values()) { const dr = Math.hypot(e.pos.x - r.pos.x, e.pos.z - r.pos.z); if (dr < d) d = dr; }
       e._lodAcc = (e._lodAcc || 0) + dt;
-      const step = d > 90 ? 0.25 : d > 45 ? 0.066 : 0;
+      // hedefi olan (kovalayan/saldıran) düşman seyreltilmez: 0.25 s adımla ince duvardan geçmez, vuruş zamanlaması bozulmaz
+      const step = (e.target && e.alive) ? 0 : d > 90 ? 0.25 : d > 45 ? 0.066 : 0;
       if (e._lodAcc < step) continue;
       const edt = e._lodAcc; e._lodAcc = 0;
       if (G.isHost || !G.online) e.update(edt);

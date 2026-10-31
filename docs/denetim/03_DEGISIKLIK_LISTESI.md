@@ -47,3 +47,11 @@ Her madde: dosya · ne değişti · neden · nasıl test edildi. "Test" sütunun
 | `js/game/interact.js` | Aday değişince basılı tutma kolu sıfırlanır; yerde yatan oyuncu etkileşemez; uzun basma sonrası tuş tüketilir | C20, C21 | `04_karakter.js` C21 |
 | `js/net/net.js` | Uzak oyuncuda yüzme kaldırması ve `loop` bayrağına göre tek seferlik/döngülü oynatma | C01, C25 | statik (co-op testleri Aşama 6) |
 | `js/treasure/treasure.js`, `js/player/inventory.js` | Taşıma başlarken `equip` olayı; veri verilen n adet ekleme n yığın | C26, C27 | `04_karakter.js` |
+
+## Aşama 5 — Düşman AI ve boss (tek oyunculu mantık)
+| Dosya | Değişiklik | Neden | Test |
+|---|---|---|---|
+| `js/game/enemies.js` | `noLoot` seçeneği; sersemlik/çağırma/yardım çağrısı hafif vuruşla iptal olmaz; grup öldürme sayacı ve kamp bekleme kararı; `start(data)` kamp durumunu kayıttan yükler; AI seyreltme tüm oyunculara göre ve hedefli düşman muaf; dolaşma yönü ilerleme varsa korunur; batan gemi tayfası boğulur | F-03, F-05, F-07, F-08, F-09, F-10, ek-109 | `05_dusman_ai.js` |
+| `js/game/bosses.js` | Lanetli Amiral ve temizlik düşmanları ganimetsiz; deniz yılanı ve hayalet gemi karaya oturmaz (ileri nokta kontrolü) | F-10, D-19 | F-10 çalıştırıldı; D-19 statik |
+| `js/game/combat.js` | Tabanca ışını kaya/duvar/bina çarpıştırıcılarıyla engellenir | F-16 | `05_dusman_ai.js` |
+| `js/player/player.js` | Güvertede geri tepme uygulanır ve mod değişiminde sıfırlanır; `slowT` yavaşlatması okunur | F-14, ek-110 | `05_dusman_ai.js` (ek-110); F-14 statik |
