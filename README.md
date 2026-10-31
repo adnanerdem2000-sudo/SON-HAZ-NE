@@ -5,8 +5,8 @@ Mavi Kırıklar takımadasında küçük, eski bir sloop ile denize açıl; adal
 ipuçlarını çöz, kürekle kaz, sandıkları gemine taşı, limanda sat; balık tut, vahşi hayvanlarla karşılaş,
 iskeletler, hayaletler ve Kızıl Hançer'in korsanlarıyla savaş — ve efsanevi Kaptan Mira Veyl'in **Son Hazine**'sinin peşine düş.
 
-> **Bu sürüm:** İlk oynanabilir sürüm (MVP). Tarayıcıda çalışır, kurulum gerektirmez.
-> Masaüstü (exe) paketi bir sonraki adımda hazırlanacak.
+> **Bu sürüm:** 0.2 — görsel iyileştirmeler, dinamik hava olayları, zaman çizelgesi ve yeni fizik altyapısı.
+> Tarayıcıda çalışır, kurulum gerektirmez. Masaüstü (exe) paketi bir sonraki adımda hazırlanacak.
 
 ## Oynamak için
 - **GitHub Pages:** depo ayarlarında *Settings → Pages → Source: GitHub Actions* seçildikten sonra
@@ -39,11 +39,22 @@ Gereken: WebGL2 destekli güncel Chrome / Edge / Firefox. Online mod için inter
 | G | Taşınan sandığı bırak |
 | 1–5 | Pala, tabanca, kürek, olta, hazine haritası |
 | C | Pusula şeridi |
+| Z | Dürbün (tekerlek: yakınlaştır; bakılan ada/gemi/canlı ve uzaklığı yazılır) |
 | Enter | Sohbet (online) |
 | Esc | Duraklat menüsü |
 
 Gemide: dümende **A/D** yön, **W/S** yelken miktarı; çapa için baştaki ırgata, toplar için borda boyundaki toplara git.
 Oyun kumandası (standart düzen) desteklenir.
+
+## 0.2 sürümünde yenilikler
+- **Görüntü:** son işleme zinciri (HDR → parlama/bloom → günün saatine ve havaya göre renk düzenleme + vinyet → ACES ton eşleme → kenar yumuşatma; Ayarlar → Efekt kalitesi), sığ sularda hareketli kostik ışık desenleri, gelgit çizgisinde ıslak kum, eğime duyarlı kıyı köpüğü, yağmurda ıslanan zemin, yumuşak hacimli deniz feneri hüzmesi, gece daha okunur ay ışığı.
+- **Dünya ayrıntıları:** mercan resifleri, sallanan yosunlar, kumsalda deniz kabukları ve deniz yıldızları, toplanabilir kabuk/istiridye (inci çıkabilir), açık denizde kaya sütunları (gemiler çarpabilir), martı sürüleri (seyreden gemiyi takip eder), Timsah Lagünü'ne dökülen şelale, kıyıda gezinen balıkçı tekneleri, gemilerin arkasında dümen suyu köpüğü ve pruva serpintisi.
+- **Dinamik hava olayları:** 8 hava türü (açık, parçalı, bulutlu, çiseleme, sağanak, fırtına, sisli, rüzgârlı) Markov zinciriyle kendiliğinden değişir; hava tahmini (sonraki 3 değişim), rüzgâr cepheleri, 3B bulut katmanı, gerçek yıldırım çarpmaları (gemiye isabet edebilir, gök gürültüsü mesafeye göre gecikir), yağmur sonrası gökkuşağı, fırtınada su hortumları (gemiyi çeker, döndürür, hasar verir), denizde yağmur halkaları ve sıçramalar, sis bulutları.
+- **Zaman çizelgesi:** gün sayacı, gelgit (≈12,4 saatlik döngü, ±0,55 m; bazı hazineler yalnızca alçak suda kazılabilir), günlük program (şafak/akşam balık akını, liman açılış-kapanış, handa akşam eğlencesi, gece yarısı hayalet saatleri) ve dönemsel olaylar (iki günde bir **ticaret gemisi "Altın Martı"** — nadir mallar ve +%15 alım; üç günde bir **pazar günü** +%20 satış; beş günde bir **korsan şenliği**). Ekranın sağ üstünde 12 saatlik zaman şeridi; Korsan Defteri'nde **Zaman Çizelgesi** sekmesi (bugünün programı, 7 günlük takvim, hava tahmini, gelgit tablosu, dükkân saatleri, macera günlüğü). Tüccarların çalışma saatleri var; dükkân kapanınca NPC'ler hana yürür, sabah geri döner. Handa oda tutup sabaha / akşama kadar uyunabilir.
+- **Fizik altyapısı:** sekiz noktalı kaldırma kuvvetiyle gemi yalpası/baş-kıç vurması (kütleye göre), rüzgârla yatma, omurga yanal direnci, çapa zinciri ve rüzgâra dönme, limanda halatla bağlı kalma, kayalara ve gemilere çarpışma (itki, dönme, darbe hasarı), kürek darbeli kayık; sandık ve yüzen nesneler için rijit cisimler (düşme, sekme, yuvarlanma, eğimde kayma, suda yüzme, dalga ve rüzgârla sürüklenme, patlamayla savrulma); karakterlerin birbirini itmesi, darbeyle geri tepme, güvertede eğim ve ivmeyle kayma, top güllelerinde hava direnci ve rüzgâr sapması.
+- **Karakterler ve eşyalar:** kenar ışığı (siluetler gündüz ufuk, gece ay ışığıyla belirginleşir), altın sırmalı ve tüylü şapkalar, kavisli korsan palası (kabuk siper, sargılı kabza), pirinç kakmalı çakmaklı tabanca, yeni ayrıntılı eşya simgeleri, **dürbün**.
+- **Harita:** suluboya deniz haritası (tepe gölgelendirme, eş yükselti eğrileri, kıyı mürekkebi, dalga işaretleri, deniz canavarı, kartuş, dama çerçeve), yumuşak kenarlı keşif sisi, yer simgeleri; ekranda dönen **mini harita**; eskitilmiş, el boyaması hazine haritaları.
+- **Online:** gün, saat, hava, tahmin, ıslaklık ve su hortumları oda sahibinden eşitlenir; uyuma tüm tayfaya yansır.
 
 ## Bu sürümde neler var
 - **Ana menü** (gün batımında seyreden gemi): Devam Et, Oyna, Tek Oyunculu (3 kayıt yuvası), Online, Oda Kur, Odaya Katıl, Korsanım, Korsan Defteri, Ayarlar, Krediler, Çıkış.
@@ -71,8 +82,8 @@ Exe için en hızlı yol bu web sürümünü Electron ile paketlemek.
 ```
 index.html, css/style.css
 js/main.js              giriş noktası, oturum akışları, kayıt
-js/core/                motor, giriş, ses, kayıt, ayarlar, varlıklar, dokular
-js/world/               arazi, okyanus, gökyüzü/hava, bitki örtüsü, liman, mağara, fizik
+js/core/                motor, son işleme, kenar ışığı, giriş, ses, kayıt, ayarlar, varlıklar, dokular
+js/world/               arazi, okyanus, gökyüzü/hava, hava efektleri, zaman çizelgesi, rijit cisimler, dünya ayrıntıları, liman, mağara, fizik
 js/player/              karakter ve özelleştirme, oyuncu kontrolcüsü, kamera, envanter
 js/ship/                gemi modeli ve fiziği, kürek sandalı
 js/wildlife/            kara hayvanları, balıklar/köpekbalığı, balıkçılık
@@ -80,7 +91,7 @@ js/treasure/            haritalar, kazı, sandıklar, ganimet
 js/economy/             eşya veritabanı, tüccarlar
 js/game/                oyun döngüsü, etkileşim, savaş, düşmanlar, NPC'ler, görevler, olaylar
 js/net/                 online co-op
-js/ui/                  menüler, HUD, paneller, karakter editörü, defter, ayarlar
+js/ui/                  menüler, HUD (zaman şeridi, mini harita), paneller, harita çizimi, karakter editörü, defter, ayarlar
 assets/                 CC0 modeller ve sesler, OFL yazı tipleri
 ```
 Krediler ve lisanslar: [CREDITS.md](CREDITS.md)

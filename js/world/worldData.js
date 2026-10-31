@@ -53,6 +53,8 @@ export const TERRAIN_MODS = [
   { type: 'flatten', x: -520, z: -440, r: 34, h: 9, blend: 20 },
   // Martı Adacığı hazine düzlüğü
   { type: 'flatten', x: 470, z: 355, r: 20, h: 3.2, blend: 18 },
+  // Gelgit kum dili: yalnızca alçak suda açığa çıkar (gelgit ±0.55 m)
+  { type: 'flatten', x: 121, z: 201, r: 7, h: -0.14, blend: 9 },
 ];
 
 // Mağara yolu (taban yüksekliği sabit). Giriş doğu sahilinden içeri kıvrılır.
@@ -105,6 +107,11 @@ export const DIG_SITES = [
     id: 'kir_1', island: 'kirlangic', x: 115, z: 162, tier: 'small',
     clue: 'Limanın kuzeydoğusunda, devrilmiş kütüğün yanındaki iki kayanın arasında.',
     landmarks: [{ type: 'log', x: 111, z: 158 }, { type: 'rock', x: 119, z: 165 }, { type: 'rock', x: 110, z: 166 }],
+  },
+  {
+    id: 'gelgit_1', island: 'kirlangic', x: 121, z: 201, tier: 'medium', tide: true,
+    clue: 'Limanın doğusundaki kum dili yalnızca su çekildiğinde görünür. Alçak suda, kum dilinin ucunu kaz.',
+    landmarks: [{ type: 'barrel', x: 125, z: 203 }],
   },
   {
     id: 'kir_2', island: 'kirlangic', x: -205, z: 120, tier: 'medium',

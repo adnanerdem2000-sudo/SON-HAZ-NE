@@ -14,6 +14,8 @@ import { FISH } from '../wildlife/fish.js';
 import { SHIP_TYPES } from '../ship/shipModel.js';
 import { effects } from './effects.js';
 import { rng } from '../core/util.js';
+import { time, SHOP_HOURS } from '../world/time.js';
+import { sky } from '../world/sky.js';
 
 // ---- Ana hikâye: Son Hazine Efsanesi ----
 export const STORY = [
@@ -102,7 +104,7 @@ export const quests = {
     const s = STORY[to];
     audio.play('level_up', { vol: 0.7 });
     G.notify(`Yeni görev: ${s.title}`, 'quest', 5000);
-    G.emit('storyAdvanced', { stage: to });
+    G.emit('storyAdvanced', { stage: to, title: s.title });
     G.emit('netStory', { stage: to, flags: this.flags });
   },
 
@@ -232,12 +234,14 @@ export const quests = {
       for (const I of ISLANDS) if (!this.discovered[I.id] && Math.hypot(p.pos.x - I.x, p.pos.z - I.z) < I.r * 1.4) {
         this.discovered[I.id] = true;
         G.notify(`Keşfedildi: ${I.name}`, 'discover', 4500);
+        G.emit('discovered', { id: I.id, name: I.name });
         audio.play('gem', { vol: 0.5, rate: 0.8 });
         this._checkAch();
       }
       for (const P of POIS) if (!this.discovered[P.id] && Math.hypot(p.pos.x - P.x, p.pos.z - P.z) < (P.id === 'batik' ? 18 : 30) && (P.id !== 'batik' || p.underwater)) {
         this.discovered[P.id] = true;
         G.notify(`Keşfedildi: ${P.name}`, 'discover', 4000);
+        G.emit('discovered', { id: P.id, name: P.name });
         this._side('discover', P.id, 1);
       }
       if (p.depth > this.stats.maxDepth) { this.stats.maxDepth = p.depth; this._checkAch(); }
@@ -303,6 +307,13 @@ export const quests = {
     const st = this.stage;
     const D = (text, options) => G.emit('openDialog', { name: npc.name, title: npc.title, text, options });
     const close = { label: 'Hoşça kal', close: true };
+    // zaman çizelgesi: dükkânların çalışma saatleri
+    if (SHOP_HOURS[role] && !time.shopOpen(role)) {
+      const h = SHOP_HOURS[role];
+      const night = sky.isNight();
+      D(`${night ? 'Esneyerek' : 'Tezgâhı toplarken'}: "Dükkân kapalı kaptan, yarın <b>${String(h[0]).padStart(2, '0')}:00</b>'da açarım. ${night ? 'Şimdi biraz dinleneyim; sen de handa bir oda tutabilirsin.' : 'Şimdilik iyi rüzgârlar!'}"<br><span class="muted">Çalışma saatleri: ${String(h[0]).padStart(2, '0')}:00–${h[1] === 24 ? '24' : String(h[1]).padStart(2, '0')}:00 · Saat şu an ${time.hourString(sky.hour)}</span>`, [close]);
+      return;
+    }
     switch (role) {
       case 'quest': {
         if (st === 0) {
@@ -314,6 +325,10 @@ export const quests = {
         else if (st === 4) D('Bir parça! Ama dikkat et: <b>Kızıl Hançer</b> de aynı haritanın peşinde. Adamları adanın kuzeyinde kamp kurmuş. Seni beklediğine eminim.', [close]);
         else D('Kızıl Hançer\'in mektubu… "Volkanik Adalar\'daki ateşin bekçisi" ve "buzların altındaki kraliçe"… Kalan iki parça oralarda, Yitik Ufuk\'un ötesinde. Rüzgâr değiştiğinde yola çıkacağız evlat.', [close]);
         const opts = [];
+        // handa uyuma: zamanı ilerletir, canı doldurur
+        const toMorning = sky.hour >= 17 || sky.hour < 5;
+        const room = time.isActive('festival') ? 10 : 20;
+        opts.push({ label: `${toMorning ? 'Sabaha kadar uyu' : 'Akşama kadar dinlen'} — handa oda (${room} altın${room < 20 ? ', şenlik indirimi' : ''})`, fn: () => G.emit('sleepAtInn', { until: toMorning ? 6 : 18, cost: room }) });
         opts.push({ label: 'Tayfa kirala (500 altın) — gemide su boşaltır ve delik onarır', fn: () => {
           if (G.crewHired) { G.notify('Zaten bir tayfan var.'); return; }
           if (p.inv.gold < 500) { G.notify('Yeterli altının yok.', 'warn'); return; }

@@ -21,12 +21,13 @@ for (const w of WAVES) {
 export const ocean = {
   time: 0,
   waveScale: 1,
+  tide: 0,
   mesh: null,
   uniforms: null,
 
   // Kıyıya yaklaştıkça dalgalar sönümlenir
   shoreFactor(x, z) {
-    const depth = -terrain.heightAt(x, z);
+    const depth = this.tide - terrain.heightAt(x, z);
     return 0.15 + 0.85 * smoothstep(0.0, 9.0, depth);
   },
 
@@ -37,7 +38,7 @@ export const ocean = {
       const w = WAVES[i];
       h += w.A * Math.sin(w.k * (w.dx * x + w.dz * z) - w.w * t + i * 1.7);
     }
-    return h * s;
+    return h * s + this.tide;
   },
 
   normalAt(x, z, out = new THREE.Vector3(), t = this.time) {
@@ -99,6 +100,8 @@ export const ocean = {
       uLight: { value: 1.0 },
       uCamPos: { value: new THREE.Vector3() },
       uGhost: { value: 0 },
+      uTide: { value: 0 },
+      uRain: { value: 0 },
     };
     const mat = new THREE.ShaderMaterial({
       uniforms: this.uniforms,
@@ -106,7 +109,7 @@ export const ocean = {
       side: THREE.DoubleSide,
       depthWrite: true,
       vertexShader: /* glsl */`
-        uniform float uTime, uWaveScale, uWorld;
+        uniform float uTime, uWaveScale, uWorld, uTide;
         uniform vec4 uWaves[5];
         uniform vec2 uAmps[5];
         uniform sampler2D uHeight;
@@ -118,7 +121,7 @@ export const ocean = {
         void main(){
           vec4 wp = modelMatrix * vec4(position, 1.0);
           float th = terrainH(wp.xz);
-          float depth = -th;
+          float depth = uTide - th;
           float s = uWaveScale * (0.15 + 0.85*smoothstep(0.0, 9.0, depth));
           float h = 0.0; vec2 g = vec2(0.0);
           for(int i=0;i<5;i++){
@@ -128,17 +131,19 @@ export const ocean = {
             g += cos(ph)*uAmps[i].x*w.z*w.xy;
           }
           h *= s; g *= s;
-          wp.y = h;
+          wp.y = h + uTide;
           vW = wp.xyz;
           vN = normalize(vec3(-g.x, 1.0, -g.y));
-          vDepth = h - th;
+          vDepth = h + uTide - th;
           vCrest = h;
           gl_Position = projectionMatrix * viewMatrix * wp;
         }`,
       fragmentShader: /* glsl */`
-        uniform float uTime, uFogDensity, uLight, uGhost, uWaveScale;
+        uniform float uTime, uFogDensity, uLight, uGhost, uWaveScale, uRain, uWorld;
         uniform vec3 uSunDir, uSunColor, uSkyColor, uHorizon, uShallow, uMid, uDeep, uFogColor, uCamPos;
+        uniform sampler2D uHeight;
         varying vec3 vW; varying vec3 vN; varying float vDepth; varying float vCrest;
+        float terrainHF(vec2 q){ return texture2D(uHeight, (q + uWorld*0.5)/uWorld).r; }
         float hh(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7)))*43758.5453); }
         float vn(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
           return mix(mix(hh(i),hh(i+vec2(1,0)),f.x), mix(hh(i+vec2(0,1)),hh(i+vec2(1,1)),f.x), f.y); }
@@ -153,6 +158,21 @@ export const ocean = {
           float rz = vn((p+vec2(0.0,e))*0.9 + uTime*vec2(0.3,0.2)) + 0.5*vn((p+vec2(0.0,e))*2.3 - uTime*vec2(0.25,0.4));
           float fade = 1.0 - smoothstep(30.0, 220.0, dist);
           vec3 N = normalize(vN + vec3(r0-rx, 0.0, r0-rz)*0.55*fade);
+          // yağmur halkaları
+          float ripple = 0.0;
+          if (uRain > 0.02 && dist < 60.0) {
+            vec2 cell = floor(p*0.8);
+            for (int j=0;j<2;j++) for (int i=0;i<2;i++) {
+              vec2 c = cell + vec2(float(i), float(j));
+              float rnd = hh(c);
+              vec2 center = (c + vec2(hh(c+3.1), hh(c+7.7))) / 0.8;
+              float ph = fract(uTime*0.9 + rnd);
+              float rr = length(p - center) - ph*1.1;
+              ripple += (1.0 - smoothstep(0.0, 0.07, abs(rr))) * (1.0 - ph) * step(0.35, rnd);
+            }
+            ripple *= uRain * (1.0 - smoothstep(20.0, 60.0, dist));
+            N = normalize(N + vec3(ripple*0.18, 0.0, ripple*0.18));
+          }
           if(!gl_FrontFacing){
             // su altından yüzey
             vec3 col = mix(vec3(0.15,0.55,0.6), vec3(0.6,0.9,0.95), pow(max(dot(-N, V),0.0), 3.0));
@@ -171,9 +191,22 @@ export const ocean = {
           col = mix(col, sky, clamp(fres*0.85 + 0.06, 0.0, 1.0));
           float spec = pow(max(dot(R, uSunDir), 0.0), 420.0) * 3.0 + pow(max(dot(R, uSunDir), 0.0), 40.0)*0.12;
           col += uSunColor * spec * step(0.0, uSunDir.y);
+          // dalga tepelerinde ışık geçirgenliği (turkuaz parıltı)
+          float sss = smoothstep(0.15, 0.9, vCrest / max(uWaveScale, 0.3)) * pow(max(dot(V, -uSunDir) * 0.5 + 0.5, 0.0), 2.0);
+          col += vec3(0.1, 0.55, 0.5) * sss * 0.45 * uLight;
+          // parıltılar
+          float glint = pow(max(dot(R, uSunDir), 0.0), 1200.0) * step(0.985, hh(floor(p*3.0 + uTime*0.5)));
+          col += uSunColor * glint * 4.0 * fade;
+          col += vec3(0.85) * ripple * 0.12;
           // köpük: kıyı + dalga tepeleri
           float fn = vn(p*1.6 + uTime*0.5)*0.6 + vn(p*4.0 - uTime*0.7)*0.4;
-          float shore = (1.0 - smoothstep(0.0, 1.1, depth + fn*0.5)) * step(0.02, depth+0.3);
+          // kıyı köpüğü: su derinliğini arazi eğimine bölerek kıyıya yatay uzaklığı bul (düz kumsallarda dar bant)
+          float t0 = terrainHF(p), tx = terrainHF(p + vec2(1.5, 0.0)), tz = terrainHF(p + vec2(0.0, 1.5));
+          float slope = max(length(vec2(tx - t0, tz - t0)) / 1.5, 0.02);
+          float hd = depth / slope;
+          float lap = sin(uTime*1.1 - hd*0.8 + fn*2.0)*0.5 + 0.5;
+          float shore = (1.0 - smoothstep(0.0, 1.6 + lap*1.8, hd + fn*1.2)) * step(0.02, depth+0.3) * (1.0 - smoothstep(0.9, 1.4, depth));
+          shore += (1.0 - smoothstep(0.0, 0.35, abs(hd - 3.0 - 4.0*fract(uTime*0.11 + fn*0.15)))) * 0.45 * (1.0 - smoothstep(0.6, 1.2, depth));
           float crest = smoothstep(0.62*uWaveScale, 1.05*uWaveScale, vCrest + fn*0.3*uWaveScale) * smoothstep(0.9, 1.6, uWaveScale);
           float foam = clamp(shore*0.9 + crest*0.8, 0.0, 1.0) * smoothstep(0.3, 0.55, fn);
           col = mix(col, vec3(0.95,0.98,1.0)*max(uLight,0.25), foam);

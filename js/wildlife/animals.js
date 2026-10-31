@@ -266,6 +266,13 @@ class Animal {
   }
   applyDamage(dmg, info) {
     this.hp -= dmg;
+    if (info && info.pos) {
+      const dx = this.pos.x - info.pos.x, dz = this.pos.z - info.pos.z;
+      const d = Math.hypot(dx, dz) || 1;
+      const k = Math.min(6, 1 + dmg * 0.08) / (this.kind === 'croc' ? 3 : 1);
+      this.pos.x += (dx / d) * k * 0.15; this.pos.z += (dz / d) * k * 0.15;
+      this.speed = -k * 0.3;
+    }
     effects.blood(this.pos.x, this.pos.y + this.height * 0.6, this.pos.z);
     if (this.hp <= 0) { this.die(info); return; }
     this.hurtT = 0.3;

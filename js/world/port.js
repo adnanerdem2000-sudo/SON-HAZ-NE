@@ -362,7 +362,21 @@ export const port = {
     lamp.position.y = H + 1.4;
     const roof = new THREE.Mesh(new THREE.ConeGeometry(2.2, 2, 14), new THREE.MeshStandardMaterial({ color: 0x9c3b26, roughness: 0.7 }));
     roof.position.y = H + 3.4;
-    const beam = new THREE.Mesh(new THREE.ConeGeometry(4, 60, 16, 1, true), new THREE.MeshBasicMaterial({ color: 0xfff0b0, transparent: true, opacity: 0.0, depthWrite: false, side: THREE.DoubleSide, fog: false }));
+    // hacimsel görünümlü ışık hüzmesi: fenerden uzaklaştıkça ve kenarlara doğru sönümlenir
+    const beamMat = new THREE.ShaderMaterial({
+      transparent: true, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending,
+      uniforms: { opacity: { value: 0 } },
+      vertexShader: 'varying vec2 vUv; varying vec3 vN; varying vec3 vV; void main(){ vUv = uv; vec4 mv = modelViewMatrix*vec4(position,1.0); vV = -mv.xyz; vN = normalMatrix*normal; gl_Position = projectionMatrix*mv; }',
+      fragmentShader: `uniform float opacity; varying vec2 vUv; varying vec3 vN; varying vec3 vV;
+        void main(){
+          float along = pow(vUv.y, 1.6);
+          float face = abs(dot(normalize(vN), normalize(vV)));
+          float a = along * face * face * opacity;
+          gl_FragColor = vec4(vec3(1.0, 0.93, 0.7) * a, 1.0);
+          #include <colorspace_fragment>
+        }`,
+    });
+    const beam = new THREE.Mesh(new THREE.ConeGeometry(4, 60, 24, 1, true), beamMat);
     beam.rotation.z = Math.PI / 2;
     beam.position.set(30, H + 1.4, 0);
     const pivot = new THREE.Group();
@@ -382,7 +396,7 @@ export const port = {
     if (this.windowMats) for (const m of this.windowMats) { m.emissive.setHex(0xffb860); m.emissiveIntensity = night * 0.9; }
     if (this.lighthouse) {
       this.lighthouse.lampMat.emissiveIntensity = 0.2 + night * 3;
-      this.lighthouse.beam.material.opacity = night * 0.12;
+      this.lighthouse.beam.material.uniforms.opacity.value = night * 0.55;
       this.lighthouse.pivot.rotation.y += dt * 0.6;
     }
   },

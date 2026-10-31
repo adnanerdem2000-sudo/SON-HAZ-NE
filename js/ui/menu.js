@@ -47,7 +47,7 @@ export const menu = {
       B('KREDİLER', () => this.credits()),
       B('ÇIKIŞ', () => this.quit()),
     );
-    document.getElementById('menu-foot').innerHTML = `Sürüm 0.1 — İlk oynanabilir sürüm (MVP) · <span class="kbd">WASD</span> hareket · <span class="kbd">E</span> etkileşim · <span class="kbd">M</span> harita · <span class="kbd">Tab</span> envanter`;
+    document.getElementById('menu-foot').innerHTML = `Sürüm 0.2 — Hava olayları, zaman çizelgesi, yeni fizik · <span class="kbd">WASD</span> hareket · <span class="kbd">E</span> etkileşim · <span class="kbd">M</span> harita · <span class="kbd">Tab</span> envanter`;
   },
 
   // OYNA
@@ -251,7 +251,7 @@ export const menu = {
     if (!latest?.data?.quests) { ui.alert('Korsan Defteri', 'Henüz bir macera kaydın yok. Yeni bir macera başlat; keşfettiğin adalar, yakaladığın balıklar ve bulduğun hazineler burada görünecek.'); return; }
     const q = latest.data.quests;
     G.foundSites = latest.data.treasure?.found || {};
-    openJournal({ ...q, collection: q.collection || { fish: {}, animals: {} } });
+    openJournal({ ...q, collection: q.collection || { fish: {}, animals: {} }, timeData: latest.data.time || null });
   },
 
   credits() {

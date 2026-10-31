@@ -9,6 +9,8 @@ import { effects } from '../game/effects.js';
 import { interact } from '../game/interact.js';
 import { quests } from '../game/quests.js';
 import { sky } from '../world/sky.js';
+import { time } from '../world/time.js';
+import { weatherfx } from '../world/weatherfx.js';
 import { audio } from '../core/audio.js';
 import { damp, dampAngle, clamp } from '../core/util.js';
 
@@ -399,6 +401,7 @@ export const net = {
       case 'story': quests.stage = m.stage; Object.assign(quests.flags, m.flags || {}); quests.journalMesh.visible = !quests.flags.gunluk; break;
       case 'gold': G.player.inv.gold += m.amount; G.notify(`Tayfa kazancı: +${m.amount} altın`, 'good', 2500); break;
       case 'weather': sky.setWeather(m.w); break;
+      case 'sleep': time.day = m.day; sky.hour = m.hour; time._prevHour = m.hour; G.player.hp = G.player.maxHp; G.emit('sleepFade', m); break;
       case 'lock': if (m.on) interact.locks.set(m.id, m.who); else interact.locks.delete(m.id); break;
       case 'cannon': { const s = G.ships.find((x) => x.id === m.ship); if (s && m.by !== G.myId) { const st = s.cannonState[m.i]; st.reload = 0; const keep = s.cannonballs; s.cannonballs = Math.max(1, s.cannonballs); G.visualOnlyBalls = true; combat.fireCannon(s, m.i, m.by); G.visualOnlyBalls = false; s.cannonballs = keep; } break; }
       case 'boat': this._boatCmd(m, m.from); break;
@@ -485,11 +488,20 @@ export const net = {
       if (!s) { G.emit('netNeedShip', sd); continue; }
       s.applyNet(sd.st);
     }
-    for (const s of [...G.ships]) if (s !== G.ship && !ids.has(s.id)) { s.dispose(); G.ships = G.ships.filter((x) => x !== s); }
+    for (const s of [...G.ships]) if (s !== G.ship && !s.kinematic && !ids.has(s.id)) { s.dispose(); G.ships = G.ships.filter((x) => x !== s); }
     if (m.rb && G.rowboat && G.rowboat.driver !== G.myId) { const b = G.rowboat; b.state = m.rb[0]; b.x = m.rb[1]; b.z = m.rb[2]; b.yaw = m.rb[3]; b.rowPhase = m.rb[4]; b.cargo = m.rb[5] || []; b.driver = m.rb[6]; }
     if (m.en) enemies.applySnapshot(m.en);
     if (m.an) animals.applySnapshot(m.an);
-    if (m.time) { sky.hour = m.time[0]; if (sky.weatherKey !== m.time[1]) sky.setWeather(m.time[1]); sky.windDir = m.time[2]; }
+    if (m.time) {
+      const t = m.time;
+      if (t[3] && t[3] !== time.day) { time.day = t[3]; time._prevHour = t[0]; }
+      sky.hour = t[0];
+      if (sky.weatherKey !== t[1]) sky.setWeather(t[1], false, true);
+      sky.windTarget = t[2];
+      if (t[4]) sky.forecast = t[4].map(([key, at]) => ({ key, at }));
+      if (t[5] !== undefined) sky.wetness = t[5];
+    }
+    if (m.wfx) weatherfx.applyNet(m.wfx);
     for (const c of m.ch || []) {
       const ch = treasure.chestById(c[0]);
       if (ch && ch.state !== 'carried') { ch.pos.set(c[1], c[2], c[3]); ch.state = c[4]; }
@@ -528,10 +540,10 @@ export const net = {
     this.snapT = (this.snapT || 0) + 1;
     const players = { [G.myId]: myState };
     for (const [id, r] of G.remotes) if (r.target) players[id] = r.target;
-    const m = { t: 'snap', players, ships: G.ships.map((s) => ({ id: s.id, typeId: s.typeId, look: s.look, name: s.name, st: s.netState() })) };
+    const m = { t: 'snap', players, ships: G.ships.filter((s) => !s.kinematic).map((s) => ({ id: s.id, typeId: s.typeId, look: s.look, name: s.name, st: s.netState() })) };
     const b = G.rowboat;
     if (b) m.rb = [b.state, +b.x.toFixed(2), +b.z.toFixed(2), +b.yaw.toFixed(3), +b.rowPhase.toFixed(2), b.cargo, b.driver];
-    if (this.snapT % 2 === 0) { m.en = enemies.netSnapshot(); m.an = animals.netSnapshot(); m.time = [sky.hour, sky.weatherKey, sky.windDir]; m.ch = treasure.chests.filter((c) => c.state === 'water' || c.state === 'ground').map((c) => [c.id, +c.pos.x.toFixed(2), +c.pos.y.toFixed(2), +c.pos.z.toFixed(2), c.state]); }
+    if (this.snapT % 2 === 0) { m.en = enemies.netSnapshot(); m.an = animals.netSnapshot(); m.time = [sky.hour, sky.weatherKey, sky.windDir, time.day, sky.forecast.map((f) => [f.key, +f.at.toFixed(2)]), +sky.wetness.toFixed(2)]; m.wfx = weatherfx.netState(); m.ch = treasure.chests.filter((c) => c.state === 'water' || c.state === 'ground').map((c) => [c.id, +c.pos.x.toFixed(2), +c.pos.y.toFixed(2), +c.pos.z.toFixed(2), c.state]); }
     this.broadcast(m);
   },
 };

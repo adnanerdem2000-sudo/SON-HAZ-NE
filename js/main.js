@@ -22,6 +22,14 @@ import { net } from './net/net.js';
 import { Ship } from './ship/ship.js';
 import { port } from './world/port.js';
 import { sky } from './world/sky.js';
+import { time } from './world/time.js';
+import { bodies } from './world/bodies.js';
+import { weatherfx } from './world/weatherfx.js';
+import { details } from './world/details.js';
+import { terrain } from './world/terrain.js';
+import { ocean } from './world/ocean.js';
+import { post } from './core/post.js';
+import { crowd } from './game/crowd.js';
 import { ui } from './ui/ui.js';
 import { hud } from './ui/hud.js';
 import { panels } from './ui/panels.js';
@@ -30,6 +38,8 @@ import { creator } from './ui/creator.js';
 import { openJournal } from './ui/journal.js';
 import { defaultAppearance } from './player/appearance.js';
 import { tpCamera } from './player/camera.js';
+import { interact } from './game/interact.js';
+import { renderMapBase } from './ui/mapArt.js';
 import { el } from './core/util.js';
 
 const TIPS = [
@@ -40,6 +50,12 @@ const TIPS = [
   'İpucu: Balık tutarken ip gerginliğini yeşilde tut; balığın kaçtığı yönün tersine bas.',
   'İpucu: Dalarken oksijenine dikkat et — bitince boğulmaya başlarsın.',
   'İpucu: Yankı Mağarası çok karanlık. Meşaleni F ile yak.',
+  'İpucu: Bazı kumsallar yalnızca alçak suda açığa çıkar. Gelgit saatlerini Korsan Defteri\'nin Zaman Çizelgesi sekmesinde gör.',
+  'İpucu: İki günde bir limana "Altın Martı" ticaret gemisi uğrar; nadir mallar satar ve hazinelere daha iyi para verir.',
+  'İpucu: Dürbünü Z ile çıkar; baktığın adanın, geminin ya da canlının adı ve uzaklığı yazılır.',
+  'İpucu: Fırtınada yelkenleri azalt, su hortumlarından uzak dur; şimşekli havada açık denizde gemine yıldırım düşebilir.',
+  'İpucu: Şafakta ve gün batımında balıklar yeme daha hızlı vurur.',
+  'İpucu: Dükkânlar gece kapanır; Kırlangıç Hanı\'nda oda tutup sabaha kadar uyuyabilirsin.',
 ];
 
 const misc = {
@@ -70,10 +86,16 @@ async function boot() {
   progress(0.02, 'Modeller yükleniyor…');
   await assets.loadAll((f) => progress(0.02 + f * 0.33, 'Modeller yükleniyor…'));
 
-  for (const s of [misc, effects, combat, treasure, enemies, animals, fish, fishing, npcs, quests, events]) game.register(s);
+  for (const s of [misc, time, bodies, effects, combat, treasure, enemies, animals, fish, fishing, npcs, quests, events, weatherfx, details, crowd]) game.register(s);
   net.init(engine.scene);
   const q = settings.v.quality;
   await game.buildWorld(q, (f, t) => progress(0.35 + f * 0.6, t));
+  progress(0.96, 'Deniz haritası çiziliyor…');
+  await new Promise((r) => setTimeout(r, 0));
+  renderMapBase();
+  // gölgelendiricileri önceden derle (oyun içinde ilk görüşte takılmayı azaltır)
+  progress(0.98, 'Gölgelendiriciler hazırlanıyor…');
+  try { await Promise.race([engine.renderer.compileAsync(engine.scene, engine.camera), new Promise((r) => setTimeout(r, 8000))]); } catch (e) { /* yoksay */ }
   ui.init(); hud.init(); panels.init();
   menu.init(handlers);
   game.setupMenuScene();
@@ -95,7 +117,7 @@ async function boot() {
   // davet bağlantısı
   const join = new URLSearchParams(location.search).get('join');
   if (join) menu.joinScreen(join);
-  window.DK = { G, game, input, engine, handlers, net, ui, quests, treasure, enemies, animals, fish, fishing, shipControl, THREE, save, port, combat, effects, events, sky };
+  window.DK = { G, game, input, engine, post, settings, tpCamera, interact, npcs, Ship, handlers, net, ui, quests, treasure, enemies, animals, fish, fishing, shipControl, THREE, save, port, combat, effects, events, sky, time, bodies, weatherfx, details, terrain, ocean, crowd };
   // Test/hata ayıklama yardımcıları: oyunu render etmeden ileri sar
   window.DK.sim = (seconds, dt = 1 / 30) => {
     const n = Math.round(seconds / dt);
@@ -103,6 +125,8 @@ async function boot() {
     return n;
   };
   window.DK.tap = (code) => { input.pressedSet.add(code); input.down.add(code); setTimeout(() => input.down.delete(code), 150); };
+  // eşzamanlı tuş basışı (test): basılı tut, simüle et, bırak
+  window.DK.press = (code, dur = 0.1) => { input.pressedSet.add(code); input.down.add(code); window.DK.sim(dur); input.down.delete(code); window.DK.sim(1 / 30); };
   window.__ready = true;
 }
 
@@ -197,6 +221,27 @@ function wire() {
   G.on('autosave', () => handlers.saveNow(false));
   G.on('playerDied', (e) => setTimeout(() => menu.deathScreen(e.cause, handlers), 2200));
   G.on('openJournal', () => openJournal());
+  // Handa uyuma (zaman çizelgesi): ekran kararır, zaman ilerler, can dolar
+  G.on('sleepAtInn', (e) => {
+    const p = G.player;
+    if (G.online && !G.isHost) { G.notify('Zamanı yalnızca oda sahibi ilerletebilir. Kaptana handa uyumasını söyle!', 'warn', 4000); return; }
+    if (p.inv.gold < e.cost) { G.notify('Oda için yeterli altının yok.', 'warn'); return; }
+    if (G.inCombat) { G.notify('Tehlike varken uyuyamazsın!', 'warn'); return; }
+    p.inv.gold -= e.cost;
+    const hours = time.sleepUntil(e.until);
+    p.hp = p.maxHp; p.stamina = 100; p.poison = 0;
+    time.addLog(`Kırlangıç Hanı'nda ${Math.round(hours)} saat dinlenildi`, 'info');
+    G.emit('sleepFade', { day: time.day, hour: sky.hour, hours });
+    if (G.online) net.broadcast({ t: 'sleep', day: time.day, hour: sky.hour, hours });
+  });
+  G.on('sleepFade', (e) => {
+    let f = document.getElementById('sleep-fade');
+    if (!f) { f = document.createElement('div'); f.id = 'sleep-fade'; document.body.appendChild(f); }
+    f.innerHTML = `<div class="t1">Gün ${e.day} · ${time.hourString(e.hour)}</div><div class="t2">${e.hour < 12 ? 'Martı çığlıklarıyla uyandın. Yeni bir gün, yeni maceralar…' : 'Dinlendin; akşam rüzgârı limanı serinletiyor.'}</div>`;
+    f.classList.add('on');
+    audio.play('confirm', { vol: 0.3, rate: 0.6 });
+    setTimeout(() => f.classList.remove('on'), 2600);
+  });
   G.on('openTailor', () => {
     creator.open({ appearance: G.player.appearance, title: 'Terzi Lale — Gardırop', confirm: 'Giy', shopMode: true, onDone: (app) => { G.player.setAppearance(app); G.profile.appearance = app; G.emit('profileChanged'); if (G.online && !G.isHost) net.sendApp(); } });
   });

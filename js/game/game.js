@@ -1,11 +1,12 @@
 import * as THREE from 'three';
 import { G } from './ctx.js';
 import { engine } from '../core/engine.js';
-import { input } from '../core/input.js';
+import { input, keyLabel } from '../core/input.js';
 import { audio } from '../core/audio.js';
 import { terrain } from '../world/terrain.js';
 import { ocean } from '../world/ocean.js';
 import { sky } from '../world/sky.js';
+import { time } from '../world/time.js';
 import { props } from '../world/props.js';
 import { port } from '../world/port.js';
 import { cave } from '../world/cave.js';
@@ -14,8 +15,12 @@ import { Player, EQUIP_SLOTS } from '../player/player.js';
 import { tpCamera } from '../player/camera.js';
 import { interact } from './interact.js';
 import { shipControl } from './shipControl.js';
+import { Ship } from '../ship/ship.js';
+import { post } from '../core/post.js';
 import { clamp, damp, smoothstep } from '../core/util.js';
 import { ISLANDS } from '../world/worldData.js';
+import { enemies } from './enemies.js';
+import { animals } from '../wildlife/animals.js';
 
 // Oyun oturumu: dünya, oyuncu, gemi, sistemler, döngü
 export const game = {
@@ -41,6 +46,7 @@ export const game = {
     ocean.build(scene, quality);
     sky.build(scene, engine.renderer, quality);
     sky.onThunder = () => audio.thunder();
+    sky.timeRef = time;
     onProgress?.(0.62, 'Ormanlar büyütülüyor…');
     await tick();
     props.build(scene, quality);
@@ -95,6 +101,8 @@ export const game = {
     G.difficulty = opts.difficulty || 'normal';
     G.friendlyFire = !!opts.friendlyFire;
     sky.locked = false;
+    G.spyglass = false;
+    document.getElementById('spyglass')?.classList.add('hidden');
     const data = opts.save || null;
     // gemi
     for (const s of G.ships) s.dispose();
@@ -120,12 +128,14 @@ export const game = {
     }
     if (data?.world) {
       sky.hour = data.world.hour ?? 9;
-      if (data.world.weather) sky.setWeather(data.world.weather, true);
-      sky.windDir = data.world.windDir ?? sky.windDir;
-    } else { sky.hour = 8.5; sky.setWeather('gunesli', true); }
+      sky.windDir = sky.windTarget = data.world.windDir ?? sky.windDir;
+      sky.wetness = data.world.wetness || 0;
+    } else { sky.hour = 8.5; }
     this.playTime = data?.playTime || 0;
     tpCamera.yaw = Math.PI; tpCamera.pitch = 0.3;
     for (const s of this.systems) if (s.start) await s.start(data, opts);
+    // hava: kayıttan ya da açık havayla başla (takvim yüklendikten sonra tahmin kurulur)
+    sky.setWeather(data?.world?.weather || 'acik', true);
     this.autosaveT = 0;
     G.emit('sessionStart', opts);
     input.lockPointer();
@@ -151,7 +161,7 @@ export const game = {
         onShip: p.mode === 'deck' || p.mode === 'helm' || p.mode === 'cannon', lx: p.local.x, lz: p.local.z,
       },
       ship: G.ship ? G.ship.serialize() : null,
-      world: { hour: sky.hour, weather: sky.weatherKey, windDir: sky.windDir },
+      world: { hour: sky.hour, weather: sky.weatherKey, windDir: sky.windDir, wetness: sky.wetness },
     };
     if (data.player.onShip === false && p.mode === 'swim') data.player.pos = { x: p.lastSafe.x, y: p.lastSafe.y, z: p.lastSafe.z };
     for (const s of this.systems) if (s.save) { const k = s.saveKey || s.name; data[k] = s.save(); }
@@ -169,16 +179,17 @@ export const game = {
     // kamera girişi
     const look = input.lookDelta();
     if (!G.uiOpen && p.mode !== 'cannon') tpCamera.rotate(look.dx, look.dy);
-    if (input.wheel && !G.uiOpen) tpCamera.zoom(input.wheel);
+    if (input.wheel && !G.uiOpen && !G.spyglass) tpCamera.zoom(input.wheel);
     shipControl.update(dt);
     p.update(dt);
     // gemiler
     for (const s of G.ships) {
-      if (G.isHost || s.ai) s.update(dt);
-      else s.updateTransform(dt);
+      if (G.isHost || !G.online || s.kinematic) s.update(dt);
+      else s.clientUpdate(dt);
       s.tickCannons(dt);
       if (s.events.length) { for (const e of s.events) G.emit('shipEvent', { ship: s, ...e }); s.events.length = 0; }
     }
+    if (G.isHost || !G.online) Ship.collideAll(G.ships, dt);
     G.rowboat?.update(dt);
     interact.update(dt);
     for (const s of this.systems) if (s.update) s.update(dt);
@@ -201,6 +212,58 @@ export const game = {
     if (input.pressed('birak') && p.carrying) G.emit('dropCarry', { player: p });
     if (input.pressed('pusula')) G.emit('toggleCompass');
     if (input.pressed('sohbet') && G.online) G.emit('openChat');
+    if (input.pressed('durbun')) this.toggleSpyglass();
+  },
+
+  // Dürbün: başın hizasından yakın görüş; bakılan ada, gemi ya da canlı tanımlanır
+  toggleSpyglass(force) {
+    const p = G.player;
+    const on = force !== undefined ? force : !G.spyglass;
+    if (on) {
+      if (!p.inv.has('durbun')) { G.notify('Dürbünün yok. Tüccar Rıza\'dan ya da ticaret gemisinden alabilirsin.', 'warn'); return; }
+      if (p.underwater || p.dead || p.downed || p.carrying || p.mode === 'cannon') return;
+    }
+    G.spyglass = on;
+    this.spyZoom = this.spyZoom || 16;
+    document.getElementById('spyglass').classList.toggle('hidden', !on);
+    document.getElementById('crosshair').classList.add('hidden');
+    document.body.classList.toggle('spyglass-on', on);
+    p.char.root.visible = !on;
+    audio.play('ui', { vol: 0.35, rate: on ? 1.2 : 0.8 });
+  },
+
+  _spyglassUpdate(dt) {
+    const p = G.player;
+    if (!G.spyglass) return;
+    if (G.uiOpen || p.underwater || p.dead || p.downed || p.carrying || p.mode === 'cannon') { this.toggleSpyglass(false); return; }
+    if (input.wheel) this.spyZoom = clamp(this.spyZoom + input.wheel * 2, 6, 30);
+    const cam = engine.camera;
+    const head = p.pos.clone(); head.y += p.mode === 'swim' ? 0.5 : 1.62;
+    const dir = tpCamera.lookDir();
+    // hafif el titremesi
+    const t = performance.now() / 1000;
+    cam.position.copy(head).addScaledVector(dir, 0.35);
+    cam.lookAt(cam.position.x + dir.x * 10 + Math.sin(t * 1.3) * 0.012 * this.spyZoom, cam.position.y + dir.y * 10 + Math.sin(t * 1.9) * 0.01 * this.spyZoom, cam.position.z + dir.z * 10);
+    if (Math.abs(cam.fov - this.spyZoom) > 0.01) { cam.fov = this.spyZoom; cam.updateProjectionMatrix(); }
+    // hedef tanımlama
+    this._spyT = (this._spyT || 0) - dt;
+    if (this._spyT > 0) return;
+    this._spyT = 0.25;
+    let best = null, bestA = 0.06;
+    const consider = (x, y, z, name, r = 0) => {
+      const v = new THREE.Vector3(x - cam.position.x, y - cam.position.y, z - cam.position.z);
+      const d = v.length();
+      if (d < 3) return;
+      const a = Math.acos(clamp(v.dot(dir) / d, -1, 1)) - Math.atan2(r, d);
+      if (a < bestA) { bestA = a; best = { name, d }; }
+    };
+    for (const I of ISLANDS) consider(I.x, 10, I.z, I.name, I.r * 0.8);
+    for (const s of G.ships) if (s !== p.ship && !s.sunk) consider(s.x, s.y + 4, s.z, s.kinematic ? `${s.name} (ticaret gemisi)` : s === G.ship ? `${s.name} (gemin)` : `${s.name || 'Yabancı gemi'}`, 4);
+    for (const e of enemies.list || []) if (e.alive) consider(e.pos.x, e.pos.y + 1, e.pos.z, e.T.name, 0.5);
+    for (const a of animals.list || []) if (a.alive !== false && a.S) consider(a.pos.x, a.pos.y + 0.5, a.pos.z, a.S.name, 0.5);
+    const factor = (70 / this.spyZoom).toFixed(1);
+    document.querySelector('#spyglass .sg-target').textContent = best ? `${best.name} · ${Math.round(best.d)} m` : '';
+    document.querySelector('#spyglass .sg-help').textContent = `Yakınlaştırma ${factor}× · Tekerlek: yakınlaştır/uzaklaştır · ${keyLabel(input.bindings.durbun)}: kapat`;
   },
 
   _camera(dt) {
@@ -231,8 +294,8 @@ export const game = {
     }
     if (p.inCave > 0.3) opts.dist = Math.min(opts.dist ?? tpCamera.targetDist, 3.2);
     if (p.dead || p.downed) opts.dist = 6;
+    if (G.spyglass) { this._spyglassUpdate(dt); return; }
     tpCamera.update(cam, head, dt, opts);
-    if (G.spyglass) { cam.fov = 18; cam.updateProjectionMatrix(); }
   },
 
   // Ortam: gökyüzü, deniz, sesler, rüzgâr
@@ -243,6 +306,8 @@ export const game = {
     const p = G.player;
     sky.inCave = G.state === 'playing' && p ? damp(sky.inCave, p.inCave, 3, dt) : 0;
     sky.update(dt, focus, cam, G.isHost);
+    post.update(sky);
+    if (G.state === 'playing') time.update(dt);
     ocean.update(dt, cam);
     props.update(dt, sky.windStrength);
     const night = 1 - smoothstep(0.15, 0.6, sky.lightLevel);

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { post } from './post.js';
 
 export const engine = {
   renderer: null,
@@ -28,6 +29,7 @@ export const engine = {
     this.renderer = r;
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 5000);
+    post.init(r, this.scene, this.camera);
     window.addEventListener('resize', () => this.resize());
     return this;
   },
@@ -43,6 +45,7 @@ export const engine = {
     this.renderer.setSize(w, h);
     this.camera.aspect = w / h;
     this.camera.updateProjectionMatrix();
+    post.resize();
   },
 
   start() {
@@ -61,7 +64,7 @@ export const engine = {
       for (const u of this.updaters) {
         try { u(dt); } catch (e) { console.error(e); }
       }
-      this.renderer.render(this.scene, this.camera);
+      post.render();
     };
     requestAnimationFrame(loop);
   },

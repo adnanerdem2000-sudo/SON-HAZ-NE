@@ -19,6 +19,7 @@ export const shipControl = {
 
   createPlayerShip(scene, data = null) {
     const m = port.mooring;
+    Ship.dock = { x: m.x, z: m.z, yaw: m.yaw, r: 14 };
     const ship = new Ship(scene, data?.typeId || 'sloop', {
       id: data?.id || 'ship_main', name: data?.name || 'Martı', look: data?.look || {},
       x: data?.x ?? m.x, z: data?.z ?? m.z, yaw: data?.yaw ?? m.yaw,
@@ -95,7 +96,7 @@ export const shipControl = {
       }
       // iskeleye in (limanda demirliyken)
       const bp = port.boardingPoint;
-      if (bp && Math.hypot(s.x - bp.x, s.z - bp.z) < 14) {
+      if (bp && Math.hypot(s.x - bp.x, s.z - bp.z) < 24) {
         out.push({ id: 'disembark', pos: L(st.ladderTop), radius: 2.2, label: 'İskeleye in', action: () => { p.leaveShipToWorld(new THREE.Vector3(bp.x, bp.y, bp.z - 1.5)); p.onGround = true; } });
       }
       return;
@@ -103,7 +104,7 @@ export const shipControl = {
     // sudan merdivene
     if (p.mode === 'swim') {
       for (const s of G.ships) {
-        if (s.sunk) continue;
+        if (s.sunk || s.kinematic) continue;
         const lp = s.localToWorld(_v.copy(s.model.stations.ladder), new THREE.Vector3());
         lp.y = p.pos.y;
         out.push({ id: s.id + ':ladder', pos: lp, radius: 3.2, label: 'Merdivene tırman', action: () => p.startClimb(s) });
@@ -117,7 +118,7 @@ export const shipControl = {
     }
     // iskeleden gemiye
     const bp2 = port.boardingPoint;
-    if (bp2 && p.mode === 'ground' && Math.hypot(p.pos.x - bp2.x, p.pos.z - bp2.z) < 7 && Math.hypot(ship.x - bp2.x, ship.z - bp2.z) < 14 && !ship.sunk) {
+    if (bp2 && p.mode === 'ground' && Math.hypot(p.pos.x - bp2.x, p.pos.z - bp2.z) < 7 && Math.hypot(ship.x - bp2.x, ship.z - bp2.z) < 24 && !ship.sunk) {
       out.push({ id: 'embark', pos: new THREE.Vector3(bp2.x, p.pos.y, bp2.z), radius: 7, label: `Gemiye bin (${ship.name})`, action: () => p.boardShip(ship, ship.model.stations.ladderTop.clone()) });
     }
   },

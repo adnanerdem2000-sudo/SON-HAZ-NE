@@ -2,6 +2,7 @@ import { DEFAULT_BINDINGS, input } from './input.js';
 import { audio } from './audio.js';
 import { engine } from './engine.js';
 import { tpCamera } from '../player/camera.js';
+import { post } from './post.js';
 
 const KEY = 'dksh.settings';
 
@@ -45,6 +46,7 @@ export const settings = {
       engine.renderer.shadowMap.enabled = v.shadows !== 'off';
       engine.camera.far = 1500 + 3500 * v.viewDistance;
       engine.camera.updateProjectionMatrix();
+      post.setQuality(v.effects);
     }
     document.documentElement.style.setProperty('--ui-scale', v.uiScale);
     document.body.classList.toggle('high-contrast', !!v.highContrast);

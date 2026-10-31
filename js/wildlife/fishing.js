@@ -8,6 +8,7 @@ import { terrain } from '../world/terrain.js';
 import { sky } from '../world/sky.js';
 import { FISH, fish } from './fish.js';
 import { ITEMS } from '../economy/items.js';
+import { time } from '../world/time.js';
 import { clamp, damp, lerp } from '../core/util.js';
 
 const BAIT_ORDER = ['yem_solucan', 'yem_karides', 'yem_yapay'];
@@ -135,7 +136,10 @@ export const fishing = {
     const near = fish.speciesNear(b, 30);
     const density = Math.min(3, [...near.values()].reduce((a, c) => a + c, 0) / 6);
     this.waitT = clamp(10 - density * 2 - (this.candidate.match ? 2.5 : 0) + Math.random() * 6, 2.5, 16);
-    G.emit('fishingHud', { mode: 'wait', bait: ITEMS[this.bait]?.name });
+    // zaman çizelgesi: şafak ve akşam balık akınlarında balıklar daha hızlı vurur
+    const frenzy = time.isActive('fishFrenzy');
+    if (frenzy) this.waitT = Math.max(1.5, this.waitT * 0.55);
+    G.emit('fishingHud', { mode: 'wait', bait: (ITEMS[this.bait]?.name || '') + (frenzy ? ' · 🐟 Balık akını!' : '') });
   },
 
   _pickSpecies(pos) {

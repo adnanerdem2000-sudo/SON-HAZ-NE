@@ -4,6 +4,7 @@ import { COSMETIC_PRICES } from '../player/appearance.js';
 import { SHIP_TYPES } from '../ship/shipModel.js';
 import { port } from '../world/port.js';
 import { audio } from '../core/audio.js';
+import { time } from '../world/time.js';
 
 // Tüccar tanımları: ne satarlar, hangi kategorileri hangi çarpanla alırlar
 export const MERCHANTS = {
@@ -33,6 +34,13 @@ export const MERCHANTS = {
     buys: { harita: 0.7 },
     greet: 'Haritalar konuşur, yeter ki dinlemeyi bil. Yeni bir harita mı arıyorsun?',
   },
+  // Zaman çizelgesindeki ticaret günlerinde limana yanaşan "Altın Martı"nın tüccarı
+  trader: {
+    name: 'Halil Reis — Altın Martı', sells: ['usta_kilic', 'usta_tabanca', 'usta_olta', 'durbun', 'yem_yapay', 'merhem', 'pusula', 'baharat', 'ipek'],
+    buys: { tas: 1.2, ganimet: 1.05, koleksiyon: 1.15, balik: 0.7 },
+    discount: 0.85,
+    greet: 'Uzak limanlardan geldim kaptan: Kara Ali\'nin dövdüğünden iyi palalar, ipek, baharat… Hepsi %15 indirimli. Mücevherine de iyi para veririm — ama yalnızca gün batmadan!',
+  },
 };
 
 export function sellPrice(stack, role) {
@@ -43,14 +51,16 @@ export function sellPrice(stack, role) {
   if (!mult) return 0;
   let v = itemValue(stack) * mult;
   if (stack.id.startsWith('balik:')) v = (stack.data?.value || 10) * mult * ({ nadir: 1.2, epik: 1.4 }[stack.data?.rarity] || 1);
+  // zaman çizelgesi: pazar günü ve ticaret gemisi günlerinde satış fiyatları artar
+  v *= 1 + time.priceBonus();
   return Math.max(1, Math.round(v));
 }
-export function buyPrice(id) { return Math.round((ITEMS[id]?.value || 1) * 1.15); }
+export function buyPrice(id, role) { return Math.round((ITEMS[id]?.value || 1) * 1.15 * (MERCHANTS[role]?.discount || 1)); }
 
 export const shop = {
-  buy(id, n = 1) {
+  buy(id, n = 1, role) {
     const p = G.player;
-    const price = buyPrice(id) * n;
+    const price = buyPrice(id, role) * n;
     if (p.inv.gold < price) { G.notify('Yeterli altının yok.', 'warn'); audio.play('ui', { vol: 0.3, rate: 0.6 }); return false; }
     // gülle ve tahta doğrudan gemiye de konabilir
     if (id === 'gulle' && G.ship) { G.ship.cannonballs += n; p.inv.gold -= price; G.notify(`${n} gülle gemine yüklendi (toplam ${G.ship.cannonballs}).`, 'good'); audio.play('coin', { vol: 0.5 }); this._afterTrade(); return true; }

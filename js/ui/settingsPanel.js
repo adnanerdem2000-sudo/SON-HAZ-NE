@@ -38,7 +38,7 @@ export function openSettings() {
         row('Görüş mesafesi', slider('viewDistance', 0.3, 1, 0.05, (x) => Math.round(x * 100) + '%')),
         row('Gölge kalitesi', select('shadows', [['off', 'Kapalı'], ['medium', 'Orta'], ['high', 'Yüksek']])),
         row('Su kalitesi', select('water', [['low', 'Düşük'], ['medium', 'Orta'], ['high', 'Yüksek']], true)),
-        row('Efekt kalitesi', select('effects', [['low', 'Düşük'], ['medium', 'Orta'], ['high', 'Yüksek']])),
+        row('Efekt kalitesi', select('effects', [['low', 'Düşük'], ['medium', 'Orta'], ['high', 'Yüksek']]), 'Parlama (bloom), renk düzenleme ve kenar yumuşatma. Düşük = son işleme kapalı'),
         row('Görüş alanı (FOV)', slider('fov', 55, 95, 1, (x) => x + '°')),
         row('FPS göster', check('showFps')),
       );

@@ -8,6 +8,7 @@ import { port } from '../world/port.js';
 import { terrain } from '../world/terrain.js';
 import { physics } from '../world/physics.js';
 import { dampAngle } from '../core/util.js';
+import { time, SHOP_HOURS } from '../world/time.js';
 
 // NPC görünümleri
 const LOOKS = {
@@ -43,8 +44,22 @@ export const npcs = {
       root.position.set(spot.x, y, spot.z);
       root.rotation.y = spot.yaw;
       scene.add(root);
-      physics.addCircle(spot.x, spot.z, 0.35, y - 1, y + 2, 'npc');
-      this.list.push({ spot, anim, root, pos: root.position.clone(), baseYaw: spot.yaw, talkT: 0 });
+      const col = physics.addCircle(spot.x, spot.z, 0.35, y - 1, y + 2, 'npc');
+      this.list.push({ spot, anim, root, pos: root.position.clone(), baseYaw: spot.yaw, talkT: 0, col, colY: [col.y0, col.y1] });
+    }
+    // Günlük rutin: dükkân kapanınca tüccarlar Kırlangıç Hanı'nın önüne yürür, sabah geri döner
+    const inn = port.npcSpots.find((sp) => sp.id === 'tuzla');
+    this.streetZ = inn.z + 1.2;
+    const slots = [[-7, 2], [-5, 3.6], [-3, 2.2], [3, 2.2], [5, 3.6], [7, 2], [-1.5, 3.8], [1.5, 3.8]];
+    let si = 0;
+    for (const n of this.list) {
+      const r = n.spot.role;
+      if (!n.anim || !SHOP_HOURS[r] || r === 'quest' || r === 'board') continue;
+      const [dx, dz] = slots[si++ % slots.length];
+      n.home = { x: n.spot.x, z: n.spot.z, yaw: n.spot.yaw };
+      n.slot = { x: inn.x + dx, z: inn.z + dz, yaw: Math.atan2(inn.x - (inn.x + dx), inn.z - 1.5 - (inn.z + dz)) };
+      n.at = 'home';
+      n.path = null;
     }
     interact.addProvider((ctx, out) => {
       const p = ctx.player;
@@ -74,18 +89,82 @@ export const npcs = {
     G.emit('npcTalk', { id: sp.id, role: sp.role, npc: sp });
   },
 
+  // rutin yolu: bulunduğu yer → cadde → hedefin hizası → hedef
+  _route(n, to) {
+    const from = n.root.position;
+    const tgt = to === 'inn' ? n.slot : n.home;
+    const pts = [];
+    if (n.spot.role === 'shipwright') pts.push({ x: from.x - 2.5, z: from.z });
+    pts.push({ x: pts.length ? pts[0].x : from.x, z: this.streetZ }, { x: tgt.x, z: this.streetZ }, { x: tgt.x, z: tgt.z });
+    n.path = pts;
+    n.goal = to;
+    n.col.y0 = n.col.y1 = 9999; // yürürken çarpışma halkası devre dışı
+  },
+
+  _walk(n, dt) {
+    const wp = n.path[0];
+    const r = n.root.position;
+    const dx = wp.x - r.x, dz = wp.z - r.z;
+    const d = Math.hypot(dx, dz);
+    const step = 1.45 * dt;
+    if (d <= step) {
+      r.x = wp.x; r.z = wp.z;
+      n.path.shift();
+      if (!n.path.length) {
+        n.path = null;
+        n.at = n.goal;
+        const t = n.goal === 'inn' ? n.slot : n.home;
+        n.baseYaw = t.yaw;
+        n.col.x = t.x; n.col.z = t.z;
+        if (n.goal === 'home') { n.col.y0 = n.colY[0]; n.col.y1 = n.colY[1]; }
+        n.anim.play('Idle', 0.3);
+        return;
+      }
+    } else {
+      r.x += (dx / d) * step; r.z += (dz / d) * step;
+      n.root.rotation.y = dampAngle(n.root.rotation.y, Math.atan2(dx, dz), 6, dt);
+    }
+    r.y = Math.max(physics.groundAt(r.x, r.z), 2.4);
+    n.pos.copy(r);
+    n.anim.play('Walk', 0.25);
+  },
+
   update(dt) {
     const p = G.player;
+    const playing = G.state === 'playing';
     for (const n of this.list) {
       if (!n.anim) continue;
       n.anim.update(dt);
       if (n.talkT > 0) n.talkT -= dt;
+      // günlük rutin (dükkân saatlerine göre)
+      if (n.home && playing) {
+        const want = time.shopOpen(n.spot.role) ? 'home' : 'inn';
+        if (!n.path && n.at !== want) this._route(n, want);
+        if (n.path && n.goal !== want) this._route(n, want);
+        if (n.path) { this._walk(n, dt); continue; }
+      }
       // yakındaki oyuncuya dön
       let yaw = n.baseYaw;
       if (p && p.pos.distanceTo(n.pos) < 6) yaw = Math.atan2(p.pos.x - n.pos.x, p.pos.z - n.pos.z);
       n.root.rotation.y = dampAngle(n.root.rotation.y, yaw, 4, dt);
       const cur = n.anim.current;
       if (cur && cur.loop === THREE.LoopOnce && !cur.isRunning()) n.anim.play('Idle', 0.3);
+    }
+  },
+
+  // yeni oturumda herkes yerine (zamana göre doğrudan doğru konuma) ışınlanır
+  start() {
+    for (const n of this.list) {
+      if (!n.home) continue;
+      const want = time.shopOpen(n.spot.role) ? 'home' : 'inn';
+      const t = want === 'inn' ? n.slot : n.home;
+      n.root.position.set(t.x, Math.max(physics.groundAt(t.x, t.z), 2.4), t.z);
+      n.root.rotation.y = n.baseYaw = t.yaw;
+      n.pos.copy(n.root.position);
+      n.at = want; n.path = null;
+      n.col.x = t.x; n.col.z = t.z;
+      if (want === 'home') { n.col.y0 = n.colY[0]; n.col.y1 = n.colY[1]; } else n.col.y0 = n.col.y1 = 9999;
+      n.anim.play('Idle', 0);
     }
   },
 };

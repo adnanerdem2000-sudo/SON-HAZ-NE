@@ -7,18 +7,99 @@ import { SPECIES } from '../wildlife/animals.js';
 import { FISH } from '../wildlife/fish.js';
 import { RARITY } from '../economy/items.js';
 import { treasure } from '../treasure/treasure.js';
+import { time, DAILY, PERIODIC, SHOP_HOURS } from '../world/time.js';
+import { sky } from '../world/sky.js';
 
 const EXTRA_ANIMALS = { shark: 'Kaplan Köpekbalığı', manta: 'Manta Vatozu', turtle: 'Deniz Kaplumbağası', dolphin: 'Yunus' };
+
+const SHOP_NAMES = { general: 'Tüccar Rıza', fisher: 'Balıkçı Yusuf', weapons: 'Demirci Kara Ali', tailor: 'Terzi Lale', shipwright: 'Usta Bora', cartographer: 'Haritacı Nevra', treasure: 'Sedef Hanım', trader: 'Halil Reis (ticaret günleri)' };
+
+// Zaman çizelgesi sekmesi: takvim, günün programı, hava tahmini, gelgit tablosu, macera günlüğü
+function timelineTab(sc, data) {
+  const live = G.state === 'playing' && !data?.timeData;
+  const td = live ? { day: time.day, log: time.log } : (data?.timeData || { day: 1, log: [] });
+  const day = td.day || 1;
+  const hour = live ? sky.hour : null;
+  const now = live ? time.totalHours() : null;
+  if (live) {
+    const tide = time.tide();
+    sc.appendChild(el('div', { class: 'tl-head' },
+      el('b', {}, `Gün ${day} · ${time.hourString(hour)}`),
+      el('span', {}, `${sky.weatherIcon(sky.weatherKey)} ${sky.weatherName(sky.weatherKey)}`),
+      el('span', {}, `🌊 Gelgit ${time.tideRising() ? 'yükseliyor' : 'alçalıyor'} (${tide >= 0 ? '+' : ''}${tide.toFixed(2)} m)`)));
+  } else sc.appendChild(el('div', { class: 'tl-head' }, el('b', {}, `Son kayıt: Gün ${day}`)));
+
+  const cols = el('div', { class: 'tl-cols' });
+  // günün programı
+  const c1 = el('div', { class: 'col' }, el('h3', {}, 'Bugünün programı'));
+  for (const e of time.scheduleFor(day)) {
+    const start = (day - 1) * 24 + e.h, end = e.end !== undefined ? (day - 1) * 24 + e.end : start + 0.25;
+    const state = now === null ? '' : now >= end ? ' past' : now >= start ? ' now' : '';
+    c1.appendChild(el('div', { class: 'tl-row' + state },
+      el('span', { class: 'tl-time' }, time.hourString(e.h) + (e.end !== undefined ? '–' + time.hourString(e.end) : '')),
+      el('span', { class: 'tl-ic' }, e.icon),
+      el('div', {}, el('b', {}, e.title), el('div', { class: 'muted' }, e.desc))));
+  }
+  // takvim (7 gün)
+  c1.appendChild(el('h3', {}, 'Takvim'));
+  const cal = el('div', { class: 'tl-cal' });
+  for (let d = day; d < day + 7; d++) {
+    const ev = time.scheduleFor(d).filter((e) => PERIODIC.some((p) => p.id === e.id));
+    cal.appendChild(el('div', { class: 'tl-day' + (d === day ? ' today' : '') }, el('b', {}, d === day ? 'Bugün' : `Gün ${d}`),
+      el('div', { class: 'tl-dayev' }, ev.length ? ev.map((e) => `${e.icon} ${e.title}`).join('<br>') : '<span class="muted">Sakin gün</span>')));
+  }
+  c1.appendChild(cal);
+  c1.appendChild(el('div', { class: 'muted', style: { fontSize: '14px' } }, PERIODIC.map((p) => `${p.icon} ${p.title}: her ${p.every} günde bir — ${p.desc}`).join(' · ')));
+
+  const c2 = el('div', { class: 'col' });
+  if (live) {
+    c2.appendChild(el('h3', {}, 'Hava tahmini'));
+    const fc = [{ key: sky.weatherKey, at: null }, ...(sky.forecast || [])];
+    const fl = el('div', { class: 'tl-fc' });
+    for (const f of fc) fl.appendChild(el('div', { class: 'tl-fcit' }, el('div', { class: 'big' }, sky.weatherIcon(f.key)), el('b', {}, sky.weatherName(f.key)),
+      el('div', { class: 'muted' }, f.at === null ? 'Şimdi' : `${f.at - now < 24 ? '' : 'yarın '}~${time.hourString(f.at)}`)));
+    c2.appendChild(fl);
+    c2.appendChild(el('div', { class: 'muted', style: { fontSize: '14px' } }, 'Tahminler her zaman tutmaz; denizciler bulutları ve rüzgârı izler. Fırtınada yelkenleri azalt, şimşekli havada açıkta durma.'));
+    c2.appendChild(el('h3', {}, 'Gelgit tablosu'));
+    const tl = el('div', { class: 'tl-tides' });
+    for (const t of time.nextTides(4)) tl.appendChild(el('div', {}, `${t.high ? '🌊 Yüksek su' : '🏖 Alçak su'} — ${t.at - now >= 24 - hour ? 'yarın ' : ''}${time.hourString(t.at)}`));
+    c2.appendChild(tl);
+    c2.appendChild(el('div', { class: 'muted', style: { fontSize: '14px' } }, 'Alçak suda bazı kumsallar ve sığlıklar açığa çıkar; bazı hazineler yalnızca o zaman kazılabilir. Gemiyle sığlıklara dikkat!'));
+  }
+  c2.appendChild(el('h3', {}, 'Dükkân saatleri'));
+  const sh = el('div', { class: 'tl-shops' });
+  for (const k in SHOP_NAMES) {
+    const h = SHOP_HOURS[k];
+    const open = live ? time.shopOpen(k) : null;
+    sh.appendChild(el('div', {}, el('span', {}, SHOP_NAMES[k]), el('span', { class: open === null ? '' : open ? 'open' : 'closed' }, `${String(h[0]).padStart(2, '0')}:00–${h[1] === 24 ? '24:00' : String(h[1]).padStart(2, '0') + ':00'}${open === null ? '' : open ? ' · açık' : ' · kapalı'}`)));
+  }
+  c2.appendChild(sh);
+  cols.append(c1, c2);
+  sc.appendChild(cols);
+
+  // macera günlüğü
+  sc.appendChild(el('h3', {}, 'Macera günlüğü'));
+  const log = [...(td.log || [])].reverse();
+  if (!log.length) sc.appendChild(el('div', { class: 'muted' }, 'Henüz yazılacak bir macera yok. Hazine bul, fırtınalara göğüs ger, efsaneler yaz!'));
+  let lastDay = null;
+  const lg = el('div', { class: 'tl-log' });
+  for (const e of log.slice(0, 120)) {
+    if (e.day !== lastDay) { lastDay = e.day; lg.appendChild(el('div', { class: 'tl-logday' }, `Gün ${e.day}`)); }
+    lg.appendChild(el('div', { class: 'tl-logit ' + (e.kind || '') }, el('span', { class: 'tl-time' }, time.hourString(e.hour)), el('span', {}, e.text)));
+  }
+  sc.appendChild(lg);
+}
+void DAILY;
 
 // Korsan Defteri: hikâye, görevler, keşifler, koleksiyon, başarımlar
 export function openJournal(data = null) {
   const q = data || quests;
-  let tab = 'hikaye';
+  let tab = data?.tab || 'hikaye';
   const body = el('div', { class: 'col journal' });
   const render = () => {
     body.innerHTML = '';
     const tabs = el('div', { class: 'tabs' });
-    for (const [k, n] of [['hikaye', 'Hikâye'], ['gorev', 'Görevler'], ['ada', 'Adalar'], ['hazine', 'Hazineler'], ['canli', 'Canlılar'], ['balik', 'Balıklar'], ['basarim', 'Başarımlar'], ['istatistik', 'İstatistik']]) {
+    for (const [k, n] of [['hikaye', 'Hikâye'], ['gorev', 'Görevler'], ['ada', 'Adalar'], ['hazine', 'Hazineler'], ['canli', 'Canlılar'], ['balik', 'Balıklar'], ['zaman', 'Zaman Çizelgesi'], ['basarim', 'Başarımlar'], ['istatistik', 'İstatistik']]) {
       tabs.appendChild(el('div', { class: 'tab' + (tab === k ? ' active' : ''), onclick: () => { tab = k; render(); } }, n));
     }
     body.appendChild(tabs);
@@ -81,6 +162,8 @@ export function openJournal(data = null) {
           c ? el('div', { class: 'muted' }, `Beslenme: ${f.diet}`) : null));
       }
       sc.appendChild(g);
+    } else if (tab === 'zaman') {
+      timelineTab(sc, data);
     } else if (tab === 'basarim') {
       const g = el('div', { class: 'jgrid' });
       for (const a of ACHIEVEMENTS) {

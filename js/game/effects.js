@@ -3,6 +3,7 @@ import { G } from './ctx.js';
 import { ocean } from '../world/ocean.js';
 import { terrain } from '../world/terrain.js';
 import { audio } from '../core/audio.js';
+import { sky } from '../world/sky.js';
 
 // Parçacık efektleri (su sıçraması, duman, kıvılcım, toprak) ve mermiler (gülle)
 const MAX = 900;
@@ -24,7 +25,9 @@ export const effects = {
       transparent: true, depthWrite: false,
       vertexShader: `attribute float size; attribute float alpha; attribute vec3 color; varying vec3 vC; varying float vA;
         void main(){ vC=color; vA=alpha; vec4 mv = modelViewMatrix*vec4(position,1.0); gl_PointSize = size * 300.0 / -mv.z; gl_Position = projectionMatrix*mv; }`,
-      fragmentShader: `varying vec3 vC; varying float vA; void main(){ vec2 d = gl_PointCoord-0.5; float r = length(d); if(r>0.5) discard; gl_FragColor = vec4(vC, vA*(1.0-r*1.8)); }`,
+      fragmentShader: `varying vec3 vC; varying float vA; void main(){ vec2 d = gl_PointCoord-0.5; float r = length(d); if(r>0.5) discard; gl_FragColor = vec4(pow(vC, vec3(2.2)), vA*(1.0-r*1.8));
+#include <colorspace_fragment>
+}`,
     });
     this.points = new THREE.Points(geo, mat);
     this.points.frustumCulled = false;
@@ -133,6 +136,11 @@ export const effects = {
       const b = this.balls[i];
       b.t += dt;
       b.vel.y -= 9.8 * dt;
+      // hava direnci (hızın karesiyle) ve rüzgâr sapması
+      const sp = b.vel.length();
+      b.vel.multiplyScalar(1 - Math.min(0.5, 0.0009 * sp * dt * 10));
+      b.vel.x += Math.cos(sky.windDir) * sky.windStrength * 1.6 * dt;
+      b.vel.z += Math.sin(sky.windDir) * sky.windStrength * 1.6 * dt;
       const prev = b.m.position.clone();
       b.m.position.addScaledVector(b.vel, dt);
       const p = b.m.position;

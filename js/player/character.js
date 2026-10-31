@@ -3,6 +3,7 @@ import { assets } from '../core/assets.js';
 import { SKIN_TONES, HAIR_COLORS, EYE_COLORS } from './appearance.js';
 import { woodPlanks } from '../core/textures.js';
 import { clamp, lerp } from '../core/util.js';
+import { rimAll } from '../core/rim.js';
 
 const C = (hex) => new THREE.Color(hex);
 const std = (color, o = {}) => new THREE.MeshStandardMaterial({ color, roughness: 0.75, ...o });
@@ -13,25 +14,52 @@ function shadowAll(o) {
 }
 
 // ---------- Prosedürel aksesuarlar (model uzayında, metre) ----------
+// tüy süsü: kavisli, sivrilen kuş tüyü
+function feather(color, len = 0.36) {
+  const g = new THREE.Group();
+  const m = std(color, { roughness: 0.85, side: THREE.DoubleSide });
+  const pts = [];
+  for (let i = 0; i <= 10; i++) { const t = i / 10; pts.push(new THREE.Vector2(Math.sin(t * Math.PI) * 0.045 * (1 - t * 0.35), t * len)); }
+  const vane = new THREE.Mesh(new THREE.LatheGeometry(pts, 6), m);
+  vane.scale.z = 0.18;
+  const spine = new THREE.Mesh(new THREE.CylinderGeometry(0.003, 0.005, len, 4), std('#e8e2d0'));
+  spine.position.y = len / 2;
+  g.add(vane, spine);
+  g.rotation.x = -0.25;
+  return g;
+}
 function tricorn(color) {
   const g = new THREE.Group();
   const m = std(color, { roughness: 0.9 });
-  const brim = new THREE.CylinderGeometry(0.25, 0.25, 0.025, 36, 1);
+  const R = 0.25;
+  const upAt = (a, r) => Math.pow(Math.max(0, Math.cos(3 * (a - Math.PI / 2))), 2) * 0.1 * (r / R);
+  const brim = new THREE.CylinderGeometry(R, R, 0.025, 48, 1);
   const p = brim.attributes.position;
   for (let i = 0; i < p.count; i++) {
     const x = p.getX(i), z = p.getZ(i);
-    const a = Math.atan2(z, x);
-    const r = Math.hypot(x, z);
-    const up = Math.pow(Math.max(0, Math.cos(3 * (a - Math.PI / 2))), 2) * 0.1 * (r / 0.25);
-    p.setY(i, p.getY(i) + up);
+    p.setY(i, p.getY(i) + upAt(Math.atan2(z, x), Math.hypot(x, z)));
   }
   brim.computeVertexNormals();
   const b = new THREE.Mesh(brim, m);
-  const crown = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.135, 0.13, 20), m);
+  const crown = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.135, 0.13, 24), m);
   crown.position.y = 0.06;
-  const trim = new THREE.Mesh(new THREE.TorusGeometry(0.24, 0.008, 4, 36), std('#c9a227', { metalness: 0.6, roughness: 0.4 }));
-  trim.rotation.x = Math.PI / 2;
-  g.add(b, crown);
+  const top = new THREE.Mesh(new THREE.SphereGeometry(0.12, 20, 6, 0, Math.PI * 2, 0, Math.PI / 2), m);
+  top.scale.y = 0.3; top.position.y = 0.125;
+  // kenar boyunca altın sırma
+  const gold = std('#c9a227', { metalness: 0.65, roughness: 0.35 });
+  const pts = [];
+  for (let i = 0; i < 96; i++) { const a = (i / 96) * Math.PI * 2; pts.push(new THREE.Vector3(Math.cos(a) * R, upAt(a, R), Math.sin(a) * R)); }
+  const trim = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts, true), 96, 0.008, 5, true), gold);
+  // taç bandı, rozet ve tüy
+  const band = new THREE.Mesh(new THREE.CylinderGeometry(0.137, 0.137, 0.025, 24, 1, true), std('#2a1a10', { roughness: 0.8 }));
+  band.position.y = 0.012;
+  const cockade = new THREE.Mesh(new THREE.CylinderGeometry(0.032, 0.032, 0.012, 14), std('#8a1a1a', { roughness: 0.7 }));
+  cockade.rotation.z = Math.PI / 2; cockade.position.set(-0.14, 0.05, 0.04);
+  const pin = new THREE.Mesh(new THREE.SphereGeometry(0.012, 8, 6), gold);
+  pin.position.set(-0.148, 0.05, 0.04);
+  const f = feather('#f4efe2', 0.34);
+  f.position.set(-0.13, 0.06, 0.0); f.rotation.set(-0.5, 0, 0.55);
+  g.add(b, crown, top, trim, band, cockade, pin, f);
   return g;
 }
 function captainHat(color) {
@@ -50,11 +78,16 @@ function captainHat(color) {
   const gold = std('#d4af37', { metalness: 0.7, roughness: 0.35 });
   const band = new THREE.Mesh(new THREE.TorusGeometry(0.13, 0.012, 6, 24), gold);
   band.rotation.x = Math.PI / 2; band.position.y = 0.02;
-  const feather = new THREE.Mesh(new THREE.ConeGeometry(0.03, 0.42, 6), std('#f2efe6'));
-  feather.position.set(0.1, 0.18, -0.05); feather.rotation.set(0.3, 0, -0.9);
+  const plume = feather('#f2efe6', 0.42);
+  plume.position.set(0.08, 0.1, -0.02); plume.rotation.set(-0.7, 0, -0.75);
+  const plume2 = feather('#c0392b', 0.3);
+  plume2.position.set(0.06, 0.1, -0.04); plume2.rotation.set(-0.9, 0, -0.45);
   const badge = new THREE.Mesh(new THREE.SphereGeometry(0.03, 8, 6), gold);
   badge.position.set(0, 0.08, 0.13);
-  g.add(new THREE.Mesh(brim, m), crown, band, feather, badge);
+  const trimPts = [];
+  for (let i = 0; i < 64; i++) { const a = (i / 64) * Math.PI * 2; const x = Math.cos(a) * 0.27, z = Math.sin(a) * 0.27; trimPts.push(new THREE.Vector3(x, Math.pow(Math.abs(x) / 0.27, 1.5) * 0.15, z * 0.75)); }
+  const trim = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(trimPts, true), 64, 0.007, 5, true), gold);
+  g.add(new THREE.Mesh(brim, m), crown, band, plume, plume2, badge, trim);
   return g;
 }
 function pirateHat(color) {
@@ -156,38 +189,80 @@ function beardMesh(style, color) {
 }
 
 export function makeSword() {
+  // kavisli korsan palası (cutlass): uca doğru genişleyen ağız, kabuk siper, sargılı kabza
   const g = new THREE.Group();
-  const steel = std('#c8ccd2', { metalness: 0.85, roughness: 0.25 });
-  const gold = std('#c9a227', { metalness: 0.7, roughness: 0.35 });
-  const blade = new THREE.Mesh(new THREE.BoxGeometry(0.035, 0.75, 0.012), steel);
-  blade.position.y = 0.48;
-  const tip = new THREE.Mesh(new THREE.ConeGeometry(0.025, 0.1, 4), steel);
-  tip.position.y = 0.9; tip.scale.z = 0.4;
-  const guard = new THREE.Mesh(new THREE.TorusGeometry(0.06, 0.012, 5, 12, Math.PI), gold);
-  guard.position.y = 0.08; guard.rotation.z = Math.PI;
-  const cross = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.025, 0.03), gold);
-  cross.position.y = 0.1;
-  const grip = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.13, 8), std('#3b2516'));
-  grip.position.y = 0.03;
-  const pommel = new THREE.Mesh(new THREE.SphereGeometry(0.025, 8, 6), gold);
-  pommel.position.y = -0.04;
-  g.add(blade, tip, guard, cross, grip, pommel);
+  const steel = std('#d4d9de', { metalness: 0.9, roughness: 0.22 });
+  const gold = std('#c9a227', { metalness: 0.75, roughness: 0.3 });
+  const sh = new THREE.Shape();
+  sh.moveTo(-0.016, 0.1);
+  sh.quadraticCurveTo(-0.026, 0.55, 0.012, 0.9);
+  sh.quadraticCurveTo(0.05, 0.62, 0.026, 0.1);
+  sh.lineTo(-0.016, 0.1);
+  const bladeGeo = new THREE.ExtrudeGeometry(sh, { depth: 0.005, bevelEnabled: true, bevelThickness: 0.0025, bevelSize: 0.003, bevelSegments: 1, curveSegments: 12 });
+  bladeGeo.translate(0, 0, -0.0025);
+  const blade = new THREE.Mesh(bladeGeo, steel);
+  // oluk (kan kanalı)
+  const fuller = new THREE.Mesh(new THREE.BoxGeometry(0.006, 0.42, 0.009), std('#9aa2aa', { metalness: 0.9, roughness: 0.3 }));
+  fuller.position.set(-0.004, 0.36, 0); fuller.rotation.z = 0.03;
+  // kabuk siper + el koruması
+  const shell = new THREE.Mesh(new THREE.SphereGeometry(0.055, 14, 8, 0, Math.PI * 2, 0, Math.PI / 2.4), gold);
+  shell.scale.set(1, 0.35, 0.75); shell.position.y = 0.085; shell.rotation.x = Math.PI;
+  const bow = new THREE.Mesh(new THREE.TorusGeometry(0.065, 0.007, 6, 16, Math.PI), gold);
+  bow.position.set(0.02, 0.02, 0); bow.rotation.z = -Math.PI / 2;
+  const quillon = new THREE.Mesh(new THREE.CapsuleGeometry(0.009, 0.07, 3, 6), gold);
+  quillon.rotation.z = Math.PI / 2; quillon.position.set(-0.04, 0.09, 0);
+  // sargılı kabza
+  const grip = new THREE.Mesh(new THREE.CylinderGeometry(0.017, 0.019, 0.13, 10), std('#3b2516', { roughness: 0.85 }));
+  grip.position.y = 0.025;
+  for (let i = 0; i < 5; i++) {
+    const r = new THREE.Mesh(new THREE.TorusGeometry(0.019, 0.003, 4, 10), std('#5a3a20', { roughness: 0.8 }));
+    r.rotation.x = Math.PI / 2; r.position.y = -0.03 + i * 0.026;
+    g.add(r);
+  }
+  const pommel = new THREE.Mesh(new THREE.SphereGeometry(0.024, 10, 8), gold);
+  pommel.position.y = -0.05; pommel.scale.y = 0.8;
+  g.add(blade, fuller, shell, bow, quillon, grip, pommel);
   return shadowAll(g);
 }
 export function makePistol() {
+  // çakmaklı tabanca: kavisli ceviz kundak, pirinç kakmalar, horoz ve tetik korkuluğu
   const g = new THREE.Group();
-  const wood = std('#5a3418', { roughness: 0.6 });
-  const metal = std('#3a3a3a', { metalness: 0.8, roughness: 0.35 });
-  const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.022, 0.32, 8), metal);
-  barrel.rotation.x = Math.PI / 2; barrel.position.set(0, 0.06, 0.16);
-  const stock = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.05, 0.22), wood);
-  stock.position.set(0, 0.06, 0.04);
-  const grip = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.13, 0.05), wood);
-  grip.position.set(0, -0.01, -0.06); grip.rotation.x = -0.4;
-  const hammer = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.04, 0.02), metal);
-  hammer.position.set(0, 0.1, -0.02);
-  g.add(barrel, stock, grip, hammer);
-  g.userData.muzzle = new THREE.Vector3(0, 0.06, 0.33);
+  const wood = std('#6b3a1a', { roughness: 0.55 });
+  const brass = std('#c9a227', { metalness: 0.75, roughness: 0.3 });
+  const iron = std('#3c3f44', { metalness: 0.85, roughness: 0.35 });
+  const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.019, 0.3, 10), iron);
+  barrel.rotation.x = Math.PI / 2; barrel.position.set(0, 0.068, 0.17);
+  const muzzle = new THREE.Mesh(new THREE.TorusGeometry(0.016, 0.005, 5, 12), brass);
+  muzzle.position.set(0, 0.068, 0.318);
+  const band = new THREE.Mesh(new THREE.TorusGeometry(0.02, 0.004, 5, 12), brass);
+  band.position.set(0, 0.066, 0.2);
+  // kundak profili (Z-Y düzleminde), X yönünde kalınlık
+  const s = new THREE.Shape();
+  s.moveTo(0.24, 0.06); s.lineTo(0.24, 0.045);
+  s.lineTo(0.02, 0.04);
+  s.quadraticCurveTo(-0.03, 0.03, -0.075, -0.07);
+  s.quadraticCurveTo(-0.085, -0.1, -0.11, -0.095);
+  s.quadraticCurveTo(-0.115, -0.06, -0.06, 0.07);
+  s.quadraticCurveTo(-0.04, 0.09, 0.0, 0.085);
+  s.lineTo(0.24, 0.06);
+  const stockGeo = new THREE.ExtrudeGeometry(s, { depth: 0.034, bevelEnabled: true, bevelThickness: 0.006, bevelSize: 0.006, bevelSegments: 2, curveSegments: 8 });
+  stockGeo.rotateY(-Math.PI / 2);
+  stockGeo.translate(0.017, 0, 0);
+  const stock = new THREE.Mesh(stockGeo, wood);
+  const cap = new THREE.Mesh(new THREE.SphereGeometry(0.026, 10, 8), brass);
+  cap.scale.set(0.85, 0.8, 1); cap.position.set(0, -0.09, -0.105);
+  const lock = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.026, 0.07), brass);
+  lock.position.set(0.024, 0.06, 0.02);
+  const hammer = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.045, 0.014), iron);
+  hammer.position.set(0.026, 0.09, -0.005); hammer.rotation.x = -0.5;
+  const frizzen = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.03, 0.01), iron);
+  frizzen.position.set(0.026, 0.085, 0.04);
+  const guard = new THREE.Mesh(new THREE.TorusGeometry(0.025, 0.004, 5, 12, Math.PI), brass);
+  guard.rotation.set(0, Math.PI / 2, Math.PI); guard.position.set(0, 0.028, 0.0);
+  const trigger = new THREE.Mesh(new THREE.BoxGeometry(0.004, 0.022, 0.005), iron);
+  trigger.position.set(0, 0.025, -0.005); trigger.rotation.x = 0.3;
+  g.add(barrel, muzzle, band, stock, cap, lock, hammer, frizzen, guard, trigger);
+  g.userData.muzzle = new THREE.Vector3(0, 0.068, 0.33);
   return shadowAll(g);
 }
 export function makeShovel() {
@@ -271,6 +346,7 @@ export class Character {
     this._applyColors();
     this._accessories();
     this._bodyShape();
+    rimAll(this.root);
     this.play('Idle', 0);
   }
 
@@ -574,6 +650,7 @@ export class Character {
       else if (type === 'shovel') { o.rotation.set(Math.PI / 2, 0, 0); o.position.set(0, 0, -0.25); }
       else if (type === 'rod') { o.rotation.set(Math.PI / 2 - 0.3, 0, 0); o.position.set(0, 0, -0.1); }
       else if (type === 'torch') { o.rotation.set(Math.PI / 2 - 0.4, 0, 0); }
+      rimAll(o);
       this.handR.add(o);
       this.held = o;
     }
@@ -709,6 +786,7 @@ export class Animated {
     });
     this.model = m;
     this.root.add(m);
+    rimAll(m);
     this.mixer = new THREE.AnimationMixer(m);
     this.clips = {};
     for (const c of assets.animations(name)) {

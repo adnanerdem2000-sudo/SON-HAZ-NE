@@ -126,6 +126,14 @@ export class Player {
     if (opts.poison) this.poison = Math.max(this.poison, opts.poison);
     G.emit('playerHurt', { amount });
     tpCamera.addShake(Math.min(0.6, amount / 40));
+    // geri tepme: darbe kaynağından uzağa itilir
+    if (from && (this.mode === 'ground' || this.mode === 'swim')) {
+      const dx = this.pos.x - from.x, dz = this.pos.z - from.z;
+      const d = Math.hypot(dx, dz) || 1;
+      const k = Math.min(7, 1.5 + amount * 0.12) * (this.blocking ? 0.4 : 1);
+      this.knock = { x: (dx / d) * k, z: (dz / d) * k };
+      if (amount > 20 && this.mode === 'ground') { this.vel.y = Math.max(this.vel.y, 3.5); this.onGround = false; }
+    }
     if (this.hp <= 0) { this.hp = 0; this.die(opts.cause || 'Ağır yaralandın'); }
     else if (amount > 8 && !this.action) this.startAction('hit', 0.45);
   }
@@ -194,6 +202,7 @@ export class Player {
     this.pos.copy(worldPos);
     this.vel.copy(vel || new THREE.Vector3());
     this.onGround = false;
+    this.fallStartY = worldPos.y; // güverteden inişte eski zemin yüksekliği düşme hasarı saymasın
   }
 
   // ---- ana güncelleme ----
@@ -335,6 +344,21 @@ export class Player {
     const accel = this.onGround ? 14 : 3;
     this.vel.x = damp(this.vel.x, wish.x, accel, dt);
     this.vel.z = damp(this.vel.z, wish.z, accel, dt);
+    // geri tepme itkisi (sönümlenir)
+    if (this.knock) {
+      this.vel.x += this.knock.x; this.vel.z += this.knock.z;
+      this.knock.x *= Math.exp(-9 * dt); this.knock.z *= Math.exp(-9 * dt);
+      if (Math.hypot(this.knock.x, this.knock.z) < 0.1) this.knock = null;
+    }
+    // dik yamaçta kayma: zemin normali yatıklaştıkça aşağı doğru ivme
+    if (this.onGround && !physics.lastPlatform) {
+      const gn = terrain.normalAt(this.pos.x, this.pos.z, _v2);
+      if (gn.y < 0.68) {
+        const slide = (0.68 - gn.y) * 26;
+        this.vel.x += gn.x * slide * dt * 4; this.vel.z += gn.z * slide * dt * 4;
+        this.sliding = true;
+      } else this.sliding = false;
+    }
     // zıplama
     if (!locked && input.pressed('zipla') && this.onGround && !this.busy && (!this.carrying || this.carrying.tier === 'small')) {
       this.vel.y = 7.4;
@@ -351,8 +375,9 @@ export class Player {
     const n = terrain.normalAt(nx, nz, _v);
     const climbing = gNew > gOld + 0.02;
     if (this.onGround && climbing && n.y < 0.6 && !physics.lastPlatform) {
-      // kaydır
-      this.vel.x *= 0.2; this.vel.z *= 0.2;
+      // çok dik: tırmanılamaz, geri kayar
+      this.vel.x = this.vel.x * 0.2 + n.x * 1.5; this.vel.z = this.vel.z * 0.2 + n.z * 1.5;
+      this.pos.x += n.x * 0.02; this.pos.z += n.z * 0.02;
     } else if (gNew > this.pos.y + 0.65) {
       // basamak yüksek
     } else {
@@ -499,6 +524,23 @@ export class Player {
     const lx = d.x * cy + d.z * sy, lz = -d.x * sy + d.z * cy;
     this.local.x += lx * sp * dt;
     this.local.z += lz * sp * dt;
+    // güverte fiziği: yalpa ve baş-kıç vurmada eğime doğru hafif kayma, gemi ivmesinde atalet
+    // (kontrolsüz savrulma yok: ölü bölge ve sınırlı kayma)
+    if (this.localY <= 0.01) {
+      const rollEx = Math.sign(s.roll) * Math.max(0, Math.abs(s.roll) - 0.1);
+      const pitchEx = Math.sign(s.pitch) * Math.max(0, Math.abs(s.pitch) - 0.08);
+      const slip = this.crouch ? 0.35 : 1;
+      this.local.x += -Math.sin(rollEx) * 6.5 * slip * dt;
+      this.local.z += Math.sin(pitchEx) * 5 * slip * dt;
+      const acc = ((s.speed || 0) - (this._lastShipSpeed ?? s.speed ?? 0)) / Math.max(dt, 1e-3);
+      this._lastShipSpeed = s.speed;
+      this.local.z -= clamp(acc, -3, 3) * 0.04 * slip * dt * 10;
+      // fırtınada sendeleme
+      if (Math.abs(s.roll) > 0.3 && !this.action && !this.busy && Math.random() < dt * 0.6 * slip) {
+        this.startAction('hit', 0.4);
+        G.notify('Güverte sallandı — dengeni kaybettin! (Eğilerek daha sağlam durursun)', 'warn', 2200);
+      }
+    }
     // zıplama ve küpeşteden atlama
     if (!locked && input.pressed('zipla') && this.localY <= 0.001 && !this.busy) { this.localVy = 6.5; }
     this.localVy += GRAV * dt;

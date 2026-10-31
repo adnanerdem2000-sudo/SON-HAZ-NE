@@ -12,6 +12,7 @@ import { ocean } from '../world/ocean.js';
 import { sky } from '../world/sky.js';
 import { port } from '../world/port.js';
 import { clamp, damp, dampAngle, wrapAngle, uid } from '../core/util.js';
+import { bodies } from '../world/bodies.js';
 
 // Rastgele dünya olayları + düşman korsan gemisi + tayfa yardımcısı + gemi batma/kurtarma
 export const events = {
@@ -48,11 +49,13 @@ export const events = {
     // yüzen nesneler
     for (const f of this.floating) {
       f.t += dt;
-      f.pos.y = ocean.heightAt(f.pos.x, f.pos.z) - 0.15;
-      f.pos.x += Math.cos(sky.windDir) * dt * 0.15; f.pos.z += Math.sin(sky.windDir) * dt * 0.15;
-      if (terrain.heightAt(f.pos.x, f.pos.z) > -0.3) { f.pos.x -= Math.cos(sky.windDir) * dt * 0.3; f.pos.z -= Math.sin(sky.windDir) * dt * 0.3; }
-      f.mesh.position.copy(f.pos);
-      f.mesh.rotation.set(Math.sin(f.t) * 0.2, f.t * 0.2, Math.cos(f.t * 1.3) * 0.2);
+      if (f.body) f.pos.copy(f.body.pos);
+      else {
+        f.pos.y = ocean.heightAt(f.pos.x, f.pos.z) - 0.15;
+        f.pos.x += Math.cos(sky.windDir) * dt * 0.15; f.pos.z += Math.sin(sky.windDir) * dt * 0.15;
+        f.mesh.position.copy(f.pos);
+        f.mesh.rotation.set(Math.sin(f.t) * 0.2, f.t * 0.2, Math.cos(f.t * 1.3) * 0.2);
+      }
       if (f.t > 420) f.gone = true;
     }
     const rm = this.floating.filter((f) => f.gone);
@@ -138,6 +141,10 @@ export const events = {
     this.scene.add(mesh);
     const labels = { barrel: 'Yüzen varili al', bottle: 'Şişeyi al', chest: 'Yüzen sandığı yakala', survivor: 'Kazazedeyi kurtar' };
     const f = { id: uid('f'), kind, pos: pos.clone(), mesh, t: 0, label: labels[kind] };
+    // yüzen cisim: dalgalarla sallanır, rüzgârla sürüklenir, kıyıya vurur
+    const rad = { barrel: 0.45, bottle: 0.2, chest: 0.4, survivor: 1.1 }[kind] || 0.4;
+    mesh.position.set(pos.x, ocean.heightAt(pos.x, pos.z), pos.z);
+    f.body = bodies.add(mesh, { pos: new THREE.Vector3(pos.x, ocean.heightAt(pos.x, pos.z) + 0.2, pos.z), radius: rad, offsetY: rad * 0.6, mass: kind === 'survivor' ? 4 : 1, buoyancy: 1.9, drift: 1.1, restitution: 0.2 });
     this.floating.push(f);
     return f;
   },

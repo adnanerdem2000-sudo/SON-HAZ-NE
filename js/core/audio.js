@@ -115,12 +115,12 @@ export const audio = {
     src.start(t, Math.random()); src.stop(t + 0.8);
   },
 
-  thunder() {
+  thunder(vol = 0.9) {
     if (!this.ctx) return;
     const c = this.ctx, t = c.currentTime;
     const src = c.createBufferSource(); src.buffer = this.noise; src.loop = true;
     const f = c.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 220;
-    const g = c.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.9, t + 0.15); g.gain.exponentialRampToValueAtTime(0.001, t + 3.5);
+    const g = c.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(Math.max(0.01, vol), t + 0.15); g.gain.exponentialRampToValueAtTime(0.001, t + 3.5);
     src.connect(f).connect(g).connect(this.ambBus);
     src.start(t); src.stop(t + 3.6);
   },

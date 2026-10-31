@@ -11,6 +11,8 @@ const _e = new THREE.Euler(0, 0, 0, 'YXZ');
 const _q = new THREE.Quaternion();
 
 export class Ship {
+  static obstacles = [];
+  static dock = null; // limandaki demirleme noktası {x, z, yaw, r}
   constructor(scene, typeId = 'sloop', opts = {}) {
     this.id = opts.id || uid('ship');
     this.type = SHIP_TYPES[typeId];
@@ -149,123 +151,278 @@ export class Ship {
   }
 
   damage(amount, localPos = null) {
-    if (this.sunk) return;
+    if (this.sunk || this.kinematic) return;
     this.hp = Math.max(0, this.hp - amount);
     if (localPos && amount >= 6) this.addHole(localPos, amount > 20 ? 1.4 : 1);
     this.events.push({ t: 'damage', amount });
     if (this.hp <= 0) this.water = Math.max(this.water, 100);
   }
 
-  // ---- güncelleme ----
+  // ---- güncelleme (fizik) ----
+  get mass() { return this.T.mass || (this.typeId === 'brigantine' ? 2.2 : 1); }
+
   update(dt) {
     const T = this.T;
     if (this.sunk) return;
+    // betikle yönetilen gemiler (ticaret gemisi): konum dışarıdan verilir, yalnız kaldırma/görsel
+    if (this.kinematic) { this.updateTransform(dt); return; }
     // çapa
     if (this.anchorState === 'lowering') {
       this.anchorT = Math.min(1, this.anchorT + dt / 2.2);
-      if (this.anchorT >= 1) { this.anchorState = 'down'; this.events.push({ t: 'anchorDown' }); }
+      if (this.anchorT >= 1) { this.anchorState = 'down'; this.events.push({ t: 'anchorDown' }); this._setAnchorPoint(); }
     } else if (this.anchorState === 'raising') {
       this.anchorT = Math.max(0, this.anchorT - dt / 2.8);
-      if (this.anchorT <= 0) { this.anchorState = 'up'; this.events.push({ t: 'anchorUp' }); }
+      if (this.anchorT <= 0) { this.anchorState = 'up'; this.events.push({ t: 'anchorUp' }); this.anchorPt = null; }
     }
     this.anchored = this.anchorState === 'down' || (this.anchorState === 'lowering' && this.anchorT > 0.6);
+    if (this.anchored && !this.anchorPt) this._setAnchorPoint();
 
-    // yelken
+    // yelken ve dümen
     const sailSpeed = 0.35 + this.upg.sails * 0.1;
-    this.sail = damp(this.sail, this.sailTarget, 1.2, dt);
+    this.sail = damp(this.sail, this.sailTarget, 1.2 + this.upg.sails * 0.25, dt);
     if (Math.abs(this.sail - this.sailTarget) < 0.01) this.sail = this.sailTarget;
     this.rudder = damp(this.rudder, this.rudderInput, 2.6, dt);
 
-    // su alma
-    const leak = this.holes.reduce((a, h) => a + h.size, 0) * 0.9 + (sky.weather.rain > 0.6 ? 0.08 : 0);
+    // su alma (yağmur ve fırtına dalgaları güverteden su doldurur)
+    const waveSpill = Math.max(0, sky.weather.waves - 1.6) * 0.12 * (1 - this.sail * 0.3);
+    const leak = this.holes.reduce((a, h) => a + h.size, 0) * 0.9 + (sky.weather.rain > 0.6 ? 0.08 : 0) + waveSpill;
     this.water = clamp(this.water + leak * dt, 0, 100);
     if (this.water >= 100 && !this.sinking) { this.sinking = 0.0001; this.events.push({ t: 'sinking' }); }
 
-    // hız
+    const m = this.mass;
+    const hx = Math.sin(this.yaw), hz = Math.cos(this.yaw); // baş yönü
+    const px = Math.cos(this.yaw), pz = -Math.sin(this.yaw); // iskele (sol) yönü
+    let vx = this.vx || 0, vz = this.vz || 0;
+    let fwd = vx * hx + vz * hz;
+    let lat = vx * px + vz * pz;
+
+    // yelken itkisi: hedef hıza doğru ivmelenme (ağır gemi daha yavaş hızlanır)
     const hullF = (0.55 + 0.45 * (this.hp / this.maxHp)) * (1 - this.water / 160);
     const windF = 0.45 + 0.75 * sky.windStrength;
     const stormF = sky.weather.waves > 1.8 ? 0.85 : 1;
     let target = T.maxSpeed * (1 + this.upg.sails * 0.08) * this.sail * this.windEfficiency() * windF * hullF * stormF;
-    if (this.anchored) target = 0;
-    if (this.sinking) target = 0;
-    // yelkenler toplu iken geri manevra (halat/kürekle)
+    if (this.anchored || this.sinking) target = 0;
     if (this.backing && this.sail < 0.1 && !this.anchored) target = -1.4;
-    const acc = target > this.speed ? T.accel * (1 + sailSpeed * 0.2) : (this.anchored ? 2.2 : 0.6);
-    this.speed = damp(this.speed, target, acc * 0.5, dt);
-    // dönüş
-    const sF = clamp(0.22 + Math.abs(this.speed) / T.maxSpeed, 0.22, 1.15);
-    const yawRate = this.rudder * T.turnRate * sF * (this.anchored ? 0.15 : 1);
-    this.yaw = wrapAngle(this.yaw + yawRate * dt);
+    const accRate = (target > fwd ? T.accel * (1 + sailSpeed * 0.2) * 0.5 : (this.anchored ? 1.1 : 0.32)) / Math.pow(m, 0.35);
+    fwd += (target - fwd) * (1 - Math.exp(-accRate * dt));
+    // dalga yüzeyinde kayma (dalga sırtından inerken hızlanma)
+    const L2 = T.L * 0.45;
+    const hb = ocean.heightAt(this.x + hx * L2, this.z + hz * L2), hs = ocean.heightAt(this.x - hx * L2, this.z - hz * L2);
+    fwd += ((hs - hb) / (2 * L2)) * 9.8 * 0.35 * dt;
+    // omurga: yanal kaymaya güçlü direnç; rüzgâr yan kuvveti (sürüklenme)
+    lat *= Math.exp(-2.4 * dt);
+    const wxv = Math.cos(sky.windDir), wzv = Math.sin(sky.windDir);
+    const windSide = wxv * px + wzv * pz;
+    lat += windSide * (0.25 + this.sail * 0.75) * sky.windStrength * 0.9 * dt;
+    vx = hx * fwd + px * lat;
+    vz = hz * fwd + pz * lat;
+
+    // limanda demirliyken halatlar: gemi iskeleye paralel, yerinde kalır (iskeleye sürüklenmez)
+    const D = Ship.dock;
+    const docked = this.anchored && D && Math.hypot(this.x - D.x, this.z - D.z) < D.r;
+    if (docked) {
+      vx += (D.x - this.x) * 0.8 * dt; vz += (D.z - this.z) * 0.8 * dt;
+      vx *= Math.exp(-2.5 * dt); vz *= Math.exp(-2.5 * dt);
+      let wy = D.yaw;
+      if (Math.abs(wrapAngle(wy - this.yaw)) > Math.PI / 2) wy += Math.PI;
+      this.yawRate = ((this.yawRate || 0) + wrapAngle(wy - this.yaw) * 0.6 * dt) * Math.exp(-2 * dt);
+    } else if (this.anchored && this.anchorPt) {
+      // çapa zinciri: zincir gerilince gemiyi çeker; rüzgâra karşı döner
+      const bowX = this.x + hx * T.L * 0.42, bowZ = this.z + hz * T.L * 0.42;
+      const dx = this.anchorPt.x - bowX, dz = this.anchorPt.z - bowZ;
+      const d = Math.hypot(dx, dz);
+      const chain = this.anchorPt.chain;
+      vx += wxv * sky.windStrength * 0.35 * dt; vz += wzv * sky.windStrength * 0.35 * dt;
+      if (d > chain) {
+        const pull = (d - chain) * 1.6 * dt;
+        vx += (dx / d) * pull; vz += (dz / d) * pull;
+        vx *= Math.exp(-1.2 * dt); vz *= Math.exp(-1.2 * dt);
+      }
+      vx *= Math.exp(-0.25 * dt); vz *= Math.exp(-0.25 * dt);
+      // baş rüzgâra döner
+      if (sky.windStrength > 0.25) {
+        const want = Math.atan2(-wxv, -wzv);
+        this.yawRate = (this.yawRate || 0) + wrapAngle(want - this.yaw) * 0.04 * sky.windStrength * dt;
+      }
+    }
+
+    // dönüş: dümen torku hızla artar, açısal sönüm ve atalet
+    const sF = clamp(0.2 + Math.abs(fwd) / T.maxSpeed, 0.2, 1.15);
+    const yawTarget = this.rudder * T.turnRate * sF * (fwd >= -0.2 ? 1 : -0.6) * (this.anchored ? 0.15 : 1);
+    this.yawRate = (this.yawRate || 0) + (yawTarget - (this.yawRate || 0)) * (1 - Math.exp(-(1.5 / Math.sqrt(m)) * dt));
     // fırtınada savrulma
     const storm = Math.max(0, sky.weather.waves - 1.3);
-    if (storm > 0 && !this.anchored) this.yaw += Math.sin(ocean.time * 0.7 + this.x * 0.01) * storm * 0.06 * dt;
-    // rüzgâr kayması
-    const drift = this.anchored ? 0 : sky.windStrength * 0.25 * this.sail;
-    const hx = Math.sin(this.yaw), hz = Math.cos(this.yaw);
-    this._prevX = this.x; this._prevZ = this.z;
-    this.x += (hx * this.speed + Math.cos(sky.windDir) * drift) * dt;
-    this.z += (hz * this.speed + Math.sin(sky.windDir) * drift) * dt;
-    this.vx = (this.x - this._prevX) / Math.max(dt, 1e-4);
-    this.vz = (this.z - this._prevZ) / Math.max(dt, 1e-4);
+    if (storm > 0 && !this.anchored) this.yawRate += Math.sin(ocean.time * 0.7 + this.x * 0.01) * storm * 0.05 * dt;
+    this.yaw = wrapAngle(this.yaw + this.yawRate * dt);
 
-    // karaya oturma
+    this._prevX = this.x; this._prevZ = this.z;
+    this.x += vx * dt; this.z += vz * dt;
+    this.vx = vx; this.vz = vz;
+    this.speed = fwd; this.lateral = lat;
+
+    // çarpışmalar: kara ve deniz kayalıkları
     this._grounding(dt);
+    this._obstacles(dt);
     // dünya sınırı
     const lim = 1150;
     if (Math.abs(this.x) > lim || Math.abs(this.z) > lim) {
       this.x = clamp(this.x, -lim, lim); this.z = clamp(this.z, -lim, lim);
-      this.speed *= 0.5;
+      this.vx *= 0.5; this.vz *= 0.5;
     }
     this.updateTransform(dt);
+  }
+
+  _setAnchorPoint() {
+    const T = this.T;
+    const bx = this.x + Math.sin(this.yaw) * T.L * 0.42, bz = this.z + Math.cos(this.yaw) * T.L * 0.42;
+    const depth = Math.max(2, -terrain.heightAt(bx, bz));
+    this.anchorPt = { x: bx, z: bz, chain: 3 + depth * 0.45 };
+  }
+
+  // çarpışma tepkisi: normal yönünde yansıyan hız, sürtünme, açısal itki, darbe hasarı
+  _collide(nx, nz, pen, cx, cz, dt, what = 'kara') {
+    const nl = Math.hypot(nx, nz) || 1;
+    nx /= nl; nz /= nl;
+    this.x += nx * Math.min(pen, 1.5) * 0.6;
+    this.z += nz * Math.min(pen, 1.5) * 0.6;
+    const vn = this.vx * nx + this.vz * nz;
+    if (vn < 0) {
+      const e = 0.25;
+      this.vx -= (1 + e) * vn * nx; this.vz -= (1 + e) * vn * nz;
+      // teğetsel sürtünme
+      const tx = -nz, tz = nx;
+      const vt = this.vx * tx + this.vz * tz;
+      this.vx -= vt * tx * 0.15; this.vz -= vt * tz * 0.15;
+      // çarpma noktasının merkeze göre konumu dönme momenti yaratır
+      const rx = cx - this.x, rz = cz - this.z;
+      const J = -(1 + e) * vn;
+      this.yawRate = (this.yawRate || 0) + ((rx * nz - rz * nx) * J) / (this.T.L * this.T.L * 0.12 * this.mass);
+      const impact = Math.abs(vn);
+      if (impact > 1.6) {
+        this.damage(impact * 4.2, this.worldToLocal(new THREE.Vector3(cx, this.y, cz)));
+        this.events.push({ t: 'crash', impact, what });
+      }
+    }
+    this.grounded = true;
   }
 
   _grounding(dt) {
     const T = this.T;
     const hx = Math.sin(this.yaw), hz = Math.cos(this.yaw);
     const px = Math.cos(this.yaw), pz = -Math.sin(this.yaw);
-    const draft = 1.3;
+    const draft = 1.3 + (this.mass - 1) * 0.4;
     const pts = [
-      [0, T.L / 2 - 0.5], [0, T.L / 2 + 1.5], [0, -T.L / 2 + 0.5], [T.B / 2 - 0.3, 0], [-T.B / 2 + 0.3, 0], [T.B / 2 - 0.5, T.L / 4], [-T.B / 2 + 0.5, T.L / 4],
+      [0, T.L / 2 - 0.5], [0, T.L / 2 + 1.5], [0, -T.L / 2 + 0.5], [T.B / 2 - 0.3, 0], [-T.B / 2 + 0.3, 0], [T.B / 2 - 0.5, T.L / 4], [-T.B / 2 + 0.5, T.L / 4], [T.B / 2 - 0.5, -T.L / 4], [-T.B / 2 + 0.5, -T.L / 4],
     ];
-    let worst = 0, wx = 0, wz = 0, wl = null;
+    let worst = 0, wx = 0, wz = 0;
     for (const [lx, lz] of pts) {
       const x = this.x + px * lx + hx * lz, z = this.z + pz * lx + hz * lz;
-      const h = terrain.heightAt(x, z);
-      const pen = h + draft;
-      if (pen > worst) { worst = pen; wx = x; wz = z; wl = { x: lx, z: lz }; }
+      const pen = terrain.heightAt(x, z) - ocean.tide + draft;
+      if (pen > worst) { worst = pen; wx = x; wz = z; }
     }
+    this.grounded = false;
     if (worst > 0) {
-      // arazi eğiminin tersine it (karadan uzaklaş) ve hasar ver
       const e = 2;
       let gx = terrain.heightAt(wx + e, wz) - terrain.heightAt(wx - e, wz);
       let gz = terrain.heightAt(wx, wz + e) - terrain.heightAt(wx, wz - e);
-      let gl = Math.hypot(gx, gz);
-      if (gl < 1e-4) { gx = this.x - wx; gz = this.z - wz; gl = Math.hypot(gx, gz) || 1; }
-      const push = Math.min(worst, 1.5) * 2.2 + 0.4;
-      this.x = this._prevX - (gx / gl) * push * dt;
-      this.z = this._prevZ - (gz / gl) * push * dt;
-      const impact = Math.abs(this.speed);
-      if (impact > 2.0) {
-        this.damage(impact * 3.2, new THREE.Vector3(wl.x, 0, wl.z));
-        this.events.push({ t: 'crash', impact });
-      }
-      this.speed *= -0.25;
-      this.grounded = true;
-    } else this.grounded = false;
+      if (Math.hypot(gx, gz) < 1e-4) { gx = wx - this.x; gz = wz - this.z; }
+      this._collide(-gx, -gz, worst * 0.5, wx, wz, dt, 'kara');
+    }
   }
 
-  updateTransform(dt) {
+  // deniz kayalıkları gibi dairesel engeller
+  _obstacles(dt) {
+    const list = Ship.obstacles;
+    if (!list || !list.length) return;
     const T = this.T;
     const hx = Math.sin(this.yaw), hz = Math.cos(this.yaw);
+    const ax = this.x - hx * T.L * 0.4, az = this.z - hz * T.L * 0.4;
+    const bx = this.x + hx * T.L * 0.4, bz = this.z + hz * T.L * 0.4;
+    const r = T.B * 0.45;
+    for (const o of list) {
+      if (Math.abs(o.x - this.x) > T.L + o.r || Math.abs(o.z - this.z) > T.L + o.r) continue;
+      const abx = bx - ax, abz = bz - az;
+      const t = clamp(((o.x - ax) * abx + (o.z - az) * abz) / (abx * abx + abz * abz), 0, 1);
+      const cx = ax + abx * t, cz = az + abz * t;
+      const dx = cx - o.x, dz = cz - o.z;
+      const d = Math.hypot(dx, dz);
+      if (d < r + o.r) this._collide(dx, dz, r + o.r - d, cx - (dx / (d || 1)) * r, cz - (dz / (d || 1)) * r, dt, 'kaya');
+    }
+  }
+
+  // Gemi-gemi çarpışmaları (kapsül-kapsül), kütle oranına göre itki
+  static collideAll(ships, dt) {
+    for (let i = 0; i < ships.length; i++) for (let j = i + 1; j < ships.length; j++) {
+      const a = ships[i], b = ships[j];
+      if (a.sunk || b.sunk) continue;
+      if (Math.hypot(a.x - b.x, a.z - b.z) > (a.T.L + b.T.L) * 0.6) continue;
+      const seg = (s) => { const hx = Math.sin(s.yaw) * s.T.L * 0.4, hz = Math.cos(s.yaw) * s.T.L * 0.4; return [s.x - hx, s.z - hz, s.x + hx, s.z + hz]; };
+      const [a1x, a1z, a2x, a2z] = seg(a), [b1x, b1z, b2x, b2z] = seg(b);
+      // segmentler arası en yakın noktalar (örnekleyerek)
+      let best = 1e9, pa = null, pb = null;
+      for (let s = 0; s <= 6; s++) {
+        const t = s / 6;
+        const qx = a1x + (a2x - a1x) * t, qz = a1z + (a2z - a1z) * t;
+        const ex = b2x - b1x, ez = b2z - b1z;
+        const u = clamp(((qx - b1x) * ex + (qz - b1z) * ez) / (ex * ex + ez * ez), 0, 1);
+        const rx = b1x + ex * u, rz = b1z + ez * u;
+        const d = Math.hypot(qx - rx, qz - rz);
+        if (d < best) { best = d; pa = [qx, qz]; pb = [rx, rz]; }
+      }
+      const R = a.T.B * 0.45 + b.T.B * 0.45;
+      if (best >= R) continue;
+      let nx = pa[0] - pb[0], nz = pa[1] - pb[1];
+      const nl = Math.hypot(nx, nz) || 1; nx /= nl; nz /= nl;
+      const pen = R - best;
+      // betikli (kinematik) gemiler sonsuz kütleli kabul edilir
+      const ma = a.kinematic ? 1e6 : a.mass, mb = b.kinematic ? 1e6 : b.mass;
+      a.x += nx * pen * (mb / (ma + mb)); a.z += nz * pen * (mb / (ma + mb));
+      b.x -= nx * pen * (ma / (ma + mb)); b.z -= nz * pen * (ma / (ma + mb));
+      const vrel = (a.vx - b.vx) * nx + (a.vz - b.vz) * nz;
+      if (vrel < 0) {
+        const e = 0.3;
+        const J = -(1 + e) * vrel / (1 / ma + 1 / mb);
+        a.vx += (J / ma) * nx; a.vz += (J / ma) * nz;
+        b.vx -= (J / mb) * nx; b.vz -= (J / mb) * nz;
+        const cx = (pa[0] + pb[0]) / 2, cz = (pa[1] + pb[1]) / 2;
+        a.yawRate = (a.yawRate || 0) + (((cx - a.x) * nz - (cz - a.z) * nx) * J) / (a.T.L * a.T.L * 0.12 * ma);
+        b.yawRate = (b.yawRate || 0) - (((cx - b.x) * nz - (cz - b.z) * nx) * J) / (b.T.L * b.T.L * 0.12 * mb);
+        if (a.kinematic) { a.vx = a.vz = 0; a.yawRate = 0; }
+        if (b.kinematic) { b.vx = b.vz = 0; b.yawRate = 0; }
+        if (Math.abs(vrel) > 1.5) {
+          a.damage(Math.abs(vrel) * 5 * (mb / ma), a.worldToLocal(new THREE.Vector3(cx, a.y, cz)));
+          b.damage(Math.abs(vrel) * 5 * (ma / mb), b.worldToLocal(new THREE.Vector3(cx, b.y, cz)));
+          a.events.push({ t: 'crash', impact: Math.abs(vrel), what: 'gemi' });
+          b.events.push({ t: 'crash', impact: Math.abs(vrel), what: 'gemi' });
+        }
+      }
+    }
+  }
+
+  // Kaldırma kuvveti: gövde boyunca 8 noktada su yüksekliği; yalpa ve baş-kıç vurma yay-sönüm dinamiği
+  updateTransform(dt) {
+    const T = this.T;
+    const m = this.mass;
+    const hx = Math.sin(this.yaw), hz = Math.cos(this.yaw);
     const px = Math.cos(this.yaw), pz = -Math.sin(this.yaw);
-    const hb = ocean.heightAt(this.x + hx * T.L * 0.4, this.z + hz * T.L * 0.4);
-    const hs = ocean.heightAt(this.x - hx * T.L * 0.4, this.z - hz * T.L * 0.4);
-    const hp = ocean.heightAt(this.x + px * T.B * 0.5, this.z + pz * T.B * 0.5);
-    const hst = ocean.heightAt(this.x - px * T.B * 0.5, this.z - pz * T.B * 0.5);
-    const avg = (hb + hs + hp + hst) / 4;
-    let ty = avg - this.water / 100 * 0.7;
-    let tp = -Math.atan2(hb - hs, T.L * 0.8) * 0.9;
-    let tr = Math.atan2(hp - hst, T.B) * 0.8 - this.rudder * clamp(this.speed / T.maxSpeed, 0, 1) * 0.06;
+    const L = T.L * 0.42, B = T.B * 0.45;
+    const P = [[0, L], [0, -L], [B, 0], [-B, 0], [B * 0.8, L * 0.55], [-B * 0.8, L * 0.55], [B * 0.8, -L * 0.55], [-B * 0.8, -L * 0.55]];
+    let sum = 0, fore = 0, aft = 0, port = 0, star = 0;
+    const w = [];
+    for (const [lx, lz] of P) {
+      const h = ocean.heightAt(this.x + px * lx + hx * lz, this.z + pz * lx + hz * lz);
+      w.push(h); sum += h;
+      if (lz > 0) fore += h; else if (lz < 0) aft += h;
+      if (lx > 0) port += h; else if (lx < 0) star += h;
+    }
+    const avg = sum / P.length;
+    let ty = avg - this.water / 100 * 0.8 - (m - 1) * 0.15;
+    let tp = -Math.atan2(fore / 3 - aft / 3, 2 * L) * 0.95;
+    // rüzgârla yatma (rüzgâr altına) + dönüşte dışa yatma
+    const wxv = Math.cos(sky.windDir), wzv = Math.sin(sky.windDir);
+    const windSide = wxv * px + wzv * pz;
+    const heel = -windSide * this.sail * sky.windStrength * 0.16 / Math.sqrt(m) - (this.yawRate || 0) * clamp(this.speed / T.maxSpeed, -0.5, 1) * 0.25;
+    let tr = Math.atan2(port / 3 - star / 3, 2 * B) * 0.85 + heel;
     tr += Math.sin(ocean.time * 0.9 + this.x * 0.05) * 0.012 * ocean.waveScale;
     if (this.sinking) {
       this.sinking += dt;
@@ -275,15 +432,38 @@ export class Ship {
       if (this.sinking > 14 && !this.sunk) { this.sunk = true; this.root.visible = false; this.events.push({ t: 'sunk' }); }
     }
     if (dt > 0) {
-      this.y = damp(this.y, ty, 4, dt);
-      this.pitch = damp(this.pitch, tp, 3, dt);
-      this.roll = damp(this.roll, tr, 3, dt);
-    } else { this.y = ty; this.pitch = tp; this.roll = tr; }
+      // yay-sönüm: ağır gemiler daha yavaş ve daha az salınır
+      const kH = 10 / m, cH = 4.2 / Math.sqrt(m);
+      this.vy = (this.vy || 0) + ((ty - this.y) * kH - (this.vy || 0) * cH) * dt;
+      this.y += this.vy * dt;
+      const kA = 7.5 / Math.sqrt(m), cA = 3.0 / Math.pow(m, 0.25);
+      this.pitchV = (this.pitchV || 0) + ((tp - this.pitch) * kA - (this.pitchV || 0) * cA) * dt;
+      this.rollV = (this.rollV || 0) + ((tr - this.roll) * kA * 0.8 - (this.rollV || 0) * cA * 0.9) * dt;
+      this.pitch += this.pitchV * dt;
+      this.roll += this.rollV * dt;
+      this.pitch = clamp(this.pitch, -0.6, 0.6);
+      this.roll = clamp(this.roll, -0.7, 0.7);
+    } else { this.y = ty; this.pitch = tp; this.roll = tr; this.vy = 0; this.pitchV = 0; this.rollV = 0; }
     this.root.position.set(this.x, this.y, this.z);
     _e.set(this.pitch, this.yaw, this.roll, 'YXZ');
     this.root.quaternion.setFromEuler(_e);
     this.root.updateMatrixWorld(true);
     this._animate(dt);
+  }
+
+  // Ağdan gelen durumu yumuşak takip (konuk tarafı)
+  clientUpdate(dt) {
+    const t = this.netTarget;
+    if (t) {
+      const age = (performance.now() - t.at) / 1000;
+      const ex = t.x + t.vx * Math.min(age, 0.25), ez = t.z + t.vz * Math.min(age, 0.25);
+      const far = Math.hypot(ex - this.x, ez - this.z) > 12;
+      this.x = far ? ex : damp(this.x, ex, 8, dt);
+      this.z = far ? ez : damp(this.z, ez, 8, dt);
+      this.yaw = dampAngle(this.yaw, t.yaw + (t.yawRate || 0) * Math.min(age, 0.25), 8, dt);
+      this.vx = t.vx; this.vz = t.vz; this.yawRate = t.yawRate;
+    }
+    this.updateTransform(dt);
   }
 
   _animate(dt) {
@@ -405,10 +585,12 @@ export class Ship {
     };
   }
   netState() {
-    return [this.x, this.z, this.yaw, this.speed, this.rudder, this.sail, this.sailTarget, this.anchorT, this.anchorState, this.hp, this.water, this.sinking];
+    return [+this.x.toFixed(2), +this.z.toFixed(2), +this.yaw.toFixed(4), +this.speed.toFixed(2), +this.rudder.toFixed(2), +this.sail.toFixed(2), this.sailTarget, +this.anchorT.toFixed(2), this.anchorState, Math.round(this.hp), Math.round(this.water), this.sinking, +(this.vx || 0).toFixed(2), +(this.vz || 0).toFixed(2), +(this.yawRate || 0).toFixed(3)];
   }
-  applyNet(s, alpha = 1) {
-    this.x = s[0]; this.z = s[1]; this.yaw = s[2]; this.speed = s[3]; this.rudder = s[4];
+  applyNet(s) {
+    this.netTarget = { x: s[0], z: s[1], yaw: s[2], vx: s[12] || 0, vz: s[13] || 0, yawRate: s[14] || 0, at: performance.now() };
+    if (this.x === undefined || Math.hypot(this.x - s[0], this.z - s[1]) > 30) { this.x = s[0]; this.z = s[1]; this.yaw = s[2]; }
+    this.speed = s[3]; this.rudder = s[4];
     this.sail = s[5]; this.sailTarget = s[6]; this.anchorT = s[7]; this.anchorState = s[8]; this.hp = s[9]; this.water = s[10];
     this.sinking = s[11];
     this.anchored = this.anchorState === 'down';
@@ -445,7 +627,7 @@ export class Rowboat {
     this.x = s.x + Math.sin(s.yaw) * back + Math.cos(s.yaw) * 1.5;
     this.z = s.z + Math.cos(s.yaw) * back - Math.sin(s.yaw) * 1.5;
     this.yaw = s.yaw;
-    this.speed = 0;
+    this.speed = 0; this.vx = s.vx || 0; this.vz = s.vz || 0; this.yawRate = 0; this.y = undefined;
     this.state = 'water';
   }
   dock() {
@@ -455,19 +637,32 @@ export class Rowboat {
     this.updateDocked();
   }
   control(fwd, turn, dt) {
-    this.speed = damp(this.speed, fwd * 3.6, 1.8, dt);
+    // kürek darbeleri: ileri itki ve dönüş torku
+    this.thrust = fwd;
     this.turn = damp(this.turn, turn, 4, dt);
     if (Math.abs(fwd) > 0.1 || Math.abs(turn) > 0.1) this.rowPhase += dt * 4.5;
   }
   update(dt) {
     if (this.state === 'docked') { this.updateDocked(); return; }
-    this.yaw = wrapAngle(this.yaw + this.turn * 1.1 * dt);
-    const nx = this.x + Math.sin(this.yaw) * this.speed * dt;
-    const nz = this.z + Math.cos(this.yaw) * this.speed * dt;
-    const ground = terrain.heightAt(nx, nz);
+    const hx = Math.sin(this.yaw), hz = Math.cos(this.yaw);
+    const px = Math.cos(this.yaw), pz = -Math.sin(this.yaw);
+    let vx = this.vx || 0, vz = this.vz || 0;
+    let fwd = vx * hx + vz * hz, lat = vx * px + vz * pz;
+    // kürek çekme ritmi: darbe anında itki
+    const stroke = Math.max(0, Math.sin(this.rowPhase)) * 1.6 + 0.4;
+    fwd += ((this.thrust || 0) * 3.8 - fwd) * (1 - Math.exp(-(Math.abs(this.thrust || 0) > 0.05 ? 1.3 * stroke : 0.45) * dt));
+    lat *= Math.exp(-3.0 * dt);
+    // rüzgâr ve akıntı hafifçe sürükler
+    lat += (Math.cos(sky.windDir) * px + Math.sin(sky.windDir) * pz) * sky.windStrength * 0.25 * dt;
+    vx = hx * fwd + px * lat; vz = hz * fwd + pz * lat;
+    this.yawRate = damp(this.yawRate || 0, (this.turn || 0) * 1.15 * (0.5 + Math.min(1, Math.abs(fwd) / 2)), 3, dt);
+    this.yaw = wrapAngle(this.yaw + this.yawRate * dt);
+    const nx = this.x + vx * dt, nz = this.z + vz * dt;
+    const ground = terrain.heightAt(nx, nz) - ocean.tide;
     if (ground < -0.25) { this.x = nx; this.z = nz; this.beached = false; }
-    else { this.speed *= 0.3; this.beached = true; }
-    // gemi gövdesinden uzak dur
+    else { vx *= -0.2; vz *= -0.2; this.beached = true; }
+    this.vx = vx; this.vz = vz; this.speed = fwd;
+    // gemi gövdesinden uzak dur (çarpınca geri sek)
     const s = this.ship;
     const dx = this.x - s.x, dz = this.z - s.z;
     const lx = dx * Math.cos(s.yaw) - dz * Math.sin(s.yaw), lz = dx * Math.sin(s.yaw) + dz * Math.cos(s.yaw);
@@ -476,13 +671,25 @@ export class Rowboat {
       const nlx = sgn * (hullHalfWidth(s.T, clamp(lz, -s.T.L / 2, s.T.L / 2)) + 1.0);
       this.x = s.x + nlx * Math.cos(s.yaw) + lz * Math.sin(s.yaw);
       this.z = s.z - nlx * Math.sin(s.yaw) + lz * Math.cos(s.yaw);
+      // yalnızca gövdeye doğru hız bileşenini sönümle; gövde boyunca kürek çekmek serbest
+      const onx = Math.cos(s.yaw) * sgn, onz = -Math.sin(s.yaw) * sgn;
+      const rvx = this.vx - (s.vx || 0), rvz = this.vz - (s.vz || 0);
+      const vn = rvx * onx + rvz * onz;
+      if (vn < 0.25) { this.vx += (0.25 - vn) * onx; this.vz += (0.25 - vn) * onz; }
     }
+    // kaldırma: üç noktada dalga, yay-sönüm ile yalpa
     const h = ocean.heightAt(this.x, this.z);
-    const hb = ocean.heightAt(this.x + Math.sin(this.yaw) * 1.4, this.z + Math.cos(this.yaw) * 1.4);
-    const hs = ocean.heightAt(this.x - Math.sin(this.yaw) * 1.4, this.z - Math.cos(this.yaw) * 1.4);
-    this.y = Math.max(h, terrain.heightAt(this.x, this.z) + 0.25) + 0.05;
+    const hb = ocean.heightAt(this.x + hx * 1.4, this.z + hz * 1.4);
+    const hs = ocean.heightAt(this.x - hx * 1.4, this.z - hz * 1.4);
+    const hp = ocean.heightAt(this.x + px * 0.6, this.z + pz * 0.6), hst = ocean.heightAt(this.x - px * 0.6, this.z - pz * 0.6);
+    const ty = Math.max(h, terrain.heightAt(this.x, this.z) + 0.25) + 0.05;
+    this.vy = (this.vy || 0) + ((ty - (this.y || ty)) * 22 - (this.vy || 0) * 6) * dt;
+    this.y = (this.y || ty) + this.vy * dt;
+    const tp = -Math.atan2(hb - hs, 2.8) * 0.85, tr = Math.atan2(hp - hst, 1.2) * 0.7 - (this.yawRate || 0) * 0.08;
+    this.pV = (this.pV || 0) + ((tp - (this.p || 0)) * 16 - (this.pV || 0) * 5) * dt; this.p = (this.p || 0) + this.pV * dt;
+    this.rV = (this.rV || 0) + ((tr - (this.r || 0)) * 14 - (this.rV || 0) * 4.5) * dt; this.r = (this.r || 0) + this.rV * dt;
     this.mesh.position.set(this.x, this.y, this.z);
-    _e.set(-Math.atan2(hb - hs, 2.8) * 0.8, this.yaw, Math.sin(ocean.time * 1.3 + this.x) * 0.04, 'YXZ');
+    _e.set(this.p, this.yaw, this.r, 'YXZ');
     this.mesh.quaternion.setFromEuler(_e);
     const oars = this.mesh.userData.oars;
     if (oars) oars.forEach((o, i) => { o.rotation.y = Math.sin(this.rowPhase) * 0.5 * (i ? -1 : 1); o.rotation.z = (Math.cos(this.rowPhase) * 0.2 + 0.15) * (i ? -1 : 1); });

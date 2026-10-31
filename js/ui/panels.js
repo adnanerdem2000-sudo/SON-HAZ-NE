@@ -1,13 +1,15 @@
 import { G } from '../game/ctx.js';
 import { ui } from './ui.js';
-import { el, fmtGold, clamp } from '../core/util.js';
+import { el, fmtGold, clamp, rng } from '../core/util.js';
 import { ITEMS, CATEGORIES, RARITY, iconSVG, itemName, itemWeight, itemValue, CHEST_TIERS } from '../economy/items.js';
 import { MERCHANTS, shop, sellPrice, buyPrice } from '../economy/shop.js';
+import { time } from '../world/time.js';
 import { treasure } from '../treasure/treasure.js';
 import { quests, STORY } from '../game/quests.js';
 import { terrain } from '../world/terrain.js';
 import { ISLANDS, POIS, DIG_SITES, WORLD_SIZE, WRECKS } from '../world/worldData.js';
 import { parchmentCanvas } from '../core/textures.js';
+import { renderMapBase, drawPoiIcon, fogCanvas } from './mapArt.js';
 import { SHIP_TYPES } from '../ship/shipModel.js';
 import { shipControl } from '../game/shipControl.js';
 import { engine } from '../core/engine.js';
@@ -142,6 +144,8 @@ export const panels = {
     const render = () => {
       body.innerHTML = '';
       body.appendChild(el('div', { class: 'row' }, el('i', { class: 'grow' }, M.greet), el('span', { class: 'gold-tag', style: { fontSize: '22px' } }, fmtGold(p.inv.gold))));
+      const bonus = time.priceBonus();
+      if (bonus > 0) body.appendChild(el('div', { class: 'price-bonus' }, `${time.isActive('market') ? '🏪 Pazar günü' : '⛵ Ticaret gemisi limanda'}: satış fiyatları +%${Math.round(bonus * 100)}`));
       const cols = el('div', { class: 'shop-cols', style: { marginTop: '8px' } });
       const buyCol = el('div', { class: 'col' }, el('h3', {}, 'Satın Al'));
       const bl = el('div', { class: 'shop-list' });
@@ -150,10 +154,10 @@ export const panels = {
         const row = el('div', { class: 'shop-row' },
           el('div', { class: 'ic', html: iconSVG(id) }),
           el('div', {}, el('b', {}, d.name), el('div', { class: 'muted', style: { fontSize: '14px' } }, d.desc)),
-          el('span', { class: 'price' }, buyPrice(id) + ' altın'),
+          el('span', { class: 'price' }, buyPrice(id, role) + ' altın'),
           el('div', { class: 'row' },
-            el('button', { class: 'btn small', onclick: () => { shop.buy(id, 1); render(); } }, 'Al'),
-            d.stack ? el('button', { class: 'btn small', onclick: () => { shop.buy(id, 10); render(); } }, '×10') : null));
+            el('button', { class: 'btn small', onclick: () => { shop.buy(id, 1, role); render(); } }, 'Al'),
+            d.stack ? el('button', { class: 'btn small', onclick: () => { shop.buy(id, 10, role); render(); } }, '×10') : null));
         ui.tipOn(row, () => itemTip({ id, n: 1 }));
         bl.appendChild(row);
       }
@@ -243,23 +247,42 @@ export const panels = {
     const span = isl.r * 2.6;
     const cx = isl.x, cz = isl.z;
     const toPx = (x, z) => [W / 2 + (x - cx) / span * W * 0.95, H / 2 + (z - cz) / span * H * 0.95 * (W / H)];
-    // kıyı çizgisi (el çizimi görünümü)
-    const res = 90;
+    // el boyaması görünümü: kara (kum→yeşil, tepe gölgesi) ve deniz (sığdan derine turkuaz) suluboya tonları
     const img = g.getImageData(0, 0, W, H);
-    for (let j = 0; j < H; j += 2) for (let i = 0; i < W; i += 2) {
-      const x = cx + (i - W / 2) / (W * 0.95) * span, z = cz + (j - H / 2) / (H * 0.95 * (W / H)) * span;
+    const step = 2;
+    const wx = (i) => cx + (i - W / 2) / (W * 0.95) * span, wz = (j) => cz + (j - H / 2) / (H * 0.95 * (W / H)) * span;
+    const d = span / W * step * 2;
+    for (let j = 0; j < H; j += step) for (let i = 0; i < W; i += step) {
+      const x = wx(i), z = wz(j);
       const h = terrain.heightAt(x, z);
+      let col, a;
       if (h > 0) {
-        const k = (j * W + i) * 4;
-        const shade = h > 20 ? 0.78 : h > 6 ? 0.86 : 0.93;
-        for (const [di, dj] of [[0, 0], [1, 0], [0, 1], [1, 1]]) {
-          const kk = ((j + dj) * W + (i + di)) * 4;
-          img.data[kk] *= shade; img.data[kk + 1] *= shade * 0.97; img.data[kk + 2] *= shade * 0.9;
-        }
+        const t1 = clamp((h - 0.6) / 2, 0, 1), t2 = clamp((h - 10) / 14, 0, 1);
+        col = [232 - t1 * 82 - t2 * 30, 212 - t1 * 26 - t2 * 30, 158 - t1 * 60 - t2 * 10];
+        const nx = terrain.heightAt(x + d, z) - h, nz = terrain.heightAt(x, z + d) - h;
+        const sh = clamp(1 + (nx + nz) * 0.06, 0.65, 1.25);
+        col = col.map((v) => v * sh);
+        a = 0.62;
+      } else {
+        const dd = clamp(-h / 14, 0, 1);
+        col = [132 - dd * 60, 206 - dd * 70, 200 - dd * 30];
+        a = 0.38 + dd * 0.12;
+      }
+      for (let dj = 0; dj < step; dj++) for (let di = 0; di < step; di++) {
+        const k = ((j + dj) * W + (i + di)) * 4;
+        img.data[k] = img.data[k] * (1 - a) + col[0] * a;
+        img.data[k + 1] = img.data[k + 1] * (1 - a) + col[1] * a;
+        img.data[k + 2] = img.data[k + 2] * (1 - a) + col[2] * a;
       }
     }
     g.putImageData(img, 0, 0);
-    void res;
+    // dalga çizgileri
+    g.strokeStyle = 'rgba(36,66,96,0.35)'; g.lineWidth = 1.2;
+    for (let n = 0; n < 40; n++) {
+      const i = ((n * 97 + (site.x | 0)) % (W - 40)) + 20, j = ((n * 61 + (site.z | 0) * 3) % (H - 40)) + 20;
+      if (terrain.heightAt(wx(i), wz(j)) > -2) continue;
+      g.beginPath(); g.moveTo(i - 6, j); g.quadraticCurveTo(i - 3, j - 3, i, j); g.quadraticCurveTo(i + 3, j + 3, i + 6, j); g.stroke();
+    }
     // kıyı kontur çizgisi
     g.strokeStyle = '#5a3a1e'; g.lineWidth = 2;
     for (let j = 0; j < H; j += 3) for (let i = 0; i < W; i += 3) {
@@ -295,6 +318,21 @@ export const panels = {
     this._rose(g, W - 70, 70, 40);
     g.fillStyle = '#4a2a10'; g.font = '30px "Pirata One", serif';
     g.fillText(isl.name, 20, H - 22);
+    // yıpranmış, yer yer yanmış kenarlar
+    const R = rng((site.x | 0) + 77);
+    g.save();
+    g.globalCompositeOperation = 'source-atop';
+    const grad = g.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.36, W / 2, H / 2, Math.max(W, H) * 0.62);
+    grad.addColorStop(0, 'rgba(0,0,0,0)'); grad.addColorStop(1, 'rgba(80,45,12,0.55)');
+    g.fillStyle = grad; g.fillRect(0, 0, W, H);
+    g.globalCompositeOperation = 'destination-out';
+    for (let n = 0; n < 90; n++) {
+      const side = n % 4, t = R();
+      const px = side === 0 ? t * W : side === 1 ? W : side === 2 ? t * W : 0;
+      const py = side === 0 ? 0 : side === 1 ? t * H : side === 2 ? H : t * H;
+      g.beginPath(); g.arc(px, py, 3 + R() * 11, 0, Math.PI * 2); g.fill();
+    }
+    g.restore();
     return c;
   },
 
@@ -324,7 +362,7 @@ export const panels = {
     let zoom = 1, cx = 0, cz = 0;
     const p = G.player;
     if (p) { cx = p.pos.x * 0.3; cz = p.pos.z * 0.3; }
-    const base = this._mapBase || (this._mapBase = this._renderMapBase(W, H));
+    const base = renderMapBase();
     const draw = () => {
       const g = cv.getContext('2d');
       g.clearRect(0, 0, W, H);
@@ -332,31 +370,30 @@ export const panels = {
       g.fillStyle = '#c9b48a'; g.fillRect(0, 0, W, H);
       g.drawImage(base, W / 2 + (-WORLD_SIZE / 2 - cx) * scale, H / 2 + (-WORLD_SIZE / 2 - cz) * scale, WORLD_SIZE * scale, WORLD_SIZE * scale);
       const toPx = (x, z) => [W / 2 + (x - cx) * scale, H / 2 + (z - cz) * scale];
-      // keşfedilmemiş bölgeler sisli
-      const cell = WORLD_SIZE / 64;
-      g.fillStyle = 'rgba(214,196,150,0.93)';
-      for (let j = 0; j < 64; j++) for (let i = 0; i < 64; i++) {
-        if (quests.fog[j * 64 + i]) continue;
-        const [x, y] = toPx(-WORLD_SIZE / 2 + i * cell, -WORLD_SIZE / 2 + j * cell);
-        g.fillRect(x - 0.5, y - 0.5, cell * scale + 1, cell * scale + 1);
+      // keşfedilmemiş bölgeler: yumuşak kenarlı parşömen sisi
+      {
+        const fc = fogCanvas(quests.fog);
+        const [fx, fy] = toPx(-WORLD_SIZE / 2, -WORLD_SIZE / 2);
+        g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high';
+        g.drawImage(fc, fx, fy, WORLD_SIZE * scale, WORLD_SIZE * scale);
       }
       // ada adları ve noktalar
       g.textAlign = 'center';
+      const label = (txt, x, y, font, color = '#3a2412') => {
+        g.font = font; g.lineJoin = 'round';
+        g.strokeStyle = 'rgba(244,230,196,0.85)'; g.lineWidth = 4; g.strokeText(txt, x, y);
+        g.fillStyle = color; g.fillText(txt, x, y);
+      };
       for (const I of ISLANDS) {
         if (!quests.discovered[I.id]) continue;
         const [x, y] = toPx(I.x, I.z);
-        g.font = `${Math.round(26 * Math.min(1.6, zoom))}px "Pirata One", serif`;
-        g.fillStyle = '#3a2412';
-        g.fillText(I.name, x, y - I.r * scale - 8);
+        label(I.name, x, y - I.r * scale - 8, `${Math.round(26 * Math.min(1.6, zoom))}px "Pirata One", serif`);
       }
-      g.font = `${Math.round(17 * Math.min(1.5, zoom))}px "Crimson Text", serif`;
       for (const P of POIS) {
         if (!quests.discovered[P.id] && !(P.id === 'liman')) continue;
         const [x, y] = toPx(P.x, P.z);
-        g.fillStyle = '#5a1a10';
-        g.beginPath(); g.arc(x, y, 5, 0, 6.3); g.fill();
-        g.fillStyle = '#3a2412';
-        g.fillText(P.name, x, y + 20);
+        drawPoiIcon(g, P.icon, x, y, 11 * Math.min(1.6, Math.max(0.9, zoom)));
+        label(P.name, x, y + 26, `${Math.round(16 * Math.min(1.5, zoom))}px "Crimson Text", serif`);
       }
       // hazine haritaları
       for (const s of (p?.inv.stacks || []).filter((s) => s.id === 'hazine_haritasi')) {
@@ -439,48 +476,6 @@ export const panels = {
     window.addEventListener('keydown', onKey);
     draw();
     ui.open(ui.panel('Deniz Haritası', wrap, { style: { padding: '14px' } }), { kind: 'map', closeKeys: ['KeyM'], onClose: () => { window.removeEventListener('mousemove', this._mm); window.removeEventListener('keydown', onKey); } });
-  },
-
-  _renderMapBase(W) {
-    const N = 700;
-    const c = parchmentCanvas(N, N, 3);
-    const g = c.getContext('2d');
-    const img = g.getImageData(0, 0, N, N);
-    for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) {
-      const x = -WORLD_SIZE / 2 + (i / N) * WORLD_SIZE, z = -WORLD_SIZE / 2 + (j / N) * WORLD_SIZE;
-      const h = terrain.heightAt(x, z);
-      const k = (j * N + i) * 4;
-      if (h > 0) {
-        const t = clamp(h / 50, 0, 1);
-        const isl = terrain.islandAt(x, z, 1.3);
-        const ghost = isl?.biome === 'hayalet';
-        img.data[k] = (ghost ? 150 : 176) - t * 60; img.data[k + 1] = (ghost ? 150 : 160) - t * 50; img.data[k + 2] = (ghost ? 140 : 100) - t * 30;
-      } else {
-        const d = clamp(-h / 28, 0, 1);
-        const f = 1 - d * 0.35;
-        img.data[k] *= f * 0.92; img.data[k + 1] *= f * 0.97; img.data[k + 2] *= f * 1.0;
-        // derinlik çizgileri
-        if (Math.abs(h + 5) < 0.25 || Math.abs(h + 15) < 0.25) { img.data[k] *= 0.8; img.data[k + 1] *= 0.82; img.data[k + 2] *= 0.85; }
-      }
-    }
-    g.putImageData(img, 0, 0);
-    // kıyı konturu
-    g.fillStyle = '#4a2a10';
-    for (let j = 1; j < N - 1; j++) for (let i = 1; i < N - 1; i++) {
-      const x = -WORLD_SIZE / 2 + (i / N) * WORLD_SIZE, z = -WORLD_SIZE / 2 + (j / N) * WORLD_SIZE;
-      const a = terrain.heightAt(x, z) > 0, b = terrain.heightAt(x + WORLD_SIZE / N, z) > 0, cc = terrain.heightAt(x, z + WORLD_SIZE / N) > 0;
-      if (a !== b || a !== cc) g.fillRect(i, j, 1.5, 1.5);
-    }
-    // derinlik işaretleri (rakamlar)
-    g.fillStyle = 'rgba(58,36,18,.45)'; g.font = '9px serif';
-    for (let k = 0; k < 120; k++) {
-      const i = (k * 97) % N, j = (k * 53 + 31) % N;
-      const x = -WORLD_SIZE / 2 + (i / N) * WORLD_SIZE, z = -WORLD_SIZE / 2 + (j / N) * WORLD_SIZE;
-      const h = terrain.heightAt(x, z);
-      if (h < -3) g.fillText(String(Math.round(-h)), i, j);
-    }
-    void W;
-    return c;
   },
 
   // ---------------- Tersane ----------------

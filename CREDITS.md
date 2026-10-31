@@ -32,3 +32,6 @@ prosedürel deniz türküsü müziği.
 
 Görsel referans arşivindeki görseller yalnızca stil referansı olarak kullanılmıştır; hiçbir mevcut oyunun modeli,
 haritası, logosu veya karakteri kopyalanmamıştır.
+
+## Son işleme
+- `vendor/three/addons/postprocessing/*` ve `vendor/three/addons/shaders/*` — three.js örnek eklentileri (EffectComposer, UnrealBloomPass, OutputPass, FXAA), MIT lisansı, © three.js yazarları.

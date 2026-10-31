@@ -43,6 +43,11 @@
   <section id="hud" class="hidden">
     <div id="compass-bar"><div id="compass-strip"></div><div id="compass-needle"></div></div>
     <div id="boss-bar" class="hidden"><div class="boss-name"></div><div class="boss-track"><div class="boss-fill"></div></div></div>
+    <div id="time-panel">
+      <div class="tp-top"><span class="tp-day"></span><span class="tp-clock"></span><span class="tp-weather"></span><span class="tp-tide"></span></div>
+      <div class="tp-strip"><div class="tp-bg"></div><div class="tp-bands"></div><div class="tp-ticks"></div><div class="tp-icons"></div><div class="tp-now"></div></div>
+      <div class="tp-next"></div>
+    </div>
     <div id="quest-tracker"></div>
     <div id="notify-stack"></div>
     <div id="vitals">
@@ -53,6 +58,7 @@
     </div>
     <div id="hotbar"></div>
     <div id="ship-panel" class="hidden"></div>
+    <div id="minimap"><canvas id="mm-canvas" width="200" height="200"></canvas><div class="mm-n">K</div></div>
     <div id="prompt" class="hidden"><kbd></kbd><span class="label"></span><div class="sub"></div><div class="hold-ring"></div></div>
     <div id="crosshair" class="hidden"></div>
     <div id="hitmarker"></div>
@@ -62,6 +68,7 @@
     <div id="hud-info"></div>
     <div id="chat-box" class="hidden"><div id="chat-log"></div><input id="chat-input" maxlength="140" placeholder="Mesaj yaz, Enter ile gönder"></div>
     <div id="damage-flash"></div>
+    <div id="spyglass" class="hidden"><div class="sg-ring"></div><div class="sg-cross"></div><div class="sg-target"></div><div class="sg-help"></div></div>
   </section>
 
   <div id="tooltip" class="hidden"></div>

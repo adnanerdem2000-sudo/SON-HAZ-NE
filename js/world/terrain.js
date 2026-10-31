@@ -6,6 +6,8 @@ import { fbm, noise2, smoothstep, lerp, clamp } from '../core/util.js';
 const BUMPS = [
   { x: 172, z: -58, r: 48, h: 24 },
   { x: -545, z: -470, r: 40, h: 14 },
+  // Timsah Lagünü'nün kuzeyindeki şelale tepesi
+  { x: -150, z: 8, r: 34, h: 22 },
 ];
 
 const HALF = WORLD_SIZE / 2;
@@ -145,18 +147,44 @@ export const terrain = {
     const TILE = 160;
     const tilesPer = Math.ceil(WORLD_SIZE / TILE);
     const mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.92, metalness: 0.0 });
+    // gelgit çizgisi, ıslak kum, kıyı köpüğü ve sığ sularda kostik ışık desenleri
+    this.uniforms = { uTide: { value: 0 }, uTTime: { value: 0 }, uWet: { value: 0 }, uCaustic: { value: 1 } };
     mat.onBeforeCompile = (sh) => {
-      // Hafif yüzey dokusu: dünya konumuna bağlı gürültü
-      sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 vWPos;')
-        .replace('#include <worldpos_vertex>', '#include <worldpos_vertex>\nvWPos = (modelMatrix * vec4(transformed,1.0)).xyz;');
+      Object.assign(sh.uniforms, this.uniforms);
+      sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 vWPos;\nvarying float vSlope;')
+        .replace('#include <worldpos_vertex>', `#include <worldpos_vertex>
+vWPos = (modelMatrix * vec4(transformed,1.0)).xyz;
+vec3 tWN = normalize(mat3(modelMatrix) * objectNormal);
+vSlope = sqrt(max(1.0 - tWN.y*tWN.y, 0.0)) / max(tWN.y, 0.05);`);
       sh.fragmentShader = sh.fragmentShader.replace('#include <common>', `#include <common>
 varying vec3 vWPos;
+varying float vSlope;
+uniform float uTide, uTTime, uWet, uCaustic;
 float th(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7)))*43758.5453); }
 float tn(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
- return mix(mix(th(i),th(i+vec2(1,0)),f.x), mix(th(i+vec2(0,1)),th(i+vec2(1,1)),f.x), f.y); }`)
+ return mix(mix(th(i),th(i+vec2(1,0)),f.x), mix(th(i+vec2(0,1)),th(i+vec2(1,1)),f.x), f.y); }
+float tWet = 0.0;`)
         .replace('#include <color_fragment>', `#include <color_fragment>
 float tnz = tn(vWPos.xz*0.9)*0.5 + tn(vWPos.xz*3.1)*0.3 + tn(vWPos.xz*0.13)*0.2;
-diffuseColor.rgb *= 0.86 + 0.24*tnz;`);
+diffuseColor.rgb *= 0.86 + 0.24*tnz;
+float tAbove = vWPos.y - uTide;
+// ıslak kum bandı (su çizgisinin hemen üstü, yatayda birkaç metre) ve yağmur ıslaklığı
+float tSl = max(vSlope, 0.02);
+float tBand = (1.0 - smoothstep(1.0, 4.5 + 2.5*tnz, tAbove / tSl)) * (1.0 - smoothstep(0.35, 0.9, tAbove)) * step(-0.6, tAbove);
+tWet = clamp(max(tBand, uWet * 0.7), 0.0, 1.0);
+diffuseColor.rgb *= 1.0 - 0.3 * tWet;
+`)
+        .replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
+roughnessFactor = mix(roughnessFactor, 0.3, tWet * 0.85);`)
+        .replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
+float tDepth = -tAbove;
+if (tDepth > 0.05 && uCaustic > 0.01) {
+  vec2 cp = vWPos.xz * 0.42;
+  float c1 = 1.0 - abs(tn(cp + vec2(uTTime*0.35, uTTime*0.2))*2.0 - 1.0);
+  float c2 = 1.0 - abs(tn(cp*1.6 - vec2(uTTime*0.25, -uTTime*0.31) + 4.7)*2.0 - 1.0);
+  float ca = pow(c1 * c2, 6.0) * smoothstep(0.05, 0.8, tDepth) * (1.0 - smoothstep(3.0, 12.0, tDepth));
+  totalEmissiveRadiance += vec3(0.55, 0.85, 0.9) * ca * uCaustic;
+}`);
     };
     this.material = mat;
     const hiSeg = quality === 'low' ? 40 : quality === 'medium' ? 64 : 80;
@@ -235,7 +263,10 @@ diffuseColor.rgb *= 0.86 + 0.24*tnz;`);
       const depth = -h;
       const t = clamp(depth / 26, 0, 1);
       r = lerp(0.88, 0.45, t); g = lerp(0.80, 0.48, t); b = lerp(0.60, 0.45, t);
-      if (depth > 1.2 && depth < 10 && !ghost) {
+      // Timsah Lagünü: mercan yok, çamurlu yeşil-kahve taban
+      const lagoon = Math.hypot(x + 150, z - 70) < 64;
+      if (lagoon) { const m = smoothstep(64, 40, Math.hypot(x + 150, z - 70)); r = lerp(r, 0.4, m); g = lerp(g, 0.42, m); b = lerp(b, 0.28, m); }
+      if (depth > 1.2 && depth < 10 && !ghost && !lagoon) {
         const coral = noise2(x / 6, z / 6);
         if (coral > 0.45) {
           const pick = noise2(x / 3 + 9, z / 3);

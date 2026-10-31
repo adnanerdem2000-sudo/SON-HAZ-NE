@@ -7,6 +7,7 @@ import { tpCamera } from '../player/camera.js';
 import { terrain } from '../world/terrain.js';
 import { engine } from '../core/engine.js';
 import { wrapAngle } from '../core/util.js';
+import { bodies } from '../world/bodies.js';
 
 const _v = new THREE.Vector3();
 
@@ -23,6 +24,7 @@ export const combat = {
   init() {
     G.on('fireCannon', (e) => this.fireCannon(e.ship, e.index, e.by));
     G.on('explosion', (e) => {
+      bodies.impulse(e.pos, e.radius * 2.2, 9);
       for (const t of this.targets) {
         if (!t.alive) continue;
         const d = t.pos.distanceTo(e.pos);

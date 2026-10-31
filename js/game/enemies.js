@@ -8,6 +8,7 @@ import { audio } from '../core/audio.js';
 import { terrain } from '../world/terrain.js';
 import { physics } from '../world/physics.js';
 import { sky } from '../world/sky.js';
+import { time } from '../world/time.js';
 import { clamp, damp, dampAngle, rng, wrapAngle, uid, lerp } from '../core/util.js';
 
 const _v = new THREE.Vector3();
@@ -101,6 +102,13 @@ export class Enemy {
   applyDamage(dmg, info = {}) {
     if (!this.alive) return;
     this.hp -= dmg;
+    // geri tepme
+    if (info.pos) {
+      const dx = this.pos.x - info.pos.x, dz = this.pos.z - info.pos.z;
+      const d = Math.hypot(dx, dz) || 1;
+      const k = Math.min(8, 1 + dmg * 0.09) / (this.T.boss ? 2.5 : 1);
+      this.kb = { x: (dx / d) * k, z: (dz / d) * k };
+    }
     this.state = this.hp > 0 ? 'hit' : this.state;
     this.stateT = 0;
     if (info.pos) this.target = this._nearestPlayer() || this.target;
@@ -186,7 +194,8 @@ export class Enemy {
     const dist = tgt ? tgt.pos.distanceTo(this.pos) : 1e9;
     const aggroR = this.T.boss ? 28 : this.T.ghost ? 20 : 17;
     const reachable = tgt && (tgt.mode === 'ground' || (this.T.ghost && tgt.mode !== 'helm' && tgt.mode !== 'boat'));
-    const nightBoost = sky.isNight() && !this.T.human ? 1.25 : 1;
+    // gece ölüler güçlenir; hayalet saatlerinde (00-04) daha da fazla
+    const nightBoost = sky.isNight() && !this.T.human ? (time.isActive('ghostHours') ? 1.45 : 1.25) : 1;
     let moveTo = null, speed = 0;
     if (this.state === 'hit') {
       if (this.stateT > 0.45) this.state = 'chase';
@@ -280,6 +289,12 @@ export class Enemy {
   }
 
   _place(dt) {
+    if (this.kb && this.state !== 'dead') {
+      this.pos.x += this.kb.x * dt; this.pos.z += this.kb.z * dt;
+      this.kb.x *= Math.exp(-7 * dt); this.kb.z *= Math.exp(-7 * dt);
+      if (Math.hypot(this.kb.x, this.kb.z) < 0.1) this.kb = null;
+      physics.resolve(this.pos, this.radius, this.pos.y);
+    }
     let y = this.T.ghost ? terrain.heightAt(this.pos.x, this.pos.z) + 0.6 + Math.sin(performance.now() * 0.002 + this.home.x) * 0.25 : (this.state === 'rise' ? this.pos.y : physics.groundAt(this.pos.x, this.pos.z, this.pos.y + 1));
     if (this.T.ghost) y = Math.max(y, 0.8);
     this.pos.y = y;

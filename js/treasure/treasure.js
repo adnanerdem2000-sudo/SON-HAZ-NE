@@ -11,6 +11,8 @@ import { physics } from '../world/physics.js';
 import { DIG_SITES, ISLANDS } from '../world/worldData.js';
 import { CHEST_TIERS, ITEMS, itemName } from '../economy/items.js';
 import { clamp, damp, uid, rng } from '../core/util.js';
+import { bodies } from '../world/bodies.js';
+import { time } from '../world/time.js';
 
 const LOOT = {
   small: { coins: [60, 140], picks: [1, 2], pool: [['inci', 3], ['gumus_kulce', 3], ['korsan_madalyonu', 1], ['yakut', 1]], map: 0.25 },
@@ -111,20 +113,31 @@ export const treasure = {
     // ganimetler
     for (const pk of this.pickups) {
       pk.t += dt;
-      pk.mesh.rotation.y += dt * 1.5;
-      const wh = ocean.heightAt(pk.pos.x, pk.pos.z);
-      const gy = physics.groundAt(pk.pos.x, pk.pos.z, pk.pos.y + 1);
-      pk.mesh.position.set(pk.pos.x, Math.max(gy, wh - 0.1) + 0.25 + Math.sin(pk.t * 2) * 0.08, pk.pos.z);
+      const inner = pk.mesh.children[0];
+      if (inner) { inner.rotation.y += dt * 1.5; inner.position.y = 0.12 + Math.sin(pk.t * 2) * 0.06; }
+      if (pk.body) pk.pos.copy(pk.body.pos);
+      else {
+        const wh = ocean.heightAt(pk.pos.x, pk.pos.z);
+        const gy = physics.groundAt(pk.pos.x, pk.pos.z, pk.pos.y + 1);
+        pk.mesh.position.set(pk.pos.x, Math.max(gy, wh - 0.1) + 0.25, pk.pos.z);
+      }
       if (pk.t > 300) pk.remove = true;
     }
     const rm = this.pickups.filter((x) => x.remove);
-    for (const x of rm) this.scene.remove(x.mesh);
+    for (const x of rm) { this.scene.remove(x.mesh); if (x.body) bodies.remove(x.body); }
     if (rm.length) this.pickups = this.pickups.filter((x) => !x.remove);
   },
 
   startDig(p) {
     const ground = terrain.heightAt(p.pos.x, p.pos.z);
-    if (ground < 0.2) { G.notify('Burası kazmak için fazla ıslak.', 'warn'); return; }
+    // gelgit: bazı kumsallar yalnızca alçak suda açığa çıkar
+    const tideSite = DIG_SITES.find((s) => s.tide && Math.hypot(s.x - p.pos.x, s.z - p.pos.z) < 14);
+    if (tideSite && ground < ocean.tide + 0.08) {
+      const low = time.nextTides(4).find((t) => !t.high);
+      G.notify(`Kum şu an su altında. Gelgitin çekilmesini bekle${low ? ` (alçak su ~${time.hourString(low.at)})` : ''}.`, 'warn', 5000);
+      return;
+    }
+    if (ground < (tideSite ? -0.6 : 0.2)) { G.notify('Burası kazmak için fazla ıslak.', 'warn'); return; }
     const fx = p.pos.x + Math.sin(p.yaw) * 0.9, fz = p.pos.z + Math.cos(p.yaw) * 0.9;
     let n = 0;
     p.startBusy('Kazılıyor…', 2.6, () => this.finishDig(p, fx, fz), { anim: 'dig' });
@@ -215,6 +228,7 @@ export const treasure = {
   },
 
   _updateChest(c, dt) {
+    if (c.body && !(c.state === 'ground' || c.state === 'water')) { bodies.remove(c.body); c.body = null; c.mesh.rotation.set(0, c.yaw, 0); }
     if (c.state === 'carried') {
       const carrier = c.carriers[0] === G.myId ? G.player : G.remotes.get(c.carriers[0]);
       if (!carrier) { c.state = 'ground'; c.carriers = []; return; }
@@ -223,6 +237,19 @@ export const treasure = {
       c.pos.y += 0.75 - (c.T.scale - 1) * 0.3;
       c.yaw = carrier.yaw;
       if (c.carriers.length > 1) c.pos.addScaledVector(fwd, 0.35);
+    } else if ((c.state === 'ground' || c.state === 'water') && c.rising <= 0 && (!G.online || G.isHost)) {
+      // fiziksel sandık: düşer, yuvarlanır, yüzer, itilebilir
+      const r = 0.32 * c.T.scale;
+      if (!c.body) {
+        c.mesh.rotation.set(0, c.yaw, 0);
+        c.body = bodies.add(c.mesh, { pos: c.pos.clone().add(new THREE.Vector3(0, r, 0)), vel: c.dropVel || new THREE.Vector3(), radius: r, offsetY: r, mass: c.T.weight / 15, buoyancy: 1.25, restitution: 0.12, friction: 0.85, drift: 0.6 });
+        c.dropVel = null;
+      }
+      c.pos.set(c.body.pos.x, c.body.pos.y - r, c.body.pos.z);
+      // derin suyun üstündeyse yüzüyordur (dalga tepesinde anlık su dışına çıksa bile)
+      c.state = c.body.inWater > 0.05 || terrain.heightAt(c.pos.x, c.pos.z) < ocean.tide - 0.45 ? 'water' : 'ground';
+      c.mesh.visible = true;
+      return;
     } else if (c.state === 'ground' || c.state === 'water') {
       if (c.rising > 0) {
         c.rising -= dt * 0.8;
@@ -298,6 +325,8 @@ export const treasure = {
     if (c.carriers.length === 0) {
       c.state = 'ground';
       c.vy = 0;
+      // bırakırken hafifçe öne at
+      c.dropVel = new THREE.Vector3(p.vel.x + Math.sin(p.yaw) * 1.2, 1.5, p.vel.z + Math.cos(p.yaw) * 1.2);
       if (p.mode === 'deck' && p.ship) {
         // güverteye bırakılan sandık ambara konur
         this.stowInHold(p.ship, c, true);
@@ -399,17 +428,55 @@ export const treasure = {
     if (!filtered.length) return;
     const mesh = new THREE.Group();
     const coins = filtered.find((i) => i[0] === 'altin_para');
-    const bag = assets.prop(coins && filtered.length === 1 ? 'coin' : 'gem_pink', 0.35);
-    if (coins && filtered.length === 1) bag.rotation.x = Math.PI / 2;
-    mesh.add(bag);
-    const glow = new THREE.Mesh(new THREE.RingGeometry(0.3, 0.42, 20), new THREE.MeshBasicMaterial({ color: 0xffd060, transparent: true, opacity: 0.6, side: THREE.DoubleSide }));
-    glow.rotation.x = -Math.PI / 2; glow.position.y = -0.2;
+    const inner = new THREE.Group();
+    const bag = this._lootModel(filtered, coins);
+    inner.add(bag);
+    mesh.add(inner);
+    const glow = new THREE.Mesh(new THREE.RingGeometry(0.3, 0.42, 20), new THREE.MeshBasicMaterial({ color: 0xffd060, transparent: true, opacity: 0.6, side: THREE.DoubleSide, depthWrite: false }));
+    glow.rotation.x = -Math.PI / 2; glow.position.y = 0.02;
     mesh.add(glow);
+    mesh.position.copy(pos);
     this.scene.add(mesh);
     const pk = { id: uid('pk'), pos: pos.clone(), items: filtered, mesh, t: 0, from };
+    // fiziksel ganimet: hafifçe havaya fırlar, yere düşer, suda yüzer
+    if (!G.online || G.isHost) {
+      const a = Math.random() * Math.PI * 2;
+      pk.body = bodies.add(mesh, { pos: pos.clone().add(new THREE.Vector3(0, 0.6, 0)), vel: new THREE.Vector3(Math.cos(a) * 1.4, 4.2, Math.sin(a) * 1.4), radius: 0.22, offsetY: 0.05, mass: 0.3, buoyancy: 1.6, restitution: 0.35, friction: 0.9 });
+    }
     this.pickups.push(pk);
     G.emit('netPickupSpawn', { pk: { id: pk.id, pos: pk.pos.toArray(), items: pk.items, from } });
     return pk;
+  },
+
+  _lootModel(items, coins) {
+    // ganimet türüne göre görünüm: sikke yığını, kese, mücevher
+    const g = new THREE.Group();
+    const gold = new THREE.MeshStandardMaterial({ color: 0xf2c040, metalness: 0.85, roughness: 0.28, emissive: 0x3a2400 });
+    if (coins && items.length === 1) {
+      for (let i = 0; i < 7; i++) {
+        const c = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.015, 14), gold);
+        c.position.set((Math.random() - 0.5) * 0.16, i * 0.016, (Math.random() - 0.5) * 0.16);
+        c.rotation.set((Math.random() - 0.5) * 0.3, 0, (Math.random() - 0.5) * 0.3);
+        g.add(c);
+      }
+      return g;
+    }
+    const sack = new THREE.Mesh(new THREE.SphereGeometry(0.16, 12, 10), new THREE.MeshStandardMaterial({ color: 0x8a6a42, roughness: 1 }));
+    sack.scale.set(1, 1.15, 1);
+    const tie = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.08, 0.08, 8), new THREE.MeshStandardMaterial({ color: 0x6b4a2c, roughness: 1 }));
+    tie.position.y = 0.19;
+    const rope = new THREE.Mesh(new THREE.TorusGeometry(0.06, 0.012, 5, 12), new THREE.MeshStandardMaterial({ color: 0xc9a227, metalness: 0.4 }));
+    rope.rotation.x = Math.PI / 2; rope.position.y = 0.16;
+    sack.position.y = 0.05;
+    g.add(sack, tie, rope);
+    const gem = items.find((i) => ['yakut', 'zumrut', 'elmas', 'inci'].includes(i[0]));
+    if (gem) {
+      const col = { yakut: 0xd03040, zumrut: 0x30b060, elmas: 0xe8f4ff, inci: 0xf4f0ea }[gem[0]];
+      const gm = new THREE.Mesh(new THREE.OctahedronGeometry(0.07, 0), new THREE.MeshStandardMaterial({ color: col, metalness: 0.2, roughness: 0.1, emissive: col, emissiveIntensity: 0.25 }));
+      gm.position.set(0.12, 0.2, 0.05);
+      g.add(gm);
+    }
+    return g;
   },
 
   collect(p, pk) {
