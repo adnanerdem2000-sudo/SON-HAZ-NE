@@ -20,6 +20,7 @@ import { quests } from './game/quests.js';
 import { events } from './game/events.js';
 import { shipControl } from './game/shipControl.js';
 import { animals } from './wildlife/animals.js';
+import { megafauna } from './wildlife/megafauna.js';
 import { fish } from './wildlife/fish.js';
 import { fishing } from './wildlife/fishing.js';
 import { treasure } from './treasure/treasure.js';
@@ -93,7 +94,7 @@ async function boot() {
   progress(0.02, 'Modeller yükleniyor…');
   await assets.loadAll((f) => progress(0.02 + f * 0.33, 'Modeller yükleniyor…'));
 
-  for (const s of [misc, time, bodies, effects, combat, treasure, enemies, animals, fish, fishing, npcs, islands, bosses, quests, events, weatherfx, details, crowd]) game.register(s);
+  for (const s of [misc, time, bodies, effects, combat, treasure, enemies, animals, megafauna, fish, fishing, npcs, islands, bosses, quests, events, weatherfx, details, crowd]) game.register(s);
   net.init(engine.scene);
   const q = settings.v.quality;
   await game.buildWorld(q, (f, t) => progress(0.35 + f * 0.6, t));
@@ -124,7 +125,7 @@ async function boot() {
   // davet bağlantısı
   const join = new URLSearchParams(location.search).get('join');
   if (join) menu.joinScreen(join);
-  window.DK = { G, assets, archipelago, physics, islands, bosses, ports, game, input, engine, post, settings, tpCamera, interact, npcs, Ship, kk, Character, handlers, net, ui, quests, treasure, enemies, animals, fish, fishing, shipControl, THREE, save, port, combat, effects, events, sky, time, bodies, weatherfx, details, terrain, ocean, crowd };
+  window.DK = { G, assets, archipelago, physics, islands, bosses, ports, game, input, engine, post, settings, tpCamera, interact, npcs, Ship, kk, Character, handlers, net, ui, quests, treasure, enemies, animals, megafauna, fish, fishing, shipControl, THREE, save, port, combat, effects, events, sky, time, bodies, weatherfx, details, terrain, ocean, crowd };
   // Test: yalnız 3B tuvali yakala (HUD hariç) — yazılımsal GPU'da sayfa ekran görüntüsünden daha kararlı
   window.DK.snap = (q = 0.85) => { post.render(); return engine.renderer.domElement.toDataURL('image/jpeg', q); };
   // belirli bir bakış açısından yakala (test): from/to = [x,y,z]

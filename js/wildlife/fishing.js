@@ -6,7 +6,8 @@ import { effects } from '../game/effects.js';
 import { ocean } from '../world/ocean.js';
 import { terrain } from '../world/terrain.js';
 import { sky } from '../world/sky.js';
-import { FISH, fish } from './fish.js';
+import { FISH, fish, fishInRegion } from './fish.js';
+import { regionAt } from '../world/worldData.js';
 import { ITEMS } from '../economy/items.js';
 import { time } from '../world/time.js';
 import { clamp, damp, lerp } from '../core/util.js';
@@ -149,7 +150,9 @@ export const fishing = {
     const hour = sky.hour;
     const timeOk = (t) => t === 'her zaman' || (t === 'gündüz' && hour > 7 && hour < 18) || (t === 'gece' && (hour < 6 || hour > 20)) || (t === 'akşam' && hour > 16 && hour < 21) || (t === 'şafak' && hour > 4 && hour < 9);
     const zoneReef = depth < 12;
-    const keys = Object.keys(FISH).filter((k) => FISH[k].depth[0] <= depth + 1 && (FISH[k].zone === 'reef' ? zoneReef || near.has(k) : depth > 4));
+    const reg = regionAt(pos.x, pos.z);
+    let keys = Object.keys(FISH).filter((k) => FISH[k].depth[0] <= depth + 1 && fishInRegion(k, reg) && (FISH[k].zone === 'reef' ? zoneReef || near.has(k) : depth > 4));
+    if (!keys.length) keys = ['sardalya'];
     const weights = keys.map((k) => {
       const f = FISH[k];
       let w = { siradan: 6, yaygin: 4, nadir: 1.5, epik: 0.45 }[f.rarity] || 1;

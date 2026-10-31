@@ -7,6 +7,7 @@ import { isOnce } from '../core/kk.js';
 import { physics } from '../world/physics.js';
 import { terrain } from '../world/terrain.js';
 import { animals } from '../wildlife/animals.js';
+import { megafauna } from '../wildlife/megafauna.js';
 import { treasure } from '../treasure/treasure.js';
 import { combat } from '../game/combat.js';
 import { effects } from '../game/effects.js';
@@ -122,6 +123,7 @@ export const net = {
     relay('netAction', (e) => this.sendGame({ t: 'act', ...e }));
     relay('netHurtEnemy', (e) => this.toHost({ t: 'hurtEnemy', ...e }));
     relay('netHurtAnimal', (e) => this.toHost({ t: 'hurtAnimal', ...e }));
+    relay('netHurtMarine', (e) => this.toHost({ t: 'hurtMarine', ...e }));
     relay('netHurtPlayer', (e) => this.toPeer(e.id, { t: 'hurt', dmg: e.dmg, from: e.from, cause: e.cause, melee: e.melee ? 1 : 0, ub: e.unblockable ? 1 : 0, aid: e.attackerId || null, bullet: e.bullet ? 1 : 0 }));
     relay('netStunEnemy', (e) => this.toHost({ t: 'stunEnemy', id: e.id, dur: e.dur }));
     relay('netHurtBoss', (e) => this.toHost({ t: 'hurtBoss', ...e }));
@@ -231,6 +233,7 @@ export const net = {
       case 'hurtBoss': G.emit('netHurtBossApply', m); break;
       case 'stunEnemy': { const e = enemies.list.find((x) => x.id === m.id); if (e && e.alive) e.stun(m.dur || 1.5, 'parry'); break; }
       case 'hurtAnimal': { const a = animals.byId(m.id); if (a && a.alive) a.applyDamage(m.dmg, {}); break; }
+      case 'hurtMarine': { const e = megafauna.byId(m.id); if (e && e.alive) megafauna.applyDamage(e, m.dmg, { by: pid, attacker: G.remotes.get(pid) }); break; }
       case 'dig': treasure._hole(m.x, m.z, true); treasure.resolveDig(m.x, m.z, pid); this.broadcast({ t: 'hole', x: m.x, z: m.z }, pid); break;
       case 'chestReq': {
         const ch = treasure.chestById(m.id);
@@ -473,6 +476,9 @@ export const net = {
     else if (m.cmd === 'sails') s.sailTarget = m.v;
     else if (m.cmd === 'bail') s.water = Math.max(0, s.water - 12);
     else if (m.cmd === 'repair') s.repairHole(m.hole);
+    else if (m.cmd === 'extinguish') s.extinguish(m.id);
+    else if (m.cmd === 'cannonFix') s.cannonHp[m.i] = 70;
+    else if (m.cmd === 'mastFix') { s.mastHp[m.i] = 35; s.rebuild({}); }
     this.broadcast({ t: 'shipCmdFx', ...m }, pid);
   },
   _boatCmd(m, pid) {
@@ -516,6 +522,7 @@ export const net = {
     if (m.en) enemies.applySnapshot(m.en);
     if ('bo' in m) bosses.applySnapshot(m.bo);
     if (m.an) animals.applySnapshot(m.an);
+    if (m.mf) megafauna.applySnapshot(m.mf);
     if (m.time) {
       const t = m.time;
       if (t[3] && t[3] !== time.day) { time.day = t[3]; time._prevHour = t[0]; }
@@ -567,7 +574,7 @@ export const net = {
     const m = { t: 'snap', players, ships: G.ships.filter((s) => !s.kinematic).map((s) => ({ id: s.id, typeId: s.typeId, look: s.look, name: s.name, st: s.netState() })) };
     const b = G.rowboat;
     if (b) m.rb = [b.state, +b.x.toFixed(2), +b.z.toFixed(2), +b.yaw.toFixed(3), +b.rowPhase.toFixed(2), b.cargo, b.driver];
-    if (this.snapT % 2 === 0) { m.en = enemies.netSnapshot(); m.bo = bosses.netSnapshot(); m.an = animals.netSnapshot(); m.time = [sky.hour, sky.weatherKey, sky.windDir, time.day, sky.forecast.map((f) => [f.key, +f.at.toFixed(2)]), +sky.wetness.toFixed(2)]; m.wfx = weatherfx.netState(); m.ch = treasure.chests.filter((c) => c.state === 'water' || c.state === 'ground').map((c) => [c.id, +c.pos.x.toFixed(2), +c.pos.y.toFixed(2), +c.pos.z.toFixed(2), c.state]); }
+    if (this.snapT % 2 === 0) { m.en = enemies.netSnapshot(); m.bo = bosses.netSnapshot(); m.an = animals.netSnapshot(); m.mf = megafauna.netSnapshot(); m.time = [sky.hour, sky.weatherKey, sky.windDir, time.day, sky.forecast.map((f) => [f.key, +f.at.toFixed(2)]), +sky.wetness.toFixed(2)]; m.wfx = weatherfx.netState(); m.ch = treasure.chests.filter((c) => c.state === 'water' || c.state === 'ground').map((c) => [c.id, +c.pos.x.toFixed(2), +c.pos.y.toFixed(2), +c.pos.z.toFixed(2), c.state]); }
     this.broadcast(m);
   },
 };

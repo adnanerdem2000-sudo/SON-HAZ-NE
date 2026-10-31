@@ -4,6 +4,7 @@ import { ocean } from '../world/ocean.js';
 import { terrain } from '../world/terrain.js';
 import { sky } from '../world/sky.js';
 import { clamp, damp, dampAngle, lerp, wrapAngle, uid } from '../core/util.js';
+import { WORLD_HALF } from '../world/archipelago.js';
 
 const _v = new THREE.Vector3();
 const _m = new THREE.Matrix4();
@@ -36,6 +37,11 @@ export class Ship {
     this.sinking = 0;
     this.sunk = false;
     this.cannonState = this.model.cannons.map(() => ({ reload: 0 }));
+    // bölgesel hasar: gövde bölümleri, dümen, yelken bezi, direkler, toplar; yangınlar
+    this.parts = { pruva: 100, kic: 100, iskele: 100, sancak: 100, dumen: 100, yelken: 100, ...(opts.parts || {}) };
+    this.mastHp = opts.mastHp ? [...opts.mastHp] : this.type.masts.map(() => 100);
+    this.cannonHp = opts.cannonHp ? [...opts.cannonHp] : this.model.cannons.map(() => 100);
+    this.fires = [];
     this.hold = opts.hold || { items: {}, chests: [] };
     this.cannonballs = opts.cannonballs ?? 20;
     this.planks = opts.planks ?? 6;
@@ -44,6 +50,7 @@ export class Ship {
     this.events = [];
     this._prevX = this.x; this._prevZ = this.z;
     this.updateTransform(0);
+    this._applyDamageVisuals(true);
   }
 
   _build() {
@@ -59,8 +66,101 @@ export class Ship {
     this.look = { ...this.look, ...look };
     this._build();
     this.cannonState = this.model.cannons.map(() => ({ reload: 0 }));
+    this._fallen = null;
     this._syncHoles();
     this.updateTransform(0);
+    this._applyDamageVisuals(true);
+  }
+
+  // ---- bölgesel hasar ----
+  _region(lp) {
+    const L = this.T.L;
+    return lp.z > L * 0.22 ? 'pruva' : lp.z < -L * 0.22 ? 'kic' : lp.x >= 0 ? 'iskele' : 'sancak';
+  }
+  _partHits(amount, lp, kind) {
+    const T = this.T, P = this.parts;
+    const reg = this._region(lp);
+    P[reg] = Math.max(0, P[reg] - amount * 1.5);
+    if (lp.z < -T.L * 0.36) P.dumen = Math.max(0, P.dumen - amount * 2.2);
+    const high = (lp.y ?? 0) > T.deckY + 1.6;
+    T.masts.forEach((M, i) => {
+      if (this.mastHp[i] <= 0) return;
+      if (Math.abs(lp.z - M.z) < 2.6 && (high || Math.random() < 0.3)) {
+        this.mastHp[i] = Math.max(0, this.mastHp[i] - amount * 2.4);
+        if (this.mastHp[i] <= 0) { this.events.push({ t: 'mastBroken', i }); this._applyDamageVisuals(); }
+      }
+    });
+    if (high || Math.random() < 0.3 || kind === 'fire') { P.yelken = Math.max(0, P.yelken - amount * 1.0); this._applyDamageVisuals(); }
+    this.model.cannons.forEach((c, i) => {
+      if (this.cannonHp[i] > 0 && Math.hypot(c.local.x - lp.x, c.local.z - lp.z) < 1.9) {
+        this.cannonHp[i] = Math.max(0, this.cannonHp[i] - amount * 4);
+        if (this.cannonHp[i] <= 0) this.events.push({ t: 'cannonBroken', i });
+      }
+    });
+    if ((kind === 'fire' || (kind === 'hit' && amount >= 10 && Math.random() < 0.14)) && this.fires.length < 6) this.ignite(lp.x, lp.z);
+  }
+  ignite(lx, lz) {
+    const c = { x: lx, z: lz };
+    this.clampDeck(c, 0.6);
+    if (this.fires.some((f) => Math.hypot(f.x - c.x, f.z - c.z) < 1.2)) return;
+    this.fires.push({ id: uid('fire'), x: c.x, z: c.z, s: 0.6, t: 0 });
+    this.events.push({ t: 'fire' });
+  }
+  extinguish(id) { this.fires = this.fires.filter((f) => f.id !== id); }
+  // yelken gücü çarpanı: direkler ve bez
+  sailFactor() {
+    const T = this.T;
+    let a = 0;
+    T.masts.forEach((M, i) => { const h = this.mastHp[i]; a += h <= 0 ? 0 : h < 30 ? 0.55 : 1; });
+    return (a / T.masts.length) * (0.35 + 0.65 * this.parts.yelken / 100);
+  }
+  // kırık direklerin devrilmesi ve yırtık yelken görünümü
+  _applyDamageVisuals(instant = false) {
+    const M = this.model;
+    if (!M.masts) return;
+    if (!this._fallen) this._fallen = [];
+    M.masts.forEach((g, i) => {
+      if (!g || this._fallen[i] || this.mastHp[i] > 0) return;
+      const piv = new THREE.Group();
+      piv.position.set(0, g.y, g.z);
+      this.root.add(piv);
+      piv.updateMatrixWorld(true);
+      for (const o of g.objs) piv.attach(o);
+      const side = (i % 2 ? -1 : 1);
+      this._fallen[i] = { piv, t: instant ? 1 : 0, side };
+      if (this.root.userData.rigging) this.root.userData.rigging.visible = false;
+      for (const sl of M.sails) if (sl.mast === i) sl.broken = true;
+    });
+    // yelken bezi: yırtık deseni (alfa haritası)
+    const lvl = this.parts.yelken > 70 ? 0 : this.parts.yelken > 40 ? 1 : this.parts.yelken > 15 ? 2 : 3;
+    if (M.sailMat && this._tearLvl !== lvl) {
+      this._tearLvl = lvl;
+      M.sailMat.alphaMap = lvl ? tearTexture(lvl) : null;
+      M.sailMat.alphaTest = lvl ? 0.5 : 0;
+      M.sailMat.needsUpdate = true;
+    }
+  }
+  _updateDamage(dt) {
+    // devrilen direkler
+    if (this._fallen) for (const f of this._fallen) {
+      if (!f || f.t >= 1) { if (f) f.piv.rotation.z = f.side * 1.35; continue; }
+      f.t = Math.min(1, f.t + dt * 0.7);
+      f.piv.rotation.z = f.side * 1.35 * f.t * f.t;
+      if (f.t >= 1) this.events.push({ t: 'mastFell' });
+    }
+    // yangınlar: büyür, yayılır, gövdeyi yakar; yağmur söndürür
+    if (this.fires.length) {
+      const rain = sky.weather.rain;
+      for (const f of this.fires) {
+        f.t += dt;
+        f.s = Math.min(2.2, f.s + dt * (0.05 - rain * 0.12));
+        if (!this.kinematic) this.hp = Math.max(0, this.hp - dt * 0.35 * f.s);
+        if (f.s > 1.6 && Math.random() < dt * 0.06 && this.fires.length < 6) this.ignite(f.x + (Math.random() - 0.5) * 3, f.z + (Math.random() - 0.5) * 3);
+        if (Math.random() < dt * 0.4) this.parts.yelken = Math.max(0, this.parts.yelken - 0.5);
+      }
+      this.fires = this.fires.filter((f) => f.s > 0.1);
+      if (this.hp <= 0 && !this.sinking) this.water = Math.max(this.water, 100);
+    }
   }
 
   get T() { return this.type; }
@@ -150,10 +250,11 @@ export class Ship {
     }
   }
 
-  damage(amount, localPos = null) {
+  damage(amount, localPos = null, kind = 'hit') {
     if (this.sunk || this.kinematic) return;
     this.hp = Math.max(0, this.hp - amount);
     if (localPos && amount >= 6) this.addHole(localPos, amount > 20 ? 1.4 : 1);
+    if (localPos) this._partHits(amount, localPos, kind);
     this.events.push({ t: 'damage', amount });
     if (this.hp <= 0) this.water = Math.max(this.water, 100);
   }
@@ -185,7 +286,8 @@ export class Ship {
 
     // su alma (yağmur ve fırtına dalgaları güverteden su doldurur)
     const waveSpill = Math.max(0, sky.weather.waves - 1.6) * 0.12 * (1 - this.sail * 0.3);
-    const leak = this.holes.reduce((a, h) => a + h.size, 0) * 0.9 + (sky.weather.rain > 0.6 ? 0.08 : 0) + waveSpill;
+    const leak = this.holes.reduce((a, h) => a + h.size * (this.parts[this._region(h)] < 25 ? 1.5 : 1), 0) * 0.9 + (sky.weather.rain > 0.6 ? 0.08 : 0) + waveSpill;
+    this._updateDamage(dt);
     this.water = clamp(this.water + leak * dt, 0, 100);
     if (this.water >= 100 && !this.sinking) { this.sinking = 0.0001; this.events.push({ t: 'sinking' }); }
 
@@ -197,7 +299,7 @@ export class Ship {
     let lat = vx * px + vz * pz;
 
     // yelken itkisi: hedef hıza doğru ivmelenme (ağır gemi daha yavaş hızlanır)
-    const hullF = (0.55 + 0.45 * (this.hp / this.maxHp)) * (1 - this.water / 160);
+    const hullF = (0.55 + 0.45 * (this.hp / this.maxHp)) * (1 - this.water / 160) * (0.72 + 0.28 * this.parts.pruva / 100) * this.sailFactor();
     const windF = 0.45 + 0.75 * sky.windStrength;
     const stormF = sky.weather.waves > 1.8 ? 0.85 : 1;
     let target = T.maxSpeed * (1 + this.upg.sails * 0.08) * this.sail * this.windEfficiency() * windF * hullF * stormF;
@@ -248,7 +350,7 @@ export class Ship {
 
     // dönüş: dümen torku hızla artar, açısal sönüm ve atalet
     const sF = clamp(0.2 + Math.abs(fwd) / T.maxSpeed, 0.2, 1.15);
-    const yawTarget = this.rudder * T.turnRate * sF * (fwd >= -0.2 ? 1 : -0.6) * (this.anchored ? 0.15 : 1);
+    const yawTarget = this.rudder * T.turnRate * sF * (fwd >= -0.2 ? 1 : -0.6) * (this.anchored ? 0.15 : 1) * (0.3 + 0.7 * this.parts.dumen / 100);
     this.yawRate = (this.yawRate || 0) + (yawTarget - (this.yawRate || 0)) * (1 - Math.exp(-(1.5 / Math.sqrt(m)) * dt));
     // fırtınada savrulma
     const storm = Math.max(0, sky.weather.waves - 1.3);
@@ -263,12 +365,13 @@ export class Ship {
     // çarpışmalar: kara ve deniz kayalıkları
     this._grounding(dt);
     this._obstacles(dt);
-    // dünya sınırı
-    const lim = 1150;
+    // dünya sınırı (20×20 km haritanın kenarı)
+    const lim = WORLD_HALF - 250;
     if (Math.abs(this.x) > lim || Math.abs(this.z) > lim) {
       this.x = clamp(this.x, -lim, lim); this.z = clamp(this.z, -lim, lim);
       this.vx *= 0.5; this.vz *= 0.5;
-    }
+      if (!this._edgeWarned) { this._edgeWarned = true; this.events.push({ t: 'edge' }); }
+    } else if (Math.abs(this.x) < lim - 30 && Math.abs(this.z) < lim - 30) this._edgeWarned = false;
     this.updateTransform(dt);
   }
 
@@ -464,6 +567,10 @@ export class Ship {
       this.vx = t.vx; this.vz = t.vz; this.yawRate = t.yawRate;
     }
     this.updateTransform(dt);
+    if (this._fallen) this._updateDamageVisualOnly(dt);
+  }
+  _updateDamageVisualOnly(dt) {
+    for (const f of this._fallen) { if (!f) continue; f.t = Math.min(1, f.t + dt * 0.7); f.piv.rotation.z = f.side * 1.35 * f.t * f.t; }
   }
 
   _animate(dt) {
@@ -563,7 +670,7 @@ export class Ship {
     pv.rotation.set(-clamp(pitch, -0.15, 0.35), clamp(yawOff, -0.6, 0.6), 0);
     c.mesh.updateMatrixWorld(true);
   }
-  canFire(i) { return this.cannonState[i].reload <= 0 && this.cannonballs > 0; }
+  canFire(i) { return this.cannonState[i].reload <= 0 && this.cannonballs > 0 && (this.cannonHp?.[i] ?? 100) > 0; }
   tickCannons(dt) { for (const s of this.cannonState) s.reload = Math.max(0, s.reload - dt); }
 
   // ---- ambar ----
@@ -581,11 +688,14 @@ export class Ship {
       id: this.id, typeId: this.typeId, name: this.name, look: this.look, upg: this.upg,
       x: this.x, z: this.z, yaw: this.yaw, hp: this.hp, water: this.water, holes: this.holes,
       hold: this.hold, cannonballs: this.cannonballs, planks: this.planks, sailTarget: this.sailTarget,
+      parts: this.parts, mastHp: this.mastHp, cannonHp: this.cannonHp,
       anchorState: this.anchorState === 'lowering' ? 'down' : this.anchorState === 'raising' ? 'up' : this.anchorState,
     };
   }
   netState() {
-    return [+this.x.toFixed(2), +this.z.toFixed(2), +this.yaw.toFixed(4), +this.speed.toFixed(2), +this.rudder.toFixed(2), +this.sail.toFixed(2), this.sailTarget, +this.anchorT.toFixed(2), this.anchorState, Math.round(this.hp), Math.round(this.water), this.sinking, +(this.vx || 0).toFixed(2), +(this.vz || 0).toFixed(2), +(this.yawRate || 0).toFixed(3)];
+    const P = this.parts;
+    return [+this.x.toFixed(2), +this.z.toFixed(2), +this.yaw.toFixed(4), +this.speed.toFixed(2), +this.rudder.toFixed(2), +this.sail.toFixed(2), this.sailTarget, +this.anchorT.toFixed(2), this.anchorState, Math.round(this.hp), Math.round(this.water), this.sinking, +(this.vx || 0).toFixed(2), +(this.vz || 0).toFixed(2), +(this.yawRate || 0).toFixed(3),
+      [P.pruva, P.kic, P.iskele, P.sancak, P.dumen, P.yelken].map(Math.round), this.mastHp.map(Math.round), this.cannonHp.map(Math.round), this.fires.map((f) => [+f.x.toFixed(1), +f.z.toFixed(1), +f.s.toFixed(2), f.id])];
   }
   applyNet(s) {
     this.netTarget = { x: s[0], z: s[1], yaw: s[2], vx: s[12] || 0, vz: s[13] || 0, yawRate: s[14] || 0, at: performance.now() };
@@ -594,6 +704,11 @@ export class Ship {
     this.sail = s[5]; this.sailTarget = s[6]; this.anchorT = s[7]; this.anchorState = s[8]; this.hp = s[9]; this.water = s[10];
     this.sinking = s[11];
     this.anchored = this.anchorState === 'down';
+    if (s[15]) { const [a, b, c, d, e, f] = s[15]; Object.assign(this.parts, { pruva: a, kic: b, iskele: c, sancak: d, dumen: e, yelken: f }); }
+    if (s[16]) { const was = this.mastHp.join(); this.mastHp = s[16]; if (was !== this.mastHp.join()) this._applyDamageVisuals(); }
+    if (s[17]) this.cannonHp = s[17];
+    if (s[18]) this.fires = s[18].map(([x, z, sz, id]) => ({ x, z, s: sz, id, t: 0 }));
+    this._applyDamageVisuals();
   }
 
   dispose() { this.scene.remove(this.root); }
@@ -697,4 +812,25 @@ export class Rowboat {
   seatWorld(out = new THREE.Vector3()) {
     return out.set(0, 0.2, -0.1).applyQuaternion(this.mesh.quaternion).add(this.mesh.position);
   }
+}
+
+// yırtık yelken deseni (alfa haritası): 1-3 düzey
+const _tears = {};
+function tearTexture(lvl) {
+  if (_tears[lvl]) return _tears[lvl];
+  const c = document.createElement('canvas'); c.width = c.height = 128;
+  const g = c.getContext('2d');
+  g.fillStyle = '#fff'; g.fillRect(0, 0, 128, 128);
+  g.fillStyle = '#000';
+  let seed = lvl * 977;
+  const r = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+  const n = lvl * 7;
+  for (let i = 0; i < n; i++) {
+    const x = r() * 128, y = r() * 128, w = 4 + r() * 10 * lvl, h = 3 + r() * 8 * lvl;
+    g.beginPath(); g.ellipse(x, y, w, h, r() * 3, 0, Math.PI * 2); g.fill();
+  }
+  // alt kenar saçakları
+  for (let x = 0; x < 128; x += 4) { const hh = r() * 6 * lvl; g.fillRect(x, 128 - hh, 3, hh); }
+  const t = new THREE.CanvasTexture(c);
+  return (_tears[lvl] = t);
 }

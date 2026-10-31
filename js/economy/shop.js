@@ -162,7 +162,11 @@ export const shop = {
   repairCost() {
     const s = G.ship;
     if (!s) return 0;
-    return Math.round((s.maxHp - s.hp) * 3 + s.holes.length * 25 + s.water * 0.5 + (s.sunk ? 600 : 0));
+    const P = s.parts || {};
+    const partCost = ['pruva', 'kic', 'iskele', 'sancak', 'dumen', 'yelken'].reduce((a, k) => a + (100 - (P[k] ?? 100)) * 0.8, 0);
+    const mastCost = (s.mastHp || []).reduce((a, h) => a + (100 - h) * (h <= 0 ? 3 : 1.2), 0);
+    const cannonCost = (s.cannonHp || []).reduce((a, h) => a + (100 - h) * 0.6, 0);
+    return Math.round((s.maxHp - s.hp) * 3 + s.holes.length * 25 + s.water * 0.5 + (s.sunk ? 600 : 0) + partCost + mastCost + cannonCost + (s.fires?.length || 0) * 10);
   },
   repairShip() {
     const s = G.ship; const p = G.player;
@@ -170,7 +174,10 @@ export const shop = {
     if (c <= 0) { G.notify('Gemin zaten sapasağlam.'); return; }
     if (p.inv.gold < c) { G.notify('Tamir için yeterli altının yok.', 'warn'); return; }
     p.inv.gold -= c;
-    s.hp = s.maxHp; s.holes = []; s._syncHoles(); s.water = 0;
+    s.hp = s.maxHp; s.holes = []; s.water = 0; s.fires = [];
+    for (const k in s.parts) s.parts[k] = 100;
+    s.mastHp = s.mastHp.map(() => 100); s.cannonHp = s.cannonHp.map(() => 100);
+    s.rebuild({});
     audio.play('confirm', { vol: 0.6 });
     G.notify(`Gemi tamir edildi (-${c} altın).`, 'good');
     G.emit('netShipFull', { ship: s.serialize() });

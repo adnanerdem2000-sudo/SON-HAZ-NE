@@ -302,7 +302,10 @@ export function buildShipModel(T, look = {}) {
   const sailMat = new THREE.MeshStandardMaterial({ map: cloth(sailColor, look.sailStripe || null, 11), side: THREE.DoubleSide, roughness: 0.95 });
   const ropeMat = new THREE.LineBasicMaterial({ color: 0x3a2a1a });
   const ropes = [];
+  const mastGroups = [];
   for (const M of T.masts) {
+    const mi = T.masts.indexOf(M);
+    const before = root.children.length;
     const my = deckHeight(T, M.z);
     const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.2, M.h, 10), spar);
     mast.position.set(0, my + M.h / 2, M.z);
@@ -393,6 +396,8 @@ export function buildShipModel(T, look = {}) {
       }
       ropes.push([new THREE.Vector3(0, my + M.h * 0.95, M.z), bowTip]);
     }
+    // bu direğe ait nesneler (kırılınca birlikte devrilir)
+    for (const sl of sails) if (sl.mast === undefined) sl.mast = mi;
     // bayrak
     if (M === T.masts[0]) {
       const flagGeo = new THREE.PlaneGeometry(1.6, 1.0, 10, 4);
@@ -402,13 +407,17 @@ export function buildShipModel(T, look = {}) {
       root.add(flag);
       root.userData.flag = flag;
     }
+    // bu direğe ait nesneler (kırılınca birlikte devrilir)
+    mastGroups[mi] = { objs: root.children.slice(before), z: M.z, y: my, h: M.h };
   }
   // halatlar
   const rp = [];
   for (const [a, b] of ropes) rp.push(a.x, a.y, a.z, b.x, b.y, b.z);
   const rg = new THREE.BufferGeometry();
   rg.setAttribute('position', new THREE.Float32BufferAttribute(rp, 3));
-  root.add(new THREE.LineSegments(rg, ropeMat));
+  const rigging = new THREE.LineSegments(rg, ropeMat);
+  root.add(rigging);
+  root.userData.rigging = rigging;
 
   // dümen çarkı (kıç güvertesi)
   const helmZ = -T.L / 2 + 1.6;
@@ -511,7 +520,7 @@ export function buildShipModel(T, look = {}) {
   root.traverse((o) => { if (o.isMesh) { if (o.castShadow === false) o.castShadow = true; o.receiveShadow = true; } });
 
   return {
-    root, sails, wheel, anchor, anchorRest, chain, cannons, lampMat, flag: root.userData.flag,
+    root, sails, wheel, anchor, anchorRest, chain, cannons, lampMat, flag: root.userData.flag, masts: mastGroups, sailMat,
     stations: {
       helm: new THREE.Vector3(0, helmY, helmZ - 0.75),
       anchor: new THREE.Vector3(0, capY, capZ - 0.7),

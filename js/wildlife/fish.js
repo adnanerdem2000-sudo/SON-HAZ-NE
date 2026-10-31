@@ -6,7 +6,7 @@ import { sky } from '../world/sky.js';
 import { combat } from '../game/combat.js';
 import { effects } from '../game/effects.js';
 import { audio } from '../core/audio.js';
-import { FISH_ZONES } from '../world/worldData.js';
+import { FISH_ZONES, regionAt } from '../world/worldData.js';
 import { clamp, damp, dampAngle, lerp, rng } from '../core/util.js';
 
 // ---- Balık türleri: her birinin kendi gövde profili, yüzgeç yapısı, deseni, boyu ve davranışı var ----
@@ -60,7 +60,97 @@ export const FISH = {
     name: 'Dev Orfoz', zone: 'reef', len: 1.4, depth: [6, 26], speed: 0.6, school: [1, 1], rarity: 'epik', value: 320, weight: [40, 150], big: true,
     colors: ['#6a5a3a', '#3a2e1e', '#a89060'], pattern: 'mottled', profile: { h: 0.4, w: 0.32, tail: 'round', bigmouth: true }, bait: ['karides', 'yapay'], time: 'akşam', diet: 'Her şey', fins: { dorsal: 0.5, pect: 0.6 },
   },
+  // ---- Ticaret Denizi (merkez) ----
+  istavrit: {
+    name: 'İstavrit', zone: 'open', regions: ['merkez', 'col'], len: 0.25, depth: [1, 14], speed: 2.4, school: [16, 30], rarity: 'siradan', value: 9, weight: [0.1, 0.3],
+    colors: ['#9ab8c8', '#3a5a6a', '#f0f4f6'], pattern: 'silver', profile: { h: 0.24, w: 0.13, tail: 'fork' }, bait: ['solucan'], time: 'her zaman', diet: 'Plankton ve küçük kabuklular', fins: { dorsal: 0.3, pect: 0.3 },
+  },
+  cipura: {
+    name: 'Çipura', zone: 'reef', regions: ['merkez', 'col'], len: 0.4, depth: [2, 16], speed: 1.1, school: [3, 6], rarity: 'yaygin', value: 38, weight: [0.8, 2.5],
+    colors: ['#c8ccd0', '#5a6a78', '#f2c040'], pattern: 'gradient', profile: { h: 0.5, w: 0.16, tail: 'fork' }, bait: ['karides', 'solucan'], time: 'gündüz', diet: 'Midye ve yengeç', fins: { dorsal: 0.6, pect: 0.4 },
+  },
+  kefal: {
+    name: 'Kefal', zone: 'reef', regions: ['merkez', 'tropik'], len: 0.45, depth: [1, 8], speed: 1.4, school: [6, 12], rarity: 'yaygin', value: 20, weight: [0.8, 2],
+    colors: ['#a8b0b4', '#4a5458', '#e8ecee'], pattern: 'silver', profile: { h: 0.26, w: 0.18, tail: 'fork' }, bait: ['solucan'], time: 'her zaman', diet: 'Dip çamurundaki alg', fins: { dorsal: 0.4, pect: 0.3 },
+  },
+  // ---- Buzul Denizi (kuzey) ----
+  morina: {
+    name: 'Morina', zone: 'open', regions: ['buzul'], len: 0.9, depth: [4, 28], speed: 1.4, school: [4, 8], rarity: 'yaygin', value: 48, weight: [3, 12],
+    colors: ['#8a8060', '#4a4434', '#e0d8c0'], pattern: 'mottled', profile: { h: 0.3, w: 0.22, tail: 'round', bigmouth: true }, bait: ['karides', 'solucan'], time: 'her zaman', diet: 'Ringa ve kalamar', fins: { dorsal: 0.6, pect: 0.4 },
+  },
+  ringa: {
+    name: 'Ringa', zone: 'open', regions: ['buzul'], len: 0.3, depth: [1, 18], speed: 2.4, school: [20, 36], rarity: 'siradan', value: 8, weight: [0.15, 0.4],
+    colors: ['#a8c4dc', '#2a4a6a', '#ffffff'], pattern: 'silver', profile: { h: 0.22, w: 0.11, tail: 'fork' }, bait: ['solucan'], time: 'her zaman', diet: 'Kril', fins: { dorsal: 0.3, pect: 0.3 },
+  },
+  somon: {
+    name: 'Somon', zone: 'reef', regions: ['buzul'], len: 0.8, depth: [1, 10], speed: 2.2, school: [3, 6], rarity: 'nadir', value: 95, weight: [3, 9],
+    colors: ['#b8a8a0', '#3a4a5a', '#f08070'], pattern: 'spots', profile: { h: 0.27, w: 0.16, tail: 'fork' }, bait: ['yapay', 'karides'], time: 'şafak', diet: 'Küçük balık ve karides', fins: { dorsal: 0.4, pect: 0.3 },
+  },
+  kalkan: {
+    name: 'Kalkan', zone: 'reef', regions: ['buzul', 'merkez'], len: 0.6, depth: [6, 26], speed: 0.6, school: [1, 2], rarity: 'nadir', value: 110, weight: [2, 8],
+    colors: ['#8a7a5a', '#4a3e2a', '#c8b890'], pattern: 'mottled', profile: { h: 0.7, w: 0.07, tail: 'round', tall: true }, bait: ['karides'], time: 'gece', diet: 'Dipteki küçük balıklar (kumda saklanır)', fins: { dorsal: 1.1, pect: 0.3 },
+  },
+  buzbaligi: {
+    name: 'Buz Balığı', zone: 'open', regions: ['buzul'], len: 0.4, depth: [10, 30], speed: 0.9, school: [2, 4], rarity: 'epik', value: 240, weight: [0.5, 1.4], glow: '#80d0ff',
+    colors: ['#d8f0ff', '#90b8d0', '#ffffff'], pattern: 'gradient', profile: { h: 0.24, w: 0.14, tail: 'fan', long: true }, bait: ['yapay'], time: 'gece', diet: 'Kril (kanında antifriz protein vardır)', fins: { dorsal: 0.8, pect: 0.9 },
+  },
+  // ---- Kül Adaları (doğu) ----
+  korbaligi: {
+    name: 'Kor Balığı', zone: 'reef', regions: ['volkan'], len: 0.35, depth: [3, 16], speed: 1.2, school: [3, 6], rarity: 'nadir', value: 120, weight: [0.4, 1.2], glow: '#ff6020',
+    colors: ['#401008', '#ff7020', '#ffd060'], pattern: 'chevrons', profile: { h: 0.35, w: 0.16, tail: 'fork' }, bait: ['yapay'], time: 'gece', diet: 'Sıcak su kaynaklarındaki bakteriler', fins: { dorsal: 1.0, pect: 0.6, spiky: true },
+  },
+  kukurt_yilan: {
+    name: 'Kükürt Yılan Balığı', zone: 'reef', regions: ['volkan'], len: 1.1, depth: [4, 20], speed: 0.8, school: [1, 2], rarity: 'nadir', value: 85, weight: [1.5, 4],
+    colors: ['#c8b030', '#4a4010', '#f0e080'], pattern: 'mottled', profile: { h: 0.1, w: 0.1, tail: 'round', long: true }, bait: ['karides'], time: 'akşam', diet: 'Kabuklular', fins: { dorsal: 0.2, pect: 0.2 },
+  },
+  obsidyen_vatoz: {
+    name: 'Obsidyen Vatoz', zone: 'open', regions: ['volkan'], len: 1.3, depth: [6, 28], speed: 1.0, school: [1, 1], rarity: 'epik', value: 280, weight: [12, 30],
+    colors: ['#141018', '#3a3048', '#8a70c0'], pattern: 'spots', profile: { h: 0.12, w: 0.9, tail: 'round' }, bait: ['yapay'], time: 'gece', diet: 'Kumdaki yumuşakçalar', fins: { dorsal: 0.1, pect: 1.8 },
+  },
+  // ---- Kızıl Kum Kıyıları (batı) ----
+  lufer: {
+    name: 'Lüfer', zone: 'open', regions: ['col', 'merkez'], len: 0.6, depth: [2, 18], speed: 3.0, school: [5, 10], rarity: 'yaygin', value: 52, weight: [1, 4], predator: true,
+    colors: ['#5a8aa8', '#2a4a5a', '#d8e4ea'], pattern: 'gradient', profile: { h: 0.24, w: 0.15, tail: 'fork' }, bait: ['yapay'], time: 'akşam', diet: 'İstavrit ve sardalya', fins: { dorsal: 0.4, pect: 0.3 },
+  },
+  levrek: {
+    name: 'Levrek', zone: 'reef', regions: ['col', 'merkez'], len: 0.7, depth: [1, 12], speed: 1.6, school: [2, 4], rarity: 'nadir', value: 78, weight: [1.5, 6],
+    colors: ['#a8b4bc', '#4a5a66', '#f2f4f6'], pattern: 'silver', profile: { h: 0.26, w: 0.16, tail: 'fork' }, bait: ['karides', 'yapay'], time: 'şafak', diet: 'Karides ve küçük balık', fins: { dorsal: 0.8, pect: 0.4, spiky: true },
+  },
+  zargana: {
+    name: 'Zargana', zone: 'open', regions: ['col', 'tropik'], len: 0.7, depth: [0.5, 6], speed: 2.6, school: [4, 9], rarity: 'yaygin', value: 26, weight: [0.3, 0.9],
+    colors: ['#6ab8a0', '#1a4a5a', '#e8f4f0'], pattern: 'silver', profile: { h: 0.08, w: 0.07, tail: 'fork', long: true, beak: true }, bait: ['solucan', 'yapay'], time: 'gündüz', diet: 'Yüzeydeki küçük balıklar', fins: { dorsal: 0.2, pect: 0.2 },
+  },
+  // ---- Zümrüt Takımadaları (güney) ----
+  kilicbaligi: {
+    name: 'Kılıç Balığı', zone: 'open', regions: ['tropik'], len: 2.6, depth: [4, 30], speed: 4.2, school: [1, 1], rarity: 'epik', value: 420, weight: [60, 200], big: true, predator: true,
+    colors: ['#3a4a6a', '#1a2030', '#c8d0d8'], pattern: 'tuna', profile: { h: 0.2, w: 0.16, tail: 'crescent', long: true, beak: true }, bait: ['yapay'], time: 'şafak', diet: 'Kalamar (kılıcıyla sürüleri dağıtır)', fins: { dorsal: 1.0, pect: 0.5 },
+  },
+  napolyon: {
+    name: 'Napolyon Balığı', zone: 'reef', regions: ['tropik'], len: 1.5, depth: [3, 20], speed: 0.7, school: [1, 1], rarity: 'epik', value: 300, weight: [30, 120], big: true,
+    colors: ['#2a8a8a', '#5ac0b0', '#1a4a5a'], pattern: 'scales', profile: { h: 0.45, w: 0.28, tail: 'fan', bigmouth: true }, bait: ['karides'], time: 'gündüz', diet: 'Deniz kestaneleri ve kabuklular', fins: { dorsal: 0.6, pect: 0.6 },
+  },
+  ucanbalik: {
+    name: 'Uçan Balık', zone: 'open', regions: ['tropik', 'merkez'], len: 0.3, depth: [0.5, 5], speed: 3.2, school: [8, 14], rarity: 'yaygin', value: 30, weight: [0.2, 0.5],
+    colors: ['#3a6ad0', '#1a2a50', '#e0ecff'], pattern: 'gradient', profile: { h: 0.18, w: 0.14, tail: 'fork' }, bait: ['solucan'], time: 'gündüz', diet: 'Plankton (yırtıcıdan kaçarken sudan süzülür)', fins: { dorsal: 0.3, pect: 2.2 },
+  },
+  muren: {
+    name: 'Müren', zone: 'reef', regions: ['tropik', 'col'], len: 1.2, depth: [2, 18], speed: 0.6, school: [1, 1], rarity: 'nadir', value: 95, weight: [2, 8], venom: true,
+    colors: ['#6a5a10', '#2a2008', '#e0d060'], pattern: 'spots', profile: { h: 0.1, w: 0.1, tail: 'round', long: true, bigmouth: true }, bait: ['karides'], time: 'gece', diet: 'Ahtapot ve balık (kayalık yarıklarında pusu kurar)', fins: { dorsal: 0.3, pect: 0.1 },
+  },
+  // ---- Hayalet Denizleri ----
+  fenerbaligi: {
+    name: 'Fener Balığı', zone: 'open', regions: ['hayalet'], len: 0.6, depth: [12, 30], speed: 0.5, school: [1, 1], rarity: 'epik', value: 350, weight: [3, 9], glow: '#a0ffe0',
+    colors: ['#2a2a30', '#101014', '#80ffd0'], pattern: 'mottled', profile: { h: 0.55, w: 0.45, tail: 'round', round: true, bigmouth: true }, bait: ['yapay'], time: 'gece', diet: 'Işığına kanan her şey', fins: { dorsal: 0.4, pect: 0.5 },
+  },
+  hayaletbalik: {
+    name: 'Hayalet Balık', zone: 'open', regions: ['hayalet'], len: 0.35, depth: [2, 20], speed: 1.3, school: [5, 9], rarity: 'nadir', value: 140, weight: [0.3, 0.8], glow: '#80fff0', ghost: true,
+    colors: ['#d0fff8', '#80d0c8', '#ffffff'], pattern: 'gradient', profile: { h: 0.3, w: 0.12, tail: 'fan' }, bait: ['solucan', 'yapay'], time: 'gece', diet: 'Batıklardaki gölgeler (derler)', fins: { dorsal: 1.2, pect: 0.8 },
+  },
 };
+// çekirdek türler: resif balıkları ılık bölgelerde, açık deniz balıkları her yerde
+for (const k of ['palyaco', 'melek', 'kelebek', 'papagan', 'cerrah', 'balon', 'aslan', 'snapper', 'orfoz']) FISH[k].regions = ['merkez', 'tropik', 'col'];
+for (const k of ['barakuda', 'orkinos']) FISH[k].regions = ['merkez', 'tropik', 'col', 'volkan'];
+export function fishInRegion(k, reg) { const r = FISH[k].regions; return !r || r.includes(reg); }
 
 // ---- Doku üretimi ----
 function fishTexture(sp, seed) {
@@ -225,6 +315,8 @@ export const fish = {
       geo.setAttribute('aSpeed', new THREE.InstancedBufferAttribute(speedA, 1));
       geo.setAttribute('aPuff', new THREE.InstancedBufferAttribute(puff, 1));
       const mat = swimMaterial(fishTexture(sp, seed++));
+      if (sp.glow) { mat.emissive = new THREE.Color(sp.glow); mat.emissiveIntensity = 0.9; }
+      if (sp.ghost) { mat.transparent = true; mat.opacity = 0.55; mat.depthWrite = false; }
       const im = new THREE.InstancedMesh(geo, mat, maxN);
       im.count = 0;
       im.frustumCulled = false;
@@ -261,7 +353,9 @@ export const fish = {
       let zoneType = 'open';
       for (const fz of FISH_ZONES) if (Math.hypot(x - fz.x, z - fz.z) < fz.r) { zoneType = fz.type; if (fz.type === 'reef') break; }
       if (floor > -9) zoneType = zoneType === 'open' && floor > -5 ? 'reef' : zoneType;
-      const cands = Object.keys(FISH).filter((k) => FISH[k].zone === zoneType && -floor > FISH[k].depth[0]);
+      if (zoneType === 'coast') zoneType = floor > -9 ? 'reef' : 'open';
+      const reg = regionAt(x, z);
+      const cands = Object.keys(FISH).filter((k) => FISH[k].zone === zoneType && -floor > FISH[k].depth[0] && fishInRegion(k, reg));
       if (!cands.length) continue;
       // nadir türler daha seyrek
       const weights = cands.map((k) => ({ siradan: 6, yaygin: 4, nadir: 1.6, epik: 0.5 }[FISH[k].rarity] || 1) * (FISH[k].time === 'gece' && !sky.isNight() ? 0.3 : 1));

@@ -10,6 +10,7 @@ import { ocean } from '../world/ocean.js';
 import { sky } from '../world/sky.js';
 import { props } from '../world/props.js';
 import { SPAWN_ZONES, CAVE } from '../world/worldData.js';
+import { EXTRA_ISLANDS } from '../world/archipelago.js';
 import { clamp, damp, dampAngle, lerp, rng, uid, wrapAngle } from '../core/util.js';
 
 const std = (c, o = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: 0.85, ...o });
@@ -211,17 +212,165 @@ function snakeModel(seed) {
   return { root: g, segs };
 }
 
+// Yumuşak gövde: z boyunca dizilmiş elips kesitlerden (Catmull-Rom ile yumuşatılmış) tek parça örgü.
+// rings: [z, y, yarıGenişlik, yarıYükseklik]; color(t, ny) köşe rengi döndürür.
+function loft(rings, { seg = 18, sub = 4, color = null } = {}) {
+  const cr = (a, b, c, d, t) => 0.5 * (2 * b + (c - a) * t + (2 * a - 5 * b + 4 * c - d) * t * t + (3 * b - a - 3 * c + d) * t * t * t);
+  const R = [];
+  for (let i = 0; i < rings.length - 1; i++) {
+    const a = rings[Math.max(0, i - 1)], b = rings[i], c = rings[i + 1], d = rings[Math.min(rings.length - 1, i + 2)];
+    for (let k = 0; k < sub; k++) { const t = k / sub; R.push([0, 1, 2, 3].map((j) => cr(a[j], b[j], c[j], d[j], t))); }
+  }
+  R.push(rings[rings.length - 1]);
+  const pos = [], idx = [];
+  for (const [z, y, rx, ry] of R) for (let j = 0; j < seg; j++) { const th = (j / seg) * Math.PI * 2; pos.push(Math.cos(th) * Math.max(rx, 0.003), y + Math.sin(th) * Math.max(ry, 0.003), z); }
+  for (let i = 0; i < R.length - 1; i++) for (let j = 0; j < seg; j++) {
+    const a = i * seg + j, b = i * seg + (j + 1) % seg;
+    idx.push(a, b, a + seg, b, b + seg, a + seg);
+  }
+  const f = pos.length / 3, l = f + 1, last = (R.length - 1) * seg;
+  pos.push(0, R[R.length - 1][1], R[R.length - 1][0] + 0.01, 0, R[0][1], R[0][0] - 0.01);
+  for (let j = 0; j < seg; j++) { idx.push(last + j, last + (j + 1) % seg, f); idx.push((j + 1) % seg, j, l); }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setIndex(idx);
+  g.computeVertexNormals();
+  if (color) {
+    const p = g.attributes.position, n = g.attributes.normal, col = new Float32Array(p.count * 3), c = new THREE.Color();
+    const z0 = R[0][0], z1 = R[R.length - 1][0];
+    for (let i = 0; i < p.count; i++) { color(c, (p.getZ(i) - z0) / (z1 - z0), n.getY(i)); col.set([c.r, c.g, c.b], i * 3); }
+    g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  }
+  return g;
+}
+
+// Kutup ayısı (prosedürel, yumuşak gövde + iki parçalı bacaklar)
+function polarModel(seed) {
+  const r = rng(seed);
+  const g = new THREE.Group();
+  const base = new THREE.Color().setHSL(0.12, 0.22, 0.87 + r() * 0.05);
+  const under = base.clone().multiplyScalar(0.84).lerp(new THREE.Color(0xc8b68e), 0.25);
+  const furCol = (c, t, ny) => c.copy(base).lerp(under, THREE.MathUtils.smoothstep(-ny, 0.1, 0.8)).multiplyScalar(0.96 + 0.04 * Math.sin(t * 40));
+  const fur = std(0xffffff, { vertexColors: true, roughness: 0.95 });
+  const dark = std(0x121212, { roughness: 0.5 });
+  const furPlain = std(base, { roughness: 0.95 });
+  // gövde: kıç → karın → omuz kamburu → boyun
+  const body = sh(new THREE.Mesh(loft([
+    [-1.2, 1.0, 0.04, 0.04], [-1.1, 1.0, 0.34, 0.38], [-0.85, 1.04, 0.52, 0.53], [-0.35, 1.0, 0.58, 0.56], [0.15, 1.04, 0.56, 0.58],
+    [0.52, 1.12, 0.5, 0.6], [0.86, 1.16, 0.36, 0.42], [1.1, 1.2, 0.26, 0.3], [1.22, 1.22, 0.2, 0.22],
+  ], { seg: 20, color: furCol }), fur));
+  g.add(body);
+  const tail = sh(new THREE.Mesh(new THREE.SphereGeometry(0.09, 8, 6), furPlain)); tail.position.set(0, 1.12, -1.16);
+  g.add(tail);
+  // baş: uzun, alçak kafa ve burun
+  const head = new THREE.Group();
+  head.position.set(0, 1.22, 1.1);
+  const skull = sh(new THREE.Mesh(loft([
+    [-0.08, 0.02, 0.18, 0.2], [0.08, 0.04, 0.23, 0.24], [0.26, 0.02, 0.21, 0.2], [0.4, -0.04, 0.13, 0.13], [0.52, -0.07, 0.09, 0.09], [0.56, -0.07, 0.02, 0.02],
+  ], { seg: 16, color: furCol }), fur));
+  const nose = sh(new THREE.Mesh(new THREE.SphereGeometry(0.06, 8, 6), dark)); nose.scale.set(1.2, 0.8, 0.8); nose.position.set(0, -0.05, 0.55);
+  const jaw = sh(new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 6), furPlain)); jaw.scale.set(0.9, 0.5, 1.6); jaw.position.set(0, -0.14, 0.32);
+  head.add(skull, nose, jaw);
+  for (const sx of [-1, 1]) {
+    const ear = sh(new THREE.Mesh(new THREE.SphereGeometry(0.065, 8, 6), furPlain)); ear.scale.set(1, 1, 0.6); ear.position.set(sx * 0.15, 0.22, 0.02);
+    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.028, 6, 4), dark); eye.position.set(sx * 0.12, 0.08, 0.27);
+    head.add(ear, eye);
+  }
+  g.add(head);
+  // bacaklar: kalça/omuz → diz → pençe
+  const legs = [];
+  for (const [x, z, front] of [[-0.33, 0.55, 1], [0.33, 0.55, 1], [-0.33, -0.78, 0], [0.33, -0.78, 0]]) {
+    const leg = new THREE.Group();
+    leg.position.set(x, 1.0, z);
+    const up = sh(new THREE.Mesh(new THREE.CapsuleGeometry(front ? 0.19 : 0.23, 0.36, 4, 10), furPlain)); up.position.y = -0.25;
+    const knee = new THREE.Group(); knee.position.y = -0.5;
+    const low = sh(new THREE.Mesh(new THREE.CapsuleGeometry(0.15, 0.26, 4, 10), furPlain)); low.position.y = -0.2;
+    const paw = sh(new THREE.Mesh(new THREE.SphereGeometry(0.19, 10, 6), furPlain)); paw.scale.set(1, 0.42, 1.35); paw.position.set(0, -0.44, 0.06);
+    for (let k = -1; k <= 1; k++) { const cl = new THREE.Mesh(new THREE.ConeGeometry(0.02, 0.07, 4), dark); cl.rotation.x = Math.PI / 2; cl.position.set(k * 0.08, -0.46, 0.3); knee.add(cl); }
+    knee.add(low, paw);
+    leg.add(up, knee);
+    leg.userData.knee = knee;
+    g.add(leg); legs.push(leg);
+  }
+  return { root: g, legs, head, body };
+}
+
 // ---------------- Tür tanımları ----------------
 export const SPECIES = {
-  boar: { name: 'Yaban Domuzu', hp: 70, speed: 2.2, run: 7, aggro: 'cornered', dmg: 14, flee: 12, loot: [['hayvan_postu', 1]], desc: 'Ormanda yiyecek arar; köşeye sıkışırsa saldırır, sürü halinde dolaşır.' },
+  boar: { name: 'Yaban Domuzu', hp: 120, speed: 2.2, run: 7, aggro: 'cornered', dmg: 20, flee: 12, loot: [['hayvan_postu', 1]], desc: 'Ormanda yiyecek arar; köşeye sıkışırsa saldırır, sürü halinde dolaşır.' },
   monkey: { name: 'Maymun', hp: 35, speed: 2.5, run: 6.5, aggro: 'never', dmg: 0, flee: 6, curious: true, desc: 'Meraklı ve hırsız; yiyeceklerini çalabilir, uzaktan seni izler.' },
-  croc: { name: 'Timsah', hp: 150, speed: 1.4, run: 5.5, aggro: 'territory', dmg: 26, flee: 0, loot: [['timsah_derisi', 1]], desc: 'Lagünde pusu kurar; suyun altında saklanıp ani saldırır.' },
+  croc: { name: 'Timsah', hp: 250, speed: 1.4, run: 5.5, aggro: 'territory', dmg: 35, flee: 0, loot: [['timsah_derisi', 1]], desc: 'Lagünde pusu kurar; suyun altında saklanıp ani saldırır.' },
   parrot: { name: 'Papağan', hp: 8, speed: 6, run: 9, aggro: 'never', flee: 10, fly: true, desc: 'Renkli tropik kuş; palmiyelere tüner, yaklaşınca uçar.' },
-  snake: { name: 'Zehirli Yılan', hp: 22, speed: 1.2, run: 2.5, aggro: 'close', dmg: 8, poison: 8, flee: 0, desc: 'Otların arasında saklanır, fazla yaklaşanı ısırır ve zehirler.' },
+  snake: { name: 'Zehirli Yılan', hp: 50, speed: 1.2, run: 2.5, aggro: 'close', dmg: 10, poison: 8, flee: 0, desc: 'Otların arasında saklanır, fazla yaklaşanı ısırır ve zehirler.' },
+  // --- bölgeye özgü yeni türler ---
+  wolf: { name: 'Kurt', hp: 90, speed: 2.4, run: 8.5, aggro: 'pack', dmg: 16, flee: 0, glb: 'wolf', scale: 0.3, quad: true, loot: [['hayvan_postu', 1]], desc: 'Kuzeyin çam ormanlarında sürüyle avlanır; geceleri çok daha cesurdur.' },
+  fox: { name: 'Tilki', hp: 30, speed: 2, run: 8, aggro: 'never', flee: 9, glb: 'fox', scale: 0.16, quad: true, loot: [['hayvan_postu', 0.6]], desc: 'Kurnaz ve ürkek; kampların yakınında yiyecek arar.' },
+  deer: { name: 'Geyik', hp: 60, speed: 1.6, run: 9.5, aggro: 'never', flee: 16, glb: 'deer', scale: 0.37, quad: true, loot: [['hayvan_postu', 1]], desc: 'Açıklıklarda otlar; en küçük seste kaçar.' },
+  stag: { name: 'Erkek Geyik', hp: 110, speed: 1.6, run: 9, aggro: 'cornered', dmg: 18, flee: 12, glb: 'stag', scale: 0.39, quad: true, loot: [['hayvan_postu', 1]], desc: 'Görkemli boynuzlu geyik; sıkıştırılırsa boynuzlarıyla saldırır.' },
+  polar: { name: 'Kutup Ayısı', hp: 400, speed: 1.6, run: 7.5, aggro: 'territory', dmg: 45, flee: 0, loot: [['hayvan_postu', 2]], desc: 'Buzul adalarının en tehlikeli avcısı; alanına gireni affetmez.' },
+  yeti: { name: 'Kar Canavarı', hp: 380, speed: 1.8, run: 6.5, aggro: 'territory', dmg: 38, flee: 0, glb: 'yeti', scale: 1.0, biped: true, whiten: 0.62, loot: [['hayvan_postu', 2], ['elmas', 0.15]], desc: 'Buzdişi Adası\'nın efsanevi canavarı; fırtınalı gecelerde görülür.' },
+  giantcrab: { name: 'Dev Yengeç', hp: 180, speed: 1.4, run: 4.2, aggro: 'territory', dmg: 25, flee: 0, glb: 'crab', scale: 0.85, tint: 0xd04020, loot: [['istiridye', 1], ['inci', 0.3]], desc: 'Volkanik kumsallarda yaşayan, kıskaçları kılıç kadar keskin dev yengeç.' },
   crab: { name: 'Yengeç', hp: 15, speed: 1.6, run: 3.5, aggro: 'never', flee: 4, glb: 'crab', scale: 0.45, desc: 'Sahillerde yan yan yürüyen küçük yengeçler.' },
   frog: { name: 'Lagün Kurbağası', hp: 6, speed: 1, run: 3, aggro: 'never', flee: 3, glb: 'frog', scale: 0.32, desc: 'Lagün kıyısında zıplar, geceleri vıraklar.' },
   bat: { name: 'Mağara Yarasası', hp: 10, speed: 5, run: 8, aggro: 'never', flee: 5, glb: 'bat', scale: 0.6, fly: true, desc: 'Yankı Mağarası\'nın karanlığında sürüler halinde uçar.' },
 };
+
+// Yeni adalardaki hayvan bölgeleri: türler adanın biyomuna göre seçilir.
+// Merkezler liman ve yapılardan uzak tutulur; kıyı türleri (yengeç) sahil şeridine konur.
+function islandZones() {
+  const R = rng(9137);
+  const out = [];
+  const add = (I, kind, n, o = {}) => {
+    for (let t = 0; t < 12; t++) {
+      const a = R() * Math.PI * 2, d = (o.dist ?? 0.22 + R() * 0.38) * I.r;
+      const x = I.x + Math.cos(a) * d * (I.ex || 1), z = I.z + Math.sin(a) * d * (I.ez || 1);
+      if (I.features.some((f) => f.x !== undefined && Math.hypot(f.x - x, f.z - z) < (f.type === 'port' ? 95 : (f.r || 18) + 14))) continue;
+      out.push({ kind, x: Math.round(x), z: Math.round(z), r: Math.round(o.r ?? Math.min(55, I.r * 0.4)), n, beach: !!o.beach, island: I.id });
+      return;
+    }
+  };
+  const shore = { dist: 0.95, r: 26, beach: true };
+  for (const I of EXTRA_ISLANDS) {
+    const mid = I.r >= 110, big = I.r >= 200;
+    switch (I.biome) {
+      case 'buzul':
+        if (I.id === 'buzdisi') add(I, 'yeti', 1, { dist: 0.3, r: 45 });
+        if (I.id === 'kurt_adasi') { add(I, 'wolf', 5); add(I, 'wolf', 4); } else if (mid) add(I, 'wolf', 3 + (R() < 0.5 ? 1 : 0));
+        if (I.r >= 80) add(I, 'fox', 2);
+        if (mid) { add(I, 'deer', 3 + (R() < 0.5 ? 1 : 0)); add(I, 'stag', 1); }
+        if (I.shape === 'glacier' || big) add(I, 'polar', 1, { dist: 0.68, r: 40 });
+        break;
+      case 'cangil':
+        if (I.shape === 'swamp') { add(I, 'croc', 4, { dist: 0.15, r: Math.round(I.r * 0.6) }); add(I, 'frog', 6, { dist: 0.3, r: 45, beach: true }); }
+        if (mid) add(I, 'boar', 3);
+        add(I, 'monkey', 3);
+        add(I, 'parrot', 4, { r: 60 });
+        add(I, 'snake', 2);
+        add(I, 'crab', 3, shore);
+        break;
+      case 'tropik':
+        add(I, 'crab', 3 + (R() < 0.5 ? 1 : 0), shore);
+        if (mid) add(I, 'parrot', 3, { r: 60 });
+        if (I.r >= 150) add(I, 'boar', 2);
+        if (R() < 0.5) add(I, 'snake', 1);
+        break;
+      case 'volkan':
+        if (I.r >= 80) add(I, 'giantcrab', big ? 3 : 2, { dist: 0.94, r: 32, beach: true });
+        add(I, 'crab', 2, shore);
+        if (I.shape !== 'volcano') add(I, 'snake', 2);
+        break;
+      case 'col':
+        add(I, 'snake', 3);
+        if (mid) add(I, 'fox', 1);
+        if (I.r >= 100) add(I, 'giantcrab', 1, { dist: 0.94, r: 32, beach: true });
+        break;
+      case 'hayalet':
+        add(I, 'crab', 2, shore);
+        break;
+    }
+  }
+  return out;
+}
 
 let _id = 0;
 class Animal {
@@ -240,16 +389,18 @@ class Animal {
     this.t = 0; this.stateT = 0;
     this.phase = Math.random() * 10;
     this.speed = 0;
-    this.radius = kind === 'croc' ? 0.6 : kind === 'boar' ? 0.45 : 0.25;
-    this.height = kind === 'croc' ? 0.5 : kind === 'boar' ? 0.9 : 0.4;
+    this.radius = { croc: 0.6, boar: 0.45, polar: 0.9, yeti: 0.7, giantcrab: 0.9, wolf: 0.4, stag: 0.5, deer: 0.45, fox: 0.25 }[kind] ?? 0.25;
+    this.height = { croc: 0.5, boar: 0.9, polar: 1.7, yeti: 2.6, giantcrab: 1.3, wolf: 0.9, stag: 1.8, deer: 1.5, fox: 0.5 }[kind] ?? 0.4;
     this.bloodColor = [0.6, 0.05, 0.05];
     if (this.S.glb) {
       this.anim = new Animated(this.S.glb, null);
       this.anim.model.scale.multiplyScalar(this.S.scale);
+      if (this.S.tint) this.anim.tint(this.S.tint);
+      if (this.S.whiten) this.anim.model.traverse((o) => { if (o.isMesh) for (const mm of [].concat(o.material)) mm.color.lerp(new THREE.Color(0xeef3f8), this.S.whiten); });
       this.root = this.anim.root;
       this.anim.play(kind === 'bat' ? 'Flying' : 'Idle', 0);
     } else {
-      this.m = kind === 'boar' ? boarModel(seed) : kind === 'monkey' ? monkeyModel(seed) : kind === 'croc' ? crocModel(seed) : kind === 'parrot' ? parrotModel(seed) : snakeModel(seed);
+      this.m = kind === 'boar' ? boarModel(seed) : kind === 'monkey' ? monkeyModel(seed) : kind === 'croc' ? crocModel(seed) : kind === 'parrot' ? parrotModel(seed) : kind === 'polar' ? polarModel(seed) : snakeModel(seed);
       this.root = this.m.root;
       if (kind === 'croc') this.root.scale.setScalar(1.25);
     }
@@ -268,6 +419,7 @@ class Animal {
     this.hp -= dmg;
     if (info && info.pos) {
       const dx = this.pos.x - info.pos.x, dz = this.pos.z - info.pos.z;
+      this.hitSide = Math.sin(this.yaw) * dz - Math.cos(this.yaw) * dx > 0;
       const d = Math.hypot(dx, dz) || 1;
       const k = Math.min(6, 1 + dmg * 0.08) / (this.kind === 'croc' ? 3 : 1);
       this.pos.x += (dx / d) * k * 0.15; this.pos.z += (dz / d) * k * 0.15;
@@ -333,11 +485,11 @@ class Animal {
         break;
       }
       case 'attack': {
-        if (!np || pd > 22 || np.p.mode !== 'ground' && this.kind !== 'croc') { this.state = 'wander'; break; }
+        if (!np || pd > (this.S.aggro === 'pack' ? 35 : 22) || np.p.mode !== 'ground' && this.kind !== 'croc') { this.state = 'wander'; break; }
         target = np.p.pos; sp = S.run;
         this.atkCd = (this.atkCd || 0) - dt;
         if (pd < this.radius + 1.0 && this.atkCd <= 0) {
-          this.atkCd = this.kind === 'croc' ? 2.2 : 1.4;
+          this.atkCd = { croc: 2.2, polar: 2.0, yeti: 2.2, giantcrab: 1.8, wolf: 1.2 }[this.kind] ?? 1.4;
           this.bite = 0.35;
           const dmg = S.dmg;
           if (np.id === G.myId) G.player.hurt(dmg, this.pos, { cause: S.name + ' saldırısı', poison: S.poison });
@@ -363,7 +515,13 @@ class Animal {
       if (S.aggro === 'cornered' && pd < 2.2 && np.p.sprinting) { this.state = 'attack'; this.stateT = 0; }
       if (S.aggro === 'cornered' && pd < 6 && this.state !== 'attack' && Math.random() < dt * 0.3) { this.state = 'flee'; this.stateT = 0; }
       if (S.aggro === 'territory' && this.state === 'wander' && Math.random() < dt * 0.2 && this._inWater()) { this.state = 'ambush'; this.stateT = 0; }
-      if (S.aggro === 'territory' && pd < 4) { this.state = 'attack'; this.stateT = 0; }
+      if (S.aggro === 'territory' && pd < (this.kind === 'polar' || this.kind === 'yeti' ? 9 : 4)) { this.state = 'attack'; this.stateT = 0; if (this.kind === 'polar' || this.kind === 'yeti') audio.tone(110, 0.6, 'sawtooth', 0.05, this.pos, 0.8); }
+      // kurt sürüsü: gece ya da yakında saldırır, sürüyü de çağırır
+      if (S.aggro === 'pack' && (pd < (night ? 16 : 8))) {
+        this.state = 'attack'; this.stateT = 0;
+        if (this.zone) for (const m of this.zone.members) if (m !== this && m.alive && m.state !== 'attack') { m.state = 'attack'; m.stateT = 0; }
+        if (!this.howled) { this.howled = true; audio.tone(520, 1.2, 'sine', 0.04, this.pos, 0.6); }
+      }
       // maymun: merak + muz hırsızlığı
       if (S.curious && pd < 14 && pd > 3 && this.state === 'wander') { target = np.p.pos; sp = S.speed; this.yaw = dampAngle(this.yaw, Math.atan2(np.p.pos.x - this.pos.x, np.p.pos.z - this.pos.z), 4, dt); }
       if (S.curious && pd < 2 && np.id === G.myId && G.player.inv.has('muz') && !this.stole) {
@@ -461,14 +619,50 @@ class Animal {
     }
     this.root.position.copy(this.pos);
     this.root.rotation.y = this.yaw;
+    this.root.rotation.z = 0; // uyku pozundan kalkınca dik dur
     if (this.anim) {
       this.anim.update(dt * (k === 'crab' ? 1.5 : 1));
-      if (k === 'crab') { this.anim.play(sp > 0.3 ? 'Walk' : 'Idle', 0.2, { speed: 1.5 }); this.root.rotation.y = this.yaw + Math.PI / 2; }
+      if (k === 'crab' || k === 'giantcrab') {
+        const clip = this.bite > 0 ? 'Bite_InPlace' : this.hurtT > 0 ? 'HitRecieve' : sp > 0.3 ? 'Walk' : this.state === 'attack' ? 'No' : 'Idle';
+        this.anim.play(clip, 0.15, { speed: k === 'crab' ? 1.5 : 1 });
+        this.root.rotation.y = this.yaw + Math.PI / 2;
+        if (this.bite > 0) this.bite -= dt;
+        return;
+      }
+      if (this.S.quad) {
+        if (this.bite > 0) { this.bite -= dt; if (this.anim.has('Attack')) this.anim.play('Attack', 0.1, { once: true }); else if (this.anim.has('Attack_Headbutt')) this.anim.play('Attack_Headbutt', 0.1, { once: true }); }
+        else if (this.hurtT > 0 && this.anim.has('Idle_HitReact_Left')) this.anim.play(this.hitSide ? 'Idle_HitReact_Right' : 'Idle_HitReact_Left', 0.08, { once: true });
+        else if (sp > 3.2) this.anim.play('Gallop', 0.2, { speed: clamp(sp / 8, 0.7, 1.4) });
+        else if (sp > 0.3) this.anim.play('Walk', 0.25, { speed: clamp(sp / 1.8, 0.6, 1.5) });
+        else if (this.state === 'eat' && this.anim.has('Eating')) this.anim.play('Eating', 0.4);
+        else this.anim.play('Idle', 0.4);
+        return;
+      }
+      if (this.S.biped) {
+        if (this.bite > 0) { this.bite -= dt; this.anim.play('Punch', 0.1, { once: true }); }
+        else if (this.hurtT > 0) this.anim.play('HitReact', 0.08, { once: true });
+        else this.anim.play(sp > 2.5 ? 'Run' : sp > 0.3 ? 'Walk' : 'Idle', 0.25);
+        return;
+      }
       if (k === 'frog' && sp > 0.3 && this.anim.currentName !== 'Jump') this.anim.play('Jump', 0.1);
       else if (k === 'frog' && sp <= 0.3 && this.anim.currentName !== 'Idle') this.anim.play('Idle', 0.2);
       return;
     }
     const m = this.m;
+    if (k === 'polar') {
+      const amp = clamp(sp / 5, 0, 0.7);
+      m.legs.forEach((L, i) => {
+        const a = ph * 0.8 + (i === 0 || i === 3 ? 0 : Math.PI);
+        L.rotation.x = Math.sin(a) * amp;
+        L.userData.knee.rotation.x = (i < 2 ? -1 : 1) * Math.max(0, Math.cos(a)) * amp * 0.9;
+      });
+      m.body.position.y = Math.abs(Math.sin(ph * 0.8)) * 0.05 * amp;
+      m.body.rotation.z = Math.sin(ph * 0.8) * 0.03 * amp;
+      m.head.rotation.x = damp(m.head.rotation.x, this.bite > 0 ? -0.5 : this.state === 'eat' ? 0.5 : Math.sin(this.t) * 0.08, 6, dt);
+      if (this.bite > 0) this.bite -= dt;
+      if (this.state === 'sleep') { this.root.rotation.z = 1.2; this.root.position.y += 0.4; }
+      return;
+    }
     if (k === 'boar' || k === 'monkey') {
       const amp = clamp(sp / 4, 0, 0.9);
       m.legs.forEach((L, i) => { L.rotation.x = Math.sin(ph + (i === 0 || i === 3 ? 0 : Math.PI)) * amp * (k === 'monkey' && i < 2 ? 1.2 : 1); });
@@ -541,6 +735,8 @@ export const animals = {
     let zi = 0;
     for (const kind in SPAWN_ZONES) for (const z of SPAWN_ZONES[kind]) this.zones.push({ id: 'z' + zi++, kind, ...z, active: false, members: [], cooldown: 0 });
     this.zones.push({ id: 'bats', kind: 'bat', x: CAVE.chamber.x, z: CAVE.chamber.z, r: 8, n: 7, active: false, members: [], cooldown: 0 });
+    for (const z of islandZones()) this.zones.push({ id: 'iz' + zi++, ...z, active: false, members: [], cooldown: 0 });
+    this.zoneT = 0;
   },
   start() {
     for (const a of this.list) a.dispose();
@@ -551,14 +747,16 @@ export const animals = {
 
   _spawnZone(z) {
     z.active = true;
+    const fly = SPECIES[z.kind].fly;
     for (let i = 0; i < z.n; i++) {
-      let x = z.x, zz = z.z;
-      for (let tries = 0; tries < 12; tries++) {
+      let x = z.x, zz = z.z, ok = fly;
+      for (let tries = 0; tries < 30 && !ok; tries++) {
         const a = Math.random() * 6.28, r = Math.random() * z.r;
         x = z.x + Math.cos(a) * r; zz = z.z + Math.sin(a) * r;
         const h = terrain.heightAt(x, zz);
-        if (z.kind === 'croc' ? h < -1.2 && h > -4 : z.beach ? h > 0.3 && h < 2.2 : h > 1.5) break;
+        ok = z.kind === 'croc' ? h < -1.2 && h > -4 : z.beach ? h > 0.3 && h < 2.2 : h > 1.5;
       }
+      if (!ok) continue; // uygun zemin yoksa bu üyeyi atla (suya doğmasın)
       const a = new Animal(this.scene, z.kind, x, zz, z, (Math.random() * 1e6) | 0);
       if (z.kind === 'croc') a.state = 'ambush';
       z.members.push(a);
@@ -571,9 +769,14 @@ export const animals = {
     if (!p) return;
     const pts = [p.pos, ...[...G.remotes.values()].map((r) => r.pos)];
     if (!G.online || G.isHost) {
-      for (const z of this.zones) {
-        const d = Math.min(...pts.map((f) => Math.hypot(f.x - z.x, f.z - z.z)));
-        z.cooldown -= dt;
+      // bölge kontrolü (yüzlerce bölge var): saniyede ~4 kez yeterli
+      this.zoneT = (this.zoneT || 0) - dt;
+      const check = this.zoneT <= 0;
+      if (check) this.zoneT = 0.25;
+      for (const z of check ? this.zones : []) {
+        let d = 1e9;
+        for (const f of pts) { const dd = Math.hypot(f.x - z.x, f.z - z.z); if (dd < d) d = dd; }
+        z.cooldown -= 0.25;
         if (!z.active && d < z.r + 150 && z.cooldown <= 0) this._spawnZone(z);
         else if (z.active && d > z.r + 230) {
           const dead = z.members.filter((m) => !m.alive).length;

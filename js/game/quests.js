@@ -12,6 +12,7 @@ import { enemies } from './enemies.js';
 import { MERCHANTS, shop, sellPrice } from '../economy/shop.js';
 import { ITEMS, CHEST_TIERS } from '../economy/items.js';
 import { SPECIES } from '../wildlife/animals.js';
+import { MARINE } from '../wildlife/megafauna.js';
 import { FISH } from '../wildlife/fish.js';
 import { SHIP_TYPES } from '../ship/shipModel.js';
 import { effects } from './effects.js';
@@ -163,7 +164,7 @@ export const quests = {
     G.on('seeAnimal', (kind) => {
       if (this.collection.animals[kind]) return;
       this.collection.animals[kind] = { first: new Date().toLocaleDateString('tr-TR') };
-      const name = SPECIES[kind]?.name || { shark: 'Kaplan Köpekbalığı', manta: 'Manta Vatozu', turtle: 'Deniz Kaplumbağası', dolphin: 'Yunus' }[kind] || kind;
+      const name = SPECIES[kind]?.name || MARINE[kind]?.name || kind;
       G.notify(`Yeni canlı gözlemlendi: ${name}`, 'info', 3000);
       this._checkAch();
     });

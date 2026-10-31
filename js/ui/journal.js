@@ -4,13 +4,14 @@ import { el, fmtGold } from '../core/util.js';
 import { quests, STORY, ACHIEVEMENTS } from '../game/quests.js';
 import { ISLANDS, DIG_SITES, POIS } from '../world/worldData.js';
 import { SPECIES } from '../wildlife/animals.js';
+import { MARINE } from '../wildlife/megafauna.js';
 import { FISH } from '../wildlife/fish.js';
 import { RARITY } from '../economy/items.js';
 import { treasure } from '../treasure/treasure.js';
 import { time, DAILY, PERIODIC, SHOP_HOURS } from '../world/time.js';
 import { sky } from '../world/sky.js';
 
-const EXTRA_ANIMALS = { shark: 'Kaplan Köpekbalığı', manta: 'Manta Vatozu', turtle: 'Deniz Kaplumbağası', dolphin: 'Yunus' };
+const EXTRA_ANIMALS = Object.fromEntries(Object.entries(MARINE).map(([k, v]) => [k, v.name]));
 
 const SHOP_NAMES = { general: 'Tüccar Rıza', fisher: 'Balıkçı Yusuf', weapons: 'Demirci Kara Ali', tailor: 'Terzi Lale', shipwright: 'Usta Bora', cartographer: 'Haritacı Nevra', treasure: 'Sedef Hanım', trader: 'Halil Reis (ticaret günleri)' };
 
@@ -146,7 +147,7 @@ export function openJournal(data = null) {
       const all = { ...Object.fromEntries(Object.entries(SPECIES).map(([k, v]) => [k, v.name])), ...EXTRA_ANIMALS };
       for (const k in all) {
         const seen = q.collection?.animals?.[k];
-        g.appendChild(el('div', { class: 'jcard' + (seen ? '' : ' locked') }, el('div', { class: 't' }, seen ? all[k] : '???'), el('div', {}, seen ? (SPECIES[k]?.desc || 'Denizlerin büyük canlısı.') : 'Henüz gözlemlenmedi.'), seen ? el('div', { class: 'muted' }, 'İlk görülme: ' + seen.first) : null));
+        g.appendChild(el('div', { class: 'jcard' + (seen ? '' : ' locked') }, el('div', { class: 't' }, seen ? all[k] : '???'), el('div', {}, seen ? (SPECIES[k]?.desc || MARINE[k]?.desc || 'Denizlerin büyük canlısı.') : 'Henüz gözlemlenmedi.'), seen ? el('div', { class: 'muted' }, 'İlk görülme: ' + seen.first) : null));
       }
       sc.appendChild(g);
     } else if (tab === 'balik') {

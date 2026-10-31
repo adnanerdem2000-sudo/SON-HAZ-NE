@@ -217,7 +217,8 @@ export const hud = {
         <div class="sp-row"><span>Hız ${knots} knot · Rüzgâr verimi %${windRel}</span></div>
         <div class="sp-row"><span>Çapa: ${{ down: 'Demirli', up: 'Yukarıda', lowering: 'İniyor…', raising: 'Kalkıyor…' }[s.anchorState]}</span><span>Delik: ${s.holes.length}</span></div>
         <div class="sp-row"><span>Toplar hazır: ${reload}/${s.cannonState.length} · Gülle: ${s.cannonballs}</span></div>
-        <div class="sp-row"><span>Ambar: ${s.hold.chests.length}/${s.T.holdSlots} sandık · Tahta: ${s.planks}</span></div>`;
+        <div class="sp-row"><span>Ambar: ${s.hold.chests.length}/${s.T.holdSlots} sandık · Tahta: ${s.planks}</span></div>
+        <div class="sp-dmg">${['pruva', 'kic', 'iskele', 'sancak', 'dumen', 'yelken'].map((k) => `<span class="${s.parts[k] < 30 ? 'bad' : s.parts[k] < 65 ? 'mid' : ''}">${{ pruva: 'Pruva', kic: 'Kıç', iskele: 'İskele', sancak: 'Sancak', dumen: 'Dümen', yelken: 'Bez' }[k]} %${Math.round(s.parts[k])}</span>`).join('')}${s.mastHp.map((h, i) => `<span class="${h <= 0 ? 'bad' : h < 40 ? 'mid' : ''}">Direk${s.mastHp.length > 1 ? ' ' + (i + 1) : ''} ${h <= 0 ? 'KIRIK' : '%' + Math.round(h)}</span>`).join('')}${s.cannonHp.some((h) => h <= 0) ? `<span class="bad">Bozuk top: ${s.cannonHp.filter((h) => h <= 0).length}</span>` : ''}${s.fires.length ? `<span class="bad">🔥 Yangın: ${s.fires.length}</span>` : ''}</div>`;
     }
     // nişangâh
     $('crosshair').classList.toggle('hidden', !(p.aiming || p.mode === 'cannon'));

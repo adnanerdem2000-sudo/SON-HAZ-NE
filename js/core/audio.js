@@ -78,6 +78,13 @@ export const audio = {
   // Prosedürel kısa sesler
   tone(freq, dur = 0.15, type = 'sine', vol = 0.2, bus = null, slide = 0) {
     if (!this.ctx) return;
+    // bus yerine bir konum ({x,z}) verilirse sesi dinleyiciye uzaklığa göre zayıflat
+    if (bus && typeof bus.connect !== 'function') {
+      const L = this.listener;
+      vol *= clamp(1 - Math.hypot(bus.x - L.x, bus.z - L.z) / 140, 0, 1) ** 1.5;
+      if (vol < 0.002) return;
+      bus = null;
+    }
     const c = this.ctx, t = c.currentTime;
     const o = c.createOscillator(), g = c.createGain();
     o.type = type; o.frequency.setValueAtTime(freq, t);

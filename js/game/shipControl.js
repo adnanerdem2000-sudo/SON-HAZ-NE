@@ -7,6 +7,7 @@ import { Ship, Rowboat } from '../ship/ship.js';
 import { ocean } from '../world/ocean.js';
 import { terrain } from '../world/terrain.js';
 import { ports } from '../world/ports.js';
+import { effects } from './effects.js';
 import { port } from '../world/port.js';
 import { clamp } from '../core/util.js';
 
@@ -83,6 +84,40 @@ export const shipControl = {
         out.push({ id: s.id + ':cannon' + i, lockId: s.id + ':cannon' + i, pos, radius: 1.2, label: `Topu kullan (Gülle: ${s.cannonballs})`, action: () => this.takeCannon(p, s, i) });
       });
       // delikler
+      // bordalama: yanaşık gemiye atla
+      for (const o of G.ships) {
+        if (o === s || o.sunk) continue;
+        const ol = o.worldToLocal(p.pos.clone());
+        if (Math.abs(ol.z) < o.T.L / 2 && Math.abs(ol.x) < o.T.B / 2 + 4.5 && Math.hypot(o.x - s.x, o.z - s.z) < s.T.B + o.T.B + 6) {
+          out.push({ id: 'jump' + o.id, pos: p.pos.clone(), radius: 3, priority: 1.8, label: `Karşı güverteye atla (${o.name})`, action: () => {
+            const tgt = new THREE.Vector3(Math.sign(ol.x || 1) * (o.T.B / 2 - 1), 0, ol.z);
+            o.clampDeck(tgt);
+            p.boardShip(o, tgt);
+            p.localVy = 4;
+            G.emit('sfx', { name: 'dash', vol: 0.4 });
+          } });
+        }
+      }
+      // yangın söndürme, top ve direk onarımı
+      for (const f of s.fires || []) {
+        out.push({ id: 'fire' + f.id, pos: L(new THREE.Vector3(f.x, s.deckAt(f.x, f.z), f.z)), radius: 1.9, priority: 2, hold: 1.4, label: 'Yangını söndür', action: () => { s.extinguish(f.id); G.emit('sfx', { name: 'impact', vol: 0.3, rate: 1.6 }); G.emit('shipCmd', { ship: s.id, cmd: 'extinguish', id: f.id }); } });
+      }
+      s.model.cannons.forEach((c, i) => {
+        if ((s.cannonHp?.[i] ?? 100) > 0) return;
+        out.push({ id: 'cfix' + i, pos: L(c.local.clone()), radius: 1.7, priority: 1, hold: 2.2, label: s.planks > 0 || p.inv.has('tahta') ? 'Topu onar (1 tahta)' : 'Topu onarmak için tahta gerek', action: () => {
+          if (s.planks > 0) s.planks--; else if (p.inv.has('tahta')) p.inv.remove('tahta', 1); else { G.notify('Tahtan yok.', 'warn'); return; }
+          s.cannonHp[i] = 70; G.notify('Top yeniden kullanılabilir.', 'good', 1800); G.emit('shipCmd', { ship: s.id, cmd: 'cannonFix', i });
+        } });
+      });
+      s.T.masts.forEach((M, i) => {
+        if (s.mastHp[i] > 0) return;
+        out.push({ id: 'mfix' + i, pos: L(new THREE.Vector3(0, s.deckAt(0, M.z), M.z + 0.6)), radius: 2.2, priority: 1, hold: 5, label: 'Acil direk dik (4 tahta)', action: () => {
+          const have = s.planks + (p.inv.count?.('tahta') || 0);
+          if (have < 4) { G.notify('Acil direk için 4 tahta gerekir.', 'warn'); return; }
+          let need = 4; const fromShip = Math.min(need, s.planks); s.planks -= fromShip; need -= fromShip; if (need) p.inv.remove('tahta', need);
+          s.mastHp[i] = 35; s.rebuild({}); G.notify('Acil direk dikildi — yelken kısmen tutuyor. Limanda tam tamir et.', 'good', 3500); G.emit('shipCmd', { ship: s.id, cmd: 'mastFix', i });
+        } });
+      });
       for (const h of s.holes) {
         out.push({ id: 'hole' + h.id, pos: L(new THREE.Vector3(h.x, s.deckAt(h.x, h.z), h.z)), radius: 1.6, priority: 1, hold: 2.2, label: s.planks > 0 || p.inv.has('tahta') ? 'Deliği onar (tahta)' : 'Deliği onarmak için tahta gerek', action: () => this.repair(p, s, h) });
       }
@@ -224,6 +259,19 @@ export const shipControl = {
   update(dt) {
     const p = G.player;
     if (!p) return;
+    // gemi yangınları: alev/duman, içinde duranı yakar
+    for (const s of G.ships) {
+      if (!s.fires?.length || s.sunk) continue;
+      for (const f of s.fires) {
+        const w = s.localToWorld(_v.set(f.x, s.deckAt(f.x, f.z), f.z), new THREE.Vector3());
+        if (Math.random() < 0.7) effects.spawn(w.x + (Math.random() - 0.5) * f.s, w.y + 0.2, w.z + (Math.random() - 0.5) * f.s, (Math.random() - 0.5) * 0.4, 2 + Math.random() * 1.5, (Math.random() - 0.5) * 0.4, 0.6, 0.45 * f.s, 1, 0.45 + Math.random() * 0.3, 0.08, 0.6, 0.6, 0.2);
+        if (Math.random() < 0.15) effects.smoke(w.x, w.y + 1.5, w.z, 1, 0.8 * f.s, 0.25);
+        if (p.ship === s && p.mode === 'deck' && Math.hypot(p.local.x - f.x, p.local.z - f.z) < 0.6 + f.s * 0.5) {
+          this._burnT = (this._burnT || 0) - dt;
+          if (this._burnT <= 0) { this._burnT = 0.5; p.hurt(5, null, { cause: 'Güvertedeki yangında yandın' }); }
+        }
+      }
+    }
     if (p.mode === 'cannon' && p.ship && !G.uiOpen) {
       const s = p.ship;
       const look = input.lookDelta();

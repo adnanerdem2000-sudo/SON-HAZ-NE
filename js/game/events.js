@@ -13,6 +13,8 @@ import { sky } from '../world/sky.js';
 import { port } from '../world/port.js';
 import { clamp, damp, dampAngle, wrapAngle, uid } from '../core/util.js';
 import { bodies } from '../world/bodies.js';
+import { enemies } from './enemies.js';
+import { quests } from './quests.js';
 
 // Rastgele dünya olayları + düşman korsan gemisi + tayfa yardımcısı + gemi batma/kurtarma
 export const events = {
@@ -187,6 +189,16 @@ export const events = {
     G.ships.push(e);
     this.enemyShip = e;
     this.esT = 0;
+    this.grappled = false;
+    this.captured = false;
+    // güvertede tayfa: kanca atınca gemine atlarlar
+    this.crew = [];
+    const crewTypes = ['haydut', 'haydut', 'haydut_avci', 'haydut_nisanci'];
+    crewTypes.forEach((t, i) => {
+      const en = enemies.spawn(t, x, z, { ship: e, lx: (i % 2 ? 1 : -1) * 0.8, lz: -2 + i * 1.4, role: 'patrol' });
+      en.awareness = 0.6;
+      this.crew.push(en);
+    });
     G.notify('Ufukta kara yelkenli bir gemi! Kızıl Hançer\'in korsanları saldırıyor — toplara!', 'boss', 6000);
     audio.play('boss', { vol: 0.7 });
     combat.markCombat();
@@ -210,9 +222,68 @@ export const events = {
       return;
     }
     if (!me || me.sunk) { e.setRudder(0.3); e.update(dt); return; }
-    // rotası: oyuncunun yan tarafına geç, borda ateşi
     const dx = me.x - e.x, dz = me.z - e.z;
     const dist = Math.hypot(dx, dz);
+    const crewAlive = this.crew.filter((c) => c.alive);
+    // ele geçirme: tayfanın tamamı düştüyse
+    if (!this.captured && this.crew.length && !crewAlive.length) {
+      this.captured = true;
+      const p = G.player;
+      const gold = 220 + Math.floor(Math.random() * 260);
+      p.inv.gold += gold;
+      const extra = [['gulle', 6], ['mermi', 8], ['tahta', 3]][Math.floor(Math.random() * 3)];
+      p.inv.add(extra[0], extra[1]);
+      G.notify(`Düşman gemisi ele geçirildi! Ambarı yağmaladın: +${gold} altın, ${extra[1]} ${extra[0]}. Gemiyi batırıyorlar…`, 'good', 6000);
+      G.emit('shipCaptured', { gold });
+      quests.stats.shipsCaptured = (quests.stats.shipsCaptured || 0) + 1;
+      e.water = 100; // batırılır
+      this.grappled = false;
+    }
+    // kanca: yakın ve yavaşken gemiler birbirine bağlanır, tayfa atlar
+    if (!this.grappled && !this.captured && crewAlive.length && dist < 18 && Math.abs((e.speed || 0) - (me.speed || 0)) < 4.5 && this.esT > 10) {
+      this.grappled = true; this.grappleT = 0;
+      G.notify('Kancalar atıldı! Düşman tayfası güverteye atlıyor — kılıçlar çekilsin!', 'boss', 4500);
+      audio.play('impact', { vol: 0.7, rate: 0.7 });
+      if (!this.ropes) {
+        this.ropes = new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(18), 3)), new THREE.LineBasicMaterial({ color: 0x3a2a1a }));
+        this.ropes.frustumCulled = false;
+        this.scene.add(this.ropes);
+      }
+    }
+    if (this.grappled) {
+      this.grappleT += dt;
+      // yan yana çekiş: hız ve yön eşitlenir
+      const lp = me.worldToLocal(new THREE.Vector3(e.x, me.y, e.z));
+      const side = lp.x >= 0 ? 1 : -1;
+      const want = me.localToWorld(new THREE.Vector3(side * (me.T.B / 2 + e.T.B / 2 + 1.4), 0, 0));
+      e.x += (want.x - e.x) * (1 - Math.exp(-1.5 * dt)); e.z += (want.z - e.z) * (1 - Math.exp(-1.5 * dt));
+      e.yaw = dampAngle(e.yaw, me.yaw, 1.5, dt);
+      e.vx = me.vx; e.vz = me.vz; e.speed = me.speed;
+      e.updateTransform(dt);
+      // tayfa sırayla atlar
+      for (const c of crewAlive) {
+        if (c.ship !== e || this.grappleT < 1.5 + this.crew.indexOf(c) * 1.2) continue;
+        if (c.T.ranged && Math.random() < 0.5) continue; // nişancılar kendi güvertesinden ateş eder
+        c.ship = me;
+        c.local.set(side * (me.T.B / 2 - 0.9), 0, (Math.random() - 0.5) * me.T.L * 0.4);
+        me.clampDeck(c.local);
+        c.char.play('JumpShort', 0.05, { once: true, restart: true, speed: 1.4 });
+        c.awareness = 1; c.state = 'chase';
+      }
+      // halat çizgileri
+      const pa = this.ropes.geometry.attributes.position.array;
+      for (let k = 0; k < 3; k++) {
+        const a = me.localToWorld(new THREE.Vector3(side * me.T.B / 2, me.T.deckY + 0.8, -me.T.L * 0.3 + k * me.T.L * 0.3));
+        const b = e.localToWorld(new THREE.Vector3(-side * e.T.B / 2, e.T.deckY + 0.8, -e.T.L * 0.3 + k * e.T.L * 0.3));
+        pa.set([a.x, a.y, a.z, b.x, b.y, b.z], k * 6);
+      }
+      this.ropes.geometry.attributes.position.needsUpdate = true;
+      this.ropes.visible = true;
+      combat.markCombat();
+      if (dist > 30) { this.grappled = false; G.notify('Halatlar koptu!', 'warn', 2000); }
+      return;
+    } else if (this.ropes) this.ropes.visible = false;
+    // rotası: oyuncunun yan tarafına geç, borda ateşi
     const toMe = Math.atan2(dx, dz);
     let desired;
     if (dist > 60) desired = toMe;
@@ -237,6 +308,8 @@ export const events = {
         }
       });
     }
+    // tayfası yaşıyorsa bordalamak için yanaşır
+    if (crewAlive.length >= 2 && this.esT > 25 && dist < 70) { e.sailTarget = dist < 30 ? 0.35 : 0.7; }
     if (dist > 450 || this.esT > 300) { G.notify('Düşman gemisi ufukta kayboldu.', 'info'); this._removeEnemyShip(); return; }
     combat.markCombat();
   },
@@ -244,6 +317,10 @@ export const events = {
   _removeEnemyShip() {
     const e = this.enemyShip;
     if (!e) return;
+    for (const c of this.crew || []) { if (c.ship === e) { c.remove = true; c.alive = false; } }
+    this.crew = [];
+    if (this.ropes) this.ropes.visible = false;
+    this.grappled = false;
     e.dispose();
     G.ships = G.ships.filter((s) => s !== e);
     this.enemyShip = null;
@@ -266,6 +343,7 @@ export const events = {
       G.notify(`${s.name} battı. Ambardaki ganimet kayboldu. Limandaki Usta Bora gemini kurtarabilir.`, 'warn', 8000);
     }
     if (e.t === 'crash') G.notify('Gemi kayalara çarptı! Gövdede hasar var.', 'warn', 2500);
+    if (e.t === 'edge') G.notify('Haritanın sonu: bu sulardan ötesini kimse bilmiyor. Dümeni geri kır!', 'warn', 3500);
     if (e.t === 'damage' && Math.random() < 0.3) audio.play('impact', { vol: 0.5 });
   },
 
