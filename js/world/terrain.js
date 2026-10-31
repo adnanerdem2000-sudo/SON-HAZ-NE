@@ -114,15 +114,21 @@ export const terrain = {
     this._jobs.delete(job.id);
     if (err) job.reject(err); else job.resolve(result);
   },
-  _request(msg, prio = 0) {
-    return new Promise((resolve, reject) => {
-      const id = this._rid++;
-      msg.id = id;
-      const job = { id, msg, prio, tries: 0, resolve, reject, timer: null, rec: null };
-      this._jobs.set(id, job);
-      this._queue.push(job);
-      this._pump();
-    });
+  _enqueue(msg, prio = 0) {
+    const id = this._rid++;
+    msg.id = id;
+    const job = { id, msg, prio, tries: 0, resolve: null, reject: null, timer: null, rec: null, promise: null };
+    job.promise = new Promise((resolve, reject) => { job.resolve = resolve; job.reject = reject; });
+    this._jobs.set(id, job);
+    this._queue.push(job);
+    this._pump();
+    return job;
+  },
+  _request(msg, prio = 0) { return this._enqueue(msg, prio).promise; },
+  // Kuyrukta bekleyen işi iptal et: söz null ile çözülür (işçideyse/çalışıyorsa sonucu istek eşleşmediği için yok sayılır)
+  _cancel(job) {
+    const qi = this._queue.indexOf(job);
+    if (qi >= 0) { this._queue.splice(qi, 1); this._finish(job, null, null); }
   },
   _pump() {
     if (!this._queue.length) return;
@@ -141,33 +147,43 @@ export const terrain = {
       }
     }
   },
-  // Yedek: ana iş parçacığında, dilim başına sınırlı süreyle (üreteç ara sıra yield eder); dilim içinde birden çok iş bitebilir
+  // Yedek: ana iş parçacığında, dilim başına sınırlı süreyle (üreteçler ara sıra yield eder). İki şerit vardır:
+  // şerit 0 kısa işler (karo), şerit 1 uzun işler (derinlik 512², harita ızgarası 256²); böylece tek bir uzun iş
+  // yakındaki karoların üretimini dakikalarca bloke etmez. Her dilimde iki şerit sırayla ilerler.
+  _lanes: [null, null],
   _localPump() {
-    if (this._localBusy || !this._queue.length) return;
+    if (this._localBusy) return;
+    if (!this._queue.length && !this._lanes[0] && !this._lanes[1]) return;
     this._localBusy = true;
-    let job = null, gen = null;
-    const next = () => {
-      job = this._queue.shift() || null;
-      if (!job) return false;
-      job.tries++;
-      try { gen = generate(job.msg); return true; }
-      catch (e) { this._finish(job, null, e); return next(); }
-    };
-    if (!next()) { this._localBusy = false; return; }
-    const step = () => {
-      const t0 = performance.now();
-      try {
-        for (;;) {
-          if (!this._jobs.has(job.id)) { if (!next()) break; continue; } // iptal edildi
-          const r = gen.next();
-          if (r.done) { this._finish(job, r.value.out, null); if (!next()) break; continue; }
-          if (performance.now() - t0 > this.localBudget) { schedule(step); return; }
+    schedule(this._localStep || (this._localStep = () => this._localSlice()));
+  },
+  _localSlice() {
+    const t0 = performance.now();
+    const budget = this._queue.length > 30 ? Math.max(this.localBudget, 20) : this.localBudget;
+    for (;;) {
+      let any = false;
+      for (let L = 0; L < 2; L++) {
+        let a = this._lanes[L];
+        if (!a) {
+          const idx = this._queue.findIndex((j) => (j.msg.t !== 'tile') === (L === 1));
+          if (idx < 0) continue;
+          const job = this._queue.splice(idx, 1)[0];
+          job.tries++;
+          try { a = this._lanes[L] = { job, gen: generate(job.msg) }; }
+          catch (e) { this._finish(job, null, e); continue; }
         }
-      } catch (e) { this._finish(job, null, e); if (next()) { schedule(step); return; } }
-      this._localBusy = false;
-      this._pump();
-    };
-    schedule(step);
+        any = true;
+        if (!this._jobs.has(a.job.id)) { this._lanes[L] = null; continue; } // iptal edildi
+        try {
+          const r = a.gen.next();
+          if (r.done) { this._finish(a.job, r.value.out, null); this._lanes[L] = null; }
+        } catch (e) { this._finish(a.job, null, e); this._lanes[L] = null; }
+        if (performance.now() - t0 > budget) { schedule(this._localStep); return; }
+      }
+      if (!any) break;
+    }
+    this._localBusy = false;
+    if (this._queue.length && !this.workers.some((r) => !r.dead)) this._localPump();
   },
   // test/hata ayıklama: tüm işçileri öldür (kurtarma yolu sınanır)
   killWorkers() { for (const rec of [...this.workers]) this._workerFailed(rec, 'test: işçi sonlandırıldı'); },
@@ -265,37 +281,37 @@ if (tDepth > 0.05 && uCaustic > 0.01) {
     this._upd -= 1;
     if (this._upd > 0 && !force) return;
     this._upd = 12;
-    this.center.x = cx; this.center.z = cz;
+    this.center.x = cx; this.center.z = cz; this._centered = true;
     const R = LODS[LODS.length - 1].d * this.lodScale + TILE;
-    const i0 = Math.max(0, Math.floor((cx - R + HALF) / TILE)), i1 = Math.min(NT - 1, Math.floor((cx + R + HALF) / TILE));
-    const j0 = Math.max(0, Math.floor((cz - R + HALF) / TILE)), j1 = Math.min(NT - 1, Math.floor((cz + R + HALF) / TILE));
-    const want = new Set();
-    for (let j = j0; j <= j1; j++) for (let i = i0; i <= i1; i++) {
-      const seg = this._wantSeg(i, j, cx, cz);
-      if (!seg) continue;
-      const k = tkey(i, j);
-      want.add(k);
-      let t = this.tiles.get(k);
-      if (!t) { t = { i, j, k, x0: -HALF + i * TILE, z0: -HALF + j * TILE, seg: 0, mesh: null, heights: null, pending: 0 }; this.tiles.set(k, t); }
-      // histerezis: yalnızca gerçekten farklıysa yeniden üret
-      if (t.seg !== seg && t.pending !== seg) this._requestTile(t, seg, Math.hypot(t.x0 + TILE / 2 - cx, t.z0 + TILE / 2 - cz));
-    }
-    // hazırlık odağı (ışınlanma/yükleme): kamera henüz gelmemişken bile odak çevresi istenir ve düşürülmez
-    const F = this.focus;
-    if (F && performance.now() < F.until) {
-      const fi0 = Math.max(0, Math.floor((F.x - F.r + HALF) / TILE)), fi1 = Math.min(NT - 1, Math.floor((F.x + F.r + HALF) / TILE));
-      const fj0 = Math.max(0, Math.floor((F.z - F.r + HALF) / TILE)), fj1 = Math.min(NT - 1, Math.floor((F.z + F.r + HALF) / TILE));
-      for (let j = fj0; j <= fj1; j++) for (let i = fi0; i <= fi1; i++) {
-        if (Math.hypot(-HALF + (i + 0.5) * TILE - F.x, -HALF + (j + 0.5) * TILE - F.z) > F.r) continue;
-        const seg = this._wantSeg(i, j, F.x, F.z);
+    // İstenen çözünürlük: kamera halkaları ve (varsa) hazırlık odağı — aynı karo için ikisinden YÜKSEĞİ alınır; böylece
+    // odak uzaktayken kameranın çevresi düşük çözünürlüğe indirilmez, iki döngü birbirinin isteğini ezmez.
+    const want = new Map(); // k -> { i, j, seg, prio }
+    const collect = (ox, oz, rad, circle, prioOff) => {
+      const i0 = Math.max(0, Math.floor((ox - rad + HALF) / TILE)), i1 = Math.min(NT - 1, Math.floor((ox + rad + HALF) / TILE));
+      const j0 = Math.max(0, Math.floor((oz - rad + HALF) / TILE)), j1 = Math.min(NT - 1, Math.floor((oz + rad + HALF) / TILE));
+      for (let j = j0; j <= j1; j++) for (let i = i0; i <= i1; i++) {
+        const d = Math.hypot(-HALF + (i + 0.5) * TILE - ox, -HALF + (j + 0.5) * TILE - oz);
+        if (circle && d > rad) continue;
+        const seg = this._wantSeg(i, j, ox, oz);
         if (!seg) continue;
         const k = tkey(i, j);
-        want.add(k);
-        let t = this.tiles.get(k);
-        if (!t) { t = { i, j, k, x0: -HALF + i * TILE, z0: -HALF + j * TILE, seg: 0, mesh: null, heights: null, pending: 0 }; this.tiles.set(k, t); }
-        if (t.seg !== seg && t.pending !== seg) this._requestTile(t, seg, Math.hypot(t.x0 + TILE / 2 - F.x, t.z0 + TILE / 2 - F.z) - 200);
+        const w = want.get(k);
+        if (!w) want.set(k, { i, j, seg, prio: d + prioOff });
+        else { if (seg > w.seg) w.seg = seg; if (d + prioOff < w.prio) w.prio = d + prioOff; }
       }
-    } else if (F) this.focus = null;
+    };
+    collect(cx, cz, R, false, 0);
+    const F = this.focus;
+    if (F && performance.now() < F.until) collect(F.x, F.z, F.r, true, -200);
+    else if (F) this.focus = null;
+    for (const [k, w] of want) {
+      let t = this.tiles.get(k);
+      if (!t) { t = { i: w.i, j: w.j, k, x0: -HALF + w.i * TILE, z0: -HALF + w.j * TILE, seg: 0, mesh: null, heights: null, pending: 0, job: null, req: null }; this.tiles.set(k, t); }
+      if (t.seg === w.seg) {
+        // doğru çözünürlük zaten var: başka bir çözünürlük için bekleyen istek varsa iptal (eski sonuç yok sayılır)
+        if (t.pending) { t.pending = 0; t.req = null; if (t.job) { this._cancel(t.job); t.job = null; } }
+      } else if (t.pending !== w.seg) this._requestTile(t, w.seg, w.prio); // yeni istek bekleyen farklı isteği geçersiz kılar
+    }
     for (const [k, t] of this.tiles) {
       if (want.has(k)) continue;
       const d = Math.hypot(t.x0 + TILE / 2 - cx, t.z0 + TILE / 2 - cz);
@@ -303,16 +319,18 @@ if (tDepth > 0.05 && uCaustic > 0.01) {
     }
   },
 
-  _requestTile(t, seg, dist) {
+  _requestTile(t, seg, prio) {
+    if (t.job) { this._cancel(t.job); t.job = null; } // kuyrukta bekleyen eski istek (farklı LOD) iptal
     t.pending = seg;
     const myReq = { seg };
     t.req = myReq;
-    const prio = dist + (seg === HI_SEG ? -400 : 0);
-    return this._request({ t: 'tile', key: t.k, x0: t.x0, z0: t.z0, size: TILE, seg, hires: seg === HI_SEG }, prio).then((m) => {
+    const job = this._enqueue({ t: 'tile', key: t.k, x0: t.x0, z0: t.z0, size: TILE, seg, hires: seg === HI_SEG }, prio + (seg === HI_SEG ? -400 : 0));
+    t.job = job;
+    return job.promise.then((m) => {
       if (t.req !== myReq || !this.tiles.has(t.k)) return;
-      t.pending = 0;
+      t.pending = 0; t.job = null;
       this._apply(t, m);
-    }).catch((e) => { if (t.req === myReq) t.pending = 0; this.failures.push('karo ' + t.k + ': ' + (e?.message || e)); });
+    }).catch((e) => { if (t.req === myReq) { t.pending = 0; t.job = null; } this.failures.push('karo ' + t.k + ': ' + (e?.message || e)); });
   },
 
   _apply(t, m) {
@@ -338,6 +356,7 @@ if (tDepth > 0.05 && uCaustic > 0.01) {
 
   _drop(t) {
     if (t.mesh) { this.group.remove(t.mesh); t.mesh.geometry.dispose(); }
+    if (t.job) { this._cancel(t.job); t.job = null; }
     t.req = null;
     this.tiles.delete(t.k);
   },
@@ -348,7 +367,8 @@ if (tDepth > 0.05 && uCaustic > 0.01) {
     if (!this.ready) return;
     // odak: hazırlık süresince ve sonrasında 12 sn boyunca bu çevre korunur (kamera gelene kadar düşürülmez)
     this.focus = { x, z, r: opts.radius || 700, until: performance.now() + 90000 };
-    this.update(x, z, true);
+    // kamera merkezi korunur (mevcut çevre düşürülmez); odak uzak bölgeyi isteklere ekler
+    this.update(this._centered ? this.center.x : x, this._centered ? this.center.z : z, true);
     const timers = [];
     const jobs = [];
     for (const t of this.tiles.values()) {
@@ -370,6 +390,9 @@ if (tDepth > 0.05 && uCaustic > 0.01) {
     const size = 2400, res = 512;
     const w = this.depthWin;
     if (!force && w && Math.hypot(x - (w.x0 + size / 2), z - (w.z0 + size / 2)) < 520) return Promise.resolve();
+    // hazırlık odağı etkinken (ışınlanma/hızlı yolculuk) kamera henüz gelmemiş olabilir: odaktan uzak istekler penceresini ezmesin
+    const F = this.focus;
+    if (!force && F && performance.now() < F.until && Math.hypot(x - F.x, z - F.z) > 520) return Promise.resolve();
     if (this._depthPending && !force) return this._depthPending;
     const x0 = Math.round((x - size / 2) / 40) * 40, z0 = Math.round((z - size / 2) / 40) * 40;
     const seq = (this._depthSeq = (this._depthSeq || 0) + 1);
@@ -384,8 +407,15 @@ if (tDepth > 0.05 && uCaustic > 0.01) {
   },
 
   // harita/minimap ızgarası (yükseklik + biyom)
+  _gridCache: new Map(),
   requestGrid(x0, z0, size, res, prio = 200) {
-    return this._request({ t: 'grid', x0, z0, size, res }, prio);
+    const key = `${x0},${z0},${size},${res}`;
+    let p = this._gridCache.get(key);
+    if (p) return p;
+    p = this._request({ t: 'grid', x0, z0, size, res }, prio).catch((e) => { this._gridCache.delete(key); throw e; });
+    this._gridCache.set(key, p);
+    if (this._gridCache.size > 24) this._gridCache.delete(this._gridCache.keys().next().value); // en eski düşer
+    return p;
   },
 
   // ---- sorgular ----

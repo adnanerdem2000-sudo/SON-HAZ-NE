@@ -97,7 +97,10 @@ async function main() {
     }
     return real ? real(input, init) : Promise.reject(new Error('fetch yok'));
   };
-  window.__DK_WORKER_URL = URL.createObjectURL(new Blob([window.__DK_WORKER_SRC], { type: 'text/javascript' }));
+  // file:// altında köken 'null' olduğu için blob: işçisi reddedilir; data: URL her kökenden çalışır (yedek: blob)
+  window.__DK_WORKER_URL = location.protocol === 'file:'
+    ? 'data:text/javascript;charset=utf-8,' + encodeURIComponent(window.__DK_WORKER_SRC)
+    : URL.createObjectURL(new Blob([window.__DK_WORKER_SRC], { type: 'text/javascript' }));
   window.__DK_SINGLE_FILE = true;
 })();`;
 
