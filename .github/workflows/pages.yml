@@ -40,6 +40,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
+      # tek dosyalık çevrimdışı sürüm (indirilip çift tıklanarak oynanır)
+      - name: Tek dosya HTML sürümü
+        run: |
+          npm i --prefix "$RUNNER_TEMP/esb" --no-audit --no-fund esbuild@0.24.2
+          NODE_PATH="$RUNNER_TEMP/esb/node_modules" node tools/build-single-html.mjs DenizKorsanlari-SonHazine.html
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .
