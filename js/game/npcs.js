@@ -12,13 +12,14 @@ import { time, SHOP_HOURS } from '../world/time.js';
 
 // NPC görünümleri
 const LOOKS = {
-  f1: { gender: 'f', skin: 1, hairStyle: 'orgulu', hairColor: 6, hat: 'yok', shirtColor: '#2a5a7a', pantsColor: '#3b2a1a', coat: 'yelek', necklace: 'madalyon', age: 0.3 },
-  f2: { gender: 'f', skin: 4, hairStyle: 'uzun', hairColor: 0, hat: 'bandana', hatColor: '#c0392b', shirtColor: '#e8dcc2', pantsColor: '#5a2a5a', earring: 'altin', age: 0.25 },
-  f3: { gender: 'f', skin: 2, hairStyle: 'atkuyrugu', hairColor: 8, hat: 'kaptan', hatColor: '#1f3a5a', coat: 'uzun', coatColor: '#1f3a5a', necklace: 'altin', earring: 'altin', age: 0.7 },
-  m2: { gender: 'm', skin: 6, hairStyle: 'kel', beard: 'uzun', beardColor: 0, hat: 'yok', shirtColor: '#3b2a1a', pantsColor: '#2a2a2a', gloves: 'deri', tattoo: 'iki', build: 1.12, age: 0.45 },
-  m3: { gender: 'm', skin: 3, hairStyle: 'kisa', hairColor: 2, beard: 'biyik', beardColor: 2, hat: 'tricorn', hatColor: '#6b4a2c', shirtColor: '#4f6b2f', pantsColor: '#6b4a2c', coat: 'yelek', build: 1.1, age: 0.5 },
-  m4: { gender: 'm', skin: 5, hairStyle: 'daginik', hairColor: 1, beard: 'kisa', beardColor: 1, hat: 'bandana', hatColor: '#2a5a7a', shirtColor: '#e8dcc2', pantsColor: '#2a5a7a', age: 0.6 },
-  m5: { gender: 'm', skin: 2, hairStyle: 'atkuyrugu', hairColor: 3, beard: 'orgulu', beardColor: 3, hat: 'yok', shirtColor: '#a33a2a', pantsColor: '#3b2a1a', gloves: 'deri', build: 1.08, age: 0.4 },
+  f1: { gender: 'f', body: 'kahin', skin: 1, hairColor: 6, hat: 'yok', shirtColor: '#2a5a7a', coatColor: '#b8860b', pantsColor: '#3b2a1a', necklace: 'madalyon', age: 0.3 },
+  f2: { gender: 'f', body: 'cevik', skin: 4, hairColor: 0, hat: 'bandana', hatColor: '#c0392b', shirtColor: '#e8dcc2', pantsColor: '#5a2a5a', earring: 'altin', age: 0.25 },
+  f3: { gender: 'f', body: 'cevik', skin: 2, hairColor: 8, hat: 'kaptan', hatColor: '#1f3a5a', coat: 'uzun', coatColor: '#1f3a5a', necklace: 'altin', earring: 'altin', cape: 'var', age: 0.7 },
+  m2: { gender: 'm', body: 'kaba', skin: 6, beardColor: 0, hairColor: 0, hat: 'yok', shirtColor: '#3b2a1a', pantsColor: '#2a2a2a', build: 1.12, age: 0.45 },
+  m3: { gender: 'm', body: 'subay', skin: 3, hairColor: 2, beard: 'biyik', beardColor: 2, hat: 'tricorn', hatColor: '#6b4a2c', shirtColor: '#4f6b2f', pantsColor: '#6b4a2c', build: 1.1, age: 0.5 },
+  m4: { gender: 'm', body: 'kaba', skin: 5, hairColor: 1, beardColor: 1, hat: 'bandana', hatColor: '#2a5a7a', shirtColor: '#e8dcc2', pantsColor: '#2a5a7a', age: 0.6 },
+  m5: { gender: 'm', body: 'kaba', skin: 2, hairColor: 3, beardColor: 3, hat: 'yok', shirtColor: '#a33a2a', pantsColor: '#3b2a1a', build: 1.08, age: 0.4 },
+  tuzla: { gender: 'm', body: 'kaba', skin: 3, hairColor: 8, beardColor: 8, hat: 'kaptan', hatColor: '#2a1a10', coat: 'uzun', coatColor: '#4a1a1a', shirtColor: '#4a1a1a', pantsColor: '#2a2a2a', eyepatch: 'sag', necklace: 'madalyon', age: 0.95, build: 1.05 },
 };
 
 export const npcs = {
@@ -31,8 +32,9 @@ export const npcs = {
       if (spot.noModel) { this.list.push({ spot, pos: new THREE.Vector3(spot.x, terrain.heightAt(spot.x, spot.z), spot.z) }); continue; }
       let anim, root;
       if (spot.model === 'pirate') {
-        anim = new Animated('pirate', 1.75);
+        anim = new Character({ ...defaultAppearance('m'), ...LOOKS.tuzla, name: spot.name });
         root = anim.root;
+        anim.play('Sit_Chair_Idle', 0);
         anim.play('Idle', 0);
       } else {
         const app = { ...defaultAppearance(LOOKS[spot.look].gender), ...LOOKS[spot.look], name: spot.name };

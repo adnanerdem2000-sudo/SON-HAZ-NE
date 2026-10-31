@@ -29,6 +29,8 @@ import { details } from './world/details.js';
 import { terrain } from './world/terrain.js';
 import { ocean } from './world/ocean.js';
 import { post } from './core/post.js';
+import { kk } from './core/kk.js';
+import { Character } from './player/character.js';
 import { crowd } from './game/crowd.js';
 import { ui } from './ui/ui.js';
 import { hud } from './ui/hud.js';
@@ -117,7 +119,7 @@ async function boot() {
   // davet bağlantısı
   const join = new URLSearchParams(location.search).get('join');
   if (join) menu.joinScreen(join);
-  window.DK = { G, game, input, engine, post, settings, tpCamera, interact, npcs, Ship, handlers, net, ui, quests, treasure, enemies, animals, fish, fishing, shipControl, THREE, save, port, combat, effects, events, sky, time, bodies, weatherfx, details, terrain, ocean, crowd };
+  window.DK = { G, game, input, engine, post, settings, tpCamera, interact, npcs, Ship, kk, Character, handlers, net, ui, quests, treasure, enemies, animals, fish, fishing, shipControl, THREE, save, port, combat, effects, events, sky, time, bodies, weatherfx, details, terrain, ocean, crowd };
   // Test/hata ayıklama yardımcıları: oyunu render etmeden ileri sar
   window.DK.sim = (seconds, dt = 1 / 30) => {
     const n = Math.round(seconds / dt);

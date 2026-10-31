@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { clone as skeletonClone } from 'three/addons/utils/SkeletonUtils.js';
+import { kk } from './kk.js';
 
 // CC0 modeller (Quaternius & Kenney) — bkz. CREDITS.md
 export const MODEL_LIST = [
@@ -10,6 +11,9 @@ export const MODEL_LIST = [
   'rock_small', 'rock_tall', 'bush', 'bush_large', 'barrel', 'crate', 'coin', 'gem_pink', 'campfire',
   'tent', 'fence', 'log', 'stump', 'column', 'column_broken', 'obelisk', 'sword', 'axe', 'crystal',
   'flower_red', 'mushroom_red',
+  // biyom çeşitliliği (Quaternius/Kenney CC0)
+  'wolf', 'fox', 'deer', 'stag', 'husky', 'cat', 'yeti', 'zombie', 'tree_pine', 'tree_pine_tall', 'tree_dark', 'tree_autumn',
+  'cactus', 'crystal_rock', 'orc_brute', 'demon',
 ];
 
 export const assets = {
@@ -21,7 +25,9 @@ export const assets = {
     const loader = new GLTFLoader();
     loader.setMeshoptDecoder(MeshoptDecoder);
     let done = 0;
-    await Promise.all(MODEL_LIST.map(async (name) => {
+    const total = MODEL_LIST.length + kk.count();
+    const kkJob = kk.load(loader, this.base, () => { done++; if (onProgress) onProgress(done / total); });
+    await Promise.all([kkJob, ...MODEL_LIST.map(async (name) => {
       const gltf = await loader.loadAsync(`${this.base}assets/models/${name}.glb`);
       gltf.scene.traverse((o) => {
         if (o.isMesh) {
@@ -33,8 +39,8 @@ export const assets = {
       if (name === 'crate') gltf.scene.traverse((o) => { if (o.isMesh) { o.material = o.material.clone(); o.material.color.lerp(new THREE.Color(0x8a5a32), 0.75); } });
       this.models[name] = gltf;
       done++;
-      if (onProgress) onProgress(done / MODEL_LIST.length);
-    }));
+      if (onProgress) onProgress(done / total);
+    })]);
   },
 
   // Animasyonlu modeller için iskelet kopyası

@@ -4,6 +4,7 @@ import { SKIN_TONES, HAIR_COLORS, EYE_COLORS } from './appearance.js';
 import { woodPlanks } from '../core/textures.js';
 import { clamp, lerp } from '../core/util.js';
 import { rimAll } from '../core/rim.js';
+import { kk, KK_ROLES } from '../core/kk.js';
 
 const C = (hex) => new THREE.Color(hex);
 const std = (color, o = {}) => new THREE.MeshStandardMaterial({ color, roughness: 0.75, ...o });
@@ -306,8 +307,63 @@ export function makeTorch() {
   return g;
 }
 
-// ---------- Karakter ----------
-const BASE = { m: 'adventurer', f: 'hooded_adventurer' };
+// ---------- Karakter (KayKit tabanlı) ----------
+// Gövde tipleri: KayKit macera karakterleri. Doğrudan şablon kimliği (ör. iskelet düşmanlar) app.base ile verilebilir.
+export const BODY_BASES = { kaba: 'barbarian', subay: 'knight', cevik: 'rogue', kukuleta: 'rogue_hooded', kahin: 'mage' };
+export function baseOf(app) {
+  if (app.base && kk.templates[app.base]) return app.base;
+  return BODY_BASES[app.body] || (app.gender === 'f' ? 'rogue' : 'barbarian');
+}
+const TARGET_H = 1.8;
+// eski (Quaternius) kemik adları → KayKit
+const BONE_ALIAS = {
+  Head: 'head', Neck: 'head', Chest: 'chest', Torso: 'chest', Abdomen: 'spine', Spine: 'spine', Hips: 'hips',
+  UpperArmL: 'upperarml', UpperArmR: 'upperarmr', LowerArmL: 'lowerarml', LowerArmR: 'lowerarmr', WristL: 'wristl', WristR: 'wristr',
+  UpperLegL: 'upperlegl', UpperLegR: 'upperlegr', LowerLegL: 'lowerlegl', LowerLegR: 'lowerlegr', FootL: 'footl', FootR: 'footr',
+};
+
+function colorsOf(app, id) {
+  const roles = KK_ROLES[id];
+  if (!roles) return null;
+  const hair = C(HAIR_COLORS[app.hairColor] ?? HAIR_COLORS[1]).lerp(C('#c8c8c8'), clamp(((app.age ?? 0.2) - 0.55) * 1.8, 0, 0.85));
+  const coat = app.coat === 'uzun' ? app.coatColor : app.shirtColor;
+  const c = { skin: SKIN_TONES[app.skin] ?? SKIN_TONES[2], hair: '#' + hair.getHexString(), coat, pants: app.pantsColor, boots: app.bootsColor, leather: app.beltColor };
+  if (roles.coatDark) c.coatDark = '#' + C(coat).multiplyScalar(0.72).getHexString();
+  if (roles.accent) c.accent = app.coatColor;
+  return c;
+}
+
+// ---- IK yardımcıları (dünya uzayında) ----
+const _A = new THREE.Vector3(), _B = new THREE.Vector3(), _Cc = new THREE.Vector3(), _T = new THREE.Vector3(), _D = new THREE.Vector3(), _P = new THREE.Vector3(), _N = new THREE.Vector3();
+const _q = new THREE.Quaternion(), _qw = new THREE.Quaternion(), _qp = new THREE.Quaternion();
+function rotateBoneWorld(bone, from, to, w) {
+  if (from.lengthSq() < 1e-8 || to.lengthSq() < 1e-8) return;
+  _q.setFromUnitVectors(from.normalize(), to.normalize());
+  if (w < 1) _q.slerp(_qp.identity(), 1 - w);
+  bone.getWorldQuaternion(_qw);
+  _qw.premultiply(_q);
+  bone.parent.getWorldQuaternion(_qp);
+  bone.quaternion.copy(_qp.invert().multiply(_qw));
+  bone.updateMatrixWorld(true);
+}
+// iki kemikli analitik IK: uç (end) hedefe ulaşır, dirsek/diz kutup (pole) yönüne bükülür
+function twoBoneIK(upper, lower, end, target, pole, w = 1) {
+  upper.getWorldPosition(_A); lower.getWorldPosition(_B); end.getWorldPosition(_Cc);
+  const l1 = _A.distanceTo(_B), l2 = _B.distanceTo(_Cc);
+  _T.copy(target);
+  _D.subVectors(_T, _A);
+  const dist = clamp(_D.length(), Math.abs(l1 - l2) + 1e-3, l1 + l2 - 1e-3);
+  _D.normalize();
+  const cosA = clamp((l1 * l1 + dist * dist - l2 * l2) / (2 * l1 * dist), -1, 1);
+  const sinA = Math.sqrt(1 - cosA * cosA);
+  _P.copy(pole).addScaledVector(_D, -pole.dot(_D));
+  if (_P.lengthSq() < 1e-6) _P.set(0, 0, 1).addScaledVector(_D, -_D.z);
+  _P.normalize();
+  const want = _N.copy(_A).addScaledVector(_D, cosA * l1).addScaledVector(_P, sinA * l1);
+  rotateBoneWorld(upper, _B.clone().sub(_A), want.clone().sub(_A), w);
+  lower.getWorldPosition(_B); end.getWorldPosition(_Cc);
+  rotateBoneWorld(lower, _Cc.clone().sub(_B), _T.clone().sub(_B), w);
+}
 
 export class Character {
   constructor(appearance, opts = {}) {
@@ -317,296 +373,170 @@ export class Character {
     this.held = null;
     this.heldType = null;
     this.overlay = {};
+    this.ik = {};
     this.build(appearance);
   }
 
   build(app) {
     this.app = { ...app };
-    if (this.model) this.root.remove(this.model);
-    const name = BASE[app.gender] || 'adventurer';
-    const model = assets.clone(name);
+    if (this.model) { this.mixer?.stopAllAction(); this.root.remove(this.model); }
+    const id = baseOf(app);
+    this.baseId = id;
+    const model = kk.clone(id);
+    const info = kk.info[id];
+    const s = TARGET_H / info.height;
+    this.modelScale = s;
+    model.scale.setScalar(s);
+    model.position.y = -info.minY * s;
+    this.baseY = model.position.y;
     this.model = model;
     this.root.add(model);
+    // kemikler (+ eski adlar)
     this.bones = {};
+    model.traverse((o) => { if (o.isBone) this.bones[o.name] = o; });
+    for (const k in BONE_ALIAS) if (this.bones[BONE_ALIAS[k]]) this.bones[k] = this.bones[BONE_ALIAS[k]];
+    // malzemeler ve renkler
+    const tex = kk.texture(id, colorsOf(this.app, id));
     model.traverse((o) => {
-      if (o.isBone) this.bones[o.name] = o;
-      if (o.isMesh) {
-        o.castShadow = true; o.receiveShadow = true;
-        o.frustumCulled = false;
-        if (Array.isArray(o.material)) o.material = o.material.map((m) => m.clone());
-        else o.material = o.material.clone();
-        if (o.name.startsWith('Backpack') || o.name.startsWith('Sword')) o.visible = false;
-      }
+      if (!o.isMesh) return;
+      o.castShadow = true; o.receiveShadow = true; o.frustumCulled = false;
+      o.material = o.material.clone();
+      if (o.isSkinnedMesh && tex) o.material.map = tex;
+      if (/Cape$/.test(o.name) && tex) o.material.map = tex;
+      if (/_Hat$|_Helmet$|_Hood$/.test(o.name) && !o.isSkinnedMesh) o.visible = app.hat === 'orijinal';
+      if (/_Cape$/.test(o.name)) o.visible = app.cape === 'var';
     });
     this.mixer = new THREE.AnimationMixer(model);
-    this.clips = {};
-    for (const c of assets.animations(name)) this.clips[c.name.split('|').pop()] = c;
     this.actions = {};
     this.current = null;
-    this._applyColors();
+    this.currentName = null;
     this._accessories();
     this._bodyShape();
     rimAll(this.root);
     this.play('Idle', 0);
   }
 
-  _matsByName(meshFilter, name) {
-    const out = [];
-    this.model.traverse((o) => {
-      if (!o.isMesh || (meshFilter && !meshFilter(o.name))) return;
-      const ms = Array.isArray(o.material) ? o.material : [o.material];
-      for (const m of ms) if (m.name === name) out.push(m);
-    });
-    return out;
-  }
+  has(name) { return !!kk.clip(name); }
+  get clips() { return kk.clips; }
 
-  _applyColors() {
-    const a = this.app;
-    const skin = C(SKIN_TONES[a.skin] || SKIN_TONES[2]);
-    let hair = C(HAIR_COLORS[a.hairColor] || HAIR_COLORS[1]);
-    // yaş: saçlar kırlaşır
-    hair.lerp(C('#c8c8c8'), clamp((a.age - 0.55) * 1.8, 0, 0.85));
-    const eye = C(EYE_COLORS[a.eyeColor] || EYE_COLORS[0]);
-    const shirt = C(a.coat === 'uzun' ? a.coatColor : a.shirtColor);
-    const shirt2 = C(a.coat === 'yelek' ? '#4a2e18' : a.coat === 'uzun' ? a.coatColor : a.shirtColor).multiplyScalar(0.85);
-    const pants = C(a.pantsColor), boots = C(a.bootsColor);
-    const set = (filter, name, col) => this._matsByName(filter, name).forEach((m) => m.color.copy(col));
-    if (a.gender === 'm') {
-      set(null, 'Skin', skin);
-      set(null, 'Hair', a.hairStyle === 'kel' ? skin.clone().multiplyScalar(0.92) : hair);
-      set(null, 'Eyebrows', hair.clone().multiplyScalar(0.8));
-      set(null, 'Eye', eye.clone().multiplyScalar(0.6));
-      set(null, 'Green', shirt2);
-      set(null, 'LightGreen', shirt);
-      set((n) => n.startsWith('Adventurer_Legs'), 'Brown2', pants.clone().multiplyScalar(0.85));
-      set((n) => n.startsWith('Adventurer_Legs'), 'Brown', pants);
-      set(null, 'Black', boots);
-      set(null, 'Grey', boots.clone().multiplyScalar(1.4));
-    } else {
-      const head = (n) => n.startsWith('Medieval_Head');
-      const body = (n) => n.startsWith('Medieval_Body');
-      set(null, 'Skin', skin);
-      set(head, 'White', a.hairStyle === 'kel' ? skin : hair);
-      // başlık: saç rengine boyanır (gür saç gibi görünür) ya da bandana
-      set(head, 'DarkBrown', a.hairStyle === 'kel' ? skin.clone().multiplyScalar(0.95) : hair.clone().multiplyScalar(0.9));
-      set(head, 'Black', hair.clone().multiplyScalar(0.6));
-      set(head, 'Brown', eye.clone().multiplyScalar(0.6));
-      set(body, 'LightBrown', shirt);
-      set(body, 'DarkBrown', shirt2);
-      set(body, 'Black', C(a.shirtColor).multiplyScalar(0.5));
-      set(body, 'Metal', C(a.coat === 'uzun' ? a.coatColor : '#5a3a20').multiplyScalar(0.9));
-      set((n) => n.startsWith('Medieval_Legs'), 'Black', pants);
-      set((n) => n.startsWith('Medieval_Feet'), 'LightBrown', boots.clone().multiplyScalar(1.3));
-      set((n) => n.startsWith('Medieval_Feet'), 'DarkBrown', boots);
-    }
-  }
+  _matsByName() { return []; }
 
-  // Aksesuarları dinlenme pozunda model uzayında konumlandırıp kemiğe bağlar
+  // Aksesuarlar: KayKit kafasına göre ölçeklenip kemiklere bağlanır
   _accessories() {
     const a = this.app;
     const model = this.model;
-    // dinlenme pozunu kesinleştir
-    // (yeni kopyalanmış model zaten dinlenme pozunda; skeleton.pose() ölçekli iskelette bozar)
+    const info = kk.info[this.baseId];
     model.updateMatrixWorld(true);
-    const head = this.bones.Head, chest = this.bones.Chest || this.bones.Torso, hips = this.bones.Hips;
-    const headPos = new THREE.Vector3();
-    head.getWorldPosition(headPos);
-    // root dönüşümünden bağımsız model uzayı
     const inv = new THREE.Matrix4().copy(model.matrixWorld).invert();
-    headPos.applyMatrix4(inv);
-    const hc = headPos.clone().add(new THREE.Vector3(0, 0.13, 0.0)); // kafa merkezi
-    const f = a.gender === 'f' ? 0.96 : 1;
-    const attach = (bone, obj, x, y, z) => {
+    const B = this.bones;
+    const head = B.head, chest = B.chest, hips = B.hips;
+    const hp = head.getWorldPosition(new THREE.Vector3()).applyMatrix4(inv);
+    const H = info.head;
+    const hc = hp.clone().add(H.center); // kafa merkezi (model uzayı)
+    const hs = H.size.x / 0.36; // eski aksesuar ölçüsüne oran (kafa genişliği; sakal/kulak payı dahil)
+    const top = hp.y + H.top;
+    const front = hp.z + H.front;
+    const isSkel = /^sk_/.test(this.baseId);
+    const attach = (bone, obj, x, y, z, sc = 1) => {
       obj.position.set(x, y, z);
+      obj.scale.multiplyScalar(sc);
       model.add(obj);
       obj.updateMatrixWorld(true);
       bone.attach(obj);
       return obj;
     };
-    const hairCol = C(HAIR_COLORS[a.hairColor] || HAIR_COLORS[1]).lerp(C('#c8c8c8'), clamp((a.age - 0.55) * 1.8, 0, 0.85));
-    const beardCol = C(HAIR_COLORS[a.beardColor] ?? HAIR_COLORS[1]).lerp(C('#c8c8c8'), clamp((a.age - 0.5) * 1.8, 0, 0.9));
+    const beardCol = C(HAIR_COLORS[a.beardColor] ?? HAIR_COLORS[1]).lerp(C('#c8c8c8'), clamp(((a.age ?? 0.2) - 0.5) * 1.8, 0, 0.9));
     // şapka
-    if (a.hat !== 'yok') {
+    if (a.hat && a.hat !== 'yok' && a.hat !== 'orijinal') {
       const hat = a.hat === 'tricorn' ? tricorn(a.hatColor) : a.hat === 'kaptan' ? captainHat(a.hatColor) : a.hat === 'korsan' ? pirateHat(a.hatColor) : bandana(a.hatColor);
-      const yOff = a.hat === 'bandana' ? 0.0 : 0.08;
-      hat.scale.setScalar(f * (a.gender === 'f' && a.hat !== 'bandana' ? 1.08 : 1));
-      attach(head, shadowAll(hat), hc.x, hc.y + yOff + (a.gender === 'f' ? 0.025 : 0), hc.z - 0.01);
+      const yOff = a.hat === 'bandana' ? H.size.y * 0.2 : a.hat === 'korsan' ? H.size.y * 0.36 : H.size.y * 0.32;
+      attach(head, shadowAll(hat), hc.x, hc.y + yOff, hc.z - H.size.z * 0.02, hs * (a.hat === 'bandana' ? 1.22 : 1.08));
     }
-    // saç
-    if (a.hairStyle !== 'kel' && a.hairStyle !== 'kisa') {
-      const h = hairMesh(a.hairStyle, '#' + hairCol.getHexString());
-      attach(head, shadowAll(h), hc.x, hc.y, hc.z);
-    }
-    // sakal
-    if (a.beard !== 'yok' && a.gender === 'm') {
+    // sakal (yerleşik sakalı olmayan gövdeler için)
+    if (!isSkel && a.beard && a.beard !== 'yok' && this.baseId !== 'barbarian') {
       const b = beardMesh(a.beard, '#' + beardCol.getHexString());
-      attach(head, shadowAll(b), hc.x, hc.y - 0.07, hc.z + 0.0);
+      attach(head, shadowAll(b), hc.x, hc.y - H.size.y * 0.16, front - H.size.z * 0.4, hs * 1.35);
     }
     // göz bandı
-    if (a.eyepatch !== 'yok') {
+    if (a.eyepatch && a.eyepatch !== 'yok') {
       const g = new THREE.Group();
       const black = std('#111', { roughness: 0.7 });
-      const s = a.eyepatch === 'sol' ? 1 : -1;
-      const patch = new THREE.Mesh(new THREE.CircleGeometry(0.03, 12), black);
-      patch.position.set(s * 0.04, 0.01, 0.118);
-      const strap = new THREE.Mesh(new THREE.TorusGeometry(0.118, 0.005, 4, 32), black);
-      strap.rotation.set(Math.PI / 2 - 0.25 * s, 0, 0.35 * s);
-      strap.scale.set(1.0, 1.08, 1);
+      const sgn = a.eyepatch === 'sol' ? 1 : -1;
+      const patch = new THREE.Mesh(new THREE.CircleGeometry(0.03, 14), black);
+      patch.position.set(sgn * 0.045, 0.0, 0.122);
+      const strap = new THREE.Mesh(new THREE.TorusGeometry(0.122, 0.006, 4, 32), black);
+      strap.rotation.set(Math.PI / 2 - 0.25 * sgn, 0, 0.35 * sgn);
       g.add(patch, strap);
-      attach(head, g, hc.x, hc.y + 0.0, hc.z);
+      attach(head, g, hc.x, hc.y - H.size.y * 0.02, hc.z + (front - hc.z) - 0.122 * hs, hs);
     }
     // yara izi / yüz işaretleri
-    if (a.scar !== 'yok') {
+    if (a.scar && a.scar !== 'yok') {
       const sc = new THREE.Mesh(new THREE.PlaneGeometry(0.012, a.scar === 'alin' ? 0.05 : 0.08), std('#7a2a22', { roughness: 1 }));
-      if (a.scar === 'yanak') sc.position.set(-0.06, -0.04, 0.105), sc.rotation.set(0, -0.5, 0.4);
-      else if (a.scar === 'goz') sc.position.set(0.042, 0.015, 0.12), sc.rotation.set(0, 0.25, 0.15);
-      else sc.position.set(0.02, 0.08, 0.12), sc.rotation.set(-0.3, 0, 1.2);
+      if (a.scar === 'yanak') sc.position.set(-0.06, -0.04, 0.115), sc.rotation.set(0, -0.5, 0.4);
+      else if (a.scar === 'goz') sc.position.set(0.042, 0.015, 0.124), sc.rotation.set(0, 0.25, 0.15);
+      else sc.position.set(0.02, 0.07, 0.122), sc.rotation.set(-0.3, 0, 1.2);
       const g = new THREE.Group(); g.add(sc);
-      attach(head, g, hc.x, hc.y, hc.z);
+      attach(head, g, hc.x, hc.y, front - 0.125 * hs, hs);
     }
     if (a.facemark === 'boya') {
       const g = new THREE.Group();
-      for (const s of [-1, 1]) {
+      for (const sgn of [-1, 1]) {
         const m = new THREE.Mesh(new THREE.PlaneGeometry(0.05, 0.012), std('#1a1a40', { roughness: 1 }));
-        m.position.set(s * 0.06, -0.02, 0.108); m.rotation.y = s * 0.55;
+        m.position.set(sgn * 0.06, -0.02, 0.115); m.rotation.y = sgn * 0.55;
         g.add(m);
       }
-      attach(head, g, hc.x, hc.y, hc.z);
-    } else if (a.facemark === 'cil') {
-      const g = new THREE.Group();
-      const mat = std('#8a5a3a', { roughness: 1 });
-      for (let i = 0; i < 10; i++) {
-        const s = i % 2 ? 1 : -1;
-        const m = new THREE.Mesh(new THREE.CircleGeometry(0.004, 5), mat);
-        m.position.set(s * (0.03 + (i % 5) * 0.008), -0.02 + (i % 3) * 0.008, 0.112);
-        m.rotation.y = s * 0.4;
-        g.add(m);
-      }
-      attach(head, g, hc.x, hc.y, hc.z);
+      attach(head, g, hc.x, hc.y, front - 0.12 * hs, hs);
     }
     // küpe
-    if (a.earring !== 'yok') {
-      const r = new THREE.Mesh(new THREE.TorusGeometry(0.014, 0.003, 4, 10), std(a.earring === 'altin' ? '#d4af37' : '#d0d4d8', { metalness: 0.8, roughness: 0.25 }));
-      r.rotation.y = Math.PI / 2;
-      attach(head, r, hc.x - 0.105 * f, hc.y - 0.04, hc.z - 0.01);
-    }
-    // burun/çene şekli (küçük ek hacimler)
-    if (a.nose !== 'normal') {
-      const n = new THREE.Mesh(new THREE.ConeGeometry(a.nose === 'iri' ? 0.022 : 0.016, 0.04, 6), std(SKIN_TONES[a.skin], { roughness: 0.8 }));
-      if (a.nose === 'kanca') { n.rotation.x = Math.PI / 2 + 0.5; n.position.set(0, -0.005, 0.135); }
-      else if (a.nose === 'kalkik') { n.rotation.x = Math.PI / 2 - 0.5; n.position.set(0, -0.015, 0.13); }
-      else { n.rotation.x = Math.PI / 2; n.position.set(0, -0.01, 0.13); n.scale.set(1.3, 1, 1.1); }
-      const g = new THREE.Group(); g.add(n);
-      attach(head, g, hc.x, hc.y, hc.z);
+    if (a.earring && a.earring !== 'yok') {
+      for (const sgn of [1, -1]) {
+        const r = new THREE.Mesh(new THREE.TorusGeometry(0.016, 0.0035, 4, 12), std(a.earring === 'altin' ? '#d4af37' : '#d0d4d8', { metalness: 0.8, roughness: 0.25 }));
+        r.rotation.y = Math.PI / 2;
+        attach(head, r, hc.x + sgn * H.size.x * 0.49, hc.y - H.size.y * 0.12, hc.z, hs);
+      }
     }
     // kolye
-    if (a.necklace !== 'yok') {
+    if (a.necklace && a.necklace !== 'yok') {
       const g = new THREE.Group();
       const gold = std('#d4af37', { metalness: 0.75, roughness: 0.3 });
-      const chain = new THREE.Mesh(new THREE.TorusGeometry(0.085, 0.005, 4, 24), gold);
-      chain.rotation.x = Math.PI / 2 + 0.5;
+      const chain = new THREE.Mesh(new THREE.TorusGeometry(0.085, 0.006, 4, 24), gold);
+      chain.rotation.x = Math.PI / 2 + 0.45;
       g.add(chain);
-      const pend = new THREE.Mesh(a.necklace === 'madalyon' ? new THREE.CylinderGeometry(0.03, 0.03, 0.008, 14) : new THREE.SphereGeometry(0.018, 8, 6), a.necklace === 'madalyon' ? std('#b8860b', { metalness: 0.8, roughness: 0.3, emissive: '#3a2a00' }) : std('#c0392b', { roughness: 0.3 }));
-      pend.rotation.x = Math.PI / 2;
-      pend.position.set(0, -0.06, 0.07);
+      const pend = new THREE.Mesh(a.necklace === 'madalyon' ? new THREE.CylinderGeometry(0.032, 0.032, 0.01, 14) : new THREE.SphereGeometry(0.02, 8, 6), a.necklace === 'madalyon' ? std('#b8860b', { metalness: 0.8, roughness: 0.3, emissive: '#3a2a00' }) : std('#c0392b', { roughness: 0.3 }));
+      pend.rotation.x = Math.PI / 2; pend.position.set(0, -0.07, 0.08);
       g.add(pend);
-      attach(chest, g, hc.x, hc.y - 0.27, hc.z + 0.0);
+      const cp = chest.getWorldPosition(new THREE.Vector3()).applyMatrix4(inv);
+      attach(chest, g, cp.x, hp.y - H.size.y * 0.05, cp.z + 0.06 * hs, hs * 1.15);
     }
-    // ceket etekleri
-    if (a.coat === 'uzun') {
+    // ceket etekleri (uzun korsan ceketi)
+    if (a.coat === 'uzun' && !isSkel) {
       const m = std(a.coatColor, { roughness: 0.9, side: THREE.DoubleSide });
       const g = new THREE.Group();
-      for (const s of [-1, 1]) {
-        const tail = new THREE.Mesh(new THREE.BoxGeometry(0.17, 0.55, 0.02), m);
-        tail.position.set(s * 0.1, -0.3, -0.1); tail.rotation.set(0.12, 0, s * 0.06);
+      for (const sgn of [-1, 1]) {
+        const tail = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.5, 0.02), m);
+        tail.position.set(sgn * 0.11, -0.3, -0.13); tail.rotation.set(0.14, 0, sgn * 0.08);
         g.add(tail);
-        const side = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.5, 0.16), m);
-        side.position.set(s * 0.17, -0.27, 0.0); side.rotation.z = s * 0.08;
-        g.add(side);
       }
-      const gold = std('#d4af37', { metalness: 0.7, roughness: 0.3 });
-      for (let i = 0; i < 3; i++) {
-        const btn = new THREE.Mesh(new THREE.SphereGeometry(0.012, 6, 4), gold);
-        btn.position.set(0.07, 0.25 - i * 0.09, 0.13);
-        g.add(btn);
-      }
-      attach(hips, shadowAll(g), 0, (this.bones.Hips.getWorldPosition(new THREE.Vector3()).applyMatrix4(inv)).y, 0);
+      const hy = hips.getWorldPosition(new THREE.Vector3()).applyMatrix4(inv).y;
+      attach(hips, shadowAll(g), 0, hy, 0, H.size.x / 0.42);
     }
-    // kemer / kuşak
+    // kın (kalça)
     {
-      const hipY = this.bones.Hips.getWorldPosition(new THREE.Vector3()).applyMatrix4(inv).y;
+      const hy = hips.getWorldPosition(new THREE.Vector3()).applyMatrix4(inv).y;
       const g = new THREE.Group();
-      const belt = new THREE.Mesh(new THREE.TorusGeometry(0.15, a.belt === 'kusak' ? 0.03 : 0.018, 6, 24), std(a.belt === 'kusak' ? a.coatColor : a.beltColor, { roughness: 0.8 }));
-      belt.rotation.x = Math.PI / 2; belt.scale.set(1, 0.72, 1);
-      g.add(belt);
-      if (a.belt === 'kemer') {
-        const buckle = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.04, 0.01), std('#c9a227', { metalness: 0.7, roughness: 0.3 }));
-        buckle.position.set(0, 0, 0.11);
-        g.add(buckle);
-      }
-      // kın
       const sheath = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.62, 0.05), std('#2a1a0a'));
-      sheath.position.set(-0.16, -0.22, -0.04); sheath.rotation.set(0.35, 0, 0.18);
+      sheath.position.set(-0.17, -0.2, -0.06); sheath.rotation.set(0.35, 0, 0.18);
       g.add(sheath);
       this.sheath = sheath;
-      attach(hips, shadowAll(g), 0, hipY + 0.06 * (a.gender === 'f' ? 0.8 : 1), 0.0);
+      sheath.visible = !isSkel;
+      attach(hips, shadowAll(g), 0, hy, 0, 1 / this.modelScale);
     }
-    // dövmeler
-    if (a.tattoo !== 'yok') {
-      const arms = a.tattoo === 'iki' ? ['UpperArmL', 'UpperArmR'] : ['UpperArmR'];
-      for (const an of arms) {
-        const b = this.bones[an];
-        if (!b) continue;
-        const bp = b.getWorldPosition(new THREE.Vector3()).applyMatrix4(inv);
-        const child = this.bones[an.replace('Upper', 'Lower')];
-        const cp = child.getWorldPosition(new THREE.Vector3()).applyMatrix4(inv);
-        const mid = bp.clone().lerp(cp, 0.55);
-        const band = new THREE.Mesh(new THREE.TorusGeometry(0.042, 0.009, 4, 14), std('#1d2f55', { roughness: 0.9 }));
-        const dir = cp.clone().sub(bp).normalize();
-        band.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), dir);
-        attach(b, band, mid.x, mid.y, mid.z);
-      }
-    }
-    // eldivenler
-    if (a.gloves === 'deri') {
-      for (const an of ['WristL', 'WristR']) {
-        const b = this.bones[an];
-        if (!b) continue;
-        const bp = b.getWorldPosition(new THREE.Vector3()).applyMatrix4(inv);
-        const cuff = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.038, 0.08, 10), std('#4a2e18'));
-        const lower = this.bones[an.replace('Wrist', 'LowerArm')].getWorldPosition(new THREE.Vector3()).applyMatrix4(inv);
-        cuff.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), bp.clone().sub(lower).normalize());
-        attach(b, cuff, bp.x, bp.y, bp.z);
-      }
-    }
-    // el bağlantı noktası (silah/alet)
-    const wr = this.bones['WristR'];
-    const wp = wr.getWorldPosition(new THREE.Vector3()).applyMatrix4(inv);
-    const lr = this.bones['LowerArmR'].getWorldPosition(new THREE.Vector3()).applyMatrix4(inv);
-    const handDir = wp.clone().sub(lr).normalize();
-    const socket = new THREE.Group();
-    socket.name = 'handR';
-    // avuç: bileğin biraz ilerisi, yön: önkol doğrultusu = -Y yerel eksen
-    socket.position.copy(wp).addScaledVector(handDir, 0.07);
-    socket.quaternion.setFromUnitVectors(new THREE.Vector3(0, -1, 0), handDir);
-    model.add(socket);
-    socket.updateMatrixWorld(true);
-    wr.attach(socket);
-    this.handR = socket;
-    const wl = this.bones['WristL'];
-    const wlp = wl.getWorldPosition(new THREE.Vector3()).applyMatrix4(inv);
-    const ll = this.bones['LowerArmL'].getWorldPosition(new THREE.Vector3()).applyMatrix4(inv);
-    const ldir = wlp.clone().sub(ll).normalize();
-    const socketL = new THREE.Group();
-    socketL.position.copy(wlp).addScaledVector(ldir, 0.07);
-    socketL.quaternion.setFromUnitVectors(new THREE.Vector3(0, -1, 0), ldir);
-    model.add(socketL);
-    socketL.updateMatrixWorld(true);
-    wl.attach(socketL);
-    this.handL = socketL;
-    // sırt bağlantısı (kürek/olta taşımak için)
+    // el yuvaları (KayKit handslot kemikleri)
+    this.handR = B.handslotr || B.wristr;
+    this.handL = B.handslotl || B.wristl;
     const back = new THREE.Group();
-    back.position.set(0, (chest.getWorldPosition(new THREE.Vector3()).applyMatrix4(inv)).y, -0.16);
+    const cy = chest.getWorldPosition(new THREE.Vector3()).applyMatrix4(inv).y;
+    back.position.set(0, cy + 0.05, -0.25);
     model.add(back); back.updateMatrixWorld(true); chest.attach(back);
     this.back = back;
     if (this.heldType) { const t = this.heldType; this.heldType = null; this.hold(t); }
@@ -616,51 +546,71 @@ export class Character {
     const a = this.app;
     this.root.scale.setScalar(a.height || 1);
     const b = a.build || 1;
-    const fs = { oval: [1, 1, 1], genis: [1.08, 0.97, 1.02], ince: [0.93, 1.05, 0.98], koseli: [1.05, 1.0, 1.05] }[a.face] || [1, 1, 1];
-    const chin = a.chin === 'sivri' ? 0.98 : a.chin === 'genis' ? 1.04 : 1;
+    const fs = { oval: [1, 1, 1], genis: [1.07, 0.97, 1.02], ince: [0.94, 1.04, 0.98], koseli: [1.04, 1.0, 1.04] }[a.face] || [1, 1, 1];
     const tz = lerp(1, b, 0.7);
-    // kemik ölçek çarpanları (mixer'dan sonra her karede uygulanır)
     this.shape = [];
     const add = (name, x, y, z) => {
       const bone = this.bones[name];
       if (bone) this.shape.push({ bone, base: bone.scale.clone(), f: new THREE.Vector3(x, y, z) });
     };
-    add('Torso', b, 1, tz);
-    add('Hips', lerp(1, b, 0.5), 1, lerp(1, b, 0.5));
-    add('Head', (fs[0] * chin) / b, fs[1], fs[2] / tz);
+    add('chest', b, 1, tz);
+    add('hips', lerp(1, b, 0.5), 1, lerp(1, b, 0.5));
+    add('head', fs[0] / b, fs[1], fs[2] / tz);
   }
 
-  // Eldeki eşya
+  // Eldeki eşya: korsan eşyaları (prosedürel) ya da KayKit silahları ("kk:" önekli adlar)
   hold(type) {
     if (this.heldType === type) return;
     if (this.held) { this.held.parent?.remove(this.held); this.held = null; }
-    if (this.backItem) { this.backItem.parent?.remove(this.backItem); this.backItem = null; }
+    if (this.heldL) { this.heldL.parent?.remove(this.heldL); this.heldL = null; }
     this.heldType = type;
-    if (this.sheath) this.sheath.visible = type !== 'sword';
+    if (this.sheath) this.sheath.visible = type !== 'sword' && !/^sk_/.test(this.baseId);
+    if (!type) return;
+    if (type.startsWith('kk:')) {
+      const names = type.slice(3).split('+');
+      names.forEach((n, i) => {
+        const it = kk.item(n) || this._kitItem(n);
+        if (!it) return;
+        const slot = (it.slot === 'handslotl' || i > 0) ? this.handL : this.handR;
+        slot.add(it.obj);
+        rimAll(it.obj);
+        if (i === 0) this.held = it.obj; else this.heldL = it.obj;
+      });
+      return;
+    }
     let o = null;
     if (type === 'sword') o = makeSword();
     else if (type === 'pistol') o = makePistol();
     else if (type === 'shovel') o = makeShovel();
     else if (type === 'rod') o = makeRod();
     else if (type === 'torch') o = makeTorch();
-    if (o) {
-      // yerel: el soketi -Y = önkol yönü; eşyalar +Y boyunca uzanır, avuçta kavranır
-      if (type === 'sword') { o.rotation.set(Math.PI / 2, 0, 0); o.position.set(0, 0, 0); }
-      else if (type === 'pistol') { o.rotation.set(Math.PI / 2, 0, 0); o.position.set(0, 0.0, -0.02); }
-      else if (type === 'shovel') { o.rotation.set(Math.PI / 2, 0, 0); o.position.set(0, 0, -0.25); }
-      else if (type === 'rod') { o.rotation.set(Math.PI / 2 - 0.3, 0, 0); o.position.set(0, 0, -0.1); }
-      else if (type === 'torch') { o.rotation.set(Math.PI / 2 - 0.4, 0, 0); }
-      rimAll(o);
-      this.handR.add(o);
-      this.held = o;
-    }
+    if (!o) return;
+    // KayKit el yuvası: +Y avuçtan dışarı (bilek doğrultusu), +Z başparmak yönü
+    const g = new THREE.Group();
+    g.add(o);
+    if (type === 'sword') { o.rotation.set(0, 0, 0); o.position.set(0, -0.04, 0); }
+    else if (type === 'pistol') { o.rotation.set(-Math.PI / 2, 0, 0); o.position.set(0, 0.0, 0.02); }
+    else if (type === 'shovel') { o.rotation.set(0, 0, 0); o.position.set(0, -0.3, 0); }
+    else if (type === 'rod') { o.rotation.set(0.25, 0, 0); o.position.set(0, -0.15, 0); }
+    else if (type === 'torch') { o.rotation.set(0.35, 0, 0); o.position.set(0, -0.1, 0); }
+    g.scale.setScalar(1 / this.modelScale);
+    rimAll(g);
+    this.handR.add(g);
+    this.held = g;
+    o.userData && (g.userData = o.userData);
+  }
+  _kitItem(n) {
+    if (!kk.kits.weapons?.[n]) return null;
+    const obj = kk.part('weapons', n);
+    obj.rotation.set(0, Math.PI, 0); obj.position.set(0, 0.033, 0);
+    return { obj, slot: /Shield/.test(n) ? 'handslotl' : 'handslotr' };
   }
 
   play(name, fade = 0.2, opts = {}) {
-    const clip = this.clips[name];
+    const clip = kk.clip(name);
     if (!clip) return null;
-    let action = this.actions[name];
-    if (!action) action = this.actions[name] = this.mixer.clipAction(clip);
+    let action = this.actions[clip.name];
+    if (!action) action = this.actions[clip.name] = this.mixer.clipAction(clip);
     if (this.current === action && !opts.restart) { if (opts.speed) action.timeScale = opts.speed; return action; }
     action.reset();
     action.enabled = true;
@@ -678,88 +628,111 @@ export class Character {
 
   setSpeed(s) { if (this.current) this.current.timeScale = s; }
 
-  // Prosedürel ek pozlar (taşıma, kürek çekme, dümen vb.) — mixer güncellemesinden sonra uygulanır
+  tint(color, emissive = null, opacity = null) {
+    this.model.traverse((o) => {
+      if (!o.isMesh) return;
+      const m = o.material;
+      if (color) m.color.multiply(C(color));
+      if (emissive) { m.emissive = C(emissive); m.emissiveIntensity = 0.6; }
+      if (opacity !== null) { m.transparent = true; m.opacity = opacity; m.depthWrite = false; }
+    });
+  }
+
+  // karakter uzayındaki bir noktayı dünyaya çevir
+  _w(x, y, z, out = new THREE.Vector3()) { return this.root.localToWorld(out.set(x, y, z)); }
+
+  // Animasyondan sonra: gövde şekli, prosedürel pozlar ve IK
   update(dt) {
     if (this.shape) for (const sh of this.shape) sh.bone.scale.copy(sh.base);
     this.mixer.update(dt);
     if (this.shape) for (const sh of this.shape) sh.bone.scale.multiply(sh.f);
+    this.model.position.y = this.baseY;
     const o = this.overlay;
     const B = this.bones;
-    const q = new THREE.Quaternion();
-    const e = new THREE.Euler();
-    const rot = (bone, x, y, z) => {
-      if (!bone) return;
-      q.setFromEuler(e.set(x, y, z));
-      bone.quaternion.multiply(q);
-    };
-    if (o.carry) {
-      // kollar öne uzanır, sandık kavranır
-      rot(B['UpperArmL'], -1.1, 0, 0.35);
-      rot(B['UpperArmR'], -1.1, 0, -0.35);
-      rot(B['LowerArmL'], -0.5, 0, 0);
-      rot(B['LowerArmR'], -0.5, 0, 0);
+    const hasPose = o.carry || o.helm || o.row || o.crouch || o.swim || o.tread || o.climb || o.fish || o.lookPitch || this.ik.handR || this.ik.handL || this.ik.ground;
+    if (!hasPose) { this._torch(); return; }
+    this.root.updateMatrixWorld(true);
+    const sc = (this.app.height || 1);
+    const W = (x, y, z) => this._w(x, y * 1, z, new THREE.Vector3());
+    const poleL = this.root.localToWorld(new THREE.Vector3(1, -0.4, -0.6)).sub(this.root.getWorldPosition(new THREE.Vector3()));
+    const poleR = this.root.localToWorld(new THREE.Vector3(-1, -0.4, -0.6)).sub(this.root.getWorldPosition(new THREE.Vector3()));
+    const kneeP = this.root.localToWorld(new THREE.Vector3(0, 0, 1)).sub(this.root.getWorldPosition(new THREE.Vector3()));
+    const armL = (t, w = 1) => twoBoneIK(B.upperarml, B.lowerarml, B.wristl, t, poleL, w);
+    const armR = (t, w = 1) => twoBoneIK(B.upperarmr, B.lowerarmr, B.wristr, t, poleR, w);
+    if (o.crouch) {
+      // kalça alçalır, ayaklar yerde kalır (bacak IK)
+      const fl = B.footl.getWorldPosition(new THREE.Vector3()), fr = B.footr.getWorldPosition(new THREE.Vector3());
+      this.model.position.y = this.baseY - 0.32 / sc;
+      this.model.updateMatrixWorld(true);
+      twoBoneIK(B.upperlegl, B.lowerlegl, B.footl, fl.add(this.root.localToWorld(new THREE.Vector3(0, 0, 0.12)).sub(this.root.getWorldPosition(new THREE.Vector3()))), kneeP);
+      twoBoneIK(B.upperlegr, B.lowerlegr, B.footr, fr.add(this.root.localToWorld(new THREE.Vector3(0, 0, 0.12)).sub(this.root.getWorldPosition(new THREE.Vector3()))), kneeP);
+      rotateBoneWorld(B.spine, new THREE.Vector3(0, 1, 0), this.root.localToWorld(new THREE.Vector3(0, 1, 0.35)).sub(this.root.getWorldPosition(new THREE.Vector3())), 0.6);
     }
-    if (o.helm) {
-      rot(B['UpperArmL'], -0.9, 0, 0.25);
-      rot(B['UpperArmR'], -0.9, 0, -0.25);
+    if (o.carry) {
+      armL(W(0.3, 1.02, 0.42)); armR(W(-0.3, 1.02, 0.42));
+    }
+    if (o.helm && !this.ik.handR) {
+      armL(W(0.24, 1.15, 0.5)); armR(W(-0.24, 1.15, 0.5));
     }
     if (o.row) {
-      const t = (o.rowPhase || 0);
-      const s = Math.sin(t) * 0.7;
-      rot(B['UpperArmL'], -0.8 + s, 0, 0.2);
-      rot(B['UpperArmR'], -0.8 + s, 0, -0.2);
-      rot(B['Torso'], 0.3 * Math.sin(t + 0.4), 0, 0);
-    }
-    if (o.crouch) {
-      rot(B['UpperLegL'], -0.9, 0, 0);
-      rot(B['UpperLegR'], -0.9, 0, 0);
-      rot(B['LowerLegL'], 1.4, 0, 0);
-      rot(B['LowerLegR'], 1.4, 0, 0);
-      rot(B['Torso'], 0.35, 0, 0);
-    }
-    if (o.air) {
-      const k = o.air;
-      rot(B['UpperLegL'], -0.7 * k, 0, 0);
-      rot(B['UpperLegR'], -0.25 * k, 0, 0);
-      rot(B['LowerLegL'], 1.1 * k, 0, 0);
-      rot(B['LowerLegR'], 0.5 * k, 0, 0);
-      rot(B['UpperArmL'], -0.3 * k, 0, 0.6 * k);
-      rot(B['UpperArmR'], -0.3 * k, 0, -0.6 * k);
+      const t = o.rowPhase || 0;
+      const r = Math.sin(t) * 0.22, u = Math.cos(t) * 0.06;
+      armL(W(0.26, 0.92 + u, 0.42 + r)); armR(W(-0.26, 0.92 + u, 0.42 + r));
+      rotateBoneWorld(B.spine, new THREE.Vector3(0, 1, 0), this.root.localToWorld(new THREE.Vector3(0, 1, 0.3 * Math.sin(t + 0.4))).sub(this.root.getWorldPosition(new THREE.Vector3())), 0.7);
     }
     if (o.swim) {
       const t = o.swimPhase || 0;
-      rot(B['UpperArmL'], -1.6 + Math.sin(t) * 1.2, 0, 0.3);
-      rot(B['UpperArmR'], -1.6 - Math.sin(t) * 1.2, 0, -0.3);
-      rot(B['UpperLegL'], Math.sin(t * 1.5) * 0.35, 0, 0);
-      rot(B['UpperLegR'], -Math.sin(t * 1.5) * 0.35, 0, 0);
-      rot(B['Head'], -0.9 * (o.swimLift || 1), 0, 0);
+      armL(W(0.35 + Math.cos(t) * 0.15, 1.35 + Math.sin(t) * 0.3, 0.55 + Math.cos(t) * 0.25));
+      armR(W(-0.35 - Math.cos(t) * 0.15, 1.35 - Math.sin(t) * 0.3, 0.55 - Math.cos(t) * 0.25));
+      const k = Math.sin(t * 1.5) * 0.25;
+      twoBoneIK(B.upperlegl, B.lowerlegl, B.footl, W(0.12, 0.08, -0.1 + k), kneeP.clone().negate());
+      twoBoneIK(B.upperlegr, B.lowerlegr, B.footr, W(-0.12, 0.08, -0.1 - k), kneeP.clone().negate());
     }
     if (o.tread) {
       const t = o.swimPhase || 0;
-      rot(B['UpperArmL'], -0.4, 0, 0.9 + Math.sin(t) * 0.3);
-      rot(B['UpperArmR'], -0.4, 0, -0.9 - Math.sin(t) * 0.3);
-      rot(B['UpperLegL'], -0.3 + Math.sin(t * 1.3) * 0.3, 0, 0);
-      rot(B['UpperLegR'], -0.3 - Math.sin(t * 1.3) * 0.3, 0, 0);
+      armL(W(0.62, 1.1 + Math.sin(t) * 0.08, 0.15 + Math.cos(t) * 0.15));
+      armR(W(-0.62, 1.1 - Math.sin(t) * 0.08, 0.15 - Math.cos(t) * 0.15));
+      twoBoneIK(B.upperlegl, B.lowerlegl, B.footl, W(0.13, 0.12 + Math.sin(t * 1.3) * 0.1, 0.05), kneeP);
+      twoBoneIK(B.upperlegr, B.lowerlegr, B.footr, W(-0.13, 0.12 - Math.sin(t * 1.3) * 0.1, 0.05), kneeP);
     }
     if (o.climb) {
       const t = o.climbPhase || 0;
-      rot(B['UpperArmL'], -2.6 + Math.sin(t) * 0.4, 0, 0.2);
-      rot(B['UpperArmR'], -2.6 - Math.sin(t) * 0.4, 0, -0.2);
-      rot(B['UpperLegL'], -0.6 + Math.sin(t) * 0.5, 0, 0);
-      rot(B['UpperLegR'], -0.6 - Math.sin(t) * 0.5, 0, 0);
-      rot(B['LowerLegL'], 0.9, 0, 0);
-      rot(B['LowerLegR'], 0.9, 0, 0);
+      armL(W(0.22, 1.85 + Math.sin(t) * 0.18, 0.3)); armR(W(-0.22, 1.85 - Math.sin(t) * 0.18, 0.3));
+      twoBoneIK(B.upperlegl, B.lowerlegl, B.footl, W(0.14, 0.35 - Math.sin(t) * 0.18, 0.28), kneeP);
+      twoBoneIK(B.upperlegr, B.lowerlegr, B.footr, W(-0.14, 0.35 + Math.sin(t) * 0.18, 0.28), kneeP);
     }
     if (o.fish) {
-      rot(B['UpperArmR'], -0.9 + (o.reel || 0) * 0.2, 0, -0.1);
-      rot(B['LowerArmR'], -0.6, 0, 0);
-      rot(B['UpperArmL'], -0.7, 0, 0.3);
+      armR(W(-0.18, 1.25 + (o.reel || 0) * 0.08, 0.5));
+      armL(W(0.05, 1.05, 0.42));
     }
-    if (o.lookPitch) rot(B['Neck'], o.lookPitch, 0, 0);
+    // dış IK hedefleri (dümen dişleri, sandık kolları vb.)
+    if (this.ik.handR) armR(this.ik.handR, this.ik.w ?? 1);
+    if (this.ik.handL) armL(this.ik.handL, this.ik.w ?? 1);
+    // ayak IK: eğimli zeminde ayaklar yere basar
+    if (this.ik.ground && !o.crouch) {
+      const fl = B.footl.getWorldPosition(new THREE.Vector3()), fr = B.footr.getWorldPosition(new THREE.Vector3());
+      const sole = 0.07;
+      const gl = this.ik.ground(fl.x, fl.z) + sole, gr = this.ik.ground(fr.x, fr.z) + sole;
+      const root = this.root.getWorldPosition(new THREE.Vector3()).y;
+      const dl = gl - fl.y, dr = gr - fr.y;
+      const low = Math.min(dl, dr, 0);
+      if (low > -0.45 && (Math.abs(dl) > 0.015 || Math.abs(dr) > 0.015)) {
+        this.model.position.y = this.baseY + low / (this.root.scale.y * 1);
+        this.model.updateMatrixWorld(true);
+        const fl2 = B.footl.getWorldPosition(new THREE.Vector3()), fr2 = B.footr.getWorldPosition(new THREE.Vector3());
+        if (gl > fl2.y - 0.2) twoBoneIK(B.upperlegl, B.lowerlegl, B.footl, fl2.setY(Math.max(fl2.y, gl)), kneeP, 0.9);
+        if (gr > fr2.y - 0.2) twoBoneIK(B.upperlegr, B.lowerlegr, B.footr, fr2.setY(Math.max(fr2.y, gr)), kneeP, 0.9);
+      }
+      void root;
+    }
+    if (o.lookPitch) { _q.setFromEuler(new THREE.Euler(o.lookPitch * 0.6, 0, 0)); B.head.quaternion.multiply(_q); }
+    this._torch();
+  }
+
+  _torch() {
     if (this.held && this.heldType === 'torch') {
       const fl = this.held.userData.flame;
-      fl.scale.y = 0.85 + Math.random() * 0.3;
-      this.held.userData.light.intensity = 15 + Math.random() * 5;
+      if (fl) { fl.scale.y = 0.85 + Math.random() * 0.3; this.held.userData.light.intensity = 15 + Math.random() * 5; }
     }
   }
 

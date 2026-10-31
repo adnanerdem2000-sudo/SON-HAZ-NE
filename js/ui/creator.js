@@ -76,7 +76,7 @@ export const creator = {
         const c = el('div', { class: 'chip' + (app[key] === v ? ' active' : '') + (locked ? ' locked' : ''), onclick: () => {
           if (locked && !shopMode) { G.notify('Bu kozmetik Terzi Lale\'nin dükkânında açılır.', 'info'); }
           app[key] = v;
-          if (key === 'gender') { app.beard = v === 'f' ? 'yok' : app.beard; }
+          if (key === 'gender') { app.beard = v === 'f' ? 'yok' : app.beard; app.body = v === 'f' ? (app.body === 'kaba' || app.body === 'subay' ? 'cevik' : app.body) : (app.body === 'cevik' ? 'kaba' : app.body); }
           rebuild(); sections();
         } }, n + (locked ? ` (${COSMETIC_PRICES[`${key}:${v}`]})` : ''));
         return c;
@@ -97,6 +97,7 @@ export const creator = {
       right.appendChild(el('div', { class: 'opt-grid' },
         ...g('Korsan adı', nameIn),
         ...g('Cinsiyet', chips('gender', OPTIONS.gender)),
+        ...g('Gövde', chips('body', OPTIONS.body)),
         ...g('Boy', slider('height', 0.9, 1.1, 0.01)),
         ...g('Vücut tipi', slider('build', 0.88, 1.18, 0.01)),
         ...g('Yaş', slider('age', 0, 1, 0.01)),
@@ -105,18 +106,13 @@ export const creator = {
       right.appendChild(el('div', { class: 'opt-grid' },
         ...g('Ten rengi', swatches('skin', SKIN_TONES, true)),
         ...g('Yüz şekli', chips('face', OPTIONS.face)),
-        ...g('Burun', chips('nose', OPTIONS.nose)),
-        ...g('Çene', chips('chin', OPTIONS.chin)),
-        ...g('Göz rengi', swatches('eyeColor', EYE_COLORS, true)),
         ...g('Yara izi', chips('scar', OPTIONS.scar)),
         ...g('Yüz izleri', chips('facemark', OPTIONS.facemark)),
-        ...g('Dövme', chips('tattoo', OPTIONS.tattoo)),
       ));
       right.appendChild(el('h3', {}, 'Saç ve sakal'));
       right.appendChild(el('div', { class: 'opt-grid' },
-        ...g('Saç modeli', chips('hairStyle', OPTIONS.hairStyle)),
         ...g('Saç rengi', swatches('hairColor', HAIR_COLORS, true)),
-        ...(app.gender === 'm' ? [...g('Sakal', chips('beard', OPTIONS.beard)), ...g('Sakal rengi', swatches('beardColor', HAIR_COLORS, true))] : []),
+        ...(app.gender === 'm' && app.body !== 'kaba' ? [...g('Sakal', chips('beard', OPTIONS.beard)), ...g('Sakal rengi', swatches('beardColor', HAIR_COLORS, true))] : []),
       ));
       right.appendChild(el('h3', {}, 'Kıyafet ve aksesuar'));
       right.appendChild(el('div', { class: 'opt-grid' },
@@ -127,11 +123,11 @@ export const creator = {
         ...g('Gömlek', swatches('shirtColor', CLOTH_COLORS)),
         ...g('Pantolon', swatches('pantsColor', CLOTH_COLORS)),
         ...g('Çizme', swatches('bootsColor', ['#2a2a2a', '#3b2516', '#5a3a1e', '#6b4a2c', '#1a1a2a'])),
-        ...g('Kemer', chips('belt', OPTIONS.belt)),
+        ...g('Deri işleri', swatches('beltColor', ['#6b4a2c', '#3b2516', '#8a5a2b', '#2a2a2a', '#7a1f1f'])),
+        ...g('Pelerin', chips('cape', OPTIONS.cape)),
         ...g('Göz bandı', chips('eyepatch', OPTIONS.eyepatch)),
         ...g('Küpe', chips('earring', OPTIONS.earring)),
         ...g('Kolye', chips('necklace', OPTIONS.necklace)),
-        ...g('Eldiven', chips('gloves', OPTIONS.gloves)),
       ));
       const c = cost();
       const bar = el('div', { class: 'row', style: { marginTop: '14px', justifyContent: 'flex-end', position: 'sticky', bottom: 0, background: 'rgba(241,226,189,.95)', padding: '8px 0' } },

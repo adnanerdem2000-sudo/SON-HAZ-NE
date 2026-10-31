@@ -12,6 +12,26 @@ Dosyalar `@netforge/asset-library-files` npm paketinden (optimize edilmiş kopya
 | Doğa kiti: `tree_palm`, `tree_oak`, `tree_fat`, `rock_*`, `bush*`, `log`, `stump`, `column*`, `obelisk`, `tent`, `campfire`, `fence`, `flower_red`, `mushroom_red`, `barrel`, `crate` | [Kenney — Nature Kit](https://kenney.nl/assets/nature-kit) | CC0 |
 | Ses efektleri (`assets/audio/sfx/*.ogg`) | [Kenney — Impact / Interface / RPG Audio](https://kenney.nl/assets) | CC0 |
 | Savaş müziği "Battle Theme A" | [cynicmusic — OpenGameArt](https://opengameart.org/content/battle-theme-a) | CC0 |
+| Biyom modelleri: `wolf`, `fox`, `deer`, `stag`, `husky`, `cat`, `yeti`, `zombie`, `orc_brute`, `demon`, `tree_pine`, `tree_pine_tall`, `tree_dark`, `tree_autumn`, `cactus`, `crystal_rock` | Quaternius / Kenney (npm `@netforge/asset-library-files` kopyaları) | CC0 |
+
+## KayKit (Kay Lousberg) — CC0 1.0
+
+v0.3 karakterleri ve yapı kitleri [KayKit](https://kaylousberg.com) paketlerinin herkese açık GitHub depolarından alınmış,
+`assets/models/kk/` altına optimize edilerek (doku 256 px, meshopt sıkıştırma, sabit/IK kanalları ayıklanmış animasyonlar)
+yerleştirilmiştir. Tüm paketler CC0 1.0 lisanslıdır.
+
+| Dosya | Kaynak paket | İçerik |
+|---|---|---|
+| `kk_barbarian`, `kk_knight`, `kk_mage`, `kk_rogue`, `kk_rogue_hooded` | KayKit Character Pack: Adventurers | Oyuncu ve NPC gövdeleri (oyun içinde oranları yeniden düzenlenir, renkleri boyanır) |
+| `kk_sk_minion`, `kk_sk_warrior`, `kk_sk_rogue`, `kk_sk_mage` | KayKit Character Pack: Skeletons | İskelet düşman gövdeleri |
+| `kk_anims` | KayKit Skeletons + Adventurers animasyon seti (ortak "Rig_Medium" iskeleti) | 81 animasyon klibi |
+| `kit_dungeon` | KayKit Dungeon Remastered | Zindan, tapınak ve hapishane parçaları |
+| `kit_graveyard` | KayKit Halloween Bits | Mezarlık parçaları |
+| `kit_town` | KayKit Medieval Hexagon Pack | Kale, kule, han, değirmen, maden ve kasaba binaları |
+| `kit_furniture` | KayKit Furniture Bits | Han ve ev eşyaları |
+| `kit_weapons` | KayKit Skeletons + Adventurers silah/eşya modelleri | Kılıç, balta, yay, kalkan, iksir vb. |
+
+Varlık hattı (gltf-transform ile ayıklama, birleştirme, sıkıştırma) geliştirme makinesinde çalıştırılır; çıktı dosyaları depodadır.
 
 CC0 metni: `assets/CC0-1.0.txt`
 
