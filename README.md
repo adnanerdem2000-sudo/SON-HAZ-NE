@@ -12,9 +12,10 @@ iskeletler, hayaletler ve Kızıl Hançer'in korsanlarıyla savaş — ve efsane
 ## Oynamak için
 - **GitHub Pages:** depo ayarlarında *Settings → Pages → Source: GitHub Actions* seçildikten sonra
   `https://<kullanıcı>.github.io/<depo>/` adresinde açılır (iş akışı: `.github/workflows/pages.yml`).
-- **Tek dosya (çevrimdışı):** `https://<kullanıcı>.github.io/<depo>/DenizKorsanlari-SonHazine.html` dosyasını indir ve
-  çift tıkla — sunucu gerekmez; kod, modeller, sesler ve yazı tipleri dosyanın içindedir (~21 MB). Yerelde üretmek için:
-  `npm i esbuild && node tools/build-single-html.mjs` (çıktı: `dist/DenizKorsanlari-SonHazine.html`).
+- **Tek dosya (çevrimdışı):** depo kökündeki `DenizKorsanlari-SonHazine.html` (~21 MB) — sitede
+  `https://<kullanıcı>.github.io/<depo>/DenizKorsanlari-SonHazine.html` adresinde de durur. Bilgisayara kaydedip çift
+  tıklayınca sunucusuz açılır; kod, modeller, sesler ve yazı tipleri dosyanın içindedir. Yeniden üretmek için:
+  `npm i esbuild && node tools/build-single-html.mjs DenizKorsanlari-SonHazine.html`.
 - **Yerel:** depo klasöründe bir statik sunucu başlat, tarayıcıda aç:
   ```bash
   python3 -m http.server 8080
