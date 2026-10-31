@@ -12,6 +12,7 @@ import { combat } from './game/combat.js';
 import { enemies } from './game/enemies.js';
 import { physics } from './world/physics.js';
 import { islands } from './world/islands.js';
+import { bosses } from './game/bosses.js';
 import { ports } from './world/ports.js';
 import * as archipelago from './world/archipelago.js';
 import { npcs } from './game/npcs.js';
@@ -92,7 +93,7 @@ async function boot() {
   progress(0.02, 'Modeller yükleniyor…');
   await assets.loadAll((f) => progress(0.02 + f * 0.33, 'Modeller yükleniyor…'));
 
-  for (const s of [misc, time, bodies, effects, combat, treasure, enemies, animals, fish, fishing, npcs, islands, quests, events, weatherfx, details, crowd]) game.register(s);
+  for (const s of [misc, time, bodies, effects, combat, treasure, enemies, animals, fish, fishing, npcs, islands, bosses, quests, events, weatherfx, details, crowd]) game.register(s);
   net.init(engine.scene);
   const q = settings.v.quality;
   await game.buildWorld(q, (f, t) => progress(0.35 + f * 0.6, t));
@@ -123,9 +124,16 @@ async function boot() {
   // davet bağlantısı
   const join = new URLSearchParams(location.search).get('join');
   if (join) menu.joinScreen(join);
-  window.DK = { G, assets, archipelago, physics, islands, ports, game, input, engine, post, settings, tpCamera, interact, npcs, Ship, kk, Character, handlers, net, ui, quests, treasure, enemies, animals, fish, fishing, shipControl, THREE, save, port, combat, effects, events, sky, time, bodies, weatherfx, details, terrain, ocean, crowd };
+  window.DK = { G, assets, archipelago, physics, islands, bosses, ports, game, input, engine, post, settings, tpCamera, interact, npcs, Ship, kk, Character, handlers, net, ui, quests, treasure, enemies, animals, fish, fishing, shipControl, THREE, save, port, combat, effects, events, sky, time, bodies, weatherfx, details, terrain, ocean, crowd };
   // Test: yalnız 3B tuvali yakala (HUD hariç) — yazılımsal GPU'da sayfa ekran görüntüsünden daha kararlı
   window.DK.snap = (q = 0.85) => { post.render(); return engine.renderer.domElement.toDataURL('image/jpeg', q); };
+  // belirli bir bakış açısından yakala (test): from/to = [x,y,z]
+  window.DK.snapFrom = (from, to, q = 0.85) => {
+    const cam = engine.camera;
+    cam.position.set(...from); cam.lookAt(...to); cam.updateMatrixWorld(true);
+    post.render();
+    return engine.renderer.domElement.toDataURL('image/jpeg', q);
+  };
   // Test/hata ayıklama yardımcıları: oyunu render etmeden ileri sar
   window.DK.sim = (seconds, dt = 1 / 30) => {
     const n = Math.round(seconds / dt);

@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { G } from '../game/ctx.js';
 import { Character } from '../player/character.js';
 import { enemies } from '../game/enemies.js';
+import { bosses } from '../game/bosses.js';
 import { isOnce } from '../core/kk.js';
 import { physics } from '../world/physics.js';
 import { terrain } from '../world/terrain.js';
@@ -123,6 +124,7 @@ export const net = {
     relay('netHurtAnimal', (e) => this.toHost({ t: 'hurtAnimal', ...e }));
     relay('netHurtPlayer', (e) => this.toPeer(e.id, { t: 'hurt', dmg: e.dmg, from: e.from, cause: e.cause, melee: e.melee ? 1 : 0, ub: e.unblockable ? 1 : 0, aid: e.attackerId || null, bullet: e.bullet ? 1 : 0 }));
     relay('netStunEnemy', (e) => this.toHost({ t: 'stunEnemy', id: e.id, dur: e.dur }));
+    relay('netHurtBoss', (e) => this.toHost({ t: 'hurtBoss', ...e }));
     relay('netDig', (e) => this.toHost({ t: 'dig', ...e }));
     relay('netChestReq', (e) => this.toHost({ t: 'chestReq', ...e }));
     relay('netPickupReq', (e) => this.toHost({ t: 'pickupReq', ...e }));
@@ -226,6 +228,7 @@ export const net = {
       case 'st': this._remoteState(pid, c.info, m.s); break;
       case 'act': this._remoteAct(pid, m); this.broadcast(m, pid, { from: pid }); break;
       case 'hurtEnemy': { const e = enemies.list.find((x) => x.id === m.id); if (e) e.applyDamage(m.dmg, { kind: m.kind, by: pid, pos: G.remotes.get(pid)?.pos, heavy: m.heavy, finisher: m.fin, counter: m.ctr, guardBreak: m.gb, kb: m.kb, yaw: m.yaw }); break; }
+      case 'hurtBoss': G.emit('netHurtBossApply', m); break;
       case 'stunEnemy': { const e = enemies.list.find((x) => x.id === m.id); if (e && e.alive) e.stun(m.dur || 1.5, 'parry'); break; }
       case 'hurtAnimal': { const a = animals.byId(m.id); if (a && a.alive) a.applyDamage(m.dmg, {}); break; }
       case 'dig': treasure._hole(m.x, m.z, true); treasure.resolveDig(m.x, m.z, pid); this.broadcast({ t: 'hole', x: m.x, z: m.z }, pid); break;
@@ -511,6 +514,7 @@ export const net = {
     for (const s of [...G.ships]) if (s !== G.ship && !s.kinematic && !ids.has(s.id)) { s.dispose(); G.ships = G.ships.filter((x) => x !== s); }
     if (m.rb && G.rowboat && G.rowboat.driver !== G.myId) { const b = G.rowboat; b.state = m.rb[0]; b.x = m.rb[1]; b.z = m.rb[2]; b.yaw = m.rb[3]; b.rowPhase = m.rb[4]; b.cargo = m.rb[5] || []; b.driver = m.rb[6]; }
     if (m.en) enemies.applySnapshot(m.en);
+    if ('bo' in m) bosses.applySnapshot(m.bo);
     if (m.an) animals.applySnapshot(m.an);
     if (m.time) {
       const t = m.time;
@@ -563,7 +567,7 @@ export const net = {
     const m = { t: 'snap', players, ships: G.ships.filter((s) => !s.kinematic).map((s) => ({ id: s.id, typeId: s.typeId, look: s.look, name: s.name, st: s.netState() })) };
     const b = G.rowboat;
     if (b) m.rb = [b.state, +b.x.toFixed(2), +b.z.toFixed(2), +b.yaw.toFixed(3), +b.rowPhase.toFixed(2), b.cargo, b.driver];
-    if (this.snapT % 2 === 0) { m.en = enemies.netSnapshot(); m.an = animals.netSnapshot(); m.time = [sky.hour, sky.weatherKey, sky.windDir, time.day, sky.forecast.map((f) => [f.key, +f.at.toFixed(2)]), +sky.wetness.toFixed(2)]; m.wfx = weatherfx.netState(); m.ch = treasure.chests.filter((c) => c.state === 'water' || c.state === 'ground').map((c) => [c.id, +c.pos.x.toFixed(2), +c.pos.y.toFixed(2), +c.pos.z.toFixed(2), c.state]); }
+    if (this.snapT % 2 === 0) { m.en = enemies.netSnapshot(); m.bo = bosses.netSnapshot(); m.an = animals.netSnapshot(); m.time = [sky.hour, sky.weatherKey, sky.windDir, time.day, sky.forecast.map((f) => [f.key, +f.at.toFixed(2)]), +sky.wetness.toFixed(2)]; m.wfx = weatherfx.netState(); m.ch = treasure.chests.filter((c) => c.state === 'water' || c.state === 'ground').map((c) => [c.id, +c.pos.x.toFixed(2), +c.pos.y.toFixed(2), +c.pos.z.toFixed(2), c.state]); }
     this.broadcast(m);
   },
 };

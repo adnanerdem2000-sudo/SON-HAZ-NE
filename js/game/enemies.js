@@ -159,6 +159,12 @@ export const ENEMY_TYPES = {
     body: ['subay'], weapon: ['kk:1H_Sword+Spike_Shield'], look: { hat: 'orijinal' }, scale: 1.12, vision: 20, fov: 120, hearing: 1, xp: 40,
     loot: [['altin_para', 50, 100], ['eski_mucevher', 0.5], ['zumrut', 0.2]],
   },
+  lanetli_amiral: {
+    name: 'Lanetli Amiral', faction: 'hayalet', hp: 900, dmg: 38, speed: 3.6, walk: 1.3, range: 2.4, moves: 'twoh', ghost: 0x80ffd0, boss: true, phase: true,
+    summonAt: [0.6, 0.3], summon: ['hayalet', 'hayalet_bogulmus'], callHelp: true, spin: true, enrageAt: 0.3,
+    body: ['subay'], weapon: ['kk:2H_Sword'], look: { hat: 'kaptan', hatColor: '#0a2a2a', coat: 'uzun', coatColor: '#1a3a3a' }, scale: 1.25, vision: 40, fov: 360, hearing: 2, xp: 300,
+    loot: [['altin_para', 400, 700], ['kraliyet_taci', 1], ['elmas', 1], ['korsan_madalyonu', 1]],
+  },
   hayalet_kaptan: {
     name: 'Hayalet Kaptan', faction: 'hayalet', hp: 1000, dmg: 40, speed: 3.7, walk: 1.3, range: 2.5, moves: 'twoh', ghost: 0x9fffe0, boss: true, phase: true, dash: true,
     summonAt: [0.5], summon: ['hayalet', 'hayalet_bogulmus'], callHelp: true,
@@ -239,6 +245,9 @@ export class Enemy {
     this.detour = null;
     this.alert = 0; // gösterge: 0 yok, 1 ?, 2 !, 3 sersem
     this.hover = 0;
+    // gemi güvertesinde savaşan düşmanlar (bordalama): konum gemi yerel koordinatında tutulur
+    this.ship = opts.ship || null;
+    if (this.ship) { this.local = new THREE.Vector3(opts.lx || 0, 0, opts.lz || 0); this.ship.clampDeck(this.local); this.home.set(this.ship.x, 0, this.ship.z); this.homeR = 999; }
     this._buildModel(opts);
     this._buildHud();
     combat.addTarget(this);
@@ -455,7 +464,9 @@ export class Enemy {
     } else {
       // ragdoll: darbenin yönünde savrulur
       const imp = (this.lastHitDir || new THREE.Vector3()).clone().multiplyScalar(2 + (info.kb || 1) * 1.2).setY(1.0 + (info.heavy ? 1.5 : 0));
-      this.char.startRagdoll({ ground: (x, z, y) => physics.groundAt(x, z, y + 0.6), vel: this.vel.clone(), impulse: imp });
+      const sh = this.ship;
+      const ground = sh ? (x, z) => { const l = sh.worldToLocal(new THREE.Vector3(x, sh.y, z)); return sh.insideDeck(l.x, l.z, 0) ? sh.localToWorld(new THREE.Vector3(l.x, sh.deckAt(l.x, l.z), l.z)).y : ocean.heightAt(x, z) - 0.8; } : (x, z, y) => physics.groundAt(x, z, y + 0.6);
+      this.char.startRagdoll({ ground, vel: this.vel.clone(), impulse: imp });
     }
     if (willRise) this.reviveT = 6 + Math.random() * 4;
     else {
@@ -612,7 +623,7 @@ export class Enemy {
       } else this.phased = false;
       this.opacity = damp(this.opacity ?? 0.62, this.phased ? 0.1 : 0.62, 6, dt);
       this.char.setOpacity(this.opacity);
-      if (!sky.isNight() && this.T.night && Math.random() < dt * 0.05 && this.state !== 'attack') {
+      if (!sky.isNight() && this.T.night && !this.ship && !this.T.boss && Math.random() < dt * 0.05 && this.state !== 'attack') {
         this.alive = false; this.remove = true;
         effects.glitter(this.pos.x, this.pos.y + 1, this.pos.z, [0.5, 1, 0.9]);
         return;
@@ -663,7 +674,7 @@ export class Enemy {
     if (s === 'suspicious' && this.stateT > 3.5) { if (this.awareness > 0.55) this._setState('investigate'); else { this._setState('patrol'); this.alert = 0; } }
     if (s === 'return' && Math.hypot(this.pos.x - this.home.x, this.pos.z - this.home.z) < 3) { this._setState('patrol'); this.alert = 0; }
     // tasma: evden çok uzaklaşınca geri dön
-    if (['chase', 'strafe', 'investigate', 'cover'].includes(s) && Math.hypot(this.pos.x - this.home.x, this.pos.z - this.home.z) > this.homeR + (T.boss ? 30 : 45)) {
+    if (!this.ship && ['chase', 'strafe', 'investigate', 'cover'].includes(s) && Math.hypot(this.pos.x - this.home.x, this.pos.z - this.home.z) > this.homeR + (T.boss ? 30 : 45)) {
       this._releaseToken(); this._setState('return'); this.target = null; this.alert = 0; this.awareness = 0;
     }
     // geri çekilme / kaçış (yaşayan insanlar)
@@ -758,7 +769,8 @@ export class Enemy {
           const list = T.summon || [];
           for (let i = 0; i < list.length; i++) {
             const a = (i / list.length) * 6.28 + Math.random();
-            G.emit('spawnEnemies', { list: [list[i]], x: this.pos.x + Math.cos(a) * 4, z: this.pos.z + Math.sin(a) * 4, r: 0.5, rise: T.faction !== 'insan', group: this.group });
+            if (this.ship) enemies.spawn(list[i], this.pos.x, this.pos.z, { ship: this.ship, lx: this.local.x + Math.cos(a) * 2.5, lz: this.local.z + Math.sin(a) * 2.5, group: this.group, role: 'patrol' });
+            else G.emit('spawnEnemies', { list: [list[i]], x: this.pos.x + Math.cos(a) * 4, z: this.pos.z + Math.sin(a) * 4, r: 0.5, rise: T.faction !== 'insan', group: this.group });
           }
         }
         if (this.stateT > 2.2) { this.sumDone = false; this.tired = 2.5; this._setState('chase'); }
@@ -838,6 +850,7 @@ export class Enemy {
   }
 
   _reachable(tgt, dy) {
+    if (this.ship) return tgt.ref?.ship === this.ship && (tgt.mode === 'deck' || tgt.mode === 'helm' || tgt.mode === 'cannon');
     if (tgt.mode === 'helm' || tgt.mode === 'boat' || tgt.mode === 'deck' || tgt.mode === 'cannon') return false;
     if (tgt.mode === 'swim' && !this.T.ghost) return false;
     if (dy > 2.4 && !this.T.ghost) return false;
@@ -1063,9 +1076,9 @@ export class Enemy {
         // önündeki engelden kaçınma (bakış sondası)
         const px = this.pos.x + dx * 1.3, pz = this.pos.z + dz * 1.3;
         const probe = { x: px, z: pz };
-        if (physics.resolve(probe, this.radius, this.pos.y)) { const ox = probe.x - px, oz = probe.z - pz; dx += ox * 1.6; dz += oz * 1.6; const n = Math.hypot(dx, dz) || 1; dx /= n; dz /= n; }
+        if (!this.ship && physics.resolve(probe, this.radius, this.pos.y)) { const ox = probe.x - px, oz = probe.z - pz; dx += ox * 1.6; dz += oz * 1.6; const n = Math.hypot(dx, dz) || 1; dx /= n; dz /= n; }
         // suya ve uçuruma girme
-        if (!T.ghost) {
+        if (!T.ghost && !this.ship) {
           const h = terrain.heightAt(this.pos.x + dx * 1.2, this.pos.z + dz * 1.2);
           if (h < ocean.heightAt(this.pos.x, this.pos.z) + 0.15) { dx = -dx * 0.2; dz = -dz * 0.2; if (this.state === 'patrol') this.wp = null; }
         }
@@ -1086,9 +1099,18 @@ export class Enemy {
     this.vel.z = damp(this.vel.z, wantZ, acc, dt);
     if (this.slowT > 0) { this.slowT -= dt; this.vel.multiplyScalar(0.5); }
     const before = Math.hypot(goal ? goal.x - this.pos.x : 0, goal ? goal.z - this.pos.z : 0);
-    this.pos.x += this.vel.x * dt;
-    this.pos.z += this.vel.z * dt;
-    physics.resolve(this.pos, this.radius, this.pos.y);
+    if (this.ship) {
+      // güverte: dünya hızını gemi yereline çevir ve güverte sınırında tut
+      const sh = this.ship, cy = Math.cos(-sh.yaw), sy = Math.sin(-sh.yaw);
+      this.local.x += (this.vel.x * cy + this.vel.z * sy) * dt;
+      this.local.z += (-this.vel.x * sy + this.vel.z * cy) * dt;
+      sh.clampDeck(this.local);
+      this._deckWorld();
+    } else {
+      this.pos.x += this.vel.x * dt;
+      this.pos.z += this.vel.z * dt;
+      physics.resolve(this.pos, this.radius, this.pos.y);
+    }
     // takılma tespiti
     if (goal && speed > 0.5) {
       const after = Math.hypot(goal.x - this.pos.x, goal.z - this.pos.z);
@@ -1121,7 +1143,27 @@ export class Enemy {
     else c.setSpeed(sp);
   }
 
+  _deckWorld() {
+    const sh = this.ship;
+    _w.set(this.local.x, sh.deckAt(this.local.x, this.local.z) + (this.T.ghost ? 0.2 : 0), this.local.z);
+    sh.localToWorld(_w, this.pos);
+  }
+
   _place(dt) {
+    if (this.ship) {
+      if (this.ship.sunk) { this.ship = null; return; }
+      if (this.kb && this.state !== 'dead') {
+        const cy = Math.cos(-this.ship.yaw), sy = Math.sin(-this.ship.yaw);
+        this.local.x += (this.kb.x * cy + this.kb.z * sy) * dt; this.local.z += (-this.kb.x * sy + this.kb.z * cy) * dt;
+        this.kb.x *= Math.exp(-7 * dt); this.kb.z *= Math.exp(-7 * dt);
+        if (Math.hypot(this.kb.x, this.kb.z) < 0.1) this.kb = null;
+        this.ship.clampDeck(this.local);
+      }
+      if (!(this.state === 'dead' && this.char.ragdoll)) this._deckWorld();
+      this.root.position.copy(this.pos);
+      this.root.rotation.y = this.yaw;
+      return;
+    }
     if (this.kb && this.state !== 'dead') {
       this.pos.x += this.kb.x * dt; this.pos.z += this.kb.z * dt;
       this.kb.x *= Math.exp(-7 * dt); this.kb.z *= Math.exp(-7 * dt);
@@ -1184,6 +1226,21 @@ export class Enemy {
 // ---------------------------------------------------------------------------
 const PROJ_GEO = {};
 function projMesh(kind) {
+  if (kind === 'boulder' || kind === 'lava' || kind === 'venom' || kind === 'ghostball') {
+    if (!PROJ_GEO.rock) {
+      PROJ_GEO.rock = new THREE.DodecahedronGeometry(0.9, 0);
+      PROJ_GEO.ball = new THREE.SphereGeometry(0.55, 10, 8);
+      PROJ_GEO.mats2 = {
+        boulder: new THREE.MeshStandardMaterial({ color: 0x8a8478, roughness: 1, flatShading: true }),
+        lava: new THREE.MeshStandardMaterial({ color: 0x401000, emissive: 0xff5010, emissiveIntensity: 2.2, roughness: 0.8 }),
+        venom: new THREE.MeshStandardMaterial({ color: 0x40a020, emissive: 0x206010, emissiveIntensity: 1.2, transparent: true, opacity: 0.85 }),
+        ghostball: new THREE.MeshBasicMaterial({ color: 0x80ffd0, transparent: true, opacity: 0.9 }),
+      };
+    }
+    const m = new THREE.Mesh(kind === 'boulder' ? PROJ_GEO.rock : PROJ_GEO.ball, PROJ_GEO.mats2[kind]);
+    m.castShadow = true;
+    return m;
+  }
   if (!PROJ_GEO.bolt) {
     PROJ_GEO.bolt = new THREE.CylinderGeometry(0.015, 0.015, 0.55, 5).rotateX(Math.PI / 2);
     PROJ_GEO.bullet = new THREE.SphereGeometry(0.04, 6, 4);
@@ -1210,6 +1267,7 @@ export const enemies = {
   groupState: {},
   tokens: new Map(),
   shots: [],
+  firePools: [],
 
   init(scene) {
     this.scene = scene;
@@ -1234,6 +1292,7 @@ export const enemies = {
     for (const s of this.shots) this.scene.remove(s.mesh);
     this.list = [];
     this.shots = [];
+    this.firePools = [];
     this.tokens.clear();
     this.groupState = {};
     this.wasNight = null;
@@ -1327,8 +1386,63 @@ export const enemies = {
   shoot(o) {
     const mesh = projMesh(o.kind);
     mesh.position.copy(o.from);
+    if (o.scale) mesh.scale.setScalar(o.scale);
     this.scene.add(mesh);
-    this.shots.push({ ...o, pos: o.from.clone(), vel: o.dir.clone().multiplyScalar(o.speed), mesh, t: 0 });
+    this.shots.push({ ...o, pos: o.from.clone(), vel: o.vel ? o.vel.clone() : o.dir.clone().multiplyScalar(o.speed), mesh, t: 0 });
+  },
+  // Yaylı atış: hedef noktaya T saniyede düşecek hız; iniş noktası kırmızı halkayla işaretlenir
+  lob(o) {
+    const g = o.gravity ?? 9.8, T = o.time ?? 1.6;
+    const v = new THREE.Vector3((o.to.x - o.from.x) / T, (o.to.y - o.from.y) / T + 0.5 * g * T, (o.to.z - o.from.z) / T);
+    let marker = null;
+    if (o.marker !== false) {
+      marker = new THREE.Mesh(new THREE.RingGeometry(0.7, 1, 32), new THREE.MeshBasicMaterial({ color: o.kind === 'venom' ? 0x60ff40 : 0xff3020, transparent: true, opacity: 0.7, depthWrite: false, side: THREE.DoubleSide }));
+      marker.rotation.x = -Math.PI / 2;
+      marker.scale.setScalar(o.aoe || 2);
+      marker.position.set(o.to.x, o.to.y + 0.08, o.to.z);
+      marker.renderOrder = 4;
+      marker.updateMatrixWorld();
+      if (o.ship) o.ship.root.attach(marker); else this.scene.add(marker);
+    }
+    this.shoot({ ...o, vel: v, gravity: g, marker, speed: v.length() });
+  },
+  _impact(s) {
+    const p = s.pos;
+    if (s.marker) { s.marker.parent?.remove(s.marker); s.marker.geometry.dispose(); s.marker.material.dispose(); }
+    if (!s.aoe) return;
+    // alan hasarı: oyuncular, gemi gövdesi
+    const pls = [];
+    if (G.player && !G.player.dead) pls.push({ id: G.myId, ref: G.player });
+    if (G.isHost) for (const [id, r] of G.remotes) pls.push({ id, ref: r });
+    for (const t of pls) {
+      if (t.ref.pos.distanceTo(p) < s.aoe + 0.4) {
+        if (t.id === G.myId && t.ref.invuln > 0) continue;
+        if (s.owner?._hitPlayer) s.owner._hitPlayer(t.id, t.ref, s.dmg, { kb: s.kb || 3 }, { ranged: true });
+        if (s.kind === 'venom' && t.id === G.myId) t.ref.poison = Math.max(t.ref.poison || 0, 6);
+      }
+    }
+    for (const sh of G.ships) {
+      if (sh.sunk || sh.kinematic) continue;
+      const lp = sh.worldToLocal(p.clone());
+      if (Math.abs(lp.z) < sh.T.L / 2 + 0.5 && Math.abs(lp.x) < sh.T.B / 2 + 0.5 && lp.y > -2 && lp.y < sh.T.deckY + 3) { if (G.isHost || !G.online) sh.damage(s.shipDmg ?? s.dmg * 0.5, lp); }
+    }
+    if (s.kind === 'lava') { effects.smoke(p.x, p.y + 0.5, p.z, 16, 1.6, 0.4); effects.sparks(p.x, p.y + 0.5, p.z, 20, [1, 0.5, 0.1]); if (s.pool) this.firePools.push({ x: p.x, y: p.y, z: p.z, r: s.aoe, t: 6 }); }
+    else if (s.kind === 'venom') effects.spawn(p.x, p.y + 0.3, p.z, 0, 1, 0, 1.2, 1.5, 0.4, 0.9, 0.3, -1, 1, 1);
+    else effects.dirt(p.x, p.y + 0.2, p.z, 18);
+    audio.boom(0.5, p);
+  },
+  _updatePools(dt) {
+    if (!this.firePools?.length) return;
+    const p = G.player;
+    for (const f of this.firePools) {
+      f.t -= dt;
+      if (Math.random() < 0.4) effects.spawn(f.x + (Math.random() - 0.5) * f.r * 1.4, f.y + 0.2, f.z + (Math.random() - 0.5) * f.r * 1.4, 0, 1.5, 0, 0.7, 0.5, 1, 0.45, 0.1, 0.5, 0.5);
+      if (p && !p.dead && Math.hypot(p.pos.x - f.x, p.pos.z - f.z) < f.r && Math.abs(p.pos.y - f.y) < 2) {
+        f.hitT = (f.hitT || 0) - dt;
+        if (f.hitT <= 0) { f.hitT = 0.5; p.hurt(7, null, { cause: 'Lav ateşinde yandın' }); }
+      }
+    }
+    this.firePools = this.firePools.filter((f) => f.t > 0);
   },
   _updateShots(dt) {
     const pls = [];
@@ -1341,7 +1455,9 @@ export const enemies = {
         const want = _v.set(s.homing.pos.x, s.homing.pos.y + 1.1, s.homing.pos.z).sub(s.pos).normalize().multiplyScalar(s.speed);
         s.vel.lerp(want, Math.min(1, dt * s.homingK));
       }
-      if (s.kind === 'bolt' || s.kind === 'knife') s.vel.y -= 4 * dt;
+      if (s.gravity !== undefined) s.vel.y -= s.gravity * dt;
+      else if (s.kind === 'bolt' || s.kind === 'knife') s.vel.y -= 4 * dt;
+      if (s.spin) s.mesh.rotation.x += dt * 4;
       const prev = s.pos.clone();
       s.pos.addScaledVector(s.vel, dt);
       s.mesh.position.copy(s.pos);
@@ -1351,8 +1467,9 @@ export const enemies = {
       for (const t of pls) {
         const pl = t.ref;
         const a = _v.set(pl.pos.x, pl.pos.y + 0.25, pl.pos.z), b = _w.set(pl.pos.x, pl.pos.y + 1.7, pl.pos.z);
-        if (segSegDist(prev, s.pos, a, b) < (s.kind === 'ghostbolt' ? 0.5 : 0.36)) {
+        if (segSegDist(prev, s.pos, a, b) < (s.kind === 'ghostbolt' ? 0.5 : s.aoe ? 0.9 : 0.36)) {
           s.dead = true;
+          if (s.aoe) { this._impact(s); break; }
           // kılıçla savuşturma (ok/bıçak), kaçınma dokunulmazlığı
           if (t.id === G.myId && pl.blocking && (s.kind === 'bolt' || s.kind === 'knife') && Math.abs(wrapAngle(Math.atan2(-s.vel.x, -s.vel.z) - pl.yaw)) < 1.2) {
             pl.stamina -= 8; effects.sparks(s.pos.x, s.pos.y, s.pos.z, 10, [1, 0.9, 0.6]); audio.play('hit', { pos: s.pos, vol: 0.6, rate: 1.8 }); break;
@@ -1367,12 +1484,25 @@ export const enemies = {
       }
       if (s.dead) continue;
       const g = terrain.heightAt(s.pos.x, s.pos.z);
+      // yaylı atışlar: güverteye, zemine ya da suya inince alan etkisi
+      if (s.aoe) {
+        let land = false;
+        if (s.ship && !s.ship.sunk) { const lp = s.ship.worldToLocal(s.pos.clone()); if (s.ship.insideDeck(lp.x, lp.z, 0) && lp.y < s.ship.deckAt(lp.x, lp.z) + 0.3 && s.vel.y < 0) land = true; }
+        if (land || s.pos.y < g + 0.2 || s.pos.y < ocean.heightAt(s.pos.x, s.pos.z)) {
+          s.dead = true;
+          if (s.pos.y < ocean.heightAt(s.pos.x, s.pos.z) && !land) effects.splash(s.pos.x, s.pos.z, 1.2);
+          this._impact(s);
+          continue;
+        }
+        if (s.t > 8) { s.dead = true; this._impact(s); }
+        continue;
+      }
       if (s.pos.y < g) { s.dead = true; effects.dirt(s.pos.x, g + 0.05, s.pos.z, 5); continue; }
       if (s.pos.y < ocean.heightAt(s.pos.x, s.pos.z)) { s.dead = true; effects.splash(s.pos.x, s.pos.z, 0.3); continue; }
       if (physics.lineBlocked(prev.x, prev.y, prev.z, s.pos.x, s.pos.y, s.pos.z)) { s.dead = true; effects.dirt(s.pos.x, s.pos.y, s.pos.z, 4); continue; }
       if (s.t > 4) s.dead = true;
     }
-    for (const s of this.shots) if (s.dead) this.scene.remove(s.mesh);
+    for (const s of this.shots) if (s.dead) { this.scene.remove(s.mesh); if (s.marker && s.marker.parent) { s.marker.parent.remove(s.marker); } }
     if (this.shots.some((s) => s.dead)) this.shots = this.shots.filter((s) => !s.dead);
   },
 
@@ -1445,6 +1575,7 @@ export const enemies = {
       if (e._ring && e.state !== 'attack') e._ring.visible = false;
     }
     this._updateShots(dt);
+    this._updatePools(dt);
     const rm = this.list.filter((e) => e.remove);
     for (const e of rm) e.dispose();
     if (rm.length) this.list = this.list.filter((e) => !e.remove);
