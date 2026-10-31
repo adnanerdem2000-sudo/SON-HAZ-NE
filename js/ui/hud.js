@@ -9,7 +9,7 @@ import { settings } from '../core/settings.js';
 import { clamp, wrapAngle } from '../core/util.js';
 import { treasure } from '../treasure/treasure.js';
 import { time } from '../world/time.js';
-import { renderMapBase, drawPoiIcon, fogCanvas } from './mapArt.js';
+import { renderMapBase, drawPoiIcon, fogCanvas, drawDetail } from './mapArt.js';
 import { ISLANDS, POIS, WORLD_SIZE } from '../world/worldData.js';
 
 const $ = (id) => document.getElementById(id);
@@ -287,10 +287,12 @@ export const hud = {
     const p = G.player;
     if (!cv || !p) return;
     const g = cv.getContext('2d');
-    const WS = WORLD_SIZE, R = 100, view = 170, k = R / view;
+    const WS = WORLD_SIZE, R = 100;
+    // gemideyken daha geniş görüş
+    const view = p.mode === 'helm' || p.mode === 'deck' || p.mode === 'cannon' ? 420 : 170, k = R / view;
     const base = renderMapBase();
     this._fogT = (this._fogT || 0) - 1;
-    if (!this._fogC || this._fogT <= 0) { this._fogC = fogCanvas(quests.fog, [205, 186, 140], 225); this._fogT = 60; }
+    if (!this._fogC || (this._fogT <= 0 && quests.fogDirty)) { this._fogC = fogCanvas(quests.fog, [205, 186, 140], 225); this._fogT = 60; quests.fogDirty = false; }
     const yaw = tpCamera.yaw;
     const rot = -Math.PI / 2 - Math.atan2(Math.cos(yaw), Math.sin(yaw));
     const cr = Math.cos(rot), sr = Math.sin(rot);
@@ -302,6 +304,8 @@ export const hud = {
     g.translate(R, R); g.rotate(rot); g.scale(k, k); g.translate(-p.pos.x, -p.pos.z);
     g.imageSmoothingEnabled = true;
     g.drawImage(base, -WS / 2, -WS / 2, WS, WS);
+    // yakın çevre: ayrıntılı harita karoları (yoksa arka planda üretilir)
+    drawDetail(g, (x, z) => [x, z], 1, p.pos.x - view * 1.5, p.pos.z - view * 1.5, p.pos.x + view * 1.5, p.pos.z + view * 1.5);
     g.drawImage(this._fogC, -WS / 2, -WS / 2, WS, WS);
     g.restore();
     const inView = (sx, sy, m = 0) => Math.hypot(sx - R, sy - R) < R - m;

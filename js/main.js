@@ -13,6 +13,7 @@ import { enemies } from './game/enemies.js';
 import { physics } from './world/physics.js';
 import { islands } from './world/islands.js';
 import { ports } from './world/ports.js';
+import * as archipelago from './world/archipelago.js';
 import { npcs } from './game/npcs.js';
 import { quests } from './game/quests.js';
 import { events } from './game/events.js';
@@ -44,7 +45,7 @@ import { openJournal } from './ui/journal.js';
 import { defaultAppearance } from './player/appearance.js';
 import { tpCamera } from './player/camera.js';
 import { interact } from './game/interact.js';
-import { renderMapBase } from './ui/mapArt.js';
+import { initMapBase } from './ui/mapArt.js';
 import { el } from './core/util.js';
 
 const TIPS = [
@@ -97,7 +98,7 @@ async function boot() {
   await game.buildWorld(q, (f, t) => progress(0.35 + f * 0.6, t));
   progress(0.96, 'Deniz haritası çiziliyor…');
   await new Promise((r) => setTimeout(r, 0));
-  renderMapBase();
+  await initMapBase();
   // gölgelendiricileri önceden derle (oyun içinde ilk görüşte takılmayı azaltır)
   progress(0.98, 'Gölgelendiriciler hazırlanıyor…');
   try { await Promise.race([engine.renderer.compileAsync(engine.scene, engine.camera), new Promise((r) => setTimeout(r, 8000))]); } catch (e) { /* yoksay */ }
@@ -122,7 +123,9 @@ async function boot() {
   // davet bağlantısı
   const join = new URLSearchParams(location.search).get('join');
   if (join) menu.joinScreen(join);
-  window.DK = { G, physics, islands, ports, game, input, engine, post, settings, tpCamera, interact, npcs, Ship, kk, Character, handlers, net, ui, quests, treasure, enemies, animals, fish, fishing, shipControl, THREE, save, port, combat, effects, events, sky, time, bodies, weatherfx, details, terrain, ocean, crowd };
+  window.DK = { G, assets, archipelago, physics, islands, ports, game, input, engine, post, settings, tpCamera, interact, npcs, Ship, kk, Character, handlers, net, ui, quests, treasure, enemies, animals, fish, fishing, shipControl, THREE, save, port, combat, effects, events, sky, time, bodies, weatherfx, details, terrain, ocean, crowd };
+  // Test: yalnız 3B tuvali yakala (HUD hariç) — yazılımsal GPU'da sayfa ekran görüntüsünden daha kararlı
+  window.DK.snap = (q = 0.85) => { post.render(); return engine.renderer.domElement.toDataURL('image/jpeg', q); };
   // Test/hata ayıklama yardımcıları: oyunu render etmeden ileri sar
   window.DK.sim = (seconds, dt = 1 / 30) => {
     const n = Math.round(seconds / dt);

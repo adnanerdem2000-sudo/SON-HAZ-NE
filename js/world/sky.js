@@ -4,6 +4,7 @@ import { ocean } from './ocean.js';
 import { terrain } from './terrain.js';
 import { RIM } from '../core/rim.js';
 import { ISLANDS } from './worldData.js';
+import { regionAt, regionDepth } from './archipelago.js';
 
 // Hava durumları: bulut örtüsü, yağış, sis, rüzgâr, dalga ölçeği, şimşek, karanlık
 export const WEATHERS = {
@@ -159,6 +160,27 @@ export const sky = {
     this.rain.frustumCulled = false;
     this.rainCount = N;
     scene.add(this.rain);
+    // kar / kül taneleri (bölgeye göre)
+    {
+      const FN = 1600;
+      const fp = new Float32Array(FN * 3);
+      for (let i = 0; i < FN; i++) { fp[i * 3] = (Math.random() - 0.5) * 70; fp[i * 3 + 1] = Math.random() * 30; fp[i * 3 + 2] = (Math.random() - 0.5) * 70; }
+      const fg = new THREE.BufferGeometry();
+      fg.setAttribute('position', new THREE.BufferAttribute(fp, 3));
+      const dot = document.createElement('canvas'); dot.width = dot.height = 32;
+      const dg = dot.getContext('2d');
+      const grd = dg.createRadialGradient(16, 16, 0, 16, 16, 16);
+      grd.addColorStop(0, 'rgba(255,255,255,1)'); grd.addColorStop(0.45, 'rgba(255,255,255,0.85)'); grd.addColorStop(1, 'rgba(255,255,255,0)');
+      dg.fillStyle = grd; dg.fillRect(0, 0, 32, 32);
+      const dotTex = new THREE.CanvasTexture(dot);
+      this.flakes = new THREE.Points(fg, new THREE.PointsMaterial({ color: 0xffffff, size: 0.16, map: dotTex, alphaTest: 0.02, transparent: true, opacity: 0, depthWrite: false, sizeAttenuation: true, fog: true }));
+      this.flakes.frustumCulled = false;
+      this.flakes.visible = false;
+      this.flakeCount = FN;
+      this.flakePhase = new Float32Array(FN).map(() => Math.random() * 6.28);
+      scene.add(this.flakes);
+    }
+    this.regionW = { buzul: 0, volkan: 0, col: 0, hayalet: 0, tropik: 0 };
   },
 
   _now() { return this.timeRef ? this.timeRef.totalHours() : this.hour; },
@@ -244,13 +266,22 @@ export const sky = {
     // ıslaklık: yağmurda artar, güneşte yavaşça kurur
     this.wetness = clamp(this.wetness + (W.rain > 0.1 ? W.rain * dt * 0.05 : -dt * 0.004 * (1 + this.dayFactor)), 0, 1);
 
-    // Hayalet adası sisi
+    // Bölge atmosferi: bölge ağırlıkları kamera konumundan yumuşakça izlenir
+    const RW = this.regionW;
+    if (focus) {
+      const reg = regionAt(focus.x, focus.z);
+      const dep = clamp(regionDepth(focus.x, focus.z), 0, 1);
+      for (const k in RW) RW[k] = lerp(RW[k], (k === reg || (k === 'tropik' && reg === 'merkez' && false)) ? smoothstep(0, 0.6, dep) : 0, 1 - Math.exp(-dt / 6));
+      this.region = reg;
+    }
+    // Hayalet sisi: Kemik Adası çevresi ve Hayalet Denizleri
     let regionFog = 0;
     const kemik = ISLANDS.find((i) => i.id === 'kemik');
     if (focus) {
       const d = Math.hypot(focus.x - kemik.x, focus.z - kemik.z);
       regionFog = smoothstep(kemik.r * 2.4, kemik.r * 1.1, d) * (this.isNight() ? 1 : 0.6);
     }
+    regionFog = Math.max(regionFog, RW.hayalet * (this.isNight() ? 1 : 0.72));
     this.regionFog = regionFog;
 
     // güneş konumu
@@ -321,7 +352,11 @@ export const sky = {
       fog.density = 0.045;
     } else {
       fog.color.copy(hcol);
-      fog.density = 0.0011 + W.fog * 0.009 + regionFog * 0.012 + W.rain * 0.002;
+      // bölge tonları: kuzey soğuk beyaz, doğu kül, batı sıcak pus
+      if (RW.buzul > 0.01) fog.color.lerp(C(0.84, 0.9, 0.97).multiplyScalar(0.25 + day * 0.75), RW.buzul * 0.55);
+      if (RW.volkan > 0.01) fog.color.lerp(C(0.52, 0.46, 0.42).multiplyScalar(0.25 + day * 0.75), RW.volkan * 0.6);
+      if (RW.col > 0.01) fog.color.lerp(C(0.95, 0.84, 0.64).multiplyScalar(0.25 + day * 0.75), RW.col * 0.45);
+      fog.density = 0.0011 + W.fog * 0.009 + regionFog * 0.012 + W.rain * 0.002 + RW.buzul * 0.0005 + RW.volkan * 0.0011 + RW.col * 0.0004;
     }
     // okyanus
     const ou = ocean.uniforms;
@@ -335,10 +370,44 @@ export const sky = {
       ou.uLight.value = this.lightLevel;
       ou.uGhost.value = regionFog;
       if (ou.uRain) ou.uRain.value = W.rain;
+      // bölgeye göre deniz renkleri
+      if (!this._seaBase) this._seaBase = { s: ou.uShallow.value.clone(), m: ou.uMid.value.clone(), d: ou.uDeep.value.clone() };
+      const B = this._seaBase;
+      ou.uShallow.value.copy(B.s).lerp(C(0.3, 0.55, 0.6), RW.buzul * 0.7).lerp(C(0.2, 0.3, 0.3), RW.volkan * 0.6).lerp(C(0.35, 0.75, 0.62), RW.col * 0.4);
+      ou.uMid.value.copy(B.m).lerp(C(0.06, 0.25, 0.36), RW.buzul * 0.7).lerp(C(0.05, 0.16, 0.2), RW.volkan * 0.6);
+      ou.uDeep.value.copy(B.d).lerp(C(0.03, 0.1, 0.2), RW.buzul * 0.6).lerp(C(0.02, 0.06, 0.1), RW.volkan * 0.6);
+    }
+    if (terrain.uniforms) terrain.uniforms.uSnow.value = RW.buzul * (0.45 + W.rain * 0.5);
+    // kar / kül taneleri
+    if (this.flakes && camera) {
+      const snow = RW.buzul * (0.35 + W.rain * 0.9), ash = RW.volkan * 0.6, dust = RW.col * W.wind * 0.35;
+      const amt = Math.max(snow, ash, dust) * (this.underwater || this.inCave > 0.5 ? 0 : 1);
+      this.flakes.visible = amt > 0.02;
+      if (this.flakes.visible) {
+        const mat = this.flakes.material;
+        const kind = snow >= ash && snow >= dust ? 'snow' : ash >= dust ? 'ash' : 'dust';
+        mat.color.set(kind === 'snow' ? 0xffffff : kind === 'ash' ? 0x8a8480 : 0xd8c090);
+        mat.size = kind === 'snow' ? 0.17 : kind === 'ash' ? 0.12 : 0.08;
+        mat.opacity = Math.min(0.95, amt * 1.2) * (0.35 + 0.65 * this.lightLevel);
+        const fall = (kind === 'snow' ? 2.2 : kind === 'ash' ? 1.1 : 0.4) * dt;
+        const wx = Math.cos(this.windDir) * this.windStrength * dt * (kind === 'dust' ? 9 : 3), wz = Math.sin(this.windDir) * this.windStrength * dt * (kind === 'dust' ? 9 : 3);
+        const pa = this.flakes.geometry.attributes.position.array;
+        const n = Math.floor(this.flakeCount * Math.min(1, amt * 1.3));
+        this.flakes.geometry.setDrawRange(0, n);
+        const t = performance.now() * 0.001;
+        for (let i = 0; i < n; i++) {
+          const o = i * 3, ph = this.flakePhase[i];
+          pa[o + 1] -= fall * (0.7 + (ph % 1) * 0.6);
+          pa[o] += wx + Math.sin(t * 1.3 + ph) * dt * 0.4; pa[o + 2] += wz + Math.cos(t * 1.1 + ph) * dt * 0.4;
+          if (pa[o + 1] < -2 || Math.abs(pa[o]) > 36 || Math.abs(pa[o + 2]) > 36) { pa[o] = (Math.random() - 0.5) * 70; pa[o + 1] = 26 + Math.random() * 6; pa[o + 2] = (Math.random() - 0.5) * 70; }
+        }
+        this.flakes.geometry.attributes.position.needsUpdate = true;
+        this.flakes.position.set(camera.position.x, camera.position.y - 10, camera.position.z);
+      }
     }
     // yağmur
     if (this.rain && camera) {
-      const ri = W.rain;
+      const ri = W.rain * (1 - RW.buzul * 0.9);
       this.rain.material.opacity = ri * 0.45 * (this.underwater ? 0 : 1);
       this.rain.visible = ri > 0.02 && !this.inCave;
       if (this.rain.visible) {

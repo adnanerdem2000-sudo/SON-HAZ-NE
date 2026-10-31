@@ -61,23 +61,40 @@ function partsOf(id) {
 }
 
 // ---- örneklenmiş çizim toplayıcı ----
+// Örnekler 160 m'lik hücrelere bölünür: hücre başına ayrı InstancedMesh → görüş konisi ayıklaması ve
+// uzaklığa göre gizleme/gölge kapatma (LOD) hücre düzeyinde yapılır.
+const VCELL = 160;
 class Batch {
-  constructor() { this.map = new Map(); }
-  // h: istenen yükseklik (m) ya da s: doğrudan ölçek
-  add(id, x, y, z, { h = null, s = null, yaw = 0, rx = 0, rz = 0, tint = null, shadow = true } = {}) {
+  constructor() { this.map = new Map(); this.cells = []; }
+  // h: istenen yükseklik (m) ya da s: doğrudan ölçek; small: yalnız yakında çizilen küçük süs
+  add(id, x, y, z, { h = null, s = null, yaw = 0, rx = 0, rz = 0, tint = null, moss = null, boost = 1, shadow = true, small = false } = {}) {
     const P = partsOf(id);
     const sc = s ?? (h ? h / P.h : 1);
-    const key = id + (tint !== null ? '|' + tint : '');
+    const ci = Math.floor(x / VCELL), cj = Math.floor(z / VCELL);
+    const key = id + (tint !== null ? '|' + tint : '') + (moss !== null ? '|m' + moss : '') + (boost !== 1 ? '|b' + boost : '') + '|' + ci + ',' + cj;
     let b = this.map.get(key);
-    if (!b) this.map.set(key, (b = { id, P, tint, list: [], shadow }));
+    if (!b) this.map.set(key, (b = { id, P, tint, moss, boost, list: [], shadow, small, cx: (ci + 0.5) * VCELL, cz: (cj + 0.5) * VCELL }));
     b.list.push({ x, y, z, sc, yaw, rx, rz });
     return sc;
   }
   build(group, matsOut) {
+    const tinted = new Map();
     for (const b of this.map.values()) {
       for (const part of b.P.parts) {
         let mat = part.material;
-        if (b.tint !== null) { mat = mat.clone(); mat.color.multiply(new THREE.Color(b.tint)); matsOut.push(mat); }
+        if (b.tint !== null || b.moss !== null || b.boost !== 1) {
+          const tk = part.material.uuid + '|' + b.tint + '|' + b.moss + '|' + b.boost;
+          mat = tinted.get(tk);
+          if (!mat) {
+            mat = part.material.clone();
+            const c = mat.color;
+            // yeşil (yosun/ot) parçalar biyoma göre kar/kum/kül rengine boyanır
+            if (b.moss !== null && c.g > c.r * 1.15 && c.g > c.b * 1.15) c.set(b.moss);
+            else if (b.tint !== null) c.multiply(new THREE.Color(b.tint));
+            if (b.boost !== 1) c.multiplyScalar(b.boost);
+            matsOut.push(mat); tinted.set(tk, mat);
+          }
+        }
         const im = new THREE.InstancedMesh(part.geometry, mat, b.list.length);
         b.list.forEach((t, i) => {
           _e.set(t.rx, t.yaw, t.rz); _q.setFromEuler(_e); _s.setScalar(t.sc); _p.set(t.x, t.y, t.z);
@@ -87,7 +104,9 @@ class Batch {
         });
         im.castShadow = b.shadow; im.receiveShadow = true;
         im.computeBoundingSphere();
+        im.userData.cell = { x: b.cx, z: b.cz, small: b.small, shadow: b.shadow };
         group.add(im);
+        this.cells.push(im);
       }
     }
   }
@@ -103,7 +122,7 @@ const VEG = {
     { a: 'bush_large', w: 5, zone: 'in', h: [1.6, 2.8] },
     { a: 'bush', w: 6, zone: 'any', h: [0.8, 1.4] },
     { a: 'flower_red', w: 3, zone: 'in', h: [0.35, 0.5] },
-    { a: 'rock_large', w: 1.5, zone: 'any', h: [1.2, 2.6], col: 0.35 },
+    { a: 'rock_large', w: 1.5, zone: 'any', h: [0.45, 0.95], col: 1.4 },
     { a: 'rock_small', w: 2.5, zone: 'any', h: [0.3, 0.7] },
   ],
   cangil: [
@@ -114,32 +133,32 @@ const VEG = {
     { a: 'bush', w: 6, zone: 'any', h: [1, 1.6] },
     { a: 'flower_red', w: 4, zone: 'in', h: [0.4, 0.6] },
     { a: 'mushroom_red', w: 2, zone: 'in', h: [0.3, 0.6] },
-    { a: 'rock_large', w: 1, zone: 'any', h: [1.2, 2.4], col: 0.35, tint: 0xa0a890 },
+    { a: 'rock_large', w: 1, zone: 'any', h: [0.45, 0.95], col: 1.4, tint: 0xa0a890 },
   ],
   buzul: [
     { a: 'tree_pine', w: 6, zone: 'in', h: [6, 10], col: 0.06, tint: 0xd8e4ec },
     { a: 'tree_pine_tall', w: 4, zone: 'in', h: [9, 14], col: 0.06, tint: 0xd0dce6 },
-    { a: 'rock_large', w: 3, zone: 'any', h: [1.4, 3.2], col: 0.35, tint: 0xa8b8c8 },
-    { a: 'rock_tall', w: 1, zone: 'in', h: [4, 8], col: 0.28, tint: 0x9aaabb },
-    { a: 'crystal_rock', w: 1.5, zone: 'any', h: [1, 2.2], col: 0.3, tint: 0xb8e8ff },
-    { a: 'rock_small', w: 3, zone: 'any', h: [0.3, 0.8], tint: 0xc0c8d0 },
+    { a: 'rock_large', w: 3, zone: 'any', h: [0.45, 0.95], col: 1.4, tint: 0xb8c4d0, moss: 0xf2f6ff },
+    { a: 'rock_tall', w: 1, zone: 'in', h: [4, 8], col: 0.42, tint: 0xb0bccb, moss: 0xf2f6ff, boost: 1.2 },
+    { a: 'crystal_rock', w: 1.5, zone: 'any', h: [1, 2.2], col: 0.7, tint: 0xb8e8ff },
+    { a: 'rock_small', w: 3, zone: 'any', h: [0.3, 0.8], tint: 0xc0c8d0, moss: 0xf2f6ff },
     { a: 'bush', w: 1.5, zone: 'in', h: [0.6, 1], tint: 0xa8b8a0 },
   ],
   volkan: [
-    { a: 'tree_dark', w: 3, zone: 'in', h: [4, 7], col: 0.08, tint: 0x6a5a50 },
-    { a: 'kk:graveyard:tree_dead_large', w: 2, zone: 'in', h: [4, 7], col: 0.06, tint: 0x504038 },
-    { a: 'kk:graveyard:tree_dead_medium', w: 2, zone: 'any', h: [2.5, 4], tint: 0x504038 },
-    { a: 'rock_large', w: 4, zone: 'any', h: [1.4, 3.4], col: 0.35, tint: 0x4a4444 },
-    { a: 'rock_tall', w: 2, zone: 'in', h: [5, 10], col: 0.28, tint: 0x3a3434 },
-    { a: 'crystal_rock', w: 1.5, zone: 'in', h: [1, 2.4], col: 0.3, tint: 0x6a2a20 },
-    { a: 'rock_small', w: 3, zone: 'any', h: [0.3, 0.8], tint: 0x505050 },
+    { a: 'tree_dark', w: 1, zone: 'in', h: [4, 7], col: 0.08, tint: 0x9a8a80 },
+    { a: 'kk:graveyard:tree_dead_large', w: 3, zone: 'in', h: [4, 7], col: 0.06, tint: 0x7a6658 },
+    { a: 'kk:graveyard:tree_dead_medium', w: 3, zone: 'any', h: [2.5, 4], tint: 0x7a6658 },
+    { a: 'rock_large', w: 4, zone: 'any', h: [0.45, 0.95], col: 1.4, tint: 0x5a5452, moss: 0x5a504c },
+    { a: 'rock_tall', w: 2, zone: 'in', h: [5, 10], col: 0.42, tint: 0x4a4444, moss: 0x6a3020 },
+    { a: 'crystal_rock', w: 1.5, zone: 'in', h: [1, 2.4], col: 0.7, tint: 0x6a2a20 },
+    { a: 'rock_small', w: 3, zone: 'any', h: [0.3, 0.8], tint: 0x5a5a5a, moss: 0x5a504c },
     { a: 'bush', w: 1.5, zone: 'in', h: [0.6, 1], tint: 0x8a8a50 },
   ],
   col: [
-    { a: 'cactus', w: 5, zone: 'in', h: [2, 4.5], col: 0.12 },
-    { a: 'rock_tall', w: 2, zone: 'in', h: [5, 12], col: 0.28, tint: 0xe09060 },
-    { a: 'rock_large', w: 3, zone: 'any', h: [1.4, 3.4], col: 0.35, tint: 0xd8906a },
-    { a: 'rock_small', w: 3, zone: 'any', h: [0.3, 0.8], tint: 0xd8a080 },
+    { a: 'cactus', w: 5, zone: 'in', h: [2, 4.5], col: 0.12, boost: 1.5 },
+    { a: 'rock_tall', w: 2, zone: 'in', h: [5, 12], col: 0.42, tint: 0xffb080, moss: 0xe0b878, boost: 1.35 },
+    { a: 'rock_large', w: 3, zone: 'any', h: [0.45, 0.95], col: 1.4, tint: 0xffb088, moss: 0xe0c088, boost: 1.2 },
+    { a: 'rock_small', w: 3, zone: 'any', h: [0.3, 0.8], tint: 0xffc0a0, moss: 0xe0c088, boost: 1.2 },
     { a: 'bush', w: 4, zone: 'in', h: [0.6, 1.1], tint: 0xc8b070 },
     { a: 'kk:graveyard:tree_dead_small', w: 1.5, zone: 'in', h: [2, 3.5], tint: 0x8a6a48 },
     { a: 'tree_palm', w: 1, zone: 'beach', h: [5, 7], col: 0.05, tilt: 0.2 },
@@ -150,7 +169,7 @@ const VEG = {
     { a: 'kk:graveyard:tree_dead_medium', w: 3, zone: 'any', h: [2.5, 4] },
     { a: 'kk:graveyard:gravestone', w: 1.5, zone: 'in', h: [1, 1.5] },
     { a: 'kk:graveyard:grave_A_destroyed', w: 1, zone: 'in', h: [0.8, 1.2] },
-    { a: 'rock_large', w: 2, zone: 'any', h: [1.4, 3], col: 0.35, tint: 0x8a8a96 },
+    { a: 'rock_large', w: 2, zone: 'any', h: [0.45, 0.95], col: 1.4, tint: 0x9a9aa6, moss: 0x5a6a5a },
     { a: 'mushroom_red', w: 1.5, zone: 'in', h: [0.3, 0.6], tint: 0x90ffd0 },
   ],
 };
@@ -227,6 +246,7 @@ export const islands = {
     }
     this._updateLamps(dt);
     this._updateLava(dt);
+    this._cellLod(cam);
     for (const b of this.built.values()) for (const fn of b.tick) fn(dt);
   },
 
@@ -249,11 +269,25 @@ export const islands = {
     this._seaStacks(B, R); mark('stacks');
     if (I.shape === 'volcano') this._lava(B);
     B.batch.build(group, B.mats); mark('batch');
+    B.cells = B.batch.cells;
     rimAll(group); mark('rim');
     this.scene.add(group);
     this.built.set(I.id, B);
     B.ms = performance.now() - t0;
     G.emit('islandBuilt', { id: I.id, ms: B.ms });
+  },
+
+  // hücre LOD: uzak hücreler gizlenir, gölgeler yalnız yakında
+  _cellLod(cam) {
+    this._lodT = (this._lodT || 0) - 1;
+    if (this._lodT > 0) return;
+    this._lodT = 15;
+    for (const b of this.built.values()) for (const im of b.cells || []) {
+      const c = im.userData.cell;
+      const d = Math.hypot(c.x - cam.x, c.z - cam.z);
+      im.visible = d < (c.small ? 240 : 850);
+      im.castShadow = c.shadow && d < 220;
+    }
   },
 
   _drop(id) {
@@ -277,7 +311,7 @@ export const islands = {
     const q = terrain.quality || 'high';
     const dens = q === 'low' ? 0.45 : q === 'medium' ? 0.75 : 1;
     const area = Math.PI * I.r * I.r * I.ex * I.ez;
-    const n = Math.floor(area / 26 * dens * (I.shape === 'glacier' ? 0.55 : I.biome === 'cangil' ? 1.25 : I.biome === 'col' ? 0.6 : 1));
+    const n = Math.min(7000, Math.floor(area / 34 * dens * (I.shape === 'glacier' ? 0.55 : I.shape === 'volcano' ? 0.4 : I.biome === 'cangil' ? 1.25 : I.biome === 'col' ? 0.6 : 1)));
     const keep = I.features.filter((f) => f.r || f.type === 'port').map((f) => ({ x: f.x, z: f.z, r: (f.type === 'port' ? 58 * (f.size || 1) : f.r * 1.1) }));
     for (const s of DIG_SITES) if (s.island === I.id) keep.push({ x: s.x, z: s.z, r: 6 });
     const pp = ports.list.find((p) => p.island === I.id);
@@ -301,7 +335,7 @@ export const islands = {
       const hh = v.h[0] + R() * (v.h[1] - v.h[0]);
       const yaw = R() * 6.28;
       const tilt = v.tilt ? (R() - 0.5) * v.tilt : 0;
-      B.batch.add(v.a, x, h - 0.15, z, { h: hh, yaw, rx: tilt, rz: v.tilt ? (R() - 0.5) * v.tilt : 0, tint: v.tint ?? null, shadow: hh > 1.5 });
+      B.batch.add(v.a, x, h - 0.15, z, { h: hh, yaw, rx: tilt, rz: v.tilt ? (R() - 0.5) * v.tilt : 0, tint: v.tint ?? null, moss: v.moss ?? null, boost: v.boost ?? 1, shadow: hh > 1.5, small: hh < 1.2 });
       if (v.col) physics.addCircle(x, z, Math.max(0.25, v.col * hh), h - 1, h + hh, B.tag);
     }
   },
@@ -455,7 +489,7 @@ export const islands = {
   _camp(B, f, R) {
     const cx = f.x, cz = f.z;
     const y = terrain.heightAt(cx, cz);
-    B.batch.add('campfire', cx, y, cz, { h: 0.7 });
+    B.batch.add('campfire', cx, y, cz, { h: 0.2 });
     this._lamp(B, cx, y + 1.2, cz, { color: 0xff8030, power: 22, range: 26, flicker: 0.5, night: false });
     B.tick.push(() => { if (Math.random() < 0.3) effects.smoke(cx, y + 1, cz, 1, 0.5, 0.3); });
     const nT = 3 + Math.floor(R() * 3);
@@ -486,7 +520,7 @@ export const islands = {
     for (let i = -2; i <= 2; i++) {
       if (i === 0) continue;
       const fx = cx + Math.sin(yaw) * 14 + Math.cos(yaw) * i * 7.2, fz = cz + Math.cos(yaw) * 14 - Math.sin(yaw) * i * 7.2;
-      this._place(B, 'kk:town:wall_straight', fx, fz, yaw + Math.PI / 2, { s: 3.6, col: true, colK: 0.9 });
+      this._place(B, 'kk:town:wall_straight', fx, fz, yaw, { s: 3.6, col: true, colK: 0.9 });
     }
     this._place(B, 'kk:town:flag_red', cx, cz, yaw, { s: 12, dy: 18 });
   },
@@ -705,7 +739,7 @@ export const islands = {
       for (let k = -3; k <= 3; k++) {
         if (side === 0 && k === 0) continue;
         const ox = Math.sin(a) * 26 + Math.cos(a) * k * 7.6, oz = Math.cos(a) * 26 - Math.sin(a) * k * 7.6;
-        this._place(B, 'kk:town:wall_straight', cx + ox, cz + oz, a + Math.PI / 2, { s: S, col: true, colK: 0.95, tint: 0xa89888 });
+        this._place(B, 'kk:town:wall_straight', cx + ox, cz + oz, a, { s: S, col: true, colK: 0.95, tint: 0xa89888 });
       }
       const tx = cx + Math.sin(a) * 26 + Math.cos(a) * 27, tz = cz + Math.cos(a) * 26 - Math.sin(a) * 27;
       this._place(B, 'kk:town:tower_base_red', tx, tz, a, { s: 5, col: true, colK: 0.75, tint: 0x9a8a7a });
@@ -807,10 +841,10 @@ export const islands = {
       if (s.island !== B.I.id || !s.gen) continue;
       for (const L of s.landmarks) {
         const y = terrain.heightAt(L.x, L.z);
-        if (L.type === 'rock') B.batch.add('rock_large', L.x, y - 0.2, L.z, { h: 1.8, yaw: L.x });
+        if (L.type === 'rock') B.batch.add('rock_large', L.x, y - 0.1, L.z, { h: 0.75, yaw: L.x });
         else if (L.type === 'deadtree') B.batch.add('kk:graveyard:tree_dead_large', L.x, y - 0.2, L.z, { h: 5, yaw: L.z });
         else if (L.type === 'column') B.batch.add('column_broken', L.x, y - 0.1, L.z, { h: 3.2, yaw: L.x * 0.7 });
-        else if (L.type === 'campfire') B.batch.add('campfire', L.x, y, L.z, { h: 0.7 });
+        else if (L.type === 'campfire') B.batch.add('campfire', L.x, y, L.z, { h: 0.2 });
         else if (L.type === 'barrel') B.batch.add('barrel', L.x, y - 0.4, L.z, { h: 1.1, rz: 0.35 });
         else if (L.type === 'obelisk') B.batch.add('obelisk', L.x, y - 0.2, L.z, { h: 6.5, yaw: 0.3 });
         physics.addCircle(L.x, L.z, 0.5, y - 1, y + 2, B.tag);
@@ -832,7 +866,8 @@ export const islands = {
       if (pp && Math.hypot(x - pp.mooring.x, z - pp.mooring.z) < 120) continue;
       const hgt = 9 + R() * 14;
       const tint = I.biome === 'buzul' ? 0xb8c8d8 : I.biome === 'volkan' ? 0x403838 : I.biome === 'col' ? 0xd08a60 : 0x9a9088;
-      B.batch.add('rock_tall', x, h - 1, z, { h: hgt + 1 - h, yaw: R() * 6, tint });
+      const moss = I.biome === 'buzul' ? 0xf2f6ff : I.biome === 'volkan' ? 0x4a4440 : I.biome === 'col' ? 0xe0c088 : null;
+      B.batch.add('rock_tall', x, h - 1, z, { h: hgt + 1 - h, yaw: R() * 6, tint, moss });
       const ob = { x, z, r: hgt * 0.32 };
       Ship.obstacles.push(ob);
       B.obstacles.push(ob);

@@ -2,7 +2,8 @@ import * as THREE from 'three';
 import { G } from './ctx.js';
 import { interact } from './interact.js';
 import { audio } from '../core/audio.js';
-import { ISLANDS, POIS, WRECKS, DIG_SITES } from '../world/worldData.js';
+import { ISLANDS, POIS, WRECKS, DIG_SITES, WORLD_SIZE } from '../world/worldData.js';
+import { FOG_N } from '../ui/mapArt.js';
 import { cave } from '../world/cave.js';
 import { terrain } from '../world/terrain.js';
 import { ports } from '../world/ports.js';
@@ -78,8 +79,8 @@ export const quests = {
     this.side = d?.side || [];
     this.completed = d?.completed || [];
     this.discovered = d?.discovered || {};
-    this.fog = new Uint8Array(64 * 64);
-    if (d?.fog) { const b = atob(d.fog); for (let i = 0; i < Math.min(b.length, this.fog.length); i++) this.fog[i] = b.charCodeAt(i); }
+    this.fog = new Uint8Array(FOG_N * FOG_N);
+    if (d?.fog) this._loadFog(d.fog);
     this.stats = { treasures: 0, earned: 0, fish: 0, kills: {}, maxDepth: 0, sold: 0, soldValue: 0, shipsBought: 0, shipsSunk: 0, chests: 0, ...(d?.stats || {}) };
     this.collection = { fish: {}, animals: {}, ...(d?.collection || {}) };
     this.achievements = d?.achievements || {};
@@ -92,10 +93,33 @@ export const quests = {
   },
   stop() {},
 
+  // Keşif sisi: 256×256 hücre (78 m), bit paketli kayıt. Eski kayıtlar (64×64, 2.4 km) dönüştürülür.
+  _loadFog(str) {
+    if (str.startsWith('v2:')) {
+      const b = atob(str.slice(3));
+      for (let i = 0; i < this.fog.length; i++) this.fog[i] = (b.charCodeAt(i >> 3) >> (i & 7)) & 1;
+      return;
+    }
+    const b = atob(str);
+    const cell = WORLD_SIZE / FOG_N;
+    for (let j = 0; j < 64; j++) for (let i = 0; i < 64; i++) {
+      if (!b.charCodeAt(j * 64 + i)) continue;
+      const x = -1200 + (i + 0.5) * 37.5, z = -1200 + (j + 0.5) * 37.5;
+      const gx = Math.floor((x + WORLD_SIZE / 2) / cell), gz = Math.floor((z + WORLD_SIZE / 2) / cell);
+      this.fog[gz * FOG_N + gx] = 1;
+    }
+  },
+  _saveFog() {
+    const bytes = new Uint8Array(Math.ceil(this.fog.length / 8));
+    for (let i = 0; i < this.fog.length; i++) if (this.fog[i]) bytes[i >> 3] |= 1 << (i & 7);
+    let s = '';
+    for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
+    return 'v2:' + btoa(s);
+  },
+
   save() {
-    let fog = '';
-    for (let i = 0; i < this.fog.length; i++) fog += String.fromCharCode(this.fog[i]);
-    return { stage: this.stage, flags: this.flags, side: this.side, completed: this.completed, discovered: this.discovered, fog: btoa(fog), stats: this.stats, collection: this.collection, achievements: this.achievements, markers: this.markers, boardSeed: this.boardSeed };
+    const fog = this._saveFog();
+    return { stage: this.stage, flags: this.flags, side: this.side, completed: this.completed, discovered: this.discovered, fog, stats: this.stats, collection: this.collection, achievements: this.achievements, markers: this.markers, boardSeed: this.boardSeed };
   },
 
   storyStep() { return STORY[Math.min(this.stage, STORY.length - 1)]; },
@@ -222,12 +246,13 @@ export const quests = {
     const p = G.player;
     if (!p) return;
     // keşif sisi
-    const gx = Math.floor((p.pos.x + 1200) / 2400 * 64), gz = Math.floor((p.pos.z + 1200) / 2400 * 64);
-    const rr = p.mode === 'helm' || p.mode === 'deck' ? 4 : 3;
+    const cell = WORLD_SIZE / FOG_N;
+    const gx = Math.floor((p.pos.x + WORLD_SIZE / 2) / cell), gz = Math.floor((p.pos.z + WORLD_SIZE / 2) / cell);
+    const rr = p.mode === 'helm' || p.mode === 'deck' || p.mode === 'cannon' ? 5 : 3;
     for (let j = -rr; j <= rr; j++) for (let i = -rr; i <= rr; i++) {
       if (i * i + j * j > rr * rr) continue;
       const x = gx + i, z = gz + j;
-      if (x >= 0 && z >= 0 && x < 64 && z < 64) this.fog[z * 64 + x] = 1;
+      if (x >= 0 && z >= 0 && x < FOG_N && z < FOG_N && !this.fog[z * FOG_N + x]) { this.fog[z * FOG_N + x] = 1; this.fogDirty = true; }
     }
     this._discoverT -= dt;
     if (this._discoverT <= 0) {
@@ -239,7 +264,7 @@ export const quests = {
         audio.play('gem', { vol: 0.5, rate: 0.8 });
         this._checkAch();
       }
-      for (const P of POIS) if (!this.discovered[P.id] && Math.hypot(p.pos.x - P.x, p.pos.z - P.z) < (P.id === 'batik' ? 18 : 30) && (P.id !== 'batik' || p.underwater)) {
+      for (const P of POIS) if (!this.discovered[P.id] && Math.hypot(p.pos.x - P.x, p.pos.z - P.z) < (P.id === 'batik' ? 18 : P.port ? 90 : P.icon === 'temple' ? 75 : P.id.includes('sunken') ? 60 : P.id === 'liman' ? 30 : 42) && (P.id !== 'batik' || p.underwater)) {
         this.discovered[P.id] = true;
         G.notify(`Keşfedildi: ${P.name}`, 'discover', 4000);
         G.emit('discovered', { id: P.id, name: P.name });

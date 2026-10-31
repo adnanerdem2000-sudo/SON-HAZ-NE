@@ -9,7 +9,7 @@ import { quests, STORY } from '../game/quests.js';
 import { terrain } from '../world/terrain.js';
 import { ISLANDS, POIS, DIG_SITES, WORLD_SIZE, WRECKS } from '../world/worldData.js';
 import { parchmentCanvas } from '../core/textures.js';
-import { renderMapBase, drawPoiIcon, fogCanvas } from './mapArt.js';
+import { renderMapBase, drawPoiIcon, fogCanvas, drawDetail, onMapDetail } from './mapArt.js';
 import { SHIP_TYPES } from '../ship/shipModel.js';
 import { shipControl } from '../game/shipControl.js';
 import { engine } from '../core/engine.js';
@@ -359,17 +359,24 @@ export const panels = {
     wrap.appendChild(cv);
     const legend = el('div', { class: 'map-legend' });
     wrap.appendChild(legend);
-    let zoom = 1, cx = 0, cz = 0;
+    // yakınlaştırma: 1 = tüm dünya (20 km); 80 ≈ 250 m
+    let zoom = this._mapZoom || 6, cx = 0, cz = 0;
     const p = G.player;
-    if (p) { cx = p.pos.x * 0.3; cz = p.pos.z * 0.3; }
+    if (p) { cx = p.pos.x; cz = p.pos.z; }
     const base = renderMapBase();
+    let raf = 0;
+    const unsub = onMapDetail(() => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; if (cv.isConnected) draw(); }); });
+    this._mapUnsub = unsub;
     const draw = () => {
       const g = cv.getContext('2d');
       g.clearRect(0, 0, W, H);
       const scale = (W / WORLD_SIZE) * zoom;
       g.fillStyle = '#c9b48a'; g.fillRect(0, 0, W, H);
+      g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high';
       g.drawImage(base, W / 2 + (-WORLD_SIZE / 2 - cx) * scale, H / 2 + (-WORLD_SIZE / 2 - cz) * scale, WORLD_SIZE * scale, WORLD_SIZE * scale);
       const toPx = (x, z) => [W / 2 + (x - cx) * scale, H / 2 + (z - cz) * scale];
+      // yakınlaşınca ayrıntılı karolar
+      if (scale > 1024 / WORLD_SIZE * 1.6) drawDetail(g, toPx, scale, cx - W / 2 / scale, cz - H / 2 / scale, cx + W / 2 / scale, cz + H / 2 / scale);
       // keşfedilmemiş bölgeler: yumuşak kenarlı parşömen sisi
       {
         const fc = fogCanvas(quests.fog);
@@ -384,25 +391,31 @@ export const panels = {
         g.strokeStyle = 'rgba(244,230,196,0.85)'; g.lineWidth = 4; g.strokeText(txt, x, y);
         g.fillStyle = color; g.fillText(txt, x, y);
       };
+      const zk = Math.log2(zoom);
       for (const I of ISLANDS) {
         if (!quests.discovered[I.id]) continue;
         const [x, y] = toPx(I.x, I.z);
-        label(I.name, x, y - I.r * scale - 8, `${Math.round(26 * Math.min(1.6, zoom))}px "Pirata One", serif`);
+        if (x < -200 || y < -200 || x > W + 200 || y > H + 200) continue;
+        if (I.r * scale < 4 && zoom < 3) continue;
+        label(I.name, x, y - I.r * scale - 8, `${Math.round(clamp(12 + zk * 3.2 + I.r / 60, 12, 34))}px "Pirata One", serif`);
       }
       for (const P of POIS) {
         if (!quests.discovered[P.id] && !(P.id === 'liman')) continue;
+        if (zoom < 2.5 && !P.port && P.id !== 'liman') continue;
         const [x, y] = toPx(P.x, P.z);
-        drawPoiIcon(g, P.icon, x, y, 11 * Math.min(1.6, Math.max(0.9, zoom)));
-        label(P.name, x, y + 26, `${Math.round(16 * Math.min(1.5, zoom))}px "Crimson Text", serif`);
+        if (x < -50 || y < -50 || x > W + 50 || y > H + 50) continue;
+        drawPoiIcon(g, P.icon, x, y, clamp(8 + zk * 1.6, 8, 17));
+        if (zoom > 4 || P.port) label(P.name, x, y + 24, `${Math.round(clamp(11 + zk * 1.6, 11, 19))}px "Crimson Text", serif`);
       }
       // hazine haritaları
       for (const s of (p?.inv.stacks || []).filter((s) => s.id === 'hazine_haritasi')) {
         const site = DIG_SITES.find((d) => d.id === s.data?.site);
         if (!site) continue;
         const isl = ISLANDS.find((i) => i.id === site.island);
+        if (!isl) continue;
         const [x, y] = toPx(isl.x, isl.z);
         g.strokeStyle = '#a3241a'; g.lineWidth = 2; g.setLineDash([5, 4]);
-        g.beginPath(); g.arc(x, y, isl.r * scale * 1.2, 0, 6.3); g.stroke(); g.setLineDash([]);
+        g.beginPath(); g.arc(x, y, Math.max(8, isl.r * scale * 1.2), 0, 6.3); g.stroke(); g.setLineDash([]);
       }
       // işaretler
       for (const m of quests.markers) {
@@ -442,9 +455,23 @@ export const panels = {
       this._rose(g, W - 90, H - 100, 60);
       g.textAlign = 'left';
     };
-    legend.innerHTML = `<b style="font-family:var(--title);font-size:20px">Mavi Kırıklar</b><br>Fare tekerleği: yakınlaştır · Sürükle: kaydır<br>Sol tık: işaret koy / kaldır · Sağ tık: rota noktası ekle · <span class="kbd">R</span> rotayı sil<br><span style="color:#a3241a">✚</span> işaret · <span style="color:#c0392b">▲</span> sen · <span style="color:#a3241a">◌</span> hazine haritası bölgesi<br>Sisli alanlar henüz keşfedilmedi.`;
+    legend.innerHTML = `<b style="font-family:var(--title);font-size:20px">Mavi Kırıklar ve Ötesi</b><br>Fare tekerleği: yakınlaştır · Sürükle: kaydır · <span class="kbd">Boşluk</span> konumuna dön<br>Sol tık: işaret koy / kaldır · Sağ tık: rota noktası ekle · <span class="kbd">R</span> rotayı sil<br><span style="color:#a3241a">✚</span> işaret · <span style="color:#c0392b">▲</span> sen · <span style="color:#a3241a">◌</span> hazine haritası bölgesi<br>Sisli alanlar henüz keşfedilmedi.`;
     let drag = null, moved = false;
-    cv.addEventListener('wheel', (e) => { e.preventDefault(); zoom = clamp(zoom * (e.deltaY < 0 ? 1.15 : 0.87), 0.8, 6); draw(); }, { passive: false });
+    cv.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      // imlecin altındaki nokta sabit kalsın
+      const r = cv.getBoundingClientRect();
+      const px = (e.clientX - r.left) * (W / r.width), py = (e.clientY - r.top) * (H / r.height);
+      const sc0 = (W / WORLD_SIZE) * zoom;
+      const wx = cx + (px - W / 2) / sc0, wz = cz + (py - H / 2) / sc0;
+      zoom = clamp(zoom * (e.deltaY < 0 ? 1.2 : 0.83), 0.95, 90);
+      this._mapZoom = zoom;
+      const sc1 = (W / WORLD_SIZE) * zoom;
+      cx = wx - (px - W / 2) / sc1; cz = wz - (py - H / 2) / sc1;
+      draw();
+    }, { passive: false });
+    this._mapKey = (e) => { if (e.code === 'Space' && p) { cx = p.pos.x; cz = p.pos.z; draw(); } };
+    window.addEventListener('keydown', this._mapKey);
     cv.addEventListener('mousedown', (e) => { drag = { x: e.clientX, y: e.clientY, cx, cz, b: e.button }; moved = false; });
     window.addEventListener('mousemove', this._mm = (e) => {
       if (!drag) return;
@@ -475,7 +502,7 @@ export const panels = {
     const onKey = (e) => { if (e.code === 'KeyR') { this.route = []; draw(); } };
     window.addEventListener('keydown', onKey);
     draw();
-    ui.open(ui.panel('Deniz Haritası', wrap, { style: { padding: '14px' } }), { kind: 'map', closeKeys: ['KeyM'], onClose: () => { window.removeEventListener('mousemove', this._mm); window.removeEventListener('keydown', onKey); } });
+    ui.open(ui.panel('Deniz Haritası', wrap, { style: { padding: '14px' } }), { kind: 'map', closeKeys: ['KeyM'], onClose: () => { window.removeEventListener('mousemove', this._mm); window.removeEventListener('keydown', onKey); window.removeEventListener('keydown', this._mapKey); this._mapUnsub?.(); } });
   },
 
   // ---------------- Tersane ----------------
