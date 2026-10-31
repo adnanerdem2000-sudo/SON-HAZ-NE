@@ -55,7 +55,13 @@ export const combat = {
       for (const t of this.targets) {
         if (!t.alive || !t.big) continue;
         _v.copy(t.pos); _v.y += t.height * 0.5;
-        if (_v.distanceTo(e.pos) < t.radius + 0.6) {
+        // önceki konum → yeni konum parçasının hedef merkezine en yakın noktası (hızlı gülle hedefin içinden geçmesin)
+        const prev = e.prev || e.pos;
+        const sx = e.pos.x - prev.x, sy = e.pos.y - prev.y, sz = e.pos.z - prev.z;
+        const l2 = sx * sx + sy * sy + sz * sz;
+        const u = l2 > 1e-9 ? Math.max(0, Math.min(1, ((_v.x - prev.x) * sx + (_v.y - prev.y) * sy + (_v.z - prev.z) * sz) / l2)) : 0;
+        const cx = prev.x + sx * u, cy = prev.y + sy * u, cz = prev.z + sz * u;
+        if (Math.hypot(_v.x - cx, _v.y - cy, _v.z - cz) < t.radius + 0.6) {
           e.out({ type: 'target', apply: (b) => t.hurt(60 * b.dmg, { kind: 'cannon', pos: e.pos }) });
           return;
         }

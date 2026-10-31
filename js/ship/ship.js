@@ -336,8 +336,11 @@ export class Ship {
       const d = Math.hypot(dx, dz);
       const chain = this.anchorPt.chain;
       vx += wxv * sky.windStrength * 0.35 * dt; vz += wzv * sky.windStrength * 0.35 * dt;
-      if (d > chain) {
-        const pull = (d - chain) * 1.6 * dt;
+      if (d > chain * 3 + 40) {
+        // zincir olanaksız biçimde uzamış (gemi taşındı/ışınlandı): çapa bulunduğu yere yeniden atılır
+        this._setAnchorPoint();
+      } else if (d > chain) {
+        const pull = Math.min(d - chain, 6) * 1.6 * dt; // çekiş sınırlı: gemi fırlamaz
         vx += (dx / d) * pull; vz += (dz / d) * pull;
         vx *= Math.exp(-1.2 * dt); vz *= Math.exp(-1.2 * dt);
       }
@@ -482,20 +485,23 @@ export class Ship {
       const ma = a.kinematic ? 1e6 : a.mass, mb = b.kinematic ? 1e6 : b.mass;
       a.x += nx * pen * (mb / (ma + mb)); a.z += nz * pen * (mb / (ma + mb));
       b.x -= nx * pen * (ma / (ma + mb)); b.z -= nz * pen * (ma / (ma + mb));
-      const vrel = (a.vx - b.vx) * nx + (a.vz - b.vz) * nz;
+      // kinematik (betikli) gemide hız alanları tanımsız olabilir: 0 kabul edilir (NaN yayılmaz)
+      const avx = a.vx || 0, avz = a.vz || 0, bvx = b.vx || 0, bvz = b.vz || 0;
+      const vrel = (avx - bvx) * nx + (avz - bvz) * nz;
       if (vrel < 0) {
         const e = 0.3;
         const J = -(1 + e) * vrel / (1 / ma + 1 / mb);
-        a.vx += (J / ma) * nx; a.vz += (J / ma) * nz;
-        b.vx -= (J / mb) * nx; b.vz -= (J / mb) * nz;
+        a.vx = avx + (J / ma) * nx; a.vz = avz + (J / ma) * nz;
+        b.vx = bvx - (J / mb) * nx; b.vz = bvz - (J / mb) * nz;
         const cx = (pa[0] + pb[0]) / 2, cz = (pa[1] + pb[1]) / 2;
         a.yawRate = (a.yawRate || 0) + (((cx - a.x) * nz - (cz - a.z) * nx) * J) / (a.T.L * a.T.L * 0.12 * ma);
         b.yawRate = (b.yawRate || 0) - (((cx - b.x) * nz - (cz - b.z) * nx) * J) / (b.T.L * b.T.L * 0.12 * mb);
         if (a.kinematic) { a.vx = a.vz = 0; a.yawRate = 0; }
         if (b.kinematic) { b.vx = b.vz = 0; b.yawRate = 0; }
         if (Math.abs(vrel) > 1.5) {
-          a.damage(Math.abs(vrel) * 5 * (mb / ma), a.worldToLocal(new THREE.Vector3(cx, a.y, cz)));
-          b.damage(Math.abs(vrel) * 5 * (ma / mb), b.worldToLocal(new THREE.Vector3(cx, b.y, cz)));
+          // kütle oranı sınırlı (≤1.5): sonsuz kütleli kinematik gemiye çarpınca 1e6 kat hasar olmaz; 4 m/s çarpma ≈ 30 HP
+          a.damage(Math.abs(vrel) * 5 * Math.min(1.5, mb / ma), a.worldToLocal(new THREE.Vector3(cx, a.y, cz)));
+          b.damage(Math.abs(vrel) * 5 * Math.min(1.5, ma / mb), b.worldToLocal(new THREE.Vector3(cx, b.y, cz)));
           a.events.push({ t: 'crash', impact: Math.abs(vrel), what: 'gemi' });
           b.events.push({ t: 'crash', impact: Math.abs(vrel), what: 'gemi' });
         }
@@ -778,6 +784,9 @@ export class Rowboat {
     if (ground < -0.25) { this.x = nx; this.z = nz; this.beached = false; }
     else { vx *= -0.2; vz *= -0.2; this.beached = true; }
     this.vx = vx; this.vz = vz; this.speed = fwd;
+    // dünya sınırı (20×20 km haritanın kenarı)
+    const lim = WORLD_HALF - 250;
+    if (Math.abs(this.x) > lim || Math.abs(this.z) > lim) { this.x = clamp(this.x, -lim, lim); this.z = clamp(this.z, -lim, lim); this.vx *= 0.5; this.vz *= 0.5; }
     // gemi gövdesinden uzak dur (çarpınca geri sek)
     const s = this.ship;
     const dx = this.x - s.x, dz = this.z - s.z;

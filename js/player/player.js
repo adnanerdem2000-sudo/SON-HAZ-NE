@@ -11,6 +11,7 @@ import { clamp, damp, dampAngle, lerp, wrapAngle } from '../core/util.js';
 import { G } from '../game/ctx.js';
 import { ITEMS } from '../economy/items.js';
 import { hullHalfWidth } from '../ship/shipModel.js';
+import { WORLD_HALF } from '../world/archipelago.js';
 
 const GRAV = -22;
 const _v = new THREE.Vector3();
@@ -63,6 +64,9 @@ export class Player {
     this.fallStartY = this.pos.y;
     // savaş durumu
     this.blockT = 0;        // savunmaya geçeli geçen süre (parry penceresi)
+    this.blockCd = 0;       // savunma bırakıldıktan sonra yeniden başlama gecikmesi
+    this._modeT = 0;        // yüzme↔yürüme geçiş kilidi (titreşim önleme)
+    this.onPlatform = false;
     this.counterT = 0;      // parry sonrası karşı saldırı penceresi
     this.guardBroken = 0;   // savunması kırılınca bekleme
     this.combo = { step: 0, grace: 0 };
@@ -296,6 +300,7 @@ export class Player {
     this.guardBroken = Math.max(0, this.guardBroken - dt);
     this.combo.grace = Math.max(0, this.combo.grace - dt);
     if (this.blocking) this.blockT += dt; else this.blockT = 0;
+    this._modeT = Math.max(0, this._modeT - dt);
     if (this.action) {
       this.action.t += dt;
       if (this.action.t >= this.action.dur) {
@@ -406,8 +411,13 @@ export class Player {
     // nişan / savunma
     const rmb = input.isDown('nisan') && !this.carrying;
     this.aiming = rmb && this.equipped === 'pistol';
-    const canBlock = this.equipped === 'sword' && this.stamina > 3 && this.guardBroken <= 0 && !(this.action && ['atk', 'dodge', 'stagger'].includes(this.action.type));
+    // savunma histerezisi: başlamak için dayanıklılık > 10, sürdürmek için > 0 (kare kare açılıp kapanmaz);
+    // bırakıldıktan sonra 0.25 sn yeniden başlanamaz (parry penceresi tuş spam'iyle sürekli açık kalmaz)
+    this.blockCd = Math.max(0, this.blockCd - dt);
+    const canBlock = this.equipped === 'sword' && this.stamina > (this.blocking ? 0 : 10) && this.guardBroken <= 0 && !(this.action && ['atk', 'dodge', 'stagger'].includes(this.action.type)) && (this.blocking || this.blockCd <= 0);
+    const wasBlocking = this.blocking;
     this.blocking = rmb && canBlock;
+    if (wasBlocking && !this.blocking) this.blockCd = 0.25;
     if (this.blocking) this.stamina -= dt * 4;
     // kaçınma: hareket yönüne göre ileri/geri/sol/sağ
     if (input.pressed('kacin') && this.stamina > 16 && !this.carrying && this.onGround && (!this.action || ['atk', 'hit', 'blockhit', 'shoot'].includes(this.action.type) && this.action.t > 0.15)) {
@@ -463,12 +473,13 @@ export class Player {
     this.vel.z = damp(this.vel.z, wish.z, accel, dt);
     // geri tepme itkisi (sönümlenir)
     if (this.knock) {
-      this.vel.x += this.knock.x; this.vel.z += this.knock.z;
+      // 60 Hz'de kare başına eklenen itki; dt ile ölçeklenir (30/120 FPS'te aynı savrulma)
+      this.vel.x += this.knock.x * 60 * dt; this.vel.z += this.knock.z * 60 * dt;
       this.knock.x *= Math.exp(-9 * dt); this.knock.z *= Math.exp(-9 * dt);
       if (Math.hypot(this.knock.x, this.knock.z) < 0.1) this.knock = null;
     }
     // dik yamaçta kayma: zemin normali yatıklaştıkça aşağı doğru ivme
-    if (this.onGround && !physics.lastPlatform) {
+    if (this.onGround && !this.onPlatform) {
       const gn = terrain.normalAt(this.pos.x, this.pos.z, _v2);
       if (gn.y < 0.68) {
         const slide = (0.68 - gn.y) * 26;
@@ -496,8 +507,10 @@ export class Player {
     const climbing = gNew > gOld + 0.02;
     if (this.onGround && climbing && n.y < 0.6 && !physics.lastPlatform) {
       // çok dik: tırmanılamaz, geri kayar
-      this.vel.x = this.vel.x * 0.2 + n.x * 1.5; this.vel.z = this.vel.z * 0.2 + n.z * 1.5;
-      this.pos.x += n.x * 0.02; this.pos.z += n.z * 0.02;
+      // (kare hızından bağımsız: 60 Hz'deki 0.2 çarpanı ve 2 cm itiş dt ile ölçeklenir)
+      const kk = Math.exp(-96 * dt);
+      this.vel.x = this.vel.x * kk + n.x * 1.875 * (1 - kk); this.vel.z = this.vel.z * kk + n.z * 1.875 * (1 - kk);
+      this.pos.x += n.x * 1.2 * dt; this.pos.z += n.z * 1.2 * dt;
     } else if (gNew > this.pos.y + 0.65) {
       // basamak yüksek
     } else {
@@ -507,6 +520,7 @@ export class Player {
     physics.resolve(this.pos, 0.33, this.pos.y);
     this._shipHullPush();
     const g = physics.groundAt(this.pos.x, this.pos.z, this.pos.y);
+    this.onPlatform = !!physics.lastPlatform;
     if (this.pos.y <= g + 0.02 && this.vel.y <= 0.5) {
       const fall = this.fallStartY - g;
       if (!this.onGround && fall > 7) {
@@ -528,7 +542,7 @@ export class Player {
     }
     // suya girdi mi?
     const wh = ocean.heightAt(this.pos.x, this.pos.z);
-    if (this.pos.y < wh - 1.15 && g < wh - 1.35) {
+    if (this._modeT <= 0 && this.pos.y < wh - 1.15 && g < wh - 1.35) {
       this.enterWater();
       return;
     }
@@ -594,6 +608,7 @@ export class Player {
   }
 
   enterWater() {
+    this._modeT = 0.35;
     this.mode = 'swim';
     this.crouch = false;
     this.aiming = false;
@@ -623,6 +638,13 @@ export class Player {
     this.pos.x += this.vel.x * dt;
     this.pos.z += this.vel.z * dt;
     this.pos.y += this.vel.y * dt;
+    // dünya sınırı (20×20 km haritanın kenarı): yüzerek dışarı çıkılamaz
+    const lim = WORLD_HALF - 250;
+    if (Math.abs(this.pos.x) > lim || Math.abs(this.pos.z) > lim) {
+      this.pos.x = clamp(this.pos.x, -lim, lim); this.pos.z = clamp(this.pos.z, -lim, lim);
+      if (!(this._edgeT > 0)) { this._edgeT = 10; G.notify('Açık denizin sonu: haritanın kenarına ulaştın.', 'warn', 3000); }
+    }
+    if (this._edgeT > 0) this._edgeT -= dt;
     if (this.pos.y > surfaceY) { this.pos.y = damp(this.pos.y, surfaceY, 8, dt); if (this.vel.y > 0) this.vel.y = 0; }
     const floor = terrain.heightAt(this.pos.x, this.pos.z);
     if (this.pos.y < floor + 0.15) this.pos.y = floor + 0.15;
@@ -645,12 +667,13 @@ export class Player {
     c.model.rotation.x = damp(c.model.rotation.x, pitch, 6, dt);
     c.model.position.y = damp(c.model.position.y, this.swimMoving ? 1.0 : 0, 6, dt);
     this._wantAnim('Idle');
-    // sığ suya çıkış
-    if (floor > wh - 1.25 || this.pos.y - floor < 0.3 && floor > wh - 1.5) {
+    // sığ suya çıkış (histerezis: giriş eşiği wh-1.35'in üstünde; mod kilidi süresince değişmez)
+    if (this._modeT <= 0 && (floor > wh - 1.25 || this.pos.y - floor < 0.3 && floor > wh - 1.3)) {
       this.exitWater();
     }
   }
   exitWater() {
+    this._modeT = 0.35;
     this.mode = 'ground';
     this.char.model.rotation.x = 0;
     this.char.model.position.y = 0;
@@ -663,7 +686,13 @@ export class Player {
 
   _updateDeck(dt, locked) {
     const s = this.ship;
-    if (!s || s.sunk) { this.leaveShipToWorld(this.pos.clone(), new THREE.Vector3()); return; }
+    if (!s || s.sunk || !s.root.parent) { this.leaveShipToWorld(this.pos.clone(), new THREE.Vector3()); return; }
+    // batan gemi: güverte su altına inince denize geç (su altında yürüme yok)
+    if (s.sinking && this.pos.y < ocean.heightAt(this.pos.x, this.pos.z) - 0.5) {
+      this.leaveShipToWorld(this.pos.clone(), new THREE.Vector3(s.vx || 0, 0, s.vz || 0));
+      this.enterWater();
+      return;
+    }
     const { d, mag } = locked ? { d: new THREE.Vector3(), mag: 0 } : this._moveDir();
     if (!locked) { if (input.pressed('egil')) this.crouch = !this.crouch; this._commonCombatInput(dt); }
     const sp = this._speedFor(mag);

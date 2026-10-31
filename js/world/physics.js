@@ -65,12 +65,15 @@ export const physics = {
     return c;
   },
 
-  // Yürünebilir kutu platformu (üst yüzey yüksekliği top)
-  addPlatform(x, z, hw, hd, yaw, top, tag = null) {
+  // Yürünebilir kutu platformu (üst yüzey yüksekliği top). sides=true: yan yüzler çarpıştırıcı olur, böylece
+  // basamak sınırından (0.6 m) yüksek bir platforma yandan girilince bloğun içinde yürünmez; üstünden 0.6 m
+  // içindeyken (basamak) engellenmez. Alçak güverteler (top ≤ 3) altından yüzülebilir (yan yüz yalnız üst 1 m).
+  addPlatform(x, z, hw, hd, yaw, top, tag = null, sides = true) {
     const p = { x, z, hw, hd, yaw, cos: Math.cos(yaw), sin: Math.sin(yaw), top, tag };
     const R = Math.hypot(hw, hd);
     this._insert(this.platforms, p, x - R, z - R, x + R, z + R);
     (this.platList || (this.platList = [])).push(p);
+    if (sides) p.side = this.addBox(x, z, hw, hd, yaw, top > 3 ? -50 : top - 1.0, top - 0.6, tag);
     return p;
   },
 
@@ -94,8 +97,17 @@ export const physics = {
     return g;
   },
 
-  // Daireyi çarpıştırıcılardan dışarı iter. pos: {x,z}, y: ayak yüksekliği
+  // Daireyi çarpıştırıcılardan dışarı iter. pos: {x,z}, y: ayak yüksekliği.
+  // Köşe/dar aralıkta bir engelden çıkarken diğerine gömülmemek için en çok 3 geçiş yapılır.
   resolve(pos, radius, y, height = 1.8) {
+    let any = false;
+    for (let pass = 0; pass < 3; pass++) {
+      if (!this._resolveOnce(pos, radius, y, height)) break;
+      any = true;
+    }
+    return any;
+  },
+  _resolveOnce(pos, radius, y, height) {
     const i0 = Math.floor((pos.x - radius) / CELL), i1 = Math.floor((pos.x + radius) / CELL);
     const j0 = Math.floor((pos.z - radius) / CELL), j1 = Math.floor((pos.z + radius) / CELL);
     let hit = false;
@@ -143,7 +155,10 @@ export const physics = {
   },
 
   // Görüş hattı: arazi + çarpıştırıcılar (kaya, ağaç gövdesi, duvar, bina). a ve b göz/hedef yükseklikleri.
-  lineBlocked(ax, ay, az, bx, by, bz) {
+  // Hücreler DDA ile yalnız doğrunun geçtiği sırayla gezilir: uzunluk sınırı yok (eski 64 hücre erken dönüşü kaldırıldı).
+  // opts: { tMin, tMax, rScale } — mermi süpürmesi için tMin=0, tMax=1, rScale=1 (uçlarda boşluk bırakılmaz).
+  lineBlocked(ax, ay, az, bx, by, bz, opts = null) {
+    const tMin = opts?.tMin ?? 0.02, tMax = opts?.tMax ?? 0.98, rScale = opts?.rScale ?? 0.8;
     const dx = bx - ax, dy = by - ay, dz = bz - az;
     const len = Math.hypot(dx, dz);
     const steps = Math.max(1, Math.ceil(len / 1.5));
@@ -154,14 +169,16 @@ export const physics = {
     if (len < 1e-3) return false;
     const seen = this._seenL || (this._seenL = new Set());
     seen.clear();
-    const i0 = Math.floor(Math.min(ax, bx) / CELL), i1 = Math.floor(Math.max(ax, bx) / CELL);
-    const j0 = Math.floor(Math.min(az, bz) / CELL), j1 = Math.floor(Math.max(az, bz) / CELL);
-    if ((i1 - i0 + 1) * (j1 - j0 + 1) > 64) return false;
     const ux = dx / len, uz = dz / len;
-    for (let i = i0; i <= i1; i++) for (let j = j0; j <= j1; j++) {
-      const a = this.cells.get(this._key(i, j));
-      if (!a) continue;
-      for (const c of a) {
+    let ci = Math.floor(ax / CELL), cj = Math.floor(az / CELL);
+    const ei = Math.floor(bx / CELL), ej = Math.floor(bz / CELL);
+    const si = dx > 0 ? 1 : -1, sj = dz > 0 ? 1 : -1;
+    let tMaxX = dx !== 0 ? (((dx > 0 ? ci + 1 : ci) * CELL - ax) / dx) : Infinity;
+    let tMaxZ = dz !== 0 ? (((dz > 0 ? cj + 1 : cj) * CELL - az) / dz) : Infinity;
+    const tDx = dx !== 0 ? Math.abs(CELL / dx) : Infinity, tDz = dz !== 0 ? Math.abs(CELL / dz) : Infinity;
+    for (let n = 0; n < 4096; n++) {
+      const a = this.cells.get(this._key(ci, cj));
+      if (a) for (const c of a) {
         if (seen.has(c)) continue;
         seen.add(c);
         let t = -1;
@@ -170,7 +187,7 @@ export const physics = {
           const px = c.x - ax, pz = c.z - az;
           const proj = Math.max(0, Math.min(len, px * ux + pz * uz));
           const qx = ax + ux * proj - c.x, qz = az + uz * proj - c.z;
-          if (qx * qx + qz * qz < c.r * c.r * 0.8) t = proj / len;
+          if (qx * qx + qz * qz < c.r * c.r * rScale) t = proj / len;
         } else {
           // yerel uzayda dilim (slab) testi
           const [lax, laz] = this._local(c, ax, az), [lbx, lbz] = this._local(c, bx, bz);
@@ -186,11 +203,13 @@ export const physics = {
           }
           if (ok) t = t0;
         }
-        if (t > 0.02 && t < 0.98) {
+        if (t >= tMin && t <= tMax) {
           const y = ay + dy * t;
           if (y > c.y0 && y < c.y1) return true;
         }
       }
+      if ((ci === ei && cj === ej) || Math.min(tMaxX, tMaxZ) > 1) break;
+      if (tMaxX < tMaxZ) { ci += si; tMaxX += tDx; } else { cj += sj; tMaxZ += tDz; }
     }
     return false;
   },

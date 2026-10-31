@@ -171,20 +171,50 @@ export const game = {
     return data;
   },
 
+  // Sabit zaman adımı: benzetim (oyuncu, gemiler, fizik, savaş, AI) en çok 1/60 sn'lik alt adımlarla ilerler;
+  // böylece sonuçlar kare hızından bağımsızdır (30/60/120 FPS aynı sıçrama, aynı geri tepme, aynı tünelleme sınırı).
+  // Çok düşük FPS'te en fazla MAX_SUB alt adım atılır (oyun zamanı yavaşlar, ölüm sarmalına girilmez).
+  // Kamera, ortam, içerik akışı ve görsel sistemler kare başına bir kez güncellenir; girişin kenar tetikleyicileri
+  // (pressed) yalnız ilk alt adımda okunur.
+  STEP: 1 / 60,
+  MAX_SUB: 6,
+  SUBSTEP: new Set(['bodies', 'effects', 'combat', 'enemies', 'animals', 'megafauna', 'hazards', 'bosses', 'crowd', 'events']),
+  lastSubsteps: 1,
   update(dt) {
-    input.endFrame && null;
     if (G.state === 'menu') { this.menuUpdate(dt); return; }
     if (G.state !== 'playing' || !G.player) return;
     // vuruş anı duraksaması (hit-stop): ağır darbe ve parry'de kısa ağır çekim
     if (G.hitStop > 0) { G.hitStop -= dt; dt *= 0.12; }
-    this.playTime += dt;
     const p = G.player;
-    // global tuşlar
+    // global tuşlar ve kamera girişi (kare başına)
     if (!G.uiOpen && !p.dead) this._globalKeys();
-    // kamera girişi
     const look = input.lookDelta();
     if (!G.uiOpen && p.mode !== 'cannon') tpCamera.rotate(look.dx, look.dy);
     if (input.wheel && !G.uiOpen && !G.spyglass) tpCamera.zoom(input.wheel);
+    const n = clamp(Math.ceil(dt / this.STEP - 1e-6), 1, this.MAX_SUB);
+    const h = dt / n;
+    for (let i = 0; i < n; i++) {
+      input.subframe = i > 0;
+      this._step(h);
+      if (G.state !== 'playing' || !G.player) break;
+    }
+    input.subframe = false;
+    this.lastSubsteps = n;
+    if (G.state !== 'playing' || !G.player) return;
+    // kare başına sistemler (içerik akışı, görevler, görsel efekt katmanları, NPC rutinleri)
+    for (const s of this.systems) if (s.update && !this.SUBSTEP.has(s.name)) s.update(dt);
+    // kamera
+    this._camera(dt);
+    this._env(dt, p.pos);
+    // otomatik kayıt
+    this.autosaveT += dt;
+    if (this.autosaveT > 120 && G.isHost) { this.autosaveT = 0; G.emit('autosave'); }
+  },
+
+  // Bir benzetim adımı (dt ≤ 1/60)
+  _step(dt) {
+    const p = G.player;
+    this.playTime += dt;
     shipControl.update(dt);
     p.update(dt);
     // gemiler
@@ -197,13 +227,7 @@ export const game = {
     if (G.isHost || !G.online) Ship.collideAll(G.ships, dt);
     G.rowboat?.update(dt);
     interact.update(dt);
-    for (const s of this.systems) if (s.update) s.update(dt);
-    // kamera
-    this._camera(dt);
-    this._env(dt, p.pos);
-    // otomatik kayıt
-    this.autosaveT += dt;
-    if (this.autosaveT > 120 && G.isHost) { this.autosaveT = 0; G.emit('autosave'); }
+    for (const s of this.systems) if (s.update && this.SUBSTEP.has(s.name)) s.update(dt);
   },
 
   _globalKeys() {

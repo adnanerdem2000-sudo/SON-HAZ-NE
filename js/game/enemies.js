@@ -73,6 +73,9 @@ const BANDIT = { hatColor: '#8a1f1f', coatColor: '#5a1a1a', shirtColor: '#7a2a22
 // ---------------------------------------------------------------------------
 // Düşman kataloğu (değerler belgedeki denge tablosuyla aynıdır: docs/05_DUSMAN_DENGE_TABLOSU.md)
 // ---------------------------------------------------------------------------
+// mermi süpürmesi: uçlarda boşluk bırakmayan görüş hattı seçenekleri
+const PROJ_LOS = { tMin: 0, tMax: 1, rScale: 1 };
+
 export const ENEMY_TYPES = {
   // --- İnsanlar: Kızıl Hançer çetesi ---
   haydut: {
@@ -831,7 +834,7 @@ export class Enemy {
           else if (d < kMin && d > 2.5) {
             const away = _w.set(this.pos.x - tgt.pos.x, 0, this.pos.z - tgt.pos.z).normalize();
             goal = this.pos.clone().addScaledVector(away, 3); speed = T.walk * 1.6; this.backing = true;
-          } else if (d <= 2.5) { this._meleeOrStrafe(tgt, d, reachable, boost); goal = this._mGoal; speed = this._mSpeed; }
+          } else if (d <= 2.5) { this._meleeOrStrafe(tgt, d, reachable, boost, dt); goal = this._mGoal; speed = this._mSpeed; }
           else {
             this.strafeDir = this.strafeDir || (Math.random() < 0.5 ? 1 : -1);
             if (Math.random() < 0.004) this.strafeDir *= -1;
@@ -840,7 +843,7 @@ export class Enemy {
           }
           break;
         }
-        this._meleeOrStrafe(tgt, d, reachable, boost);
+        this._meleeOrStrafe(tgt, d, reachable, boost, dt);
         goal = this._mGoal; speed = this._mSpeed;
         break;
       }
@@ -858,13 +861,13 @@ export class Enemy {
   }
 
   // Yakın dövüş: belirteç varsa yaklaş ve saldır, yoksa kuşatma halkasında dolaş
-  _meleeOrStrafe(tgt, d, reachable, boost) {
+  _meleeOrStrafe(tgt, d, reachable, boost, dt = 1 / 60) {
     const T = this.T;
     this._mGoal = null; this._mSpeed = 0;
     if (!reachable) {
       // ulaşılamaz hedef: kıyıda/yamacın dibinde bekle, alay et; bıçak atabilenler atar
       if (d > 4) { this._mGoal = tgt.pos; this._mSpeed = T.walk * 1.5; }
-      this.tauntT = (this.tauntT || 4) - 0.016;
+      this.tauntT = (this.tauntT || 4) - dt;
       if (this.tauntT <= 0 && Math.random() < 0.01) { this.tauntT = 6; this.char.play('Taunt', 0.15, { once: true, restart: true }); }
       return;
     }
@@ -1174,7 +1177,7 @@ export class Enemy {
     if (this.T.ghost) {
       this.hover += dt;
       y = Math.max(terrain.heightAt(this.pos.x, this.pos.z), ocean.heightAt(this.pos.x, this.pos.z)) + 0.25 + Math.sin(this.hover * 2 + this.home.x) * 0.12;
-    } else y = physics.groundAt(this.pos.x, this.pos.z, this.pos.y + 1);
+    } else y = physics.groundAt(this.pos.x, this.pos.z, this.pos.y + 0.05); // basamak 0.65 m (oyuncuyla aynı; 1.6 m 'ışınlanma' yok)
     this.pos.y = this.state === 'dead' && this.char.ragdoll ? this.pos.y : y;
     this.root.position.copy(this.pos);
     this.root.rotation.y = this.yaw;
@@ -1499,7 +1502,7 @@ export const enemies = {
       }
       if (s.pos.y < g) { s.dead = true; effects.dirt(s.pos.x, g + 0.05, s.pos.z, 5); continue; }
       if (s.pos.y < ocean.heightAt(s.pos.x, s.pos.z)) { s.dead = true; effects.splash(s.pos.x, s.pos.z, 0.3); continue; }
-      if (physics.lineBlocked(prev.x, prev.y, prev.z, s.pos.x, s.pos.y, s.pos.z)) { s.dead = true; effects.dirt(s.pos.x, s.pos.y, s.pos.z, 4); continue; }
+      if (physics.lineBlocked(prev.x, prev.y, prev.z, s.pos.x, s.pos.y, s.pos.z, PROJ_LOS)) { s.dead = true; effects.dirt(s.pos.x, s.pos.y, s.pos.z, 4); continue; }
       if (s.t > 4) s.dead = true;
     }
     for (const s of this.shots) if (s.dead) { this.scene.remove(s.mesh); if (s.marker && s.marker.parent) { s.marker.parent.remove(s.marker); } }

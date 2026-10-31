@@ -163,11 +163,18 @@ export const effects = {
       if (b.lava) { b.m.rotation.x += dt * 3; b.m.rotation.y += dt * 2; this.spawn(p.x, p.y, p.z, (Math.random() - 0.5), 0.4, (Math.random() - 0.5), 0.9, 0.5 + Math.random() * 0.4, 1, 0.45 + Math.random() * 0.3, 0.1, 0.5, 1, 0.6); if (Math.random() < 0.4) this.spawn(p.x, p.y, p.z, 0, 0.6, 0, 1.6, 0.8, 0.25, 0.22, 0.2, 0.3, 1, 1); }
       else if (b.t > 0.05 && Math.random() < 0.5) this.spawn(p.x, p.y, p.z, 0, 0.3, 0, 0.6, 0.25, 0.7, 0.7, 0.7, 0, 1, 0.5);
       let hit = null;
-      // gemiler
-      for (const s of G.ships) {
-        if (s === b.owner || s.sunk) continue;
-        const lp = s.worldToLocal(p.clone());
-        if (Math.abs(lp.z) < s.T.L / 2 + 0.3 && Math.abs(lp.x) < s.T.B / 2 + 0.2 && lp.y > -1.5 && lp.y < s.T.deckY + 2.5) { hit = { type: 'ship', ship: s, local: lp }; break; }
+      // gemiler: önceki konumdan yeni konuma süpürme (yüksek hızda gövdeden geçmesin)
+      const segLen = prev.distanceTo(p);
+      const ns = Math.max(1, Math.ceil(segLen / 0.5));
+      const sw = this._sw || (this._sw = new THREE.Vector3());
+      outer: for (let q = 1; q <= ns; q++) {
+        sw.lerpVectors(prev, p, q / ns);
+        for (const s of G.ships) {
+          if (s === b.owner || s.sunk) continue;
+          const lp = s.worldToLocal(sw.clone());
+          if (Math.abs(lp.z) < s.T.L / 2 + 0.3 && Math.abs(lp.x) < s.T.B / 2 + 0.2 && lp.y > -1.5 && lp.y < s.T.deckY + 2.5) { hit = { type: 'ship', ship: s, local: lp }; p.copy(sw); break outer; }
+        }
+        if (q < ns && sw.y < terrain.heightAt(sw.x, sw.z)) { p.copy(sw); break; } // zemine çarpma noktası
       }
       if (!hit) G.emit('projectileTest', { pos: p, prev, ball: b, out: (h) => { hit = hit || h; } });
       const th = terrain.heightAt(p.x, p.z);

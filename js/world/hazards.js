@@ -204,11 +204,11 @@ export const hazards = {
     effects.sparks(c.x, c.y, c.z, 40, [1, 0.75, 0.35]);
     effects.smoke(c.x, c.y, c.z, 26, 2.4, 0.22);
     effects.dirt(c.x, h.y + 0.1, c.z, 24);
+    bodies.impulse(c, R * 1.6, 16); // önce çevredeki cisimler; enkaz sonra doğar (120 m/s fırlamaz)
     this._debris(c, 7, 0x6a4428);
     audio.boom(1, c);
     const p = G.player;
     if (p) { const d = p.pos.distanceTo(c); if (d < 45) tpCamera.addShake(Math.min(1, 1.2 * (1 - d / 45))); }
-    bodies.impulse(c, R * 1.6, 16);
     // hasar: yerel oyuncu her istemcide; düşman/hayvan/gemi yalnızca ev sahibinde
     if (p && !p.dead) {
       const d = p.pos.distanceTo(c);
@@ -366,6 +366,12 @@ export const hazards = {
       const vn = (v.x * nx + v.z * nz) / nl;
       if (vn < 0) { v.x -= 1.5 * vn * nx / nl; v.z -= 1.5 * vn * nz / nl; v.multiplyScalar(0.7); effects.dirt(p.x, g + 0.5, p.z, 6); audio.play('impact', { pos: p, vol: 0.5, rate: 0.6 }); }
       p.x = _v.x; p.z = _v.z;
+    }
+    // oyuncu kayanın içinde kalmaz: daireden dışarı itilir (ezme hasarı aşağıda ayrıca)
+    const pl0 = G.player;
+    if (pl0 && !pl0.dead && pl0.mode === 'ground' && Math.abs(pl0.pos.y - (p.y - r)) < 2.5) {
+      const ddx = pl0.pos.x - p.x, ddz = pl0.pos.z - p.z, dd = Math.hypot(ddx, ddz), want = r + 0.4;
+      if (dd < want && dd > 1e-4) { pl0.pos.x = p.x + (ddx / dd) * want; pl0.pos.z = p.z + (ddz / dd) * want; }
     }
     const wy = ocean.heightAt(p.x, p.z);
     p.y = Math.max(g + r * 0.85, g < wy - r ? g + r * 0.85 : -1e9);
@@ -582,7 +588,7 @@ export const hazards = {
         p.hurt(4, null, { cause: 'Kaynar buhar', unblockable: true });
         G.notify('Buhar seni havaya fırlattı!', 'info', 1500);
       }
-      bodies.impulse(new THREE.Vector3(h.x, h.y, h.z), 1.6, 3);
+      bodies.force(_v.set(h.x, h.y, h.z), 1.6, 20, dt); // sürekli buhar kuvveti (kare hızından bağımsız)
       if (h.t <= 0) { h.state = 'idle'; h.t = h.period; }
     }
   },

@@ -40,6 +40,7 @@ export const input = {
   mouseDX: 0, mouseDY: 0, wheel: 0,
   sensitivity: 1, invertY: false, padSensitivity: 1,
   enabled: true,
+  subframe: false, // sabit adım döngüsünde ilk alt adımdan sonrası: pressed() tetiklenmez (çift tetik önlenir)
   pointerLocked: false,
   pad: null,
   padAxes: { lx: 0, ly: 0, rx: 0, ry: 0 },
@@ -91,6 +92,7 @@ export const input = {
     return (c && this.down.has(c)) || this._padDown(action);
   },
   pressed(action) {
+    if (this.subframe) return false;
     const c = this.bindings[action];
     return (c && this.pressedSet.has(c)) || this._padPressed(action);
   },

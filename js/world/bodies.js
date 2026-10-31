@@ -58,11 +58,22 @@ export const bodies = {
       _n.copy(b.pos).sub(pos);
       const d = _n.length();
       if (d > radius) continue;
-      const k = (1 - d / radius) * strength / b.mass;
+      const k = Math.min(14, (1 - d / radius) * strength / b.mass); // hafif cisimler (enkaz) 14 m/s'yi aşmaz
       _n.normalize();
       b.vel.addScaledVector(_n, k);
       b.vel.y += k * 0.6;
       b.angVel.set((Math.random() - 0.5) * k, (Math.random() - 0.5) * k, (Math.random() - 0.5) * k);
+      b.wake();
+    }
+  },
+
+  // Sürekli dikey kuvvet (buhar/gayzer): ivme = strength/kütle, dt ile ölçekli; kare hızından bağımsız
+  force(pos, radius, strength, dt) {
+    for (const b of this.list) {
+      if (!b.enabled) continue;
+      const d = Math.hypot(b.pos.x - pos.x, b.pos.y - pos.y, b.pos.z - pos.z);
+      if (d > radius) continue;
+      b.vel.y += (1 - d / radius) * strength / b.mass * dt;
       b.wake();
     }
   },
@@ -118,9 +129,10 @@ export const bodies = {
       b.quat.slerp(_q2.copy(_q).multiply(this._yawOnly(b.quat)), 1 - Math.exp(-2.5 * sub * dt));
       b.angVel.multiplyScalar(Math.exp(-2 * dt));
     }
+    const prevBottom = p.y - b.r;
     p.addScaledVector(v, dt);
-    // zemin / platform
-    const g = physics.groundAt(p.x, p.z, p.y - b.r + 0.3);
+    // zemin / platform (adım içinde geçilen platform da sayılır: hızlı cisim platformdan düşmez)
+    const g = physics.groundAt(p.x, p.z, Math.max(prevBottom, p.y - b.r) + 0.3);
     if (p.y - b.r < g) {
       p.y = g + b.r;
       terrain.normalAt(p.x, p.z, _n);
@@ -186,6 +198,7 @@ export const bodies = {
         const pen = m - d, ia = 1 / a.mass, ib = 1 / b.mass;
         a.pos.addScaledVector(_n, pen * ia / (ia + ib));
         b.pos.addScaledVector(_n, -pen * ib / (ia + ib));
+        if (pen > 1e-3) { if (a.sleeping) a.wake(); if (b.sleeping) b.wake(); } // itilen uyuyan cisim uyanır (havada asılı kalmaz)
         const vrel = (a.vel.x - b.vel.x) * _n.x + (a.vel.y - b.vel.y) * _n.y + (a.vel.z - b.vel.z) * _n.z;
         if (vrel < 0) {
           const J = -(1 + 0.3) * vrel / (ia + ib);

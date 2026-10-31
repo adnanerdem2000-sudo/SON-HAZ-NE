@@ -253,7 +253,7 @@ export const events = {
       if (e.sunk) this._removeEnemyShip();
       return;
     }
-    if (!me || me.sunk) { e.setRudder(0.3); e.update(dt); return; }
+    if (!me || me.sunk) { e.setRudder(0.3); return; } // gemi zaten oyun döngüsünde güncelleniyor (çift hız yok)
     const dx = me.x - e.x, dz = me.z - e.z;
     const dist = Math.hypot(dx, dz);
     const crewAlive = this.crew.filter((c) => c.alive);
@@ -386,6 +386,7 @@ export const events = {
     p.inv.gold -= 600;
     s.sunk = false; s.sinking = 0; s.root.visible = true;
     s.hp = s.maxHp * 0.6; s.water = 0; s.holes = []; s._syncHoles();
+    s.fires = []; s.anchorPt = null; s.vx = 0; s.vz = 0; s.yawRate = 0; s.speed = 0;
     s.x = port.mooring.x; s.z = port.mooring.z; s.yaw = port.mooring.yaw;
     s.anchorState = 'down'; s.anchorT = 1; s.anchored = true; s.sail = s.sailTarget = 0;
     if (G.rowboat) G.rowboat.dock();

@@ -281,6 +281,7 @@ function wire() {
     await new Promise((r) => setTimeout(r, 1200));
     await terrain.prepare(to.mooring.x, to.mooring.z, { radius: 450 });
     s.x = to.mooring.x; s.z = to.mooring.z; s.yaw = to.mooring.yaw;
+    s.anchorPt = null; // eski çapa noktası kalmasın (zincir gemiyi kilometrelerce öteye çekmesin)
     s.vx = 0; s.vz = 0; s.speed = 0; s.yawRate = 0;
     s.anchorState = 'down'; s.anchorT = 1; s.anchored = true; s.sail = s.sailTarget = 0;
     if (G.rowboat) G.rowboat.dock();
