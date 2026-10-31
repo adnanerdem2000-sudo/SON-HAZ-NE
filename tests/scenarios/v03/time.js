@@ -1,0 +1,18 @@
+[
+ {js: `DK.G.noAutoPause=true; DK.handlers.startGame({kind:'solo', slot:2, data:null}); 'ok'`},
+ {wait: 1200, js: `DK.sim(1); DK.time.addLog('Test kaydı', 'info'); ({tp: document.getElementById('time-panel').innerText})`},
+ {wait: 400, shot: '/tmp/preview/p2/hud_time.png'},
+ {js: `DK.G.emit('openJournal'); [...document.querySelectorAll('.tab')].find(t=>t.textContent==='Zaman Çizelgesi').click(); 'j'`},
+ {wait: 600, shot: '/tmp/preview/p2/journal_time.png'},
+ {js: `DK.ui.closeAll(); DK.sky.hour=21.5; for(let i=0;i<40;i++) DK.sim(1); const n = DK.npcs ? null : null; ({hour: DK.sky.hour.toFixed(2)})`},
+ {js: `const p=DK.G.player; const L=DK.port.npcSpots.find(s=>s.id==='tuzla'); p.pos.set(L.x+1, 3, L.z+7); p.yaw=Math.PI; DK.sim(0.5); 'moved'`},
+ {wait: 400, shot: '/tmp/preview/p2/npc_inn.png'},
+ {js: `DK.G.emit('npcTalk', {id:'tuccar', role:'general', npc: DK.port.npcSpots.find(s=>s.id==='tuccar')}); document.querySelector('.dialog')?.innerText.slice(0,300)`},
+ {js: `DK.ui.closeAll(); DK.G.player.inv.gold=100; DK.G.player.hp=40; DK.G.emit('sleepAtInn', {until:6, cost:20}); ({day: DK.time.day, hour: DK.sky.hour.toFixed(2), hp: DK.G.player.hp, gold: DK.G.player.inv.gold, w: DK.sky.weatherKey, fc: DK.sky.forecast.map(f=>f.key+'@'+f.at.toFixed(1))})`},
+ {wait: 700, shot: '/tmp/preview/p2/sleep.png'},
+ {wait: 2500, js: `for(let i=0;i<30;i++) DK.sim(1); ({hour: DK.sky.hour.toFixed(2), log: DK.time.log.map(l=>l.text)})`},
+ {js: `DK.ui.closeAll(); const p=DK.G.player; p.pos.set(121, 3, 201); DK.sim(0.5); ({ground: DK.terrain.heightAt(121,201).toFixed(2), tide: DK.ocean.tide.toFixed(2), mode: p.mode})`},
+ {js: `DK.time.day=2; DK.sky.hour=12; DK.time._prevHour=12; for(let i=0;i<3;i++) DK.sim(1); ({trader: DK.details.trader && DK.details.trader.phase, bonus: DK.time.priceBonus()})`},
+ {js: `DK.G.emit('openShop', {role:'trader'}); [...document.querySelectorAll('.shop-row')].slice(0,10).map(r=>r.textContent.replace(/\\s+/g,' ').slice(0,70))`},
+ {wait: 500, shot: '/tmp/preview/p2/trader_shop.png'},
+]

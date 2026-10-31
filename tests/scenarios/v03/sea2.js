@@ -1,0 +1,15 @@
+[
+ {js: `DK.G.noAutoPause=true; DK.handlers.startGame({kind:'solo', slot:2, data:null}); 'ok'`},
+ {wait: 2500, js: `(async()=>{ const s=DK.G.ship; const p=DK.G.player; s.x=600; s.z=-6200; s.yaw=0.4; s.anchored=true; s.anchorState='down'; s.anchorT=1; s.anchorPt=null; await DK.terrain.prepare(s.x, s.z, {radius:300}); s.updateTransform(0); p.boardShip(s, s.model.stations.helm.clone()); DK.sky.hour=10; DK.sim(1); const g = DK.megafauna.debugSpawn('balina', 45); DK.sim(3); const w=g.members[0]; w.mode='dive'; w.modeT=0; DK.sim(2.7); return [w.pitch, w.pos.y]; })()`},
+ {snapjs: ['/tmp/preview/p3/s_whale_dive2.jpg', `(()=>{ const w=DK.megafauna.groups[0].members[0]; return DK.snapFrom([w.pos.x+Math.sin(w.yaw+1.75)*26, 4, w.pos.z+Math.cos(w.yaw+1.75)*26], [w.pos.x, w.pos.y+2.5, w.pos.z]); })()`]},
+ {js: `(()=>{ const w=DK.megafauna.groups[0].members[0]; w.mode='rise'; w.modeT=0; DK.sim(6); return [w.mode, w.pos.y]; })()`},
+ {snapjs: ['/tmp/preview/p3/s_whale_surf.jpg', `(()=>{ const w=DK.megafauna.groups[0].members[0]; return DK.snapFrom([w.pos.x+Math.sin(w.yaw+1.1)*18, 4.5, w.pos.z+Math.cos(w.yaw+1.1)*18], [w.pos.x, w.pos.y+0.8, w.pos.z]); })()`]},
+ {js: `(()=>{ for (const g of DK.megafauna.groups) for (const e of g.members) e.root.visible=false; DK.megafauna.clear(); const g = DK.megafauna.debugSpawn('orka', 30); DK.sim(4); return g.members.map(e=>[+e.pos.x.toFixed(1), +e.pos.y.toFixed(1), +e.pos.z.toFixed(1)]); })()`},
+ {snapjs: ['/tmp/preview/p3/s_orca.jpg', `(()=>{ const g=DK.megafauna.groups[0]; const e=g.members[0]; return DK.snapFrom([e.pos.x+Math.sin(e.yaw+1.3)*16, 3.5, e.pos.z+Math.cos(e.yaw+1.3)*16], [e.pos.x, e.pos.y+0.6, e.pos.z]); })()`]},
+ {js: `(()=>{ const g=DK.megafauna.groups[0]; const e=g.members[0]; e.phase = Math.PI/2; DK.sim(0.1); return [e.pos.y]; })()`},
+ {snapjs: ['/tmp/preview/p3/s_orca2.jpg', `(()=>{ const g=DK.megafauna.groups[0]; const e=g.members[0]; return DK.snapFrom([e.pos.x+Math.sin(e.yaw+1.6)*10, 1.8, e.pos.z+Math.cos(e.yaw+1.6)*10], [e.pos.x, e.pos.y+0.4, e.pos.z]); })()`]},
+ {js: `(()=>{ DK.megafauna.clear(); const g = DK.megafauna.debugSpawn('dolphin', 18); DK.sim(2.2); return g.members.map(e=>[+e.pos.y.toFixed(1)]); })()`},
+ {snapjs: ['/tmp/preview/p3/s_dolphin.jpg', `(()=>{ const g=DK.megafauna.groups[0]; const e=g.members.reduce((a,b)=>a.pos.y>b.pos.y?a:b); return DK.snapFrom([e.pos.x+Math.sin(e.yaw+1.5)*7, 1.6, e.pos.z+Math.cos(e.yaw+1.5)*7], [e.pos.x, e.pos.y+0.2, e.pos.z]); })()`]},
+ {js: `(()=>{ DK.megafauna.clear(); DK.sky.hour=23; const g = DK.megafauna.debugSpawn('hayalet_balina', 30); DK.sim(2); return g ? 'ok' : 'none'; })()`},
+ {snapjs: ['/tmp/preview/p3/s_ghost.jpg', `(()=>{ const e=DK.megafauna.groups[0].members[0]; return DK.snapFrom([e.pos.x+Math.sin(e.yaw+1.2)*22, 5, e.pos.z+Math.cos(e.yaw+1.2)*22], [e.pos.x, e.pos.y+0.5, e.pos.z]); })()`]},
+]

@@ -1,0 +1,6 @@
+[
+ {js: `DK.G.noAutoPause=true; DK.handlers.startGame({kind:'solo', slot:2, data:null}); window.toSea = async (x, z, yaw, hour) => { const s=DK.G.ship; const p=DK.G.player; s.x=x; s.z=z; s.yaw=yaw; s.anchored=true; s.anchorState='down'; s.anchorT=1; s.anchorPt=null; await DK.terrain.prepare(s.x, s.z, {radius:300}); s.updateTransform(0); p.boardShip(s, s.model.stations.helm.clone()); DK.sky.hour=hour; DK.sim(1); return 'ok'; }; 'ok'`},
+ {wait: 2500, js: `(async()=>{ const I = DK.archipelago.EXTRA_ISLANDS.find(i=>i.id==='ates_dagi'); await toSea(I.x - I.r - 260, I.z, Math.PI/2, 14); const ok = DK.worldEvents.trigger('volcanic'); const hp0 = DK.G.ship.hp; let maxB=0; for (let i=0;i<120;i++){ DK.sim(1/20, 1/20); maxB=Math.max(maxB, DK.effects.balls.length); } return {ok, maxB, balls: DK.effects.balls.length, hp0, hp: DK.G.ship.hp}; })()`},
+ {snapjs: ['/tmp/preview/p3/e_volc.jpg', `(()=>{ const s=DK.G.ship; const b = DK.effects.balls.filter(b=>b.lava).sort((a,b)=>b.m.position.y-a.m.position.y)[0]; const t = b ? b.m.position : {x: s.x+100, y: 40, z: s.z}; return DK.snapFrom([s.x - 40, 12, s.z + 30], [t.x, t.y*0.7, t.z]); })()`]},
+ {js: `(()=>{ DK.sim(30); return {vol: !!DK.worldEvents.volcanic, hp: DK.G.ship.hp, fires: DK.G.ship.fires?.length}; })()`},
+]

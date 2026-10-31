@@ -1,0 +1,17 @@
+[
+ {js: `DK.G.noAutoPause=true; DK.handlers.startGame({kind:'solo', slot:2, data:null}); 'ok'`},
+ {wait: 1200, js: `/* gün batımında seyir */ const p=DK.G.player; const s=DK.G.ship; p.boardShip(s, s.model.stations.helm.clone()); DK.sim(0.3); p.mode='helm'; s.anchorState='up'; s.anchorT=0; s.anchored=false; s.sailTarget=1; s.backing=true; DK.sim(5); s.backing=false; DK.sim(8); DK.sky.hour=18.6; DK.sky.setWeather('parcali', true); DK.tpCamera.yaw=s.yaw+2.4; DK.tpCamera.pitch=0.12; DK.tpCamera.targetDist=11; DK.sim(2); 'sunset'`},
+ {wait: 500, shot: '/tmp/preview/p2/tour_sunset.png'},
+ {js: `/* fırtına ve şimşek */ DK.sky.hour=15; DK.sky.setWeather('firtina', true); DK.sim(3); const s=DK.G.ship; DK.weatherfx.strike(new DK.THREE.Vector3(s.x+60, 0, s.z+40)); DK.sim(0.08); 'storm'`},
+ {wait: 100, shot: '/tmp/preview/p2/tour_storm.png'},
+ {js: `/* yağmur sonrası gökkuşağı */ DK.sky.hour=14; DK.sky.setWeather('saganak', true); DK.sim(1); DK.sky.setWeather('parcali', false); for(let i=0;i<6;i++) DK.sim(6, 0.1); DK.tpCamera.yaw = Math.atan2(-DK.sky.uniforms.uSunDir.value.x, -DK.sky.uniforms.uSunDir.value.z) + Math.PI; DK.tpCamera.pitch=-0.05; DK.sim(1); ({rb: DK.weatherfx.rainbow.visible, op:+DK.weatherfx.rainbow.material.uniforms.uOpacity.value.toFixed(2)})`},
+ {wait: 400, shot: '/tmp/preview/p2/tour_rainbow.png'},
+ {js: `/* şelale ve lagün */ DK.sky.setWeather('acik', true); DK.sky.hour=11; const p=DK.G.player; p.leaveShipToWorld(new DK.THREE.Vector3(-150, 6, 75)); p.vel.set(0,0,0); DK.tpCamera.yaw=Math.PI; DK.tpCamera.pitch=0.05; DK.tpCamera.targetDist=7; DK.sim(2); 'fall'`},
+ {wait: 400, shot: '/tmp/preview/p2/tour_waterfall.png'},
+ {js: `/* mercan resifi (su altı) */ const p=DK.G.player; p.mode='ground'; p.pos.set(470, 1, 300); p.vel.set(0,0,0); DK.sim(1.5); DK.input.down.add('ControlLeft'); DK.sim(2.5); DK.input.down.delete('ControlLeft'); DK.tpCamera.pitch=0.35; DK.sim(0.5); ({mode:p.mode, depth:+p.depth.toFixed(1)})`},
+ {wait: 400, shot: '/tmp/preview/p2/tour_reef.png'},
+ {js: `/* sisli sabah limanı */ const p=DK.G.player; p.mode='ground'; p.pos.set(10, 4, 232); p.vel.set(0,0,0); DK.sky.hour=6.4; DK.sky.setWeather('sisli', true); DK.tpCamera.yaw=0; DK.tpCamera.pitch=0.1; DK.tpCamera.targetDist=6; DK.sim(2); 'fog'`},
+ {wait: 400, shot: '/tmp/preview/p2/tour_fog.png'},
+ {js: `/* gece limanı */ DK.sky.setWeather('acik', true); DK.sky.hour=21.5; const p=DK.G.player; p.pos.set(10, 4, 238); DK.tpCamera.yaw=Math.PI; DK.tpCamera.pitch=0.12; DK.sim(2); 'night'`},
+ {wait: 400, shot: '/tmp/preview/p2/tour_night.png'},
+]

@@ -1,0 +1,9 @@
+[
+ {js: `window._notes=[]; DK.G.on('notify', e=>window._notes.push(e.text)); DK.G.noAutoPause=true; DK.handlers.startGame({kind:'solo', slot:2, data:null}); window.goto = async (x, z, hour) => { await DK.terrain.prepare(x, z, {radius: 300}); const p=DK.G.player; p.mode='ground'; p.ship=null; p.pos.set(x, DK.terrain.heightAt(x,z)+1, z); p.vel.set(0,0,0); DK.sky.hour = hour ?? 11; DK.sim(0.3); DK.islands.checkT=0; DK.sim(1.5); return 'ok'; }; 'ok'`},
+ {wait: 2500, js: `(async()=>{ await goto(-40+14, -228+10, 11); DK.sim(1); return DK.hazards.list('keg').length; })()`},
+ {snapjs: ['/tmp/preview/p3/h_camp2.jpg', `(()=>{ const k = DK.hazards.list('keg')[0]; return DK.snapFrom([k.x+4, k.y+2.2, k.z+4], [k.x, k.y+0.6, k.z]); })()`]},
+ {js: `(()=>{ const k = DK.hazards.list('keg')[0]; DK.G.player.pos.set(k.x+30, DK.terrain.heightAt(k.x+30,k.z+30), k.z+30); DK.hazards.ignite(k, 0.05); DK.sim(0.12); return k.state; })()`},
+ {snapjs: ['/tmp/preview/p3/h_boom.jpg', `(()=>{ const k = DK.hazards.list('keg')[0]; return DK.snapFrom([k.x+9, k.y+3, k.z+9], [k.x, k.y+1, k.z]); })()`]},
+ {js: `(async()=>{ const I = DK.archipelago.EXTRA_ISLANDS; window._camps = []; for (const isl of I) for (const f of isl.features) if (f.type==='camp') _camps.push({isl: isl.id, id: f.id, x: f.x, z: f.z}); for (const c of _camps.slice(0, 12)) { await goto(c.x+12, c.z+12, 11); DK.sim(0.5); const b = DK.hazards.list('boulder').find(h=>h.id===c.id+'_kaya'); if (b) { window._b = b; return {camp: c, b: [b.pos.x, b.pos.y, b.pos.z, b.state]}; } } return 'none'; })()`},
+ {js: `(()=>{ const b=_b; const p=DK.G.player; p.pos.set(b.pos.x+3, DK.terrain.heightAt(b.pos.x+3,b.pos.z+3), b.pos.z+3); const p0=b.pos.clone(); DK.hazards.release(b, true); const tr=[]; for (let i=0;i<10;i++){ DK.sim(0.6); tr.push([+b.pos.x.toFixed(1), +b.pos.z.toFixed(1), +Math.hypot(b.vel.x,b.vel.z).toFixed(1), b.state]); } return {moved: +p0.distanceTo(b.pos).toFixed(1), tr}; })()`},
+]

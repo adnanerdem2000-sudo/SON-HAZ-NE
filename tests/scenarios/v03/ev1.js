@@ -1,0 +1,13 @@
+[
+ {js: `window._notes=[]; DK.G.on('notify', e=>window._notes.push(e.text)); DK.G.noAutoPause=true; DK.handlers.startGame({kind:'solo', slot:2, data:null}); window.toSea = async (x, z, yaw, hour) => { const s=DK.G.ship; const p=DK.G.player; s.x=x; s.z=z; s.yaw=yaw; s.anchored=true; s.anchorState='down'; s.anchorT=1; s.anchorPt=null; await DK.terrain.prepare(s.x, s.z, {radius:300}); s.updateTransform(0); p.boardShip(s, s.model.stations.helm.clone()); DK.sky.hour=hour; DK.sim(1); return 'ok'; }; 'ok'`},
+ {wait: 2500, js: `(async()=>{ await toSea(600, -6200, 0.4, 11); const ok = DK.worldEvents.trigger('iceberg'); DK.sim(1); return {ok, n: DK.worldEvents.icebergs.length, obs: DK.Ship.obstacles.length, note: _notes.slice(-1)}; })()`},
+ {snapjs: ['/tmp/preview/p3/e_ice.jpg', `(()=>{ const b = DK.worldEvents.icebergs[0]; const s=DK.G.ship; return DK.snapFrom([s.x - Math.sin(s.yaw)*12, 9, s.z - Math.cos(s.yaw)*12], [b.ob.x, 3, b.ob.z]); })()`]},
+ {js: `(async()=>{ DK.worldEvents.clear(); await toSea(400, 1800, 0.2, 23); const ok = DK.worldEvents.trigger('plankton'); const s=DK.G.ship; s.anchored=false; s.anchorState='up'; s.anchorT=0; s.sail=s.sailTarget=1; DK.sim(5); return {ok, parts: DK.effects.parts.length, speed: s.speed}; })()`},
+ {snapjs: ['/tmp/preview/p3/e_plankton.jpg', `(()=>{ const s=DK.G.ship; return DK.snapFrom([s.x + Math.cos(s.yaw)*14 - Math.sin(s.yaw)*6, 7, s.z - Math.sin(s.yaw)*14 - Math.cos(s.yaw)*6], [s.x, 0, s.z]); })()`]},
+ {js: `(()=>{ const ok = DK.worldEvents.trigger('meteor'); DK.sim(2.0); return {ok, m: !!DK.worldEvents.meteor}; })()`},
+ {snapjs: ['/tmp/preview/p3/e_meteor.jpg', `(()=>{ const M = DK.worldEvents.meteor; const s=DK.G.ship; const p = M.mesh.position; return DK.snapFrom([s.x, 8, s.z], [p.x, p.y*0.6, p.z]); })()`]},
+ {js: `(()=>{ DK.sim(2); const f = DK.events.floating.filter(f=>f.kind==='meteor'); return {floats: f.length, notes: _notes.slice(-2)}; })()`},
+ {js: `(async()=>{ DK.worldEvents.clear(); const I = DK.archipelago.EXTRA_ISLANDS.find(i=>i.id==='ates_dagi'); await toSea(I.x - I.r - 260, I.z, Math.PI/2, 14); const ok = DK.worldEvents.trigger('volcanic'); const hp0 = DK.G.ship.hp; DK.sim(6); return {ok, balls: DK.effects.balls.length, hp0, hp: DK.G.ship.hp}; })()`},
+ {snapjs: ['/tmp/preview/p3/e_volc.jpg', `(()=>{ const s=DK.G.ship; const b = DK.effects.balls[0]; const t = b ? b.m.position : {x: s.x+100, y: 40, z: s.z}; return DK.snapFrom([s.x - 30, 14, s.z + 20], [t.x, t.y, t.z]); })()`]},
+ {js: `(()=>{ DK.sim(30); const c = DK.worldEvents.context(); return {vol: !!DK.worldEvents.volcanic, hp: DK.G.ship.hp, reg: c.reg, w: DK.worldEvents.weights(c).filter(x=>x[1]>0)}; })()`},
+]

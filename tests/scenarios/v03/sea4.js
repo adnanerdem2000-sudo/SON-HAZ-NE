@@ -1,0 +1,4 @@
+[
+ {js: `DK.G.noAutoPause=true; DK.handlers.startGame({kind:'solo', slot:2, data:null}); 'ok'`},
+ {wait: 2500, js: `(async()=>{ const s=DK.G.ship; const p=DK.G.player; s.x=600; s.z=-6200; s.yaw=0.4; s.anchored=false; s.anchorState='up'; s.anchorT=0; s.anchorPt=null; await DK.terrain.prepare(s.x, s.z, {radius:300}); s.updateTransform(0); p.boardShip(s, s.model.stations.helm.clone()); DK.sky.hour=10; s.sail=s.sailTarget=1; DK.sim(6); const g = DK.megafauna.debugSpawn('dolphin', 60); g.yaw = s.yaw; const out=[]; for (let i=0;i<12;i++){ DK.sim(1); const hx=Math.sin(s.yaw), hz=Math.cos(s.yaw); const dx=g.x-s.x, dz=g.z-s.z; out.push([g.mode, +(dx*hx+dz*hz).toFixed(1), +(dx*Math.cos(s.yaw)-dz*Math.sin(s.yaw)).toFixed(1), +g.speed.toFixed(1), +s.speed.toFixed(1), +(s.vx*hx+s.vz*hz).toFixed(1), s.T.L]); } return out; })()`},
+]

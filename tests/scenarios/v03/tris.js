@@ -1,0 +1,3 @@
+[
+ {js: `const out={}; for (const n of ['tree_palm','tree_fat','tree_oak','bush_large','bush','flower_red','rock_large','rock_small','rock_tall','tree_pine','tree_pine_tall','crystal_rock','tree_dark','cactus','mushroom_red']) { const parts=DK.assets.meshParts(n); out[n]=parts.reduce((s,p)=>s+(p.geometry.index? p.geometry.index.count/3 : p.geometry.attributes.position.count/3),0)|0; } for (const n of ['tree_dead_large','tree_dead_medium','gravestone']) { let t=0; DK.kk.part('graveyard',n).traverse(o=>{ if(o.isMesh) t+= (o.geometry.index? o.geometry.index.count/3 : o.geometry.attributes.position.count/3); }); out['kk:'+n]=t|0; } out`},
+]

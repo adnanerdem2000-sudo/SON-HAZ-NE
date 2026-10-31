@@ -1,0 +1,5 @@
+[
+ {js: `window._notes=[]; DK.G.on('notify', e=>window._notes.push(e.text)); DK.G.noAutoPause=true; DK.handlers.startGame({kind:'solo', slot:2, data:null}); 'ok'`},
+ {wait: 2500, js: `(async()=>{ const s=DK.G.ship; const p=DK.G.player; s.x=600; s.z=-6200; s.yaw=0.4; s.anchored=true; s.anchorState='down'; s.anchorT=1; s.anchorPt=null; await DK.terrain.prepare(s.x, s.z, {radius:300}); s.updateTransform(0); p.boardShip(s, s.model.stations.helm.clone()); DK.sky.hour=10; DK.sim(2); const w = p.pos.clone(); p.leaveShipToWorld(w.add(new DK.THREE.Vector3(Math.cos(s.yaw)*8,0,-Math.sin(s.yaw)*8)), new DK.THREE.Vector3()); p.enterWater(); DK.sim(1); const g = DK.megafauna.debugSpawn('orka', 50); const log=[]; for (let i=0;i<20;i++){ DK.sim(1); log.push([g.mode, p.hp, p.dead?1:0]); } return {log, notes: _notes.slice(-4)}; })()`},
+ {js: `(()=>{ const p=DK.G.player; const g=DK.megafauna.groups[0]; const e=g.members[0]; const hp0=e.target.hp; e.target.hurt(50, {attacker: p, by: DK.G.myId}); return [hp0, e.target.hp, g.mode]; })()`},
+]

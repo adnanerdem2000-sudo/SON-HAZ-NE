@@ -1,0 +1,9 @@
+[
+ {js: `DK.G.noAutoPause=true; DK.handlers.startGame({kind:'solo', slot:2, data:null}); window.goto = async (x, z, hour) => { await DK.terrain.prepare(x, z, {radius: 400}); const p=DK.G.player; p.mode='ground'; p.ship=null; p.pos.set(x, DK.terrain.heightAt(x,z)+1, z); p.vel.set(0,0,0); DK.sky.hour = hour ?? 11; DK.sim(0.3); DK.islands.checkT=0; DK.sim(1.5); return 'ok'; }; 'ok'`},
+ {wait: 2500, js: `(()=>{ const z = DK.animals.zones.filter(z=>z.island); const by = {}; for (const q of z) by[q.kind]=(by[q.kind]||0)+q.n; return {zones: DK.animals.zones.length, island: z.length, by}; })()`},
+ {js: `(async()=>{ const zs = DK.animals.zones.filter(z=>z.island==='kurt_adasi'); await goto(zs[0].x+20, zs[0].z+20, 11); DK.sim(2); const near = DK.animals.list.filter(a=>Math.hypot(a.pos.x-zs[0].x,a.pos.z-zs[0].z)<300).map(a=>[a.kind, Math.round(a.pos.x), Math.round(a.pos.y*10)/10, Math.round(a.pos.z), a.state]); return {zs: zs.map(z=>[z.kind,z.x,z.z,z.n,z.active]), near}; })()`},
+ {js: `(()=>{ const ws = DK.animals.list.filter(a=>['wolf','deer','stag','fox','polar'].includes(a.kind)); const w = ws[0]; if(!w) return 'none'; window._w = w; return [w.kind, w.pos.x, w.pos.y, w.pos.z, w.root.children.length]; })()`},
+ {js: `(()=>{ const out=[]; for (const k of ['wolf','deer','stag','fox']) { const a = DK.animals.list.find(x=>x.kind===k); if (a) { const b = new DK.THREE.Box3().setFromObject(a.root, true); const s=new DK.THREE.Vector3(); b.getSize(s); out.push([k, +s.x.toFixed(2), +s.y.toFixed(2), +s.z.toFixed(2)]); } } return out; })()`},
+ {js: `(()=>{ const w=_w; window._v=[w.pos.x+Math.sin(w.yaw+0.9)*5, w.pos.y+1.8, w.pos.z+Math.cos(w.yaw+0.9)*5]; return _v; })()`},
+ {js: `(async()=>{ const w=_w; const d = DK.snapFrom([w.pos.x+Math.sin(w.yaw+1.2)*4.5, w.pos.y+1.6, w.pos.z+Math.cos(w.yaw+1.2)*4.5], [w.pos.x, w.pos.y+0.5, w.pos.z]); window._d=d; return d.length; })()`},
+]

@@ -1,0 +1,8 @@
+[
+ {js: `DK.G.noAutoPause=true; DK.handlers.startGame({kind:'solo', slot:2, data:null}); window.goto = async (x, z, hour) => { await DK.terrain.prepare(x, z, {radius: 300}); const p=DK.G.player; p.mode='ground'; p.ship=null; p.pos.set(x, DK.terrain.heightAt(x,z)+1, z); p.vel.set(0,0,0); DK.sky.hour = hour ?? 11; DK.sim(0.3); DK.islands.checkT=0; DK.sim(1.5); return 'ok'; }; window.look = (a, ang, dist, h) => { const fx=a.pos.x+Math.sin(a.yaw+ang)*dist, fz=a.pos.z+Math.cos(a.yaw+ang)*dist; return DK.snapFrom([fx, Math.max(a.pos.y, DK.terrain.heightAt(fx,fz))+h, fz], [a.pos.x, a.pos.y+h*0.35, a.pos.z]); }; 'ok'`},
+ {wait: 2500, js: `(async()=>{ const z = DK.animals.zones.find(z=>z.kind==='polar'); await goto(z.x+15, z.z+15, 11); DK.sim(2); const a = DK.animals.list.find(x=>x.kind==='polar'); a.state='wander'; a.wp = a.pos.clone().add(new DK.THREE.Vector3(Math.sin(a.yaw)*30,0,Math.cos(a.yaw)*30)); DK.sim(1.2); return a ? [a.pos.x, a.pos.y, a.pos.z, a.state, a.speed] : 'none'; })()`},
+ {snapjs: ['/tmp/preview/p3/e_polar2.jpg', `(()=>{ const a = DK.animals.list.find(x=>x.kind==='polar'); return look(a, 1.3, 5.5, 1.9); })()`]},
+ {snapjs: ['/tmp/preview/p3/e_polar3.jpg', `(()=>{ const a = DK.animals.list.find(x=>x.kind==='polar'); return look(a, 0.5, 4.5, 1.6); })()`]},
+ {js: `(async()=>{ const z = DK.animals.zones.find(z=>z.kind==='yeti'); await goto(z.x+15, z.z+15, 11); DK.sim(2); const a = DK.animals.list.find(x=>x.kind==='yeti'); return a ? [a.pos.x, a.pos.y, a.pos.z, a.state] : 'none'; })()`},
+ {snapjs: ['/tmp/preview/p3/e_yeti2.jpg', `(()=>{ const a = DK.animals.list.find(x=>x.kind==='yeti'); return look(a, 0.3, 6, 2.4); })()`]},
+]

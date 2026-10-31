@@ -1,0 +1,15 @@
+[
+ {js: `DK.G.noAutoPause=true; DK.handlers.startGame({kind:'solo', slot:2, data:null}); 'ok'`},
+ {wait: 1200, js: `DK.sky.hour=10; const p=DK.G.player; const s=DK.G.ship; p.boardShip(s, s.model.stations.helm.clone()); DK.sim(1); 'x'`},
+ {wait: 500, shot: '/tmp/preview/p2/hi_day.png'},
+ {js: `DK.settings.v.effects='low'; DK.settings.apply(); DK.sim(0.2); 'low'`},
+ {wait: 500, shot: '/tmp/preview/p2/lo_day.png'},
+ {js: `DK.settings.v.effects='high'; DK.settings.apply(); DK.sky.hour=18.4; DK.sim(1.5); 'sunset'`},
+ {wait: 500, shot: '/tmp/preview/p2/hi_sunset.png'},
+ {js: `DK.settings.v.effects='low'; DK.settings.apply(); DK.sim(0.2); 'low'`},
+ {wait: 500, shot: '/tmp/preview/p2/lo_sunset.png'},
+ {js: `DK.settings.v.effects='high'; DK.settings.apply(); DK.sky.hour=22.5; const p=DK.G.player; p.leaveShipToWorld(new DK.THREE.Vector3(0, 3, 190)); p.yaw=Math.PI; DK.sim(1.5); 'night'`},
+ {wait: 500, shot: '/tmp/preview/p2/hi_night.png'},
+ {js: `DK.settings.v.effects='low'; DK.settings.apply(); DK.sim(0.2); 'low'`},
+ {wait: 500, shot: '/tmp/preview/p2/lo_night.png'},
+]
