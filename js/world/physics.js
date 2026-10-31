@@ -20,12 +20,34 @@ export const physics = {
   _insert(map, obj, minX, minZ, maxX, maxZ) {
     const i0 = Math.floor(minX / CELL), i1 = Math.floor(maxX / CELL);
     const j0 = Math.floor(minZ / CELL), j1 = Math.floor(maxZ / CELL);
+    if (obj.tag) obj._keys = [];
     for (let i = i0; i <= i1; i++) for (let j = j0; j <= j1; j++) {
       const k = this._key(i, j);
       let a = map.get(k);
       if (!a) map.set(k, (a = []));
       a.push(obj);
+      if (obj._keys) obj._keys.push(k);
     }
+  },
+
+  // Etiketli çarpıştırıcıları kaldır (ada içeriği boşaltılırken)
+  removeTag(tag) {
+    const drop = (map, list) => {
+      for (const o of list) {
+        for (const k of o._keys || []) {
+          const a = map.get(k);
+          if (!a) continue;
+          const f = a.filter((x) => x !== o);
+          if (f.length) map.set(k, f); else map.delete(k);
+        }
+      }
+    };
+    const cols = this.all.filter((o) => o.tag === tag);
+    drop(this.cells, cols);
+    this.all = this.all.filter((o) => o.tag !== tag);
+    const plats = (this.platList || []).filter((o) => o.tag === tag);
+    drop(this.platforms, plats);
+    if (this.platList) this.platList = this.platList.filter((o) => o.tag !== tag);
   },
 
   addCircle(x, z, r, y0 = -50, y1 = 100, tag = null) {
@@ -48,6 +70,7 @@ export const physics = {
     const p = { x, z, hw, hd, yaw, cos: Math.cos(yaw), sin: Math.sin(yaw), top, tag };
     const R = Math.hypot(hw, hd);
     this._insert(this.platforms, p, x - R, z - R, x + R, z + R);
+    (this.platList || (this.platList = [])).push(p);
     return p;
   },
 
@@ -117,6 +140,59 @@ export const physics = {
       }
     }
     return hit;
+  },
+
+  // Görüş hattı: arazi + çarpıştırıcılar (kaya, ağaç gövdesi, duvar, bina). a ve b göz/hedef yükseklikleri.
+  lineBlocked(ax, ay, az, bx, by, bz) {
+    const dx = bx - ax, dy = by - ay, dz = bz - az;
+    const len = Math.hypot(dx, dz);
+    const steps = Math.max(1, Math.ceil(len / 1.5));
+    for (let s = 1; s < steps; s++) {
+      const t = s / steps;
+      if (terrain.heightAt(ax + dx * t, az + dz * t) > ay + dy * t + 0.15) return true;
+    }
+    if (len < 1e-3) return false;
+    const seen = this._seenL || (this._seenL = new Set());
+    seen.clear();
+    const i0 = Math.floor(Math.min(ax, bx) / CELL), i1 = Math.floor(Math.max(ax, bx) / CELL);
+    const j0 = Math.floor(Math.min(az, bz) / CELL), j1 = Math.floor(Math.max(az, bz) / CELL);
+    if ((i1 - i0 + 1) * (j1 - j0 + 1) > 64) return false;
+    const ux = dx / len, uz = dz / len;
+    for (let i = i0; i <= i1; i++) for (let j = j0; j <= j1; j++) {
+      const a = this.cells.get(this._key(i, j));
+      if (!a) continue;
+      for (const c of a) {
+        if (seen.has(c)) continue;
+        seen.add(c);
+        let t = -1;
+        if (c.t === 'c') {
+          // doğru parçasının çembere en yakın noktası
+          const px = c.x - ax, pz = c.z - az;
+          const proj = Math.max(0, Math.min(len, px * ux + pz * uz));
+          const qx = ax + ux * proj - c.x, qz = az + uz * proj - c.z;
+          if (qx * qx + qz * qz < c.r * c.r * 0.8) t = proj / len;
+        } else {
+          // yerel uzayda dilim (slab) testi
+          const [lax, laz] = this._local(c, ax, az), [lbx, lbz] = this._local(c, bx, bz);
+          let t0 = 0, t1 = 1;
+          const ddx = lbx - lax, ddz = lbz - laz;
+          let ok = true;
+          for (const [p0, d, h] of [[lax, ddx, c.hw], [laz, ddz, c.hd]]) {
+            if (Math.abs(d) < 1e-6) { if (p0 < -h || p0 > h) { ok = false; break; } continue; }
+            let ta = (-h - p0) / d, tb = (h - p0) / d;
+            if (ta > tb) [ta, tb] = [tb, ta];
+            t0 = Math.max(t0, ta); t1 = Math.min(t1, tb);
+            if (t0 > t1) { ok = false; break; }
+          }
+          if (ok) t = t0;
+        }
+        if (t > 0.02 && t < 0.98) {
+          const y = ay + dy * t;
+          if (y > c.y0 && y < c.y1) return true;
+        }
+      }
+    }
+    return false;
   },
 
   // Basit ışın testi (yatay düzlemde) — mermi/görüş için

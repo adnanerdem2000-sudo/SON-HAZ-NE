@@ -5,6 +5,7 @@ import { woodPlanks } from '../core/textures.js';
 import { clamp, lerp } from '../core/util.js';
 import { rimAll } from '../core/rim.js';
 import { kk, KK_ROLES } from '../core/kk.js';
+import { Ragdoll } from './ragdoll.js';
 
 const C = (hex) => new THREE.Color(hex);
 const std = (color, o = {}) => new THREE.MeshStandardMaterial({ color, roughness: 0.75, ...o });
@@ -410,6 +411,9 @@ export class Character {
     this.actions = {};
     this.current = null;
     this.currentName = null;
+    this.upper = null;
+    this.upperName = null;
+    this.ragdoll = null;
     this._accessories();
     this._bodyShape();
     rimAll(this.root);
@@ -606,8 +610,10 @@ export class Character {
     return { obj, slot: /Shield/.test(n) ? 'handslotl' : 'handslotr' };
   }
 
+  // Temel katman: tam gövde; üst katman etkinken yalnız alt gövde (bacaklar) oynar
   play(name, fade = 0.2, opts = {}) {
-    const clip = kk.clip(name);
+    const lower = !!this.upper;
+    const clip = lower ? kk.clipPart(name, 'L') : kk.clip(name);
     if (!clip) return null;
     let action = this.actions[clip.name];
     if (!action) action = this.actions[clip.name] = this.mixer.clipAction(clip);
@@ -618,15 +624,102 @@ export class Character {
     action.timeScale = opts.speed || 1;
     if (opts.once) { action.setLoop(THREE.LoopOnce, 1); action.clampWhenFinished = true; }
     else action.setLoop(THREE.LoopRepeat, Infinity);
-    if (this.current && fade > 0) action.crossFadeFrom(this.current, fade, false);
-    else if (this.current) this.current.stop();
+    if (this.current && this.current !== action && fade > 0) action.crossFadeFrom(this.current, fade, false);
+    else if (this.current && this.current !== action) this.current.stop();
     action.play();
     this.current = action;
     this.currentName = name;
+    this.currentLower = lower;
     return action;
   }
 
+  // Üst gövde katmanı: koşarken saldırı, nişan, blok, el sallama…
+  playUpper(name, fade = 0.12, opts = {}) {
+    const clip = kk.clipPart(name, 'U');
+    if (!clip || this.ragdoll) return null;
+    if (!this.upper) this._swapBase('L', fade);
+    let a = this.actions[clip.name] || (this.actions[clip.name] = this.mixer.clipAction(clip));
+    if (this.upper === a && !opts.restart) { if (opts.speed) a.timeScale = opts.speed; return a; }
+    if (this.upper && this.upper !== a) this.upper.fadeOut(fade);
+    a.reset();
+    a.enabled = true;
+    a.timeScale = opts.speed || 1;
+    if (opts.once) { a.setLoop(THREE.LoopOnce, 1); a.clampWhenFinished = true; } else a.setLoop(THREE.LoopRepeat, Infinity);
+    a.setEffectiveWeight(1);
+    a.fadeIn(fade);
+    a.play();
+    this.upper = a;
+    this.upperName = name;
+    this.upperOnce = !!opts.once;
+    return a;
+  }
+  stopUpper(fade = 0.18) {
+    if (!this.upper) return;
+    this.upper.fadeOut(fade);
+    this.upper = null;
+    this.upperName = null;
+    this._swapBase('F', fade);
+  }
+  // temel katmanı aynı zamanda tam/alt gövde sürümüne geçir (dikişsiz)
+  _swapBase(part, fade) {
+    const cur = this.current;
+    if (!cur || !this.currentName) return;
+    const clip = part === 'L' ? kk.clipPart(this.currentName, 'L') : kk.clip(this.currentName);
+    if (!clip || clip === cur.getClip()) return;
+    const a = this.actions[clip.name] || (this.actions[clip.name] = this.mixer.clipAction(clip));
+    a.reset();
+    a.enabled = true;
+    a.setLoop(cur.loop, cur.repetitions);
+    a.clampWhenFinished = cur.clampWhenFinished;
+    a.timeScale = cur.timeScale;
+    a.time = cur.time;
+    a.setEffectiveWeight(1);
+    a.play();
+    if (part === 'L') cur.fadeOut(fade); // bacaklar aynı kalır, üst yarı yeni katmana devredilir
+    else a.crossFadeFrom(cur, fade, false);
+    this.current = a;
+    this.currentLower = part === 'L';
+  }
+
   setSpeed(s) { if (this.current) this.current.timeScale = s; }
+
+  // Fizik tabanlı düşüş (ölüm, savrulma). opts: { ground(x,z,y), vel, impulse }
+  startRagdoll(opts = {}) {
+    if (this.ragdoll) { if (opts.impulse) this.ragdoll.push(opts.impulse); return this.ragdoll; }
+    if (this.held && opts.dropWeapon !== false) this.held.visible = false;
+    this.mixer.stopAllAction();
+    this.current = null;
+    this.upper = null; this.upperName = null;
+    this.currentName = 'Ragdoll';
+    this.ragdoll = new Ragdoll(this, opts);
+    return this.ragdoll;
+  }
+  stopRagdoll() {
+    if (!this.ragdoll) return;
+    this.ragdoll = null;
+    if (this.held) this.held.visible = true;
+    this.play('Idle', 0, { restart: true });
+  }
+
+  // Hayalet görünümü: yarı saydam, ışıyan malzeme
+  ghostly(color = 0x8ff0e0, opacity = 0.6) {
+    this.ghost = true;
+    const c = C(color);
+    this.root.traverse((o) => {
+      if (!o.isMesh) return;
+      const ms = Array.isArray(o.material) ? o.material : [o.material];
+      for (const m of ms) {
+        m.transparent = true; m.opacity = opacity; m.depthWrite = false;
+        m.color.lerp(c, 0.55);
+        if (m.emissive) { m.emissive.copy(c).multiplyScalar(0.5); m.emissiveIntensity = 0.7; }
+        m.needsUpdate = true;
+      }
+      o.castShadow = false;
+    });
+  }
+  setOpacity(op) {
+    this.root.traverse((o) => { if (o.isMesh) { const ms = Array.isArray(o.material) ? o.material : [o.material]; for (const m of ms) m.opacity = op; } });
+  }
 
   tint(color, emissive = null, opacity = null) {
     this.model.traverse((o) => {
@@ -643,7 +736,9 @@ export class Character {
 
   // Animasyondan sonra: gövde şekli, prosedürel pozlar ve IK
   update(dt) {
+    if (this.ragdoll) { this.ragdoll.update(dt); this._torch(); return; }
     if (this.shape) for (const sh of this.shape) sh.bone.scale.copy(sh.base);
+    if (this.upper && this.upperOnce && !this.upperHold && this.upper.time >= this.upper.getClip().duration - 0.02) this.stopUpper(0.2);
     this.mixer.update(dt);
     if (this.shape) for (const sh of this.shape) sh.bone.scale.multiply(sh.f);
     this.model.position.y = this.baseY;

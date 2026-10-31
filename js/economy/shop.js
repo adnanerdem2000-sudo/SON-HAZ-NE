@@ -1,4 +1,5 @@
 import { G } from '../game/ctx.js';
+import { ports } from '../world/ports.js';
 import { ITEMS, CHEST_TIERS, itemValue, itemName } from './items.js';
 import { COSMETIC_PRICES } from '../player/appearance.js';
 import { SHIP_TYPES } from '../ship/shipModel.js';
@@ -35,6 +36,12 @@ export const MERCHANTS = {
     greet: 'Haritalar konuşur, yeter ki dinlemeyi bil. Yeni bir harita mı arıyorsun?',
   },
   // Zaman çizelgesindeki ticaret günlerinde limana yanaşan "Altın Martı"nın tüccarı
+  // Gizli Korsan Pazarı (yalnız gece)
+  smuggler: {
+    name: 'Kaçakçı', sells: ['usta_kilic', 'usta_tabanca', 'durbun', 'gulle', 'mermi', 'merhem', 'yem_yapay', 'hazine_haritasi'], discount: 0.85,
+    buys: { tas: 1.25, ganimet: 1.1, koleksiyon: 1.2, silah: 0.7, harita: 0.9 },
+    greet: 'Soru sorma, yalan duyma. Gece pazarında her şeyin bir fiyatı var, kaptan.',
+  },
   trader: {
     name: 'Halil Reis — Altın Martı', sells: ['usta_kilic', 'usta_tabanca', 'usta_olta', 'durbun', 'yem_yapay', 'merhem', 'pusula', 'baharat', 'ipek'],
     buys: { tas: 1.2, ganimet: 1.05, koleksiyon: 1.15, balik: 0.7 },
@@ -115,8 +122,7 @@ export const shop = {
 
   shipNearPort() {
     const s = G.ship;
-    const bp = port.boardingPoint;
-    return s && !s.sunk && Math.hypot(s.x - bp.x, s.z - bp.z) < 60;
+    return !!(s && !s.sunk && ports.atShip(s, 60));
   },
 
   chestPrice(tier) { return CHEST_TIERS[tier].value; },

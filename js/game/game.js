@@ -37,13 +37,12 @@ export const game = {
     const scene = engine.scene;
     onProgress?.(0.05, 'Takımadalar oluşturuluyor…');
     await tick();
-    terrain.build();
-    onProgress?.(0.35, 'Arazi örülüyor…');
-    await tick();
-    terrain.buildMeshes(scene, quality);
-    onProgress?.(0.5, 'Okyanus dolduruluyor…');
+    terrain.init(scene, quality);
+    onProgress?.(0.2, 'Okyanus dolduruluyor…');
     await tick();
     ocean.build(scene, quality);
+    onProgress?.(0.3, 'Arazi örülüyor…');
+    await terrain.prepare(160, 470, { radius: 900 });
     sky.build(scene, engine.renderer, quality);
     sky.onThunder = () => audio.thunder();
     sky.timeRef = time;
@@ -114,6 +113,8 @@ export const game = {
     if (G.player) { G.player.char.dispose(); G.player = null; }
     const app = opts.appearance;
     const spawn = data?.player?.pos || { x: port.boardingPoint.x - 8, y: 3, z: port.shoreZ - 20 };
+    // uzak bir adada kaydedildiyse önce o bölgenin arazisini hazırla
+    await terrain.prepare(spawn.x, spawn.z, { radius: 500 });
     const p = new Player(scene, app, { x: spawn.x, y: spawn.y + 0.5, z: spawn.z, yaw: Math.PI });
     G.player = p;
     G.playerName = app.name;
@@ -171,7 +172,9 @@ export const game = {
   update(dt) {
     input.endFrame && null;
     if (G.state === 'menu') { this.menuUpdate(dt); return; }
-    if (G.state !== 'playing') return;
+    if (G.state !== 'playing' || !G.player) return;
+    // vuruş anı duraksaması (hit-stop): ağır darbe ve parry'de kısa ağır çekim
+    if (G.hitStop > 0) { G.hitStop -= dt; dt *= 0.12; }
     this.playTime += dt;
     const p = G.player;
     // global tuşlar
@@ -257,7 +260,7 @@ export const game = {
       const a = Math.acos(clamp(v.dot(dir) / d, -1, 1)) - Math.atan2(r, d);
       if (a < bestA) { bestA = a; best = { name, d }; }
     };
-    for (const I of ISLANDS) consider(I.x, 10, I.z, I.name, I.r * 0.8);
+    for (const I of ISLANDS) if (Math.hypot(I.x - cam.position.x, I.z - cam.position.z) < 4500) consider(I.x, 10, I.z, I.name, I.r * 0.8);
     for (const s of G.ships) if (s !== p.ship && !s.sunk) consider(s.x, s.y + 4, s.z, s.kinematic ? `${s.name} (ticaret gemisi)` : s === G.ship ? `${s.name} (gemin)` : `${s.name || 'Yabancı gemi'}`, 4);
     for (const e of enemies.list || []) if (e.alive) consider(e.pos.x, e.pos.y + 1, e.pos.z, e.T.name, 0.5);
     for (const a of animals.list || []) if (a.alive !== false && a.S) consider(a.pos.x, a.pos.y + 0.5, a.pos.z, a.S.name, 0.5);
@@ -301,6 +304,7 @@ export const game = {
   // Ortam: gökyüzü, deniz, sesler, rüzgâr
   _env(dt, focus) {
     const cam = engine.camera;
+    terrain.update(cam.position.x, cam.position.z);
     const wh = ocean.heightAt(cam.position.x, cam.position.z);
     sky.underwater = cam.position.y < wh - 0.05;
     const p = G.player;

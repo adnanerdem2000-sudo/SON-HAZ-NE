@@ -30,7 +30,7 @@ export const PERIODIC = [
 // Tüccar çalışma saatleri
 export const SHOP_HOURS = {
   general: [6, 22], fisher: [5, 20], weapons: [7, 21], tailor: [8, 20], shipwright: [6, 21],
-  cartographer: [8, 22], treasure: [6, 24], quest: [0, 24], board: [0, 24], trader: [11, 16],
+  cartographer: [8, 22], treasure: [6, 24], quest: [0, 24], board: [0, 24], trader: [11, 16], travel: [0, 24], prisoner: [0, 24],
 };
 
 export const time = {

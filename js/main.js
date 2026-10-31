@@ -10,6 +10,9 @@ import { game } from './game/game.js';
 import { effects } from './game/effects.js';
 import { combat } from './game/combat.js';
 import { enemies } from './game/enemies.js';
+import { physics } from './world/physics.js';
+import { islands } from './world/islands.js';
+import { ports } from './world/ports.js';
 import { npcs } from './game/npcs.js';
 import { quests } from './game/quests.js';
 import { events } from './game/events.js';
@@ -88,7 +91,7 @@ async function boot() {
   progress(0.02, 'Modeller yükleniyor…');
   await assets.loadAll((f) => progress(0.02 + f * 0.33, 'Modeller yükleniyor…'));
 
-  for (const s of [misc, time, bodies, effects, combat, treasure, enemies, animals, fish, fishing, npcs, quests, events, weatherfx, details, crowd]) game.register(s);
+  for (const s of [misc, time, bodies, effects, combat, treasure, enemies, animals, fish, fishing, npcs, islands, quests, events, weatherfx, details, crowd]) game.register(s);
   net.init(engine.scene);
   const q = settings.v.quality;
   await game.buildWorld(q, (f, t) => progress(0.35 + f * 0.6, t));
@@ -119,7 +122,7 @@ async function boot() {
   // davet bağlantısı
   const join = new URLSearchParams(location.search).get('join');
   if (join) menu.joinScreen(join);
-  window.DK = { G, game, input, engine, post, settings, tpCamera, interact, npcs, Ship, kk, Character, handlers, net, ui, quests, treasure, enemies, animals, fish, fishing, shipControl, THREE, save, port, combat, effects, events, sky, time, bodies, weatherfx, details, terrain, ocean, crowd };
+  window.DK = { G, physics, islands, ports, game, input, engine, post, settings, tpCamera, interact, npcs, Ship, kk, Character, handlers, net, ui, quests, treasure, enemies, animals, fish, fishing, shipControl, THREE, save, port, combat, effects, events, sky, time, bodies, weatherfx, details, terrain, ocean, crowd };
   // Test/hata ayıklama yardımcıları: oyunu render etmeden ileri sar
   window.DK.sim = (seconds, dt = 1 / 30) => {
     const n = Math.round(seconds / dt);
@@ -206,7 +209,10 @@ const handlers = {
     if (where === 'ship' && s && !s.sunk) p.boardShip(s, s.model.stations.ladderTop.clone());
     else {
       p.mode = 'ground'; p.ship = null;
-      p.pos.set(port.boardingPoint.x - 6, 3, port.shoreZ - 22);
+      // en yakın keşfedilmiş limanda uyan
+      const pt = ports.nearest(p.pos.x, p.pos.z, Infinity, (x) => x.core || quests.discovered[x.island]) || ports.list[0];
+      const sx = pt.core ? port.boardingPoint.x - 6 : pt.spawn.x, sz = pt.core ? port.shoreZ - 22 : pt.spawn.z;
+      p.pos.set(sx, terrain.heightAt(sx, sz) + 1, sz);
       p.vel.set(0, 0, 0);
     }
     G.notify('Gözlerini açtın. Biraz başın dönüyor…', 'info');
@@ -235,6 +241,38 @@ function wire() {
     time.addLog(`Kırlangıç Hanı'nda ${Math.round(hours)} saat dinlenildi`, 'info');
     G.emit('sleepFade', { day: time.day, hour: sky.hour, hours });
     if (G.online) net.broadcast({ t: 'sleep', day: time.day, hour: sky.hour, hours });
+  });
+  // Hızlı yolculuk (rota kaptanı): ekran kararır, varış bölgesi hazırlanır, gemi ve oyuncu taşınır
+  G.on('fastTravel', async (e) => {
+    const p = G.player, s = G.ship;
+    const to = ports.byId(e.to), from = ports.byId(e.from);
+    if (!to || !s || s.sunk) return;
+    if (G.online && !G.isHost) { G.notify('Hızlı yolculuğu yalnız oda sahibi başlatabilir.', 'warn', 3000); return; }
+    if (G.inCombat) { G.notify('Çatışma sürerken yola çıkılmaz!', 'warn'); return; }
+    if (p.inv.gold < e.cost) { G.notify('Yol parası için yeterli altının yok.', 'warn'); return; }
+    if (p.carrying) { G.notify('Önce taşıdığını bırak ya da ambara koy.', 'warn'); return; }
+    p.inv.gold -= e.cost;
+    let f = document.getElementById('sleep-fade');
+    if (!f) { f = document.createElement('div'); f.id = 'sleep-fade'; document.body.appendChild(f); }
+    const d = from ? Math.hypot(to.x - from.x, to.z - from.z) : 3000;
+    const hours = Math.max(1, Math.round(d / 2600));
+    f.innerHTML = `<div class="t1">${to.name}</div><div class="t2">Rota kaptanı dümende… ${hours} saatlik yolculuk.</div>`;
+    f.classList.add('on');
+    audio.play('confirm', { vol: 0.3, rate: 0.7 });
+    await new Promise((r) => setTimeout(r, 1200));
+    await terrain.prepare(to.mooring.x, to.mooring.z, { radius: 450 });
+    s.x = to.mooring.x; s.z = to.mooring.z; s.yaw = to.mooring.yaw;
+    s.vx = 0; s.vz = 0; s.speed = 0; s.yawRate = 0;
+    s.anchorState = 'down'; s.anchorT = 1; s.anchored = true; s.sail = s.sailTarget = 0;
+    if (G.rowboat) G.rowboat.dock();
+    p.leaveShipToWorld(new THREE.Vector3(to.boarding.x, to.boarding.y + 0.3, to.boarding.z));
+    p.onGround = false; p.vel.set(0, 0, 0);
+    time.sleepUntil((sky.hour + hours) % 24);
+    time.addLog(`${from ? from.name : 'Liman'} → ${to.name} hızlı yolculuk (${e.cost} altın)`, 'info');
+    if (G.online) net.broadcast({ t: 'teleport', x: to.boarding.x, y: to.boarding.y + 0.3, z: to.boarding.z, ship: [s.x, s.z, s.yaw], hour: sky.hour, day: time.day });
+    setTimeout(() => f.classList.remove('on'), 900);
+    G.notify(`${to.name} limanına vardın.`, 'good', 3500);
+    G.emit('arrivedPort', { port: to.id });
   });
   G.on('sleepFade', (e) => {
     let f = document.getElementById('sleep-fade');

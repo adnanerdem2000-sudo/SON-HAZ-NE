@@ -6,6 +6,7 @@ import { tpCamera } from '../player/camera.js';
 import { Ship, Rowboat } from '../ship/ship.js';
 import { ocean } from '../world/ocean.js';
 import { terrain } from '../world/terrain.js';
+import { ports } from '../world/ports.js';
 import { port } from '../world/port.js';
 import { clamp } from '../core/util.js';
 
@@ -95,9 +96,11 @@ export const shipControl = {
         }
       }
       // iskeleye in (limanda demirliyken)
-      const bp = port.boardingPoint;
-      if (bp && Math.hypot(s.x - bp.x, s.z - bp.z) < 24) {
-        out.push({ id: 'disembark', pos: L(st.ladderTop), radius: 2.2, label: 'İskeleye in', action: () => { p.leaveShipToWorld(new THREE.Vector3(bp.x, bp.y, bp.z - 1.5)); p.onGround = true; } });
+      const pt = ports.atShip(s, 26);
+      const bp = pt?.boarding;
+      if (bp) {
+        const off = pt.core ? { x: 0, z: -1.5 } : { x: 0, z: 0 };
+        out.push({ id: 'disembark', pos: L(st.ladderTop), radius: 2.2, label: `İskeleye in (${pt.name})`, action: () => { p.leaveShipToWorld(new THREE.Vector3(bp.x + off.x, bp.y, bp.z + off.z)); p.onGround = true; } });
       }
       return;
     }
@@ -117,8 +120,8 @@ export const shipControl = {
       out.push({ id: 'boat_enter', pos: bp, radius: 3.0, label: 'Kayığa bin' + (p.carrying ? ' (sandığı koy)' : ''), action: () => this.enterBoat(p) });
     }
     // iskeleden gemiye
-    const bp2 = port.boardingPoint;
-    if (bp2 && p.mode === 'ground' && Math.hypot(p.pos.x - bp2.x, p.pos.z - bp2.z) < 7 && Math.hypot(ship.x - bp2.x, ship.z - bp2.z) < 24 && !ship.sunk) {
+    const bp2 = ports.nearBoarding(p.pos.x, p.pos.z, 7)?.boarding;
+    if (bp2 && p.mode === 'ground' && Math.hypot(ship.x - bp2.x, ship.z - bp2.z) < 26 && !ship.sunk) {
       out.push({ id: 'embark', pos: new THREE.Vector3(bp2.x, p.pos.y, bp2.z), radius: 7, label: `Gemiye bin (${ship.name})`, action: () => p.boardShip(ship, ship.model.stations.ladderTop.clone()) });
     }
   },

@@ -2,6 +2,9 @@ import * as THREE from 'three';
 import { G } from '../game/ctx.js';
 import { Character } from '../player/character.js';
 import { enemies } from '../game/enemies.js';
+import { isOnce } from '../core/kk.js';
+import { physics } from '../world/physics.js';
+import { terrain } from '../world/terrain.js';
 import { animals } from '../wildlife/animals.js';
 import { treasure } from '../treasure/treasure.js';
 import { combat } from '../game/combat.js';
@@ -83,7 +86,12 @@ class RemotePlayer {
     const c = this.char;
     c.root.position.copy(this.pos);
     c.root.rotation.y = this.yaw;
-    if (t.anim && c.currentName !== t.anim) c.play(t.anim, 0.15, { once: /Slash|Shoot|Punch|Interact|Roll|Hit|Death|Wave/.test(t.anim) });
+    if (t.anim === 'Ragdoll') { if (!c.ragdoll) c.startRagdoll({ ground: (x, z, y) => physics.groundAt(x, z, y + 0.6) }); }
+    else {
+      if (c.ragdoll) c.stopRagdoll();
+      if (t.anim && c.currentName !== t.anim) c.play(t.anim, 0.15, { once: isOnce(t.anim) });
+      if ((t.up || null) !== (c.upperName || null)) { if (t.up) c.playUpper(t.up, 0.1, { once: isOnce(t.up) }); else c.stopUpper(0.15); }
+    }
     if (c.heldType !== (t.eq === 'none' || t.eq === 'map' ? null : t.eq)) c.hold(t.eq === 'none' || t.eq === 'map' ? null : t.eq);
     c.overlay.carry = !!t.carry;
     c.overlay.swim = t.mode === 'swim';
@@ -113,7 +121,8 @@ export const net = {
     relay('netAction', (e) => this.sendGame({ t: 'act', ...e }));
     relay('netHurtEnemy', (e) => this.toHost({ t: 'hurtEnemy', ...e }));
     relay('netHurtAnimal', (e) => this.toHost({ t: 'hurtAnimal', ...e }));
-    relay('netHurtPlayer', (e) => this.toPeer(e.id, { t: 'hurt', dmg: e.dmg, from: e.from, cause: e.cause }));
+    relay('netHurtPlayer', (e) => this.toPeer(e.id, { t: 'hurt', dmg: e.dmg, from: e.from, cause: e.cause, melee: e.melee ? 1 : 0, ub: e.unblockable ? 1 : 0, aid: e.attackerId || null, bullet: e.bullet ? 1 : 0 }));
+    relay('netStunEnemy', (e) => this.toHost({ t: 'stunEnemy', id: e.id, dur: e.dur }));
     relay('netDig', (e) => this.toHost({ t: 'dig', ...e }));
     relay('netChestReq', (e) => this.toHost({ t: 'chestReq', ...e }));
     relay('netPickupReq', (e) => this.toHost({ t: 'pickupReq', ...e }));
@@ -216,7 +225,8 @@ export const net = {
       case 'chat': this.broadcast({ t: 'chat', from: c.info.name, text: m.text, color: c.info.color }); G.emit('chat', { from: c.info.name, text: m.text, color: c.info.color }); break;
       case 'st': this._remoteState(pid, c.info, m.s); break;
       case 'act': this._remoteAct(pid, m); this.broadcast(m, pid, { from: pid }); break;
-      case 'hurtEnemy': { const e = enemies.list.find((x) => x.id === m.id); if (e) e.applyDamage(m.dmg, { kind: m.kind, by: pid, pos: G.remotes.get(pid)?.pos }); break; }
+      case 'hurtEnemy': { const e = enemies.list.find((x) => x.id === m.id); if (e) e.applyDamage(m.dmg, { kind: m.kind, by: pid, pos: G.remotes.get(pid)?.pos, heavy: m.heavy, finisher: m.fin, counter: m.ctr, guardBreak: m.gb, kb: m.kb, yaw: m.yaw }); break; }
+      case 'stunEnemy': { const e = enemies.list.find((x) => x.id === m.id); if (e && e.alive) e.stun(m.dur || 1.5, 'parry'); break; }
       case 'hurtAnimal': { const a = animals.byId(m.id); if (a && a.alive) a.applyDamage(m.dmg, {}); break; }
       case 'dig': treasure._hole(m.x, m.z, true); treasure.resolveDig(m.x, m.z, pid); this.broadcast({ t: 'hole', x: m.x, z: m.z }, pid); break;
       case 'chestReq': {
@@ -385,8 +395,18 @@ export const net = {
       case 'snap': this._applySnap(m); break;
       case 'chat': G.emit('chat', m); break;
       case 'act': this._remoteAct(m.from, m); break;
-      case 'hurt': G.player.hurt(m.dmg, m.from ? new THREE.Vector3(...m.from) : null, { cause: m.cause }); break;
+      case 'hurt': G.player.hurt(m.dmg, m.from ? new THREE.Vector3(...m.from) : null, { cause: m.cause, melee: !!m.melee, unblockable: !!m.ub, attackerId: m.aid, bullet: !!m.bullet }); break;
       case 'give': treasure.giveItems(m.items); break;
+      case 'teleport': {
+        // oda sahibi hızlı yolculuk yaptı: tayfa da varış limanına taşınır
+        const p = G.player;
+        terrain.prepare(m.x, m.z, { radius: 400 }).then(() => {
+          p.leaveShipToWorld(new THREE.Vector3(m.x + (Math.random() - 0.5) * 2, m.y, m.z + (Math.random() - 0.5) * 2));
+          p.vel.set(0, 0, 0);
+          G.notify('Kaptan rotayı kırdı: yeni limana vardınız!', 'good', 3500);
+        });
+        break;
+      }
       case 'mapUsed': treasure.mapUsed(m.site); G.notify('Tayfa hazineyi buldu! Haritan kullanıldı.', 'good'); break;
       case 'carryOk': { const c = treasure.chestById(m.id); if (c) { c.state = 'carried'; if (!c.carriers.includes(G.myId)) c.carriers.push(G.myId); treasure._applyCarry(G.player, c); } break; }
       case 'chestSpawn': if (!treasure.chestById(m.c.id)) { const c = treasure.spawnChest(m.c.tier, new THREE.Vector3(...m.c.pos), { id: m.c.id, contents: m.c.contents, siteId: m.c.siteId, rising: true }); void c; } break;

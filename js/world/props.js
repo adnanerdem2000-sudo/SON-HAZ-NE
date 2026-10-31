@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { assets } from '../core/assets.js';
 import { terrain } from './terrain.js';
 import { physics } from './physics.js';
-import { ISLANDS, DIG_SITES, TERRAIN_MODS, CAVE, POIS } from './worldData.js';
+import { CORE_ISLANDS as ISLANDS, CORE_DIG_SITES as DIG_SITES, TERRAIN_MODS, CAVE, POIS } from './worldData.js';
 import { rng, noise2, smoothstep } from '../core/util.js';
 import { stone, woodPlanks } from '../core/textures.js';
 

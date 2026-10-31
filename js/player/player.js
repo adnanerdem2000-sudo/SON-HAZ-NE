@@ -61,6 +61,15 @@ export class Player {
     this.lastSafe = this.pos.clone();
     this.animState = '';
     this.fallStartY = this.pos.y;
+    // savaş durumu
+    this.blockT = 0;        // savunmaya geçeli geçen süre (parry penceresi)
+    this.counterT = 0;      // parry sonrası karşı saldırı penceresi
+    this.guardBroken = 0;   // savunması kırılınca bekleme
+    this.combo = { step: 0, grace: 0 };
+    this.charge = null;     // basılı tutma (ağır saldırı)
+    this.idleT = 0;
+    this.airT = 0;
+    this.parryHints = 0;
   }
 
   setAppearance(app) {
@@ -111,13 +120,34 @@ export class Player {
 
   // ---- hasar ----
   hurt(amount, from = null, opts = {}) {
-    if (this.dead || this.downed || this.invuln > 0 || G.godMode) return;
-    if (this.blocking && from && this.equipped === 'sword') {
-      const toSrc = Math.atan2(from.x - this.pos.x, from.z - this.pos.z);
-      if (Math.abs(wrapAngle(toSrc - this.yaw)) < 1.3 && this.stamina > 10) {
-        amount *= 0.2;
-        this.stamina -= 12;
-        G.emit('sfx', { name: 'hit', pos: this.pos, vol: 0.6 });
+    if (this.dead || this.downed || G.godMode) return;
+    if (this.invuln > 0) {
+      if (this.action?.type === 'dodge' && opts.melee) G.emit('dodged', { pos: this.pos.clone() });
+      return;
+    }
+    const front = from ? Math.abs(wrapAngle(Math.atan2(from.x - this.pos.x, from.z - this.pos.z) - this.yaw)) < 1.35 : false;
+    if (this.blocking && front && opts.melee && !opts.unblockable) {
+      // tam zamanında savunma = parry: hasar yok, saldıran sersemler, karşı saldırı penceresi açılır
+      if (this.blockT < 0.24) { this._parry(opts.attacker, opts.attackerId); return; }
+      const cost = amount * 0.9 + 4;
+      if (this.stamina > cost) {
+        this.stamina -= cost;
+        amount *= 0.12;
+        this.startAction('blockhit', 0.3);
+        G.emit('sfx', { name: 'hit', pos: this.pos, vol: 0.7, rate: 1.5 });
+        G.emit('blockSpark', { pos: this.pos.clone(), yaw: this.yaw });
+        tpCamera.addShake(0.12);
+        this.knock = from ? { x: (this.pos.x - from.x) * 0.8, z: (this.pos.z - from.z) * 0.8 } : null;
+        if (amount < 1) return;
+      } else {
+        // dayanıklılık bitti: savunma kırılır
+        this.stamina = 0;
+        this.guardBroken = 1.4;
+        this.blocking = false;
+        this.char.stopUpper(0.05);
+        this.startAction('stagger', 0.9);
+        G.notify('Savunman kırıldı!', 'warn', 1500);
+        amount *= 0.5;
       }
     }
     const diff = G.difficulty === 'kolay' ? 0.6 : G.difficulty === 'zor' ? 1.35 : 1;
@@ -134,14 +164,30 @@ export class Player {
       this.knock = { x: (dx / d) * k, z: (dz / d) * k };
       if (amount > 20 && this.mode === 'ground') { this.vel.y = Math.max(this.vel.y, 3.5); this.onGround = false; }
     }
+    this.lastHitFrom = from ? from.clone?.() || null : null;
+    this.lastHitAmount = amount;
     if (this.hp <= 0) { this.hp = 0; this.die(opts.cause || 'Ağır yaralandın'); }
-    else if (amount > 8 && !this.action) this.startAction('hit', 0.45);
+    else if (amount > 8 && (!this.action || this.action.type === 'blockhit')) this.startAction(amount > 22 && !opts.bullet ? 'stagger' : 'hit', amount > 22 && !opts.bullet ? 0.7 : 0.45);
+  }
+  _parry(attacker, attackerId) {
+    this.counterT = 1.3;
+    this.stamina = Math.min(100, this.stamina + 12);
+    this.startAction('parry', 0.4);
+    G.hitStop = 0.1;
+    tpCamera.addShake(0.22);
+    G.emit('sfx', { name: 'hit', pos: this.pos, vol: 0.95, rate: 2.0 });
+    G.emit('parry', { pos: this.pos.clone(), yaw: this.yaw });
+    if (attacker && attacker.stun) attacker.stun(1.7, 'parry');
+    else if (attackerId) G.emit('netStunEnemy', { id: attackerId, dur: 1.7 });
+    if (this.parryHints++ < 3) G.notify('Kusursuz savunma! Hemen vurursan karşı saldırı yaparsın.', 'good', 1800);
   }
   heal(n) { this.hp = Math.min(this.maxHp, this.hp + n); }
 
   die(cause) {
     if (this.dead || this.downed) return;
     if (this.carrying) G.emit('dropCarry', { player: this });
+    this.action = null;
+    this.char.stopUpper(0.05);
     if (G.online && G.remotes.size > 0) {
       this.downed = true;
       this.downT = 35;
@@ -149,35 +195,70 @@ export class Player {
       G.emit('playerDowned', { cause });
     } else {
       this.dead = true;
-      this.char.play('Death', 0.2, { once: true });
+      if (this.mode === 'ground' || this.mode === 'deck') this._ragdoll();
+      else this.char.play('Death', 0.2, { once: true });
       G.emit('playerDied', { cause });
     }
   }
+  _ragdoll() {
+    const from = this.lastHitFrom;
+    const imp = new THREE.Vector3();
+    if (from) imp.set(this.pos.x - from.x, 0, this.pos.z - from.z).normalize().multiplyScalar(2 + Math.min(4, (this.lastHitAmount || 10) * 0.08)).setY(1.2);
+    const ship = this.mode === 'deck' ? this.ship : null;
+    const ground = ship ? (x, z) => {
+      const l = ship.worldToLocal(new THREE.Vector3(x, ship.y, z));
+      if (!ship.insideDeck(l.x, l.z, 0)) return ocean.heightAt(x, z) - 0.8;
+      return ship.localToWorld(new THREE.Vector3(l.x, ship.deckAt(l.x, l.z), l.z)).y;
+    } : (x, z, y) => physics.groundAt(x, z, y + 0.6);
+    this.char.startRagdoll({ ground, vel: this.vel.clone().setY(Math.max(0, this.vel.y)), impulse: imp });
+  }
   revive(hp = 45) {
+    const wasRag = !!this.char.ragdoll;
     this.dead = false; this.downed = false;
     this.hp = hp; this.oxygen = 100; this.poison = 0;
     this.action = null;
-    this.char.play('Idle', 0.2);
+    this.char.stopRagdoll();
+    if (!wasRag && (this.mode === 'ground' || this.mode === 'deck')) this.startAction('getup', 1.1);
+    else this.char.play('Idle', 0.2);
   }
 
   startAction(type, dur, data = {}) {
     this.action = { type, t: 0, dur, ...data };
     const c = this.char;
-    if (type === 'slash') c.play('Sword_Slash', 0.08, { once: true, restart: true, speed: 1.35 });
-    else if (type === 'punch') c.play('Punch_Right', 0.08, { once: true, restart: true, speed: 1.3 });
-    else if (type === 'shoot') c.play('Gun_Shoot', 0.05, { once: true, restart: true, speed: 1.2 });
-    else if (type === 'reload' || type === 'interact' || type === 'pickup') c.play('Interact', 0.1, { once: true, restart: true, speed: type === 'reload' ? 0.8 : 1.1 });
-    else if (type === 'roll') c.play('Roll', 0.05, { once: true, restart: true, speed: 1.3 });
-    else if (type === 'hit') c.play(Math.random() < 0.5 ? 'HitRecieve' : 'HitRecieve_2', 0.05, { once: true, restart: true });
-    else if (type === 'cheer') c.play('Wave', 0.15, { once: true, restart: true });
-    else if (type === 'dig') c.play('Sword_Slash', 0.15, { speed: 0.75 });
+    const moving = Math.hypot(this.vel.x, this.vel.z) > 1.6 && this.mode !== 'swim';
+    const once = { once: true, restart: true };
+    const up = (name, speed = 1, fade = 0.08) => c.playUpper(name, fade, { ...once, speed });
+    const full = (name, speed = 1, fade = 0.08) => { if (c.upper) c.stopUpper(0.05); return c.play(name, fade, { ...once, speed }); };
+    const pick = (name, speed = 1, fade = 0.08) => (moving || data.upper ? up(name, speed, fade) : full(name, speed, fade));
+    switch (type) {
+      case 'atk': pick(data.anim, data.speed || 1, 0.07); break;
+      case 'slash': pick('Atk1', 1.45); break; // eski çağrılar (olta atma vb.)
+      case 'punch': pick('Punch_Right', 1.6); break;
+      case 'shoot': up('Gun_Shoot', 1.3, 0.04); break;
+      case 'reload': up('Reload', 1.17 / Math.max(0.3, dur)); break;
+      case 'interact': full('Interact', 1.1, 0.1); break;
+      case 'pickup': full('PickUp', 1.3 / Math.max(0.3, dur), 0.1); break;
+      case 'use': up('UseItem', 1.6 / Math.max(0.3, dur)); break;
+      case 'throw': pick('Throw', 1.37 / Math.max(0.3, dur)); break;
+      case 'dodge': case 'roll': full(data.anim || 'Dodge_F', 0.4 / Math.max(0.2, dur), 0.04); break;
+      case 'parry': up('Parry', 1.9, 0.03); break;
+      case 'blockhit': up('BlockHit', 1.7, 0.03); break;
+      case 'stagger': full('HitRecieve_2', 0.87 / Math.max(0.3, dur), 0.05); break;
+      case 'hit': pick(Math.random() < 0.5 ? 'HitRecieve' : 'HitRecieve_2', 1.1, 0.05); break;
+      case 'cheer': full('Cheer', 1, 0.15); break;
+      case 'land': full('Jump_Land', 1.4, 0.05); break;
+      case 'getup': full('LieUp', 2.33 / Math.max(0.5, dur), 0.1); break;
+      case 'dig': c.play('Heavy2H', 0.15, { speed: 0.85 }); break;
+      default: break;
+    }
   }
 
   // uzun süreli eylem (kazma, tamir, sandık açma) — ilerleme çubuğu
   startBusy(label, dur, onDone, opts = {}) {
     this.busy = { label, t: 0, dur, onDone, anim: opts.anim || 'interact', cancelOnMove: opts.cancelOnMove !== false, onCancel: opts.onCancel };
+    this.char.stopUpper(0.1);
     if (opts.anim === 'dig') this.startAction('dig', dur);
-    else this.char.play('Interact', 0.15, { speed: 0.6 });
+    else this.char.play(opts.anim === 'use' ? 'UseItem' : 'Interact', 0.15, { speed: 0.6 });
   }
   cancelBusy() {
     if (this.busy?.onCancel) this.busy.onCancel();
@@ -210,6 +291,10 @@ export class Player {
     const c = this.char;
     this.invuln = Math.max(0, this.invuln - dt);
     this.lastHurt += dt;
+    this.counterT = Math.max(0, this.counterT - dt);
+    this.guardBroken = Math.max(0, this.guardBroken - dt);
+    this.combo.grace = Math.max(0, this.combo.grace - dt);
+    if (this.blocking) this.blockT += dt; else this.blockT = 0;
     if (this.action) {
       this.action.t += dt;
       if (this.action.t >= this.action.dur) {
@@ -272,11 +357,20 @@ export class Player {
     c.update(dt);
   }
 
-  _wantAnim(name, speed = 1) {
-    if (this.action || this.busy || this.dead || this.downed) return;
+  _wantAnim(name, speed = 1, fade = 0.2) {
+    if (this.busy || this.dead || this.downed) return;
     const c = this.char;
-    if (c.currentName !== name) c.play(name, 0.2, { speed });
+    // tam gövde eylemi oynarken temel katmana dokunma; üst katman eylemleri sırasında bacaklar yürümeye devam eder
+    if (this.action && !c.upper) return;
+    if (c.currentName !== name) c.play(name, fade, { speed });
     else c.setSpeed(speed);
+  }
+  // Üst gövde duruşu (nişan, savunma): eylem yokken sürekli
+  _wantUpper(name) {
+    const c = this.char;
+    if (this.action || this.busy || this.dead || this.downed) return;
+    if (name) { if (c.upperName !== name) c.playUpper(name, 0.15); }
+    else if (c.upper && !c.upperOnce) c.stopUpper(0.2);
   }
 
   _moveDir() {
@@ -298,7 +392,12 @@ export class Player {
     if (this.aiming || this.blocking) sp = 2.0;
     if (this.carrying) sp *= this.carrying.speedFactor || 0.6;
     if (this.busy) sp = 0;
-    if (this.action && ['slash', 'shoot', 'reload', 'interact', 'pickup', 'dig', 'hit', 'cheer'].includes(this.action.type)) sp *= 0.25;
+    const a = this.action;
+    if (a) {
+      if (a.type === 'atk') sp *= a.heavy || a.counter ? 0.15 : 0.5;
+      else if (['interact', 'pickup', 'dig', 'cheer', 'stagger', 'getup', 'land', 'parry'].includes(a.type)) sp *= 0.1;
+      else if (['slash', 'punch', 'shoot', 'reload', 'hit', 'use', 'throw', 'blockhit'].includes(a.type)) sp *= 0.5;
+    }
     return sp * mag;
   }
 
@@ -306,12 +405,22 @@ export class Player {
     // nişan / savunma
     const rmb = input.isDown('nisan') && !this.carrying;
     this.aiming = rmb && this.equipped === 'pistol';
-    this.blocking = rmb && this.equipped === 'sword' && this.stamina > 5;
-    if (this.blocking) this.stamina -= dt * 6;
-    if (input.pressed('kacin') && !this.action && this.stamina > 20 && !this.carrying && this.onGround) {
-      this.stamina -= 20;
-      this.invuln = 0.45;
-      this.startAction('roll', 0.7, { dir: this._moveDir().d.lengthSq() > 0 ? this._moveDir().d : new THREE.Vector3(Math.sin(this.yaw), 0, Math.cos(this.yaw)) });
+    const canBlock = this.equipped === 'sword' && this.stamina > 3 && this.guardBroken <= 0 && !(this.action && ['atk', 'dodge', 'stagger'].includes(this.action.type));
+    this.blocking = rmb && canBlock;
+    if (this.blocking) this.stamina -= dt * 4;
+    // kaçınma: hareket yönüne göre ileri/geri/sol/sağ
+    if (input.pressed('kacin') && this.stamina > 16 && !this.carrying && this.onGround && (!this.action || ['atk', 'hit', 'blockhit', 'shoot'].includes(this.action.type) && this.action.t > 0.15)) {
+      const md = this._moveDir().d;
+      const dir = md.lengthSq() > 0 ? md.clone() : new THREE.Vector3(-Math.sin(this.yaw), 0, -Math.cos(this.yaw));
+      const rel = wrapAngle(Math.atan2(dir.x, dir.z) - this.yaw);
+      const anim = Math.abs(rel) < 0.785 ? 'Dodge_F' : Math.abs(rel) > 2.356 ? 'Dodge_B' : rel > 0 ? 'Dodge_L' : 'Dodge_R';
+      this.stamina -= 16;
+      this.invuln = 0.34;
+      this.blocking = false;
+      this.char.stopUpper(0.04);
+      this.startAction('dodge', 0.46, { dir, anim, keepYaw: anim !== 'Dodge_F' });
+      G.emit('sfx', { name: 'dash', pos: this.pos, vol: 0.3 });
+      G.emit('netAction', { a: 'dodge' });
     }
   }
 
@@ -329,19 +438,26 @@ export class Player {
     if (this.sprinting || this.carrying) this.crouch = false;
     let sp = this._speedFor(mag);
     let wish = d.clone().multiplyScalar(sp);
-    if (this.action?.type === 'roll') {
-      wish = this.action.dir.clone().multiplyScalar(7.5);
+    if (this.action?.type === 'dodge' || this.action?.type === 'roll') {
+      // hızlı çıkış, yumuşak duruş
+      const k = clamp(1 - this.action.t / this.action.dur, 0, 1);
+      wish = this.action.dir.clone().multiplyScalar(2.5 + 7.5 * k * k);
+    } else if (this.action?.type === 'atk' && this.action.lunge && this.action.t < this.action.hitAt) {
+      // vuruşa doğru küçük atılım
+      wish.add(new THREE.Vector3(Math.sin(this.yaw), 0, Math.cos(this.yaw)).multiplyScalar(this.action.lunge));
     }
     if (this.sprinting) this.stamina = Math.max(0, this.stamina - dt * 14);
     // yönelim
     if (this.action && this.action.lockYaw !== undefined && this.action.lockYaw !== null) {
       this.yaw = dampAngle(this.yaw, this.action.lockYaw, 20, dt);
-    } else if (this.aiming || this.blocking || (this.action && ['slash', 'shoot', 'punch'].includes(this.action.type))) {
+    } else if (this.aiming || this.blocking || (this.action && ['slash', 'shoot', 'punch', 'atk'].includes(this.action.type))) {
       this.yaw = dampAngle(this.yaw, tpCamera.yaw, 16, dt);
-    } else if (this.action?.type === 'roll') this._faceTowards(this.action.dir, dt, 20);
-    else this._faceTowards(wish, dt);
+    } else if (this.action?.type === 'dodge' || this.action?.type === 'roll') { if (!this.action.keepYaw) this._faceTowards(this.action.dir, dt, 20); }
+    else this._faceTowards(wish, dt, this.sprinting ? 7 : 12);
 
-    const accel = this.onGround ? 14 : 3;
+    // ivme: kalkışta yumuşak, duruşta daha hızlı; havada az kontrol
+    const speedNow = Math.hypot(this.vel.x, this.vel.z), speedWish = Math.hypot(wish.x, wish.z);
+    const accel = !this.onGround ? 2.5 : this.action?.type === 'dodge' ? 20 : speedWish > speedNow ? 9 : 13;
     this.vel.x = damp(this.vel.x, wish.x, accel, dt);
     this.vel.z = damp(this.vel.z, wish.z, accel, dt);
     // geri tepme itkisi (sönümlenir)
@@ -360,10 +476,13 @@ export class Player {
       } else this.sliding = false;
     }
     // zıplama
-    if (!locked && input.pressed('zipla') && this.onGround && !this.busy && (!this.carrying || this.carrying.tier === 'small')) {
+    if (!locked && input.pressed('zipla') && this.onGround && !this.busy && (!this.action || this.action.type === 'land') && (!this.carrying || this.carrying.tier === 'small')) {
       this.vel.y = 7.4;
       this.onGround = false;
       this.crouch = false;
+      this.action = null;
+      this.jumpAnimT = 0;
+      if (!this.carrying) { this.char.stopUpper(0.05); this.char.play('JumpStart', 0.06, { once: true, restart: true, speed: 1.5 }); }
       G.emit('sfx', { name: 'dash', pos: this.pos, vol: 0.25 });
     }
     this.vel.y += GRAV * dt;
@@ -394,6 +513,7 @@ export class Player {
         this.hurt(dmg, null, { cause: 'Yüksekten düştün' });
         G.emit('sfx', { name: 'land', pos: this.pos, vol: 0.6 });
       } else if (!this.onGround && fall > 1.5) G.emit('sfx', { name: 'land', pos: this.pos, vol: 0.3 });
+      if (!this.onGround && fall > 0.9 && !this.action && !this.carrying && Math.hypot(this.vel.x, this.vel.z) < 3.2 && !this.dead) this.startAction('land', fall > 3 ? 0.5 : 0.3);
       this.pos.y = g;
       this.vel.y = 0;
       this.onGround = true;
@@ -414,17 +534,44 @@ export class Player {
     if (this.onGround && g > 0.5) this.lastSafe.copy(this.pos);
     // animasyon
     const hs = Math.hypot(this.vel.x, this.vel.z);
-    if (this.aiming) this._wantAnim('Idle_Gun_Pointing');
-    else if (this.blocking) this._wantAnim('Idle_Sword');
-    else if (!this.onGround) { /* hava pozu overlay */ if (this.char.currentName !== 'Run' && hs > 1) this._wantAnim('Run', 0.6); }
-    else if (hs < 0.25) this._wantAnim(this.equipped === 'pistol' ? 'Idle_Gun' : this.equipped === 'sword' ? 'Idle_Sword' : 'Idle');
-    else if (this.crouch || hs < 2.6) this._wantAnim('Walk', clamp(hs / 1.9, 0.5, 1.4));
-    else this._wantAnim('Run', clamp(hs / 5.2, 0.7, 1.45));
+    this._locomotion(hs, dt, !this.onGround);
     // adım sesi
     if (this.onGround && hs > 1) {
       this.stepT += dt * hs;
       if (this.stepT > (this.sprinting ? 2.6 : 2.2)) { this.stepT = 0; G.emit('sfx', { name: 'step', pos: this.pos, vol: 0.12 + hs * 0.02, rate: 0.9 + Math.random() * 0.2 }); }
     }
+  }
+
+  // Hareket animasyonları: nişan/savunmada yan adım + üst gövde katmanı, boşta bekleme çeşitleri, zıplama evreleri
+  _locomotion(hs, dt, air) {
+    const c = this.char;
+    if (this.action && !c.upper) { this.idleT = 0; return; }
+    // üst gövde duruşu
+    this._wantUpper(this.aiming ? 'Aim' : this.blocking ? 'Block' : null);
+    if (air && this.mode === 'ground') {
+      this.jumpAnimT = (this.jumpAnimT || 0) + dt;
+      if (this.airT > 0.25 || (this.jumpAnimT > 0.35 && c.currentName === 'JumpStart')) this._wantAnim('Jump_Idle', 1, 0.15);
+      return;
+    }
+    if (hs < 0.25) {
+      this.idleT += dt;
+      const combat = G.inCombat && this.equipped === 'sword';
+      // uzun beklemede ara sıra farklı bekleme pozu
+      const idle = combat ? 'IdleCombat' : this.idleT > 9 && (this.idleT % 14) < 2.1 && !this.aiming && !this.blocking ? 'IdleB' : 'Idle';
+      this._wantAnim(idle, 1, 0.3);
+      return;
+    }
+    this.idleT = 0;
+    if (this.aiming || this.blocking) {
+      // gövde kameraya dönük: hareket yönüne göre yan adım / geri yürüme
+      const rel = wrapAngle(Math.atan2(this.vel.x, this.vel.z) - this.yaw);
+      const a = Math.abs(rel) < 0.7 ? 'Walk' : Math.abs(rel) > 2.4 ? 'WalkBack' : rel > 0 ? 'StrafeL' : 'StrafeR';
+      this._wantAnim(a, clamp(hs / (a.startsWith('Strafe') ? 3.6 : 1.9), 0.5, 1.3), 0.25);
+      return;
+    }
+    if (this.crouch || hs < 2.6) this._wantAnim('Walk', clamp(hs / 1.9, 0.5, 1.4));
+    else if (this.sprinting && hs > 5.6) this._wantAnim('Sprint', clamp(hs / 6.6, 0.8, 1.35));
+    else this._wantAnim('Run', clamp(hs / 5.2, 0.7, 1.45));
   }
 
   // Gemi gövdesine dışarıdan girme
@@ -567,11 +714,8 @@ export class Player {
     else if (mag > 0.05) this._faceTowards(d, dt);
     const ws = sp;
     this.onGround = this.localY <= 0.01;
-    if (this.aiming) this._wantAnim('Idle_Gun_Pointing');
-    else if (this.blocking) this._wantAnim('Idle_Sword');
-    else if (ws < 0.25) this._wantAnim(this.equipped === 'pistol' ? 'Idle_Gun' : this.equipped === 'sword' ? 'Idle_Sword' : 'Idle');
-    else if (this.crouch || ws < 2.6) this._wantAnim('Walk', clamp(ws / 1.9, 0.5, 1.4));
-    else this._wantAnim('Run', clamp(ws / 5.2, 0.7, 1.45));
+    this.vel.set(d.x * ws, 0, d.z * ws);
+    this._locomotion(ws, dt, !this.onGround);
     if (ws > 1 && this.onGround) {
       this.stepT += dt * ws;
       if (this.stepT > 2.2) { this.stepT = 0; G.emit('sfx', { name: 'step', pos: this.pos, vol: 0.15, rate: 0.7 }); }
@@ -648,7 +792,7 @@ export class Player {
   netState() {
     return {
       x: +this.pos.x.toFixed(2), y: +this.pos.y.toFixed(2), z: +this.pos.z.toFixed(2), yaw: +this.yaw.toFixed(2),
-      anim: this.char.currentName, mode: this.mode, eq: this.equipped, carry: this.carrying ? this.carrying.id : null,
+      anim: this.char.currentName, up: this.char.upperName || null, mode: this.mode, eq: this.equipped, carry: this.carrying ? this.carrying.id : null,
       hp: Math.round(this.hp), torch: this.torch, down: this.downed, swimP: +(this.char.model.rotation.x).toFixed(2),
       ship: this.ship ? this.ship.id : null, lx: +this.local.x.toFixed(2), lz: +this.local.z.toFixed(2), ly: +this.localY.toFixed(2),
     };

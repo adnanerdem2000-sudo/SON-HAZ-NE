@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import { terrain } from './terrain.js';
-import { WORLD_SIZE } from './worldData.js';
 import { smoothstep } from '../core/util.js';
 
 // Dalga bileşenleri: yön, dalga boyu, genlik
@@ -86,8 +85,9 @@ export const ocean = {
       uWaveScale: { value: 1 },
       uWaves: { value: waveVec },
       uAmps: { value: waveAmp },
-      uHeight: { value: terrain.heightTexture(512) },
-      uWorld: { value: WORLD_SIZE },
+      uHeight: { value: this._emptyDepth() },
+      uHMin: { value: new THREE.Vector2(-1e6, -1e6) },
+      uHSize: { value: 1 },
       uSunDir: { value: new THREE.Vector3(0.3, 0.8, 0.2).normalize() },
       uSunColor: { value: new THREE.Color(1, 0.95, 0.85) },
       uSkyColor: { value: new THREE.Color(0.55, 0.75, 0.95) },
@@ -109,7 +109,8 @@ export const ocean = {
       side: THREE.DoubleSide,
       depthWrite: true,
       vertexShader: /* glsl */`
-        uniform float uTime, uWaveScale, uWorld, uTide;
+        uniform float uTime, uWaveScale, uHSize, uTide;
+        uniform vec2 uHMin;
         uniform vec4 uWaves[5];
         uniform vec2 uAmps[5];
         uniform sampler2D uHeight;
@@ -117,7 +118,7 @@ export const ocean = {
         varying vec3 vN;
         varying float vDepth;
         varying float vCrest;
-        float terrainH(vec2 p){ return texture2D(uHeight, (p + uWorld*0.5)/uWorld).r; }
+        float terrainH(vec2 p){ vec2 uv = (p - uHMin)/uHSize; if (uv.x < 0.0 || uv.y < 0.0 || uv.x > 1.0 || uv.y > 1.0) return -30.0; return texture2D(uHeight, uv).r; }
         void main(){
           vec4 wp = modelMatrix * vec4(position, 1.0);
           float th = terrainH(wp.xz);
@@ -139,11 +140,12 @@ export const ocean = {
           gl_Position = projectionMatrix * viewMatrix * wp;
         }`,
       fragmentShader: /* glsl */`
-        uniform float uTime, uFogDensity, uLight, uGhost, uWaveScale, uRain, uWorld;
+        uniform float uTime, uFogDensity, uLight, uGhost, uWaveScale, uRain, uHSize;
+        uniform vec2 uHMin;
         uniform vec3 uSunDir, uSunColor, uSkyColor, uHorizon, uShallow, uMid, uDeep, uFogColor, uCamPos;
         uniform sampler2D uHeight;
         varying vec3 vW; varying vec3 vN; varying float vDepth; varying float vCrest;
-        float terrainHF(vec2 q){ return texture2D(uHeight, (q + uWorld*0.5)/uWorld).r; }
+        float terrainHF(vec2 q){ vec2 uv = (q - uHMin)/uHSize; if (uv.x < 0.0 || uv.y < 0.0 || uv.x > 1.0 || uv.y > 1.0) return -30.0; return texture2D(uHeight, uv).r; }
         float hh(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7)))*43758.5453); }
         float vn(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
           return mix(mix(hh(i),hh(i+vec2(1,0)),f.x), mix(hh(i+vec2(0,1)),hh(i+vec2(1,1)),f.x), f.y); }
@@ -226,12 +228,35 @@ export const ocean = {
     this.mesh.renderOrder = 2;
     this.mesh.name = 'ocean';
     scene.add(this.mesh);
+    terrain.onDepth = (m) => this.setDepth(m);
+    if (this._pendingDepth) { this.setDepth(this._pendingDepth); this._pendingDepth = null; }
     return this.mesh;
+  },
+
+  _emptyDepth() {
+    const t = new THREE.DataTexture(new Uint16Array([THREE.DataUtils.toHalfFloat(-30)]), 1, 1, THREE.RedFormat, THREE.HalfFloatType);
+    t.needsUpdate = true;
+    return t;
+  },
+
+  // arazi işçisinden gelen kayan derinlik penceresi
+  setDepth(m) {
+    if (!this.uniforms) { this._pendingDepth = m; return; }
+    const tex = new THREE.DataTexture(m.data, m.res, m.res, THREE.RedFormat, THREE.HalfFloatType);
+    tex.magFilter = THREE.LinearFilter; tex.minFilter = THREE.LinearFilter;
+    tex.wrapS = tex.wrapT = THREE.ClampToEdgeWrapping;
+    tex.needsUpdate = true;
+    const old = this.uniforms.uHeight.value;
+    this.uniforms.uHeight.value = tex;
+    this.uniforms.uHMin.value.set(m.x0, m.z0);
+    this.uniforms.uHSize.value = m.size;
+    old?.dispose();
   },
 
   update(dt, camera) {
     this.time += dt;
     if (!this.mesh) return;
+    terrain.requestDepth(camera.position.x, camera.position.z);
     const u = this.uniforms;
     u.uTime.value = this.time;
     u.uWaveScale.value = this.waveScale;

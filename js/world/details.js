@@ -6,7 +6,7 @@ import { physics } from './physics.js';
 import { sky } from './sky.js';
 import { time } from './time.js';
 import { port } from './port.js';
-import { ISLANDS, FISH_ZONES } from './worldData.js';
+import { CORE_ISLANDS as ISLANDS, CORE_FISH_ZONES as FISH_ZONES } from './worldData.js';
 import { assets } from '../core/assets.js';
 import { audio } from '../core/audio.js';
 import { interact } from '../game/interact.js';

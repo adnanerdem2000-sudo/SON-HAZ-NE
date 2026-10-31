@@ -347,3 +347,8 @@ body.spyglass-on #minimap { display: none; }
   #compass-bar { width: max(220px, calc(100vw - 640px)); }
   #quest-tracker { width: 290px; }
 }
+
+/* yüzen hasar sayıları */
+.dmgnum { position: absolute; left: 0; top: 0; pointer-events: none; font-family: 'Pirata One', serif; font-size: 22px; color: #ffe9c0;
+  text-shadow: 0 0 3px #000, 0 2px 2px #000; will-change: transform, opacity; z-index: 6; }
+.dmgnum.crit { color: #ffb030; font-size: 30px; }

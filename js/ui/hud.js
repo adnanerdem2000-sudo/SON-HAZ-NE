@@ -26,6 +26,17 @@ export const hud = {
     G.on('hitMarker', () => { const h = $('hitmarker'); h.classList.add('on'); setTimeout(() => h.classList.remove('on'), 120); });
     G.on('playerHurt', () => { const d = $('damage-flash'); d.classList.add('on'); setTimeout(() => d.classList.remove('on'), 60); });
     G.on('bossBar', (b) => this._boss(b));
+    // yüzen hasar sayıları
+    this.dmgNums = [];
+    G.on('dmgNumber', (e) => {
+      if (!settings.v.dmgNumbers && settings.v.dmgNumbers !== undefined) return;
+      const d = document.createElement('div');
+      d.className = 'dmgnum' + (e.crit ? ' crit' : '');
+      d.textContent = e.dmg;
+      this.root.appendChild(d);
+      this.dmgNums.push({ el: d, x: e.pos.x + (Math.random() - 0.5) * 0.5, y: e.pos.y, z: e.pos.z, t: 0 });
+      if (this.dmgNums.length > 24) this.dmgNums.shift().el.remove();
+    });
     G.on('fishingHud', (f) => this._fishing(f));
     G.on('underwater', (u) => $('underwater-tint').classList.toggle('on', u));
     G.on('equip', () => this._hotbarActive());
@@ -123,10 +134,29 @@ export const hud = {
     }
   },
 
+  _updateDmgNums(dt) {
+    if (!this.dmgNums?.length) return;
+    const cam = engine.camera;
+    const w = window.innerWidth, h = window.innerHeight;
+    for (const n of this.dmgNums) {
+      n.t += dt;
+      const v = { x: n.x, y: n.y + n.t * 1.1, z: n.z };
+      const p = engine._proj || (engine._proj = new cam.position.constructor());
+      p.set(v.x, v.y, v.z).project(cam);
+      const vis = p.z < 1 && n.t < 1.1;
+      n.el.style.display = vis ? '' : 'none';
+      if (vis) { n.el.style.transform = `translate(${(p.x * 0.5 + 0.5) * w}px, ${(-p.y * 0.5 + 0.5) * h}px) translate(-50%, -50%) scale(${1 + Math.max(0, 0.25 - n.t) * 2})`; n.el.style.opacity = String(clamp(1.4 - n.t * 1.3, 0, 1)); }
+      if (n.t >= 1.1) n.dead = true;
+    }
+    for (const n of this.dmgNums) if (n.dead) n.el.remove();
+    this.dmgNums = this.dmgNums.filter((n) => !n.dead);
+  },
+
   update(dt) {
     const p = G.player;
     if (!p || G.state !== 'playing') return;
     this._t = (this._t || 0) + dt;
+    this._updateDmgNums(dt);
     // can / dayanıklılık / oksijen
     const set = (sel, v) => { const f = document.querySelector(sel + ' .fill'); if (f) f.style.width = clamp(v, 0, 100) + '%'; };
     set('.vital.hp', p.hp / p.maxHp * 100);

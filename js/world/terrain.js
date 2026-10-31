@@ -1,154 +1,107 @@
 import * as THREE from 'three';
-import { ISLANDS, TERRAIN_MODS, CAVE, WORLD_SIZE, SEA_FLOOR } from './worldData.js';
-import { fbm, noise2, smoothstep, lerp, clamp } from '../core/util.js';
+import { WORLD_SIZE, SEA_FLOOR } from './worldData.js';
+import { computeHeight, islandAt as geoIslandAt, biomeAt as geoBiomeAt, rectMayHaveLand, colorSRGB, distToCavePath as geoCave } from './geo.js';
 
-// Ek tepe (mağaranın içine oyulduğu tepe)
-const BUMPS = [
-  { x: 172, z: -58, r: 48, h: 24 },
-  { x: -545, z: -470, r: 40, h: 14 },
-  // Timsah Lagünü'nün kuzeyindeki şelale tepesi
-  { x: -150, z: 8, r: 34, h: 22 },
-];
+// Bölgesel (akışlı) arazi: dünya 160 m'lik karolara bölünür; kameraya uzaklığa göre ayrıntı düzeyi (LOD)
+// seçilir ve karo geometrileri arka planda Web Worker'larda üretilir. Yakın karoların 2 m çözünürlüklü
+// yükseklik ızgarası fizik/yerleşim sorguları için önbellek olarak kullanılır; diğer yerlerde analitik
+// yükseklik fonksiyonu (geo.js) aynı sonucu verir.
 
+export const TILE = 160;
 const HALF = WORLD_SIZE / 2;
-const CELL = 2; // metre
-const N = WORLD_SIZE / CELL + 1;
+const NT = WORLD_SIZE / TILE;
+const HI_SEG = 80; // 2 m
+const LODS = [
+  { d: 380, seg: HI_SEG },
+  { d: 950, seg: 32 },
+  { d: 1750, seg: 16 },
+  { d: 2700, seg: 8 },
+];
+const DEEP_VIEW = 300; // derin deniz karoları yalnızca yakında (su altı görüşü)
+const tkey = (i, j) => i * 1024 + j;
 
-function distToSegment(px, pz, ax, az, bx, bz) {
-  const abx = bx - ax, abz = bz - az;
-  const t = clamp(((px - ax) * abx + (pz - az) * abz) / (abx * abx + abz * abz), 0, 1);
-  const cx = ax + abx * t, cz = az + abz * t;
-  return Math.hypot(px - cx, pz - cz);
-}
-export function distToCavePath(x, z) {
-  let d = Infinity;
-  const p = CAVE.path;
-  for (let i = 0; i < p.length - 1; i++) d = Math.min(d, distToSegment(x, z, p[i][0], p[i][1], p[i + 1][0], p[i + 1][1]));
-  return d;
-}
-
-// Analitik yükseklik fonksiyonu (önbelleğe alınır)
-function computeHeight(x, z) {
-  let h = SEA_FLOOR + fbm(x / 260, z / 260, 3) * 4;
-  for (let i = 0; i < ISLANDS.length; i++) {
-    const I = ISLANDS[i];
-    const dx = x - I.x, dz = z - I.z;
-    const dist = Math.sqrt(dx * dx + dz * dz);
-    if (dist > I.r * 2.6) continue;
-    const a = Math.atan2(dz, dx);
-    const rn = fbm(Math.cos(a) * 1.3 + I.seed, Math.sin(a) * 1.3 + I.seed * 0.7, 3) * 0.3 + noise2(x / 45 + I.seed, z / 45) * 0.05;
-    const Re = I.r * (1 + rn);
-    const d = dist / Re;
-    let ih;
-    if (d < 1) {
-      const beach = 1.5 * smoothstep(1.0, 0.9, d);
-      const inner = smoothstep(0.97, 0.0, d);
-      const mount = (I.h - 1.5) * Math.pow(inner, 1.5) * (0.62 + 0.38 * fbm(x / 95 + I.seed, z / 95, 3));
-      const hills = fbm(x / 48 + I.seed * 3, z / 48, 3) * 6 * I.hill * smoothstep(0.95, 0.6, d);
-      ih = beach + Math.max(0, mount + hills);
-    } else {
-      const t = smoothstep(1.0, 2.1, d);
-      ih = SEA_FLOOR * Math.pow(t, 1.25) + fbm(x / 22, z / 22, 2) * 0.9 * (1 - t);
-    }
-    if (ih > h) h = ih;
-  }
-  for (const B of BUMPS) {
-    const d = Math.hypot(x - B.x, z - B.z);
-    if (d < B.r) {
-      const k = smoothstep(B.r, 0, d);
-      h += B.h * k * k * (0.85 + 0.15 * noise2(x / 12, z / 12));
-    }
-  }
-  for (const M of TERRAIN_MODS) {
-    const d = Math.hypot(x - M.x, z - M.z);
-    if (M.type === 'flatten') {
-      if (d < M.r + M.blend) {
-        const k = smoothstep(M.r + M.blend, M.r, d);
-        h = lerp(h, M.h, k);
-      }
-    } else if (M.type === 'dig') {
-      if (d < M.r + M.blend) {
-        const k = smoothstep(M.r + M.blend, M.r * 0.5, d);
-        h = Math.min(h, lerp(h, M.depth, k));
-      }
-    }
-  }
-  // Mağara: yol boyunca taban düzleştirilir
-  const cd = distToCavePath(x, z);
-  const cw = CAVE.width + 0.4;
-  if (cd < cw + 3) {
-    const k = smoothstep(cw + 3, cw, cd);
-    h = lerp(h, CAVE.floor, k);
-  }
-  const ch = CAVE.chamber;
-  const chd = Math.hypot(x - ch.x, z - ch.z);
-  if (chd < ch.r + 3) {
-    const k = smoothstep(ch.r + 3, ch.r, chd);
-    h = lerp(h, CAVE.floor, k);
-  }
-  return h;
-}
+export function distToCavePath(x, z) { return geoCave(x, z); }
 
 export const terrain = {
-  grid: null,
-  N, CELL, HALF,
+  HALF, TILE,
+  tiles: new Map(),
   ready: false,
+  uniforms: null,
+  workers: [],
+  _rid: 1,
+  _cb: new Map(),
+  _busy: 0,
+  _queue: [],
+  _upd: 0,
+  center: { x: 0, z: 0 },
 
-  build(onProgress) {
-    // Yükseklik ızgarası (2 m çözünürlük)
-    const grid = new Float32Array(N * N);
-    for (let j = 0; j < N; j++) {
-      const z = -HALF + j * CELL;
-      for (let i = 0; i < N; i++) {
-        const x = -HALF + i * CELL;
-        grid[j * N + i] = computeHeight(x, z);
+  // ---- işçiler ----
+  _initWorkers() {
+    if (this.workers.length) return;
+    const n = Math.max(1, Math.min(3, (navigator.hardwareConcurrency || 2) - 1));
+    for (let i = 0; i < n; i++) {
+      let w;
+      try { w = new Worker(new URL('./terrainWorker.js', import.meta.url), { type: 'module' }); }
+      catch (e) { console.warn('Arazi işçisi başlatılamadı, ana iş parçacığında üretilecek', e); this.workers = []; return; }
+      w.inflight = 0;
+      w.onmessage = (e) => this._onMsg(w, e.data);
+      w.onerror = (e) => console.error('Arazi işçisi hatası', e.message || e);
+      this.workers.push(w);
+    }
+  },
+  _onMsg(w, m) {
+    if (m.t === 'ready') return;
+    w.inflight = Math.max(0, w.inflight - 1);
+    const cb = this._cb.get(m.id);
+    this._cb.delete(m.id);
+    if (m.t === 'error') { console.error('Arazi işçisi:', m.msg); cb?.reject?.(new Error(m.msg)); }
+    else cb?.resolve(m);
+    this._pump();
+  },
+  _request(msg, prio = 0) {
+    return new Promise((resolve, reject) => {
+      const id = this._rid++;
+      msg.id = id;
+      this._cb.set(id, { resolve, reject });
+      this._queue.push({ msg, prio });
+      this._pump();
+    });
+  },
+  _pump() {
+    if (!this._queue.length) return;
+    if (!this.workers.length) {
+      // yedek: ana iş parçacığında (yavaş ama güvenli)
+      const job = this._queue.shift();
+      setTimeout(() => this._localJob(job.msg), 0);
+      return;
+    }
+    this._queue.sort((a, b) => a.prio - b.prio);
+    for (const w of this.workers) {
+      while (w.inflight < 2 && this._queue.length) {
+        const job = this._queue.shift();
+        w.inflight++;
+        w.postMessage(job.msg);
       }
-      if (onProgress && j % 120 === 0) onProgress(j / N);
     }
-    this.grid = grid;
-    this.ready = true;
   },
-
-  heightAt(x, z) {
-    const fx = (x + HALF) / CELL, fz = (z + HALF) / CELL;
-    if (fx < 0 || fz < 0 || fx >= N - 1 || fz >= N - 1) return SEA_FLOOR;
-    const i = Math.floor(fx), j = Math.floor(fz);
-    const tx = fx - i, tz = fz - j;
-    const g = this.grid;
-    const a = g[j * N + i], b = g[j * N + i + 1], c = g[(j + 1) * N + i], d = g[(j + 1) * N + i + 1];
-    return (a * (1 - tx) + b * tx) * (1 - tz) + (c * (1 - tx) + d * tx) * tz;
-  },
-
-  normalAt(x, z, out = new THREE.Vector3()) {
-    const e = 1.5;
-    const hl = this.heightAt(x - e, z), hr = this.heightAt(x + e, z);
-    const hd = this.heightAt(x, z - e), hu = this.heightAt(x, z + e);
-    return out.set(hl - hr, 2 * e, hd - hu).normalize();
-  },
-
-  islandAt(x, z, margin = 1.25) {
-    let best = null, bd = Infinity;
-    for (const I of ISLANDS) {
-      const d = Math.hypot(x - I.x, z - I.z) / I.r;
-      if (d < margin && d < bd) { bd = d; best = I; }
+  async _localJob(msg) {
+    // işçi yoksa aynı hesap burada (yalnız acil durum)
+    const cb = this._cb.get(msg.id);
+    this._cb.delete(msg.id);
+    if (msg.t === 'tile') {
+      const n = msg.seg + 1, step = msg.size / msg.seg;
+      const heights = new Float32Array(n * n);
+      for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) heights[j * n + i] = computeHeight(msg.x0 + i * step, msg.z0 + j * step);
+      cb?.resolve({ t: 'tile', key: msg.key, seg: msg.seg, heights, local: true, maxH: Math.max(...heights), minH: Math.min(...heights) });
     }
-    return best;
+    this._pump();
   },
 
-  biomeAt(x, z) {
-    const I = this.islandAt(x, z, 2.2);
-    return I ? I.biome : 'deniz';
-  },
-
-  // Görsel arazi parçaları
-  buildMeshes(scene, quality = 'high') {
-    const group = new THREE.Group();
-    group.name = 'terrain';
-    const TILE = 160;
-    const tilesPer = Math.ceil(WORLD_SIZE / TILE);
+  // ---- malzeme ----
+  _material() {
     const mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.92, metalness: 0.0 });
     // gelgit çizgisi, ıslak kum, kıyı köpüğü ve sığ sularda kostik ışık desenleri
-    this.uniforms = { uTide: { value: 0 }, uTTime: { value: 0 }, uWet: { value: 0 }, uCaustic: { value: 1 } };
+    this.uniforms = { uTide: { value: 0 }, uTTime: { value: 0 }, uWet: { value: 0 }, uCaustic: { value: 1 }, uSnow: { value: 0 } };
     mat.onBeforeCompile = (sh) => {
       Object.assign(sh.uniforms, this.uniforms);
       sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 vWPos;\nvarying float vSlope;')
@@ -159,7 +112,7 @@ vSlope = sqrt(max(1.0 - tWN.y*tWN.y, 0.0)) / max(tWN.y, 0.05);`);
       sh.fragmentShader = sh.fragmentShader.replace('#include <common>', `#include <common>
 varying vec3 vWPos;
 varying float vSlope;
-uniform float uTide, uTTime, uWet, uCaustic;
+uniform float uTide, uTTime, uWet, uCaustic, uSnow;
 float th(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7)))*43758.5453); }
 float tn(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
  return mix(mix(th(i),th(i+vec2(1,0)),f.x), mix(th(i+vec2(0,1)),th(i+vec2(1,1)),f.x), f.y); }
@@ -173,6 +126,9 @@ float tSl = max(vSlope, 0.02);
 float tBand = (1.0 - smoothstep(1.0, 4.5 + 2.5*tnz, tAbove / tSl)) * (1.0 - smoothstep(0.35, 0.9, tAbove)) * step(-0.6, tAbove);
 tWet = clamp(max(tBand, uWet * 0.7), 0.0, 1.0);
 diffuseColor.rgb *= 1.0 - 0.3 * tWet;
+// kar yağışı birikintisi (buzul bölgesinde düz yüzeylere)
+float tSnowK = uSnow * smoothstep(0.55, 0.25, vSlope) * smoothstep(0.8, 1.6, tAbove) * (0.75 + 0.25*tnz);
+diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.92, 0.95, 1.0), tSnowK);
 `)
         .replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
 roughnessFactor = mix(roughnessFactor, 0.3, tWet * 0.85);`)
@@ -186,138 +142,186 @@ if (tDepth > 0.05 && uCaustic > 0.01) {
   totalEmissiveRadiance += vec3(0.55, 0.85, 0.9) * ca * uCaustic;
 }`);
     };
-    this.material = mat;
-    const hiSeg = quality === 'low' ? 40 : quality === 'medium' ? 64 : 80;
-    for (let tj = 0; tj < tilesPer; tj++) {
-      for (let ti = 0; ti < tilesPer; ti++) {
-        const x0 = -HALF + ti * TILE, z0 = -HALF + tj * TILE;
-        // Kara var mı?
-        let maxH = -999;
-        for (let s = 0; s <= 8; s++) for (let t = 0; t <= 8; t++) {
-          maxH = Math.max(maxH, this.heightAt(x0 + (s / 8) * TILE, z0 + (t / 8) * TILE));
-        }
-        const seg = maxH > -24 ? hiSeg : 6;
-        const geo = this._tileGeo(x0, z0, TILE, seg);
-        const mesh = new THREE.Mesh(geo, mat);
-        mesh.receiveShadow = true;
-        mesh.castShadow = maxH > 0;
-        mesh.matrixAutoUpdate = false;
-        mesh.updateMatrix();
-        group.add(mesh);
-      }
-    }
-    scene.add(group);
-    this.group = group;
-    return group;
+    return mat;
   },
 
-  _tileGeo(x0, z0, size, seg) {
-    const verts = (seg + 1) * (seg + 1);
-    const pos = new Float32Array(verts * 3);
-    const nor = new Float32Array(verts * 3);
-    const col = new Float32Array(verts * 3);
-    const n = new THREE.Vector3();
-    const c = new THREE.Color();
-    let k = 0;
-    for (let j = 0; j <= seg; j++) {
-      for (let i = 0; i <= seg; i++) {
-        const x = x0 + (i / seg) * size, z = z0 + (j / seg) * size;
-        const h = this.heightAt(x, z);
-        pos[k * 3] = x; pos[k * 3 + 1] = h; pos[k * 3 + 2] = z;
-        this.normalAt(x, z, n);
-        nor[k * 3] = n.x; nor[k * 3 + 1] = n.y; nor[k * 3 + 2] = n.z;
-        this.colorAt(x, z, h, n.y, c);
-        col[k * 3] = c.r; col[k * 3 + 1] = c.g; col[k * 3 + 2] = c.b;
-        k++;
-      }
+  // ---- kurulum ----
+  init(scene, quality = 'high') {
+    this.scene = scene;
+    this.quality = quality;
+    this.group = new THREE.Group();
+    this.group.name = 'terrain';
+    scene.add(this.group);
+    this.material = this._material();
+    this.lodScale = quality === 'low' ? 0.7 : quality === 'medium' ? 0.85 : 1;
+    this._initWorkers();
+    this.ready = true;
+  },
+
+  // eski API uyumluluğu
+  build() {},
+  buildMeshes(scene, quality) { this.init(scene, quality); },
+
+  _wantSeg(i, j, cx, cz) {
+    const x = -HALF + (i + 0.5) * TILE, z = -HALF + (j + 0.5) * TILE;
+    const d = Math.max(0, Math.hypot(x - cx, z - cz) - TILE * 0.5);
+    const land = this._land(i, j);
+    if (!land) return d < DEEP_VIEW ? 8 : 0;
+    for (const L of LODS) if (d < L.d * this.lodScale) return L.seg;
+    return 0;
+  },
+  _land(i, j) {
+    const k = tkey(i, j);
+    let v = this._landCache?.get(k);
+    if (v === undefined) {
+      if (!this._landCache) this._landCache = new Map();
+      const x0 = -HALF + i * TILE, z0 = -HALF + j * TILE;
+      v = rectMayHaveLand(x0, z0, x0 + TILE, z0 + TILE);
+      this._landCache.set(k, v);
     }
-    const idx = new (verts > 65535 ? Uint32Array : Uint16Array)(seg * seg * 6);
-    let q = 0;
-    for (let j = 0; j < seg; j++) for (let i = 0; i < seg; i++) {
-      const a = j * (seg + 1) + i, b = a + 1, d = a + seg + 1, e = d + 1;
-      idx[q++] = a; idx[q++] = d; idx[q++] = b;
-      idx[q++] = b; idx[q++] = d; idx[q++] = e;
+    return v;
+  },
+
+  // Kamera çevresindeki karoları iste / LOD değiştir / uzaktakileri boşalt
+  update(cx, cz, force = false) {
+    if (!this.ready) return;
+    this._upd -= 1;
+    if (this._upd > 0 && !force) return;
+    this._upd = 12;
+    this.center.x = cx; this.center.z = cz;
+    const R = LODS[LODS.length - 1].d * this.lodScale + TILE;
+    const i0 = Math.max(0, Math.floor((cx - R + HALF) / TILE)), i1 = Math.min(NT - 1, Math.floor((cx + R + HALF) / TILE));
+    const j0 = Math.max(0, Math.floor((cz - R + HALF) / TILE)), j1 = Math.min(NT - 1, Math.floor((cz + R + HALF) / TILE));
+    const want = new Set();
+    for (let j = j0; j <= j1; j++) for (let i = i0; i <= i1; i++) {
+      const seg = this._wantSeg(i, j, cx, cz);
+      if (!seg) continue;
+      const k = tkey(i, j);
+      want.add(k);
+      let t = this.tiles.get(k);
+      if (!t) { t = { i, j, k, x0: -HALF + i * TILE, z0: -HALF + j * TILE, seg: 0, mesh: null, heights: null, pending: 0 }; this.tiles.set(k, t); }
+      // histerezis: yalnızca gerçekten farklıysa yeniden üret
+      if (t.seg !== seg && t.pending !== seg) this._requestTile(t, seg, Math.hypot(t.x0 + TILE / 2 - cx, t.z0 + TILE / 2 - cz));
     }
+    for (const [k, t] of this.tiles) {
+      if (want.has(k)) continue;
+      const d = Math.hypot(t.x0 + TILE / 2 - cx, t.z0 + TILE / 2 - cz);
+      if (d > R + TILE * 2) this._drop(t);
+    }
+  },
+
+  _requestTile(t, seg, dist) {
+    t.pending = seg;
+    const myReq = { seg };
+    t.req = myReq;
+    const prio = dist + (seg === HI_SEG ? -400 : 0);
+    return this._request({ t: 'tile', key: t.k, x0: t.x0, z0: t.z0, size: TILE, seg, hires: seg === HI_SEG }, prio).then((m) => {
+      if (t.req !== myReq || !this.tiles.has(t.k)) return;
+      t.pending = 0;
+      this._apply(t, m);
+    }).catch(() => { t.pending = 0; });
+  },
+
+  _apply(t, m) {
+    t.seg = m.seg;
+    t.maxH = m.maxH; t.minH = m.minH;
+    t.heights = m.heights || null;
+    if (m.local) return; // yalnız yükseklik (yedek yol)
     const g = new THREE.BufferGeometry();
-    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    g.setAttribute('normal', new THREE.BufferAttribute(nor, 3));
-    g.setAttribute('color', new THREE.BufferAttribute(col, 3));
-    g.setIndex(new THREE.BufferAttribute(idx, 1));
-    g.computeBoundingSphere();
-    return g;
+    g.setAttribute('position', new THREE.BufferAttribute(m.pos, 3));
+    g.setAttribute('normal', new THREE.BufferAttribute(m.nor, 3));
+    g.setAttribute('color', new THREE.BufferAttribute(m.col, 3));
+    g.setIndex(new THREE.BufferAttribute(m.idx, 1));
+    g.boundingSphere = new THREE.Sphere(new THREE.Vector3(t.x0 + TILE / 2, (m.maxH + m.minH) / 2, t.z0 + TILE / 2), Math.hypot(TILE * 0.71, (m.maxH - m.minH) / 2 + 4));
+    if (t.mesh) { t.mesh.geometry.dispose(); t.mesh.geometry = g; }
+    else {
+      t.mesh = new THREE.Mesh(g, this.material);
+      t.mesh.matrixAutoUpdate = false;
+      t.mesh.receiveShadow = true;
+      this.group.add(t.mesh);
+    }
+    t.mesh.castShadow = m.maxH > 0 && m.seg >= 32;
   },
 
-  colorAt(x, z, h, ny, out) {
-    const biome = this.biomeAt(x, z);
-    const n1 = noise2(x / 30, z / 30), n2 = noise2(x / 7 + 40, z / 7);
-    const ghost = biome === 'hayalet';
-    const sand = ghost ? [0.70, 0.68, 0.60] : [0.95, 0.87, 0.66];
-    const wetSand = ghost ? [0.52, 0.5, 0.45] : [0.80, 0.70, 0.50];
-    const grassA = ghost ? [0.30, 0.36, 0.28] : [0.33, 0.62, 0.20];
-    const grassB = ghost ? [0.25, 0.27, 0.24] : [0.18, 0.45, 0.14];
-    const rock = ghost ? [0.36, 0.34, 0.38] : [0.55, 0.50, 0.44];
-    const dirt = [0.55, 0.43, 0.28];
-    let r, g, b;
-    if (h < -0.4) {
-      // Deniz tabanı: kum + mercan lekeleri
-      const depth = -h;
-      const t = clamp(depth / 26, 0, 1);
-      r = lerp(0.88, 0.45, t); g = lerp(0.80, 0.48, t); b = lerp(0.60, 0.45, t);
-      // Timsah Lagünü: mercan yok, çamurlu yeşil-kahve taban
-      const lagoon = Math.hypot(x + 150, z - 70) < 64;
-      if (lagoon) { const m = smoothstep(64, 40, Math.hypot(x + 150, z - 70)); r = lerp(r, 0.4, m); g = lerp(g, 0.42, m); b = lerp(b, 0.28, m); }
-      if (depth > 1.2 && depth < 10 && !ghost && !lagoon) {
-        const coral = noise2(x / 6, z / 6);
-        if (coral > 0.45) {
-          const pick = noise2(x / 3 + 9, z / 3);
-          if (pick > 0.2) { r = 0.95; g = 0.45; b = 0.50; }
-          else if (pick > -0.3) { r = 0.98; g = 0.62; b = 0.25; }
-          else { r = 0.62; g = 0.38; b = 0.75; }
-        } else if (coral > 0.3) { r *= 0.7; g *= 0.8; b *= 0.7; }
-      }
-      if (n2 > 0.55) { r *= 0.85; g *= 0.9; b *= 0.85; }
-    } else if (h < 1.0) {
-      const t = smoothstep(-0.4, 1.0, h);
-      r = lerp(wetSand[0], sand[0], t); g = lerp(wetSand[1], sand[1], t); b = lerp(wetSand[2], sand[2], t);
-    } else if (h < 2.3 + n1 * 0.5) {
-      r = sand[0]; g = sand[1]; b = sand[2];
-      const t = smoothstep(1.6 + n1 * 0.5, 2.3 + n1 * 0.5, h);
-      r = lerp(r, grassA[0], t); g = lerp(g, grassA[1], t); b = lerp(b, grassA[2], t);
-    } else {
-      const t = clamp(n1 * 0.5 + 0.5, 0, 1);
-      r = lerp(grassA[0], grassB[0], t); g = lerp(grassA[1], grassB[1], t); b = lerp(grassA[2], grassB[2], t);
-      if (n2 > 0.5) { r = lerp(r, dirt[0], 0.5); g = lerp(g, dirt[1], 0.5); b = lerp(b, dirt[2], 0.5); }
-      const rockT = smoothstep(0.82, 0.68, ny) + smoothstep(38, 52, h) * 0.8;
-      const rt = clamp(rockT, 0, 1);
-      r = lerp(r, rock[0], rt); g = lerp(g, rock[1], rt); b = lerp(b, rock[2], rt);
-    }
-    // Liman çevresi patika
-    const pd = Math.hypot(x - 10, z - 215);
-    if (pd < 75 && h > 1.5) {
-      const t = smoothstep(75, 55, pd) * (0.55 + 0.25 * n2);
-      r = lerp(r, 0.62, t); g = lerp(g, 0.52, t); b = lerp(b, 0.36, t);
-    }
-    // Mağara tabanı
-    if (distToCavePath(x, z) < CAVE.width + 1 || Math.hypot(x - CAVE.chamber.x, z - CAVE.chamber.z) < CAVE.chamber.r + 1) {
-      r = 0.36; g = 0.32; b = 0.28;
-    }
-    out.setRGB(r, g, b, THREE.SRGBColorSpace);
-    return out;
+  _drop(t) {
+    if (t.mesh) { this.group.remove(t.mesh); t.mesh.geometry.dispose(); }
+    t.req = null;
+    this.tiles.delete(t.k);
   },
 
-  // Su shader'ı için yükseklik dokusu
-  heightTexture(res = 512) {
-    const data = new Uint16Array(res * res);
-    for (let j = 0; j < res; j++) for (let i = 0; i < res; i++) {
-      const x = -HALF + (i + 0.5) / res * WORLD_SIZE;
-      const z = -HALF + (j + 0.5) / res * WORLD_SIZE;
-      data[j * res + i] = THREE.DataUtils.toHalfFloat(this.heightAt(x, z));
+  // Bir noktanın çevresini hazırla (yükleme ekranı / ışınlanma): yakın karolar ve okyanus derinliği
+  async prepare(x, z, opts = {}) {
+    if (!this.ready) return;
+    this.update(x, z, true);
+    const jobs = [];
+    for (const t of this.tiles.values()) {
+      const d = Math.hypot(t.x0 + TILE / 2 - x, t.z0 + TILE / 2 - z);
+      if (t.pending && d < (opts.radius || 700)) jobs.push(new Promise((res) => { const iv = setInterval(() => { if (!t.pending || !this.tiles.has(t.k)) { clearInterval(iv); res(); } }, 30); }));
     }
-    const tex = new THREE.DataTexture(data, res, res, THREE.RedFormat, THREE.HalfFloatType);
-    tex.magFilter = THREE.LinearFilter;
-    tex.minFilter = THREE.LinearFilter;
-    tex.wrapS = tex.wrapT = THREE.ClampToEdgeWrapping;
-    tex.needsUpdate = true;
-    return tex;
+    jobs.push(this.requestDepth(x, z, true));
+    await Promise.all(jobs);
+  },
+
+  // ---- okyanus derinlik penceresi (kamerayla birlikte kayar) ----
+  depthWin: null,
+  requestDepth(x, z, force = false) {
+    const size = 2400, res = 512;
+    const w = this.depthWin;
+    if (!force && w && Math.hypot(x - (w.x0 + size / 2), z - (w.z0 + size / 2)) < 520) return Promise.resolve();
+    if (this._depthPending && !force) return this._depthPending;
+    const x0 = Math.round((x - size / 2) / 40) * 40, z0 = Math.round((z - size / 2) / 40) * 40;
+    const p = this._request({ t: 'depth', x0, z0, size, res }, force ? -1000 : 50).then((m) => {
+      this.depthWin = { x0: m.x0, z0: m.z0, size: m.size };
+      this._depthPending = null;
+      this.onDepth?.(m);
+    }).catch(() => { this._depthPending = null; });
+    this._depthPending = p;
+    return p;
+  },
+
+  // harita/minimap ızgarası (yükseklik + biyom)
+  requestGrid(x0, z0, size, res, prio = 200) {
+    return this._request({ t: 'grid', x0, z0, size, res }, prio);
+  },
+
+  // ---- sorgular ----
+  heightAt(x, z) {
+    const fi = (x + HALF) / TILE, fj = (z + HALF) / TILE;
+    const i = Math.floor(fi), j = Math.floor(fj);
+    const t = this.tiles.get(tkey(i, j));
+    if (t && t.heights) {
+      const n = t.seg + 1;
+      const u = (fi - i) * t.seg, v = (fj - j) * t.seg;
+      let a = Math.floor(u), b = Math.floor(v);
+      if (a >= t.seg) a = t.seg - 1;
+      if (b >= t.seg) b = t.seg - 1;
+      const tx = u - a, tz = v - b;
+      const H = t.heights;
+      const h00 = H[b * n + a], h10 = H[b * n + a + 1], h01 = H[(b + 1) * n + a], h11 = H[(b + 1) * n + a + 1];
+      return (h00 * (1 - tx) + h10 * tx) * (1 - tz) + (h01 * (1 - tx) + h11 * tx) * tz;
+    }
+    if (x < -HALF || z < -HALF || x > HALF || z > HALF) return SEA_FLOOR;
+    return computeHeight(x, z);
+  },
+
+  normalAt(x, z, out = new THREE.Vector3()) {
+    const e = 1.5;
+    const hl = this.heightAt(x - e, z), hr = this.heightAt(x + e, z);
+    const hd = this.heightAt(x, z - e), hu = this.heightAt(x, z + e);
+    return out.set(hl - hr, 2 * e, hd - hu).normalize();
+  },
+
+  islandAt(x, z, margin = 1.25) { return geoIslandAt(x, z, margin); },
+  biomeAt(x, z) { return geoBiomeAt(x, z); },
+
+  colorAt(x, z, h, ny, out = new THREE.Color()) {
+    const c = colorSRGB(x, z, h, ny, [0, 0, 0]);
+    return out.setRGB(c[0], c[1], c[2], THREE.SRGBColorSpace);
+  },
+
+  stats() {
+    let meshes = 0, hires = 0, tris = 0;
+    for (const t of this.tiles.values()) { if (t.mesh) { meshes++; tris += t.mesh.geometry.index.count / 3; } if (t.heights) hires++; }
+    return { tiles: this.tiles.size, meshes, hires, tris: Math.round(tris), queue: this._queue.length, workers: this.workers.length };
   },
 };

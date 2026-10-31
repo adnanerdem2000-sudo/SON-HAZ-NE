@@ -26,7 +26,30 @@ export const ANIM_MAP = {
   Gun_Shoot: '1H_Ranged_Shoot', Idle_Gun: 'Idle', Idle_Gun_Pointing: '1H_Ranged_Aiming', Idle_Sword: 'Blocking', Roll: 'Dodge_Forward',
   HitRecieve: 'Hit_A', HitRecieve_2: 'Hit_B', HitReact: 'Hit_A', Jump: 'Jump_Idle', Jump_Idle: 'Jump_Idle', Jump_Land: 'Jump_Land', Sword: '1H_Melee_Attack_Chop',
   Yes: 'Cheer', No: 'Hit_B',
+  // savaş: kombo zinciri, ağır vuruş, karşı saldırı, blok, kaçınma
+  Atk1: '1H_Melee_Attack_Slice_Diagonal', Atk2: '1H_Melee_Attack_Slice_Horizontal', Atk3: '1H_Melee_Attack_Chop',
+  AtkStab: '1H_Melee_Attack_Stab', AtkHeavy: '1H_Melee_Attack_Jump_Chop', Counter: 'Block_Attack',
+  Atk2H: '2H_Melee_Attack_Slice', Heavy2H: '2H_Melee_Attack_Chop', Spin2H: '2H_Melee_Attack_Spin', Stab2H: '2H_Melee_Attack_Stab', Idle2H: '2H_Melee_Idle',
+  DualChop: 'Dualwield_Melee_Attack_Chop', DualSlice: 'Dualwield_Melee_Attack_Slice', DualStab: 'Dualwield_Melee_Attack_Stab',
+  Block: 'Blocking', BlockHit: 'Block_Hit', Parry: 'Block',
+  Dodge_F: 'Dodge_Forward', Dodge_B: 'Dodge_Backward', Dodge_L: 'Dodge_Left', Dodge_R: 'Dodge_Right',
+  Punch2: 'Unarmed_Melee_Attack_Punch_B', Kick: 'Unarmed_Melee_Attack_Kick', Unarmed: 'Unarmed_Idle',
+  Aim: '1H_Ranged_Aiming', Reload: '1H_Ranged_Reload', Aim2H: '2H_Ranged_Aiming', Shoot2H: '2H_Ranged_Shoot', Reload2H: '2H_Ranged_Reload',
+  Cast: 'Spellcast_Shoot', CastLong: 'Spellcast_Long', Summon: 'Spellcast_Summon', CastRaise: 'Spellcast_Raise',
+  // yaşam: oturma, uzanma, eşya, hareket çeşitleri
+  IdleB: 'Idle_B', IdleCombat: 'Idle_Combat', WalkB: 'Walking_B', WalkC: 'Walking_C', WalkBack: 'Walking_Backwards', WalkSk: 'Walking_D_Skeletons',
+  RunB: 'Running_B', Sprint: 'Running_C', StrafeL: 'Running_Strafe_Left', StrafeR: 'Running_Strafe_Right',
+  JumpStart: 'Jump_Start', JumpLong: 'Jump_Full_Long', JumpShort: 'Jump_Full_Short',
+  PickUp: 'PickUp', UseItem: 'Use_Item', Throw: 'Throw', Taunt: 'Taunt', Cheer: 'Cheer',
+  SitDown: 'Sit_Chair_Down', Sit: 'Sit_Chair_Idle', SitUp: 'Sit_Chair_StandUp',
+  SitFloorDown: 'Sit_Floor_Down', SitFloor: 'Sit_Floor_Idle', SitFloorUp: 'Sit_Floor_StandUp',
+  LieDown: 'Lie_Down', Lie: 'Lie_Idle', LieUp: 'Lie_StandUp',
+  Death2: 'Death_B', DeathSk: 'Death_C_Skeletons', Resurrect: 'Death_C_Skeletons_Resurrect',
+  Awaken: 'Skeletons_Awaken_Floor', AwakenStand: 'Skeletons_Awaken_Standing', SpawnGround: 'Spawn_Ground_Skeletons',
 };
+// Tek seferlik (döngüsüz) oynatılan mantıksal animasyonlar — ağ eşitlemesi ve durum makineleri için
+const ONCE_RE = /Slash|Shoot|Punch|Interact|Roll|Hit|Death|Wave|Atk|Heavy|Counter|Spin|Stab|Chop|Slice|Dodge|Parry|Kick|Reload|Cast|Summon|Pick|Use|Throw|Taunt|Cheer|Jump_?Start|JumpStart|JumpLong|JumpShort|Land|Down|Up$|Resurrect|Awaken|Spawn|Sword$/;
+export function isOnce(name) { return !!name && ONCE_RE.test(name); }
 
 const _v = new THREE.Vector3();
 
@@ -48,6 +71,8 @@ export const kk = {
     await Promise.all(jobs);
     for (const id of KK_CHARS) this._prepChar(id);
     this._prepClips();
+    // renk boyama için atlas piksellerini yüklemede bir kez oku (oyun içinde takılma olmasın)
+    for (const id of Object.keys(KK_ROLES)) if (this.info[id]) this._atlasPixels(id);
     this.ready = true;
   },
   count() { return KK_CHARS.length + 1 + KK_KITS.length; },
@@ -116,6 +141,19 @@ export const kk = {
     return skeletonClone(t.scene);
   },
   clip(name) { return this.clips[ANIM_MAP[name] || name] || null; },
+  // Katmanlı animasyon için klip yarıları: U = omurga/göğüs/baş/kollar, L = kök/kalça/bacaklar
+  clipPart(name, part) {
+    const full = this.clip(name);
+    if (!full) return null;
+    const key = full.name + '__' + part;
+    if (!this._parts) this._parts = new Map();
+    let c = this._parts.get(key);
+    if (c) return c;
+    const isUp = (t) => /^(spine|chest|head|neck|upperarm|lowerarm|wrist|hand|finger|thumb)/i.test(t.name.split('.')[0]);
+    c = new THREE.AnimationClip(key, full.duration, full.tracks.filter((t) => (part === 'U' ? isUp(t) : !isUp(t))));
+    this._parts.set(key, c);
+    return c;
+  },
   item(name) {
     const it = this.items[name];
     return it ? { obj: it.obj.clone(true), slot: it.slot } : null;
@@ -145,46 +183,59 @@ export const kk = {
   partNames(kit) { return Object.keys(this.kits[kit] || {}); },
 
   // ---- renk özelleştirme (atlas hücrelerini yeniden boyama) ----
+  // atlas pikselleri bir kez okunur (tuvalden okuma yavaştır), sonra CPU'da kopyalanıp boyanır
+  _atlasPixels(id) {
+    if (!this._px) this._px = {};
+    if (this._px[id]) return this._px[id];
+    const src = this.info[id]?.atlas;
+    if (!src?.image) return null;
+    const W = 256, H = 256;
+    const cv = document.createElement('canvas');
+    cv.width = W; cv.height = H;
+    const g = cv.getContext('2d', { willReadFrequently: true });
+    g.drawImage(src.image, 0, 0, W, H);
+    this._px[id] = g.getImageData(0, 0, W, H).data;
+    return this._px[id];
+  },
+
   texture(id, colors) {
     const roles = KK_ROLES[id];
     const src = this.info[id]?.atlas;
     if (!roles || !src || !colors) return src;
     const key = id + JSON.stringify(colors);
     if (this.texCache.has(key)) return this.texCache.get(key);
-    const img = src.image;
+    const base = this._atlasPixels(id);
+    if (!base) return src;
     const W = 256, H = 256;
-    const cv = document.createElement('canvas');
-    cv.width = W; cv.height = H;
-    const g = cv.getContext('2d');
-    g.drawImage(img, 0, 0, W, H);
-    const data = g.getImageData(0, 0, W, H);
+    const data = new Uint8Array(base);
     const cw = W / 8, ch = H / 4;
-    const tmp = new THREE.Color();
+    const tc = new THREE.Color();
     for (const role in colors) {
       const cells = roles[role];
       if (!cells || !colors[role]) continue;
-      const target = new THREE.Color(colors[role]);
-      target.getRGB(target, THREE.SRGBColorSpace); // tuval sRGB değerleriyle çalışır
+      tc.set(colors[role]);
+      tc.getRGB(tc, THREE.SRGBColorSpace); // atlas sRGB değerleriyle çalışır
+      const tr = tc.r * 255, tg = tc.g * 255, tb = tc.b * 255;
       for (const [r, c] of cells) {
         // hücrenin orta parlaklığı referans alınır, gradyan korunur
         const mx = Math.floor((c + 0.5) * cw), my = Math.floor((r + 0.5) * ch);
         const mi = (my * W + mx) * 4;
-        const mid = Math.max(0.05, lum(data.data[mi], data.data[mi + 1], data.data[mi + 2]));
-        for (let y = Math.floor(r * ch); y < Math.floor((r + 1) * ch); y++) for (let x = Math.floor(c * cw); x < Math.floor((c + 1) * cw); x++) {
+        const mid = Math.max(0.05, lum(data[mi], data[mi + 1], data[mi + 2]));
+        const y0 = Math.floor(r * ch), y1 = Math.floor((r + 1) * ch), x0 = Math.floor(c * cw), x1 = Math.floor((c + 1) * cw);
+        for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) {
           const i = (y * W + x) * 4;
-          const k = lum(data.data[i], data.data[i + 1], data.data[i + 2]) / mid;
-          tmp.copy(target).multiplyScalar(Math.min(1.6, k));
-          data.data[i] = Math.min(255, tmp.r * 255); data.data[i + 1] = Math.min(255, tmp.g * 255); data.data[i + 2] = Math.min(255, tmp.b * 255);
+          const k = Math.min(1.6, lum(base[i], base[i + 1], base[i + 2]) / mid);
+          data[i] = Math.min(255, tr * k); data[i + 1] = Math.min(255, tg * k); data[i + 2] = Math.min(255, tb * k);
         }
       }
     }
-    g.putImageData(data, 0, 0);
-    const tex = new THREE.CanvasTexture(cv);
-    tex.flipY = src.flipY; tex.colorSpace = src.colorSpace; tex.wrapS = src.wrapS; tex.wrapT = src.wrapT;
+    const tex = new THREE.DataTexture(data, W, H, THREE.RGBAFormat);
+    tex.flipY = false; tex.colorSpace = src.colorSpace; tex.wrapS = src.wrapS; tex.wrapT = src.wrapT;
     tex.offset.copy(src.offset); tex.repeat.copy(src.repeat); tex.rotation = src.rotation; tex.center.copy(src.center);
     tex.channel = src.channel;
-    tex.magFilter = THREE.LinearFilter; tex.minFilter = THREE.LinearMipmapLinearFilter;
-    if (this.texCache.size > 64) this.texCache.clear();
+    tex.magFilter = THREE.LinearFilter; tex.minFilter = THREE.LinearMipmapLinearFilter; tex.generateMipmaps = true;
+    tex.needsUpdate = true;
+    if (this.texCache.size > 96) { const k0 = this.texCache.keys().next().value; this.texCache.get(k0)?.dispose?.(); this.texCache.delete(k0); }
     this.texCache.set(key, tex);
     return tex;
   },

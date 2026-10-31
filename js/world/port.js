@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { terrain } from './terrain.js';
+import { ports } from './ports.js';
 import { physics } from './physics.js';
 import { assets } from '../core/assets.js';
 import { woodPlanks, roofTiles, thatch, stone, cloth, makeLabelTexture } from '../core/textures.js';
@@ -258,6 +259,8 @@ export const port = {
 
     realScene.add(mergeStatic(scene));
 
+    ports.add({ id: 'kirlangic_limani', name: 'Kırlangıç Limanı', island: 'kirlangic', region: 'merkez', x: 10, z: 222, core: true,
+      boarding: this.boardingPoint, mooring: this.mooring, spawn: { x: this.boardingPoint.x - 8, z: this.shoreZ - 20 } });
     // NPC konumları (karakter modülü bunları doldurur)
     this.npcSpots = [
       { id: 'tuzla', role: 'quest', name: 'Yaşlı Kaptan Tuzla', title: 'Hanın emekli kaptanı', x: -32, z: bz + 6.5, yaw: 0, model: 'pirate' },

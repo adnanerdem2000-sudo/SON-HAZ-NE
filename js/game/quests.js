@@ -5,6 +5,7 @@ import { audio } from '../core/audio.js';
 import { ISLANDS, POIS, WRECKS, DIG_SITES } from '../world/worldData.js';
 import { cave } from '../world/cave.js';
 import { terrain } from '../world/terrain.js';
+import { ports } from '../world/ports.js';
 import { treasure } from '../treasure/treasure.js';
 import { enemies } from './enemies.js';
 import { MERCHANTS, shop, sellPrice } from '../economy/shop.js';
@@ -373,6 +374,34 @@ export const quests = {
       }
       case 'general': case 'fisher': case 'weapons':
         G.emit('openShop', { role });
+        break;
+      case 'travel': {
+        // hızlı yolculuk: keşfedilmiş limanlar arasında, gemiyle birlikte
+        const here = (npc.port && ports.byId(npc.port)) || ports.nearest(p.pos.x, p.pos.z);
+        const known = ports.list.filter((pt) => pt !== here && (pt.core || this.discovered[pt.island]));
+        const shipHere = G.ship && !G.ship.sunk && ports.atShip(G.ship, 120) === here;
+        const opts = [];
+        if (shipHere && known.length) {
+          for (const pt of known) {
+            const d = Math.hypot(pt.x - here.x, pt.z - here.z);
+            const cost = Math.round(25 + d / 40);
+            opts.push({ label: `${pt.name} — ${(d / 1000).toFixed(1)} km · ${cost} altın`, fn: () => G.emit('fastTravel', { to: pt.id, cost, from: here.id }) });
+          }
+        }
+        opts.push(close);
+        D(!known.length ? 'Henüz başka bir limanı keşfetmedin. Denize açıl; bulduğun her liman rota defterime girer.'
+          : shipHere ? `Rüzgâr ve akıntıyı bilirim kaptan. Gemini ve tayfanı istediğin limana ben götürürüm — yol parası peşin.<br><span class="muted">Hızlı yolculukta gemi ve ambarı seninle gelir; yolculuk birkaç saat sürer.</span>`
+          : 'Seni götürebilirim ama gemin bu limanda demirli değil. Önce gemini iskeleye yanaştır.', opts);
+        break;
+      }
+      case 'smuggler': {
+        const day = sky.hour >= 5 && sky.hour < 20;
+        if (day) { D('Gün ışığında iş yapmam kaptan. Fenerler yanınca gel; pazar ancak gece kurulur.', [close]); break; }
+        D(MERCHANTS.smuggler.greet, [{ label: 'Mallarına bak', fn: () => G.emit('openShop', { role: 'smuggler' }) }, close]);
+        break;
+      }
+      case 'prisoner':
+        D('"Kaptan! Bizi buradan çıkar! Gardiyanlar gidince hücrenin kilidini kırabilirsin."', [close]);
         break;
       case 'tailor':
         D('Bir korsan kıyafetinden tanınır! Yeni şapkalar, ceketler, mücevherler… Kozmetikler savaşta güç vermez ama herkes seni hatırlar.', [

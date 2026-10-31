@@ -1,10 +1,12 @@
-// Mavi Kırıklar takımadası — ilk oynanabilir bölge verileri.
+// Mavi Kırıklar takımadası (çekirdek bölge) + büyük dünya (archipelago.js).
 // Koordinatlar metre cinsinden. Kuzey = -Z (haritada yukarı), Doğu = +X.
+import { EXTRA_ISLANDS, EXTRA_MODS, EXTRA_POIS, EXTRA_DIG_SITES, EXTRA_WRECKS, EXTRA_FISH_ZONES, regionAt } from './archipelago.js';
 
-export const WORLD_SIZE = 2400; // ±1200 m
+export const WORLD_SIZE = 20000; // ±10 km
+export const CORE_SIZE = 2400; // çekirdek takımada (±1200 m)
 export const SEA_FLOOR = -30;
 
-export const ISLANDS = [
+export const CORE_ISLANDS = [
   {
     id: 'kirlangic', name: 'Kırlangıç Adası', biome: 'tropik',
     x: 0, z: 0, r: 270, h: 58, seed: 11, hill: 1.0,
@@ -36,6 +38,9 @@ export const ISLANDS = [
     desc: 'İkizlerin doğusundaki ada; sığ resifleriyle ünlü.',
   },
 ];
+for (const I of CORE_ISLANDS) { I.core = true; I.region = 'merkez'; I.features = []; }
+export const ISLANDS = [...CORE_ISLANDS, ...EXTRA_ISLANDS];
+export { regionAt };
 
 // Arazi düzenlemeleri: düzleştirme ve çukurlar
 export const TERRAIN_MODS = [
@@ -55,6 +60,15 @@ export const TERRAIN_MODS = [
   { type: 'flatten', x: 470, z: 355, r: 20, h: 3.2, blend: 18 },
   // Gelgit kum dili: yalnızca alçak suda açığa çıkar (gelgit ±0.55 m)
   { type: 'flatten', x: 121, z: 201, r: 7, h: -0.14, blend: 9 },
+  ...EXTRA_MODS,
+];
+
+// Ek tepeler (mağaranın içine oyulduğu tepe vb.)
+export const BUMPS = [
+  { x: 172, z: -58, r: 48, h: 24 },
+  { x: -545, z: -470, r: 40, h: 14 },
+  // Timsah Lagünü'nün kuzeyindeki şelale tepesi
+  { x: -150, z: 8, r: 34, h: 22 },
 ];
 
 // Mağara yolu (taban yüksekliği sabit). Giriş doğu sahilinden içeri kıvrılır.
@@ -76,7 +90,7 @@ export const PORT = {
 };
 
 // Önemli noktalar (harita, keşif ve görevler için)
-export const POIS = [
+export const CORE_POIS = [
   { id: 'liman', name: 'Kırlangıç Limanı', x: 10, z: 230, icon: 'port', island: 'kirlangic' },
   { id: 'gozcu', name: 'Gözcü Tepesi', x: -10, z: -20, icon: 'peak', island: 'kirlangic' },
   { id: 'yanki', name: 'Yankı Mağarası', x: 205, z: -30, icon: 'cave', island: 'kirlangic' },
@@ -87,9 +101,10 @@ export const POIS = [
   { id: 'harabe', name: 'Kemik Harabeleri', x: -520, z: -440, icon: 'ruin', island: 'kemik' },
   { id: 'resif', name: 'İkiz Resifi', x: 690, z: -300, icon: 'reef', island: 'ikiz1' },
 ];
+export const POIS = [...CORE_POIS, ...EXTRA_POIS];
 
 // Hazine kazı noktaları. Her birinin çevresinde ipucu nesneleri dünyada gerçekten bulunur.
-export const DIG_SITES = [
+export const CORE_DIG_SITES = [
   {
     id: 'marti_1', island: 'marti', x: 478, z: 352, tier: 'small',
     clue: 'Üç palmiyenin ortasında dur. Kırık heykelin baktığı yöne beş adım at, kumun altını kaz.',
@@ -154,11 +169,13 @@ export const DIG_SITES = [
     landmarks: [{ type: 'barrel', x: 739, z: -273 }],
   },
 ];
+export const DIG_SITES = [...CORE_DIG_SITES, ...EXTRA_DIG_SITES];
 
 // Batık gemi (su altı)
-export const WRECKS = [
+export const CORE_WRECKS = [
   { id: 'marti_batigi', name: 'Martı Batığı', x: 545, z: 470, yaw: 0.6, depth: -11 },
 ];
+export const WRECKS = [...CORE_WRECKS, ...EXTRA_WRECKS];
 
 // Hayvan yayılım bölgeleri
 export const SPAWN_ZONES = {
@@ -174,7 +191,7 @@ export const SPAWN_ZONES = {
   frog: [{ x: -150, z: 70, r: 50, n: 6 }],
 };
 
-export const FISH_ZONES = [
+export const CORE_FISH_ZONES = [
   // Mercan sığlıkları
   { id: 'kirlangic_resif', x: 160, z: 260, r: 90, type: 'reef' },
   { id: 'marti_resif', x: 470, z: 360, r: 140, type: 'reef' },
@@ -185,3 +202,5 @@ export const FISH_ZONES = [
   { id: 'acik_2', x: -300, z: 0, r: 200, type: 'open' },
   { id: 'acik_3', x: 300, z: -500, r: 250, type: 'open' },
 ];
+for (const f of CORE_FISH_ZONES) f.region = 'merkez';
+export const FISH_ZONES = [...CORE_FISH_ZONES, ...EXTRA_FISH_ZONES];

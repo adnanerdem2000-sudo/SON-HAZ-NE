@@ -28,27 +28,7 @@ export const npcs = {
 
   init(scene) {
     this.scene = scene;
-    for (const spot of port.npcSpots) {
-      if (spot.noModel) { this.list.push({ spot, pos: new THREE.Vector3(spot.x, terrain.heightAt(spot.x, spot.z), spot.z) }); continue; }
-      let anim, root;
-      if (spot.model === 'pirate') {
-        anim = new Character({ ...defaultAppearance('m'), ...LOOKS.tuzla, name: spot.name });
-        root = anim.root;
-        anim.play('Sit_Chair_Idle', 0);
-        anim.play('Idle', 0);
-      } else {
-        const app = { ...defaultAppearance(LOOKS[spot.look].gender), ...LOOKS[spot.look], name: spot.name };
-        anim = new Character(app);
-        root = anim.root;
-        anim.play('Idle', 0);
-      }
-      const y = Math.max(physics.groundAt(spot.x, spot.z), 2.4);
-      root.position.set(spot.x, y, spot.z);
-      root.rotation.y = spot.yaw;
-      scene.add(root);
-      const col = physics.addCircle(spot.x, spot.z, 0.35, y - 1, y + 2, 'npc');
-      this.list.push({ spot, anim, root, pos: root.position.clone(), baseYaw: spot.yaw, talkT: 0, col, colY: [col.y0, col.y1] });
-    }
+    for (const spot of port.npcSpots) this._create(spot);
     // Günlük rutin: dükkân kapanınca tüccarlar Kırlangıç Hanı'nın önüne yürür, sabah geri döner
     const inn = port.npcSpots.find((sp) => sp.id === 'tuzla');
     this.streetZ = inn.z + 1.2;
@@ -80,6 +60,37 @@ export const npcs = {
   },
 
   byRole(role) { return this.list.find((n) => n.spot.role === role); },
+
+  _create(spot) {
+    if (spot.noModel) { const n = { spot, pos: new THREE.Vector3(spot.x, terrain.heightAt(spot.x, spot.z), spot.z) }; this.list.push(n); return n; }
+    let anim;
+    if (spot.model === 'pirate') {
+      anim = new Character({ ...defaultAppearance('m'), ...LOOKS.tuzla, name: spot.name });
+      anim.play('Idle', 0);
+    } else {
+      const look = spot.app || LOOKS[spot.look] || LOOKS.m2;
+      const app = { ...defaultAppearance(look.gender || 'm'), ...look, name: spot.name };
+      anim = new Character(app);
+      anim.play(spot.anim || 'Idle', 0);
+    }
+    const root = anim.root;
+    const y = Math.max(physics.groundAt(spot.x, spot.z), spot.minY ?? 2.4);
+    root.position.set(spot.x, y, spot.z);
+    root.rotation.y = spot.yaw;
+    this.scene.add(root);
+    const col = physics.addCircle(spot.x, spot.z, 0.35, y - 1, y + 2, spot.tag || 'npc');
+    const n = { spot, anim, root, pos: root.position.clone(), baseYaw: spot.yaw, talkT: 0, col, colY: [col.y0, col.y1] };
+    this.list.push(n);
+    return n;
+  },
+  // Dinamik NPC (ada içeriği yüklenince eklenir, boşaltılınca kaldırılır)
+  add(spot) { if (this.list.some((n) => n.spot.id === spot.id)) return null; return this._create(spot); },
+  remove(id) {
+    const n = this.list.find((x) => x.spot.id === id);
+    if (!n) return;
+    if (n.root) { this.scene.remove(n.root); n.anim.dispose?.(); }
+    this.list = this.list.filter((x) => x !== n);
+  },
 
   talk(n) {
     const sp = n.spot;
