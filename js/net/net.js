@@ -133,6 +133,7 @@ export const net = {
     relay('fireCannon', (e) => { if (!G.isHost && e.by === G.myId) this.toHost({ t: 'fire', ship: e.ship.id, i: e.index, yaw: G.player.cannonYaw, pitch: G.player.cannonPitch }); });
     relay('mapGained', () => this.sendGame({ t: 'maps', sites: G.player.inv.stacks.filter((s) => s.id === 'hazine_haritasi').map((s) => s.data?.site) }));
     relay('playerDowned', () => this.sendGame({ t: 'downed' }));
+    relay('netMapUsed', (e) => this.toPeer(e.who, { t: 'mapUsed', site: e.site }));
   },
 
   // ---------------- Bağlantı ----------------
@@ -384,6 +385,7 @@ export const net = {
       case 'act': this._remoteAct(m.from, m); break;
       case 'hurt': G.player.hurt(m.dmg, m.from ? new THREE.Vector3(...m.from) : null, { cause: m.cause }); break;
       case 'give': treasure.giveItems(m.items); break;
+      case 'mapUsed': treasure.mapUsed(m.site); G.notify('Tayfa hazineyi buldu! Haritan kullanıldı.', 'good'); break;
       case 'carryOk': { const c = treasure.chestById(m.id); if (c) { c.state = 'carried'; if (!c.carriers.includes(G.myId)) c.carriers.push(G.myId); treasure._applyCarry(G.player, c); } break; }
       case 'chestSpawn': if (!treasure.chestById(m.c.id)) { const c = treasure.spawnChest(m.c.tier, new THREE.Vector3(...m.c.pos), { id: m.c.id, contents: m.c.contents, siteId: m.c.siteId, rising: true }); void c; } break;
       case 'chestState': this._applyChestState(m.c); break;

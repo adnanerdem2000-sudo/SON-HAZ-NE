@@ -18,7 +18,7 @@ const WEATHER_TABLE = [
 const C = (r, g, b) => new THREE.Color().setRGB(r, g, b, THREE.SRGBColorSpace);
 const DAY_Z = C(0.24, 0.52, 0.92), DAY_H = C(0.72, 0.86, 0.98);
 const SET_Z = C(0.28, 0.32, 0.6), SET_H = C(1.0, 0.56, 0.32);
-const NIGHT_Z = C(0.012, 0.02, 0.06), NIGHT_H = C(0.04, 0.07, 0.13);
+const NIGHT_Z = C(0.02, 0.035, 0.09), NIGHT_H = C(0.07, 0.11, 0.2);
 const STORM_Z = C(0.3, 0.33, 0.37), STORM_H = C(0.48, 0.5, 0.53);
 
 export const sky = {
@@ -215,18 +215,18 @@ export const sky = {
     // ışıklar
     const caveDark = this.inCave;
     const lightDir = elev > -0.05 ? sd : new THREE.Vector3(-sd.x, -sd.y, sd.z).normalize();
-    const dirInt = elev > -0.05 ? (0.4 + 2.4 * day) * (1 - storm * 0.65) : 0.35 * night * (1 - storm * 0.5);
+    const dirInt = elev > -0.05 ? (0.4 + 2.4 * day) * (1 - storm * 0.65) : 0.75 * night * (1 - storm * 0.5);
     this.sun.intensity = (dirInt + lf * 3) * (1 - caveDark * 0.97);
-    this.sun.color.copy(elev > -0.05 ? sunCol : C(0.6, 0.7, 1.0));
+    this.sun.color.copy(elev > -0.05 ? sunCol : C(0.62, 0.72, 1.0));
     if (focus) {
       this.sun.target.position.set(focus.x, focus.y, focus.z);
       this.sun.position.set(focus.x + lightDir.x * 120, focus.y + lightDir.y * 120, focus.z + lightDir.z * 120);
     }
-    const hemiInt = (0.25 + 0.85 * day) * (1 - storm * 0.3) + lf;
+    const hemiInt = (0.55 + 0.6 * day) * (1 - storm * 0.3) + lf;
     this.hemi.intensity = hemiInt * (1 - caveDark * 0.88);
-    this.hemi.color.copy(z).lerp(C(1, 1, 1), 0.35);
+    this.hemi.color.copy(z).lerp(day > 0.3 ? C(1, 1, 1) : C(0.55, 0.65, 0.95), day > 0.3 ? 0.35 : 0.6);
     this.hemi.groundColor.copy(C(0.42, 0.36, 0.26)).multiplyScalar(0.3 + day * 0.7);
-    this.lightLevel = clamp(0.12 + day * 0.9 - storm * 0.3 + lf, 0.08, 1.1) * (1 - caveDark * 0.8);
+    this.lightLevel = clamp(0.22 + day * 0.8 - storm * 0.3 + lf, 0.12, 1.1) * (1 - caveDark * 0.8);
 
     // sis
     const fog = this.scene.fog;

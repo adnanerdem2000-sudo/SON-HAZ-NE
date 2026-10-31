@@ -1,5 +1,6 @@
 # Oyunu GitHub Pages üzerinde yayınlar (derleme adımı yok — statik dosyalar).
-# Depo ayarlarında: Settings → Pages → Build and deployment → Source: "GitHub Actions" seçilmelidir.
+# Tek seferlik ayar (depo sahibi): Settings → Pages → Build and deployment → Source: "GitHub Actions".
+# Pages açık değilse iş akışı hata vermeden atlanır; açıldıktan sonra her push'ta otomatik yayınlanır.
 name: GitHub Pages
 
 on:
@@ -17,7 +18,21 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      enabled: ${{ steps.pages.outputs.enabled }}
+    steps:
+      - id: pages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          code=$(curl -s -o /dev/null -w '%{http_code}' -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" "https://api.github.com/repos/${{ github.repository }}/pages")
+          if [ "$code" = "200" ]; then echo "enabled=true" >> "$GITHUB_OUTPUT"; else echo "enabled=false" >> "$GITHUB_OUTPUT"; echo "::notice::GitHub Pages bu depoda henüz açık değil (Settings → Pages → Source: GitHub Actions). Yayın atlandı."; fi
+
   deploy:
+    needs: check
+    if: needs.check.outputs.enabled == 'true'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -25,8 +40,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
-        with:
-          enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .

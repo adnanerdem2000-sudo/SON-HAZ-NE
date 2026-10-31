@@ -20,7 +20,7 @@ export const ENEMY_TYPES = {
   hayalet_kafa: { name: 'Lanetli Kaptan Ruhu', hp: 90, dmg: 18, speed: 3.4, range: 2.2, model: 'ghost_skull', h: 2.3, ghost: true, night: true, loot: [['altin_para', 25, 60], ['eski_mucevher', 0.3]] },
   haydut: { name: 'Kızıl Hançer Haydudu', hp: 70, dmg: 13, speed: 4.0, range: 2.0, human: true, loot: [['altin_para', 15, 40], ['mermi', 0.4], ['ekmek', 0.3]] },
   haydut_tabanca: { name: 'Tabancalı Haydut', hp: 60, dmg: 22, speed: 3.6, range: 14, ranged: true, human: true, loot: [['altin_para', 20, 45], ['mermi', 0.7]] },
-  kizil_hancer: { name: 'Kızıl Hançer', hp: 520, dmg: 22, speed: 4.4, range: 2.3, human: true, boss: true, ranged2: true, loot: [['altin_para', 400, 600], ['kizil_mektup', 1], ['harita_parcasi', 1]] },
+  kizil_hancer: { name: 'Kızıl Hançer', hp: 520, dmg: 22, speed: 4.4, range: 2.3, human: true, boss: true, ranged2: true, loot: [['altin_para', 400, 600], ['kizil_mektup', 1], ['altin_kulce', 2]] },
 };
 
 // Yerleşim grupları

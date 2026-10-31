@@ -8,7 +8,7 @@ import { G } from '../game/ctx.js';
 export function openSettings() {
   const v = settings.v;
   let tab = 'goruntu';
-  const body = el('div', { class: 'col', style: { width: 'min(820px, 92vw)', height: 'min(660px, 82vh)' } });
+  const body = el('div', { class: 'col', style: { width: 'min(820px, 92vw)', height: 'min(660px, calc(90vh - 120px))' } });
   const commit = () => { settings.apply(); settings.save(); G.emit('settingsChanged'); };
   const slider = (key, min, max, step, fmt = (x) => x) => {
     const val = el('span', { style: { minWidth: '52px', textAlign: 'right' } }, fmt(v[key]));

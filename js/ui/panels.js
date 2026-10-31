@@ -55,7 +55,7 @@ export const panels = {
     if (ui.topIs('inv')) { ui.close(); return; }
     const p = G.player;
     let cat = 'hepsi';
-    const body = el('div', { class: 'col', style: { width: 'min(980px, 92vw)', height: 'min(640px, 80vh)' } });
+    const body = el('div', { class: 'col', style: { width: 'min(980px, 92vw)', height: 'min(640px, calc(90vh - 120px))' } });
     const render = () => {
       body.innerHTML = '';
       const tabs = el('div', { class: 'tabs' });
@@ -138,7 +138,7 @@ export const panels = {
   shopPanel(role) {
     const M = MERCHANTS[role];
     const p = G.player;
-    const body = el('div', { class: 'col', style: { width: 'min(1100px, 94vw)', height: 'min(700px, 84vh)' } });
+    const body = el('div', { class: 'col', style: { width: 'min(1100px, 94vw)', height: 'min(700px, calc(90vh - 120px))' } });
     const render = () => {
       body.innerHTML = '';
       body.appendChild(el('div', { class: 'row' }, el('i', { class: 'grow' }, M.greet), el('span', { class: 'gold-tag', style: { fontSize: '22px' } }, fmtGold(p.inv.gold))));
@@ -163,10 +163,11 @@ export const panels = {
       const sl = el('div', { class: 'shop-list' });
       let any = false;
       for (const s of p.inv.stacks) {
-        const pr = sellPrice(s, role);
+        const isFish = s.id.startsWith('balik:');
+        const pr = isFish ? sellPrice(s, role) : sellPrice({ ...s, n: 1 }, role);
         if (!pr) continue;
         any = true;
-        const total = s.id.startsWith('balik:') ? pr : pr * (s.n || 1);
+        const total = isFish ? pr : pr * (s.n || 1);
         const row = el('div', { class: 'shop-row' },
           el('div', { class: 'ic', html: iconSVG(s, s.data?.color) }),
           el('div', {}, el('b', {}, itemName(s.id, s.data) + ((s.n || 1) > 1 ? ' ×' + s.n : '')), el('div', { class: 'muted', style: { fontSize: '14px' } }, s.id.startsWith('balik:') ? `${s.data.len} cm, ${s.data.weight} kg` : `Birim: ${pr} altın`)),

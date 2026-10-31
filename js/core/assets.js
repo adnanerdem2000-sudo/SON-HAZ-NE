@@ -29,6 +29,8 @@ export const assets = {
           o.receiveShadow = true;
         }
       });
+      // renk düzeltmeleri: Kenney sandık/varil modelleri ahşap tonuna
+      if (name === 'crate') gltf.scene.traverse((o) => { if (o.isMesh) { o.material = o.material.clone(); o.material.color.lerp(new THREE.Color(0x8a5a32), 0.75); } });
       this.models[name] = gltf;
       done++;
       if (onProgress) onProgress(done / MODEL_LIST.length);

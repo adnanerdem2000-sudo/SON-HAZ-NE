@@ -21,6 +21,7 @@ import { treasure } from './treasure/treasure.js';
 import { net } from './net/net.js';
 import { Ship } from './ship/ship.js';
 import { port } from './world/port.js';
+import { sky } from './world/sky.js';
 import { ui } from './ui/ui.js';
 import { hud } from './ui/hud.js';
 import { panels } from './ui/panels.js';
@@ -94,7 +95,7 @@ async function boot() {
   // davet bağlantısı
   const join = new URLSearchParams(location.search).get('join');
   if (join) menu.joinScreen(join);
-  window.DK = { G, game, input, engine, handlers, net, ui, quests, treasure, enemies, animals, fish, fishing, shipControl, THREE, save, port, combat, effects, events };
+  window.DK = { G, game, input, engine, handlers, net, ui, quests, treasure, enemies, animals, fish, fishing, shipControl, THREE, save, port, combat, effects, events, sky };
   // Test/hata ayıklama yardımcıları: oyunu render etmeden ileri sar
   window.DK.sim = (seconds, dt = 1 / 30) => {
     const n = Math.round(seconds / dt);

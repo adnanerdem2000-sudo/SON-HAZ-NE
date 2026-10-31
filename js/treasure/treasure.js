@@ -147,7 +147,8 @@ export const treasure = {
     let site = null, bd = 1e9;
     for (const s of DIG_SITES) {
       const d = Math.hypot(s.x - x, s.z - z);
-      if (d < 2.8 && d < bd && active.has(s.id) && !this.chests.some((c) => c.siteId === s.id && c.state !== 'gone')) { bd = d; site = s; }
+      const recent = this.found[s.id] && Date.now() - this.found[s.id] < 1000 * 60 * 8;
+      if (d < 2.8 && d < bd && active.has(s.id) && !recent && !this.chests.some((c) => c.siteId === s.id && c.state !== 'gone')) { bd = d; site = s; }
     }
     if (!site) {
       const near = DIG_SITES.find((s) => active.has(s.id) && Math.hypot(s.x - x, s.z - z) < 9);
@@ -159,16 +160,20 @@ export const treasure = {
     const pos = new THREE.Vector3(site.x, terrain.heightAt(site.x, site.z) - 0.6, site.z);
     const c = this.spawnChest(site.tier, pos, { siteId: site.id, rising: true });
     this.found[site.id] = Date.now();
-    // harita kullanıldı
-    for (const pl of [G.player]) {
-      const st = pl.inv.stacks.find((s) => s.id === 'hazine_haritasi' && s.data?.site === site.id);
-      if (st) pl.inv.removeStack(st);
-    }
+    // harita kullanıldı (kazan kişinin haritası düşer)
+    if (who === G.myId) this.mapUsed(site.id);
+    else G.emit('netMapUsed', { who, site: site.id });
     audio.play('level_up', { vol: 0.6 });
     effects.glitter(site.x, pos.y + 0.8, site.z);
     G.notify(`Hazine buldun: ${CHEST_TIERS[site.tier].name}!`, 'good', 4500);
     G.emit('treasureFound', { site: site.id, tier: site.tier, chest: c.id, who });
     G.emit('netChestSpawn', { chest: this.chestNet(c) });
+  },
+
+  mapUsed(siteId) {
+    const st = G.player.inv.stacks.find((s) => s.id === 'hazine_haritasi' && s.data?.site === siteId);
+    if (st) G.player.inv.removeStack(st);
+    G.emit('mapGained', {});
   },
 
   _hole(x, z, effect) {
