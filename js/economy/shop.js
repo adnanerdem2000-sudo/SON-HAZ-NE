@@ -60,6 +60,7 @@ export function sellPrice(stack, role) {
   if (stack.id.startsWith('balik:')) v = (stack.data?.value || 10) * mult * ({ nadir: 1.2, epik: 1.4 }[stack.data?.rarity] || 1);
   // zaman çizelgesi: pazar günü ve ticaret gemisi günlerinde satış fiyatları artar
   v *= 1 + time.priceBonus();
+  v *= G.mods?.price || 1; // Pazarlıkçı yeteneği
   return Math.max(1, Math.round(v));
 }
 export function buyPrice(id, role) { return Math.round((ITEMS[id]?.value || 1) * 1.15 * (MERCHANTS[role]?.discount || 1)); }

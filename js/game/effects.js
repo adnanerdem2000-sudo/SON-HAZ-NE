@@ -94,14 +94,28 @@ export const effects = {
   },
 
   // Gülle
-  cannonball(origin, vel, owner, dmg = 1) {
-    const m = new THREE.Mesh(this.ballGeo, this.ballMat);
+  cannonball(origin, vel, owner, dmg = 1, opts = {}) {
+    const lava = !!opts.lava;
+    if (lava && !this.lavaMat) { this.lavaMat = new THREE.MeshStandardMaterial({ color: 0x401000, emissive: 0xff5a10, emissiveIntensity: 2.2, roughness: 0.8 }); this.lavaGeo = new THREE.DodecahedronGeometry(0.55, 0); }
+    const m = new THREE.Mesh(lava ? this.lavaGeo : this.ballGeo, lava ? this.lavaMat : this.ballMat);
+    if (lava) { // uzaktan görünen kızıl hale
+      if (!this.lavaGlow) {
+        const c = document.createElement('canvas'); c.width = c.height = 64;
+        const g = c.getContext('2d'), gr = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+        gr.addColorStop(0, 'rgba(255,240,200,1)'); gr.addColorStop(0.3, 'rgba(255,140,40,.8)'); gr.addColorStop(1, 'rgba(255,60,0,0)');
+        g.fillStyle = gr; g.fillRect(0, 0, 64, 64);
+        this.lavaGlow = new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
+      }
+      const sp = new THREE.Sprite(this.lavaGlow);
+      sp.scale.setScalar(6);
+      m.add(sp);
+    }
     m.position.copy(origin);
     m.castShadow = true;
     this.scene.add(m);
     // çevrimiçi konukta gülleler yalnızca görseldir; hasarı oda sahibi hesaplar
     const visual = (G.online && !G.isHost) || !!G.visualOnlyBalls;
-    this.balls.push({ m, vel: vel.clone(), owner, t: 0, dmg, visual });
+    this.balls.push({ m, vel: vel.clone(), owner, t: 0, dmg, visual, lava });
   },
 
   update(dt) {
@@ -137,14 +151,17 @@ export const effects = {
       b.t += dt;
       b.vel.y -= 9.8 * dt;
       // hava direnci (hızın karesiyle) ve rüzgâr sapması
-      const sp = b.vel.length();
-      b.vel.multiplyScalar(1 - Math.min(0.5, 0.0009 * sp * dt * 10));
-      b.vel.x += Math.cos(sky.windDir) * sky.windStrength * 1.6 * dt;
-      b.vel.z += Math.sin(sky.windDir) * sky.windStrength * 1.6 * dt;
+      if (!b.lava) { // lav bombaları saf balistik uçar
+        const sp = b.vel.length();
+        b.vel.multiplyScalar(1 - Math.min(0.5, 0.0009 * sp * dt * 10));
+        b.vel.x += Math.cos(sky.windDir) * sky.windStrength * 1.6 * dt;
+        b.vel.z += Math.sin(sky.windDir) * sky.windStrength * 1.6 * dt;
+      }
       const prev = b.m.position.clone();
       b.m.position.addScaledVector(b.vel, dt);
       const p = b.m.position;
-      if (b.t > 0.05 && Math.random() < 0.5) this.spawn(p.x, p.y, p.z, 0, 0.3, 0, 0.6, 0.25, 0.7, 0.7, 0.7, 0, 1, 0.5);
+      if (b.lava) { b.m.rotation.x += dt * 3; b.m.rotation.y += dt * 2; this.spawn(p.x, p.y, p.z, (Math.random() - 0.5), 0.4, (Math.random() - 0.5), 0.9, 0.5 + Math.random() * 0.4, 1, 0.45 + Math.random() * 0.3, 0.1, 0.5, 1, 0.6); if (Math.random() < 0.4) this.spawn(p.x, p.y, p.z, 0, 0.6, 0, 1.6, 0.8, 0.25, 0.22, 0.2, 0.3, 1, 1); }
+      else if (b.t > 0.05 && Math.random() < 0.5) this.spawn(p.x, p.y, p.z, 0, 0.3, 0, 0.6, 0.25, 0.7, 0.7, 0.7, 0, 1, 0.5);
       let hit = null;
       // gemiler
       for (const s of G.ships) {
@@ -165,11 +182,12 @@ export const effects = {
         continue;
       } else if (p.y < wh) {
         this.splash(p.x, p.z, 1.6);
+        if (b.lava) { this.smoke(p.x, wh + 0.5, p.z, 12, 1.6, 0.85); audio.tone(300, 0.8, 'sawtooth', 0.03, p, 0.3); }
         this._removeBall(i);
         continue;
       }
       if (hit) { this._removeBall(i); continue; }
-      if (b.t > 8) this._removeBall(i);
+      if (b.t > (b.lava ? 16 : 8)) this._removeBall(i);
     }
   },
 

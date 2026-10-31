@@ -342,6 +342,11 @@ export const quests = {
       return;
     }
     switch (role) {
+      case 'gambler': {
+        D(`Zarları avucunda şıkırdatıyor: "Bir el atalım mı kaptan? İki zar, büyük toplam kazanır. <b>6-6 Kara Bayrak</b> üç kat öder, <b>1-1 Yılan Gözü</b> kaybettirir. Kesemde her gün dört yüz altın olur."`, [
+          { label: 'Zar oyna', fn: () => G.emit('openDice', npc) }, close]);
+        break;
+      }
       case 'quest': {
         if (st === 0) {
           D(`Demek yeni bir korsan daha… Otur bakalım. Altmış yıl önce <b>Kaptan Mira Veyl</b> tarihin en büyük hazinesini bulduğunu ilan etti: <b>Son Hazine</b>. Altın, kayıp krallıkların eserleri ve denizin akışını değiştiren <b>Gelgit Pusulası</b>… Sonra Mira ortadan kayboldu.<br><br>Ben yaşlandım evlat. Limandaki küçük sloop'um <b>Martı</b> artık senin. Önce para kazan, adını duyur. Haritacı Nevra sana ilk haritanı verecek.`, [

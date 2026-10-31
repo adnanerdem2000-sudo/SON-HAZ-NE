@@ -357,7 +357,9 @@ export const panels = {
     const cv = document.createElement('canvas');
     cv.width = W; cv.height = H;
     wrap.appendChild(cv);
-    const legend = el('div', { class: 'map-legend' });
+    // açıklama kutusu: başlığa tıklayınca açılır/kapanır (küçük ekranda haritayı kapatmasın)
+    const legend = el('div', { class: 'map-legend' + (this._legendOpen === false || (this._legendOpen === undefined && window.innerHeight < 700) ? ' collapsed' : '') });
+    legend.addEventListener('click', (e) => { if (e.target.closest('.lg-head')) { legend.classList.toggle('collapsed'); this._legendOpen = !legend.classList.contains('collapsed'); } });
     wrap.appendChild(legend);
     // yakınlaştırma: 1 = tüm dünya (20 km); 80 ≈ 250 m
     let zoom = this._mapZoom || 6, cx = 0, cz = 0;
@@ -455,7 +457,7 @@ export const panels = {
       this._rose(g, W - 90, H - 100, 60);
       g.textAlign = 'left';
     };
-    legend.innerHTML = `<b style="font-family:var(--title);font-size:20px">Mavi Kırıklar ve Ötesi</b><br>Fare tekerleği: yakınlaştır · Sürükle: kaydır · <span class="kbd">Boşluk</span> konumuna dön<br>Sol tık: işaret koy / kaldır · Sağ tık: rota noktası ekle · <span class="kbd">R</span> rotayı sil<br><span style="color:#a3241a">✚</span> işaret · <span style="color:#c0392b">▲</span> sen · <span style="color:#a3241a">◌</span> hazine haritası bölgesi<br>Sisli alanlar henüz keşfedilmedi.`;
+    legend.innerHTML = `<div class="lg-head"><b style="font-family:var(--title);font-size:20px">Mavi Kırıklar ve Ötesi</b><span class="lg-tog">?</span></div><div class="lg-body">Fare tekerleği: yakınlaştır · Sürükle: kaydır · <span class="kbd">Boşluk</span> konumuna dön<br>Sol tık: işaret koy / kaldır · Sağ tık: rota noktası ekle · <span class="kbd">R</span> rotayı sil<br><span style="color:#a3241a">✚</span> işaret · <span style="color:#c0392b">▲</span> sen · <span style="color:#a3241a">◌</span> hazine haritası bölgesi<br>Sisli alanlar henüz keşfedilmedi.</div>`;
     let drag = null, moved = false;
     cv.addEventListener('wheel', (e) => {
       e.preventDefault();

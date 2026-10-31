@@ -183,6 +183,7 @@ const NPC_NAMES = {
   shipwright: ['Usta Cemal', 'Usta Sevgi', 'Usta Rıfat', 'Usta Leyla', 'Usta Temel'],
   smuggler: ['Kaçakçı Gölge', 'Kaçakçı Tilki', 'Kaçakçı Yarasa'],
   prisoner: ['Tutsak Denizci Ali', 'Tutsak Topçu Hasan', 'Tutsak Gemici Elif'],
+  gambler: ['Zarcı Şirin', 'Kumarbaz Tahsin', 'Zarcı Lütfiye', 'Kumarbaz Bekir', 'Zarcı Necmi'],
 };
 const LOOK_POOL = [
   { gender: 'm', body: 'kaba', skin: 3, hairColor: 2, beardColor: 2, hat: 'tricorn', hatColor: '#3a2a1a', shirtColor: '#e8dcc2', pantsColor: '#3b2a1a', coat: 'uzun', coatColor: '#2a4a6a' },
@@ -390,7 +391,7 @@ export const islands = {
     const name = names[Math.floor(R() * names.length)];
     const look = { ...LOOK_POOL[Math.floor(R() * LOOK_POOL.length)], ...(extra.look || {}) };
     const id = `${B.I.id}_${role}_${Math.round(x)}_${Math.round(z)}`;
-    const titles = { general: 'Genel Tüccar', treasure: 'Hazine Alıcısı', travel: 'Rota Kaptanı — hızlı yolculuk', shipwright: 'Gemi Ustası', smuggler: 'Gizli Pazar Kaçakçısı', prisoner: 'Tutsak' };
+    const titles = { general: 'Genel Tüccar', treasure: 'Hazine Alıcısı', travel: 'Rota Kaptanı — hızlı yolculuk', shipwright: 'Gemi Ustası', smuggler: 'Gizli Pazar Kaçakçısı', prisoner: 'Tutsak', gambler: 'Zar Ustası — Korsan Zarı' };
     npcs.add({ id, role, name, title: extra.title || titles[role] || '', x, z, yaw, app: look, minY: -50, tag: B.tag, port: extra.port || null, anim: extra.anim, dynamic: true });
     B.npcs.push(id);
     return id;
@@ -443,6 +444,10 @@ export const islands = {
     const ps = P.pierStart;
     this._npc(B, 'travel', ps.x + px * 4 - fx * 2, ps.z + pz * 4 - fz * 2, Math.atan2(fx, fz) + Math.PI, R, { port: f.id, look: { hat: 'kaptan', coat: 'uzun' } });
     this._npc(B, 'shipwright', ps.x - px * 4 - fx * 2, ps.z - pz * 4 - fz * 2, Math.atan2(fx, fz) + Math.PI, R, { port: f.id });
+    // meyhane önünde zar masası
+    { const a = sea + 0.75, gx = cx + Math.cos(a) * 19, gz = cz + Math.sin(a) * 19;
+      this._place(B, 'kk:dungeon:barrel_large', gx + Math.cos(a + 1.57) * 1.3, gz + Math.sin(a + 1.57) * 1.3, a, { s: 0.75, col: true });
+      this._npc(B, 'gambler', gx, gz, Math.atan2(cx - gx, cz - gz), R, { port: f.id }); }
     // bayraklar
     for (const da of [-0.35, 0.35]) {
       const x = cx + Math.cos(sea + da) * 22, z = cz + Math.sin(sea + da) * 22;

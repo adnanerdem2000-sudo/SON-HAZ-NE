@@ -96,9 +96,10 @@ export class Player {
     G.emit('equip', this.equipped);
   }
   weaponDamage() {
-    if (this.equipped === 'sword') return this.inv.has('usta_kilic') ? ITEMS.usta_kilic.dmg : ITEMS.kilic.dmg;
-    if (this.equipped === 'pistol') return this.inv.has('usta_tabanca') ? ITEMS.usta_tabanca.dmg : ITEMS.tabanca.dmg;
-    return 8;
+    const m = G.mods || {};
+    if (this.equipped === 'sword') return (this.inv.has('usta_kilic') ? ITEMS.usta_kilic.dmg : ITEMS.kilic.dmg) * (m.melee || 1);
+    if (this.equipped === 'pistol') return (this.inv.has('usta_tabanca') ? ITEMS.usta_tabanca.dmg : ITEMS.tabanca.dmg) * (m.gun || 1);
+    return 8 * (m.melee || 1);
   }
   toggleTorch() {
     if (!this.inv.has('fener')) { G.notify('Meşalen yok. Genel Tüccar\'dan alabilirsin.', 'warn'); return; }
@@ -334,7 +335,7 @@ export class Player {
     }
 
     // stamina
-    if (!this.sprinting && !this.blocking) this.stamina = Math.min(100, this.stamina + dt * 18);
+    if (!this.sprinting && !this.blocking) this.stamina = Math.min(100, this.stamina + dt * 18 * (G.mods?.stamina || 1));
 
     // mağara
     this.inCave = cave.insideFactor(this.pos.x, this.pos.z) * (this.pos.y < 9 ? 1 : 0);
@@ -634,7 +635,7 @@ export class Player {
     this.depth = Math.max(0, wh - (this.pos.y + 1.55));
     this.underwater = this.pos.y + 1.6 < wh;
     if (this.underwater) {
-      this.oxygen = Math.max(0, this.oxygen - dt * (100 / 50));
+      this.oxygen = Math.max(0, this.oxygen - dt * (100 / 50) / (G.mods?.breath || 1));
       if (this.oxygen <= 0) this.hurt(dt * 9, null, { cause: 'Boğuldun' });
     } else this.oxygen = Math.min(100, this.oxygen + dt * 35);
     // görsel: yatay yüzüş

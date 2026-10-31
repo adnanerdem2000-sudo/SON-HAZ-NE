@@ -22,6 +22,7 @@ import { shipControl } from './game/shipControl.js';
 import { animals } from './wildlife/animals.js';
 import { megafauna } from './wildlife/megafauna.js';
 import { hazards } from './world/hazards.js';
+import { worldEvents } from './game/worldEvents.js';
 import { fish } from './wildlife/fish.js';
 import { fishing } from './wildlife/fishing.js';
 import { treasure } from './treasure/treasure.js';
@@ -45,6 +46,9 @@ import { panels } from './ui/panels.js';
 import { menu } from './ui/menu.js';
 import { creator } from './ui/creator.js';
 import { openJournal } from './ui/journal.js';
+import { openSkills } from './ui/skills.js';
+import { openDice } from './ui/dice.js';
+import { progress } from './game/progress.js';
 import { defaultAppearance } from './player/appearance.js';
 import { tpCamera } from './player/camera.js';
 import { interact } from './game/interact.js';
@@ -83,7 +87,7 @@ async function boot() {
   const loadFill = document.getElementById('load-fill');
   const loadText = document.getElementById('load-text');
   document.getElementById('load-tip').textContent = TIPS[Math.floor(Math.random() * TIPS.length)];
-  const progress = (f, t) => { loadFill.style.width = Math.round(f * 100) + '%'; if (t) loadText.textContent = t; };
+  const setLoad = (f, t) => { loadFill.style.width = Math.round(f * 100) + '%'; if (t) loadText.textContent = t; };
 
   if (!save.available()) console.warn('localStorage kullanılamıyor; kayıt yapılamayacak.');
   engine.init(document.getElementById('game'));
@@ -92,18 +96,18 @@ async function boot() {
   settings.apply();
 
   try { await Promise.race([document.fonts.load('40px "Pirata One"'), new Promise((r) => setTimeout(r, 2500))]); } catch (e) { /* yoksay */ }
-  progress(0.02, 'Modeller yükleniyor…');
-  await assets.loadAll((f) => progress(0.02 + f * 0.33, 'Modeller yükleniyor…'));
+  setLoad(0.02, 'Modeller yükleniyor…');
+  await assets.loadAll((f) => setLoad(0.02 + f * 0.33, 'Modeller yükleniyor…'));
 
-  for (const s of [misc, time, bodies, effects, combat, treasure, enemies, animals, megafauna, fish, fishing, npcs, islands, hazards, bosses, quests, events, weatherfx, details, crowd]) game.register(s);
+  for (const s of [misc, time, bodies, effects, combat, treasure, enemies, animals, megafauna, fish, fishing, npcs, islands, hazards, bosses, quests, progress, events, worldEvents, weatherfx, details, crowd]) game.register(s);
   net.init(engine.scene);
   const q = settings.v.quality;
-  await game.buildWorld(q, (f, t) => progress(0.35 + f * 0.6, t));
-  progress(0.96, 'Deniz haritası çiziliyor…');
+  await game.buildWorld(q, (f, t) => setLoad(0.35 + f * 0.6, t));
+  setLoad(0.96, 'Deniz haritası çiziliyor…');
   await new Promise((r) => setTimeout(r, 0));
   await initMapBase();
   // gölgelendiricileri önceden derle (oyun içinde ilk görüşte takılmayı azaltır)
-  progress(0.98, 'Gölgelendiriciler hazırlanıyor…');
+  setLoad(0.98, 'Gölgelendiriciler hazırlanıyor…');
   try { await Promise.race([engine.renderer.compileAsync(engine.scene, engine.camera), new Promise((r) => setTimeout(r, 8000))]); } catch (e) { /* yoksay */ }
   ui.init(); hud.init(); panels.init();
   menu.init(handlers);
@@ -117,7 +121,7 @@ async function boot() {
     input.endFrame();
   });
   engine.start();
-  progress(1, 'Hazır!');
+  setLoad(1, 'Hazır!');
   document.getElementById('loading').classList.remove('active');
   menu.show(true);
   const unlockAudio = async () => { await audio.init(); audio.resume(); audio.setMusic('menu'); window.removeEventListener('pointerdown', unlockAudio); window.removeEventListener('keydown', unlockAudio); };
@@ -126,7 +130,7 @@ async function boot() {
   // davet bağlantısı
   const join = new URLSearchParams(location.search).get('join');
   if (join) menu.joinScreen(join);
-  window.DK = { G, assets, archipelago, physics, islands, bosses, ports, game, input, engine, post, settings, tpCamera, interact, npcs, Ship, kk, Character, handlers, net, ui, quests, treasure, enemies, animals, megafauna, hazards, fish, fishing, shipControl, THREE, save, port, combat, effects, events, sky, time, bodies, weatherfx, details, terrain, ocean, crowd };
+  window.DK = { G, assets, archipelago, physics, islands, bosses, ports, game, input, engine, post, settings, tpCamera, interact, npcs, Ship, kk, Character, handlers, net, ui, quests, treasure, enemies, animals, megafauna, hazards, progress, fish, fishing, shipControl, THREE, save, port, combat, effects, events, worldEvents, sky, time, bodies, weatherfx, details, terrain, ocean, crowd };
   // Test: yalnız 3B tuvali yakala (HUD hariç) — yazılımsal GPU'da sayfa ekran görüntüsünden daha kararlı
   window.DK.snap = (q = 0.85) => { post.render(); return engine.renderer.domElement.toDataURL('image/jpeg', q); };
   // belirli bir bakış açısından yakala (test): from/to = [x,y,z]
@@ -242,6 +246,8 @@ function wire() {
   G.on('autosave', () => handlers.saveNow(false));
   G.on('playerDied', (e) => setTimeout(() => menu.deathScreen(e.cause, handlers), 2200));
   G.on('openJournal', () => openJournal());
+  G.on('openSkills', () => openSkills());
+  G.on('openDice', (npc) => { ui.closeAll(); openDice(npc); });
   // Handa uyuma (zaman çizelgesi): ekran kararır, zaman ilerler, can dolar
   G.on('sleepAtInn', (e) => {
     const p = G.player;

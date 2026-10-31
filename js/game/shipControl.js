@@ -104,14 +104,14 @@ export const shipControl = {
       }
       s.model.cannons.forEach((c, i) => {
         if ((s.cannonHp?.[i] ?? 100) > 0) return;
-        out.push({ id: 'cfix' + i, pos: L(c.local.clone()), radius: 1.7, priority: 1, hold: 2.2, label: s.planks > 0 || p.inv.has('tahta') ? 'Topu onar (1 tahta)' : 'Topu onarmak için tahta gerek', action: () => {
+        out.push({ id: 'cfix' + i, pos: L(c.local.clone()), radius: 1.7, priority: 1, hold: 2.2 / (G.mods?.repair || 1), label: s.planks > 0 || p.inv.has('tahta') ? 'Topu onar (1 tahta)' : 'Topu onarmak için tahta gerek', action: () => {
           if (s.planks > 0) s.planks--; else if (p.inv.has('tahta')) p.inv.remove('tahta', 1); else { G.notify('Tahtan yok.', 'warn'); return; }
           s.cannonHp[i] = 70; G.notify('Top yeniden kullanılabilir.', 'good', 1800); G.emit('shipCmd', { ship: s.id, cmd: 'cannonFix', i });
         } });
       });
       s.T.masts.forEach((M, i) => {
         if (s.mastHp[i] > 0) return;
-        out.push({ id: 'mfix' + i, pos: L(new THREE.Vector3(0, s.deckAt(0, M.z), M.z + 0.6)), radius: 2.2, priority: 1, hold: 5, label: 'Acil direk dik (4 tahta)', action: () => {
+        out.push({ id: 'mfix' + i, pos: L(new THREE.Vector3(0, s.deckAt(0, M.z), M.z + 0.6)), radius: 2.2, priority: 1, hold: 5 / (G.mods?.repair || 1), label: 'Acil direk dik (4 tahta)', action: () => {
           const have = s.planks + (p.inv.count?.('tahta') || 0);
           if (have < 4) { G.notify('Acil direk için 4 tahta gerekir.', 'warn'); return; }
           let need = 4; const fromShip = Math.min(need, s.planks); s.planks -= fromShip; need -= fromShip; if (need) p.inv.remove('tahta', need);
@@ -119,7 +119,7 @@ export const shipControl = {
         } });
       });
       for (const h of s.holes) {
-        out.push({ id: 'hole' + h.id, pos: L(new THREE.Vector3(h.x, s.deckAt(h.x, h.z), h.z)), radius: 1.6, priority: 1, hold: 2.2, label: s.planks > 0 || p.inv.has('tahta') ? 'Deliği onar (tahta)' : 'Deliği onarmak için tahta gerek', action: () => this.repair(p, s, h) });
+        out.push({ id: 'hole' + h.id, pos: L(new THREE.Vector3(h.x, s.deckAt(h.x, h.z), h.z)), radius: 1.6, priority: 1, hold: 2.2 / (G.mods?.repair || 1), label: s.planks > 0 || p.inv.has('tahta') ? 'Deliği onar (tahta)' : 'Deliği onarmak için tahta gerek', action: () => this.repair(p, s, h) });
       }
       // kayık
       const rb = G.rowboat;

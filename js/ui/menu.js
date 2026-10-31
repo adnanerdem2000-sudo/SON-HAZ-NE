@@ -13,6 +13,40 @@ import { iconSVG } from '../economy/items.js';
 const fmtTime = (s) => { const h = Math.floor((s || 0) / 3600), m = Math.floor(((s || 0) % 3600) / 60); return h ? `${h} sa ${m} dk` : `${m} dk`; };
 const fmtDate = (t) => t ? new Date(t).toLocaleString('tr-TR', { dateStyle: 'short', timeStyle: 'short' }) : '';
 
+// Menü simgeleri (satır içi SVG, tek renk — currentColor)
+const svg = (d) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+const MENU_ICONS = {
+  play: svg('<path d="M7 4l13 8-13 8z" fill="currentColor"/>'),
+  ship: svg('<path d="M3 15h18l-3 5H6z"/><path d="M12 3v12M12 4l6 8h-6M12 6l-5 6h5"/>'),
+  map: svg('<path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14M15 6v14"/>'),
+  crew: svg('<circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M2 20c1-4 4-6 6-6s5 2 6 6M10 20c1-4 4-6 6-6s5 2 6 6"/>'),
+  hat: svg('<path d="M2 15c3 2 17 2 20 0"/><path d="M5 15c0-6 3-9 7-9s7 3 7 9"/><circle cx="12" cy="11" r="1.6" fill="currentColor"/>'),
+  book: svg('<path d="M4 4h7a3 3 0 013 3v13a2 2 0 00-2-2H4z"/><path d="M20 4h-6a3 3 0 00-3 3"/><path d="M20 4v14h-6"/>'),
+  gear: svg('<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>'),
+  scroll: svg('<path d="M6 3h11a2 2 0 012 2v12"/><path d="M6 3a2 2 0 00-2 2v2h4"/><path d="M8 5v14a2 2 0 002 2h9a2 2 0 002-2v-2H10"/><path d="M11 9h5M11 13h5"/>'),
+  door: svg('<path d="M14 3H5v18h9"/><path d="M10 12h11M18 9l3 3-3 3"/>'),
+};
+const NEWS = [
+  '20×20 km dünya: altı bölge, 50\'den fazla ada, limanlar, kaleler, tapınak ve hapishane',
+  'Beş efsanevi boss: Kraken, Derinlik Yılanı, Taş Muhafız, Volkanik Dev, Lanetli Amiral',
+  'Algıya dayalı düşman zekâsı, kombolar, parry, kaçınma ve ragdoll',
+  'Gemi bölgesel hasarı, direk kırılması, yangın ve kancayla bordalama',
+  'Balinalar, orka ve yunus sürüleri; kurtlar, kutup ayısı, kar canavarı',
+  'Barut fıçıları, kaya tuzakları, basınç plakası bulmacaları, gayzerler',
+  'Korsan rütbesi: 30 seviye, dört dallı yetenek ağacı',
+];
+const TIPS = [
+  'Dürbünle (Z) ufku tara; balinaların nefesi uzaktan görünür.',
+  'Sırtı dönük düşmana vurmak çok daha fazla hasar verir.',
+  'Barut fıçısını vur ya da fitilini yak — sonra hemen uzaklaş!',
+  'Orkalar suda yüzeni avlar; açık denizde gemiden ayrılma.',
+  'Yunuslar hızlı giden geminin pruvasında oynar.',
+  'Fırtınada yelkenleri azalt; direk kırılırsa acil direği güvertede dik.',
+  'Runlu taş bloklar bir şeyi açar — basınç plakasını ara.',
+  'Hayalet Denizleri geceleri başka bir dünyaya dönüşür.',
+  'Kazdığın hazine sandığını gemi ambarına koyup limanda sat.',
+];
+
 // Ana menü ve alt ekranları
 export const menu = {
   init(handlers) {
@@ -30,24 +64,52 @@ export const menu = {
 
   render() {
     const latest = save.latest();
-    const B = (label, fn, cls = '') => el('button', { class: 'mbtn ' + cls, onclick: () => { audio.resume(); audio.play('ui', { vol: 0.3 }); fn(); } }, label);
+    const click = (fn) => () => { audio.resume(); audio.play('ui', { vol: 0.3 }); fn(); };
+    const B = (label, icon, fn, cls = '', sub = null) => el('button', { class: 'mbtn ' + cls, onclick: click(fn) },
+      el('span', { class: 'mico', html: MENU_ICONS[icon] || '' }), el('span', { class: 'mlabel' }, label), sub ? el('span', { class: 'msub' }, sub) : null);
+    // son macera kartı
+    const card = document.getElementById('menu-card');
+    card.innerHTML = '';
+    if (latest) {
+      const d = latest.data;
+      const stage = STORY[Math.min(d.quests?.stage || 0, STORY.length - 1)];
+      const lvl = d.progress?.level || 1;
+      card.appendChild(el('div', { class: 'save-card' },
+        el('div', { class: 'sc-head' }, el('span', { class: 'sc-lvl' }, String(lvl)), el('div', { class: 'col', style: { gap: '0' } },
+          el('div', { class: 'sc-name' }, d.name || 'Korsan'),
+          el('div', { class: 'sc-meta' }, `${latest.kind === 'solo' ? 'Tek oyunculu' : 'Online dünya'} · Yuva ${latest.slot + 1} · ${fmtDate(d.savedAt)}`))),
+        el('div', { class: 'sc-row' },
+          el('span', {}, `⚓ ${d.ship?.name || 'Gemi yok'}`), el('span', {}, `◉ ${Math.floor(d.player?.inv?.gold || 0).toLocaleString('tr-TR')} altın`),
+          el('span', {}, `☀ ${d.time?.day || 1}. gün`), el('span', {}, `⌛ ${fmtTime(d.playTime)}`)),
+        el('div', { class: 'sc-goal' }, `Hikâye: ${stage?.title || '-'}`),
+        el('button', { class: 'mbtn primary big', onclick: click(() => this.h.continueLatest(latest)) }, el('span', { class: 'mico', html: MENU_ICONS.play }), el('span', { class: 'mlabel' }, 'DEVAM ET'))));
+    } else {
+      card.appendChild(el('div', { class: 'save-card welcome' }, el('div', { class: 'sc-goal' }, 'Mavi Kırıklar\'ın sisli sularında Kaptan Mira Veyl\'in Son Hazinesi seni bekliyor. Gemini hazırla, korsan!')));
+    }
     this.buttons.innerHTML = '';
-    const cont = B('DEVAM ET', () => { if (latest) this.h.continueLatest(latest); }, latest ? 'primary' : 'disabled');
-    if (latest) ui.tipOn(cont, `<b>${latest.data.name}</b><br>${latest.kind === 'solo' ? 'Tek oyunculu' : 'Online (oda sahibi)'} · Yuva ${latest.slot + 1}<br>${fmtDate(latest.data.savedAt)} · ${fmtTime(latest.data.playTime)}`);
+    const onlineSub = el('div', { class: 'msubrow hidden' },
+      el('button', { class: 'chip', onclick: click(() => this.hostScreen()) }, 'Oda kur'),
+      el('button', { class: 'chip', onclick: click(() => this.joinScreen()) }, 'Odaya katıl'),
+      el('button', { class: 'chip', onclick: click(() => this.quickJoin()) }, 'Hızlı katıl'));
     this.buttons.append(
-      cont,
-      B('OYNA', () => this.playScreen(), latest ? '' : 'primary'),
-      B('TEK OYUNCULU', () => this.slotScreen('solo')),
-      B('ONLINE', () => this.onlineScreen()),
-      B('ODA KUR', () => this.hostScreen()),
-      B('ODAYA KATIL', () => this.joinScreen()),
-      B('KORSANIM', () => this.editPirate()),
-      B('KORSAN DEFTERİ', () => this.journal()),
-      B('AYARLAR', () => openSettings()),
-      B('KREDİLER', () => this.credits()),
-      B('ÇIKIŞ', () => this.quit()),
+      B('YENİ MACERA', 'ship', () => this.slotScreen('solo', true), latest ? '' : 'primary', 'Yeni bir korsan ve dünya'),
+      B('DÜNYALAR', 'map', () => this.slotScreen('solo'), '', 'Kayıtlı tek oyunculu dünyalar'),
+      B('ONLINE', 'crew', () => onlineSub.classList.toggle('hidden'), '', '1-4 kişilik ortak macera'),
+      onlineSub,
+      B('KORSANIM', 'hat', () => this.editPirate()),
+      B('KORSAN DEFTERİ', 'book', () => this.journal()),
+      B('AYARLAR', 'gear', () => openSettings()),
+      B('KREDİLER', 'scroll', () => this.credits()),
+      B('ÇIKIŞ', 'door', () => this.quit(), 'quiet'),
     );
-    document.getElementById('menu-foot').innerHTML = `Sürüm 0.2 — Hava olayları, zaman çizelgesi, yeni fizik · <span class="kbd">WASD</span> hareket · <span class="kbd">E</span> etkileşim · <span class="kbd">M</span> harita · <span class="kbd">Tab</span> envanter`;
+    // yenilikler ve öğüt
+    const news = document.getElementById('menu-news');
+    news.innerHTML = '';
+    news.append(
+      el('div', { class: 'news-title' }, 'Sürüm 0.3 — Genişleyen Denizler'),
+      el('ul', {}, ...NEWS.map((n) => el('li', {}, n))),
+      el('div', { class: 'news-tip' }, el('b', {}, 'Kaptanın öğüdü: '), TIPS[Math.floor(Math.random() * TIPS.length)]));
+    document.getElementById('menu-foot').innerHTML = `Sürüm 0.3 · <span class="kbd">WASD</span> hareket · <span class="kbd">E</span> etkileşim · <span class="kbd">M</span> harita · <span class="kbd">Tab</span> envanter · <span class="kbd">J</span> defter · <span class="kbd">K</span> rütbe`;
   },
 
   // OYNA
@@ -285,10 +347,11 @@ export const menu = {
       B('Devam et', () => ui.close(), 'gold'),
       G.isHost ? B('Kaydet', () => { h.saveNow(true); }) : null,
       B('Korsan Defteri', () => { ui.close(); openJournal(); }),
+      B('Korsan Rütbesi', () => { ui.close(); G.emit('openSkills'); }),
       B('Dünya haritası', () => { ui.close(); G.emit('openMap'); }),
       B('Ayarlar', () => openSettings()),
       G.online ? B(`Oda kodu: ${net.room?.code || '-'} (kopyala)`, () => { navigator.clipboard?.writeText(`${location.origin}${location.pathname}?join=${net.room?.code}`); G.notify('Davet bağlantısı kopyalandı.', 'good'); }) : null,
-      B('Kontroller', () => ui.alert('Kontroller', `<span class="kbd">W A S D</span> hareket · <span class="kbd">Shift</span> koşma · <span class="kbd">Boşluk</span> zıpla/yukarı yüz · <span class="kbd">Ctrl</span> eğil/dal · <span class="kbd">E</span> etkileşim (basılı tut: aç/onar) · <span class="kbd">F</span> meşale · <span class="kbd">Q</span> işaret · <span class="kbd">Tab</span> envanter · <span class="kbd">M</span> harita · <span class="kbd">J</span> defter · <span class="kbd">Sol fare</span> saldırı/kaz/at · <span class="kbd">Sağ fare</span> nişan/savunma · <span class="kbd">R</span> doldur/yem · <span class="kbd">V</span> kaçın · <span class="kbd">G</span> sandığı bırak · <span class="kbd">1-5</span> kılıç, tabanca, kürek, olta, harita · <span class="kbd">C</span> pusula<br><br><b>Gemi:</b> dümende A/D yön, W/S yelken miktarı, Boşluk yelkenleri aç/kapat. Çapa için baş taraftaki ırgata, toplar için yanlara git.`)),
+      B('Kontroller', () => ui.alert('Kontroller', `<span class="kbd">W A S D</span> hareket · <span class="kbd">Shift</span> koşma · <span class="kbd">Boşluk</span> zıpla/yukarı yüz · <span class="kbd">Ctrl</span> eğil/dal · <span class="kbd">E</span> etkileşim (basılı tut: aç/onar) · <span class="kbd">F</span> meşale · <span class="kbd">Q</span> işaret · <span class="kbd">Tab</span> envanter · <span class="kbd">M</span> harita · <span class="kbd">J</span> defter · <span class="kbd">K</span> korsan rütbesi · <span class="kbd">Sol fare</span> saldırı/kaz/at · <span class="kbd">Sağ fare</span> nişan/savunma · <span class="kbd">R</span> doldur/yem · <span class="kbd">V</span> kaçın · <span class="kbd">G</span> sandığı bırak · <span class="kbd">1-5</span> kılıç, tabanca, kürek, olta, harita · <span class="kbd">C</span> pusula<br><br><b>Gemi:</b> dümende A/D yön, W/S yelken miktarı, Boşluk yelkenleri aç/kapat. Çapa için baş taraftaki ırgata, toplar için yanlara git.`)),
       B('Ana menüye dön', () => ui.confirm(G.isHost ? 'Oyun kaydedilip ana menüye dönülsün mü?' : 'Odadan ayrılıp ana menüye dönülsün mü?', () => h.toMenu()), 'red'),
     );
     ui.open(ui.panel('Duraklatıldı', body), { kind: 'pause' });

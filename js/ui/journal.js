@@ -112,7 +112,7 @@ export function openJournal(data = null) {
         el('b', {}, `${i + 1}. ${s.title}`), el('div', {}, i <= q.stage ? s.goal : '???'))));
       const pieces = (q.flags?.parca1 ? 1 : 0) + (q.flags?.kizilYenildi ? 1 : 0);
       sc.appendChild(el('h3', {}, `Mira Veyl'in Harita Parçaları: ${pieces}/4`));
-      sc.appendChild(el('div', { class: 'muted' }, 'Tam sürümdeki 10 aşamalı ana hikâyenin ilk 5 aşaması bu sürümde oynanabilir; Volkanik Adalar, Hayalet Adalar, Buz Krallığı, Çöl Adaları ve Yitik Ufuk sonraki geliştirme aşamalarında eklenecek.'));
+      sc.appendChild(el('div', { class: 'muted' }, '10 aşamalı ana hikâyenin ilk 5 aşaması bu sürümde oynanabilir. Buzul, Cangıl, Kül Adaları, Kızıl Kum Kıyıları ve Hayalet Denizleri keşfedilebilir; efsanevi bosslar ve yan içerikler oradadır. Hikâyenin 6-10. aşamaları (Yitik Ufuk dahil) sonraki sürümlerde eklenecek.'));
     } else if (tab === 'gorev') {
       sc.appendChild(el('h3', {}, 'Aktif yan görevler'));
       if (!q.side?.length) sc.appendChild(el('div', { class: 'muted' }, 'Aktif yan görevin yok. Limandaki görev panosuna bak.'));
@@ -123,7 +123,7 @@ export function openJournal(data = null) {
       const g = el('div', { class: 'jgrid' });
       for (const I of ISLANDS) {
         const d = q.discovered?.[I.id];
-        g.appendChild(el('div', { class: 'jcard' + (d ? '' : ' locked') }, el('div', { class: 't' }, d ? I.name : 'Keşfedilmemiş ada'), el('div', {}, d ? I.desc : 'Haritadaki sisli bölgeleri keşfet.'), el('div', { class: 'muted' }, d ? `Biyom: ${I.biome === 'hayalet' ? 'Hayalet Adalar' : 'Tropikal Korsan Cenneti'}` : '')));
+        g.appendChild(el('div', { class: 'jcard' + (d ? '' : ' locked') }, el('div', { class: 't' }, d ? I.name : 'Keşfedilmemiş ada'), el('div', {}, d ? I.desc : 'Haritadaki sisli bölgeleri keşfet.'), el('div', { class: 'muted' }, d ? `Biyom: ${{ tropik: 'Tropik ada', cangil: 'Cangıl', buzul: 'Buzul', volkan: 'Volkanik', col: 'Çöl ve kanyon', hayalet: 'Hayalet Adalar' }[I.biome] || 'Ada'}` : '')));
       }
       for (const P of POIS) {
         const d = q.discovered?.[P.id];

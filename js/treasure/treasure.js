@@ -140,7 +140,7 @@ export const treasure = {
     if (ground < (tideSite ? -0.6 : 0.2)) { G.notify('Burası kazmak için fazla ıslak.', 'warn'); return; }
     const fx = p.pos.x + Math.sin(p.yaw) * 0.9, fz = p.pos.z + Math.cos(p.yaw) * 0.9;
     let n = 0;
-    p.startBusy('Kazılıyor…', 2.6, () => this.finishDig(p, fx, fz), { anim: 'dig' });
+    p.startBusy('Kazılıyor…', 2.6 / (G.mods?.dig || 1), () => this.finishDig(p, fx, fz), { anim: 'dig' });
     const iv = setInterval(() => {
       if (!p.busy) { clearInterval(iv); return; }
       effects.dirt(fx, terrain.heightAt(fx, fz) + 0.1, fz, 6);
@@ -420,7 +420,7 @@ export const treasure = {
     for (const row of table) {
       const [id, a, b, data] = row;
       if (exact) { items.push([id, b, data]); continue; }
-      if (b !== undefined && a >= 1 && b >= a) items.push([id, Math.floor(a + Math.random() * (b - a + 1))]);
+      if (b !== undefined && a >= 1 && b >= a) items.push([id, Math.round(Math.floor(a + Math.random() * (b - a + 1)) * (id === 'altin_para' ? G.mods?.gold || 1 : 1))]);
       else if (a < 1) { if (Math.random() < a) items.push([id, 1]); }
       else items.push([id, a]);
     }

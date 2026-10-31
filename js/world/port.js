@@ -272,6 +272,7 @@ export const port = {
       { id: 'balikci', role: 'fisher', name: 'Balıkçı Yusuf', title: 'Balıkçı', x: 26, z: z0 - 15.2, yaw: 0, look: 'm4' },
       { id: 'gemici', role: 'shipwright', name: 'Usta Bora', title: 'Gemi Ustası', x: 42, z: z0 - 9, yaw: -Math.PI / 2, look: 'm5' },
       { id: 'pano', role: 'board', name: 'Görev Panosu', x: -2, z: z0 - 12.2, yaw: 0, noModel: true },
+      { id: 'zarci', role: 'gambler', name: 'Zarcı Kemal', title: 'Zar Ustası — Korsan Zarı', x: -39.5, z: bz + 7.5, yaw: 0.6, look: 'm4' },
     ];
   },
 

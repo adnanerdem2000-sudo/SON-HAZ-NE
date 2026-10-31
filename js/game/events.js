@@ -15,6 +15,7 @@ import { clamp, damp, dampAngle, wrapAngle, uid } from '../core/util.js';
 import { bodies } from '../world/bodies.js';
 import { enemies } from './enemies.js';
 import { quests } from './quests.js';
+import { worldEvents } from './worldEvents.js';
 
 // Rastgele dünya olayları + düşman korsan gemisi + tayfa yardımcısı + gemi batma/kurtarma
 export const events = {
@@ -81,9 +82,31 @@ export const events = {
     this._updateEnemyShip(dt);
   },
 
+  // Bağlama göre ağırlıklı olay seçimi (bölge, saat, hava, gemi durumu)
   randomEvent() {
+    const c = worldEvents.context();
+    const W = [
+      ['barrel', 1], ['bottle', 0.8], ['chest', 0.55],
+      ['storm', c.calm && c.reg !== 'hayalet' ? 0.45 : 0],
+      ['survivor', c.reg === 'hayalet' ? 0.1 : 0.5],
+      ['enemyShip', !this.enemyShip && G.ship && !G.ship.sunk ? (c.reg === 'col' || c.reg === 'merkez' ? 1 : 0.6) : 0],
+      ['birds', c.night ? 0 : 0.45],
+      ...worldEvents.weights(c),
+    ];
+    const tot = W.reduce((s, w) => s + w[1], 0);
+    let r = Math.random() * tot, pick = 'barrel';
+    for (const [k, w] of W) { if ((r -= w) <= 0) { pick = k; break; } }
+    if (!this.trigger(pick)) this.trigger('barrel');
+  },
+
+  trigger(kind) {
+    if (!['barrel', 'bottle', 'chest', 'storm', 'survivor', 'enemyShip', 'birds'].includes(kind)) return worldEvents.trigger(kind);
+    const r = { barrel: 0.1, bottle: 0.3, chest: 0.45, storm: 0.6, survivor: 0.7, enemyShip: 0.8, birds: 0.95 }[kind];
+    return this._classic(r) !== false;
+  },
+
+  _classic(r) {
     const p = G.player;
-    const r = Math.random();
     const center = G.ship && (p.mode === 'deck' || p.mode === 'helm') ? new THREE.Vector3(G.ship.x, 0, G.ship.z) : p.pos.clone();
     const spot = (dist) => {
       for (let i = 0; i < 20; i++) {
@@ -94,21 +117,21 @@ export const events = {
       return null;
     };
     if (r < 0.22) {
-      const s = spot(60); if (!s) return;
+      const s = spot(60); if (!s) return false;
       this.spawnFloating('barrel', s);
       G.notify('Gözcü: "Dalgaların arasında sürüklenen bir varil var!"', 'event', 4500);
     } else if (r < 0.4) {
-      const s = spot(45); if (!s) return;
+      const s = spot(45); if (!s) return false;
       this.spawnFloating('bottle', s);
       G.notify('Suda parlayan bir şişe gördün… İçinde mesaj olabilir!', 'event', 4500);
     } else if (r < 0.52) {
-      const s = spot(70); if (!s) return;
+      const s = spot(70); if (!s) return false;
       this.spawnFloating('chest', s);
       G.notify('Batık bir gemiden kopmuş bir sandık sürükleniyor!', 'event', 4500);
     } else if (r < 0.64) {
       if (sky.weatherKey !== 'firtina') { sky.setWeather('firtina'); G.notify('Ufukta kara bulutlar… Fırtına yaklaşıyor! Yelkenleri azalt.', 'event', 5000); G.emit('netWeather', { w: 'firtina' }); }
     } else if (r < 0.74) {
-      const s = spot(55); if (!s) return;
+      const s = spot(55); if (!s) return false;
       this.spawnFloating('survivor', s);
       G.notify('Bir salın üzerinde el sallayan bir kazazede var!', 'event', 5000);
     } else if (r < 0.9) {
@@ -130,7 +153,12 @@ export const events = {
       mesh.add(b, paper);
       mesh.scale.setScalar(1.6);
     } else if (kind === 'chest') mesh = assets.prop('chest', 0.75);
-    else {
+    else if (kind === 'meteor') {
+      mesh = new THREE.Group();
+      const rock = new THREE.Mesh(new THREE.DodecahedronGeometry(0.45, 0), new THREE.MeshStandardMaterial({ color: 0x2a2030, emissive: 0x7050ff, emissiveIntensity: 0.9, roughness: 0.6, flatShading: true }));
+      rock.scale.set(1, 0.7, 1.2);
+      mesh.add(rock);
+    } else {
       mesh = new THREE.Group();
       const raft = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.25, 2.2), new THREE.MeshStandardMaterial({ color: 0x8a6238 }));
       const flag = new THREE.Mesh(new THREE.PlaneGeometry(0.6, 0.4), new THREE.MeshStandardMaterial({ color: 0xf2f2f2, side: THREE.DoubleSide }));
@@ -141,7 +169,7 @@ export const events = {
     }
     mesh.traverse((o) => { if (o.isMesh) o.castShadow = true; });
     this.scene.add(mesh);
-    const labels = { barrel: 'Yüzen varili al', bottle: 'Şişeyi al', chest: 'Yüzen sandığı yakala', survivor: 'Kazazedeyi kurtar' };
+    const labels = { barrel: 'Yüzen varili al', bottle: 'Şişeyi al', chest: 'Yüzen sandığı yakala', survivor: 'Kazazedeyi kurtar', meteor: 'Gök taşı parçasını al' };
     const f = { id: uid('f'), kind, pos: pos.clone(), mesh, t: 0, label: labels[kind] };
     // yüzen cisim: dalgalarla sallanır, rüzgârla sürüklenir, kıyıya vurur
     const rad = { barrel: 0.45, bottle: 0.2, chest: 0.4, survivor: 1.1 }[kind] || 0.4;
@@ -161,6 +189,10 @@ export const events = {
     } else if (f.kind === 'bottle') {
       p.inv.add('sise_mesaj', 1, null, true);
       G.notify('Şişede mesaj aldın! Haritacı Nevra açabilir ya da envanterden kullan.', 'good', 4500);
+    } else if (f.kind === 'meteor') {
+      p.inv.add('gok_tasi', 1, null, true);
+      G.notify('Gök Taşı Parçası aldın! Hâlâ ılık ve mor bir ışıkla parlıyor.', 'good', 4500);
+      G.emit('rareFind', { kind: 'meteor' });
     } else if (f.kind === 'chest') {
       const c = treasure.spawnChest(Math.random() < 0.7 ? 'small' : 'medium', f.pos.clone());
       c.state = 'water';

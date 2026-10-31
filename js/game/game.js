@@ -211,6 +211,7 @@ export const game = {
     if (input.pressed('envanter')) G.emit('openInventory');
     if (input.pressed('harita')) G.emit('openMap');
     if (input.pressed('defter')) G.emit('openJournal');
+    if (input.pressed('yetenek')) G.emit('openSkills');
     if (input.pressed('isaret')) G.emit('placeMarker');
     if (input.pressed('birak') && p.carrying) G.emit('dropCarry', { player: p });
     if (input.pressed('pusula')) G.emit('toggleCompass');

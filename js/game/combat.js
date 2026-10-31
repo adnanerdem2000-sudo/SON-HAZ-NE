@@ -96,7 +96,7 @@ export const combat = {
     if (input.pressed('doldur') && p.equipped === 'pistol' && !p.loaded && p.reloadT <= 0) {
       if (p.inv.has('mermi')) {
         p.inv.remove('mermi', 1);
-        p.reloadT = p.inv.has('usta_tabanca') ? 1.3 : 2.0;
+        p.reloadT = (p.inv.has('usta_tabanca') ? 1.3 : 2.0) * (G.mods?.reload || 1);
         p.startAction('reload', p.reloadT * 0.9);
         audio.play('ui', { vol: 0.3, rate: 0.6 });
       } else G.notify('Mermin kalmadı!', 'warn');
@@ -178,7 +178,7 @@ export const combat = {
   punch(p) { this._attack(p, 'light'); },
 
   _meleeHit(p, D) {
-    const base = p.equipped === 'sword' ? p.weaponDamage() : 9;
+    const base = p.equipped === 'sword' ? p.weaponDamage() : 9 * (G.mods?.melee || 1);
     const hitSet = new Set();
     let any = false, blocked = false;
     for (const t of this.targets) {
@@ -290,11 +290,12 @@ export const combat = {
   fireCannon(ship, i, by) {
     if (!ship.canFire(i)) return;
     ship.cannonballs--;
-    ship.cannonState[i].reload = 3.5 / (1 + ship.upg.cannons * 0.2);
+    const own = ship === G.ship;
+    ship.cannonState[i].reload = 3.5 / (1 + ship.upg.cannons * 0.2) * (own ? G.mods?.cannonReload || 1 : 1);
     const { muzzle, dir } = ship.cannonWorld(i);
     const vel = dir.clone().multiplyScalar(58).add(new THREE.Vector3(ship.vx || 0, 0, ship.vz || 0));
     effects.flash(muzzle.x, muzzle.y, muzzle.z, dir);
-    effects.cannonball(muzzle, vel, ship, ship.T.cannonDamage * (1 + ship.upg.cannons * 0.15));
+    effects.cannonball(muzzle, vel, ship, ship.T.cannonDamage * (1 + ship.upg.cannons * 0.15) * (own ? G.mods?.cannon || 1 : 1));
     audio.boom(0.9, muzzle);
     if (by === G.myId) tpCamera.addShake(0.6);
     this.noise(muzzle, 90, 'cannon');

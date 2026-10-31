@@ -252,6 +252,7 @@ export class Ship {
 
   damage(amount, localPos = null, kind = 'hit') {
     if (this.sunk || this.kinematic) return;
+    amount *= this.dmgTakenMul || 1;
     this.hp = Math.max(0, this.hp - amount);
     if (localPos && amount >= 6) this.addHole(localPos, amount > 20 ? 1.4 : 1);
     if (localPos) this._partHits(amount, localPos, kind);
@@ -302,7 +303,7 @@ export class Ship {
     const hullF = (0.55 + 0.45 * (this.hp / this.maxHp)) * (1 - this.water / 160) * (0.72 + 0.28 * this.parts.pruva / 100) * this.sailFactor();
     const windF = 0.45 + 0.75 * sky.windStrength;
     const stormF = sky.weather.waves > 1.8 ? 0.85 : 1;
-    let target = T.maxSpeed * (1 + this.upg.sails * 0.08) * this.sail * this.windEfficiency() * windF * hullF * stormF;
+    let target = T.maxSpeed * (1 + this.upg.sails * 0.08) * (this.speedMul || 1) * this.sail * this.windEfficiency() * windF * hullF * stormF;
     if (this.anchored || this.sinking) target = 0;
     if (this.backing && this.sail < 0.1 && !this.anchored) target = -1.4;
     const accRate = (target > fwd ? T.accel * (1 + sailSpeed * 0.2) * 0.5 : (this.anchored ? 1.1 : 0.32)) / Math.pow(m, 0.35);

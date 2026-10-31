@@ -11,6 +11,8 @@ import { treasure } from '../treasure/treasure.js';
 import { time } from '../world/time.js';
 import { renderMapBase, drawPoiIcon, fogCanvas, drawDetail } from './mapArt.js';
 import { ISLANDS, POIS, WORLD_SIZE } from '../world/worldData.js';
+import { progress, need, rankOf, MAX_LEVEL } from '../game/progress.js';
+import { regionAt, REGIONS } from '../world/archipelago.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -42,6 +44,64 @@ export const hud = {
     G.on('equip', () => this._hotbarActive());
     G.on('toggleCompass', () => { this.compassOn = !this.compassOn; $('compass-bar').classList.toggle('hidden', !this.compassOn); });
     this.compassOn = true;
+    // deneyim ve rütbe
+    G.on('xpGain', (e) => this._xpPop(e));
+    G.on('levelUp', (e) => this._levelUp(e));
+    G.on('sessionStart', () => { this._region = null; this._island = null; this._islandSeen = new Map(); });
+  },
+
+  _xpPop(e) {
+    const box = $('xp-pops');
+    if (!box) return;
+    const d = document.createElement('div');
+    d.className = 'xp-pop';
+    d.innerHTML = `+${e.xp} XP${e.reason ? ` <span>${e.reason}</span>` : ''}`;
+    box.appendChild(d);
+    while (box.children.length > 4) box.removeChild(box.firstChild);
+    setTimeout(() => d.remove(), 2200);
+  },
+
+  _levelUp(e) {
+    const b = $('levelup');
+    b.querySelector('.lu-level').textContent = `Seviye ${e.level}`;
+    b.querySelector('.lu-rank').textContent = e.newRank ? `Yeni rütbe: ${e.rank}` : e.rank;
+    b.classList.remove('hidden', 'out');
+    void b.offsetWidth;
+    b.classList.add('show');
+    clearTimeout(this._luT);
+    this._luT = setTimeout(() => { b.classList.add('out'); setTimeout(() => b.classList.add('hidden'), 600); }, 4200);
+  },
+
+  // bölgeye ya da adaya girişte sinematik konum afişi
+  _location(p) {
+    const reg = regionAt(p.pos.x, p.pos.z);
+    let isl = null;
+    for (const I of ISLANDS) { const r = I.r * Math.max(I.ex || 1, I.ez || 1); if (Math.abs(p.pos.x - I.x) < r && Math.abs(p.pos.z - I.z) < r && Math.hypot(p.pos.x - I.x, p.pos.z - I.z) < r * 0.95) { isl = I; break; } }
+    const now = performance.now();
+    if (this._region === undefined || this._region === null) { this._region = reg; this._island = isl?.id || null; return; }
+    if (reg !== this._region) {
+      this._region = reg;
+      const R = REGIONS[reg];
+      if (R) this._banner(R.name, R.desc, 'region');
+    } else if ((isl?.id || null) !== this._island) {
+      this._island = isl?.id || null;
+      const seen = this._islandSeen || (this._islandSeen = new Map());
+      if (isl && now - (seen.get(isl.id) || -1e9) > 180000) {
+        seen.set(isl.id, now);
+        const BIO = { tropik: 'Tropik ada', cangil: 'Cangıl adası', buzul: 'Buzul adası', volkan: 'Volkanik ada', col: 'Çöl adası', hayalet: 'Lanetli ada' };
+        this._banner(isl.name, `${BIO[isl.biome] || 'Ada'} · ${REGIONS[reg]?.name || ''}`, 'island');
+      }
+    }
+  },
+  _banner(title, sub, kind) {
+    const b = $('loc-banner');
+    b.className = kind;
+    b.querySelector('.lb-title').textContent = title;
+    b.querySelector('.lb-sub').textContent = sub;
+    void b.offsetWidth;
+    b.classList.add('show');
+    clearTimeout(this._lbT);
+    this._lbT = setTimeout(() => { b.classList.remove('show'); b.classList.add('out'); setTimeout(() => b.classList.add('hidden'), 900); }, 4800);
   },
 
   show(on) { this.root.classList.toggle('hidden', !on); },
@@ -166,7 +226,15 @@ export const hud = {
     ox.classList.toggle('hidden', !showOx);
     if (showOx) { set('.vital.ox', p.oxygen); ox.querySelector('.depth').textContent = p.depth.toFixed(1) + ' m'; }
     $('hud-gold').textContent = Math.floor(p.inv.gold).toLocaleString('tr-TR');
-    if (this._t % 0.5 < dt) this._hotbarActive();
+    if (this._t % 0.5 < dt) {
+      this._hotbarActive();
+      const L = progress.level;
+      $('hud-lvl').textContent = L;
+      $('hud-rank').textContent = rankOf(L);
+      $('hud-xp').style.width = (L >= MAX_LEVEL ? 100 : clamp(progress.xp / need(L) * 100, 0, 100)) + '%';
+      $('hud-pts').classList.toggle('hidden', !progress.points);
+      this._location(p);
+    }
     // pusula
     if (this.compassOn) {
       const deg = ((-tpCamera.yaw * 180 / Math.PI) + 180 + 720) % 360; // kamera bakış yönü (0 = kuzey)
