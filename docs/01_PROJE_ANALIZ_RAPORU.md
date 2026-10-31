@@ -61,3 +61,21 @@ Fab varlıkları ayrıca hesap girişi ve Unreal biçimi (uasset) gerektirdiğin
 7. Online, performans, belgeler, kabul testleri.
 
 Mevcut çalışan sistemler silinmeden genişletilir; her aşama ayrı commit olarak dalda saklanır.
+
+## 1.6 v0.3 sonunda durum (karşılaştırma)
+Aynı ölçüm yöntemiyle (başsız Chromium + SwiftShader) v0.3'ün son hâli:
+
+| Ölçüt | v0.2 | v0.3 |
+|---|---|---|
+| Oynanabilir alan | 2,4 × 2,4 km | 20 × 20 km (akışlı yükleme) |
+| Ada / liman / biyom | 6 / 1 / 2 | 73 / 6 / 6 |
+| Düşman türü | 7 + 2 boss | 17 tür (4'ü boss niteliğinde) + 5 efsanevi boss |
+| AI | tek kalıp durum makinesi | algı (görüş/ses), 17 durum, jeton, kuşatma, siper, moral |
+| Animasyon | ~24 klip, IK/ragdoll yok | 89 eşlenmiş KayKit klibi, katmanlar, ragdoll, IK |
+| Kara hayvanı / balık | 8 / 12 | 15 / 32 + balina, orka, yunus, hayalet balina |
+| Gemi hasarı | tek can + delikler | bölgesel hasar, direk/yelken/top, yangın, bordalama |
+| İlerleme | yok | 30 seviye rütbe + 12 yetenek |
+| Oyun mantığı karesi | 1,4–2,9 ms | 1,3–3,1 ms |
+| Çizim çağrısı | ~690 | 380–1 045 (sahneye göre) |
+
+Ayrıntılar: `docs/02`–`docs/14`. Açık konular: `docs/13_BILINEN_HATALAR.md`.

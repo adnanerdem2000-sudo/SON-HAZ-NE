@@ -1,4 +1,45 @@
-# Test Raporu — Aşama 2 (Görsel İyileştirmeler, Hava Olayları, Zaman Çizelgesi, Fizik)
+# Test Raporu — Sürüm 0.3 (Genişleyen Denizler)
+
+Test ortamı: başsız Chromium (Playwright) + yazılımsal WebGL (SwiftShader), Linux. Testler oyunun kendi kodunu
+`window.DK` hata ayıklama kancalarıyla ileri sararak çalıştırır; görsel kontrol 3B tuval yakalamalarıyla (`DK.snapFrom`)
+ve sayfa ekran görüntüleriyle yapıldı. Online testler iki tarayıcı bağlamı ve yerel PeerJS sinyal sunucusuyla yapıldı.
+Aşağıdaki tüm koşularda konsol hatası: **0**. Ayrıntılı belgeler: `docs/01`–`docs/14`.
+
+## A. Kabul testleri (v0.3)
+| # | Kabul ölçütü | Test | Sonuç |
+|---|---|---|---|
+| 1 | Mevcut sistemler bozulmadı | Hikâye akışı regresyonu (`g2b`): Tuzla → harita → kazı → sandığı taşı → ambara koy → sat | ✔ her adımda aynı sonuç (310 altın, aşama 2) |
+| 2 | Dünya 20 km'ye genişledi, gemi tüm haritada seyredebiliyor | Gemi Buzul (600, −6200), Kül Adaları, Hayalet Denizleri'ne taşındı; eski ±1 150 m sınırı hatası bulunup düzeltildi | ✔ |
+| 3 | Bölgeye özgü adalar ve içerik | Kurt Adası, Buzdişi, liman kasabaları, kamp/harabe/tapınak/hapishane | ✔ (bkz. `docs/03`) |
+| 4 | Bölge hayvanları doğru boyut/yön/animasyonla | Kurt, geyik, erkek geyik, tilki, kutup ayısı (yeni model), kar canavarı, dev yengeç yakın çekimleri | ✔ 193 bölge, Kurt Adası'nda 16 hayvan |
+| 5 | Deniz devleri | Balina: nefes, kuyruk kaldırarak dalış, yüzeye çıkış, sıçrama + suya çarpış; orka sürüsü; yunus sıçrayışı; hayalet balina | ✔ |
+| 6 | Yunuslar pruvada yüzer | 8,9 m/s seyirde sürü pruvanın 12,3 m önüne kilitlendi | ✔ |
+| 7 | Orkalar yüzeni avlar, adil uyarıyla | 5 sn çevreleme, sonra 14 hasarlık tekil saldırılar (20 sn'de 100 → 44 can) | ✔ |
+| 8 | Barut fıçısı, zincir, savrulma | Kampta fıçı patladı: yakındaki 2 haydut 100 → 59/73, sandık kırıldı, 13 parça savruldu | ✔ |
+| 9 | Fizik bulmacası | Taş blok 108 karede plakaya itildi, kafes 2,3 m gömüldü, gizli sandık açıldı | ✔ |
+| 10 | Kaya tuzağı | Takoz sökülünce kaya 35 m yuvarlanıp kamp merkezine ulaştı (en çok 8,9 m/s) | ✔ |
+| 11 | Gayzer | Fışkırmada oyuncu 5,4 m havalandı, 4 hasar, düşme hasarı yok | ✔ |
+| 12 | Bağlama duyarlı olaylar | Buzdağları (6, gemi engeli), plankton izi, gök taşı (yüzen parça), volkanik bombardıman (gemi 100 → 74,8) | ✔ |
+| 13 | İlerleme | XP → seviye atlama afişi, yetenek öğrenme (Demir Bilek: azami can 115), G.mods bağlantıları | ✔ |
+| 14 | Arayüz | Yeni ana menü (960×540 ve 1366×768), HUD rütbe/XP, yetenek paneli, harita, zar oyunu | ✔ |
+| 15 | Boss | Volkanik Dev: doğuş, evre 2 ve 3 bildirimleri, yenilgi, ödül, +600 XP | ✔ (diğer dört boss önceki v0.3 adımlarında) |
+| 16 | Online | Fıçı patlaması, XP payı, orka/balina/buzdağı görselleri, konuğun orka vuruşu ev sahibine | ✔ (`docs/11`) |
+| 17 | Performans | Oyun mantığı 1,3–3,1 ms/kare (60 FPS bütçesinin %8–19'u) | ✔ (`docs/12`) |
+
+## B. v0.3 ara adımlarında doğrulananlar
+- Savaş: parry 7/7, kombo, ağır vuruş, yönlü kaçınma; algı ve grup alarmı; ragdoll ve ayağa kalkış.
+- Akışlı arazi (Worker), liman kasabaları, biyomlar (kuzey, çöl, hapishane, hayalet mezarlığı, tapınak), harita ve mini harita
+  ayrıntısı, bölge atmosferi.
+- Bosslar: Kraken (dokunaç kırma, evreler), Derinlik Yılanı, Taş Muhafız (tapınak bulmacası + rün sütunları), Lanetli Amiral (bordalama).
+- Gemi bölgesel hasarı (direk devrilmesi, yelken yırtığı, yangın istemleri), düşman gemisine bordalama ve ele geçirme.
+
+## C. Bu sürümde bulunup düzeltilen hatalar
+Bkz. `docs/13_BILINEN_HATALAR.md` §13.2 (gemi dünya sınırı, `audio.tone` konum hatası, uyuyan hayvan duruşu,
+yengeç klip adları, sistem adı gölgelemesi, yavaş ada kurulumu ve diğerleri).
+
+---
+
+# Önceki rapor — Aşama 2 (Görsel İyileştirmeler, Hava Olayları, Zaman Çizelgesi, Fizik)
 
 Test ortamı: başsız Chromium (Playwright) + yazılımsal WebGL (SwiftShader), Linux. Online testler iki ayrı tarayıcı
 bağlamı ve yerel PeerJS sinyal sunucusuyla yapıldı. Testler oyunun kendi kodunu `window.DK` hata ayıklama kancalarıyla
