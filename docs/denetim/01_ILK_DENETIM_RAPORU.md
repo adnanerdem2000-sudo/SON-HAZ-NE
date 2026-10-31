@@ -4,8 +4,8 @@ Denetlenen sürüm: commit `762f1c7` (etiket `yedek-v0.3`). Yöntem: sekiz alan 
 
 ## 1.1 Özet
 
-- İncelenen alan grubu: 8 · Bildirilen hata iddiası: 147 · Doğrulanan: 33 · Tartışmalı: 0 · Belirsiz: 114 · Çürütülen: 0 · Ek bulgu: 10
-- Doğrulanan hataların önem dağılımı: Kritik 0, Yüksek 2, Orta 8, Düşük 23
+- İncelenen alan grubu: 8 · Bildirilen hata iddiası: 147 · Doğrulanan: 100 · Tartışmalı: 0 · Belirsiz: 45 · Çürütülen: 2 · Ek bulgu: 39
+- Doğrulanan hataların önem dağılımı: Kritik 1, Yüksek 10, Orta 35, Düşük 54
 
 ## 1.2 Alan durumları
 
