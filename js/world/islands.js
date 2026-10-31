@@ -301,6 +301,7 @@ export const islands = {
     for (const n of B.npcs) npcs.remove(n);
     for (const e of B.extras) e.dispose?.();
     this.built.delete(id);
+    G.emit('islandDropped', { id });
   },
 
   // ---- bitki örtüsü ----

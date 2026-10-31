@@ -8,6 +8,7 @@ import { physics } from '../world/physics.js';
 import { terrain } from '../world/terrain.js';
 import { animals } from '../wildlife/animals.js';
 import { megafauna } from '../wildlife/megafauna.js';
+import { hazards } from '../world/hazards.js';
 import { treasure } from '../treasure/treasure.js';
 import { combat } from '../game/combat.js';
 import { effects } from '../game/effects.js';
@@ -124,6 +125,7 @@ export const net = {
     relay('netHurtEnemy', (e) => this.toHost({ t: 'hurtEnemy', ...e }));
     relay('netHurtAnimal', (e) => this.toHost({ t: 'hurtAnimal', ...e }));
     relay('netHurtMarine', (e) => this.toHost({ t: 'hurtMarine', ...e }));
+    relay('netHazard', (e) => this.sendGame({ t: 'hazard', ...e }));
     relay('netHurtPlayer', (e) => this.toPeer(e.id, { t: 'hurt', dmg: e.dmg, from: e.from, cause: e.cause, melee: e.melee ? 1 : 0, ub: e.unblockable ? 1 : 0, aid: e.attackerId || null, bullet: e.bullet ? 1 : 0 }));
     relay('netStunEnemy', (e) => this.toHost({ t: 'stunEnemy', id: e.id, dur: e.dur }));
     relay('netHurtBoss', (e) => this.toHost({ t: 'hurtBoss', ...e }));
@@ -248,6 +250,7 @@ export const net = {
       case 'hold': { const s = G.ships.find((x) => x.id === m.ship); if (s) s.hold = m.hold; this.broadcast(m, pid); break; }
       case 'shipFull': this._shipFull(m); this.broadcast(m, pid); break;
       case 'marker': quests.markers.push({ x: m.x, z: m.z, by: m.by, note: m.note || '', color: c.info.color }); this.broadcast(m, pid); G.notify(`${m.by} haritaya işaret koydu.`, 'info', 2000); break;
+      case 'hazard': hazards.netApply(m); this.broadcast(m, pid); break;
       case 'shipCmd': this._shipCmd(m, pid); break;
       case 'helm': { const s = G.ships.find((x) => x.id === m.ship); if (s) { s.setRudder(m.rudder); s.sailTarget = m.sail; s.backing = m.back; } break; }
       case 'fire': { const s = G.ships.find((x) => x.id === m.ship); if (s) { s.aimCannon(m.i, m.yaw, m.pitch); combat.fireCannon(s, m.i, pid); } break; }
@@ -424,6 +427,7 @@ export const net = {
       case 'hold': { const s = G.ships.find((x) => x.id === m.ship); if (s) s.hold = m.hold; break; }
       case 'shipFull': this._shipFull(m); break;
       case 'marker': quests.markers.push({ x: m.x, z: m.z, by: m.by, note: m.note || '', color: '#6ad0f0' }); G.notify(`${m.by} haritaya işaret koydu.`, 'info', 2000); break;
+      case 'hazard': hazards.netApply(m); break;
       case 'story': quests.stage = m.stage; Object.assign(quests.flags, m.flags || {}); quests.journalMesh.visible = !quests.flags.gunluk; break;
       case 'gold': G.player.inv.gold += m.amount; G.notify(`Tayfa kazancı: +${m.amount} altın`, 'good', 2500); break;
       case 'weather': sky.setWeather(m.w); break;

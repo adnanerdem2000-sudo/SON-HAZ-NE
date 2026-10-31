@@ -67,7 +67,7 @@ export const ITEMS = {
   kizil_mektup: { name: 'Kızıl Hançer\'in Mektubu', cat: 'gorev', weight: 0.1, value: 0, rarity: 'epik', icon: 'letter', nosell: true, desc: 'Yitik Ufuk\'tan söz eden mühürlü mektup.' },
   baharat: { name: 'Baharat Kesesi', cat: 'koleksiyon', weight: 0.4, value: 70, rarity: 'yaygin', icon: 'spice', stack: true, desc: 'Uzak doğunun safran ve tarçını. Limanda değerli bir hediye.' },
   ipek: { name: 'İpek Top', cat: 'koleksiyon', weight: 1, value: 150, rarity: 'nadir', icon: 'silk', stack: true, desc: 'Parlak, yumuşak ipek kumaş. Terziler bayılır.' },
-  hayvan_postu: { name: 'Yaban Domuzu Postu', cat: 'ganimet', weight: 2, value: 18, rarity: 'siradan', icon: 'hide', stack: true, desc: 'Tüccarlar deri için alır.' },
+  hayvan_postu: { name: 'Hayvan Postu', cat: 'ganimet', weight: 2, value: 18, rarity: 'siradan', icon: 'hide', stack: true, desc: 'Avlanan hayvanlardan elde edilen post; tüccarlar deri için alır.' },
   timsah_derisi: { name: 'Timsah Derisi', cat: 'ganimet', weight: 3, value: 75, rarity: 'yaygin', icon: 'hide', stack: true, desc: 'Sağlam ve değerli deri.' },
 };
 
