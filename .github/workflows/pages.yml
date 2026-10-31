@@ -5,7 +5,7 @@ name: GitHub Pages
 
 on:
   push:
-    branches: [main, master, 'claude/**']
+    branches: [main, master, 'claude/hopeful-cray-o1jw6w']
   workflow_dispatch:
 
 permissions:
