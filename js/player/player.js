@@ -564,14 +564,16 @@ export class Player {
       if (this.vel.y > 0) this.fallStartY = Math.max(this.fallStartY, this.pos.y);
     }
     // suya girdi mi?
-    const wh = ocean.heightAt(this.pos.x, this.pos.z);
-    // platform (iskele basamağı) üzerinde: derin su kanalında dalga sönümsüzdür (±1.1 m); giriş eşiği 0.3 m daha derin ve 0.5 s
-    // süreklilik aranır, yoksa su hattındaki basamakta duran oyuncu dakikada 16 kez yüzme/yürüme kipi değiştiriyordu
-    const dw = this.onPlatform ? 0.3 : 0;
-    if (this._modeT <= 0 && this.pos.y < wh - 1.15 - dw && g < wh - 1.35 - dw) {
-      this._wetT = (this._wetT || 0) + dt;
-      if (!this.onPlatform || this._wetT >= 0.5) { this._wetT = 0; this.enterWater(); return; }
-    } else this._wetT = 0;
+    const whRaw = ocean.heightAt(this.pos.x, this.pos.z);
+    // platform (iskele basamağı) üzerinde karar dalgasız su düzeyine göre verilir: 4 s alçak geçiren seviye (dalga ortalaması
+    // ≈ gelgit). Anlık dalga ile karar verilince su hattındaki basamakta duran oyuncu her dalgada kip değiştiriyor, olta/nişan/
+    // taşıma sıfırlanıyordu (inceleme L1). Kumsalda (platform yok) anlık yükseklik kullanılır.
+    this._wlp = this._wlp === undefined ? whRaw : this._wlp + (whRaw - this._wlp) * (1 - Math.exp(-dt / 4));
+    const wh = this.onPlatform ? this._wlp : whRaw;
+    if (this._modeT <= 0 && this.pos.y < wh - 1.15 && g < wh - 1.35) {
+      this.enterWater();
+      return;
+    }
     if (this.onGround && g > 0.5) this.lastSafe.copy(this.pos);
     // animasyon
     const hs = Math.hypot(this.vel.x, this.vel.z);
@@ -651,6 +653,7 @@ export class Player {
   _updateSwim(dt, locked) {
     const { d, mag } = locked ? { d: new THREE.Vector3(), mag: 0 } : this._moveDir();
     const wh = ocean.heightAt(this.pos.x, this.pos.z);
+    this._wlp = this._wlp === undefined ? wh : this._wlp + (wh - this._wlp) * (1 - Math.exp(-dt / 4)); // alçak geçiren su düzeyi
     const surfaceY = wh - 1.35;
     let vy = 0;
     const fast = !locked && input.isDown('kos') && this.stamina > 2;
@@ -697,8 +700,10 @@ export class Player {
     c.model.rotation.x = damp(c.model.rotation.x, pitch, 6, dt);
     c.overlay.lift = damp(c.overlay.lift || 0, this.swimMoving ? 1.0 : 0, 6, dt); // Character.update uygular
     this._wantAnim('Idle');
-    // sığ suya çıkış (histerezis: giriş eşiği wh-1.35'in üstünde; mod kilidi süresince değişmez)
-    if (this._modeT <= 0 && (floor > wh - 1.25 || this.pos.y - floor < 0.3 && floor > wh - 1.3)) {
+    // sığ suya çıkış (histerezis: giriş eşiği wh-1.35'in üstünde; mod kilidi süresince değişmez). Zemin bir platformsa
+    // (iskele basamağı) karar alçak geçiren su düzeyine göre (bkz. _updateGround).
+    const whX = physics.lastPlatform ? this._wlp : wh;
+    if (this._modeT <= 0 && (floor > whX - 1.25 || this.pos.y - floor < 0.3 && floor > whX - 1.3)) {
       this.exitWater();
     }
   }

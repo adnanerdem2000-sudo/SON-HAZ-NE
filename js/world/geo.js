@@ -70,7 +70,8 @@ function islandH(I, x, z) {
     return beach + Math.max(0, mount + hills * 0.25);
   } else if (shape === 'atoll') {
     // halka ada: içte sığ lagün
-    if (d < 0.66) return lerp(-3.6, 0.4, smoothstep(0.42, 0.66, d)) + fbm(x / 18, z / 18, 2) * 0.4;
+    // lagün dalı halka tabanına (d=0.66'da beach·0.6 = 0.9) süreklilikle bağlanır; önce 0.4±0.4 → 0.9 arasında 0.1–0.9 m dikiş vardı
+    if (d < 0.66) return lerp(-3.6, 0.9, smoothstep(0.42, 0.66, d)) + fbm(x / 18, z / 18, 2) * 0.4 * (1 - smoothstep(0.55, 0.66, d));
     const ring = smoothstep(0.66, 0.78, d) * smoothstep(1.0, 0.9, d);
     return beach * 0.6 + ring * (1.2 + I.h * 0.35 * (0.5 + 0.5 * fbm(x / 30 + I.seed, z / 30, 2)));
   } else if (shape === 'spire') {
@@ -79,10 +80,15 @@ function islandH(I, x, z) {
     mount = (I.h - 1.5) * Math.pow(inner, 0.95) * (0.7 + 0.3 * fbm(x / 180 + I.seed, z / 180, 3));
   } else if (shape === 'swamp') {
     // alçak, düz ve su birikintileriyle delik deşik
-    mount = 3 + (I.h - 3) * Math.pow(inner, 2) * 0.6;
+    // 3 m'lik taban kıyıda sıfıra iner: önce d→1⁻'de 3 m, d≥1'de 0 → her bataklık adasının çevresinde 3 m'lik dikey duvar
+    // (denizden karaya hiçbir noktadan çıkılamıyordu)
+    mount = (3 + (I.h - 3) * Math.pow(inner, 2) * 0.6) * smoothstep(1.0, 0.9, d);
     const pool = noise2(x / 38 + I.seed, z / 38);
-    if (pool > 0.3 && d < 0.85) return lerp(beach + mount, -1.4, smoothstep(0.3, 0.42, pool));
-    return beach + Math.max(0, mount + hills * 0.3);
+    // su birikintisi: kıyıya doğru (d 0.75→0.85) ve havuz eşiğinde (pool 0.3→0.42) sürekli geçiş; önce `d < 0.85` keskin
+    // sınırı havuz kenarında 6 m'lik duvar, havuz eşiği de tepecik terimi kadar basamak bırakıyordu
+    const land = beach + Math.max(0, mount + hills * 0.3);
+    const w = smoothstep(0.3, 0.42, pool) * smoothstep(0.85, 0.75, d);
+    return w > 0 ? lerp(land, -1.4, w) : land;
   } else {
     mount = (I.h - 1.5) * Math.pow(inner, 1.5) * (0.62 + 0.38 * fbm(x / 95 + I.seed, z / 95, 3));
   }

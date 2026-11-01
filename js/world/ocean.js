@@ -24,10 +24,20 @@ export const ocean = {
   mesh: null,
   uniforms: null,
 
+  // Barınak (liman): merkez çevresinde dalgalar ×0.2'ye iner (r0 içinde tam, r1'de normal). Liman kanalı 9 m derin
+  // olduğundan kıyı sönümü işlemiyor ve iskele merdiveninde ±1.1 m dalga kip titreşimine yol açıyordu.
+  shelter: null,
+  setShelter(x, z, r0, r1) {
+    this.shelter = r1 > r0 ? { x, z, r0, r1 } : null;
+    if (this.uniforms) this.uniforms.uShelter.value.set(x, z, r0, this.shelter ? r1 : 0);
+  },
   // Kıyıya yaklaştıkça dalgalar sönümlenir
   shoreFactor(x, z) {
     const depth = this.tide - terrain.heightAt(x, z);
-    return 0.15 + 0.85 * smoothstep(0.0, 9.0, depth);
+    let f = 0.15 + 0.85 * smoothstep(0.0, 9.0, depth);
+    const S = this.shelter;
+    if (S) f *= 0.2 + 0.8 * smoothstep(S.r0, S.r1, Math.hypot(x - S.x, z - S.z));
+    return f;
   },
 
   heightAt(x, z, t = this.time) {
@@ -102,7 +112,9 @@ export const ocean = {
       uGhost: { value: 0 },
       uTide: { value: 0 },
       uRain: { value: 0 },
+      uShelter: { value: new THREE.Vector4(0, 0, 0, 0) }, // x, z, r0, r1 (r1 = 0: kapalı)
     };
+    if (this.shelter) this.uniforms.uShelter.value.set(this.shelter.x, this.shelter.z, this.shelter.r0, this.shelter.r1);
     const mat = new THREE.ShaderMaterial({
       uniforms: this.uniforms,
       transparent: true,
@@ -110,6 +122,7 @@ export const ocean = {
       depthWrite: true,
       vertexShader: /* glsl */`
         uniform float uTime, uWaveScale, uHSize, uTide;
+        uniform vec4 uShelter;
         uniform vec2 uHMin;
         uniform vec4 uWaves[5];
         uniform vec2 uAmps[5];
@@ -124,6 +137,7 @@ export const ocean = {
           float th = terrainH(wp.xz);
           float depth = uTide - th;
           float s = uWaveScale * (0.15 + 0.85*smoothstep(0.0, 9.0, depth));
+          if (uShelter.w > uShelter.z) s *= 0.2 + 0.8*smoothstep(uShelter.z, uShelter.w, distance(wp.xz, uShelter.xy));
           float h = 0.0; vec2 g = vec2(0.0);
           for(int i=0;i<5;i++){
             vec4 w = uWaves[i];

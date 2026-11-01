@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { terrain } from './terrain.js';
 import { ports } from './ports.js';
 import { physics } from './physics.js';
+import { ocean } from './ocean.js';
 import { assets } from '../core/assets.js';
 import { woodPlanks, roofTiles, thatch, stone, cloth, makeLabelTexture } from '../core/textures.js';
 import { rng } from '../core/util.js';
@@ -172,10 +173,12 @@ export const port = {
     scene.add(tdeck);
     physics.addPlatform(10, tz, tW / 2, tD / 2, 0, pierTop, 'pier');
     // sudan iskeleye çıkış: T başlığının doğu kenarından denize inen taş merdiven. Yüzen oyuncunun ayağı su yüzeyinin 1.35 m
-    // altındadır (gelgit ±0.55 m; liman kanalı 9 m derin olduğundan dalga sönümsüz, ±1.1 m), 0.6 m'den yüksek basamağa çıkamaz.
-    // Su altı basamakları 0.3 m, su üstü basamakları 0.55 m yükselir; en alt basamak −2.4 m (gelgit −0.55 + dalga çukuru −1.1'de
-    // ayak −3.0 → 0.6 m penceresinde). Taş kolonlar deniz tabanına kadar dolu çizilir; çarpıştırıcı da tam yükseklik
-    // (platform yan bandı yerine), yüzücü/dalgıç taşın içinden geçemez. Önce iskeleye sudan çıkış yoktu.
+    // altındadır (gelgit ±0.55 m), 0.6 m'den yüksek basamağa çıkamaz. Liman kanalı 9 m derin olduğundan kıyı sönümü işlemez;
+    // bu yüzden liman barınak ilan edilir (ocean.setShelter: dalga ×0.2, 70 m içinde tam) — aksi hâlde ±1.1 m dalga (fırtınada
+    // ±2.6 m) alt basamağı eriştirmiyor ve su hattındaki basamakta kip titreşimi yapıyordu. Su altı basamakları 0.3 m, su üstü
+    // 0.55 m yükselir; en alt basamak −2.4 m (en düşük gelgit + sönümlü çukurda ayak ≈ −2.1 → pencerede). Taş kolonlar deniz
+    // tabanına kadar dolu çizilir; çarpıştırıcı da tam yükseklik, yüzücü/dalgıç taşın içinden geçemez. Önce sudan çıkış yoktu.
+    ocean.setShelter(10, tz + 2, 70, 160);
     {
       const stairMat = M('stair', () => texMat(stone('#8d8578', 23), 1, 0.5));
       const tops = [-2.4, -2.1, -1.8, -1.5, -1.2, -0.9, -0.6, -0.05, 0.5, 1.05, 1.6, 2.15];
@@ -186,6 +189,9 @@ export const port = {
         sx += tread / 2;
         const base = Math.min(top - 0.3, terrain.heightAt(sx, tz) - 0.3);
         const sm = box(tread, top - base, width, stairMat);
+        // doku ölçeği: paylaşımlı malzemenin (1, 0.5) tekrarı 7–11 m'lik kolona gerilmesin; her yüzde ~0.6 m'lik taş karosu
+        { const uv = sm.geometry.attributes.uv, H = top - base, k = 1 / 0.6; const su = [tread * k, tread * k, tread * k, tread * k, width * k, width * k], sv = [H * k, H * k, width * k, width * k, H * k, H * k];
+          for (let f = 0; f < 6; f++) for (let v = 0; v < 4; v++) { const i = f * 4 + v; uv.setXY(i, uv.getX(i) * su[f], uv.getY(i) * sv[f]); } uv.needsUpdate = true; }
         sm.position.set(sx, (top + base) / 2, tz);
         sm.receiveShadow = true;
         scene.add(sm);
