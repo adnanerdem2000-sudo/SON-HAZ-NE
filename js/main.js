@@ -188,20 +188,24 @@ const handlers = {
     ui.closeAll();
     G.saveKind = 'guest';
     const guest = save.read('guest', 0);
-    const data = guest ? { player: { inv: guest.inv, hp: 100 } } : null;
+    // konuk kaydı: envanter, rütbe/yetenek ve kişisel görev/keşif/koleksiyon durumu (hikâye aşaması ev sahibinden gelir)
+    const data = guest ? { player: { inv: guest.inv, hp: 100 }, progress: guest.progress || null, quests: guest.quests || null } : null;
     await game.start({ appearance: G.profile.appearance, save: data, online: true, isHost: false, difficulty: net.room?.difficulty });
     afterStart();
     G.notify('Odaya katıldın! Dünya oda sahibinden yükleniyor…', 'good');
   },
 
   saveNow(manual = false) {
-    if (G.state !== 'playing') return;
+    if (G.state !== 'playing' || !G.player) return;
     if (!G.isHost) {
-      // konuk: kişisel envanteri yerel olarak sakla
-      save.write('guest', 0, { inv: G.player.inv.toJSON(), savedAt: Date.now(), name: G.playerName });
+      // konuk: kişisel envanter + rütbe/yetenek ilerlemesi yerel olarak saklanır (odak kaybı/sekme kapanışı dahil)
+      save.write('guest', 0, { inv: G.player.inv.toJSON(), progress: progress.save(), quests: quests.save(), savedAt: Date.now(), name: G.playerName });
+      progress._guestSave();
       if (manual) G.notify('Kişisel ilerlemen kaydedildi.', 'good');
       return;
     }
+    // ölü/yaralı düşmüş oyuncu kaydedilmez (0 HP ve ölüm konumu kalıcı olmasın)
+    if (G.player.dead || G.player.downed) { if (manual) G.notify('Bayılmışken kayıt yapılamaz.', 'warn'); return; }
     const data = game.serialize();
     data.appearance = G.player.appearance;
     const ok = save.write(G.saveKind === 'online' ? 'online' : 'solo', G.slot ?? 0, data);
@@ -358,7 +362,8 @@ function wire() {
   G.on('chat', (m) => {
     if (G.state !== 'playing') return;
     chatBox.classList.remove('hidden');
-    chatLog.appendChild(el('div', {}, el('b', { style: { color: m.color || '#f3d27a' } }, m.from + ': '), m.text));
+    while (chatLog.childElementCount > 200) chatLog.removeChild(chatLog.firstChild); // günlük DOM'u sınırsız büyümez
+    chatLog.appendChild(el('div', {}, el('b', { style: { color: /^#[0-9a-fA-F]{3,8}$/.test(m.color || '') ? m.color : '#f3d27a' } }, String(m.from ?? '') + ': '), String(m.text ?? '')));
     chatLog.scrollTop = 1e6;
     clearTimeout(wire._ct);
     wire._ct = setTimeout(() => { if (!chatIn.matches(':focus')) chatBox.classList.add('hidden'); }, 8000);
@@ -371,6 +376,8 @@ function wire() {
     if (!G.noAutoPause && !document.pointerLockElement && G.state === 'playing' && !ui.isOpen() && !G.uiOpen && performance.now() - (ui._justClosed || 0) > 300) menu.pause(handlers);
   });
   engine.renderer.domElement.addEventListener('click', () => { if (G.state === 'playing' && !G.uiOpen && !ui.isOpen()) input.lockPointer(); });
+  engine.renderer.domElement.addEventListener('webglcontextlost', (e) => { e.preventDefault(); handlers.saveNow(false); G.notify('Grafik bağlamı kaybedildi (sürücü/GPU). Oyun kaydedildi; sayfayı yenilemen gerekebilir.', 'warn', 10000); });
+  engine.renderer.domElement.addEventListener('webglcontextrestored', () => G.notify('Grafik bağlamı geri geldi.', 'good', 4000));
   window.addEventListener('beforeunload', (e) => {
     if (G.state === 'playing') { handlers.saveNow(false); e.preventDefault(); e.returnValue = ''; }
   });

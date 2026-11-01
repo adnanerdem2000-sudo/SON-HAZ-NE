@@ -21,6 +21,23 @@ export const assets = {
   loaded: 0,
   base: '',
 
+  missing: [],
+  // ağ/CDN hatasına dayanıklı yükleme: 3 deneme, artan bekleme
+  async loadRetry(loader, url, tries = 3) {
+    let err;
+    for (let i = 0; i < tries; i++) {
+      try { return await loader.loadAsync(url); }
+      catch (e) { err = e; await new Promise((r) => setTimeout(r, 400 * (i + 1))); }
+    }
+    throw err;
+  },
+  _placeholder(name) {
+    const g = new THREE.Group();
+    const m = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.6, 0.6), new THREE.MeshStandardMaterial({ color: 0xff40c0 }));
+    m.position.y = 0.3; m.name = 'placeholder_' + name;
+    g.add(m);
+    return { scene: g, animations: [] };
+  },
   async loadAll(onProgress) {
     const loader = new GLTFLoader();
     loader.setMeshoptDecoder(MeshoptDecoder);
@@ -28,7 +45,14 @@ export const assets = {
     const total = MODEL_LIST.length + kk.count();
     const kkJob = kk.load(loader, this.base, () => { done++; if (onProgress) onProgress(done / total); });
     await Promise.all([kkJob, ...MODEL_LIST.map(async (name) => {
-      const gltf = await loader.loadAsync(`${this.base}assets/models/${name}.glb`);
+      let gltf;
+      try { gltf = await this.loadRetry(loader, `${this.base}assets/models/${name}.glb`); }
+      catch (e) {
+        // eksik/bozuk model: oyun yine açılır, pembe yer tutucu kullanılır ve uyarı verilir
+        console.error('Model yüklenemedi:', name, e?.message || e);
+        this.missing.push(name);
+        gltf = this._placeholder(name);
+      }
       gltf.scene.traverse((o) => {
         if (o.isMesh) {
           o.castShadow = true;

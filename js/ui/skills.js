@@ -1,5 +1,6 @@
 import { G } from '../game/ctx.js';
 import { ui } from './ui.js';
+import { input } from '../core/input.js';
 import { el } from '../core/util.js';
 import { iconSVG } from '../economy/items.js';
 import { progress, SKILLS, SKILL_MAX, MAX_LEVEL, need, rankOf, nextRank } from '../game/progress.js';
@@ -42,5 +43,5 @@ export function openSkills() {
   };
   render();
   const off = G.on('levelUp', () => render());
-  ui.open(ui.panel('Korsan Rütbesi', body, { style: { width: 'min(1040px, 96vw)' } }), { closeKeys: ['KeyK'], onClose: () => off?.() });
+  ui.open(ui.panel('Korsan Rütbesi', body, { style: { width: 'min(1040px, 96vw)' } }), { closeKeys: [input.bindings.yetenek], onClose: () => off?.() });
 }

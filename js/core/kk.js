@@ -64,10 +64,16 @@ export const kk = {
   texCache: new Map(),
 
   async load(loader, base, onEach) {
+    // karakter/animasyon/kit dosyaları kritiktir: 3 deneme, yine olmazsa anlaşılır hata (hangi dosya)
+    const get = async (file) => {
+      let err;
+      for (let i = 0; i < 3; i++) { try { return await loader.loadAsync(`${base}assets/models/kk/${file}`); } catch (e) { err = e; await new Promise((r) => setTimeout(r, 400 * (i + 1))); } }
+      throw new Error(`Karakter dosyası yüklenemedi: ${file} (${err?.message || err})`);
+    };
     const jobs = [];
-    for (const id of KK_CHARS) jobs.push(loader.loadAsync(`${base}assets/models/kk/kk_${id}.glb`).then((g) => { this.templates[id] = g; onEach && onEach(); }));
-    jobs.push(loader.loadAsync(`${base}assets/models/kk/kk_anims.glb`).then((g) => { this._anims = g.animations; onEach && onEach(); }));
-    for (const k of KK_KITS) jobs.push(loader.loadAsync(`${base}assets/models/kk/kit_${k}.glb`).then((g) => { this._prepKit(k, g.scene); onEach && onEach(); }));
+    for (const id of KK_CHARS) jobs.push(get(`kk_${id}.glb`).then((g) => { this.templates[id] = g; onEach && onEach(); }));
+    jobs.push(get('kk_anims.glb').then((g) => { this._anims = g.animations; onEach && onEach(); }));
+    for (const k of KK_KITS) jobs.push(get(`kit_${k}.glb`).then((g) => { this._prepKit(k, g.scene); onEach && onEach(); }));
     await Promise.all(jobs);
     for (const id of KK_CHARS) this._prepChar(id);
     this._prepClips();

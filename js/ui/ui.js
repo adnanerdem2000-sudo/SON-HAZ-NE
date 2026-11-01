@@ -43,6 +43,7 @@ export const ui = {
     this.modal.classList.add('active');
     this.modal.classList.toggle('clear', !!opts.clear);
     if (G.state === 'playing') { G.uiOpen = true; input.unlockPointer(); }
+    if (opts.kind === 'pause' && !G.online) G.paused = true; // tek oyunculu: dünya gerçekten durur
     audio.play('ui', { vol: 0.25 });
     return panel;
   },
@@ -50,6 +51,7 @@ export const ui = {
   close(silent = false) {
     const top = this.stack.pop();
     if (!top) return;
+    if (top.kind === 'pause') G.paused = false;
     top.wrap.remove();
     if (top.onClose) top.onClose();
     if (this.stack.length) {

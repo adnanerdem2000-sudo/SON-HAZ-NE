@@ -27,9 +27,11 @@ export const shipControl = {
       x: data?.x ?? m.x, z: data?.z ?? m.z, yaw: data?.yaw ?? m.yaw,
       hp: data?.hp, water: data?.water, holes: data?.holes, hold: data?.hold, upg: data?.upg,
       cannonballs: data?.cannonballs, planks: data?.planks,
+      parts: data?.parts, mastHp: data?.mastHp, cannonHp: data?.cannonHp,
     });
     if (data?.anchorState === 'up') { ship.anchorState = 'up'; ship.anchorT = 0; ship.anchored = false; }
     if (data?.sailTarget) ship.sailTarget = ship.sail = data.sailTarget;
+    if (data?.sunk) { ship.sunk = true; ship.sinking = 15; ship.root.visible = false; } // batık kaydedildi: yüzeyde belirip yeniden batmaz
     G.ships.push(ship);
     G.ship = ship;
     G.rowboat = new Rowboat(scene, ship);

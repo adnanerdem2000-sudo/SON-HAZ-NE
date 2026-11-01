@@ -21,6 +21,7 @@ import { clamp, damp, smoothstep } from '../core/util.js';
 import { ISLANDS } from '../world/worldData.js';
 import { enemies } from './enemies.js';
 import { animals } from '../wildlife/animals.js';
+import { settings } from '../core/settings.js';
 
 // Oyun oturumu: dünya, oyuncu, gemi, sistemler, döngü
 export const game = {
@@ -41,7 +42,7 @@ export const game = {
     terrain.localBudget = 40; // yükleme ekranında (işçi yoksa) üretime daha uzun dilimler ver
     onProgress?.(0.2, 'Okyanus dolduruluyor…');
     await tick();
-    ocean.build(scene, quality);
+    ocean.build(scene, settings.v.water || quality);
     onProgress?.(0.3, 'Arazi örülüyor…');
     await terrain.prepare(160, 470, { radius: 900 });
     sky.build(scene, engine.renderer, quality);
@@ -123,7 +124,7 @@ export const game = {
     if (data?.player) {
       p.inv.load(data.player.inv);
       p.hp = data.player.hp ?? 100;
-      if (data.player.onShip && G.ship) p.boardShip(G.ship, new THREE.Vector3(data.player.lx || 0, 0, data.player.lz || 0));
+      if (data.player.onShip && G.ship && !G.ship.sunk) p.boardShip(G.ship, new THREE.Vector3(data.player.lx || 0, 0, data.player.lz || 0));
     } else {
       // başlangıç donanımı
       p.inv.gold = 150;
@@ -146,6 +147,7 @@ export const game = {
 
   stop() {
     for (const s of this.systems) if (s.stop) s.stop();
+    G.paused = false;
     G.state = 'menu';
     G.online = false;
     this.setupMenuScene();
@@ -183,6 +185,7 @@ export const game = {
   update(dt) {
     if (G.state === 'menu') { this.menuUpdate(dt); return; }
     if (G.state !== 'playing' || !G.player) return;
+    if (G.paused) return; // duraklatma menüsü (tek oyunculu): benzetim, zaman ve otomatik kayıt durur
     // vuruş anı duraksaması (hit-stop): ağır darbe ve parry'de kısa ağır çekim
     if (G.hitStop > 0) { G.hitStop -= dt; dt *= 0.12; }
     const p = G.player;

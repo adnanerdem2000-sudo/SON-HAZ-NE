@@ -243,11 +243,11 @@ export const audio = {
     const c = this.ctx;
     if (!this.battleBuf) {
       try {
-        const r = await fetch(`${this.base}assets/audio/music/battle_theme_a.mp3`);
-        this.battleBuf = await c.decodeAudioData(await r.arrayBuffer());
-      } catch (e) { return; }
+        this._battleLoad ||= fetch(`${this.base}assets/audio/music/battle_theme_a.mp3`).then((r) => r.arrayBuffer()).then((ab) => c.decodeAudioData(ab));
+        this.battleBuf = await this._battleLoad;
+      } catch (e) { this._battleLoad = null; return; }
     }
-    if (this.music.mode !== 'battle') return;
+    if (this.music.mode !== 'battle' || this.battleSrc) return; // yükleme sırasında mod değiştiyse ya da zaten çalıyorsa ikinci kaynak açma
     const src = c.createBufferSource(); src.buffer = this.battleBuf; src.loop = true;
     const g = c.createGain(); g.gain.value = 0; g.gain.setTargetAtTime(0.55, c.currentTime, 1.2);
     src.connect(g).connect(this.musicBus); src.start();

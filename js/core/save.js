@@ -29,12 +29,19 @@ export const save = {
     }
   },
 
+  // Şema doğrulaması: yarım/elle bozulmuş kayıtlar geçerli yuva sayılmaz
+  valid(kind, d) {
+    if (!d || typeof d !== 'object') return false;
+    if (kind === 'guest') return !!d.inv && typeof d.inv === 'object';
+    return !!d.player && typeof d.player === 'object' && !!d.player.inv && (d.version === undefined || typeof d.version === 'number');
+  },
   read(kind, slot) {
     const k = this.key(kind, slot);
     const d = safeParse(localStorage.getItem(k));
-    if (d) return d;
+    if (this.valid(kind, d)) return d;
     // asıl kayıt bozuksa yedeği dene
-    return safeParse(localStorage.getItem(k + '.bak')) || safeParse(localStorage.getItem(k + '.tmp'));
+    for (const s of ['.bak', '.tmp']) { const b = safeParse(localStorage.getItem(k + s)); if (this.valid(kind, b)) return b; }
+    return null;
   },
 
   remove(kind, slot) {

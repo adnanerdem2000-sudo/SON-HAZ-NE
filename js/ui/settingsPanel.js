@@ -34,9 +34,8 @@ export function openSettings() {
         row('Çözünürlük ölçeği', slider('renderScale', 0.5, 1.5, 0.05, (x) => Math.round(x * 100) + '%'), 'Düşük değer = daha yüksek FPS'),
         row('Grafik kalitesi', select('quality', [['low', 'Düşük'], ['medium', 'Orta'], ['high', 'Yüksek']], true), 'Arazi, su ve bitki yoğunluğu (yeniden başlatınca)'),
         row('FPS sınırı', select('fpsLimit', [[0, 'Sınırsız (ekran yenileme hızı)'], [30, '30'], [60, '60'], [120, '120']])),
-        row('V-Sync', check('vsync'), 'Tarayıcıda dikey senkron her zaman açıktır; masaüstü sürümünde kapatılabilir.'),
         row('Görüş mesafesi', slider('viewDistance', 0.3, 1, 0.05, (x) => Math.round(x * 100) + '%')),
-        row('Gölge kalitesi', select('shadows', [['off', 'Kapalı'], ['medium', 'Orta'], ['high', 'Yüksek']])),
+        row('Gölge kalitesi', select('shadows', [['off', 'Kapalı'], ['medium', 'Orta (1024)'], ['high', 'Yüksek (2048)']])),
         row('Su kalitesi', select('water', [['low', 'Düşük'], ['medium', 'Orta'], ['high', 'Yüksek']], true)),
         row('Efekt kalitesi', select('effects', [['low', 'Düşük'], ['medium', 'Orta'], ['high', 'Yüksek']]), 'Parlama (bloom), renk düzenleme ve kenar yumuşatma. Düşük = son işleme kapalı'),
         row('Görüş alanı (FOV)', slider('fov', 55, 95, 1, (x) => x + '°')),
@@ -64,8 +63,6 @@ export function openSettings() {
       sc.appendChild(el('button', { class: 'btn small', onclick: () => { v.bindings = { ...DEFAULT_BINDINGS }; commit(); render(); } }, 'Varsayılan tuşlar'));
     } else {
       sc.append(
-        row('Dil', select('language', [['tr', 'Türkçe'], ['en', 'English (menüler, beta)']]), 'Altyapı çoklu dile hazır; ilk sürüm Türkçe.'),
-        row('Altyazılar / diyalog metinleri', check('subtitles')),
         row('Arayüz ölçeği', slider('uiScale', 0.8, 1.4, 0.05, (x) => Math.round(x * 100) + '%')),
         row('Yüksek kontrast', check('highContrast')),
         row('Hareketi azalt (animasyonlar)', check('reduceMotion')),

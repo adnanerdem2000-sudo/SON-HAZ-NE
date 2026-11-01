@@ -1,5 +1,6 @@
 import { G } from '../game/ctx.js';
 import { ui } from './ui.js';
+import { input } from '../core/input.js';
 import { el, fmtGold, clamp, rng } from '../core/util.js';
 import { ITEMS, CATEGORIES, RARITY, iconSVG, itemName, itemWeight, itemValue, CHEST_TIERS } from '../economy/items.js';
 import { MERCHANTS, shop, sellPrice, buyPrice } from '../economy/shop.js';
@@ -77,7 +78,7 @@ export const panels = {
     };
     render();
     this._refresh = render;
-    ui.open(ui.panel('Envanter — Korsan Çantası', body), { kind: 'inv', closeKeys: ['Tab'], onClose: () => { this._refresh = null; } });
+    ui.open(ui.panel('Envanter — Korsan Çantası', body), { kind: 'inv', closeKeys: [input.bindings.envanter], onClose: () => { this._refresh = null; } });
   },
 
   _itemMenu(s, rerender) {
@@ -89,8 +90,8 @@ export const panels = {
     if (s.id === 'sise_mesaj') opts.push({ label: 'Şişeyi kır, mesajı oku', fn: () => { p.inv.removeStack(s, 1); treasure.giveMap(); } });
     if (s.id === 'eski_gunluk') opts.push({ label: 'Günlüğü oku', fn: () => { ui.close(); quests.takeJournal && this.reader('Serdümen Halil\'in Günlüğü', 'Kaptan Mira haritayı dört parçaya böldü. İlk parça Kemik Adası\'nda Morvan\'da…'); } });
     if (s.id === 'kizil_mektup') opts.push({ label: 'Mektubu oku', fn: () => { ui.close(); this.reader('Kızıl Hançer\'in Mektubu', '<i>"…Mira\'nın kalan iki parçası: biri Volkanik Adalar\'da ateşin bekçisinde, diğeri buzların altındaki kraliçede. Gelgit Pusulası Yitik Ufuk\'ta bekliyor. — K.H."</i>'); } });
-    if (s.id === 'gulle' && G.ship) opts.push({ label: 'Gemiye yükle', fn: () => { const n = s.n; p.inv.removeStack(s); G.ship.cannonballs += n; } });
-    if (s.id === 'tahta' && G.ship) opts.push({ label: 'Gemiye yükle', fn: () => { const n = s.n; p.inv.removeStack(s); G.ship.planks += n; } });
+    if (s.id === 'gulle' && G.ship) opts.push({ label: 'Gemiye yükle', fn: () => { const n = s.n; p.inv.removeStack(s); G.ship.cannonballs += n; if (G.online && !G.isHost) G.emit('shipCmd', { ship: G.ship.id, cmd: 'addBalls', n }); } });
+    if (s.id === 'tahta' && G.ship) opts.push({ label: 'Gemiye yükle', fn: () => { const n = s.n; p.inv.removeStack(s); G.ship.planks += n; if (G.online && !G.isHost) G.emit('shipCmd', { ship: G.ship.id, cmd: 'addPlanks', n }); } });
     if (p.ship && (p.mode === 'deck') && !def.nosell) opts.push({ label: 'Ambara koy', fn: () => { const k = s.id; const n = s.n || 1; if (k.startsWith('balik:')) { p.ship.hold.fish = p.ship.hold.fish || []; p.ship.hold.fish.push(s.data); p.inv.removeStack(s); } else { p.inv.removeStack(s); p.ship.hold.items[k] = (p.ship.hold.items[k] || 0) + n; } G.emit('netHold', { ship: p.ship.id, hold: p.ship.hold }); } });
     if (!def.nosell) opts.push({ label: 'Yere bırak', fn: () => { p.inv.removeStack(s); treasure.spawnLoot(p.pos.clone(), [[s.id, 1, s.n || 1, s.data]], 'Bırakılan', true); } });
     opts.push({ label: 'Vazgeç', fn: () => {} });
@@ -504,7 +505,7 @@ export const panels = {
     const onKey = (e) => { if (e.code === 'KeyR') { this.route = []; draw(); } };
     window.addEventListener('keydown', onKey);
     draw();
-    ui.open(ui.panel('Deniz Haritası', wrap, { style: { padding: '14px' } }), { kind: 'map', closeKeys: ['KeyM'], onClose: () => { window.removeEventListener('mousemove', this._mm); window.removeEventListener('keydown', onKey); window.removeEventListener('keydown', this._mapKey); this._mapUnsub?.(); } });
+    ui.open(ui.panel('Deniz Haritası', wrap, { style: { padding: '14px' } }), { kind: 'map', closeKeys: [input.bindings.harita], onClose: () => { window.removeEventListener('mousemove', this._mm); window.removeEventListener('keydown', onKey); window.removeEventListener('keydown', this._mapKey); this._mapUnsub?.(); } });
   },
 
   // ---------------- Tersane ----------------

@@ -55,7 +55,8 @@ G.mods = baseMods();
 
 const FISH_XP = { siradan: 5, yaygin: 8, nadir: 25, epik: 60, efsanevi: 150 };
 const TREASURE_XP = { small: 60, medium: 100, large: 160, legend: 300 };
-const GUEST_KEY = 'dk_progress_guest';
+const GUEST_KEY = 'dksh.progress.guest'; // dışa/içe aktarma kapsamında (dksh. öneki)
+const GUEST_KEY_OLD = 'dk_progress_guest';
 
 export const progress = {
   name: 'progress',
@@ -89,7 +90,10 @@ export const progress = {
 
   start(data) {
     let d = data?.progress;
-    if (G.online && !G.isHost) { try { d = JSON.parse(localStorage.getItem(GUEST_KEY) || 'null'); } catch (e) { d = null; } }
+    if (G.online && !G.isHost && !d) {
+      // eski anahtar → yeni anahtar taşıma
+      try { d = JSON.parse(localStorage.getItem(GUEST_KEY) || localStorage.getItem(GUEST_KEY_OLD) || 'null'); if (d && !localStorage.getItem(GUEST_KEY)) localStorage.setItem(GUEST_KEY, JSON.stringify(d)); localStorage.removeItem(GUEST_KEY_OLD); } catch (e) { d = null; }
+    }
     this.level = d?.level || 1;
     this.xp = d?.xp || 0;
     this.skills = { ...(d?.skills || {}) };
