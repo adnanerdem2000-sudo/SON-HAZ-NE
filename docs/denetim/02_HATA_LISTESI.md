@@ -1673,3 +1673,49 @@ Sıralama: doğrulanmış hatalar önce, sonra tartışmalı, belirsiz ve tek me
 - **Ana menü sütunu 540 px yükseklikte kaydırmaya düşüyor** (`css/style.css`, kucuk): Ölçüm: .menu-side scrollHeight 557 > 540; 'ÇIKIŞ' ve alt bilgi görünür alan dışında. → @media (max-height:600px): logo-bottom font küçült, mbtn padding/gap min değerlerini düşür, menu-news zaten gizli.
 - **Konuk için duraklat menüsünde kaydet ve periyodik yerel kayıt** (`js/ui/menu.js`, kucuk): H16: konuk ilerlemesi yalnız çıkış olaylarında yazılır; saveNow konuğu zaten destekliyor. → menu.pause'da Kaydet'i herkese göster (konukta 'Kişisel ilerleme'); game.update'te autosave'i isHost koşulundan ayır (konukta yalnız yerel yazım).
 - **İşaret silme eşitlemesi ve sınır** (`js/game/quests.js`, kucuk): H19: silme yerel, ağ işaretleri sınırsız. → 'markerDel' {x,z} mesajı; ağ işleyicisinde 30 sınırı ve not uzunluğu 40.
+
+## 5. Donma (takılma) denetimi bulguları (Aşama 9 sonrası)
+Ayrıntı ve ölçümler: 10. belge §10.8; kalıcı test `tests/scenarios/13_donma.js`.
+
+### T01 — Adaya yaklaşırken tek karelik takılma: ada içeriği tek karede kuruluyordu (`js/world/islands.js`, yüksek) — DÜZELTİLDİ
+Oyuncu bir adanın kıyısına 750 m yaklaşınca bitki örtüsü (en çok 7 000 örnek), yapılar, NPC karakter modelleri ve örneklenmiş çizim
+grupları aynı karede kuruluyordu: gemiyle yaklaşmada 55–58 ms, ışınlanmada (soğuk) 142 ms'lik kare. → Kurulum üretece çevrildi, kare
+başına 3 ms bütçe; NPC'ler ayrı adımda; yakında/ışınlanmada eşzamanlı. Sonra: 11–14 kare, karedeki ada işi 6–11 ms; 67 adada içerik aynı.
+
+### T02 — Balık sürüsü güncellemesi her karede ~100 KB geçici nesne üretiyordu (`js/wildlife/fish.js`, orta) — DÜZELTİLDİ
+Her balık için `new Vector3`, her sürü için `filter` dizisi, sürü içi her çift için `Vector3.length()` (kutulanmış dönüş değeri).
+→ Geçici nesneler yeniden kullanılır, canlı üyeler yerinde süzülür, ayrılma döngüsü skaler (aynı işlem sırası). 97,5 → 35,1 KB/kare,
+0,18 → 0,14 ms; simülasyon bit düzeyinde aynı.
+
+### T03 — Kalan büyük bellek ayırıcılar (çöp toplama sıklığı) (çeşitli, düşük) — AÇIK
+Yelken normallerinin her karede yeniden hesabı (`ship._animate` → `computeVertexNormals`), `ocean.heightAt` (balık başına her kare),
+karakter güncellemesi, arazi örneklemesi. Büyük toplama ~5–10 sn'de bir (bu ortamda 7–12 ms tek kare). → 14. belge.
+
+### T04 — Sonradan görünen içerikte gölgelendirici ilk derlemesi (`js/main.js`, `js/world/islands.js`, düşük) — AÇIK
+Yükleme ekranında yalnız başlangıç sahnesi önceden derleniyor; hayvan/ada içeriği/düşman/efekt ilk görüldüğünde derleniyor (turda 6 yeni
+program). Gerçek GPU'da her tür için oturumda bir kez kısa takılma olabilir. → Ada grubunu sahneye eklemeden önce `compileAsync`.
+
+### T05 — Kadim Tapınak bulmacası ada yeniden kurulunca ve kayıt yüklenince bozuluyordu (`js/world/islands.js`, yüksek — ilerleme engeli, önceden var) — DÜZELTİLDİ
+Bağımsız kod incelemesinde bulundu, çalıştırarak doğrulandı. `_temple` kalıcı bulmaca durumunu `templeState[id] = {seq, done}` olarak
+oluşturup kurulumun sonunda aynı anahtarı çalışma zamanı sarmalayıcısıyla `{state, gate, cx, cz, y0, top}` eziyordu. Ada sökülüp yeniden
+kurulunca (1,15 km uzaklaşıp dönme) ya da kayıt yüklenince (sarmalayıcı kayda giriyordu) `state` olarak sarmalayıcı okunuyordu:
+levye `state.seq.push` → "Cannot read properties of undefined (reading 'push')", çözülmüş kapı yeniden kapalı, Taş Muhafız tetik koşulu
+(`ts.state.done`) tanımsız. → Kalıcı durum yalnız `{seq, done}`; çalışma zamanı bilgisi ayrı `islands.temples` (bosses.js bunu okur);
+yüklemede eski/iç içe sarmalayıcı biçim onarılır (`puzzleState`). Test: `13_donma.js` P08.
+
+### T06 — Eşzamanlı (yakın) ada kurulumunda hata olursa yarım içerik kalıyordu (`js/world/islands.js`, düşük) — DÜZELTİLDİ
+Arka plan işinin hata yolu temizlik + yeniden denememe içeriyordu; eşzamanlı yol (`_build`) içermiyordu (inceleme bulgusu).
+→ `_build` hatada yarım içeriği bırakır ve hatayı iletir; `update` yakalar, adayı oturum boyunca yeniden denemez.
+
+### T07 — Test sağlamlığı (`tests/scenarios/13_donma.js`, düşük) — DÜZELTİLDİ
+P07 balık sürüsü yokken `'sürü yok'` metni döndürüp `truthy` beklentisini geçiyordu (sahte geçiş) → `false`. P01'in kare başına
+20 ms eşiği bu çekişmeli ortamda tek bir GC/işlemci beklemesiyle rastgele kalabilirdi → 35 ms (eski davranış 55–58 ms; ölçülen 6–11 ms). P03/P04/P06 yarım işi saat süresiyle kuruyordu (hızlı/boşta makinede iş erken bitip test hatalı kalabilirdi; doğrulanmış inceleme bulgusu) → adım sayısıyla (`_runJob(J, 0)` = tek adım).
+
+### T08 — Volkanik Dev lav düzeyi ada içeriğinden önce doğarsa yedek değerde kalıyordu (`js/game/bosses.js`, düşük) — DÜZELTİLDİ
+Lav düzeyi doğuşta bir kez okunuyordu; ada içeriği henüz kurulmamışsa (ışınlanma, co-op konuk) krater zemini + 1,5 kullanılıyordu.
+v03/boss3'te eski kod 77,7'de kalırken gerçek lav yüzeyi 84,1 (dev lavın ~6 m altında yükseliyordu). → İçerik kurulunca güncellenir.
+
+### T09 — Test altyapısı `js` adımı istisnalarını başarısızlık saymıyordu (`tests/harness/run.cjs`, orta) — DÜZELTİLDİ
+Bir adım istisna atınca yalnız `EVALERR` yazılıyor, senaryo geçmiş görünüyordu (inceleme eleştirmeni; v03/boss1 rastgele oyuncu ölümünde
+böyle sessizce kalıyordu). → `evalErrors` sayılır, çıkış kodu 1.
+

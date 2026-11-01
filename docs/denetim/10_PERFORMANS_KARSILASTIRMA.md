@@ -92,3 +92,126 @@ Yöntem: sahnenin üst düzey çocukları tek tek gizlenip çağrı farkı ölç
 | Aynı, dilimler arasında `gc()` | Blink yığını ~200 MB'a, RSS ~0,8 GB'a döner; tepe ≤ 1,5 GB |
 | 30 dk benzetimli oturum (`10_uzun_oturum.js`, alt dilim + olay döngüsüne teslim + gc) | 5/5 GEÇTİ; RSS tepesi 959 MB (çoğunlukla 0,47–0,85 GB); JS yığını 103–115 MB (kesin ölçüm), Blink yığını 5–46 MB; geometri 4.–16. dilimde 1 143–1 152 (artış medyanı ≤ 1/dilim); doku 236 sabit; kare maliyeti 1,5–1,9 ms |
 | `04_karakter.js` (güverteye/dümene ışınlanma adımları) | Yazılımsal GPU'da gerçek zamanlı çizim açıkken bazı adımlar 10–15 sn sürüp RSS 3–6 GB'a çıkıyordu (bir regresyon koşusunda bellek sınırı); CPU profili ana iş parçacığını çoğunlukla boşta/yerel kodda gösterdi (JS < 0,1 sn). Senaryo DK.sim ile sınadığı için çizim kısıldı (`fpsLimit 2`): 36 sn, RSS ≤ 1,2 GB, iki ardışık koşu 21/21 |
+
+## 10.8 Donma (takılma) ve kare süresi denetimi (Aşama 9 sonrası, kullanıcı isteği)
+Soru: "Oyunda donma oluyor mu, yeterli FPS alınıyor mu?" Bu ortamda gerçek ekran kartı olmadığından (10.1) **gerçek FPS ölçülemez**.
+Ölçülen: 60 Hz tempoda (`game.update(1/60)` + HUD + ağ, çizim kısılmış) karenin **oyun mantığı** süresi, tek seferlik ağır işler,
+Chrome izleme kaydıyla (CDP Tracing: ana iş parçacığı duvar/işlemci süresi, V8 çöp toplama olayları) uzun karelerin nedeni, V8
+`--trace-gc` günlüğü ve örneklemeli bellek ayırma profili. Kare bütçesi 60 FPS'te 16,7 ms'dir; çizimin işlemci tarafı ayrıca eklenir.
+
+### 10.8.1 Oyun turu (önceki kod; 640×360, dt = 1/60)
+| Evre | Kare | Ort. ms | p95 | p99 | Maks | > 16,7 ms |
+|---|---|---|---|---|---|---|
+| Limanda boşta (10 sn) | 600 | 1,64 | 4,1 | 8,5 | 62,0 | 2 |
+| Limanda yürüyüş (20 sn) | 1 200 | 1,57 | 3,5 | 11,3 | 26,4 | 5 |
+| Gemiyle seyir (180 sn, 1,6 km) | 10 800 | 1,43 | 3,1 | 8,4 | 38,7 | 24 |
+| Adaya ışınlanma + yürüyüş (15 sn) | 900 | 1,43 | 3,0 | 11,1 | **143,7** | 3 |
+| Savaş, 6 düşman (20 sn) | 1 200 | 1,42 | 3,2 | 7,6 | 21,4 | 1 |
+| Fırtına (20 sn) | 1 200 | 1,60 | 3,5 | 12,0 | 166,5 | 6 |
+| Dünya haritası açık (3 sn) | 180 | 1,38 | 3,1 | 9,8 | 14,7 | 0 |
+| Boss: Kraken (10 sn) | 600 | 1,24 | 2,5 | 5,6 | 19,1 | 1 |
+
+Tek seferlik işler: harita açma 9,7 ms, elle kayıt 3,8 ms (otomatik kayıt en çok 9,3 ms), boss doğması 2,2 ms, düşman doğması ≤ 15,5 ms,
+mini harita çizimi ≤ 20,5 ms (seyrek), arazi karosu iletisi ≤ 5,8 ms. **Tekrarlanabilir tek takılma ada içeriği kurulumuydu**:
+ışınlanmada 142 ms (soğuk), ayrı ölçümde ılık 4–65 ms (bitki örtüsü 13–45 ms, liman yapısı 18–36 ms ki bunun ~12 ms'si 5 NPC karakter
+modeli, örneklenmiş çizim kurulumu 3–22 ms). 62 ms ve 166 ms'lik iki tekil kare sistem bazlı ölçümde yinelenmedi (10.8.3: çöp toplama
+ya da işletim sistemi beklemesi).
+
+### 10.8.2 Düzeltme: ada içeriği karelere bölünerek kurulur
+`js/world/islands.js`: kurulum bir üreteçtir; her `yield` bir bölünme noktası (bitki örtüsü 64 örnekte bir, her yapı, her NPC — karakter
+modeli ayrı adımda, her örnek grubu). Arka plan işi kare başına 3 ms bütçeyle ilerler; grup sahneye iş bitince eklenir. Oyuncu adanın
+kıyısına 250 m'den yakınsa (ışınlanma, kayıt yükleme, hızlı yolculuk — hızlı yolculuk ekranı kararmışken yapılır) kurulum aynı karede
+tamamlanır. Uzaklaşma, `_drop` ve yeni oturum yarım işi iptal edip tüm kaynaklarını bırakır.
+
+| Ölçüm (gemi 12 m/sn ile Tuz Pazarı'na yaklaşır, gerçek `islands.update` yolu) | Önce | Sonra |
+|---|---|---|
+| Ada kurulumu | tek karede 54,9–57,5 ms | 11–14 kareye yayılır (toplam iş 38–70 ms) |
+| Karedeki en uzun ada işi (`islands.update`) | 55,5–58,3 ms | 6,2–10,8 ms (ilk/soğuk liman kurulumu en çok ~12 ms'lik tek adım) |
+| Tur boyunca en uzun kare | 56,8–60,3 ms | 29,8–40,9 ms (ada dışı: çöp toplama/işlemci beklemesi, 10.8.3) |
+
+Tehlike setli adalar (aynı yaklaşma yöntemi; tamamlama karesi = sahneye ekleme + `islandBuilt` → tehlike seti kurulumu):
+
+| Ada | Kare | Toplam iş | Karedeki en uzun ada işi | Tamamlama karesi (tehlike seti) |
+|---|---|---|---|---|
+| Ateş Dağı (volkan, kamp, boss alanı; 10 tehlike) | 19 | 81,3 ms (bitki örtüsü 69 ms: karo yüklenmemiş bölgede analitik yükseklik) | 8,3 ms | 3,7 ms (2,5 ms) |
+| Korsan Kasabası (yıkık kasaba, kamp, kale) | 7 | 22,4 ms | 5,9 ms | 2,5 ms (1,0 ms) |
+
+Eşdeğerlik: 67 adanın tamamında eski kod, yeni eşzamanlı kurulum ve yeni karelere bölünmüş kurulum **birebir aynı** içeriği üretir
+(örnek matrisleri, çarpıştırıcılar, platformlar, NPC adı/konumu, fenerler, etkileşimler, engeller, lav); söküm sonrası artık 0.
+Adım profili (soğuk/ılık): bitki dilimi ≤ 6,5 ms, örnek grubu ≤ 5,6 ms, NPC ≤ 10 ms, tamamlama (tehlike seti dahil) ≤ 5,9 ms.
+Kalıcı test: `tests/scenarios/13_donma.js` (P01–P07; P08 tapınak durumu, inceleme bulgusu).
+
+### 10.8.3 Kalan uzun karelerin nedeni (Chrome izleme kaydı, 130 sn yaklaşma rotası, 7 800 kare)
+Her kare ayrı görev olarak çalıştırıldı; 12 ms'yi aşan her kare için kareyi içeren görevin duvar/işlemci süresi ve kareyle çakışan V8
+çöp toplama süresi çıkarıldı.
+
+| | Uzun kare (> 12 ms) | Çöp toplama | İşlemci beklemesi (ortam) | Kod |
+|---|---|---|---|---|
+| Balık düzeltmesinden önce | 18 | 13 | 3 | 2 |
+| Sonra | 13 | 9 | 4 | 0 |
+
+- Bu makinede ana iş parçacığı uzun görevlerde zamanın yalnız **%28'inde** işlemcideydi (4 çekirdek; yazılımsal GPU ve arazi işçileri
+  aynı çekirdeklerde). Görev duvar süresi 115 ms iken işlemci süresi 9,5 ms olan örnekler var: bu ortamın ölçüm gürültüsü.
+- V8 günlüğü (`--trace-gc`): JS yığını küçük (büyük toplamadan sonra 35–37 MB, önce 45–65 MB). Büyük toplama (mark-compact) yaklaşık
+  5–10 sn'de bir; son duraklama bu ortamda tipik 7–12 ms (4–22 ms). Küçük toplama (scavenge) ortalama 0,40–0,47 ms, her biri ~2,6 MB.
+- Masaüstü işlemcide ve çekişmesiz ortamda bu duraklamaların daha kısa olması beklenir; ancak bu ortamda doğrulanamaz.
+
+### 10.8.4 Bellek ayırma (çöp) azaltma: balık sürüleri
+Örneklemeli ayırma profili (40 sn oyun): toplam ayırmanın en büyük kaynağı `fish.update` idi (her balık için her karede yeni vektör,
+her sürü için `filter` dizisi, sürü içi her çift için `Vector3.length()` çağrısı — orta seviye V8 derleyicisinde ondalık dönüşler kutulanır).
+Düzeltme: geçici nesneler yeniden kullanılır, canlı üyeler yerinde süzülür, ayrılma döngüsü aynı işlem sırasıyla skaler.
+
+| Ölçüm (198 balık, 16 sürü) | Önce | Sonra |
+|---|---|---|
+| Çağrı başına ayırma | 97,5 KB | 35,1 KB (−%64) |
+| Çağrı süresi | 0,18 ms | 0,14 ms |
+| Profildeki toplam ayırma (40 sn) | 630 MB (balık 291 MB) | 366 MB (balık 64 MB) |
+| Simülasyon sonucu (300 kare, yüzen oyuncu tehdidiyle) | — | konum/hız farkı **0** (bit düzeyinde aynı); çizim matrisi ≤ 1,7·10⁻¹⁶ |
+
+Dürüst not: uçtan uca çöp toplama sayısındaki düşüş ölçüm gürültüsü içinde kaldı (aynı rota A/B: küçük toplama 1 714 → 1 660, büyük
+toplama 25 → 23). Kalan büyük ayırıcılar: yelken normallerinin her karede yeniden hesabı (`ship._animate` → `computeVertexNormals`),
+`ocean.heightAt` (balık, gemi kaldırma kuvveti), karakter güncellemesi, arazi örneklemesi — yol haritasında (14. belge).
+
+### 10.8.5 Sonuç
+- Oyun mantığı karede ortalama ~1,4 ms (p99 5–12 ms); 16,7 ms'lik 60 FPS bütçesinin küçük bir kısmı. Tekrarlanabilir tek donma kaynağı
+  (ada kurulumu, 55–142 ms) giderildi; kalan seyrek uzun kareler çöp toplama (tek kare, ~10 ms) ve bu test makinesinin işlemci
+  çekişmesinden kaynaklanıyor.
+- **Gerçek FPS** (ekran kartında çizim süresi) bu ortamda ölçülemez. Çizim yükü 10.2'deki gibidir (liman ~1 000 çizim çağrısı); ayar
+  ön tanımlarına göre yük 10.9'da. Yükleme ekranında başlangıç sahnesinin gölgelendiricileri önceden derleniyor
+  (`renderer.compileAsync`, `main.js`); sonradan görünen içerik (hayvan, ada içeriği, düşman/boss, efekt) ilk görüldüğünde derleniyor:
+  turda liman yürüyüşünde 5, seyirde 1 yeni program (yazılımsal GPU'da bu karelerin çizimi 38–81 ms). Gerçek GPU'da bu, her içerik türü
+  için oturumda bir kez kısa bir takılma olabilir — ada grubunu sahneye eklemeden önce `compileAsync` ile derlemek yol haritasında.
+  Ayarlardaki **FPS göster** seçeneği (`showFps`) ile gerçek makinede doğrulama önerilir.
+
+## 10.9 Çizim yükü: grafik ön ayarları ve çizimin işlemci maliyeti
+### 10.9.1 Ön ayarlara göre çizim yükü (1280×720)
+"Grafik kalitesi" (arazi/su ızgarası, bitki yoğunluğu) yalnız yükleme anında uygulanır; orta/düşük ölçümleri ayarlar kaydedilip sayfa
+yeniden yüklenerek alındı. Gölge, efekt ve görüş mesafesi anında uygulanır. Çağrı/üçgen sayılarına gölge ve son işleme geçişleri dahildir.
+
+| Sahne | Yüksek (çağrı / üçgen) | Orta | Düşük |
+|---|---|---|---|
+| Liman (başlangıç) | 1 000 / 1,22 M | 1 019 / 1,05 M | 737 / 0,57 M |
+| Orman adası (Kadim Tapınak) | 302 / 551 K | 299 / 466 K | 175 / 250 K |
+| Açık deniz | 203 / 490 K | 195 / 277 K | 100 / 258 K |
+| Gölgelendirici programı | 89 | 89 | 40 |
+
+- Orta ayar çizim çağrısını azaltmaz (gölge açık, 1 024 harita); kazancı üçgen (−%14…−%43) ve GPU doldurma yükündedir (gölge haritası
+  4 kat küçük; gerçek GPU'da "yüksek" son işleme 4× MSAA kullanır — yazılımsal GPU'da otomatik olarak ortaya düşer).
+- Düşük ayar: gölge ve son işleme kapalı, görüş %30, bitki %45, su ızgarası 160² → limanda çağrı −%26, üçgen −%53; orman adasında
+  çağrı −%42; açık denizde çağrı −%51. Düşük FPS'te ilk düşürülecekler gölge ve görüş mesafesidir.
+
+### 10.9.2 Çizimin ana iş parçacığı maliyeti (Chrome izleme kaydı, iş parçacığı işlemci süresi)
+Her `post.render()` ayrı görevde çalıştırıldı; görevin işlemci süresi (tdur: three.js sahne gezintisi, matris/uniform hazırlığı ve
+WebGL komut kodlaması; işletim sistemi beklemesi hariç) ölçüldü. Ekran kartının kendi çizim süresi bu ölçüme girmez ve burada ölçülemez.
+Makine: Intel Xeon 2,30 GHz sanal çekirdek (4 çekirdek). Yüksek ayar, 30 çizim/sahne.
+
+| Sahne | Çizim çağrısı | Çizim CPU medyan (min–maks) | + oyun mantığı | Ana iş parçacığı toplamı |
+|---|---|---|---|---|
+| Liman | 1 022 | 10,9 ms (7,4–20,6) | ~1,5 ms | ~12,5 ms |
+| Orman adası | 308 | 4,3 ms (3,6–5,6) | ~1,5 ms | ~6 ms |
+| Açık deniz | 226 | 3,5 ms (3,0–5,6) | ~1,0 ms | ~4,5 ms |
+
+Yorum: bu (yavaş, paylaşımlı) işlemcide bile ana iş parçacığı 60 FPS bütçesinin (16,7 ms) içinde; en ağır sahne liman (~12,5 ms,
+pay az). Masaüstü işlemcilerde tek çekirdek hızı genelde daha yüksektir, ancak bu ortamda doğrulanamaz. **Gerçek FPS'i belirleyen
+ekran kartı tarafı** (gölge, su, son işleme, çözünürlük) burada ölçülemez; gerçek makinede "FPS göster" ile liman, seyir, fırtına ve savaş
+sahnelerinde kontrol edilmeli. Limanda çağrı sayısını düşürme adayları 10.5 ve 14. belge #12'de.

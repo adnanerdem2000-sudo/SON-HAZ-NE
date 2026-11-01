@@ -63,3 +63,67 @@ bellek sınırı; düzeltmelerden sonra hedefli yeniden koşuların hepsi geçti
 
 Her koşuda kaydedilen: geçti/kaldı, konsol/sayfa hataları (`pageErrors`), ölçümler (metre/saniye/sayaç), ekran görüntüleri
 (`shot`/`snapjs` adımları), bellek (`performance.memory`, yalnız 09. senaryo), yeniden üretme adımları (senaryo dosyasının kendisi).
+
+## Donma denetimi sonrası tam regresyon (zaman dilimli ada kurulumu + balık güncellemesi; tek tarayıcı sırayla)
+| Senaryo | Sonuç | Süre | Not |
+|---|---|---|---|
+| `00_acilis.js` | geçti (0 hata) | 23 sn | |
+| `02_arazi_kurtarma.js` | geçti | 42 sn | |
+| `02_arazi_yedek.js` | geçti | 68 sn | |
+| `03_fizik_dt.js` | ölçüm, 0 hata | 35 sn | |
+| `03_fizik_duzeltmeler.js` | 13/14 | 57 sn | "Sığ su bandı" kontrolü 2 geçiş: önceden var olan, dalga evresine bağlı kararsızlık (aşağıda; bilinen #33) |
+| `04_karakter.js` | geçti | 41 sn | |
+| `05_dusman_ai.js` | geçti | 33 sn | |
+| `06_arayuz_960.js` | geçti | 65 sn | 960×540 |
+| `07_dunya_kesif.js` | geçti | 46 sn | D05 adacıkları eşzamanlı `_build` ile kurar/söker |
+| `07_ekonomi.js` | geçti | 20 sn | |
+| `08_kalicilik.js` | geçti | 35 sn | |
+| `09_performans.js` | geçti | 94 sn | ada kur/sök sızıntı döngüsü dahil (paralel inceleme ajanlarıyla işlemci paylaşıldı) |
+| `11_arayuz_sizinti.js` | geçti | 34 sn | |
+| `12_kayit_dongusu.js` | geçti | 33 sn | |
+| `13_donma.js` (yeni) | 7/7 → 8/8 | 29–30 sn | yaklaşmada 13–14 kare, karedeki ada işi en çok 7,7–9,7 ms; 5 adada eşdeğerlik; iptal yolları; inceleme sonrası P08 (tapınak durumu) eklendi |
+| Tek dosya derleme + `02_tek_dosya.js` (file://) | geçti | 21 sn | 21,0 MB |
+| `coop/06b` (2 oyuncu) | 18/18 | 148 sn | |
+| `coop/06a` (3 oyuncu) | 10/10 | 274 sn | |
+| `coop/06a2` (3 oyuncu) | 3/3 | 270 sn | |
+| `coop/06c` (4 oyuncu) | 7/7 | 402 sn | |
+| Node `archipelago_sabit.mjs` | GEÇTİ | <1 sn | 67 ada, v0.3 determinizmi |
+
+Sayfa hatası (pageerror) tüm koşularda 0. Ek doğrulamalar (yalnız bu değişiklik için): 67 adanın tamamında eski kod / yeni
+eşzamanlı / yeni karelere bölünmüş kurulumun parmak izi aynı; balık simülasyonu eski kodla 300 karede bit düzeyinde aynı.
+
+**03_fizik_duzeltmeler "sığ su bandı" kontrolü (A/B):** Kontrol, o anki dalga yüksekliğine göre derinliği 1,36–1,45 m olan ilk noktayı
+seçip 240 karede yüzme/yürüme geçişini sayar (≤ 1 beklenir). Aynı kontrol tek sayfada 30 farklı dalga anında tekrarlandı
+(`/tmp/fps/sig_su.js` mantığı): **eski kod** (değişiklik öncesi) 23 × 1 geçiş, 4 × 2, 3 × 3 → 7/30 başarısız; **yeni kod** birebir aynı
+dağılım ve aynı noktalar/geçiş sayıları. Sonuç: kararsızlık bu değişiklikten bağımsız ve önceden vardı (Aşama 9'da şans eseri geçmişti).
+Kök neden: kumsalda (platform yokken) giriş/çıkış kararı anlık dalga yüksekliğiyle verilir; ~1,4 m derinlikte dalga tepesi/çukuru 4 sn
+içinde 2–3 geçişe yol açabilir. Bilinen sorunlar #33, yol haritası #18.
+
+**Test altyapısı (inceleme sonrası):** `run.cjs` artık `js` adımlarındaki istisnaları başarısızlık sayar (`evalErrors`). Önceki tam
+regresyonda tek sayfalı senaryolarda EVALERR 0'dı (co-op günlüklerindeki EVALERR satırları senaryonun kasıtlı kapattığı konuk sekmesine
+yapılan çağrılardır). v03 referans senaryoları eski/yeni kodda A/B koşturuldu (aşağıda).
+
+**v03 referans senaryoları, eski (e56f49a) / yeni kod A/B** (aynı sıkılaştırılmış harness; adalar, tapınak, boss, tehlike, dünya,
+ekosistem ve bellek senaryoları): boss1–5, temple, temple2, temple3, volc, tdbg, perf1, tperf, haz1–3, world2–3, eco1–3, mem → 21 senaryonun
+20'si iki kodda da istisnasız. Çıktılar temple/temple2/temple3/volc/haz2'de birebir aynı; tdbg'de yalnız rastgele geometri kimlikleri, world2–3'te
+yalnız kurulum süresi, eco1–3/haz3'te yalnız rastgele dolaşan hayvan/kalabalık konumları farklı. perf1: çizim çağrıları aynı (liman 1 021/1 019),
+benzetim maliyeti benzer ya da düşük. boss3 (yeni tapınak düzenine uyarlandı): Taş Muhafız tapınak koşuluyla doğup yeniliyor; Volkanik Dev
+lav düzeyi eski kodda yedek değerde (77,7) kalırken yeni kodda gerçek lav yüzeyine (84,1) geçiyor.
+- **boss1**: yeni kodda ilk koşuda 2 istisna (`bosses.active` boş). Tanı (eski/yeni × 2, yılanın saniyelik durumu + bildirimler): oyuncu
+  ölürse (senaryo ölümsüzlük açmıyordu) limanda yeniden doğuyor, bosslar 650 m kuralıyla "derinlere çekiliyor", sonraki adımlar boş
+  boss'a erişiyor. Eski kodda 1/3, yeni kodda 2/3 koşuda oyuncu öldü; istisnalar her seferinde ölümle birebir eşleşiyor. Değişiklikten
+  bağımsız; senaryoya `DK.G.godMode=true` eklendi → yeni kodda istisnasız.
+- **haz1**: patlama sonrası düşman can değerleri eski kodun kendi koşuları arasında da değişiyor (rastgele düşman konumu); durum, enkaz ve
+  sandık sonuçları aynı.
+
+**Son kod (`3b4f28d`) ile son regresyon** (sıkılaştırılmış harness: `js` adımı istisnası da başarısızlık): `00_acilis`, `03_fizik_duzeltmeler`
+(bu koşuda 14/14), `05_dusman_ai`, `07_dunya_kesif`, `08_kalicilik`, `09_performans`, `11_arayuz_sizinti`, `12_kayit_dongusu`, `13_donma` (8/8),
+tek dosya derleme (21,0 MB) + `02_tek_dosya.js` → hepsi geçti; hata, sayfa hatası ve adım istisnası 0.
+
+**Co-op, son kod:** `06b` (2 oyuncu) 18/18, `06a` (3 oyuncu) 10/10, `06a2` (3 oyuncu) 3/3. `06c` (4 oyuncu) son kodla 5 koşunun 3'ünde
+geçti; kalan 2'sinde başlangıçta ilk başlatılan konuk(lar) birkaç saniye içinde menüye düştü, sonraki kontroller bu yüzden kaldı (sayfa
+hatası 0). Aynı orijinal senaryo **eski kodda** (`e56f49a`, bu turdan önce) da birebir aynı biçimde kaldı (ilk konuk menüde). Konuk
+düşmesini kaydeden tanılı kopya 4 koşuda (eski 2, yeni 2) geçti, düşme kaydı yok. Sonuç: değişiklikten bağımsız, bu ortama bağlı
+kararsızlık. Kodda konuğu birkaç saniyede menüye düşüren tek yol ev sahibiyle WebRTC bağlantısının kapanması; en olası açıklama dört
+sekmenin tek yazılımsal GPU sürecini paylaşırken konuğun 15 sn kalp atışı kuralına takılması (kanıtlanmadı). Bilinen #37.
+

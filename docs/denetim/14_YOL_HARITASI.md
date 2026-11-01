@@ -30,3 +30,20 @@
     işaretler her kare) azaltmak.
 14. **Kaynak ömrü kuralı**: yeni sistemlerde `disposeTree` (js/core/dispose.js) ya da paylaşımlı kaynak kullanımı; `09_performans.js`
     oluştur/kaldır döngüleri her yeni nesne türü için genişletilmeli.
+15. **Kalan bellek ayırıcıları** (10. belge §10.8.4; bilinen #30): yelken normallerini yalnız yelken biçimi değiştiğinde ya da birkaç
+    karede bir hesaplamak (ya da elle yazılmış ayırmasız normal hesabı), `ocean.heightAt`/`shoreFactor`'ı satır içi ve ayırmasız yapmak,
+    balıklar için zemin/yüzey örneğini sürü düzeyinde önbelleğe almak, karakter IK yolundaki `new Vector3` çağrılarını geçici nesnelere
+    çevirmek. Hedef: büyük çöp toplama sıklığını yarıya indirmek.
+16. **Gölgelendirici ön derlemesi** (bilinen #31): ada grubunu sahneye eklemeden önce `renderer.compileAsync(grup, kamera, sahne)`;
+    düşman/boss/hayvan malzeme çeşitlerini yükleme ekranında görünmez örneklerle derlemek.
+17. **Ada kurulumunda soğuk ilk adım**: oturumdaki ilk liman kurulumunda yapı yerleşimi tek adımda ~12 ms (kit parçası önbelleği soğuk);
+    `_port`'u da üretece çevirmek ya da kit parçalarını yükleme ekranında ısıtmak.
+18. **Kumsalda yüzme/yürüme kip titreşimi** (bilinen #33): `player.js` giriş (`_updateGround`) ve çıkış (`_updateSwim`) kararlarında platform
+    dışı için de `_wlp` (4 sn alçak geçiren su düzeyi) kullanmak; dalga tepesinde boyun hizasında yürüme görseli kabul edilebilir mi el ile
+    bakılmalı. Doğrulama: sığ su bandı kontrolünün 30 dalga anı tekrarı (hedef 0/30 başarısız) + `07_dunya_kesif` D03 sudan çıkış.19. **LOD'dan bağımsız ada yerleşimi** (bilinen #35): bitki örtüsü ve yapı döngülerinde aday başına sabit sayıda rastgele sayı çekmek
+    (reddedilse bile) ya da yerleşim kararlarını LOD'dan bağımsız analitik yükseklikle (`computeHeight`) vermek. Bu tüm adaların görünümünü
+    bir kez değiştirir (kayıtlar etkilenmez); co-op'ta ev sahibi/konuk aynı yerleşimi görür.
+20. **Konuk düşme nedeninin görünürlüğü** (bilinen #37): ev sahibi bir konuğu kalp atışıyla düşürdüğünde kapatmadan önce `kick` iletisiyle
+    neden göndermek (konukta "bağlantı koptu" yerine gerçek neden), `coop.cjs`'in `console.warn` iletilerini de rapora yazması; 4 oyunculu
+    testte konukları sırayla başlatırken önceki konukların çizimini kısmak (`fpsLimit` başlatmadan önce).
+

@@ -82,3 +82,32 @@ kesesi kendi geometri ve malzemelerini yaratıyor, kese toplandığında ya da 5
 kazı çukurları (40 sınırı) aynı biçimde; `Ship.dispose` yalnız sahneden kaldırıyordu (gemi başına 80 geometri); boss temizliği
 prosedürel parçaları bırakmıyordu. Kök neden B14 ile aynı sınıf: three.js'te sahneden kaldırma GPU kaynağını bırakmaz. Düzeltme:
 kese/çukur paylaşımlı kaynaklarla kurulur (kaldırmada bırakılacak bir şey kalmaz); gemi ve boss `disposeTree` ile bırakılır.
+
+## 4.10 Adaya yaklaşırken tek karelik takılma (T01)
+Ada içeriği, oyuncu kıyıya 750 m yaklaştığında `islands._build` ile **tek karede** kuruluyordu. Bu kurulum bitki örtüsü yerleşimini
+(her örnek için arazi yüksekliği/normali, yasak bölge ve iskele denetimi, çarpıştırıcı), yapıları, NPC karakter modellerini (tanesi 1–10 ms)
+ve hücre başına örneklenmiş örgüleri (matris yazımı, sınır küresi) içeriyordu: büyük adalarda 40–73 ms, oturumdaki ilk kurulumda
+(soğuk önbellek) 142 ms. Kök neden mimari: akış (streaming) sistemi kare bütçesini gözetmiyordu; "kare başına en çok bir ada" sınırı
+yalnız birden çok adanın aynı karede kurulmasını önlüyordu. Düzeltme: kurulum kesintili bir üreteçtir ve kare başına zaman bütçesiyle
+ilerler; NPC oluşturma ertelenir ama zemin yüksekliği çağrı anında hesaplanır, böylece sonuç eşzamanlı kurulumla birebir aynıdır.
+
+## 4.11 Balık sürüsü kare başına ~100 KB çöp üretiyordu (T02)
+`fish.update` her canlı balık için her karede yeni bir `Vector3`, her sürü için `filter` dizisi oluşturuyor ve sürü içi her balık çifti için
+`Vector3.length()` çağırıyordu (~16 sürü × n² çift). İşlev V8'in orta seviye derleyicisinde (Maglev) çalıştığından satır içine alınmayan
+çağrıların ondalık dönüş değerleri de kutulanıyordu (HeapNumber). Sonuç: küçük toplama sıklığına ve eskiye taşınan çöpe katkı.
+Düzeltme yöntem çağrısı yerine aynı işlem sırasıyla skaler matematik; sonuçlar bit düzeyinde aynı.
+
+## 4.12 Tapınak bulmacası yeniden kurulumda bozuluyordu (T05)
+Aynı nesne anahtarı iki farklı anlam taşıyordu: `templeState[id]` hem kayda giden kalıcı bulmaca durumu (`{seq, done}`) hem de
+boss kodunun okuduğu çalışma zamanı bilgisi (`{state, gate, cx, …}`) olarak kullanılıyordu. İlk kurulumda sorun görünmüyordu (durum
+önce okunup sonra sarmalanıyordu); ada akış sistemi içeriği söküp yeniden kurduğunda ya da kayıt yüklendiğinde sarmalayıcı durum
+sanılıyordu. Önceki testler bulmacayı yalnız ilk kurulumda ve yapay bir kimlikle (`08_kalicilik`: `tap_1`) sınadığı için yakalanmadı.
+Düzeltme: iki kavram ayrı haritalarda; yüklemede eski biçim onarılır. Ders: akışla söküp yeniden kurulan içerikte kalıcı durum ile
+çalışma zamanı nesneleri aynı yapıda tutulmamalı; testler "kur → sök → yeniden kur" ve "kaydet → yükle → kur" yollarını içermeli.
+
+## 4.13 Ada yerleşimi arazi ayrıntı düzeyine bağlı (bilinen #35; önceden var)
+`terrain.heightAt` yüklü karonun o anki LOD ızgarasından okur (yoksa analitik yükseklik). Bitki örtüsü döngüsü her aday için önce iki
+rastgele sayı çeker, ardından yükseklik/eğim denetimi reddederse sonraki sayıları çekmeden geçer. Kaba LOD'da (ada 750 m'den kurulurken)
+eşik yakınındaki birkaç aday farklı karar alır → çekilen sayı adedi değişir → sonraki tüm özelliklerin (liman yapı yönleri, NPC adları,
+tapınak levye sırası) sayı dizisi kayar. Ölçüm: eski ve yeni kodda gemiyle yaklaşma ile hazırlık sonrası kurulum farklı, aynı koşulda iki
+kurulum birebir aynı. Karelere bölünmüş kurulum bu sınıfa yeni bir neden eklemez, yalnız kurulum penceresini ~0,2–0,5 sn'ye uzatır.

@@ -50,6 +50,9 @@ Taban `34977c5` (Aşama 1 belgeleri) üzerine, eskiden yeniye (Aşama 9 commit'i
 - `2e2a1f6` Aşama 8 testleri ve belgeleri: 09_performans (sayaç düzeltmesi, sızıntı döngüleri), 11_arayuz_sizinti; 10. belge ölçümleri
 - `dbf50ab` Aşama 9: HUD DOM yazımları değişiklik algılamalı; kese/çukur/gemi/boss GPU kaynakları bırakılır
 - `3bfb7b8` Aşama 9 testleri ve belgeleri: uzun oturum (bellek teşhisi), 3 kayıt döngüsü, 4 oyuncu, tam regresyon ve test düzeltmeleri
+- `e56f49a` Son rapor: Aşama 9 commit kimlikleri
+- `105acd8` Donma denetimi: ada içeriği karelere bölünerek kurulur; balık sürüsü çöpsüz; tapınak durumu korunur (16.8)
+- `3b4f28d` İnceleme sonrası düzeltmeler: çift kurulum koruması, aynı karede LOD, lav düzeyi; harness istisnayı başarısızlık sayar (16.8)
 
 ## 16.5 Bilinen sorunlar ve ertelenenler
 11. belgedeki açık maddeler (özet): 19 açık madde:
@@ -96,3 +99,34 @@ Taban `34977c5` (Aşama 1 belgeleri) üzerine, eskiden yeniye (Aşama 9 commit'i
   2–4 oyunculu gerçek ağ denemesi. Yayın için `claude/denetim-v0.4` dalının `claude/hopeful-cray-o1jw6w` (canlı) dalına
   birleştirilmesi ve tek dosya sürümünün (`dist/`) kökteki dosya yerine konması gerekir — **bu adımlar kullanıcı onayı bekler**.
 - Yol haritası: 14. belge.
+
+## 16.8 Ek: Donma ve FPS denetimi (Aşama 9 sonrası kullanıcı sorusu)
+Soru: "Oyunda donma oluyor mu, yeterli FPS alınıyor mu?" Ayrıntı: 10. belge §10.8–10.9; kalıcı test `13_donma.js` (P01–P08).
+- **Ölçülebilen**: oyun mantığının kare maliyeti (60 Hz tempo), tek seferlik işler, çizimin ana iş parçacığı maliyeti (izleme kaydı,
+  iş parçacığı işlemci süresi), uzun karelerin nedeni (çöp toplama / işlemci beklemesi / kod), V8 çöp toplama günlüğü, ayırma profili.
+  **Ölçülemeyen**: ekran kartındaki çizim süresi, yani gerçek FPS (bu ortam yazılımsal GPU).
+- Oyun mantığı karede ortalama ~1,4 ms (p99 5–12 ms). Çizimin ana iş parçacığı maliyeti (2,3 GHz sanal Xeon): liman ~10,9 ms
+  (1 022 çağrı), orman adası ~4,3 ms, açık deniz ~3,5 ms → en ağır sahnede bile toplam ~12,5 ms < 16,7 ms (60 FPS bütçesi), pay az.
+- **Bulunan tekrarlanabilir donma — giderildi**: ada içeriği tek karede kuruluyordu (gemiyle yaklaşırken 55–58 ms, ışınlanmada 142 ms;
+  Ateş Dağı gibi büyük adada ~80 ms). Kurulum karelere bölündü (3 ms/kare): 7–19 kareye yayılıyor, karedeki ada işi 6–11 ms, adanın
+  tamamlandığı kare (tehlike seti dahil) 2,5–3,7 ms; 67 adada içerik eskisiyle birebir aynı.
+- Kalan seyrek uzun kareler (130 sn rotada > 12 ms olan 13 kare): 9'u V8 çöp toplama (büyük toplama ~5–10 sn'de bir, bu ortamda tek
+  karede tipik 7–12 ms), 4'ü bu test makinesinin işlemci çekişmesi. Balık sürüsü güncellemesinin çöpü %64 azaltıldı (simülasyon bit
+  düzeyinde aynı); uçtan uca toplama sayısındaki düşüş ölçüm gürültüsü içinde kaldı; kalan ayırıcılar yol haritasında (#15).
+- Ayar ön tanımları: düşük ayar limanda çizim çağrısını %26, üçgeni %53 azaltır; orta ayar çağrı sayısını değiştirmez (10.9.1).
+- **Bağımsız kod incelemesi** (4 açı, her bulguya çürütme amaçlı doğrulayıcılar, eksiklik eleştirmeni; 14 ajan):
+  - Önceden var olan bir ilerleme engeli bulundu ve düzeltildi: Kadim Tapınak bulmacası ada yeniden kurulunca/kayıt yüklenince
+    bozuluyordu (levye hatası, kapı kapanıyor, Taş Muhafız tetiklenmiyor; 02. belge T05, P08).
+  - Doğrulanan test tasarımı sorunu: P03/P04/P06 yarım işi saat süresine bağlıyordu → adım sayısına bağlandı. Eşzamanlı yolun hata
+    temizliği, çift kurulum koruması, tamamlanan adanın aynı karede LOD'u, Volkanik Dev lav düzeyinin sonradan güncellenmesi eklendi.
+  - Test altyapısı sıkılaştırıldı: `js` adımı istisnası artık başarısızlık. v03 referans senaryoları eski/yeni A/B: 21'in 20'si iki kodda
+    temiz; boss1'deki istisnaların oyuncunun rastgele ölümüne bağlı olduğu ve eski kodda da oluştuğu gösterildi, senaryo düzeltildi.
+- **Önceden var olan, bu turda değiştirilmeyen iki davranış** (ölçümle doğrulandı, eski ve yeni kodda aynı):
+  - Ada yerleşimi kurulum anındaki arazi ayrıntı düzeyine bağlı: yaklaşırken ve yüklemeden sonra kurulan ada arasında bitki örtüsü, NPC
+    adları ve tapınak levye sırası farklı olabiliyor (bilinen #35, yol haritası #19). Kalıcı kimlikler etkilenmez; yarım levye dizisi artık
+    kurulumlar arasında taşınmıyor.
+  - Kumsalda ~1,4 m derinlikte dalga, yüzme↔yürüme kipini 4 sn'de 2–3 kez değiştirebiliyor; `03_fizik_duzeltmeler` "sığ su bandı"
+    kontrolü 30 dalga anının 7'sinde kalıyor (bilinen #33, yol haritası #18).
+- Öneri: gerçek makinede Ayarlar → "FPS göster" ile liman, seyir, fırtına ve savaş sahnelerinde el ile kontrol; düşük FPS'te gölge ve
+  görüş mesafesi ilk düşürülecek ayarlardır. Gölgelendiriciler başlangıç sahnesi için yüklemede önceden derleniyor; sonradan görünen
+  içerik ilk görüldüğünde derleniyor (gerçek GPU'da oturumda bir kez kısa takılma olabilir; bilinen #31).
