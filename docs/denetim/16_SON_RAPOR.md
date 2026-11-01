@@ -48,7 +48,8 @@ Taban `34977c5` (Aşama 1 belgeleri) üzerine, eskiden yeniye (Aşama 9 commit'i
 - `1c9b6f9` Aşama 7 devam testleri ve belgeleri: D02b (1 mm dikiş), D03 faz taraması + sağanak, D07 barınak, D08 bekleme; inceleme bulguları R6–R11, bayat belge değerleri düzeltildi
 - `ac8f452` Aşama 8: GPU kaynak ve dinleyici sızıntıları (B14, B-09, H23, H24)
 - `2e2a1f6` Aşama 8 testleri ve belgeleri: 09_performans (sayaç düzeltmesi, sızıntı döngüleri), 11_arayuz_sizinti; 10. belge ölçümleri
-- Aşama 9 commit'leri: HUD DOM yazımları + kese/çukur/gemi/boss GPU kaynakları; Aşama 9 testleri ve belgeleri (en üstteki iki commit)
+- `dbf50ab` Aşama 9: HUD DOM yazımları değişiklik algılamalı; kese/çukur/gemi/boss GPU kaynakları bırakılır
+- `3bfb7b8` Aşama 9 testleri ve belgeleri: uzun oturum (bellek teşhisi), 3 kayıt döngüsü, 4 oyuncu, tam regresyon ve test düzeltmeleri
 
 ## 16.5 Bilinen sorunlar ve ertelenenler
 11. belgedeki açık maddeler (özet): 19 açık madde:
