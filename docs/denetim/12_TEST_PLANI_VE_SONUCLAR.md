@@ -12,7 +12,7 @@ değildir ve 60 FPS hedefi bu ortamda doğrulanamaz — yalnız CPU tarafı benz
 | 3 | Gemiye biniş, yelken, çapa, top atışı | `03_fizik_dt.js`, `03_fizik_duzeltmeler.js`, `04_karakter.js` | GEÇTİ | 05/06. belgeler (gülle süpürmesi, dümen/top IK) |
 | 4 | Gemi–kara / gemi–gemi çarpışması | `03_fizik_duzeltmeler.js` | GEÇTİ | kinematik gemi çarpışması; kara oturması v0.3 mantığı (statik) |
 | 5 | Fırtınada seyir | `09_performans.js` (fırtına ölçümü) | KISMİ | hava anahtarı 'firtina' ile ölçüm; seyir hissi gerçek GPU'da el ile |
-| 6 | Yüzme, dalış, kayıktan geçiş | `04_karakter.js`, `03_fizik_duzeltmeler.js` | GEÇTİ | yüzme kaldırması, mod histerezisi, kayık/biniş silah durumu |
+| 6 | Yüzme, dalış, kayıktan geçiş | `04_karakter.js`, `03_fizik_duzeltmeler.js`, `07_dunya_kesif.js` (D03) | GEÇTİ | yüzme kaldırması, mod histerezisi, kayık/biniş silah durumu; sudan iskele merdivenine çıkış (Aşama 7: yüzme zemini platformları görür) |
 | 7 | Mağara, tapınak, bulmaca | `08_kalicilik.js` (tapınak mekanizması kaydı) | KISMİ | mekanizma çözümü ve kaydı; bulmaca akışı uçtan uca oynanmadı |
 | 8 | Hazine haritası ve kazı | v0.3 referans senaryoları | GEÇTİ (v0.3) | bu aşamada değişmedi |
 | 9 | Dövüş: kılıç, parry, tabanca, kaçınma | `05_dusman_ai.js`, `04_karakter.js` | GEÇTİ | savunma histerezisi, tabanca ışını engeli, telgraf |
@@ -26,6 +26,10 @@ değildir ve 60 FPS hedefi bu ortamda doğrulanamaz — yalnız CPU tarafı benz
 | 17 | Uzun oturum (30+ dakika) | — | YAPILMADI | Aşama 9'da benzetimli 30 dk koşu planlandı |
 | 18 | Hızlı yolculuk | `03_fizik_duzeltmeler.js` (çapa sıfırlama) | GEÇTİ | E-01 düzeltildi |
 | 19 | Yanlış girdi/spam/hile girişimi | `coop/06a_ag_guvenligi.cjs` | GEÇTİ (7/9; 2 kontrol 06a2'de) | oran/boyut/hasar/altın/sahte ad |
+
+Ek senaryolar (19 listesi dışında, Aşama 7): `07_dunya_kesif.js` D01–D06 — dünya boyutu, kıyı dikişi (önce/sonra), iskeleye sudan çıkış
+(3 gelgit × 2 dalga fazı), adacık özellikleri, arazi uygunluğu ve çalışma zamanı kurulumu; `tests/node/archipelago_sabit.mjs` —
+dünya üretiminin v0.3 sabitiyle determinizmi (kazı noktaları/hazine haritaları değişmez); sonuçlar 15. belgede.
 
 Her koşuda kaydedilen: geçti/kaldı, konsol/sayfa hataları (`pageErrors`), ölçümler (metre/saniye/sayaç), ekran görüntüleri
 (`shot`/`snapjs` adımları), bellek (`performance.memory`, yalnız 09. senaryo), yeniden üretme adımları (senaryo dosyasının kendisi).

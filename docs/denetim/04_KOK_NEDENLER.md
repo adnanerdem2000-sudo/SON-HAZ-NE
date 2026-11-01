@@ -41,3 +41,18 @@
 - **Kök neden:** `lineBlocked` sınır kutusu 64 hücreyi (16 m) aşınca `false` dönüyordu; uçlarda %2 pay mermi süpürmesinde boşluk bırakıyordu.
 - **Düzeltme:** DDA hücre yürüyüşü (yalnız doğrunun geçtiği hücreler, uzunluk sınırı yok), mermi için `tMin=0, tMax=1, rScale=1`.
 - **Doğrulama:** 400 m doğruda engel bulunur, boş doğruda bulunmaz; kutu içinden başlayan mermi parçası engellenir.
+
+## 4.6 Kıyı çizgisinde basamak halkası (B-05)
+`geo.js` ada yükseklik fonksiyonunda kıyı dışı (d ≥ 1) dalı `SEA_FLOOR·t^1,25 + fbm·0,9·(1−t)` ile başlar; t = smoothstep(1, 2,1, d)
+olduğundan d = 1'de yükseklik `0,9·fbm` (±0,9 m) olur. Kıyı içi (d < 1) dalında kumsal ve tepe terimleri d → 1'de tam 0'a
+iner. İki dal kıyı çizgisinde farklı değer verdiği için her adanın çevresinde dalgalı bir set/çukur halkası oluşuyordu; çizilen
+ağ, fizik zemini ve derinlik penceresi aynı fonksiyonu kullandığından halka hem görünür hem yürünür. Düzeltme: gürültü terimi
+`smoothstep(1.0, 1.12, d)` ile kıyıdan sıfırdan başlar. Ölçüm: 15. belge §15.2 (96 → 0 sıçrama).
+
+## 4.7 Yüzen oyuncu hiçbir platforma çıkamıyor (B-07)
+`player.js` `_updateSwim` yüzme zeminini yalnız `terrain.heightAt` ile alıyordu; `physics.groundAt` yalnız yürüme kipinde
+kullanılıyordu. Bu yüzden iskele basamağı, batık taş gibi platformlar yüzen oyuncu için yoktu: oyuncu basamağın içinden
+geçiyor, sığ su çıkış koşulu (`floor > wh − 1,25`) hiç sağlanmıyordu. Liman merdiveninin ilk iki tasarımı bu yüzden başarısız
+oldu (15. belge §15.3 koşu geçmişi). Düzeltme: yüzme zemini de `groundAt(x, z, pos.y, 0.6)` ile alınır (yürüme kipiyle aynı
+0,6 m basamak kuralı). İkinci kök neden: limanda denize inen merdiven yoktu; eklendi.
+

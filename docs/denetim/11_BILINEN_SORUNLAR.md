@@ -22,3 +22,7 @@
 | 18 | Dünya haritası/karakter oluşturucu dinleyici sızıntıları (H23/H24) | Açık (düşük) | Aşama 8'de ele alınacak |
 | 19 | Yuvarlanan kaya durumu kaydedilmiyor (yüklemede yeniden kurulur) | Açık (düşük) | |
 | 20 | Dost ateşi seçeneği kaldırıldı; oyuncular arası hasar yok (tasarım kararı) | Kapalı (kayıt) | İleride PvP istenirse yakın dövüş/ışın uzak oyuncuları hedef almalı |
+| 21 | `swamp`/`atoll` şekilli 13 adacıkta kıyı profili dik (0,25 m'de 1,5 m'ye kadar yükselir; sürekli rampa, dikiş değil) | Açık (düşük, tasarım) | Bataklık için düz/alçak kıyı profili; atol halkası için yumuşak kumsal (geo.js şekil fonksiyonları) |
+| 22 | Otomatik adacık özellikleri yalnız şekle göre seçilir (arazi sorgusu `archipelago.js` içinde yapılamaz: `geo.js` bu modülü içe aktarır); bu yüzden volkan/spire/bataklık adacıkları hep batık aldı, fener/mezarlık seçilmedi | Açık (düşük, çeşitlilik) | Arazi-farkında yerleşim ada kurulurken (`islands.js`, `terrain.heightAt` ile aday açı denemesi) |
+| 23 | Yalnız ana limanda denize inen merdiven var; yeni liman iskelelerine (ports.js) sudan çıkış yok (B-07'nin ikinci yarısı) | Açık (orta) | `islands._pier` için aynı basamak yapısı; kumsaldan iskeleye basamak |
+| 24 | Liman kanalı 9 m derin olduğundan merdivende dalga sönümsüz (±1,1 m, fırtınada daha çok): su hattındaki basamakta duran oyuncu dalga tepesinde yine de suya girebilir (0,5 s gecikme ve 0,3 m derin eşikle seyrekleştirildi, sıfırlanmadı) | Açık (düşük) | Merdiven çevresinde yerel dalga sönümü (`ocean.shoreFactor` için yapay sığlık) ya da platformda tam histerezis |
