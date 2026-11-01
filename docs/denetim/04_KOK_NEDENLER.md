@@ -47,7 +47,10 @@
 olduğundan d = 1'de yükseklik `0,9·fbm` (±0,9 m) olur. Kıyı içi (d < 1) dalında kumsal ve tepe terimleri d → 1'de tam 0'a
 iner. İki dal kıyı çizgisinde farklı değer verdiği için her adanın çevresinde dalgalı bir set/çukur halkası oluşuyordu; çizilen
 ağ, fizik zemini ve derinlik penceresi aynı fonksiyonu kullandığından halka hem görünür hem yürünür. Düzeltme: gürültü terimi
-`smoothstep(1.0, 1.12, d)` ile kıyıdan sıfırdan başlar. Ölçüm: 15. belge §15.2 (96 → 0 sıçrama).
+`smoothstep(1.0, 1.3, d)` ile kıyıdan sıfırdan başlar (ilk yama 1,12 bandı kıyı ötesinde kum setleri bırakıyordu). Ölçüm: 15. belge
+§15.2 (dik olmayan 54 adacıkta 81 → 0 sıçrama). Aynı "iki dal uyuşmazlığı" sınıfından iki dikiş daha bulundu (inceleme R6):
+bataklık tabanı d → 1⁻'de 3 m / d ≥ 1'de 0 (3 m duvar; karaya çıkılamıyordu) ve havuz dalının `d < 0.85` keskin sınırı; atolde
+lagün dalı (0,4 ± 0,4) ile halka tabanı (0,9) uyuşmazlığı. Üçü de süreklilikle bağlandı; 1 mm inceltme metriği 67 adada 0.
 
 ## 4.7 Yüzen oyuncu hiçbir platforma çıkamıyor (B-07)
 `player.js` `_updateSwim` yüzme zeminini yalnız `terrain.heightAt` ile alıyordu; `physics.groundAt` yalnız yürüme kipinde

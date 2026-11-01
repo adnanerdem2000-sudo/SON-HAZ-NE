@@ -15,7 +15,7 @@
 7. Telgraf halkaları/iniş işaretleri konukta; Taş Muhafız sütunları; satış yarışı (#14–#16).
 
 ## İçerik / keşif
-8. Aşama 7 kalemleri uygulandı (03. belge Aşama 7, 15. belge): ada ayırt edilebilirliği, kıyı dikişi, ana liman merdiveni. Kalan: yeni liman iskelelerine sudan çıkış (#23), swamp/atoll kıyı profili (#21), arazi-farkında otomatik özellik yerleşimi ve çeşitlilik (#22), merdivende yerel dalga sönümü (#24).
+8. Aşama 7 kalemleri uygulandı (03. belge Aşama 7, 15. belge): ada ayırt edilebilirliği, kıyı dikişi, ana liman merdiveni. Kalan: yeni liman iskelelerine sudan çıkış ve barınak (#23), arazi-farkında otomatik özellik yerleşimi ve çeşitlilik (#22). (#21 ve #24 Aşama 7 devamında kapatıldı.)
 9. Dikey derinlik: mağara/uçurum/yükselti çeşitliliği; tapınak sunağına erişim (basamak platformları).
 
 ## Teknik borç

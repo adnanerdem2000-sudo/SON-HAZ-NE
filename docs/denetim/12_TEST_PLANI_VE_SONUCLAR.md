@@ -27,8 +27,8 @@ değildir ve 60 FPS hedefi bu ortamda doğrulanamaz — yalnız CPU tarafı benz
 | 18 | Hızlı yolculuk | `03_fizik_duzeltmeler.js` (çapa sıfırlama) | GEÇTİ | E-01 düzeltildi |
 | 19 | Yanlış girdi/spam/hile girişimi | `coop/06a_ag_guvenligi.cjs` | GEÇTİ (7/9; 2 kontrol 06a2'de) | oran/boyut/hasar/altın/sahte ad |
 
-Ek senaryolar (19 listesi dışında, Aşama 7): `07_dunya_kesif.js` D01–D06 — dünya boyutu, kıyı dikişi (önce/sonra), iskeleye sudan çıkış
-(3 gelgit × 2 dalga fazı), adacık özellikleri, arazi uygunluğu ve çalışma zamanı kurulumu; `tests/node/archipelago_sabit.mjs` —
+Ek senaryolar (19 listesi dışında, Aşama 7): `07_dunya_kesif.js` D01–D07 — dünya boyutu, kıyı dikişi (önce/sonra, 1 mm inceltme), iskeleye
+sudan çıkış (3 gelgit × çukur/tepe + sağanak), adacık özellikleri, arazi uygunluğu, çalışma zamanı kurulumu, liman barınağı; `tests/node/archipelago_sabit.mjs` —
 dünya üretiminin v0.3 sabitiyle determinizmi (kazı noktaları/hazine haritaları değişmez); sonuçlar 15. belgede.
 
 Her koşuda kaydedilen: geçti/kaldı, konsol/sayfa hataları (`pageErrors`), ölçümler (metre/saniye/sayaç), ekran görüntüleri
