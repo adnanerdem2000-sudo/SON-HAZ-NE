@@ -20,6 +20,9 @@ const _ikL = new THREE.Vector3(), _ikR = new THREE.Vector3(); // IK el hedefleri
 
 export const EQUIP_SLOTS = { slot0: 'none', slot1: 'sword', slot2: 'pistol', slot3: 'shovel', slot4: 'rod', slot5: 'map', slot6: 'harpoon', slot7: 'net' };
 
+// donanım yuvası → gereken eşyalardan biri
+const EQUIP_NEED = { sword: ['kilic', 'usta_kilic'], pistol: ['tabanca', 'usta_tabanca'], shovel: ['kurek'], rod: ['olta', 'usta_olta'], map: ['hazine_haritasi'], harpoon: ['zipkin', 'usta_zipkin'], net: ['balik_agi'] };
+
 export class Player {
   constructor(scene, appearance, opts = {}) {
     this.scene = scene;
@@ -85,9 +88,17 @@ export class Player {
   }
 
   // ---- ekipman ----
+  // elde tutulan eşya envanterden çıktıysa (yere bırakıldı) elden de bırakılır: önce kılıç bırakılsa bile elde kalıyordu
+  unequipIfMissing() {
+    const need = EQUIP_NEED[this.equipped];
+    if (!need || need.some((id) => this.inv.has(id))) return;
+    this.equipped = 'none'; this.aiming = false;
+    this.char.hold(null);
+    G.emit('equip', 'none');
+  }
   equip(slot) {
     if (this.carrying) return;
-    const need = { sword: ['kilic', 'usta_kilic'], pistol: ['tabanca', 'usta_tabanca'], shovel: ['kurek'], rod: ['olta', 'usta_olta'], map: ['hazine_haritasi'], harpoon: ['zipkin', 'usta_zipkin'], net: ['balik_agi'] }[slot];
+    const need = EQUIP_NEED[slot];
     if (need && !need.some((id) => this.inv.has(id))) {
       G.notify(slot === 'map' ? 'Envanterinde hazine haritası yok.' : 'Bu eşyaya sahip değilsin.', 'warn');
       return;
@@ -338,6 +349,12 @@ export class Player {
     }
     // balıkla mücadelede A/D balığa karşı koymak içindir: oyuncu yürümez (önce iskelede yana yürüyüp suya düşüyor, balık kaçıyordu)
     const locked = this.dead || this.downed || G.uiOpen || !!this.fishLock;
+    // alçak geçiren su düzeyi: güverte/kayık/dümen kiplerinde de güncellenir, ışınlanmada (hızlı yolculuk, doğma) sıfırlanır —
+    // önce yalnız karada/suda güncelleniyordu; uzun seyirden sonra gelgit değişmişken suya atlayınca karar eski düzeye göreydi
+    { const whNow = ocean.heightAt(this.pos.x, this.pos.z);
+      if (this._wlp === undefined || Math.abs(this.pos.x - (this._wlpX ?? this.pos.x)) + Math.abs(this.pos.z - (this._wlpZ ?? this.pos.z)) > 30) this._wlp = whNow;
+      else if (this.mode !== 'ground' && this.mode !== 'swim') this._wlp += (whNow - this._wlp) * (1 - Math.exp(-dt / 4));
+      this._wlpX = this.pos.x; this._wlpZ = this.pos.z; }
     if (this.mode === 'ground') this._updateGround(dt, locked);
     else if (this.mode === 'deck') this._updateDeck(dt, locked);
     else if (this.mode === 'swim') this._updateSwim(dt, locked);
@@ -345,6 +362,13 @@ export class Player {
     else if (this.mode === 'helm') this._updateHelm(dt, locked);
     else if (this.mode === 'cannon') this._updateCannon(dt, locked);
     else if (this.mode === 'climb') this._updateClimb(dt);
+    // yüzme dışındaki her kipte yüzme eğimi ve kaldırması sıfırlanır: her kip geçişi exitWater'dan geçmiyor (ör. suda ölüp
+    // yeniden doğmada kaldırma kalıyordu, karakter yerden yüksekte duruyordu); kalan eğim karakteri karada yüzüstü yatırırdı
+    if (this.mode !== 'swim' && !c.ragdoll) {
+      const m = c.model;
+      if (m.rotation.x !== 0) m.rotation.x = Math.abs(m.rotation.x) < 0.01 ? 0 : damp(m.rotation.x, 0, 14, dt);
+      if (c.overlay.lift) c.overlay.lift = 0;
+    }
 
     // meşgul eylem
     if (this.busy && !this.dead && !this.downed) {
@@ -366,6 +390,14 @@ export class Player {
 
     // karakter görsel güncellemesi
     c.root.position.copy(this.pos);
+    // basamak yumuşatma (yalnız görsel): iskele basamağı/kaya gibi 0,1–0,7 m'lik ani zemin değişiminde gövde bir alt adımda
+    // sıçramaz, ~0,1 sn'de yetişir. Yamaçlar (yatay yol dikey değişimden büyük) ve ışınlanmalar etkilenmez.
+    if (this.mode === 'ground' && this.onGround && this._lpy !== undefined) {
+      const dy = this.pos.y - this._lpy, hz = Math.hypot(this.pos.x - this._lpx, this.pos.z - this._lpz);
+      if (Math.abs(dy) > 0.1 && Math.abs(dy) < 0.7 && Math.abs(dy) > 1.5 * hz && hz < 0.5) this._visDY = clamp((this._visDY || 0) - dy, -0.7, 0.7);
+    } else if (this.mode !== 'ground') this._visDY = 0; // havada (basamaktan hemen sonra zıplama) kalan pay sönmeye devam eder, bir karede sıçramaz
+    this._lpx = this.pos.x; this._lpy = this.pos.y; this._lpz = this.pos.z;
+    if (this._visDY) { this._visDY = Math.abs(this._visDY) < 0.004 ? 0 : damp(this._visDY, 0, 16, dt); c.root.position.y += this._visDY; }
     if (this.mode !== 'swim') c.root.rotation.set(0, this.yaw, 0);
     c.overlay.carry = !!this.carrying;
     c.overlay.crouch = this.crouch && this.mode === 'ground' && this.onGround && !this.carrying;
@@ -412,11 +444,18 @@ export class Player {
     const was = this.sprinting;
     this.sprinting = false;
     this.staminaCd = Math.max(0, (this.staminaCd || 0) - dt);
-    // sprint histerezisi: başlamak için dayanıklılık > 15 (ve 1 sn yenilenme gecikmesi yok), sürdürmek için > 0.5
-    if (input.isDown('kos') && this.stamina > (was ? 0.5 : 15) && this.staminaCd <= 0 && !this.carrying && !this.aiming && mag > 0.3) {
+    this._sprintEndT = Math.max(0, (this._sprintEndT || 0) - dt);
+    // sprint histerezisi: başlamak için dayanıklılık > 15, sürdürmek için > 0,5. Tükenme kilidi: dayanıklılık bitince sprint,
+    // Shift bırakılıp yeniden basılana (ve > 15) ya da %60'a dolana dek açılmaz. Önce 1 sn sonra 15'e dolunca kendiliğinden
+    // yeniden başlıyordu: Shift basılı koşuda ~1,3 sn sprint / 1 sn koşu döngüsü, her geçişte sert fren ve adım sıçraması
+    const key = input.isDown('kos');
+    if (!key) this._kosUp = true;
+    if (was && this.stamina <= 0.5) { this.exhausted = true; this._kosUp = false; }
+    if (this.exhausted && ((this._kosUp && this.stamina > 15) || this.stamina >= 60)) this.exhausted = false;
+    if (key && !this.exhausted && this.stamina > (was ? 0.5 : 15) && this.staminaCd <= 0 && !this.carrying && !this.aiming && mag > 0.3) {
       sp = 7.0; this.sprinting = true;
     }
-    if (was && !this.sprinting && this.stamina <= 0.5) this.staminaCd = 1.0;
+    if (was && !this.sprinting) { if (this.stamina <= 0.5) this.staminaCd = 1.0; if (key && mag > 0.3 && !this.aiming && !this.carrying) this._sprintEndT = 0.6; } // sprintten koşuya yumuşak geçiş (nişan alınca değil)
     if (this.sprinting && dt > 0) this.stamina = Math.max(0, this.stamina - dt * 14); // kara ve güvertede aynı tüketim
     if (this.crouch) sp = 1.7;
     if (this.aiming || this.blocking) sp = 2.0;
@@ -492,7 +531,8 @@ export class Player {
 
     // ivme: kalkışta yumuşak, duruşta daha hızlı; havada az kontrol
     const speedNow = Math.hypot(this.vel.x, this.vel.z), speedWish = Math.hypot(wish.x, wish.z);
-    const accel = !this.onGround ? 2.5 : this.action?.type === 'dodge' ? 20 : speedWish > speedNow ? 9 : 13;
+    // sprint bitince (tuş basılı) koşu hızına yumuşak iniş: önce 7 → 4,4 m/sn 0,2 sn'de sert frenleniyordu
+    const accel = !this.onGround ? 2.5 : this.action?.type === 'dodge' ? 20 : speedWish > speedNow ? 9 : (this._sprintEndT > 0 && speedWish > 1 ? 3.5 : 13);
     this.vel.x = damp(this.vel.x, wish.x, accel, dt);
     this.vel.z = damp(this.vel.z, wish.z, accel, dt);
     // geri tepme itkisi (sönümlenir)
@@ -528,7 +568,10 @@ export class Player {
     const gNew = physics.groundAt(nx, nz, this.pos.y);
     const gOld = physics.groundAt(this.pos.x, this.pos.z, this.pos.y);
     const n = terrain.normalAt(nx, nz, _v);
-    const climbing = gNew > gOld + 0.02;
+    // tırmanma: yükselme/ilerleme oranı > 0,3 (≈17°). Önce alt adım başına 2 cm'di: 60 Hz'de ~15°, 144 Hz'de ~34° sayılıyor,
+    // kare süresi oynadıkça aynı yamaçta dur-kalk oluyordu
+    const runH = Math.hypot(nx - this.pos.x, nz - this.pos.z);
+    const climbing = runH > 1e-4 && (gNew - gOld) / runH > 0.3;
     if (this.onGround && climbing && n.y < 0.6 && !physics.lastPlatform) {
       // çok dik: tırmanılamaz, geri kayar
       // (kare hızından bağımsız: 60 Hz'deki 0.2 çarpanı ve 2 cm itiş dt ile ölçeklenir)
@@ -541,9 +584,15 @@ export class Player {
       this.pos.x = nx; this.pos.z = nz;
     }
     this.pos.y += this.vel.y * dt;
+    const px0 = this.pos.x, pz0 = this.pos.z;
     physics.resolve(this.pos, 0.33, this.pos.y);
     this._shipHullPush();
+    // çarpıştırıcı oyuncuyu ittiyse hızın engele doğru bileşeni silinir: önce hız korunuyordu, oyuncu engele "koşmaya" devam
+    // ediyor (koşu animasyonu yerinde), engelin kenarından kayarken hız ve animasyon sıçrıyordu
+    { const pdx = this.pos.x - px0, pdz = this.pos.z - pz0, pl = Math.hypot(pdx, pdz);
+      if (pl > 1e-4) { const ux = pdx / pl, uz = pdz / pl, vn = this.vel.x * ux + this.vel.z * uz; if (vn < 0) { this.vel.x -= vn * ux; this.vel.z -= vn * uz; } } }
     const g = physics.groundAt(this.pos.x, this.pos.z, this.pos.y);
+    const wasPlat = this.onPlatform;
     this.onPlatform = !!physics.lastPlatform;
     if (this.pos.y <= g + 0.02 && this.vel.y <= 0.5) {
       const fall = this.fallStartY - g;
@@ -552,7 +601,9 @@ export class Player {
         this.hurt(dmg, null, { cause: 'Yüksekten düştün' });
         G.emit('sfx', { name: 'land', pos: this.pos, vol: 0.6 });
       } else if (!this.onGround && fall > 1.5) G.emit('sfx', { name: 'land', pos: this.pos, vol: 0.3 });
-      if (!this.onGround && fall > 0.9 && !this.action && !this.carrying && Math.hypot(this.vel.x, this.vel.z) < 3.2 && !this.dead) this.startAction('land', fall > 3 ? 0.5 : 0.3);
+      // iniş eylemi (hızı 0,3 sn kısar) yalnız ≥ 1,8 m düşüşte: önce 0,9 m'de (yerinde zıplama dahil) tetikleniyor, yavaş
+      // yürürken alçak bir kayadan inmek bile oyuncuyu bir an durduruyordu
+      if (!this.onGround && fall > 1.8 && !this.action && !this.carrying && Math.hypot(this.vel.x, this.vel.z) < 3.2 && !this.dead) this.startAction('land', fall > 3 ? 0.5 : 0.3);
       this.pos.y = g;
       this.vel.y = 0;
       this.onGround = true;
@@ -560,7 +611,11 @@ export class Player {
       this.fallStartY = this.pos.y;
     } else {
       if (this.onGround && g < this.pos.y - 0.3) this.fallStartY = this.pos.y;
-      if (this.onGround && this.pos.y - g < 0.35 && this.vel.y <= 0) { this.pos.y = g; this.vel.y = 0; }
+      // koşarken yere yapışma payı daha büyük: alçak kaya/basamaktan koşarak inişte karakter bir anlığına havaya kalkıp
+      // zıplama pozuna geçiyordu (koşu adımında takılma); yürürken ya da dururken eski pay
+      // (iskele/merdiven kenarından kuma inerken eski pay: merkez platformdan çıktığı tek alt adımda 0,5 m çöküp geri sıçramasın)
+      const snapD = !(wasPlat && !this.onPlatform) && Math.hypot(this.vel.x, this.vel.z) > 1.5 ? 0.55 : 0.35;
+      if (this.onGround && this.pos.y - g < snapD && this.vel.y <= 0) { this.pos.y = g; this.vel.y = 0; }
       else { this.onGround = false; this.airT = (this.airT || 0) + dt; }
       if (this.vel.y > 0) this.fallStartY = Math.max(this.fallStartY, this.pos.y);
     }
@@ -570,9 +625,20 @@ export class Player {
     // ≈ gelgit). Anlık dalga ile karar verilince su hattındaki basamakta duran oyuncu her dalgada kip değiştiriyor, olta/nişan/
     // taşıma sıfırlanıyordu (inceleme L1). Kumsalda (platform yok) anlık yükseklik kullanılır.
     this._wlp = this._wlp === undefined ? whRaw : this._wlp + (whRaw - this._wlp) * (1 - Math.exp(-dt / 4));
-    const wh = this.onPlatform ? this._wlp : whRaw;
-    if (this._modeT <= 0 && this.pos.y < wh - 1.15 && g < wh - 1.35) {
+    // Kumsalda da karar ortalama su düzeyine göre verilir (önce anlık dalga yüksekliğiyle veriliyordu: ~1,15 m derinlikte
+    // her dalgada yüzme↔yürüme değişiyor — 20 sn'de 4–6 kez —, karakter suya doğru öne yatıp doğruluyor, hızı 4,4 ↔ 2,8 m/sn
+    // arasında sıçrıyordu; bilinen #33). Dalga tepesi başı aşarsa (anlık derinlik ≥ 1,85 m) yine yüzmeye geçilir.
+    const wh = this._wlp;
+    const crest = !this.onPlatform && g < whRaw - 1.85 && this.pos.y < whRaw - 1.6;
+    // kumsal: ortalama derinlik > 1,4 m'de yüzmeye geçilir, < 1,2 m'de çıkılır (0,2 m aralık; fırtınada ortalama düzeyin
+    // ±0,1 m salınımı kipi değiştirmez). İskele basamağında eski eşikler (1,35 / 1,25) korunur.
+    const deep = this.pos.y < wh - 1.15 && g < wh - (this.onPlatform ? 1.35 : 1.4);
+    // ortalama derinlik > 2,2 m ise kip kilidi beklenmez (kıyıdan çıkıp hemen dik yamaçtan suya koşan oyuncu başı su
+    // altında 1,2 sn yürümesin)
+    const veryDeep = this.pos.y < wh - 1.15 && g < wh - 2.2;
+    if ((this._modeT <= 0 && (deep || crest)) || veryDeep) {
       this.enterWater();
+      if (!this.onPlatform) this._modeT = 1.2; // kumsalda kip en az 1,2 sn korunur
       return;
     }
     if (this.onGround && g > 0.5) this.lastSafe.copy(this.pos);
@@ -593,11 +659,15 @@ export class Player {
     // üst gövde duruşu
     this._wantUpper(this.aiming ? 'Aim' : this.blocking ? 'Block' : null);
     if (air && (this.mode === 'ground' || this.mode === 'deck')) {
+      this._gait = null;
       this.jumpAnimT = (this.jumpAnimT || 0) + dt;
-      if (this.airT > 0.25 || (this.jumpAnimT > 0.35 && c.currentName === 'JumpStart')) this._wantAnim('Jump_Idle', 1, 0.15);
+      // zıplamadan düşüşte (kenardan iniş) havada kalma pozu biraz daha geç: kısa inişlerde poz bir kare yanıp sönmesin
+      const unjumped = this.jumpAnimT > this.airT + 0.2;
+      if (this.airT > (unjumped ? 0.35 : 0.25) || (this.jumpAnimT > 0.35 && c.currentName === 'JumpStart')) this._wantAnim('Jump_Idle', 1, 0.15);
       return;
     }
     if (hs < 0.25) {
+      this._gait = null;
       this.idleT += dt;
       const combat = G.inCombat && this.equipped === 'sword';
       // uzun beklemede ara sıra farklı bekleme pozu
@@ -613,9 +683,18 @@ export class Player {
       this._wantAnim(a, clamp(hs / (a.startsWith('Strafe') ? 3.6 : 1.9), 0.5, 1.3), 0.25);
       return;
     }
-    if (this.crouch || hs < 3.4) this._wantAnim('Walk', clamp(hs / 1.9, 0.5, 1.6));
-    else if (this.sprinting && hs > 5.6) this._wantAnim('Sprint', clamp(hs / 6.6, 0.8, 1.35));
-    else this._wantAnim('Run', clamp(hs / 5.2, 0.6, 1.45));
+    // yürüyüş biçimi: eşiklerde histerezis (Yürü→Koş 3,7, Koş→Yürü 3,1; Sprint 5,9 / 5,0) ve 0,3 sn içinde A→B→A
+    // titremesinin bastırılması. Önce sabit eşikler (3,4 / 5,6) dönüşlerde, kalkışta ve sprint geçişlerinde klibi kare kare
+    // değiştirip baştan başlatıyordu (bacaklarda sıçrama: "koşarken takılma")
+    const cur = this._gait;
+    const walkMax = cur === 'Run' || cur === 'Sprint' ? 3.1 : 3.7;
+    let g = this.crouch || hs < walkMax ? 'Walk' : this.sprinting && hs > (cur === 'Sprint' ? 5.0 : 5.9) ? 'Sprint' : 'Run';
+    this._gaitT = (this._gaitT || 0) + dt;
+    if (cur && g !== cur && g === this._gaitPrev && this._gaitT < 0.3) g = cur;
+    if (g !== cur) { this._gaitPrev = cur; this._gaitT = 0; this._gait = g; }
+    if (g === 'Walk') this._wantAnim('Walk', clamp(hs / 1.9, 0.5, 1.9));
+    else if (g === 'Sprint') this._wantAnim('Sprint', clamp(hs / 6.6, 0.75, 1.4));
+    else this._wantAnim('Run', clamp(hs / 5.2, 0.55, 1.5));
   }
 
   // Gemi gövdesine dışarıdan girme
@@ -638,6 +717,7 @@ export class Player {
 
   enterWater() {
     this._modeT = 0.35;
+    this.airT = 0; this.fallStartY = this.pos.y;
     if (this.busy) this.cancelBusy();
     this._resetCombatFlags();
     this.mode = 'swim';
@@ -710,15 +790,21 @@ export class Player {
     this._wantAnim('Idle');
     // sığ suya çıkış (histerezis: giriş eşiği wh-1.35'in üstünde; mod kilidi süresince değişmez). Zemin bir platformsa
     // (iskele basamağı) karar alçak geçiren su düzeyine göre (bkz. _updateGround).
-    const whX = physics.lastPlatform ? this._wlp : wh;
-    if (this._modeT <= 0 && (floor > whX - 1.25 || this.pos.y - floor < 0.3 && floor > whX - 1.3)) {
+    const onPlat = !!physics.lastPlatform, whX = this._wlp;
+    // kumsal: ortalama derinlik < 1,2 m ve ayağa kalkınca anlık dalga başı aşmıyor (< 1,6 m); iskele basamağında eski kural
+    const exit = onPlat ? (floor > whX - 1.25 || this.pos.y - floor < 0.3 && floor > whX - 1.3) : (floor > whX - 1.2 && floor > wh - 1.6);
+    if (this._modeT <= 0 && exit) {
       this.exitWater();
+      if (!onPlat) this._modeT = 1.2;
     }
   }
   exitWater() {
     this._modeT = 0.35;
     this.mode = 'ground';
     this.aiming = false;
+    // havada kalma durumu sıfırlanır: suya atlayıp kıyıya çıkınca önce hava pozu, 'iniş' duraksaması ve atlama yüksekliğinden
+    // düşme hasarı geliyordu
+    this.onGround = true; this.airT = 0; this.jumpAnimT = 1; this.fallStartY = this.pos.y; if (this.vel.y > 0) this.vel.y = 0;
     this.char.model.rotation.x = 0;
     this.char.model.position.y = 0;
     this.char.overlay.lift = 0;

@@ -93,6 +93,7 @@ export const shop = {
     const count = n ?? (stack.n || 1);
     const gold = stack.id.startsWith('balik:') ? sellPrice(stack, role) : unit * count;
     p.inv.removeStack(stack, count);
+    p.unequipIfMissing?.(); // son kılıç/tabanca/olta satıldıysa elde kalmasın
     this.earn(gold);
     G.emit('itemSold', { id: stack.id, n: count, gold, role, data: stack.data });
     audio.play('coin', { vol: 0.6 });

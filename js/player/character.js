@@ -445,6 +445,11 @@ export class Character {
     this.bones = {};
     model.traverse((o) => { if (o.isBone) this.bones[o.name] = o; });
     for (const k in BONE_ALIAS) if (this.bones[BONE_ALIAS[k]]) this.bones[k] = this.bones[BONE_ALIAS[k]];
+    // dinlenme (bind) pozu: ragdoll'dan çıkışta geri yüklenir; her kemiğin animasyon pozu her karede saklanır (bkz. update)
+    this._rest = [];
+    this._anim = [];
+    model.traverse((o) => { if (o.isBone) { this._rest.push([o, o.position.clone(), o.quaternion.clone()]); this._anim.push([o, new THREE.Quaternion()]); } });
+    this._animValid = false;
     // malzemeler ve renkler
     const tex = kk.texture(id, colorsOf(this.app, id));
     model.traverse((o) => {
@@ -687,8 +692,13 @@ export class Character {
     return { obj, slot: /Shield/.test(n) ? 'handslotl' : 'handslotr' };
   }
 
+  // önceki karenin prosedürel kemik düzenlemelerini geri al (eylem etkinleşirken three.js kemiğin o anki değerini 'özgün'
+  // değer olarak saklar: çömelme/kürek eğimi oraya yazılıp kalıcı oluyordu)
+  _undoProc() { if (this._animValid && !this.ragdoll) for (const e of this._anim) e[0].quaternion.copy(e[1]); }
+
   // Temel katman: tam gövde; üst katman etkinken yalnız alt gövde (bacaklar) oynar
   play(name, fade = 0.2, opts = {}) {
+    this._undoProc();
     const lower = !!this.upper;
     const clip = lower ? kk.clipPart(name, 'L') : kk.clip(name);
     if (!clip) return null;
@@ -714,6 +724,7 @@ export class Character {
   playUpper(name, fade = 0.12, opts = {}) {
     const clip = kk.clipPart(name, 'U');
     if (!clip || this.ragdoll) return null;
+    this._undoProc();
     if (!this.upper) this._swapBase('L', fade);
     let a = this.actions[clip.name] || (this.actions[clip.name] = this.mixer.clipAction(clip));
     if (this.upper === a && !opts.restart) { if (opts.speed) a.timeScale = opts.speed; return a; }
@@ -732,6 +743,7 @@ export class Character {
   }
   stopUpper(fade = 0.18) {
     if (!this.upper) return;
+    this._undoProc();
     this.upper.fadeOut(fade);
     this.upper = null;
     this.upperName = null;
@@ -767,6 +779,7 @@ export class Character {
     // noktalar önce ÖLÜM ANINDAKİ pozdan örneklenir (bind pozuna sıçrama yok), eylemler sonra durdurulur
     const rag = new Ragdoll(this, opts);
     this.mixer.stopAllAction();
+    this._animValid = false;
     this.current = null;
     this.upper = null; this.upperName = null;
     this.currentName = 'Ragdoll';
@@ -777,6 +790,14 @@ export class Character {
     if (!this.ragdoll) return;
     this.ragdoll = null;
     if (this.held) this.held.visible = true;
+    // three.js karıştırıcısı bir bağı yeniden etkinleştirirken kemiğin O ANKİ değerini "özgün durum" olarak saklar; ceset
+    // pozundayken saklanırsa sonraki her yürüyüş/zıplama karışımı karakteri ceset pozuna doğru yatırıyordu (yere kapaklanma).
+    // Önce bağlar bırakılır, kemikler dinlenme pozuna döner, sonra eylemler yeniden başlar.
+    this.mixer.stopAllAction();
+    for (const [b, pos, q] of this._rest) { b.position.copy(pos); b.quaternion.copy(q); }
+    this._animValid = false;
+    this.current = null; this.currentName = null;
+    this.upper = null; this.upperName = null;
     this.play('Idle', 0, { restart: true });
   }
 
@@ -817,8 +838,14 @@ export class Character {
   update(dt) {
     if (this.ragdoll) { this.ragdoll.update(dt); this._torch(); return; }
     if (this.shape) for (const sh of this.shape) sh.bone.scale.copy(sh.base);
+    // önceki karenin prosedürel düzenlemeleri (çömelme/kürek omurga eğimi, IK, baş eğimi) geri alınır: hiçbir klibin yeniden
+    // yazmadığı kemiklerde (ör. Idle'da omurga izi yok; karıştırıcı değişmeyen değeri yazmıyor) her kare üst üste biniyordu —
+    // dururken C ile çömelince gövde sürekli dönüp başı yere gömüyordu
+    if (this._animValid) for (const e of this._anim) e[0].quaternion.copy(e[1]);
     if (this.upper && this.upperOnce && !this.upperHold && this.upper.time >= this.upper.getClip().duration - 0.02) this.stopUpper(0.2);
     this.mixer.update(dt);
+    for (const e of this._anim) e[1].copy(e[0].quaternion);
+    this._animValid = true;
     if (this.shape) for (const sh of this.shape) sh.bone.scale.multiply(sh.f);
     const o = this.overlay;
     this.model.position.y = this.baseY + (o.lift || 0); // yüzme kaldırması burada uygulanır (her kare sıfırlanmaz)

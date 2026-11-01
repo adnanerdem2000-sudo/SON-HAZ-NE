@@ -26,11 +26,17 @@ export const events = {
     this.scene = scene;
     interact.addProvider((ctx, out) => {
       const p = ctx.player;
+      const boat = p.mode === 'boat', deck = p.mode === 'deck';
+      if (p.mode !== 'ground' && p.mode !== 'swim' && !boat && !deck) return;
       for (const f of this.floating) {
         if (f.gone) continue;
+        if ((boat || deck) && f.kind === 'chest') continue; // kayıktan/güverteden sandık taşınamaz: yüzerek alınır
         const d = Math.hypot(p.pos.x - f.pos.x, p.pos.z - f.pos.z);
-        const reach = p.mode === 'boat' ? 3.5 : p.mode === 'deck' ? 0 : 2.6;
-        if (d < reach) out.push({ id: 'fl' + f.id, pos: f.pos, radius: reach, priority: 3, label: f.label, action: () => this.collectFloating(f, G.myId) });
+        // güverteden kancayla: küpeşteye yanaşan yüzen nesne 3 m'ye kadar alınır (önce güverteden hiç alınamıyordu)
+        const reach = boat ? 3.5 : deck ? 3.0 : 2.6;
+        if (deck && Math.abs(f.pos.y - p.pos.y) > 3.5) continue;
+        // kayıkta öncelik 6: çıkış istemi (öncelik 5, puan 50) önceki 3 öncelikli adayı hep bastırıyordu, kayıktan hiçbir şey toplanamıyordu
+        if (d < reach) out.push({ id: 'fl' + f.id, pos: f.pos, radius: reach, priority: boat ? 6 : 3, label: deck ? f.label + ' (kancayla)' : f.label, action: () => this.collectFloating(f, G.myId) });
       }
     });
     G.on('shipEvent', (e) => this._shipEvent(e));
@@ -195,19 +201,20 @@ export const events = {
     f.gone = true;
     const mine = who === G.myId;
     const p = G.player;
-    const give = (items) => { if (mine) treasure.giveItems(items); else G.emit('netGive', { who, items }); };
-    const at = mine ? p.pos.clone() : (G.remotes.get(who)?.pos.clone() || f.pos.clone());
+    const give = (items, from = 'Yüzen varil') => { if (mine) return treasure.giveItems(items, from); G.emit('netGive', { who, items, from }); return []; };
     if (f.kind === 'barrel') {
       const tables = [[['altin_para', 20, 60], ['gulle', 0.5], ['ekmek', 0.5]], [['mermi', 5, 10], ['tahta', 0.6], ['merhem', 0.3]], [['altin_para', 40, 90], ['inci', 0.4]],
         [['yem_karides', 3, 6], ['balik_agi', 0.45], ['hava_kesesi', 0.6], ['zipkin', 0.2]]]; // balıkçı varili
       const t = tables[Math.floor(Math.random() * tables.length)];
-      treasure.spawnLoot(at, t, 'Varil'); // ev sahibinde doğar, herkese yayınlanır
+      // içerik doğrudan toplayanın çantasına (önce kese doğuyordu: kayıktan/güverteden alınamıyor, güvertede kese tahtadan
+      // denize düşüyordu); sığmayan kısım toplayanın yanına kese olarak bırakılır
+      give(treasure.rollTable(t));
     } else if (f.kind === 'bottle') {
-      give([['sise_mesaj', 1]]);
-      if (mine) G.notify('Şişede mesaj aldın! Haritacı Nevra açabilir ya da envanterden kullan.', 'good', 4500);
+      const left = give([['sise_mesaj', 1]], 'Şişe');
+      if (mine && !left.length) G.notify('Şişede mesaj aldın! Haritacı Nevra açabilir ya da envanterden kullan.', 'good', 4500);
     } else if (f.kind === 'meteor') {
-      give([['gok_tasi', 1]]);
-      if (mine) { G.notify('Gök Taşı Parçası aldın! Hâlâ ılık ve mor bir ışıkla parlıyor.', 'good', 4500); G.emit('rareFind', { kind: 'meteor' }); }
+      const left = give([['gok_tasi', 1]], 'Gök taşı');
+      if (mine) { if (!left.length) G.notify('Gök Taşı Parçası aldın! Hâlâ ılık ve mor bir ışıkla parlıyor.', 'good', 4500); G.emit('rareFind', { kind: 'meteor' }); }
     } else if (f.kind === 'chest') {
       const c = treasure.spawnChest(Math.random() < 0.7 ? 'small' : 'medium', f.pos.clone());
       c.state = 'water';
@@ -294,7 +301,13 @@ export const events = {
       const gold = 220 + Math.floor(Math.random() * 260);
       p.inv.gold += gold;
       const extra = [['gulle', 6], ['mermi', 8], ['tahta', 3]][Math.floor(Math.random() * 3)];
-      p.inv.add(extra[0], extra[1]);
+      const left = p.inv.add(extra[0], extra[1]);
+      // çantaya sığmayan kısım kaybolmaz: gemi ambarına (gülle/tahta) ya da oyuncunun yanına kese olarak bırakılır
+      if (left > 0) {
+        if (G.ship && extra[0] === 'gulle') G.ship.cannonballs += left;
+        else if (G.ship && extra[0] === 'tahta') G.ship.planks += left;
+        else G.emit('loot', { pos: p.pos.clone(), table: [[extra[0], left]], from: 'Yağma' }); // konukta ev sahibine yönlenir
+      }
       G.notify(`Düşman gemisi ele geçirildi! Ambarı yağmaladın: +${gold} altın, ${extra[1]} ${extra[0]}. Gemiyi batırıyorlar…`, 'good', 6000);
       G.emit('shipCaptured', { gold });
       quests.stats.shipsCaptured = (quests.stats.shipsCaptured || 0) + 1;

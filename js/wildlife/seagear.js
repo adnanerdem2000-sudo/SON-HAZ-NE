@@ -113,7 +113,7 @@ export const seagear = {
     scene.add(this.netMesh);
     this.hints = {};
     this.wreckOpened = false;
-    // Martı Batığı'ndaki sandık: dalınca E ile açılır (oturum başına bir kez), ganimet kesesi yüzeye süzülür
+    // Martı Batığı'ndaki sandık: dalınca E ile açılır (oturum başına bir kez), içerik doğrudan çantaya gider
     interact.addProvider((ctx, out) => {
       const c = props.wreckChest;
       const p = ctx.player;
@@ -131,10 +131,10 @@ export const seagear = {
     const c = props.wreckChest;
     if (!c || this.wreckOpened) return false;
     this.wreckOpened = true;
-    G.emit('loot', { pos: c.clone().add(_o.set(0, 0.6, 0)), table: [['altin_para', 60, 140], ['dalis_maskesi', 0.6], ['palet', 0.5], ['hava_kesesi', 1, 2], ['zipkin', 0.35], ['inci', 0.5]], from: 'Batık sandığı' });
+    // içerik doğrudan çantaya (önce kese yüzeye süzülüyordu, nefes biterken yüzeyde ayrıca aranıyordu); sığmayan kısım kese olarak yüzer
+    G.emit('lootToBag', { pos: c.clone().add(_o.set(0, 0.6, 0)), table: [['altin_para', 60, 140], ['dalis_maskesi', 0.6], ['palet', 0.5], ['hava_kesesi', 1, 2], ['zipkin', 0.35], ['inci', 0.5]], from: 'Batık sandığı' });
     effects.bubbles(c.x, c.y + 0.5, c.z);
     audio.play('coin', { vol: 0.6 });
-    G.notify('Batık sandığını açtın! Ganimet kesesi yüzeye doğru süzülüyor.', 'good', 4000);
     return true;
   },
   stop() { this.reset(); sky.maskClear = false; },

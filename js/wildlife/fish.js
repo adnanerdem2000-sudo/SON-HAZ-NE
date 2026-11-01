@@ -525,7 +525,7 @@ export const fish = {
         t.hp -= dmg;
         effects.blood(t.pos.x, t.pos.y, t.pos.z);
         this.sharkState.mode = 'flee'; this.sharkState.t = 0;
-        if (t.hp <= 0) { t.alive = false; this.shark.visible = false; G.notify('Köpekbalığını alt ettin!', 'good'); G.emit('seeAnimal', 'shark'); G.emit('loot', { pos: t.pos.clone().setY(ocean.heightAt(t.pos.x, t.pos.z)), table: [['altin_para', 0, 0]], from: 'Köpekbalığı' }); t.respawn = 180; }
+        if (t.hp <= 0) { t.alive = false; this.shark.visible = false; G.notify('Köpekbalığını alt ettin!', 'good'); G.emit('seeAnimal', 'shark'); const lp = t.pos.clone(); const pp = G.player?.pos; if (G.online && !G.isHost && pp) { const dx = lp.x - pp.x, dz = lp.z - pp.z, dd = Math.hypot(dx, dz); if (dd > 25) { lp.x = pp.x + dx / dd * 25; lp.z = pp.z + dz / dd * 25; } } lp.y = Math.max(ocean.heightAt(lp.x, lp.z), terrain.heightAt(lp.x, lp.z)); G.emit('loot', { pos: lp, table: [['kopekbaligi_eti', 1, 2], ['kopekbaligi_disi', 1, 2]], from: 'Köpekbalığı' }); /* konukta düşme noktası konuğa 25 m içinde: ev sahibi 30 m ötesindeki ganimet isteğini reddediyor */ t.respawn = 180; } // önce boş tablo: hiçbir şey düşmüyordu
       },
     };
     combat.addTarget(this.sharkTarget);

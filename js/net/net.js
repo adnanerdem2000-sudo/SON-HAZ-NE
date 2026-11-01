@@ -158,7 +158,7 @@ export const net = {
     relay('netFloatReq', (e) => this.toHost({ t: 'floatReq', ...e }));
     relay('netFloatSpawn', (e) => { if (G.isHost) this.broadcast({ t: 'floatSpawn', ...e }); });
     relay('netFloatGone', (e) => { if (G.isHost) this.broadcast({ t: 'floatGone', id: e.id }); });
-    relay('netGive', (e) => { if (G.isHost) this.toPeer(e.who, { t: 'give', items: e.items }); });
+    relay('netGive', (e) => { if (G.isHost) this.toPeer(e.who, { t: 'give', items: e.items, from: e.from || '' }); });
     relay('netGold', (e) => { if (G.isHost) this.toPeer(e.who, { t: 'gold', amount: e.amount }); });
     relay('netCarryOk', (e) => { if (G.isHost) this.toPeer(e.who, { t: 'carryOk', id: e.id }); });
     relay('netNoise', (e) => { if (!G.isHost) this.toHost({ t: 'noise', radius: e.radius, kind: e.kind }); });
@@ -166,7 +166,8 @@ export const net = {
     relay('netChestState', (e) => this.sendGame({ t: 'chestState', c: e.chest }));
     relay('netChestGone', (e) => this.sendGame({ t: 'chestGone', id: e.id }));
     relay('netPickupSpawn', (e) => { if (G.isHost) this.broadcast({ t: 'pickupSpawn', pk: e.pk }); });
-    relay('netPickupGone', (e) => { if (G.isHost) { this.broadcast({ t: 'pickupGone', id: e.id }); if (e.who !== G.myId) this.toPeer(e.who, { t: 'give', items: e.items }); } });
+    relay('netPickupGone', (e) => { if (G.isHost) { this.broadcast({ t: 'pickupGone', id: e.id }); if (e.who !== G.myId) this.toPeer(e.who, { t: 'give', items: e.items, from: e.from || '' }); } });
+    relay('netPickupItems', (e) => { if (G.isHost) this.broadcast({ t: 'pickupItems', id: e.id, items: e.items }); }); // kısmen alınan kesede kalanlar
     relay('netHold', (e) => this.sendGame({ t: 'hold', ship: e.ship, hold: e.hold, gone: e.gone || null })); // ambara konan sandığın kimliği de gider (hayalet sandık yok)
     relay('netShipFull', (e) => this.sendGame({ t: 'shipFull', ship: e.ship, replace: e.replace }));
     relay('netMarker', (e) => this.sendGame({ t: 'marker', ...e }));
@@ -286,7 +287,7 @@ export const net = {
       }
       case 'hurtBoss': G.emit('netHurtBossApply', { ...m, dmg: num(m.dmg, 0, DMG_MAX.hurtBoss), by: pid }); break;
       case 'stunEnemy': { const e = enemies.list.find((x) => x.id === m.id); const r = G.remotes.get(pid); if (e && e.alive && r && e.pos.distanceTo(r.pos) < 8) e.stun(num(m.dur, 0.2, 3, 1.5), 'parry'); break; }
-      case 'hurtAnimal': { const a = animals.byId(m.id); const r = G.remotes.get(pid); if (a && a.alive && r && a.pos.distanceTo(r.pos) < 80) a.applyDamage(num(m.dmg, 0, DMG_MAX.hurtAnimal), { pos: r.pos }); break; }
+      case 'hurtAnimal': { const a = animals.byId(m.id); const r = G.remotes.get(pid); if (a && a.alive && r && a.pos.distanceTo(r.pos) < 80) a.applyDamage(num(m.dmg, 0, DMG_MAX.hurtAnimal), { pos: r.pos, by: pid }); break; }
       case 'hurtMarine': { const e = megafauna.byId(m.id); const r = G.remotes.get(pid); if (e && e.alive && r && e.pos.distanceTo(r.pos) < 120) megafauna.applyDamage(e, num(m.dmg, 0, DMG_MAX.hurtMarine), { by: pid, attacker: r }); break; }
       case 'dig': treasure._hole(m.x, m.z, true); treasure.resolveDig(m.x, m.z, pid); this.broadcast({ t: 'hole', x: m.x, z: m.z }, pid); break;
       case 'chestReq': {
@@ -303,7 +304,12 @@ export const net = {
         const pos = new THREE.Vector3(num(m.pos[0], -10000, 10000), num(m.pos[1], -100, 400), num(m.pos[2], -10000, 10000));
         if (pos.distanceTo(r.pos) > 30) break;
         const table = m.table.slice(0, 10).map((row) => (Array.isArray(row) ? [str(row[0], 40), num(row[1], 0, 999), row[2] === undefined ? undefined : num(row[2], 0, 999), row[3] && typeof row[3] === 'object' ? row[3] : undefined] : null)).filter((row) => row && row[0]);
-        if (table.length) treasure.spawnLoot(pos, table, str(m.from, 40), !!m.exact);
+        let deckShip = null, deckLocal = null;
+        if (m.ship && Array.isArray(m.local) && r.target && r.target.ship === m.ship) {
+          deckShip = G.ships.find((x) => x.id === m.ship && !x.sunk) || null;
+          if (deckShip) deckLocal = deckShip.clampDeck(new THREE.Vector3(num(m.local[0], -60, 60), num(m.local[1], -10, 20), num(m.local[2], -60, 60)), 0.45);
+        }
+        if (table.length) treasure.spawnLoot(pos, table, str(m.from, 40), !!m.exact, { keep: !!m.keep, still: !!m.still, ship: deckShip, local: deckLocal });
         break;
       }
       case 'holdTake': {
@@ -508,7 +514,7 @@ export const net = {
       t: 'world',
       ship: s ? s.serialize() : null,
       chests: treasure.chests.filter((c) => c.state !== 'gone').map((c) => treasure.chestNet(c)),
-      pickups: treasure.pickups.map((p) => ({ id: p.id, pos: p.pos.toArray(), items: p.items, from: p.from })),
+      pickups: treasure.pickups.filter((p) => !p.remove).map((p) => treasure.pickupNet(p)),
       quests: { stage: quests.stage, flags: quests.flags, markers: quests.markers },
       time: { hour: sky.hour, weather: sky.weatherKey, wind: sky.windDir },
       rowboat: G.rowboat ? { state: G.rowboat.state, x: G.rowboat.x, z: G.rowboat.z, yaw: G.rowboat.yaw } : null,
@@ -534,7 +540,7 @@ export const net = {
       }
       case 'floatSpawn': if (!events.floating.some((f) => f.id === m.id)) events.spawnFloating(m.kind, new THREE.Vector3(m.x, 0, m.z), { id: m.id, net: true }); break;
       case 'floatGone': events.removeFloating(m.id); break;
-      case 'give': treasure.giveItems(m.items); break;
+      case 'give': if (Array.isArray(m.items)) treasure.giveItems(m.items, str(m.from, 40)); break;
       case 'teleport': {
         // oda sahibi hızlı yolculuk yaptı: tayfa da varış limanına taşınır
         const p = G.player;
@@ -552,6 +558,7 @@ export const net = {
       case 'chestGone': this._chestGone(m.id); break;
       case 'pickupSpawn': if (!treasure.pickups.some((p) => p.id === m.pk.id)) { const pk = treasure.spawnLootLocal ? null : null; void pk; this._spawnPickup(m.pk); } break;
       case 'pickupGone': { const pk = treasure.pickups.find((p) => p.id === m.id); if (pk) pk.remove = true; break; }
+      case 'pickupItems': { const pk = treasure.pickups.find((p) => p.id === m.id); if (pk && Array.isArray(m.items)) { pk.items = m.items; pk.keep = true; } break; }
       case 'hole': treasure._hole(m.x, m.z, true); break;
       case 'hold': { const s = G.ships.find((x) => x.id === m.ship); if (s) s.hold = m.hold; if (m.gone) this._chestGone(m.gone); break; }
       case 'shipFull': this._shipFull(m); break;
@@ -572,8 +579,15 @@ export const net = {
   },
 
   _spawnPickup(pk) {
-    const p = treasure.spawnLoot(new THREE.Vector3(...pk.pos), pk.items.map((i) => [i[0], 1, i[1], i[2]]), pk.from, true);
-    if (p) p.id = pk.id;
+    // güverteye bağlı kese: ev sahibinin gemi kimliği ve yerel konumu kullanılır (gemi bulunamazsa düz konuma düşer)
+    const ship = pk.ship && G.ships.find((x) => x.id === pk.ship);
+    const local = ship && Array.isArray(pk.local) ? new THREE.Vector3(...pk.local) : null;
+    const p = treasure.spawnLoot(new THREE.Vector3(...pk.pos), pk.items.map((i) => [i[0], 1, i[1], i[2]]), pk.from, true, { net: true, keep: !!pk.keep, ship: local ? ship : null, local });
+    if (p) {
+      p.id = pk.id;
+      p.t = Math.max(0, Math.min(1800, +pk.t || 0)); // geç katılan konukta kese ev sahibindekiyle aynı anda süresini doldurur
+      if (!local && pk.ship && Array.isArray(pk.local)) { p.netShip = pk.ship; p.netLocal = pk.local.map((v) => num(v, -100, 100)); } // gemisi sonra gelirse bağlanır
+    }
   },
 
   _applyChestState(c) {

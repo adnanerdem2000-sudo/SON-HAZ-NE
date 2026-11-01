@@ -59,6 +59,16 @@ export const assets = {
           o.receiveShadow = true;
         }
       });
+      // merkezi kaymış modeller ortalanır: Kenney 'barrel' geometrisi orijinden (2; 1,5) birim, 'crystal_rock' (2; 1,5) birim
+      // uzakta modellenmiş. Ölçeklenince her varil konduğu yerden ~10 m, her kristal 4–9 m ötede çiziliyordu: denizde yüzen
+      // olay varili görünen yerinde toplanamıyor (toplama noktası 10 m ötede), liman yük yığınının varilleri iskelenin
+      // dibinde/suyun üstünde görünüyor, kristal kayanın çarpıştırıcısı boşlukta kalıyordu. Yatay (x, z) merkez orijine alınır.
+      {
+        const bb = new THREE.Box3().setFromObject(gltf.scene);
+        const cx = (bb.min.x + bb.max.x) / 2, cz = (bb.min.z + bb.max.z) / 2;
+        const size = Math.max(bb.max.x - bb.min.x, bb.max.z - bb.min.z, 1e-6);
+        if (Math.hypot(cx, cz) > size) { for (const ch of gltf.scene.children) { ch.position.x -= cx; ch.position.z -= cz; } gltf.scene.updateMatrixWorld(true); }
+      }
       // renk düzeltmeleri: Kenney sandık/varil modelleri ahşap tonuna
       if (name === 'crate') gltf.scene.traverse((o) => { if (o.isMesh) { o.material = o.material.clone(); o.material.color.lerp(new THREE.Color(0x8a5a32), 0.75); } });
       // varil: glTF'de metallicFactor yazılmamış → metalness 1; ortam haritası olmadığından gövde siyah/turuncu yağ varili gibi

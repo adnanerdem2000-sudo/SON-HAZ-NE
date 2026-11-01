@@ -168,3 +168,48 @@ düzeltmesi ve 7 yuvalı araç çubuğu doğrulandı.
   taşıyordu (kalan üyeler sürü merkezini 176 m uzakta tuttu). Senaryo düzeltildi (ölümsüzlük yalnız boğulma ölçümü dışında, köpekbalığı
   yalnız G04'te, palet ölçümü durgun suda, ağ testinde sürünün tüm üyeleri); oyun kodu değişmedi. `15_iskele_kamera` I07 Kuzey Fener
   limanında kaldı (kum 20 m içinde güverteye yetişmiyor, kökte 1,38 m kalıyordu) → kök basamağı eklendi (oyun kodu), sonra geçti.
+
+## Kullanıcı bildirimi turu: koşarken takılma, başını yere gömme, av eti, yerden toplananlar çantaya
+Senaryolar: `tests/scenarios/16_kosu_poz_ganimet.js` (tek oyunculu) ve `tests/scenarios/coop/06d_ganimet_canta.cjs` (2 oyuncu).
+"Önce" sütunu aynı test kodunun önceki sürümde (HEAD 0a2d8cc, 8080) koşturulmasıdır; ölçümler başsız Chromium + SwiftShader, 640×360.
+
+| Kontrol | Önce (HEAD 0a2d8cc) | Sonra (son kod) |
+|---|---|---|
+| K01 açık kumsalda 1,0–1,5 m derinlikte 20 sn bekleme (36 durum) | KALDI: 1,25–1,4 m'de 2–6 kip geçişi (en çok 6) | GEÇTİ: en çok 1 geçiş |
+| K02 kıyı boyunca ≈1,2 m derinlikte 8 sn yürüyüş | GEÇTİ: 0 geçiş | GEÇTİ: 0 geçiş |
+| K03 iniş duraksaması | KALDI: yerinde zıplamada ve 1,2 m inişte 0,3 sn duraksama | GEÇTİ: zıplama ve 1,2 m'de yok, 2,5 m'de var |
+| P01 yüzme eğimi yüzme dışında | KALDI: karada gövde eğimi 1,2 rad (yüzüstü), kaldırma 1 m kalıyor; doğmada 0,05 m havada | GEÇTİ: 0 |
+| V01 varil/kristal kaya modeli merkezi | KALDI: 2,5 m kaymış; yüzen varil toplama noktasından 10 m ötede çiziliyor | GEÇTİ: 0 / 0,01 m |
+| A01–A04 av ganimeti, köpekbalığı, et kızartma, maymun muzu | KALDI: domuzdan et yok (A01 hata), köpekbalığı kesesi yok, et ve kızartma seçeneği yok | GEÇTİ: 15 tür, köpekbalığı eti/dişi, kızartma (çanta sınırında 6 pişti 4 çiğ kaldı), muz geri düştü |
+| T01–T02 dolu çantada kabuk, bırak/geri al | KALDI | GEÇTİ |
+| K05 16 sn W+Shift (dayanıklılık biter) | KALDI: 8 sprint geçişi, kare başı en büyük hız düşüşü 0,51 m/s | GEÇTİ: 3 geçiş, 0,15 m/s |
+| K06 koşarken 4 × 90° dönüş | GEÇTİ (bu senaryoda titreme üretilemedi) | GEÇTİ |
+| Çömelme (C basılı, 3 sn bekleme) — baş yüksekliği | −0,28 … 0,85 m (baş yerin altına iner) | 0,82–0,84 m sabit; ayağa kalkınca 1,15–1,17 m |
+| Ragdoll sonrası yürüyüşte en düşük baş (ölüm öncesi 1,06 m) | 0,35 m | 1,06 m |
+| T07 koşarak kesenin üstünden geçme | KALDI: kese 3,02 m fırladı | GEÇTİ: 0 m |
+| T03 kısmen sığan kese | KALDI: kese silindi, yanına yeni kese fırladı; dolu çantada istem yine "Ganimeti topla" | GEÇTİ: aynı kesede 2 post kaldı; "Ganimet — çantan dolu" (öncelik 0,4) |
+| T04 güverteye düşen kese | KALDI: kese güvertenin (1,12 m) içinden 0,27 m'ye düştü, güverteden alınamıyor ("Yelkenleri aç" istemi) | GEÇTİ: güvertede, gemiyle 3,8 m gider, E ile alınır; gemi kalkınca suya düşüp yüzer |
+| T05 kayıktan yüzen varil/kese | KALDI: istem "Gemiye çık" | GEÇTİ: "Yüzen varili al", içerik çantaya; kese de alınır |
+| T06 envanterden "Yere bırak" | KALDI: kılıç elde kaldı, kese 400 sn sonra yok | GEÇTİ |
+| T08 sandık açma | KALDI: içerik kese olarak doğdu (kazılan, ada, batık) | GEÇTİ: doğrudan çantaya, kese 0 |
+| T09 HUD çanta yükü | KALDI: gösterge yok | GEÇTİ: "Çanta 27/45 kg", dolunca kırmızı |
+| T10 güverteden yüzen nesne | KALDI: istem "Yelkenleri aç" | GEÇTİ: "Şişeyi al (kancayla)" |
+| coop C01–C06 (konuk bırakma/geri alma, konuğun açtığı sandık, kısmi kese eşitleme, güverte kesesi, av XP'si) | 5 kontrol KALDI (konuğun bıraktığı kese ev sahibinde hiç doğmadı) | 9/9 GEÇTİ |
+
+Toplam: `16_kosu_poz_ganimet.js` (23 kontrol) eski kodda 20 kontrol kaldı (K02 ve K06 eski kodda da geçiyor), son kodda 23/23;
+`coop/06d_ganimet_canta.cjs` eski kodda 5 kontrol kaldı, son kodda 9/9. Harita karosu: skaler piksel döngüleri eski çıktıyla birebir
+aynı (4 karoda 8×8 ortalama farkı 0); karo başına uzun görev (yazılımsal GPU) eski 69–653 ms, yeni 98–635 ms — değişmedi (11. belge #45).
+Bellek (yalnız testin kendi süreç ağacı): 04_karakter tepe 1,17 GB / 36 sn (eski 1,18 GB / 40 sn); 09_performans tepe 2,55 GB (eski 2,68 GB).
+
+**Bu turun tam regresyonu (son kod, iki şerit paralel, 640×360; 06 için 960×540):** `00_acilis`, `02_arazi_kurtarma`, `02_arazi_yedek`,
+`03_fizik_dt`, `03_fizik_duzeltmeler`, `04_karakter`, `05_dusman_ai`, `06_arayuz_960`, `07_dunya_kesif`, `07_ekonomi`, `08_kalicilik`,
+`11_arayuz_sizinti`, `12_kayit_dongusu`, `14_deniz_ekipmani`, `15_iskele_kamera`, `16_kosu_poz_ganimet` → 16/16 geçti (hata, sayfa
+hatası, adım istisnası 0); Node `archipelago_sabit.mjs` GEÇTİ. `09_performans` paralel şeritte "Target crashed" ile kaldı (düşman
+doğur/kaldır adımından hemen sonra; bellek sonlandırması yok); tek başına yinelendiğinde son kodda 0 hata (tepe 2,55 GB), eski kodda da
+0 hata (2,68 GB) — bu ortamda iki tarayıcıyla bellek sınırına yakın, kodla ilgili değil. Tek başına: `13_donma` 0 hata, `coop/06b`
+18/18, `coop/06d` 9/9. Tek dosya derleme (21,0 MB) + `02_tek_dosya.js` (file://) 4/4; tek dosyada yeni toplama/poz kodu ve HUD çanta
+göstergesi doğrulandı.
+- Bu turun ilk iki tam koşusu geçersiz sayıldı: (1) üçüncü bir tarayıcı (ek ölçüm) ve inceleme ajanlarıyla işlem grubunun 14,3 GB sınırı
+  aşıldı, çekirdek sayfaları sonlandırdı (11. belge #52); (2) ikinci koşu, inceleme bulgusu için yapılan kamera düzeltmesindeki bir hatayı
+  yakaladı: `_col` başlangıçtaki sonsuz değerden sönümlenince NaN oluyor, kamera duvarlarda hiç yaklaşmıyordu (04 C07, 15 C03 kaldı) →
+  düzeltildi, son koşuda ikisi de geçti.

@@ -376,6 +376,26 @@ export const quests = {
           p.inv.add('pismis_balik', fish.length, null, true);
           G.notify(`${fish.length} balık ızgara yapıldı.`, 'good');
         } });
+        // av eti ayrı seçenek: balık seçeneğiyle birleşik olunca et kızarttırmak isteyen oyuncunun (nadir) balıkları da pişiyordu
+        if (p.inv.stacks.some((s) => ITEMS[s.id]?.raw)) opts.push({ label: 'Av etini aşçıya kızarttır (5 altın / parça)', fn: () => {
+          // ağır etler önce (kızarmış et 0,6 kg: ağır çiğ et çantayı hafifletir, hafif olanlar ağırlaştırır); çanta sınırı aşılmaz
+          const st = p.inv.stacks.filter((s) => ITEMS[s.id]?.raw).sort((a, b) => ITEMS[b.id].weight - ITEMS[a.id].weight);
+          if (!st.length) { G.notify('Pişirecek etin yok.'); return; }
+          const per = ITEMS.pismis_et.weight, total = st.reduce((a, s) => a + (s.n || 1), 0);
+          let free = p.inv.free(), n = 0;
+          const take = [];
+          for (const s of st) {
+            const w = ITEMS[s.id].weight;
+            let k = 0;
+            while (k < (s.n || 1) && p.inv.gold >= 5 * (n + 1) && (w >= per || free + w - per >= -1e-6)) { k++; n++; free += w - per; }
+            if (k) take.push([s, k]);
+          }
+          if (!n) { G.notify(p.inv.gold < 5 ? 'Yeterli altının yok.' : 'Çantanda kızarmış ete yer yok.', 'warn'); return; }
+          p.inv.gold -= n * 5;
+          for (const [s, k] of take) p.inv.removeStack(s, k);
+          p.inv.add('pismis_et', n, null, true);
+          G.notify(`${n} parça et kızartıldı.` + (n < total ? ` ${total - n} parça pişirilemedi (altın ya da çanta yeri yetmedi).` : ''), 'good', 4000);
+        } });
         setTimeout(() => G.emit('dialogExtra', opts), 0);
         break;
       }

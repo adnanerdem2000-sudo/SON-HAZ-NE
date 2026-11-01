@@ -201,6 +201,8 @@ label.set { display: flex; align-items: center; justify-content: space-between; 
 .vital.ox .fill { background: linear-gradient(90deg, #1a6a9a, #6ad0f0); }
 .vital .depth { font-size: 14px; color: #bfe6f4; text-shadow: 0 1px 2px #000; min-width: 46px; }
 .gold-line { display: flex; align-items: center; gap: 8px; font-family: var(--title); font-size: 24px; color: var(--gold); text-shadow: 0 2px 2px #000; margin-top: 2px; }
+#hud-bag { font-family: var(--body, sans-serif); font-size: 13px; color: #e8dcc0; opacity: 0.85; margin-left: 6px; letter-spacing: 0.02em; }
+#hud-bag.full { color: #ff6a50; opacity: 1; font-weight: 700; }
 .coin { width: 20px; height: 20px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #fff2b0, #e8b84a 50%, #8a5a1a); box-shadow: 0 1px 0 #3d2614; }
 #hotbar { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; }
 .hb { width: 58px; height: 58px; border-radius: 8px; background: rgba(20,12,5,.7); border: 2px solid #5a3a1e; box-shadow: 0 0 0 1px var(--bronze); position: relative; display: flex; align-items: center; justify-content: center; }

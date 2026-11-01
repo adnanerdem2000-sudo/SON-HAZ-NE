@@ -76,7 +76,13 @@ export const input = {
     window.addEventListener('mouseup', (e) => { this.down.delete('Mouse' + e.button); });
     canvas.addEventListener('contextmenu', (e) => e.preventDefault());
     window.addEventListener('mousemove', (e) => {
-      if (this.pointerLocked) { this.mouseDX += e.movementX; this.mouseDY += e.movementY; }
+      if (!this.pointerLocked) return;
+      // işaretçi kilidindeki sahte sıçramalar (Chromium: odak/pencere değişiminde tek olayda yüzlerce piksel) kamerayı
+      // bir karede savuruyordu; olay başına 400 pikselden büyük hareket yok sayılır (gerçek fare hareketi bunun çok altında)
+      const now = performance.now(), gap = now - (this._lastMove || 0);
+      this._lastMove = now;
+      if ((Math.abs(e.movementX) > 400 || Math.abs(e.movementY) > 400) && gap < 50) return; // uzun karede birikmiş gerçek hareket korunur
+      this.mouseDX += e.movementX; this.mouseDY += e.movementY;
     });
     window.addEventListener('wheel', (e) => { this.wheel += Math.sign(e.deltaY); }, { passive: true });
     document.addEventListener('pointerlockchange', () => {

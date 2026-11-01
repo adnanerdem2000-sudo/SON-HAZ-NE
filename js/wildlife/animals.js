@@ -297,22 +297,22 @@ function polarModel(seed) {
 
 // ---------------- Tür tanımları ----------------
 export const SPECIES = {
-  boar: { name: 'Yaban Domuzu', hp: 120, speed: 2.2, run: 7, aggro: 'cornered', dmg: 20, flee: 12, loot: [['hayvan_postu', 1]], desc: 'Ormanda yiyecek arar; köşeye sıkışırsa saldırır, sürü halinde dolaşır.' },
-  monkey: { name: 'Maymun', hp: 35, speed: 2.5, run: 6.5, aggro: 'never', dmg: 0, flee: 6, curious: true, desc: 'Meraklı ve hırsız; yiyeceklerini çalabilir, uzaktan seni izler.' },
-  croc: { name: 'Timsah', hp: 250, speed: 1.4, run: 5.5, aggro: 'territory', dmg: 35, flee: 0, loot: [['timsah_derisi', 1]], desc: 'Lagünde pusu kurar; suyun altında saklanıp ani saldırır.' },
-  parrot: { name: 'Papağan', hp: 8, speed: 6, run: 9, aggro: 'never', flee: 10, fly: true, desc: 'Renkli tropik kuş; palmiyelere tüner, yaklaşınca uçar.' },
-  snake: { name: 'Zehirli Yılan', hp: 50, speed: 1.2, run: 2.5, aggro: 'close', dmg: 10, poison: 8, flee: 0, desc: 'Otların arasında saklanır, fazla yaklaşanı ısırır ve zehirler.' },
+  boar: { name: 'Yaban Domuzu', hp: 120, speed: 2.2, run: 7, aggro: 'cornered', dmg: 20, flee: 12, loot: [['domuz_eti', 1, 2], ['hayvan_postu', 1]], desc: 'Ormanda yiyecek arar; köşeye sıkışırsa saldırır, sürü halinde dolaşır.' },
+  monkey: { name: 'Maymun', hp: 35, speed: 2.5, run: 6.5, aggro: 'never', dmg: 0, flee: 6, curious: true, loot: [['muz', 0.35]], desc: 'Meraklı ve hırsız; yiyeceklerini çalabilir, uzaktan seni izler.' },
+  croc: { name: 'Timsah', hp: 250, speed: 1.4, run: 5.5, aggro: 'territory', dmg: 35, flee: 0, loot: [['timsah_eti', 1, 2], ['timsah_derisi', 1]], desc: 'Lagünde pusu kurar; suyun altında saklanıp ani saldırır.' },
+  parrot: { name: 'Papağan', hp: 8, speed: 6, run: 9, aggro: 'never', flee: 10, fly: true, loot: [['papagan_tuyu', 1, 2]], desc: 'Renkli tropik kuş; palmiyelere tüner, yaklaşınca uçar.' },
+  snake: { name: 'Zehirli Yılan', hp: 50, speed: 1.2, run: 2.5, aggro: 'close', dmg: 10, poison: 8, flee: 0, loot: [['yilan_derisi', 1], ['zehir_kesesi', 0.4]], desc: 'Otların arasında saklanır, fazla yaklaşanı ısırır ve zehirler.' },
   // --- bölgeye özgü yeni türler ---
-  wolf: { name: 'Kurt', hp: 90, speed: 2.4, run: 8.5, aggro: 'pack', dmg: 16, flee: 0, glb: 'wolf', scale: 0.3, quad: true, loot: [['hayvan_postu', 1]], desc: 'Kuzeyin çam ormanlarında sürüyle avlanır; geceleri çok daha cesurdur.' },
+  wolf: { name: 'Kurt', hp: 90, speed: 2.4, run: 8.5, aggro: 'pack', dmg: 16, flee: 0, glb: 'wolf', scale: 0.3, quad: true, loot: [['hayvan_postu', 1], ['kurt_disi', 0.6]], desc: 'Kuzeyin çam ormanlarında sürüyle avlanır; geceleri çok daha cesurdur.' },
   fox: { name: 'Tilki', hp: 30, speed: 2, run: 8, aggro: 'never', flee: 9, glb: 'fox', scale: 0.16, quad: true, loot: [['hayvan_postu', 0.6]], desc: 'Kurnaz ve ürkek; kampların yakınında yiyecek arar.' },
-  deer: { name: 'Geyik', hp: 60, speed: 1.6, run: 9.5, aggro: 'never', flee: 16, glb: 'deer', scale: 0.37, quad: true, loot: [['hayvan_postu', 1]], desc: 'Açıklıklarda otlar; en küçük seste kaçar.' },
-  stag: { name: 'Erkek Geyik', hp: 110, speed: 1.6, run: 9, aggro: 'cornered', dmg: 18, flee: 12, glb: 'stag', scale: 0.39, quad: true, loot: [['hayvan_postu', 1]], desc: 'Görkemli boynuzlu geyik; sıkıştırılırsa boynuzlarıyla saldırır.' },
-  polar: { name: 'Kutup Ayısı', hp: 400, speed: 1.6, run: 7.5, aggro: 'territory', dmg: 45, flee: 0, loot: [['hayvan_postu', 2]], desc: 'Buzul adalarının en tehlikeli avcısı; alanına gireni affetmez.' },
-  yeti: { name: 'Kar Canavarı', hp: 380, speed: 1.8, run: 6.5, aggro: 'territory', dmg: 38, flee: 0, glb: 'yeti', scale: 1.0, biped: true, whiten: 0.62, loot: [['hayvan_postu', 2], ['elmas', 0.15]], desc: 'Buzdişi Adası\'nın efsanevi canavarı; fırtınalı gecelerde görülür.' },
-  giantcrab: { name: 'Dev Yengeç', hp: 180, speed: 1.4, run: 4.2, aggro: 'territory', dmg: 25, flee: 0, glb: 'crab', scale: 0.85, tint: 0xd04020, loot: [['istiridye', 1], ['inci', 0.3]], desc: 'Volkanik kumsallarda yaşayan, kıskaçları kılıç kadar keskin dev yengeç.' },
-  crab: { name: 'Yengeç', hp: 15, speed: 1.6, run: 3.5, aggro: 'never', flee: 4, glb: 'crab', scale: 0.45, desc: 'Sahillerde yan yan yürüyen küçük yengeçler.' },
-  frog: { name: 'Lagün Kurbağası', hp: 6, speed: 1, run: 3, aggro: 'never', flee: 3, glb: 'frog', scale: 0.32, desc: 'Lagün kıyısında zıplar, geceleri vıraklar.' },
-  bat: { name: 'Mağara Yarasası', hp: 10, speed: 5, run: 8, aggro: 'never', flee: 5, glb: 'bat', scale: 0.6, fly: true, desc: 'Yankı Mağarası\'nın karanlığında sürüler halinde uçar.' },
+  deer: { name: 'Geyik', hp: 60, speed: 1.6, run: 9.5, aggro: 'never', flee: 16, glb: 'deer', scale: 0.37, quad: true, loot: [['geyik_eti', 1, 2], ['hayvan_postu', 1]], desc: 'Açıklıklarda otlar; en küçük seste kaçar.' },
+  stag: { name: 'Erkek Geyik', hp: 110, speed: 1.6, run: 9, aggro: 'cornered', dmg: 18, flee: 12, glb: 'stag', scale: 0.39, quad: true, loot: [['geyik_eti', 2, 3], ['hayvan_postu', 1], ['geyik_boynuzu', 0.7]], desc: 'Görkemli boynuzlu geyik; sıkıştırılırsa boynuzlarıyla saldırır.' },
+  polar: { name: 'Kutup Ayısı', hp: 400, speed: 1.6, run: 7.5, aggro: 'territory', dmg: 45, flee: 0, loot: [['ayi_eti', 2, 3], ['hayvan_postu', 2]], desc: 'Buzul adalarının en tehlikeli avcısı; alanına gireni affetmez.' },
+  yeti: { name: 'Kar Canavarı', hp: 380, speed: 1.8, run: 6.5, aggro: 'territory', dmg: 38, flee: 0, glb: 'yeti', scale: 1.0, biped: true, whiten: 0.62, loot: [['hayvan_postu', 2], ['yeti_kurku', 0.5], ['elmas', 0.15]], desc: 'Buzdişi Adası\'nın efsanevi canavarı; fırtınalı gecelerde görülür.' },
+  giantcrab: { name: 'Dev Yengeç', hp: 180, speed: 1.4, run: 4.2, aggro: 'territory', dmg: 25, flee: 0, glb: 'crab', scale: 0.85, tint: 0xd04020, loot: [['yengec_eti', 2, 3], ['istiridye', 1], ['inci', 0.3]], desc: 'Volkanik kumsallarda yaşayan, kıskaçları kılıç kadar keskin dev yengeç.' },
+  crab: { name: 'Yengeç', hp: 15, speed: 1.6, run: 3.5, aggro: 'never', flee: 4, glb: 'crab', scale: 0.45, loot: [['yengec_eti', 1]], desc: 'Sahillerde yan yan yürüyen küçük yengeçler.' },
+  frog: { name: 'Lagün Kurbağası', hp: 6, speed: 1, run: 3, aggro: 'never', flee: 3, glb: 'frog', scale: 0.32, loot: [['kurbaga_bacagi', 1, 2]], desc: 'Lagün kıyısında zıplar, geceleri vıraklar.' },
+  bat: { name: 'Mağara Yarasası', hp: 10, speed: 5, run: 8, aggro: 'never', flee: 5, glb: 'bat', scale: 0.6, fly: true, loot: [['yarasa_kanadi', 0.7]], desc: 'Yankı Mağarası\'nın karanlığında sürüler halinde uçar.' },
 };
 
 // Yeni adalardaki hayvan bölgeleri: türler adanın biyomuna göre seçilir.
@@ -446,8 +446,10 @@ class Animal {
     this.state = 'dead';
     this.stateT = 0;
     combat.removeTarget(this);
-    if (this.S.loot) G.emit('loot', { pos: this.pos.clone(), table: this.S.loot, from: this.S.name });
-    G.emit('animalKilled', { kind: this.kind });
+    const table = this.S.loot ? this.S.loot.slice() : [];
+    if (this.stole) table.push(['muz', 1]); // maymunun kaptığı muz geri düşer
+    if (table.length) G.emit('loot', { pos: this.pos.clone(), table, from: this.S.name });
+    G.emit('animalKilled', { kind: this.kind, by: (info && info.by) || null }); // XP öldürene gider (co-op: konuğun avı konuğa)
   }
 
   nearestPlayer() {

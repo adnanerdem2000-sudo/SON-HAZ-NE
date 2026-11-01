@@ -86,7 +86,11 @@ export const panels = {
     const p = G.player;
     const def = ITEMS[s.id] || {};
     const opts = [];
-    if (def.heal) opts.push({ label: `Kullan (Can +${def.heal})`, fn: () => { p.inv.removeStack(s, 1); p.heal(def.heal); if (def.cure) p.poison = 0; audio.play('confirm', { vol: 0.4 }); } });
+    if (def.heal) opts.push({ label: `${def.raw ? 'Çiğ ye' : 'Kullan'} (Can +${def.heal})`, fn: () => {
+      // can doluyken (ve zehir yokken) yiyecek boşa harcanmasın
+      if (p.hp >= p.maxHp && !(def.cure && p.poison > 0)) { G.notify('Canın zaten dolu.', 'info', 1800); return; }
+      p.inv.removeStack(s, 1); p.heal(def.heal); if (def.cure) p.poison = 0; audio.play('confirm', { vol: 0.4 });
+    } });
     if (def.air) opts.push({ label: `Kullan (Nefes +${def.air})`, fn: () => seagear.useAir(p) });
     if (s.id === 'hazine_haritasi') opts.push({ label: 'Haritayı incele', fn: () => { ui.close(); this.treasureMap(s); } });
     if (s.id === 'sise_mesaj') opts.push({ label: 'Şişeyi kır, mesajı oku', fn: () => { p.inv.removeStack(s, 1); treasure.giveMap(); } });
@@ -94,8 +98,18 @@ export const panels = {
     if (s.id === 'kizil_mektup') opts.push({ label: 'Mektubu oku', fn: () => { ui.close(); this.reader('Kızıl Hançer\'in Mektubu', '<i>"…Mira\'nın kalan iki parçası: biri Volkanik Adalar\'da ateşin bekçisinde, diğeri buzların altındaki kraliçede. Gelgit Pusulası Yitik Ufuk\'ta bekliyor. — K.H."</i>'); } });
     if (s.id === 'gulle' && G.ship) opts.push({ label: 'Gemiye yükle', fn: () => { const n = s.n; p.inv.removeStack(s); G.ship.cannonballs += n; if (G.online && !G.isHost) G.emit('shipCmd', { ship: G.ship.id, cmd: 'addBalls', n }); } });
     if (s.id === 'tahta' && G.ship) opts.push({ label: 'Gemiye yükle', fn: () => { const n = s.n; p.inv.removeStack(s); G.ship.planks += n; if (G.online && !G.isHost) G.emit('shipCmd', { ship: G.ship.id, cmd: 'addPlanks', n }); } });
-    if (p.ship && (p.mode === 'deck') && !def.nosell) opts.push({ label: 'Ambara koy', fn: () => { const k = s.id; const n = s.n || 1; if (k.startsWith('balik:')) { p.ship.hold.fish = p.ship.hold.fish || []; p.ship.hold.fish.push(s.data); p.inv.removeStack(s); } else { p.inv.removeStack(s); p.ship.hold.items[k] = (p.ship.hold.items[k] || 0) + n; } G.emit('netHold', { ship: p.ship.id, hold: p.ship.hold }); } });
-    if (!def.nosell) opts.push({ label: 'Yere bırak', fn: () => { p.inv.removeStack(s); treasure.spawnLoot(p.pos.clone(), [[s.id, 1, s.n || 1, s.data]], 'Bırakılan', true); } });
+    if (p.ship && (p.mode === 'deck') && !def.nosell) opts.push({ label: 'Ambara koy', fn: () => { const k = s.id; const n = s.n || 1; if (k.startsWith('balik:')) { p.ship.hold.fish = p.ship.hold.fish || []; p.ship.hold.fish.push(s.data); p.inv.removeStack(s); } else { p.inv.removeStack(s); p.ship.hold.items[k] = (p.ship.hold.items[k] || 0) + n; } G.emit('netHold', { ship: p.ship.id, hold: p.ship.hold }); p.unequipIfMissing(); } });
+    if (!def.nosell) opts.push({ label: 'Yere bırak', fn: () => {
+      const n = s.n || 1;
+      p.inv.removeStack(s);
+      // 'loot' olayı: tek oyunculu/ev sahibinde yerinde doğar; konukta ev sahibine gider (ev sahibi doğurur, herkese yayınlar).
+      // Önceden konukta kese yalnız konuğun ekranında doğuyordu; geri alınmak istenince ev sahibi keseyi tanımadığından eşya kayboluyordu.
+      // Ev sahibi satır başına en çok 999 adet kabul eder: büyük yığınlar 999'luk satırlara bölünür
+      const table = [];
+      for (let k = n; k > 0; k -= 999) table.push([s.id, 1, Math.min(999, k), s.data]);
+      G.emit('loot', { pos: p.pos.clone(), table, from: 'Bırakılan', exact: true, keep: true }); // keep: 30 dk kalır, NPC istemini bastırmaz
+      p.unequipIfMissing();
+    } });
     opts.push({ label: 'Vazgeç', fn: () => {} });
     const body = el('div', { class: 'col' }, el('div', { html: itemTip(s), style: { marginBottom: '8px' } }),
       ...opts.map((o) => el('button', { class: 'btn small', onclick: () => { ui.close(); o.fn(); rerender && rerender(); } }, o.label)));
@@ -127,10 +141,14 @@ export const panels = {
       for (const id in ship.hold.items) {
         const n = ship.hold.items[id];
         if (!n) continue;
-        g2.appendChild(itemCell({ id, n }, () => { const left = p.inv.add(id, n); ship.hold.items[id] = left; if (!left) delete ship.hold.items[id]; G.emit('netHold', { ship: ship.id, hold: ship.hold }); render(); }, 'Al'));
+        g2.appendChild(itemCell({ id, n }, () => {
+          const left = p.inv.add(id, n); ship.hold.items[id] = left; if (!left) delete ship.hold.items[id];
+          if (left) G.notify(`Çantan dolu (${treasure.bagText(p)}): ${left} ${itemName(id)} ambarda kaldı.`, 'warn');
+          G.emit('netHold', { ship: ship.id, hold: ship.hold }); render();
+        }, 'Al'));
       }
       for (const [i, f] of (ship.hold.fish || []).entries()) {
-        g2.appendChild(itemCell({ id: 'balik:' + f.key, n: 1, data: f }, () => { if (p.inv.canAdd('balik:' + f.key, 1, f)) { p.inv.add('balik:' + f.key, 1, f); ship.hold.fish.splice(i, 1); render(); } else G.notify('Envanter dolu.', 'warn'); }, 'Al'));
+        g2.appendChild(itemCell({ id: 'balik:' + f.key, n: 1, data: f }, () => { if (p.inv.canAdd('balik:' + f.key, 1, f)) { p.inv.add('balik:' + f.key, 1, f); ship.hold.fish.splice(i, 1); render(); } else G.notify(`Çantan dolu (${treasure.bagText(p)}).`, 'warn'); }, 'Al'));
       }
       if (!g2.children.length) g2.appendChild(el('div', { class: 'muted' }, 'Ambarda eşya yok. Envanterden "Ambara koy" ile bırakabilirsin.'));
       body.appendChild(g2);

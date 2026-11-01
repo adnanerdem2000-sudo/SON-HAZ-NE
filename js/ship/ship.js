@@ -736,7 +736,12 @@ export class Ship {
   // GPU kaynakları: gemi modeli her gemi için kendi geometri ve malzemelerini yaratır; önce yalnız sahneden kaldırılıyordu (düşman
   // gemisi olayı, tüccar gemisi, gemi değiştirme, konukta kaybolan gemi başına onlarca geometri/malzeme sızıyordu). Dokular paylaşımlı
   // önbellekten (textures.js) gelir ve bırakılmaz.
-  dispose() { this.scene.remove(this.root); disposeTree(this.root); }
+  dispose() {
+    // güverteye bağlı ganimet keseleri (paylaşımlı geometri/malzeme) gemiyle birlikte yok edilmez: önce ayrılır,
+    // treasure.update onları suya bırakır (enkaz ganimeti)
+    for (const c of [...this.root.children]) if (c.userData?.loot) this.root.remove(c);
+    this.scene.remove(this.root); disposeTree(this.root);
+  }
 }
 
 // ---- Kürek sandalı ----

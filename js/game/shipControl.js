@@ -256,6 +256,7 @@ export const shipControl = {
           p.mode = 'ground';
           p.pos.set(x, terrain.heightAt(x, z) + 0.1, z);
           p.vel.set(0, 0, 0);
+          p.onGround = true; p.airT = 0; p.fallStartY = p.pos.y; // eski hava/düşme durumu taşınmasın
           if (!p.carrying && p.equipped !== 'none' && p.equipped !== 'map') p.char.hold(p.equipped);
           p._syncTorch();
           return;

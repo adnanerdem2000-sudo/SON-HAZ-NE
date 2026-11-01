@@ -374,12 +374,15 @@ export const details = {
 
   collect(c) {
     const p = G.player;
+    // çanta doluysa toplanmaz, yerinde kalır (önce eşya sessizce kayboluyor ama "topladın" yazıyordu)
+    const id = c.kind === 'istiridye' ? 'istiridye' : 'deniz_kabugu';
+    if (!p.inv.canAdd(id, 1)) { G.notify('Çantan dolu — önce yük boşalt (envanter: Tab).', 'warn', 2500); return; }
     c.taken = 240; // 4 dakika sonra yeniden belirir
     c.mesh.visible = false;
     if (c.kind === 'istiridye') {
-      if (Math.random() < 0.25) { p.inv.add('inci', 1); G.notify('İstiridyenin içinden bir inci çıktı!', 'good'); audio.play('gem', { vol: 0.5 }); }
-      else { p.inv.add('istiridye', 1); G.notify('İstiridye topladın.', 'info', 1800); }
-    } else { p.inv.add('deniz_kabugu', 1); G.notify('Deniz kabuğu topladın.', 'info', 1500); }
+      if (Math.random() < 0.25) { p.inv.add('inci', 1); G.notify('İstiridyenin içinden bir inci çıktı! → çantana', 'good'); audio.play('gem', { vol: 0.5 }); }
+      else { p.inv.add('istiridye', 1); G.notify('İstiridye topladın → çantana', 'info', 1800); }
+    } else { p.inv.add('deniz_kabugu', 1); G.notify('Deniz kabuğu topladın → çantana', 'info', 1500); }
     p.startAction('pickup', 0.6);
     audio.play('confirm', { vol: 0.3, rate: 1.4 });
   },

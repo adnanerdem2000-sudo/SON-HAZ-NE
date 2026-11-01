@@ -190,6 +190,7 @@ export const physics = {
   // Hücreler DDA ile yalnız doğrunun geçtiği sırayla gezilir: uzunluk sınırı yok (eski 64 hücre erken dönüşü kaldırıldı).
   // opts: { tMin, tMax, rScale, camera } — mermi süpürmesi için tMin=0, tMax=1, rScale=1 (uçlarda boşluk bırakılmaz);
   // camera: noCam işaretli ve 0,2 m'den ince çember engeller atlanır.
+  camThinR: 0.2, // kamera görüşünü kesmeyen çember engel yarıçapı sınırı
   lineBlocked(ax, ay, az, bx, by, bz, opts = null) {
     const tMin = opts?.tMin ?? 0.02, tMax = opts?.tMax ?? 0.98, rScale = opts?.rScale ?? 0.8;
     const dx = bx - ax, dy = by - ay, dz = bz - az;
@@ -216,7 +217,7 @@ export const physics = {
         seen.add(c);
         // kamera: ince/hareketli engeller (fener direği, iskele babası, NPC) görüşü kesmez; yoksa kamera bunlara çarpıp başın
         // dibine (0,4 m) çekiliyor, siyah şapka ekranı kaplıyordu ("arkama duvar geliyor, ekran kararıyor")
-        if (opts?.camera && (c.noCam || (c.t === 'c' && c.r < 0.2))) continue;
+        if (opts?.camera && (c.noCam || (c.t === 'c' && c.r < this.camThinR))) continue;
         let t = -1;
         if (c.t === 'c') {
           // doğru parçasının çembere en yakın noktası

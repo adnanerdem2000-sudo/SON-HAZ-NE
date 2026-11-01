@@ -653,7 +653,7 @@ export const hazards = {
           out.push({ id: 'pzc:' + h.id, pos: new THREE.Vector3(h.C.x, h.cy + 0.8, h.C.z), radius: 2.6, priority: 1.6, label: 'Gizli sandığı aç', action: () => {
             if (this.looted.has(h.id)) { G.notify('Sandık boş.'); return; }
             this.looted.add(h.id);
-            G.emit('loot', { pos: new THREE.Vector3(h.C.x, h.cy + 0.6, h.C.z), table: [['altin_para', 140, 320], ['altin_kulce', 0.8], ['zumrut', 0.5], ['yakut', 0.4], ['antik_vazo', 0.5], ['eski_kilic', 0.25]], from: 'Gizli sandık' });
+            G.emit('lootToBag', { pos: new THREE.Vector3(h.C.x, h.cy + 0.6, h.C.z), table: [['altin_para', 140, 320], ['altin_kulce', 0.8], ['zumrut', 0.5], ['yakut', 0.4], ['antik_vazo', 0.5], ['eski_kilic', 0.25]], from: 'Gizli sandık' }); // doğrudan çantaya
             G.emit('puzzleLooted', { id: h.id });
             audio.play('coin', { vol: 0.7 });
           } });

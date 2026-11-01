@@ -44,19 +44,28 @@ export const tpCamera = {
       const at = (d, out) => { out.copy(f).addScaledVector(dir, -d).addScaledVector(right, shoulder); out.y += opts.height || 0; return out; };
       // engel: çarpıştırıcılar + platform güverteleri (kamera güvertenin öbür yüzüne, ör. iskelenin altına geçmesin)
       const blocked = (q) => physics.lineBlocked(f.x, f.y, f.z, q.x, q.y, q.z, CAM_LOS) || physics.slabBlocked(f.x, f.y, f.z, q.x, q.y, q.z);
-      let hit = this.dist + 1;
+      let hit = this.dist + 1, blk = false;
       if (blocked(p)) {
+        blk = true;
         let lo = 0.4, hi = this.dist;
         for (let i = 0; i < 6; i++) { const mid = (lo + hi) / 2; at(mid, _cq); if (blocked(_cq)) hi = mid; else lo = mid; }
         hit = Math.max(0.4, lo - 0.1);
       }
-      this._col = hit < this._col ? hit : damp(this._col, hit, 5, dt);
+      // engel: anında yaklaş; açılırken 0,3 sn bekle, sonra yumuşak açıl. Koşarken kaya/duvar kenarını sıyıran görüş hattı
+      // her karede yaklaş-uzaklaş yapıyordu (kamera pompalaması koşuda takılma gibi görünüyordu)
+      // bekleme yalnız gerçek bir engelden sonra: engel yokken (ör. nişandan çıkış, tekerlekle uzaklaştırma) kamera hemen açılır
+      if (!(this._col < 1e6)) this._col = hit; // başlangıç (Infinity) / NaN koruması: sonsuzdan sönümleme NaN üretip kamerayı kilitliyordu
+      if (blk) { if (hit < this._col) this._col = hit; else this._col = damp(this._col, hit, 4, dt); this._colHold = 0.3; }
+      else if ((this._colHold = (this._colHold || 0) - dt) <= 0) this._col = damp(this._col, hit, 4, dt);
       if (this._col < this.dist) at(this._col, p);
     }
     // zemin: arazi + (opts.floorMax verilmişse) tepesi floorMax'ı aşmayan platformlar (oyuncunun üzerinde durduğu güverte). İskele güvertesinde kamera aşağıdan
     // bakınca güvertenin altına iniyor, ekranı koyu güverte tabanı kaplıyordu ("arkama duvar geliyor, ekran kararıyor").
     const ground = opts.floorMax !== undefined ? physics.floorAt(p.x, p.z, opts.floorMax) : terrain.heightAt(p.x, p.z);
-    if (p.y < ground + 0.4) p.y = ground + 0.4;
+    // zemin sınırı yumuşatılır ama gerçek zeminin altına asla inilmez: kamera bir kaya/iskele kenarından geçerken zemin
+    // aniden alçalınca kamera bir karede aşağı sıçrıyordu
+    this._floorY = opts.snap || this._floorY === undefined ? ground : Math.max(ground, damp(this._floorY, ground, 10, dt));
+    if (p.y < this._floorY + 0.4) p.y = this._floorY + 0.4;
     // gemi güvertesi: kamera güverte düzleminin altına (gövdenin içine) inmez
     const s = opts.deckShip;
     if (s) {

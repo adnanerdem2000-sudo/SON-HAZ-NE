@@ -77,6 +77,23 @@ export const ITEMS = {
   gok_tasi: { name: 'Gök Taşı Parçası', cat: 'tas', weight: 1.2, value: 240, rarity: 'epik', icon: 'gem_white', stack: true, desc: 'Gökten düşen, hâlâ ılık, mor ışıkla parlayan taş. Koleksiyoncular servet öder.' },
   hayvan_postu: { name: 'Hayvan Postu', cat: 'ganimet', weight: 2, value: 18, rarity: 'siradan', icon: 'hide', stack: true, desc: 'Avlanan hayvanlardan elde edilen post; tüccarlar deri için alır.' },
   timsah_derisi: { name: 'Timsah Derisi', cat: 'ganimet', weight: 3, value: 75, rarity: 'yaygin', icon: 'hide', stack: true, desc: 'Sağlam ve değerli deri.' },
+  // Av ürünleri: avlanan hayvanlardan düşer. Çiğ et yenebilir (az can); handa pişirtilince Kızarmış Et olur.
+  domuz_eti: { name: 'Yaban Domuzu Eti', cat: 'sarf', weight: 0.8, value: 10, rarity: 'siradan', icon: 'meat', stack: true, heal: 10, raw: true, desc: 'Çiğ et: Can +10. Handa pişirtilirse Kızarmış Et (Can +45).' },
+  geyik_eti: { name: 'Geyik Eti', cat: 'sarf', weight: 0.8, value: 12, rarity: 'siradan', icon: 'meat', stack: true, heal: 10, raw: true, desc: 'Çiğ et: Can +10. Handa pişirtilirse Kızarmış Et (Can +45).' },
+  ayi_eti: { name: 'Ayı Eti', cat: 'sarf', weight: 1.2, value: 18, rarity: 'yaygin', icon: 'meat', stack: true, heal: 12, raw: true, desc: 'Kutup ayısının yağlı eti. Çiğ: Can +12; handa pişirtilebilir.' },
+  timsah_eti: { name: 'Timsah Eti', cat: 'sarf', weight: 1.0, value: 16, rarity: 'yaygin', icon: 'meat', stack: true, heal: 10, raw: true, desc: 'Beyaz, sıkı et. Çiğ: Can +10; handa pişirtilebilir.' },
+  kopekbaligi_eti: { name: 'Köpekbalığı Eti', cat: 'sarf', weight: 1.2, value: 22, rarity: 'yaygin', icon: 'meat', stack: true, heal: 12, raw: true, desc: 'Çiğ: Can +12; handa pişirtilebilir.' },
+  yengec_eti: { name: 'Yengeç Eti', cat: 'sarf', weight: 0.3, value: 7, rarity: 'siradan', icon: 'claw', stack: true, heal: 8, raw: true, desc: 'Kıskaç ve kabuk eti. Çiğ: Can +8; handa pişirtilebilir.' },
+  kurbaga_bacagi: { name: 'Kurbağa Bacağı', cat: 'sarf', weight: 0.1, value: 5, rarity: 'siradan', icon: 'meat', stack: true, heal: 5, raw: true, desc: 'Lagün kurbağasından. Çiğ: Can +5; handa pişirtilebilir.' },
+  pismis_et: { name: 'Kızarmış Et', cat: 'sarf', weight: 0.6, value: 26, rarity: 'yaygin', icon: 'cookedmeat', stack: true, heal: 45, desc: 'Hanın aşçısının kızarttığı et. Can +45.' },
+  kurt_disi: { name: 'Kurt Dişi', cat: 'ganimet', weight: 0.05, value: 22, rarity: 'yaygin', icon: 'fang', stack: true, desc: 'Kuzey kurdunun sivri azı dişi; tılsımcılar alır.' },
+  kopekbaligi_disi: { name: 'Köpekbalığı Dişi', cat: 'ganimet', weight: 0.05, value: 35, rarity: 'yaygin', icon: 'fang', stack: true, desc: 'Testere ağızlı dişi; denizcilerin uğur kolyesi.' },
+  geyik_boynuzu: { name: 'Geyik Boynuzu', cat: 'koleksiyon', weight: 1.2, value: 48, rarity: 'yaygin', icon: 'antler', stack: true, desc: 'Erkek geyiğin dallı boynuzu.' },
+  papagan_tuyu: { name: 'Papağan Tüyü', cat: 'koleksiyon', weight: 0.02, value: 14, rarity: 'yaygin', icon: 'feather', stack: true, desc: 'Parlak yeşil-kırmızı tüy; şapkacılar sever.' },
+  yilan_derisi: { name: 'Yılan Derisi', cat: 'ganimet', weight: 0.3, value: 28, rarity: 'yaygin', icon: 'snakeskin', stack: true, desc: 'Pullu, desenli deri.' },
+  zehir_kesesi: { name: 'Zehir Kesesi', cat: 'ganimet', weight: 0.1, value: 40, rarity: 'nadir', icon: 'venom', stack: true, desc: 'Yılanın zehir bezi; şifacılar ve kaçakçılar iyi para verir.' },
+  yarasa_kanadi: { name: 'Yarasa Kanadı', cat: 'koleksiyon', weight: 0.05, value: 8, rarity: 'siradan', icon: 'batwing', stack: true, desc: 'Yankı Mağarası yarasasının deri kanadı.' },
+  yeti_kurku: { name: 'Kar Canavarı Kürkü', cat: 'ganimet', weight: 4, value: 260, rarity: 'epik', icon: 'fur', stack: true, desc: 'Buzdişi efsanesinin kar beyazı kürkü.' },
 };
 
 // Sandık türleri (dünyada taşınan fiziksel sandıklar)

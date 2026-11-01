@@ -66,7 +66,10 @@ export const progress = {
   init() {
     const share = (xp, reason, by) => {
       // ev sahibi: öldüren oyuncu tam, diğer tayfa üçte bir pay alır
-      if (by && by !== G.myId && G.online) { G.emit('netXp', { id: by, xp, reason }); this.gain(Math.round(xp / 3), 'Tayfa payı'); }
+      if (by && by !== G.myId && G.online) {
+        G.emit('netXp', { id: by, xp, reason }); this.gain(Math.round(xp / 3), 'Tayfa payı');
+        if (G.isHost) for (const id of G.remotes.keys()) if (id !== by) G.emit('netXp', { id, xp: Math.round(xp / 3), reason: 'Tayfa payı' }); // diğer konuklar da payını alır
+      }
       else { this.gain(xp, reason); if (G.online && G.isHost) for (const id of G.remotes.keys()) G.emit('netXp', { id, xp: Math.round(xp / 3), reason: 'Tayfa payı' }); }
     };
     G.on('enemyKilled', (e) => { const T = ENEMY_TYPES[e.type]; if (T && !T.boss) share((T.xp || 10) * 2, T.name || 'Düşman', e.by); });

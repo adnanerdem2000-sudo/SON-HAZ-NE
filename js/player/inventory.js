@@ -26,7 +26,7 @@ export class Inventory {
     if (!force && !this.canAdd(id, n, data)) {
       // sığdığı kadar ekle
       const per = def?.weight || 0.1;
-      const fit = Math.floor(this.free() / per);
+      const fit = Math.floor((this.free() + 1e-6) / per); // canAdd ile aynı pay: kayan nokta artığı yüzünden 'sığar' denen eşya eklenmiyordu
       if (fit <= 0 || data) return n;
       this.add(id, fit, null, true);
       return n - fit;

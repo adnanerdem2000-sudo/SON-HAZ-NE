@@ -237,6 +237,9 @@ export const hud = {
     setTxt($('hud-gold'), Math.floor(p.inv.gold).toLocaleString('tr-TR'));
     if (this._t % 0.5 < dt) {
       this._hotbarActive();
+      // çanta yükü: dolunca kırmızı (önce HUD'da yük göstergesi yoktu; çanta dolunca alınan eşyanın neden girmediği anlaşılmıyordu)
+      const bag = $('hud-bag');
+      if (bag) { const w = p.inv.weight(), cap = p.inv.capacity; setTxt(bag, `Çanta ${Math.round(w)}/${cap} kg`); bag.classList.toggle('full', cap - w < 1); }
       const L = progress.level;
       setTxt($('hud-lvl'), L);
       setTxt($('hud-rank'), rankOf(L));

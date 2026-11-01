@@ -32,6 +32,7 @@ export class Body {
     this.grounded = false;
     this.inWater = 0;
     this.enabled = true;
+    this.noPush = !!opts.noPush; // karakter/düşman itişi uygulanmaz (ganimet kesesi: oyuncu yürürken kese tekmelenip kaçmasın)
     this.onLand = opts.onLand || null;
   }
   wake() { this.sleeping = false; this.sleepT = 0; }
@@ -81,7 +82,7 @@ export const bodies = {
   // Karakter itişi: karakter dairesi cisme değiyorsa cisim itilir
   push(x, z, y, radius, vx, vz) {
     for (const b of this.list) {
-      if (!b.enabled) continue;
+      if (!b.enabled || b.noPush) continue;
       const dx = b.pos.x - x, dz = b.pos.z - z;
       const d = Math.hypot(dx, dz), m = radius + b.r * 0.9;
       if (d >= m || d < 1e-4 || Math.abs(b.pos.y - y - 0.5) > 1.6) continue;

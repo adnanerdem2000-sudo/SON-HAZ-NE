@@ -158,3 +158,43 @@ menüsünde "null" yazısı. Ayrıntı: 03. belge (son bölüm), 12. belge (önc
   15 kontrolün hepsi geçti. Dar ekranda (640×360) 7 yuvalı araç çubuğu küçülüp mini haritanın soluna yaslanır (ekran görüntüsüyle doğrulandı).
 - **Doğrulanamayan / sınırlı:** gerçek GPU'da el ile oynanış; gerçek fare ile nişan hissi (testte kamera yönü ve doğrudan yön
   verildi); co-op'ta zıpkın/ağ atışı diğer oyunculara çizilmez (balık sürüleri istemciye yerel, olta gibi; 11. belge #38).
+
+## 16.10 Ek: Koşarken takılma, başını yere gömme, av eti ganimeti, yerden toplananlar çantaya (kullanıcı bildirimi)
+Bildirim: "bazen karakter koşarken takılır gibi oluyor", "bazen karakter yere düşer gibi kafasını aşağı gömüyor", "hayvanları
+öldürdükten sonra içlerinden etler vs. düşsün, çantamıza atabilelim", "yerden aldıklarımız çantamıza alınabilsin". Ayrıntı:
+03. belge (son bölüm), 12. belge (önce/sonra tablosu), 11. belge #33 (kapandı) ve #44–#52.
+- **Koşarken takılma (ölçülen nedenler):** (1) Shift basılıyken dayanıklılık bitince sprint 1,0–1,3 sn'de bir açılıp kapanıyor, hız
+  7 ↔ 4,4 m/s kare kare sıçrıyordu → tükenme kilidi + yumuşak fren (K05: 16 sn'de 8 geçiş → 3, kare başı hız düşüşü 0,51 → 0,15 m/s);
+  (2) yürü/koş/sprint eşiklerinde histerezis yoktu, dönüşte ve engel kenarında klip kare kare değişip baştan başlıyordu → histerezis +
+  titreşim bastırma (K06, 04 C13); (3) engele çarpınca hız korunuyor, oyuncu yerinde koşuyordu → çarpışma sonrası hız izdüşümü;
+  (4) görünmeyen/gömülü kaya çemberleri ve kalın ağaç çarpıştırıcıları → görsele göre küçültüldü; (5) kumsalda yüzme↔yürüme her
+  dalgada değişiyordu (#33) → K01: 36 durumda en çok 1 geçiş (önce 2–6); (6) 0,9 m'lik inişte 0,3 sn iniş duraksaması → yalnız ≥ 1,8 m
+  (K03); (7) koşan oyuncu ganimet kesesini 3 m fırlatıyordu (T07: 3,02 → 0 m). Ayrıca basamak yumuşatma, kamera sıyırma beklemesi,
+  fare sıçrama süzgeci. **Açık kalan:** yeni harita karosu boyanırken bir kerelik takılma (yazılımsal GPU'da 100–650 ms, #45).
+- **Başını yere gömme (kök neden ölçüldü):** three.js karıştırıcısı bir eylem etkinleşirken kemiğin o anki değerini "özgün" sayıyor;
+  klibi o kemiğe iz yazmayan pozlarda (Idle'da omurga yok) çömelme/kürek/IK eğimi her karede üst üste biniyordu. Dururken C ile
+  çömelince baş 3 sn'de −0,28 m'ye (yerin altına) iniyordu → 0,82–0,84 m'de sabit, ayağa kalkınca 1,15–1,17 m'ye döner. Ragdoll
+  sonrası bağlama pozu bozuluyordu (yürüyüşte en düşük baş 0,35 m) → 1,06 m. Yüzme eğimi yüzme dışındaki her kipte sıfırlanır (P01).
+- **Av ganimeti:** 15 kara hayvanı türü türüne göre et, post, diş, boynuz, tüy, deri, zehir kesesi düşürür; köpekbalığı et ve diş
+  (önce boş tablo); maymunun kaptığı muz geri düşer; çiğ et yenebilir (Can +5…+12), handa ayrı seçenekle Kızarmış Et (Can +45, 5 altın;
+  çanta sınırını aşmaz, balıklara dokunmaz). Co-op'ta konuğun avının XP'si konuğa yazılır (önce ev sahibine).
+- **Yerden toplananlar çantaya:** sandık açılınca içerik doğrudan çantaya (kazılan, ada, tapınak, gizli, batık); çanta doluysa kese
+  yerinde kalır, kısmen sığarsa kalan aynı kesede kalır (önce kese alınıp ayağın dibine yeniden fırlıyordu); HUD'da çanta yükü;
+  güverteye düşen kese gemiye bağlı (önce tahtadan denize düşüp kayboluyordu); kayıktan ve güverteden (kancayla) yüzen nesne/kese
+  toplanır (önce hiç alınamıyordu); co-op'ta konuğun "Yere bırak"ı ev sahibinde doğar (önce eşya kayboluyordu).
+- **Bağımsız inceleme (çürütme turlu):** 4 boyutta (ganimet akışı, co-op, hareket/kamera, veri/arayüz/testler) 23 bulgu; her boyutta
+  ayrı bir doğrulayıcı bulguları çürütmeye çalıştı: 22'si gerçek, 1'i çürütüldü. Örnekler: kayıktaki sandığı açınca hayalet yük yeri,
+  sınırdaki ağırlıkta "Ganimeti topla" görünüp alınamayan kese, güverte kesesinin dümen istemini gizlemesi, konuk avında diğer
+  konukların XP payının kaybolması, kamera beklemesinin nişandan çıkışı dondurması, çömelme eğiminin eylem değişiminde kalıcı
+  olması, zıplayınca basamak yumuşatmasının bir karede sıfırlanması. Hepsi düzeltildi. Kamera düzeltmesinin ilk hali başlangıçtaki
+  sonsuz değeri sönümleyip NaN üretiyor, kamera duvarlarda hiç yaklaşmıyordu; tam regresyon (04 C07, 15 C03) bunu yakaladı, düzeltildi.
+- **Test:** `16_kosu_poz_ganimet.js` (23 kontrol) eski kodda 20 kontrol kaldı (K02 ve K06 eski kodda da geçiyor), son kodda 23/23;
+  `coop/06d_ganimet_canta.cjs` (2 oyuncu) eski kodda 5 kontrol kaldı, son kodda 9/9. Tam regresyon (son kod): 16/16 senaryo + Node
+  testi geçti; `13_donma`, `coop/06b` 18/18 ve `coop/06d` 9/9 tek başına geçti; `09_performans` yalnız paralel şeritte çöktü, tek
+  başına hem son kodda hem eski kodda geçiyor (ayrıntı 12. belgede). Tek dosya `02_tek_dosya` 4/4.
+- **Bellek uyarısı (bu turda bulundu ve geri alındı):** harita karosu boyamasını hızlandırma denemeleri (CPU tuvali, dilimli boyama,
+  doğrudan piksel dizisi) test ortamında sayfa belleğini ~2 katına çıkardı; tuval yolu eski haline döndürüldü, yalnız piksel
+  döngüleri ayırmasız bırakıldı (04_karakter: 1,17 GB / 36 sn, eski kod 1,18 GB / 40 sn).
+- **Doğrulanamayan / sınırlı:** gerçek GPU'da el ile oynanış ve görsel his (çömelme/kürek eğimi, basamak yumuşatma), gerçek fareyle
+  sıçrama süzgeci; harita karosu takılmasının gerçek GPU'daki süresi. Yayındaki sürüm (v0.3) bu düzeltmeleri içermez; yayına alma
+  kullanıcı onayı bekler.

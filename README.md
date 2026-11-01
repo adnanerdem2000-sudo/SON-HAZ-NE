@@ -65,7 +65,18 @@ Oyun kumandası (standart düzen) desteklenir.
   (nefes +45; nefes tükenmek üzereyken kendiliğinden, envanterden elle de kullanılır).
 - **Nereden bulunur:** Balıkçı Yusuf (zıpkın, ağ, maske, palet, hava kesesi), Tüccar Rıza (hava kesesi), Halil Reis ve
   Kaçakçı (yaylı zıpkın); hazine sandıkları, denizde yüzen balıkçı varilleri, ada sandıkları (batık şehir dahil) ve
-  Martı Batığı'nın dibindeki batık sandığı (dalıp **E**; ganimet kesesi yüzeye süzülür).
+  Martı Batığı'nın dibindeki batık sandığı (dalıp **E**; içerik doğrudan çantaya).
+
+## Avcılık ve toplama
+- **Av ganimeti:** öldürülen hayvan türüne göre et, post, diş, boynuz, tüy, deri ya da zehir kesesi düşürür (yaban domuzu,
+  geyik, timsah, kutup ayısı, köpekbalığı eti; kurt dişi, geyik boynuzu, papağan tüyü, yılan derisi, kar canavarı kürkü…).
+  Maymunun kaptığı muz da geri düşer. Kesede et varsa yanında kemikli but görünür.
+- **Toplama (E):** kese, kabuk, istiridye ve yüzen nesneler **çantaya** girer; açılan sandıkların (kazılan hazine sandığı —
+  basılı tut, ada "Eski sandık", tapınak sunağı, gizli sandık, batık sandık) içeriği doğrudan çantaya gider. Çanta yükü HUD'da
+  altının yanında görünür (dolunca kırmızı). Çanta doluysa kese yerinde kalır, sığan kısmı alınır; yüzen varil/şişe kayıktan
+  (**E**) ya da güverteden küpeşteye yanaşınca kancayla alınır. Envanterden **Yere bırak** ile bırakılan kese 30 dk kalır.
+- **Et:** çiğ et envanterden "Çiğ ye" ile az can verir; handaki aşçı "Av etini aşçıya kızarttır" ile 5 altına **Kızarmış Et**
+  (Can +45) yapar. Can doluyken yiyecek harcanmaz.
 
 ## 0.3 sürümünde yenilikler
 - **Dünya:** 20 × 20 km akışlı dünya (arazi karoları Web Worker'da, LOD halkaları; adalar yaklaşınca kurulur), 6 bölge ve

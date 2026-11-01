@@ -130,10 +130,10 @@ class Batch {
 // ---- bitki örtüsü tabloları (yükseklik metre; col: çarpışma yarıçapı/yükseklik oranı) ----
 const VEG = {
   tropik: [
-    { a: 'tree_palm', w: 6, zone: 'beach', h: [6, 9], col: 0.05, tilt: 0.25 },
-    { a: 'tree_palm', w: 2, zone: 'in', h: [7, 10], col: 0.05, tilt: 0.15 },
-    { a: 'tree_fat', w: 4, zone: 'in', h: [5, 8], col: 0.08 },
-    { a: 'tree_oak', w: 3, zone: 'in', h: [6, 9], col: 0.08 },
+    { a: 'tree_palm', w: 6, zone: 'beach', h: [6, 9], col: 0.075, tilt: 0.25 },
+    { a: 'tree_palm', w: 2, zone: 'in', h: [7, 10], col: 0.075, tilt: 0.15 },
+    { a: 'tree_fat', w: 4, zone: 'in', h: [5, 8], col: 0.065 },
+    { a: 'tree_oak', w: 3, zone: 'in', h: [6, 9], col: 0.06 },
     { a: 'bush_large', w: 5, zone: 'in', h: [1.6, 2.8] },
     { a: 'bush', w: 6, zone: 'any', h: [0.8, 1.4] },
     { a: 'flower_red', w: 3, zone: 'in', h: [0.35, 0.5] },
@@ -141,9 +141,9 @@ const VEG = {
     { a: 'rock_small', w: 2.5, zone: 'any', h: [0.3, 0.7] },
   ],
   cangil: [
-    { a: 'tree_palm', w: 4, zone: 'beach', h: [7, 10], col: 0.05, tilt: 0.25 },
-    { a: 'tree_fat', w: 7, zone: 'in', h: [7, 11], col: 0.08, tint: 0x9fd890 },
-    { a: 'tree_oak', w: 5, zone: 'in', h: [8, 12], col: 0.08, tint: 0x88c080 },
+    { a: 'tree_palm', w: 4, zone: 'beach', h: [7, 10], col: 0.075, tilt: 0.25 },
+    { a: 'tree_fat', w: 7, zone: 'in', h: [7, 11], col: 0.065, tint: 0x9fd890 },
+    { a: 'tree_oak', w: 5, zone: 'in', h: [8, 12], col: 0.06, tint: 0x88c080 },
     { a: 'bush_large', w: 8, zone: 'in', h: [2, 3.4], tint: 0x9ad08a },
     { a: 'bush', w: 6, zone: 'any', h: [1, 1.6] },
     { a: 'flower_red', w: 4, zone: 'in', h: [0.4, 0.6] },
@@ -151,8 +151,8 @@ const VEG = {
     { a: 'rock_large', w: 1, zone: 'any', h: [0.45, 0.95], col: 1.4, tint: 0xa0a890 },
   ],
   buzul: [
-    { a: 'tree_pine', w: 6, zone: 'in', h: [6, 10], col: 0.06, tint: 0xd8e4ec },
-    { a: 'tree_pine_tall', w: 4, zone: 'in', h: [9, 14], col: 0.06, tint: 0xd0dce6 },
+    { a: 'tree_pine', w: 6, zone: 'in', h: [6, 10], col: 0.047, tint: 0xd8e4ec },
+    { a: 'tree_pine_tall', w: 4, zone: 'in', h: [9, 14], col: 0.047, tint: 0xd0dce6 },
     { a: 'rock_large', w: 3, zone: 'any', h: [0.45, 0.95], col: 1.4, tint: 0xb8c4d0, moss: 0xf2f6ff },
     { a: 'rock_tall', w: 1, zone: 'in', h: [4, 8], col: 0.42, tint: 0xb0bccb, moss: 0xf2f6ff, boost: 1.2 },
     { a: 'crystal_rock', w: 1.5, zone: 'any', h: [1, 2.2], col: 0.7, tint: 0xb8e8ff },
@@ -160,7 +160,7 @@ const VEG = {
     { a: 'bush', w: 1.5, zone: 'in', h: [0.6, 1], tint: 0xa8b8a0 },
   ],
   volkan: [
-    { a: 'tree_dark', w: 1, zone: 'in', h: [4, 7], col: 0.08, tint: 0x9a8a80 },
+    { a: 'tree_dark', w: 1, zone: 'in', h: [4, 7], col: 0.07, tint: 0x9a8a80 },
     { a: 'kk:graveyard:tree_dead_large', w: 3, zone: 'in', h: [4, 7], col: 0.06, tint: 0x7a6658 },
     { a: 'kk:graveyard:tree_dead_medium', w: 3, zone: 'any', h: [2.5, 4], tint: 0x7a6658 },
     { a: 'rock_large', w: 4, zone: 'any', h: [0.45, 0.95], col: 1.4, tint: 0x5a5452, moss: 0x5a504c },
@@ -176,10 +176,10 @@ const VEG = {
     { a: 'rock_small', w: 3, zone: 'any', h: [0.3, 0.8], tint: 0xffc0a0, moss: 0xe0c088, boost: 1.2 },
     { a: 'bush', w: 4, zone: 'in', h: [0.6, 1.1], tint: 0xc8b070 },
     { a: 'kk:graveyard:tree_dead_small', w: 1.5, zone: 'in', h: [2, 3.5], tint: 0x8a6a48 },
-    { a: 'tree_palm', w: 1, zone: 'beach', h: [5, 7], col: 0.05, tilt: 0.2 },
+    { a: 'tree_palm', w: 1, zone: 'beach', h: [5, 7], col: 0.075, tilt: 0.2 },
   ],
   hayalet: [
-    { a: 'tree_dark', w: 4, zone: 'in', h: [5, 8], col: 0.08, tint: 0x8a8a9a },
+    { a: 'tree_dark', w: 4, zone: 'in', h: [5, 8], col: 0.07, tint: 0x8a8a9a },
     { a: 'kk:graveyard:tree_dead_large', w: 3, zone: 'in', h: [4, 7], col: 0.06 },
     { a: 'kk:graveyard:tree_dead_medium', w: 3, zone: 'any', h: [2.5, 4] },
     { a: 'kk:graveyard:gravestone', w: 1.5, zone: 'in', h: [1, 1.5] },
@@ -453,8 +453,17 @@ export const islands = {
       const hh = v.h[0] + R() * (v.h[1] - v.h[0]);
       const yaw = R() * 6.28;
       const tilt = v.tilt ? (R() - 0.5) * v.tilt : 0;
-      B.batch.add(v.a, x, h - 0.15, z, { h: hh, yaw, rx: tilt, rz: v.tilt ? (R() - 0.5) * v.tilt : 0, tint: v.tint ?? null, moss: v.moss ?? null, boost: v.boost ?? 1, shadow: hh > 1.5, small: hh < 1.2 });
-      if (v.col) physics.addCircle(x, z, Math.max(0.25, v.col * hh), h - 1, h + hh, B.tag);
+      const vsc = B.batch.add(v.a, x, h - 0.15, z, { h: hh, yaw, rx: tilt, rz: v.tilt ? (R() - 0.5) * v.tilt : 0, tint: v.tint ?? null, moss: v.moss ?? null, boost: v.boost ?? 1, shadow: hh > 1.5, small: hh < 1.2 });
+      // çarpıştırıcı yarıçapı = gövdenin 1 m yükseklikteki kesiti (ölçüldü): önce palmiyede gövdeden ince (gövdenin içine
+      // giriliyordu), meşe/çamda 0,1–0,25 m kalındı (koşarken ağaca değmeden takılınıyordu). Tepe = görünen tepe; yerden 0,35 m'den
+      // alçak kaya engel sayılmaz (önce alçak kayanın 0,3 m üstüne kadar görünmez duvar vardı). Ağaç gövdeleri kamerayı çekmez.
+      if (v.col) {
+        const top = h - 0.15 + partsOf(v.a).box.max.y * vsc;
+        if (top - h >= 0.35) {
+          const cc = physics.addCircle(x, z, Math.max(0.25, v.col * hh), h - 1, top, B.tag);
+          if (/tree|cactus/.test(v.a)) cc.noCam = true;
+        }
+      }
     }
   },
   _nearSeg(x, z, a, b) {
@@ -723,7 +732,7 @@ export const islands = {
     B.inter.push({ id: 'chest:' + id, x, y: y + 0.8, z, r: 2.4, label: 'Sandığı aç', once: true, action: () => {
       if (this.opened?.has(id)) { G.notify('Sandık boş.'); return; }
       (this.opened || (this.opened = new Set())).add(id);
-      G.emit('loot', { pos: new THREE.Vector3(x, y + 0.5, z), table, from: 'Eski sandık' });
+      G.emit('lootToBag', { pos: new THREE.Vector3(x, y + 0.5, z), table, from: 'Eski sandık' }); // içerik doğrudan çantaya; taşan kısım kese olur
       audio.play('coin', { vol: 0.6 });
     } });
   },
@@ -834,7 +843,7 @@ export const islands = {
     B.inter.push({ id: `altar:${f.id}`, x: cx, y: y0 + 5.1 * S + 0.8, z: cz - 14, r: 3, label: 'Sunak sandığını aç', cond: () => state.done, action: () => {
       if (this.opened?.has('altar' + f.id)) { G.notify('Sandık boş.'); return; }
       (this.opened || (this.opened = new Set())).add('altar' + f.id);
-      G.emit('loot', { pos: new THREE.Vector3(cx, y0 + 5.1 * S + 0.5, cz - 13), table: [['altin_para', 400, 700], ['kraliyet_taci', 0.6], ['altin_heykelcik', 1], ['elmas', 0.5], ['antik_vazo', 1]], from: 'Kadim Tapınak' });
+      G.emit('lootToBag', { pos: new THREE.Vector3(cx, y0 + 5.1 * S + 0.5, cz - 13), table: [['altin_para', 400, 700], ['kraliyet_taci', 0.6], ['altin_heykelcik', 1], ['elmas', 0.5], ['antik_vazo', 1]], from: 'Kadim Tapınak' });
       G.emit('templeLooted', { id: f.id });
     } });
     // çalışma zamanı bilgisi (kapı, avlu) ayrı tutulur. Önce templeState[f.id] bu sarmalayıcıyla eziliyordu: ada yeniden

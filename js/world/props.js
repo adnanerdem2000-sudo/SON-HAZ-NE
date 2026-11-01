@@ -233,11 +233,19 @@ export const props = {
     }
 
     // Çarpıştırıcılar
-    for (const p of palms) physics.addCircle(p.x, p.z, 0.32, p.y - 1, p.y + 8, 'palm');
-    for (const t of trees) physics.addCircle(t.x, t.z, 0.5 * t.s, t.y - 1, t.y + 10, 'tree');
-    for (const r of rocks) if (r.s > 1.2) physics.addCircle(r.x, r.z, 0.45 * r.s, r.y - 1, r.y + r.s * 0.3, 'rock');
+    // ağaç gövdeleri kamerayı çekmez (kamera gövdenin içinden geçer; önce gövdeye değince başa sıçrıyordu)
+    for (const p of palms) physics.addCircle(p.x, p.z, 0.32, p.y - 1, p.y + 8, 'palm').noCam = true;
+    for (const t of trees) physics.addCircle(t.x, t.z, 0.5 * t.s, t.y - 1, t.y + 10, 'tree').noCam = true;
+    // kaya: tepe = görünen tepe (rock_large modeli y −0,05…0,21); yerden 0,35 m'den alçak (gömülü/bilek boyu) kaya engel değil —
+    // önce gömülü kayanın tepesi yer altındayken çarpıştırıcısı yerin 7–28 cm üstüne çıkıp görünmez duvar oluyordu
+    for (const r of rocks) {
+      if (r.s <= 1.2) continue;
+      const top = r.y + 0.21 * r.s;
+      if (top - terrain.heightAt(r.x, r.z) < 0.35) continue;
+      physics.addCircle(r.x, r.z, 0.45 * r.s, r.y - 1, top, 'rock');
+    }
     for (const r of rocksTall) physics.addCircle(r.x, r.z, 0.42 * r.s, r.y - 1, r.y + r.s * 1.2, 'rock');
-    for (const d of dead) physics.addCircle(d.x, d.z, 0.35 * d.s, d.y - 1, d.y + 6, 'tree');
+    for (const d of dead) physics.addCircle(d.x, d.z, 0.35 * d.s, d.y - 1, d.y + 6, 'tree').noCam = true;
     this.palms = palms;
     this.trees = trees;
 

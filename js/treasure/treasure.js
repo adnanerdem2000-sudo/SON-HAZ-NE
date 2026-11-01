@@ -52,6 +52,10 @@ function lootRes() {
     ropeMat: new THREE.MeshStandardMaterial({ color: 0xc9a227, metalness: 0.4 }),
     gemGeo: new THREE.OctahedronGeometry(0.07, 0),
     gemMats: {},
+    meatGeo: new THREE.SphereGeometry(0.1, 10, 8),
+    meatMat: new THREE.MeshStandardMaterial({ color: 0xa8323a, roughness: 0.6 }),
+    boneGeo: new THREE.CylinderGeometry(0.02, 0.02, 0.26, 6),
+    boneMat: new THREE.MeshStandardMaterial({ color: 0xeee6d2, roughness: 0.8 }),
     glowGeo: new THREE.RingGeometry(0.3, 0.42, 20),
     glowMat: new THREE.MeshBasicMaterial({ color: 0xffd060, transparent: true, opacity: 0.6, side: THREE.DoubleSide, depthWrite: false }),
     holeGeo: new THREE.CircleGeometry(0.55, 12),
@@ -77,8 +81,21 @@ export const treasure = {
     G.on('boatRecall', (e) => this.boatToHold(e.boat, e.ship));
     // konukta üretilen ganimet ev sahibinde doğar (tek otorite): kese herkes için görünür ve alınabilir
     G.on('loot', (e) => {
-      if (G.online && !G.isHost) G.emit('netLootReq', { pos: e.pos.toArray(), table: e.table, from: e.from || '', exact: !!e.exact });
-      else this.spawnLoot(e.pos, e.table, e.from, !!e.exact);
+      if (G.online && !G.isHost) {
+        // güvertedeki konuk: gemi kimliği + yerel konum da gider (ev sahibi kendi gemi konumundan yeniden hesaplayınca
+        // hareket eden gemide kese kıça doğru kayıyor, denize düşebiliyordu)
+        const ps = G.player?.ship, onDeck = ps && ['deck', 'helm', 'cannon'].includes(G.player.mode);
+        G.emit('netLootReq', { pos: e.pos.toArray(), table: e.table, from: e.from || '', exact: !!e.exact, keep: !!e.keep, still: !!e.still, ship: onDeck ? ps.id : null, local: onDeck ? ps.worldToLocal(e.pos.clone()).toArray() : null });
+      }
+      else this.spawnLoot(e.pos, e.table, e.from, !!e.exact, { keep: !!e.keep, still: !!e.still });
+    });
+    // sandık açma: içerik doğrudan açanın çantasına gider (ikinci bir E ile kese toplamak gerekmez); sığmayan kısım
+    // sandığın yanında kese olarak kalır. Envanter her oyuncuda yereldir, bu yüzden konukta da yerel çalışır.
+    G.on('lootToBag', (e) => {
+      const items = this.rollTable(e.table, !!e.exact);
+      if (!items.length) return;
+      const left = this.giveItems(items, e.from || '', { respawn: false });
+      if (left.length) G.emit('loot', { pos: e.pos, table: left.map((l) => [l[0], 1, l[1], l[2]]), from: e.from || '', exact: true, keep: true });
     });
     this.holeGroup = new THREE.Group();
     scene.add(this.holeGroup);
@@ -86,7 +103,7 @@ export const treasure = {
 
   start(data) {
     for (const c of this.chests) this.scene.remove(c.mesh);
-    for (const p of this.pickups) this.scene.remove(p.mesh);
+    for (const p of this.pickups) p.mesh.removeFromParent();
     this.chests = []; this.pickups = []; this.found = {};
     while (this.holeGroup.children.length) this.holeGroup.remove(this.holeGroup.children[0]);
     this.holes = [];
@@ -146,16 +163,22 @@ export const treasure = {
       pk.t += dt;
       const inner = pk.mesh.children[0];
       if (inner) { inner.rotation.y += dt * 1.5; inner.position.y = 0.12 + Math.sin(pk.t * 2) * 0.06; }
-      if (pk.body) pk.pos.copy(pk.body.pos);
+      if (!pk.ship && pk.netShip) { // konuk: kesenin gemisi geç geldi (geç katılım, düşman/tüccar gemisi)
+        const s = G.ships.find((x) => x.id === pk.netShip);
+        if (s && s.root?.parent && Array.isArray(pk.netLocal)) { this._attachDeck(pk, s, new THREE.Vector3(...pk.netLocal)); pk.netShip = null; }
+      }
+      if (pk.ship) this._updateDeckLoot(pk);
+      else if (pk.body) pk.pos.copy(pk.body.pos);
       else {
         const wh = ocean.heightAt(pk.pos.x, pk.pos.z);
         const gy = physics.groundAt(pk.pos.x, pk.pos.z, pk.pos.y + 1);
         pk.mesh.position.set(pk.pos.x, Math.max(gy, wh - 0.1) + 0.25, pk.pos.z);
       }
-      if (pk.t > 300) pk.remove = true;
+      // ömür: av/düşman kesesi 10 dk; bırakılan ya da çanta dolu diye kalan kese 30 dk (önce hepsi 5 dk'da sessizce siliniyordu)
+      if (pk.t > (pk.keep ? 1800 : 600)) pk.remove = true;
     }
     const rm = this.pickups.filter((x) => x.remove);
-    for (const x of rm) { this.scene.remove(x.mesh); if (x.body) bodies.remove(x.body); }
+    for (const x of rm) { x.mesh.removeFromParent(); if (x.body) bodies.remove(x.body); }
     if (rm.length) this.pickups = this.pickups.filter((x) => !x.remove);
   },
 
@@ -450,29 +473,81 @@ export const treasure = {
     this._openChest(c, G.myId);
   },
   _openChest(c, who) {
-    if (c.state === 'gone') return;
+    if (c.state === 'gone' || c.state === 'carried') return; // geç/yinelenen istek taşınan sandığı açmasın
+    const rb = G.rowboat;
+    if (rb && rb.cargo.includes(c.id)) rb.cargo = rb.cargo.filter((x) => x !== c.id); // kayıktaki sandık açılınca yük yeri boşalır
     c.state = 'gone';
     this.scene.remove(c.mesh);
     this.chests = this.chests.filter((x) => x !== c);
     const pos = c.pos.clone();
     effects.glitter(pos.x, pos.y, pos.z);
     audio.play('gem', { vol: 0.6 });
-    this.spawnLoot(pos, c.contents.map((x) => [x[0], 1, x[1], x[2]]), c.T.name, true);
+    // içerik doğrudan açanın çantasına (önce kese doğuyordu, ayrıca E ile toplamak gerekiyordu); sığmayan kısım sandığın
+    // yerinde kese olarak kalır. Konuk açtıysa ev sahibi içeriği ona iletir; konuğun taşan kısmı yine kese olur.
+    const table = c.contents.map((x) => [x[0], 1, x[1], x[2]]);
+    if (who === G.myId) G.emit('lootToBag', { pos, table, from: c.T.name, exact: true });
+    else G.emit('netGive', { who, items: c.contents.map((x) => [x[0], x[1], x[2]]), from: c.T.name, pos: pos.toArray() });
     G.emit('chestOpened', { tier: c.tier, who });
     G.emit('netChestGone', { id: c.id });
   },
 
   // ---- ganimet torbaları ----
-  spawnLoot(pos, table, from = '', exact = false) {
+  // ganimet tablosu → eşya listesi. Satır: [id, a] (a < 1: olasılık, a ≥ 1: adet), [id, a, b] (a..b arası adet);
+  // exact: satırlar [id, 1, adet, veri] biçiminde hazır listedir
+  rollTable(table, exact = false) {
     const items = [];
     for (const row of table) {
       const [id, a, b, data] = row;
-      if (exact) { items.push([id, b, data]); continue; }
+      if (exact) { items.push(data ? [id, b, data] : [id, b]); continue; }
       if (b !== undefined && a >= 1 && b >= a) items.push([id, Math.round(Math.floor(a + Math.random() * (b - a + 1)) * (id === 'altin_para' ? G.mods?.gold || 1 : 1))]);
       else if (a < 1) { if (Math.random() < a) items.push([id, 1]); }
       else items.push([id, a]);
     }
-    const filtered = items.filter((i) => i[1] > 0);
+    return items.filter((i) => i[1] > 0);
+  },
+
+  // kese bir geminin güvertesine mi düşüyor? (gemi güverteleri fizik zemini değil: kese tahtaların içinden denize,
+  // gövdenin içine düşüyor, görünmüyor ve gemi gidince kayboluyordu — güvertede öldürülen bordacılar, deniz boss ödülü,
+  // güvertede 'Yere bırak'). Güvertedeyse kese gemiye yerel konumla bağlanır ve gemiyle birlikte gider.
+  _deckAt(pos) {
+    for (const s of G.ships || []) {
+      if (!s || s.sunk || !s.root?.parent || Math.abs(pos.x - s.x) > s.T.L || Math.abs(pos.z - s.z) > s.T.L) continue;
+      const l = s.worldToLocal(pos.clone());
+      if (!s.insideDeck(l.x, l.z, 0.15)) continue;
+      const dy = s.deckAt(l.x, l.z);
+      if (l.y < dy - 1.0 || l.y > dy + 4) continue;
+      s.clampDeck(l, 0.45);
+      return { ship: s, local: l };
+    }
+    return null;
+  },
+  _attachDeck(pk, ship, local) {
+    pk.ship = ship; pk.local = local.clone();
+    pk.mesh.userData.loot = true; // Ship.dispose bu kesesi gemiyle birlikte yok etmez
+    pk.local.y = ship.deckAt(local.x, local.z) + 0.05;
+    ship.root.add(pk.mesh);
+    pk.mesh.position.copy(pk.local);
+    pk.mesh.quaternion.identity();
+    ship.localToWorld(pk.local, pk.pos);
+  },
+  _updateDeckLoot(pk) {
+    const s = pk.ship;
+    if (s.sunk || !s.root.parent) { // gemi battı / sahneden kalktı: kese suya düşer, yüzer (enkaz ganimeti)
+      // gemi değiştirildiyse (aynı kimlikli yeni gemi): kese yeni geminin güvertesine geçer
+      const n = !s.sunk && (G.ships || []).find((x) => x !== s && x.id === s.id && !x.sunk && x.root?.parent);
+      if (n) { this._attachDeck(pk, n, n.clampDeck(pk.local.clone(), 0.45)); return; }
+      pk.ship = null; pk.local = null;
+      this.scene.add(pk.mesh);
+      pk.mesh.position.copy(pk.pos); pk.mesh.quaternion.identity();
+      if (!G.online || G.isHost) pk.body = bodies.add(pk.mesh, { pos: pk.pos.clone(), vel: new THREE.Vector3(0, 1, 0), radius: 0.22, offsetY: 0.05, mass: 0.3, buoyancy: 1.6, restitution: 0.35, friction: 0.9, noPush: true });
+      return;
+    }
+    if (pk.mesh.parent !== s.root) { s.root.add(pk.mesh); pk.mesh.position.copy(pk.local); pk.mesh.quaternion.identity(); } // gemi görünümü yeniden kuruldu (yeni kök)
+    s.localToWorld(pk.local, pk.pos);
+  },
+
+  spawnLoot(pos, table, from = '', exact = false, opts = {}) {
+    const filtered = this.rollTable(table, exact);
     if (!filtered.length) return;
     const mesh = new THREE.Group();
     const coins = filtered.find((i) => i[0] === 'altin_para');
@@ -485,15 +560,23 @@ export const treasure = {
     mesh.add(glow);
     mesh.position.copy(pos);
     this.scene.add(mesh);
-    const pk = { id: uid('pk'), pos: pos.clone(), items: filtered, mesh, t: 0, from };
-    // fiziksel ganimet: hafifçe havaya fırlar, yere düşer, suda yüzer
-    if (!G.online || G.isHost) {
+    const pk = { id: uid('pk'), pos: pos.clone(), items: filtered, mesh, t: 0, from, keep: !!opts.keep };
+    // güverteye düşen kese gemiye bağlanır (ağdan gelen kesede ev sahibinin gemi bilgisi kullanılır)
+    const deck = opts.ship ? (opts.local ? { ship: opts.ship, local: opts.local } : null) : opts.net ? null : this._deckAt(pos);
+    if (deck) this._attachDeck(pk, deck.ship, deck.local);
+    else if (!G.online || G.isHost) {
+      // fiziksel ganimet: hafifçe havaya fırlar, yere düşer, suda yüzer. 'still': fırlamadan yerinde doğar (çanta taşması)
       const a = Math.random() * Math.PI * 2;
-      pk.body = bodies.add(mesh, { pos: pos.clone().add(new THREE.Vector3(0, 0.6, 0)), vel: new THREE.Vector3(Math.cos(a) * 1.4, 4.2, Math.sin(a) * 1.4), radius: 0.22, offsetY: 0.05, mass: 0.3, buoyancy: 1.6, restitution: 0.35, friction: 0.9 });
+      const vel = opts.still ? new THREE.Vector3() : new THREE.Vector3(Math.cos(a) * 1.4, 4.2, Math.sin(a) * 1.4);
+      // noPush: oyuncu/düşman yürürken keseyi tekmeleyip kaçırmasın (kütlesi 0,3: koşan oyuncu 2-3 m fırlatıyordu)
+      pk.body = bodies.add(mesh, { pos: pos.clone().add(new THREE.Vector3(0, opts.still ? 0.3 : 0.6, 0)), vel, radius: 0.22, offsetY: 0.05, mass: 0.3, buoyancy: 1.6, restitution: 0.35, friction: 0.9, noPush: true });
     }
     this.pickups.push(pk);
-    G.emit('netPickupSpawn', { pk: { id: pk.id, pos: pk.pos.toArray(), items: pk.items, from } });
+    G.emit('netPickupSpawn', { pk: this.pickupNet(pk) });
     return pk;
+  },
+  pickupNet(pk) {
+    return { id: pk.id, pos: pk.pos.toArray(), items: pk.items, from: pk.from, keep: !!pk.keep, ship: pk.ship?.id || null, local: pk.local ? pk.local.toArray() : null, t: Math.round(pk.t || 0) };
   },
 
   _lootModel(items, coins) {
@@ -524,41 +607,73 @@ export const treasure = {
       gm.position.set(0.12, 0.2, 0.05);
       g.add(gm);
     }
+    if (items.some((i) => ITEMS[i[0]]?.raw)) { // av eti: kesenin yanında kemikli but (uzaktan 'et düştü' okunur)
+      const m = new THREE.Mesh(R.meatGeo, R.meatMat);
+      m.scale.set(1.6, 0.8, 1.1); m.position.set(-0.16, 0.06, 0.05);
+      const b = new THREE.Mesh(R.boneGeo, R.boneMat);
+      b.rotation.z = Math.PI / 2; b.position.copy(m.position);
+      g.add(m, b);
+    }
     return g;
   },
 
   collect(p, pk) {
+    // çanta tamamen doluysa keseyi alıp hemen yere geri bırakma döngüsüne girme: uyar ve keseyi yerinde bırak
+    if (!this.canTakeAny(p, pk.items)) { G.notify(`Çantan dolu (${this.bagText(p)}) — kese yerinde duruyor. Envanter (Tab): yük boşalt ya da sat.`, 'warn', 3500); return; }
     if (G.online && !G.isHost) { G.emit('netPickupReq', { id: pk.id }); return; }
     this._collect(pk, G.myId);
   },
+  canTakeAny(p, items) {
+    return items.some(([id, n, data]) => id === 'hazine_haritasi' || ITEMS[id]?.currency || p.inv.canAdd(id, 1, data || null));
+  },
+  bagText(p = G.player) { return `${p.inv.weight().toFixed(1)}/${p.inv.capacity} kg`; },
   _collect(pk, who) {
     if (pk.remove) return;
+    if (who === G.myId) {
+      // kısmen sığıyorsa: sığanlar çantaya, kalanı AYNI kesede yerinde kalır (önce kese silinip ayağının dibine yeni bir kese
+      // fırlıyordu; 'aldım ama çantama girmedi' gibi görünüyordu)
+      const left = this.giveItems(pk.items, pk.from, { respawn: false });
+      if (left.length) { pk.items = left; pk.keep = true; G.emit('netPickupItems', { id: pk.id, items: left }); return; }
+    }
     pk.remove = true;
-    G.emit('netPickupGone', { id: pk.id, who, items: pk.items });
-    if (who === G.myId) this.giveItems(pk.items, pk.from);
+    G.emit('netPickupGone', { id: pk.id, who, items: pk.items, from: pk.from });
   },
-  giveItems(items, from = '') {
+  // eşyaları çantaya koyar; sığmayanları döndürür. respawn: sığmayanları oyuncunun yanına kese olarak bırak
+  giveItems(items, from = '', { respawn = true } = {}) {
     const p = G.player;
     const got = [];
-    let left = [];
+    const left = [];
     for (const [id, n, data] of items) {
       if (id === 'hazine_haritasi') { const s = this.giveMap(data?.site || null, true); got.push(`Hazine haritası (${ISLANDS.find((i) => i.id === s.island)?.name})`); continue; }
       const rest = p.inv.add(id, n, data || null);
-      if (rest < n) got.push(`${itemName(id)}${n - rest > 1 ? ' ×' + (n - rest) : ''}`);
-      if (rest > 0) left.push([id, rest, data]);
+      if (rest < n) got.push(`${itemName(id, data)}${n - rest > 1 ? ' ×' + (n - rest) : ''}`);
+      if (rest > 0) left.push(data ? [id, rest, data] : [id, rest]);
     }
-    if (got.length) { G.notify(`${from ? from + ': ' : ''}${got.join(', ')}`, 'good', 4500); audio.play('coin', { vol: 0.6 }); }
+    if (got.length) { G.notify(`${from ? from + ': ' : ''}${got.join(', ')} → çantana (${this.bagText(p)})`, 'good', 4500); audio.play('coin', { vol: 0.6 }); }
     if (left.length) {
-      G.notify('Envanterin dolu! Bazı eşyalar yere bırakıldı.', 'warn');
-      G.emit('loot', { pos: p.pos.clone(), table: left.map((l) => [l[0], 1, l[1], l[2]]), from, exact: true }); // konukta ev sahibine yönlenir
+      const names = left.map(([id, n, d]) => itemName(id, d) + (n > 1 ? ' ×' + n : '')).slice(0, 4).join(', ');
+      G.notify(`Çantan dolu (${this.bagText(p)}): ${names} ${respawn ? 'yanına bırakıldı' : 'kesede kaldı'}.`, 'warn', 5500);
+      // konukta ev sahibine yönlenir; fırlamadan yerinde doğar ve uzun ömürlüdür
+      if (respawn) G.emit('loot', { pos: p.pos.clone(), table: left.map((l) => [l[0], 1, l[1], l[2]]), from, exact: true, keep: true, still: true });
     }
     G.emit('itemsGained', { items });
+    return left;
   },
 
   // ---- etkileşimler ----
   _provide(ctx, out) {
     const p = ctx.player;
-    if (p.mode === 'helm' || p.mode === 'cannon' || p.mode === 'boat' || p.busy) return;
+    if (p.mode === 'helm' || p.mode === 'cannon' || p.busy) return;
+    if (p.mode === 'boat') {
+      // kayıktan suda yüzen keseler toplanabilir: 'Kayıktan in / Gemiye çık' istemi önceliği 5 (puan 50) olduğundan
+      // kese önceliği 6; kese alınınca çıkış istemi geri gelir. Çanta doluysa düşük öncelik: çıkış istemi engellenmez.
+      // Kayıkta sandık taşınmaz (sandıklar burada sunulmaz).
+      for (const pk of this.pickups) {
+        if (pk.remove) continue;
+        if (Math.hypot(pk.pos.x - p.pos.x, pk.pos.z - p.pos.z) < 3.5 && Math.abs(pk.pos.y - p.pos.y) < 2.5) out.push(this._lootCand(p, pk, 3.5, 6));
+      }
+      return;
+    }
     if (p.carrying) {
       out.push({ id: 'drop', dist: 50, priority: -5, label: 'Sandığı bırak (G)', action: () => this.drop(p) });
       return;
@@ -571,14 +686,29 @@ export const treasure = {
         if (c.T.twoPlayer && c.carriers.length === 1 && c.carriers[0] !== G.myId) out.push({ id: 'help' + c.id, pos: c.pos, radius: 2.6, priority: 2, label: 'Birlikte taşı', action: () => this.pickUp(p, c) });
         continue;
       }
-      out.push({ id: 'carry' + c.id, pos: c.pos, radius: 2.6, priority: 1, label: `${c.T.name} — taşı`, sub: `${c.T.weight} kg · Basılı tut: sandığı aç`, hold: 1.4, action: () => this.pickUp(p, c), holdAction: () => this.open(p, c) });
+      out.push({ id: 'carry' + c.id, pos: c.pos, radius: 2.6, priority: 1, label: `${c.T.name} — taşı`, sub: `${c.T.weight} kg · Basılı tut: sandığı aç, içi çantana`, hold: 1.4, action: () => this.pickUp(p, c), holdAction: () => this.open(p, c) });
     }
     for (const pk of this.pickups) {
       if (pk.remove) continue;
-      const d = pk.pos.distanceTo(p.pos);
-      if (d < 2.4) out.push({ id: 'pk' + pk.id, pos: pk.pos, radius: 2.4, priority: 1.5, label: 'Ganimeti topla', sub: pk.items.map((i) => itemName(i[0], i[2]) + (i[1] > 1 ? ' ×' + i[1] : '')).slice(0, 4).join(', '), action: () => this.collect(p, pk) });
+      // yüzerken oyuncu yüzeyin ~1,35 m altında: dikey fark yarıya indirilerek ölçülür (suda erişim önce ~1,9 m'ye düşüyordu)
+      const dy = (pk.pos.y - p.pos.y) * (p.mode === 'swim' ? 0.5 : 1);
+      const d = Math.hypot(pk.pos.x - p.pos.x, dy, pk.pos.z - p.pos.z);
+      // kesenin dibindeyken (≤ 1,4 m) konuşma isteminin (öncelik 2) önüne geçer: önce yakında NPC varken kese E ile alınamıyordu.
+      // Bırakılan / çanta dolu diye kalan kese (keep) bu üstünlüğü ancak üstüne basınca (≤ 0,8 m) alır: NPC yanında eşya bırakıp
+      // E'ye basan oyuncu keseyi istemeden geri almaz. Sığmayan kese hiç üstünlük almaz (öncelik 0,4)
+      if (d < 2.4) {
+        const cand = this._lootCand(p, pk, 2.4, d < (pk.keep ? 0.8 : 1.4) ? 2.5 : 1.5);
+        // güvertede bırakılmış/kalan ya da sığmayan kese dümen, top, çapa, ambar istemlerini (öncelik 0–0,2) bastırmaz
+        if (pk.ship && p.mode === 'deck' && (pk.keep || cand.priority < 1)) cand.priority = -0.5;
+        out.push(cand);
+      }
     }
   },
+  _lootCand(p, pk, radius, priority) {
+    const fits = this.canTakeAny(p, pk.items);
+    return { id: 'pk' + pk.id, pos: pk.pos, radius, priority: fits ? priority : 0.4, label: fits ? 'Ganimeti topla' : 'Ganimet — çantan dolu', sub: this._lootSub(pk) + (fits ? '' : ` · ${this.bagText(p)}`), action: () => this.collect(p, pk) };
+  },
+  _lootSub(pk) { return pk.items.map((i) => itemName(i[0], i[2]) + (i[1] > 1 ? ' ×' + i[1] : '')).slice(0, 4).join(', '); },
 
   chestNet(c) { return { id: c.id, tier: c.tier, pos: c.pos.toArray(), state: c.state, carriers: c.carriers, contents: c.contents, siteId: c.siteId }; },
 };

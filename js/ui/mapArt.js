@@ -15,7 +15,6 @@ const pendingDetail = new Set();
 const listeners = new Set();
 
 const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
-const mix3 = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
 
 export function mapScale() { return N / WORLD_SIZE; }
 export function onMapDetail(fn) { listeners.add(fn); return () => listeners.delete(fn); }
@@ -30,60 +29,87 @@ const LAND = {
   6: { sand: [236, 206, 150], g1: [210, 186, 128], g2: [196, 156, 104], rock: [196, 120, 80], peak: [222, 170, 120] },
 };
 
-// yükseklik + biyom ızgarasını parşömen üzerine boya (res × res piksel)
+// yükseklik + biyom ızgarasını parşömen üzerine boya (res × res piksel).
+// Piksel döngüleri skaler hesaplanır: önce piksel başına 6–8 küçük dizi ayrılıyordu (512×512 karoda ~2 milyon dizi, çöp
+// toplama yükü). Çıktı önceki sürümle birebir aynı.
+const SH = [132, 210, 202], MID = [84, 166, 196], DEEP = [46, 104, 156];
+function paintRows(D, heights, biomes, res, worldPx, j0, j1) {
+  const shadeK = 0.045 * worldPx / 4.8; // eğim → gölge (piksel boyutuna göre)
+  const lineW = 0.16 * Math.max(1, worldPx / 4.8);
+  for (let j = j0; j < j1; j++) {
+    const jp = j < res - 1 ? j + 1 : res - 1, jm = j > 0 ? j - 1 : 0;
+    for (let i = 0; i < res; i++) {
+      const idx = j * res + i, k = idx * 4;
+      const h = heights[idx];
+      const pr = D[k], pg = D[k + 1], pb = D[k + 2];
+      let r, g, b, t;
+      if (h > 0) {
+        const bi = biomes[idx] || 1;
+        const P = LAND[bi] || LAND[1];
+        t = smooth(0.7, 2.4, h);
+        r = P.sand[0] + (P.g1[0] - P.sand[0]) * t; g = P.sand[1] + (P.g1[1] - P.sand[1]) * t; b = P.sand[2] + (P.g1[2] - P.sand[2]) * t;
+        t = smooth(8, 18, h);
+        r += (P.g2[0] - r) * t; g += (P.g2[1] - g) * t; b += (P.g2[2] - b) * t;
+        if (bi === 6) {
+          const band = Math.sin(h * 0.55) * 0.5 + 0.5;
+          const rr = P.rock[0] + (222 - P.rock[0]) * band, rg = P.rock[1] + (150 - P.rock[1]) * band, rb = P.rock[2] + (100 - P.rock[2]) * band;
+          t = smooth(10, 24, h);
+          r += (rr - r) * t; g += (rg - g) * t; b += (rb - b) * t;
+        } else {
+          t = smooth(24, 34, h);
+          r += (P.rock[0] - r) * t; g += (P.rock[1] - g) * t; b += (P.rock[2] - b) * t;
+        }
+        t = smooth(bi === 4 ? 30 : 40, bi === 4 ? 60 : 52, h);
+        r += (P.peak[0] - r) * t; g += (P.peak[1] - g) * t; b += (P.peak[2] - b) * t;
+        // tepe gölgelendirme (ışık kuzeybatıdan)
+        const ip = i < res - 1 ? i + 1 : res - 1, im = i > 0 ? i - 1 : 0;
+        const hE = heights[j * res + ip], hS = heights[jp * res + i];
+        const nx = hE - heights[j * res + im], nz = hS - heights[jm * res + i];
+        const shade = clamp(1 + (nx + nz) * shadeK / worldPx * 4.8, 0.62, 1.28);
+        r *= shade; g *= shade; b *= shade;
+        // eş yükselti eğrileri (10 m)
+        if (h > 3) { const f = Math.floor(h / 10); if (f !== Math.floor(hE / 10) || f !== Math.floor(hS / 10)) { r *= 0.78; g *= 0.74; b *= 0.7; } }
+        r = pr + (r - pr) * 0.82; g = pg + (g - pg) * 0.82; b = pb + (b - pb) * 0.82;
+      } else {
+        const d = -h;
+        t = smooth(0.5, 8, d);
+        r = SH[0] + (MID[0] - SH[0]) * t; g = SH[1] + (MID[1] - SH[1]) * t; b = SH[2] + (MID[2] - SH[2]) * t;
+        t = smooth(10, 34, d);
+        r += (DEEP[0] - r) * t; g += (DEEP[1] - g) * t; b += (DEEP[2] - b) * t;
+        t = 0.5 + 0.2 * smooth(0, 30, d);
+        r = pr + (r - pr) * t; g = pg + (g - pg) * t; b = pb + (b - pb) * t;
+        if (Math.abs(h + 5) < lineW) { r *= 0.88; g *= 0.9; b *= 0.94; }
+      }
+      D[k] = r; D[k + 1] = g; D[k + 2] = b;
+    }
+  }
+}
+// kıyı mürekkebi ve açıktaki kıyı halkaları (yalnız yükseklik okur)
+function coastRows(D, heights, res, j0, j1) {
+  const L = (i, j) => heights[(j < 0 ? 0 : j >= res ? res - 1 : j) * res + (i < 0 ? 0 : i >= res ? res - 1 : i)] > 0;
+  for (let j = Math.max(1, j0); j < Math.min(res - 1, j1); j++) for (let i = 1; i < res - 1; i++) {
+    const k = (j * res + i) * 4;
+    const l = L(i, j);
+    if (l !== L(i + 1, j) || l !== L(i, j + 1) || l !== L(i - 1, j) || l !== L(i, j - 1)) { D[k] = 64; D[k + 1] = 40; D[k + 2] = 20; continue; }
+    if (l) continue;
+    if ((L(i + 3, j) || L(i - 3, j) || L(i, j + 3) || L(i, j - 3)) && !(L(i + 2, j) || L(i - 2, j) || L(i, j + 2) || L(i, j - 2))) { D[k] *= 1 - 0.32 * 0.6; D[k + 1] *= 1 - 0.32 * 0.5; D[k + 2] *= 1 - 0.32 * 0.35; }
+    if ((L(i + 7, j) || L(i - 7, j) || L(i, j + 7) || L(i, j - 7)) && !(L(i + 6, j) || L(i - 6, j) || L(i, j + 6) || L(i, j - 6))) { D[k] *= 1 - 0.18 * 0.6; D[k + 1] *= 1 - 0.18 * 0.5; D[k + 2] *= 1 - 0.18 * 0.35; }
+  }
+}
 function paint(heights, biomes, res, worldPx, seed = 3) {
   const c = parchmentCanvas(res, res, seed);
   const g = c.getContext('2d');
   const img = g.getImageData(0, 0, res, res);
-  const D = img.data;
-  const H = (i, j) => heights[clamp(j, 0, res - 1) * res + clamp(i, 0, res - 1)];
-  const land = (i, j) => H(i, j) > 0;
-  const SH = [132, 210, 202], MID = [84, 166, 196], DEEP = [46, 104, 156];
-  const shadeK = 0.045 * worldPx / 4.8; // eğim → gölge (piksel boyutuna göre)
-  for (let j = 0; j < res; j++) for (let i = 0; i < res; i++) {
-    const k = (j * res + i) * 4;
-    const h = heights[j * res + i];
-    const par = [D[k], D[k + 1], D[k + 2]];
-    let col;
-    if (h > 0) {
-      const b = biomes[j * res + i] || 1;
-      const P = LAND[b] || LAND[1];
-      col = mix3(P.sand, P.g1, smooth(0.7, 2.4, h));
-      col = mix3(col, P.g2, smooth(8, 18, h));
-      if (b === 6) { const band = Math.sin(h * 0.55) * 0.5 + 0.5; col = mix3(col, mix3(P.rock, [222, 150, 100], band), smooth(10, 24, h)); }
-      else col = mix3(col, P.rock, smooth(24, 34, h));
-      col = mix3(col, P.peak, smooth(b === 4 ? 30 : 40, b === 4 ? 60 : 52, h));
-      // tepe gölgelendirme (ışık kuzeybatıdan)
-      const nx = H(i + 1, j) - H(i - 1, j), nz = H(i, j + 1) - H(i, j - 1);
-      const shade = clamp(1 + (nx + nz) * shadeK / worldPx * 4.8, 0.62, 1.28);
-      col = [col[0] * shade, col[1] * shade, col[2] * shade];
-      // eş yükselti eğrileri (10 m)
-      if (h > 3 && (Math.floor(h / 10) !== Math.floor(H(i + 1, j) / 10) || Math.floor(h / 10) !== Math.floor(H(i, j + 1) / 10))) col = [col[0] * 0.78, col[1] * 0.74, col[2] * 0.7];
-      col = mix3(par, col, 0.82);
-    } else {
-      const d = -h;
-      let sea = mix3(SH, MID, smooth(0.5, 8, d));
-      sea = mix3(sea, DEEP, smooth(10, 34, d));
-      col = mix3(par, sea, 0.5 + 0.2 * smooth(0, 30, d));
-      if (Math.abs(h + 5) < 0.16 * Math.max(1, worldPx / 4.8)) col = [col[0] * 0.88, col[1] * 0.9, col[2] * 0.94];
-    }
-    D[k] = col[0]; D[k + 1] = col[1]; D[k + 2] = col[2];
-  }
-  // kıyı mürekkebi ve açıktaki kıyı halkaları
-  for (let j = 1; j < res - 1; j++) for (let i = 1; i < res - 1; i++) {
-    const k = (j * res + i) * 4;
-    const l = land(i, j);
-    if (l !== land(i + 1, j) || l !== land(i, j + 1) || l !== land(i - 1, j) || l !== land(i, j - 1)) { D[k] = 64; D[k + 1] = 40; D[k + 2] = 20; continue; }
-    if (l) continue;
-    for (const [r, a] of [[3, 0.32], [7, 0.18]]) {
-      const near = land(i + r, j) || land(i - r, j) || land(i, j + r) || land(i, j - r);
-      const nearer = land(i + r - 1, j) || land(i - r + 1, j) || land(i, j + r - 1) || land(i, j - r + 1);
-      if (near && !nearer) { D[k] *= 1 - a * 0.6; D[k + 1] *= 1 - a * 0.5; D[k + 2] *= 1 - a * 0.35; }
-    }
-  }
+  paintRows(img.data, heights, biomes, res, worldPx, 0, res);
+  coastRows(img.data, heights, res, 0, res);
   g.putImageData(img, 0, 0);
+  const H = (i, j) => heights[clamp(j, 0, res - 1) * res + clamp(i, 0, res - 1)];
   return { c, H };
 }
+// Not: karonun parşömen zemini tuvalden geri okunur (getImageData). Bu okuma yazılımsal GPU'lu test ortamında karo başına
+// 100–650 ms sürüyor; CPU tuvali / doğrudan piksel dizisi / dilimli boyama denendi ama bu ortamda sayfa belleğini ve test
+// süresini ~2 katına çıkardı (04_karakter: 1,2 → 2,0–2,9 GB), bu yüzden tuval yolu değiştirilmedi; yalnız piksel döngüleri
+// ayırmasız hale getirildi (çıktı birebir aynı). Kalıcı çözüm: boyamayı arazi işçisine taşımak (11. belge).
 
 // Dünya tabanı (yükleme sırasında işçiden)
 export async function initMapBase() {
@@ -110,8 +136,8 @@ export function mapDetail(i, j) {
     pendingDetail.add(key);
     const x0 = -WORLD_SIZE / 2 + i * DT, z0 = -WORLD_SIZE / 2 + j * DT;
     terrain.requestGrid(x0, z0, DT, DRES, 300).then((m) => {
-      pendingDetail.delete(key);
       const { c } = paint(m.heights, m.biomes, DRES, DT / DRES, 5 + key);
+      pendingDetail.delete(key);
       detail.set(key, { c, used: performance.now() });
       if (detail.size > 28) {
         let old = null;
