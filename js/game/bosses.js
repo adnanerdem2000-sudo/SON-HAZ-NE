@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { G } from './ctx.js';
+import { disposeTree } from '../core/dispose.js';
 import { combat } from './combat.js';
 import { effects } from './effects.js';
 import { enemies } from './enemies.js';
@@ -52,6 +53,7 @@ function attachToBone(boss, obj, re, worldOffset, size) {
   const host = bone || root;
   const wp = root.localToWorld(worldOffset.clone());
   scene_attach(host, obj, wp);
+  (boss.attached || (boss.attached = [])).push(obj); // kemiğe bağlanan prosedürel parça: dispose'ta ayrıca bırakılır (glb alt ağacı atlanır)
   const ws = host.getWorldScale(new THREE.Vector3());
   obj.scale.setScalar(size / Math.max(1e-4, ws.x));
 }
@@ -123,7 +125,10 @@ class BossBase {
   dispose() {
     combat.removeTarget(this);
     for (const r of this.rings) { this.scene.remove(r); r.geometry.dispose(); r.material.dispose(); }
-    for (const o of this.parts) this.scene.remove(o);
+    // prosedürel parçaların geometri/malzemeleri bırakılır (Kraken temizlenince 32 geometri kalıyordu); glb klonunun geometrisi
+    // varlık önbelleğiyle paylaşımlıdır → o alt ağaç atlanır, onun malzeme/iskeleti Animated.dispose ile bırakılır
+    for (const o of this.parts) { this.scene.remove(o); disposeTree(o, { skip: this.anim?.model || null }); }
+    for (const o of this.attached || []) { o.parent?.remove(o); disposeTree(o); } // Taş Muhafız kristali, Volkanik Dev çekirdeği
     this.anim?.dispose?.(); // animasyonlu model (Animated): klon malzemeler + kemik dokusu
   }
   net() { return { id: this.id, hp: Math.round(this.hp), max: Math.round(this.maxHp), x: +this.pos.x.toFixed(1), y: +this.pos.y.toFixed(1), z: +this.pos.z.toFixed(1), ph: this.phase, a: this.alive ? 1 : 0, ...(this.netExtra?.() || {}) }; }

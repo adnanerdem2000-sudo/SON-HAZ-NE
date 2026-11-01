@@ -15,6 +15,8 @@ import { progress, need, rankOf, MAX_LEVEL } from '../game/progress.js';
 import { regionAt, REGIONS } from '../world/archipelago.js';
 
 const $ = (id) => document.getElementById(id);
+// Metin yazımı yalnız değişince: her karede aynı metni yazmak kopuk Text düğümü çöpü üretir (uzun benzetimde GB'larca RSS)
+const setTxt = (el, v) => { if (!el) return; const sv = String(v); if (el._t !== sv) { el._t = sv; el.textContent = sv; } };
 
 export const hud = {
   init() {
@@ -120,12 +122,16 @@ export const hud = {
     if (!p) { el.classList.add('hidden'); return; }
     el.classList.remove('hidden');
     el.classList.toggle('disabled', !!p.disabled);
-    el.querySelector('kbd').textContent = p.key;
-    el.querySelector('.label').textContent = p.label;
-    el.querySelector('.sub').textContent = p.sub || '';
+    setTxt(el.querySelector('kbd'), p.key);
+    setTxt(el.querySelector('.label'), p.label);
+    setTxt(el.querySelector('.sub'), p.sub || '');
     const ring = el.querySelector('.hold-ring');
-    if (p.hold !== null && p.hold !== undefined) { ring.classList.add('on'); ring.innerHTML = `<i style="width:${Math.round(p.hold * 100)}%"></i>`; }
-    else ring.classList.remove('on');
+    if (p.hold !== null && p.hold !== undefined) {
+      ring.classList.add('on');
+      const pct = Math.round(p.hold * 100);
+      if (!ring.firstElementChild) ring.innerHTML = '<i></i>';
+      if (this._holdPct !== pct) { this._holdPct = pct; ring.firstElementChild.style.width = pct + '%'; }
+    } else ring.classList.remove('on');
   },
 
   _boss(b) {
@@ -190,7 +196,7 @@ export const hud = {
     for (const s of this.slots) {
       s.el.classList.toggle('active', p.equipped === s.eq);
       s.el.classList.toggle('empty', !s.need.some((i) => p.inv.has(i)));
-      s.el.querySelector('.k').textContent = keyLabel(input.bindings[s.k]);
+      setTxt(s.el.querySelector('.k'), keyLabel(input.bindings[s.k]));
     }
   },
 
@@ -224,13 +230,13 @@ export const hud = {
     const ox = document.querySelector('.vital.ox');
     const showOx = p.mode === 'swim' && (p.underwater || p.oxygen < 99);
     ox.classList.toggle('hidden', !showOx);
-    if (showOx) { set('.vital.ox', p.oxygen); ox.querySelector('.depth').textContent = p.depth.toFixed(1) + ' m'; }
-    $('hud-gold').textContent = Math.floor(p.inv.gold).toLocaleString('tr-TR');
+    if (showOx) { set('.vital.ox', p.oxygen); setTxt(ox.querySelector('.depth'), p.depth.toFixed(1) + ' m'); }
+    setTxt($('hud-gold'), Math.floor(p.inv.gold).toLocaleString('tr-TR'));
     if (this._t % 0.5 < dt) {
       this._hotbarActive();
       const L = progress.level;
-      $('hud-lvl').textContent = L;
-      $('hud-rank').textContent = rankOf(L);
+      setTxt($('hud-lvl'), L);
+      setTxt($('hud-rank'), rankOf(L));
       $('hud-xp').style.width = (L >= MAX_LEVEL ? 100 : clamp(progress.xp / need(L) * 100, 0, 100)) + '%';
       $('hud-pts').classList.toggle('hidden', !progress.points);
       this._location(p);
@@ -245,19 +251,28 @@ export const hud = {
       const addMark = (x, z, sym, color) => {
         const a = Math.atan2(x - p.pos.x, -(z - p.pos.z)) * 180 / Math.PI;
         let d = (a + 360) % 360;
-        for (const off of [-360, 0, 360]) marks.push(`<span class="mark" style="left:${(d + off) * 4}px;color:${color}">${sym}</span>`);
+        for (const off of [-360, 0, 360]) marks.push({ px: Math.round((d + off) * 4), color, sym });
       };
       for (const [, r] of G.remotes) addMark(r.pos.x, r.pos.z, '●', r.color || '#6ad0f0');
       for (const m of quests.markers || []) addMark(m.x, m.z, '✚', '#ff6050');
       const tgt = this.storyTarget();
       if (tgt) addMark(tgt.x, tgt.z, '★', '#f3d27a');
-      this.compassMarks.innerHTML = marks.join('');
+      // işaret öğeleri yeniden kullanılır: tür/renk dizisi değişmedikçe yalnız konum (style.left) güncellenir; her karede
+      // innerHTML yazmak karede ~7 kopuk düğüm çöpü üretiyordu (uzun benzetimde GB'larca RSS)
+      const sig = marks.map((m) => m.sym + m.color).join('|');
+      if (sig !== this._marksSig) {
+        this._marksSig = sig;
+        this.compassMarks.innerHTML = marks.map((m) => `<span class="mark" style="color:${m.color}">${m.sym}</span>`).join('');
+        this._markEls = [...this.compassMarks.children];
+      }
+      for (let i = 0; i < marks.length; i++) { const el = this._markEls[i], px = marks[i].px + 'px'; if (el && el._left !== px) { el._left = px; el.style.left = px; } }
     }
     // görev takibi
     if (this._t % 0.5 < dt) {
       const st = STORY[Math.min(quests.stage, STORY.length - 1)];
       const side = (quests.side || []).map((q) => `<div class="qt-side">• ${q.title}: ${q.progress || 0}/${q.need}</div>`).join('');
-      $('quest-tracker').innerHTML = `<div class="qt-title">${st.title}</div><div class="qt-goal">${st.goal}</div>${side}`;
+      const qt = `<div class="qt-title">${st.title}</div><div class="qt-goal">${st.goal}</div>${side}`;
+      if (qt !== this._qtHtml) { this._qtHtml = qt; $('quest-tracker').innerHTML = qt; }
       const fps = settings.v.showFps ? `${engine.fps} FPS` : '';
       const net = G.online ? (G.isHost ? 'Oda sahibi' : 'Konuk') + (G.ping ? ` · ${G.ping} ms` : '') : '';
       $('hud-info').textContent = [net, fps].filter(Boolean).join(' · ');
@@ -278,7 +293,7 @@ export const hud = {
       const reload = s.cannonState.filter((c) => c.reload <= 0).length;
       const knots = (Math.abs(s.speed) * 1.94).toFixed(1);
       const windRel = Math.round(s.windEfficiency() * 100);
-      sp.innerHTML = `<div class="sp-title">${s.name} <small style="font-family:var(--body);font-size:14px;color:#cfe0e2">${s.T.name}</small></div>
+      const spHtml = `<div class="sp-title">${s.name} <small style="font-family:var(--body);font-size:14px;color:#cfe0e2">${s.T.name}</small></div>
         <div class="sp-row">Gövde <span class="mini"><i style="width:${hpP}%;background:#d84a3a"></i></span> %${hpP}</div>
         <div class="sp-row">Su <span class="mini"><i style="width:${s.water}%;background:#4ab0e0"></i></span> %${Math.round(s.water)}</div>
         <div class="sp-row">Yelken <span class="mini"><i style="width:${s.sail * 100}%;background:#f3d27a"></i></span> %${Math.round(s.sailTarget * 100)}</div>
@@ -287,6 +302,7 @@ export const hud = {
         <div class="sp-row"><span>Toplar hazır: ${reload}/${s.cannonState.length} · Gülle: ${s.cannonballs}</span></div>
         <div class="sp-row"><span>Ambar: ${s.hold.chests.length}/${s.T.holdSlots} sandık · Tahta: ${s.planks}</span></div>
         <div class="sp-dmg">${['pruva', 'kic', 'iskele', 'sancak', 'dumen', 'yelken'].map((k) => `<span class="${s.parts[k] < 30 ? 'bad' : s.parts[k] < 65 ? 'mid' : ''}">${{ pruva: 'Pruva', kic: 'Kıç', iskele: 'İskele', sancak: 'Sancak', dumen: 'Dümen', yelken: 'Bez' }[k]} %${Math.round(s.parts[k])}</span>`).join('')}${s.mastHp.map((h, i) => `<span class="${h <= 0 ? 'bad' : h < 40 ? 'mid' : ''}">Direk${s.mastHp.length > 1 ? ' ' + (i + 1) : ''} ${h <= 0 ? 'KIRIK' : '%' + Math.round(h)}</span>`).join('')}${s.cannonHp.some((h) => h <= 0) ? `<span class="bad">Bozuk top: ${s.cannonHp.filter((h) => h <= 0).length}</span>` : ''}${s.fires.length ? `<span class="bad">🔥 Yangın: ${s.fires.length}</span>` : ''}</div>`;
+      if (spHtml !== this._spHtml) { this._spHtml = spHtml; sp.innerHTML = spHtml; }
     }
     // nişangâh
     $('crosshair').classList.toggle('hidden', !(p.aiming || p.mode === 'cannon'));
@@ -303,9 +319,9 @@ export const hud = {
     const now = time.totalHours();
     const SPAN = 12, PAST = 1;
     const x = (at) => ((at - (now - PAST)) / SPAN) * 100;
-    P.querySelector('.tp-day').textContent = `Gün ${time.day}`;
-    P.querySelector('.tp-clock').textContent = time.hourString(sky.hour);
-    P.querySelector('.tp-weather').textContent = `${sky.weatherIcon(sky.weatherKey)} ${sky.weatherName(sky.weatherKey)}`;
+    setTxt(P.querySelector('.tp-day'), `Gün ${time.day}`);
+    setTxt(P.querySelector('.tp-clock'), time.hourString(sky.hour));
+    setTxt(P.querySelector('.tp-weather'), `${sky.weatherIcon(sky.weatherKey)} ${sky.weatherName(sky.weatherKey)}`);
     const tide = time.tide();
     P.querySelector('.tp-tide').textContent = `🌊${time.tideRising() ? '↑' : '↓'}${tide >= 0 ? '+' : ''}${tide.toFixed(1)} m`;
     // gökyüzü renk geçişi (gece-şafak-gündüz-gün batımı)
@@ -325,7 +341,10 @@ export const hud = {
       ticks.push(`<span style="left:${x(h).toFixed(2)}%"></span>`);
       if (hh % 3 === 0) ticks.push(`<b style="left:${x(h).toFixed(2)}%">${hh}</b>`);
     }
-    P.querySelector('.tp-ticks').innerHTML = ticks.join('');
+    const setIf = (sel, html, key) => { if (this[key] !== html) { this[key] = html; P.querySelector(sel).innerHTML = html; } }; // değişince yaz
+    // çizgi/bant/simge dizileri zamanla sürekli kayar (yüzde değerleri); 2 sn'de bir yeterli (şimdi işareti her çağrıda güncellenir)
+    const slow = (this._tpSlowT === undefined || Math.abs(now - this._tpSlowT) >= 2 / 60) ; if (slow) this._tpSlowT = now;
+    if (slow) setIf('.tp-ticks', ticks.join(''), '_tpTicks');
     // olaylar
     const list = time.upcoming(SPAN - PAST);
     const bands = [], icons = [];
@@ -337,8 +356,7 @@ export const hud = {
       const px = x(e.at);
       if (px >= 2 && px <= 98) icons.push(`<span style="left:${px.toFixed(2)}%" title="${e.title}">${e.icon}</span>`);
     }
-    P.querySelector('.tp-bands').innerHTML = bands.join('');
-    P.querySelector('.tp-icons').innerHTML = icons.join('');
+    if (slow) { setIf('.tp-bands', bands.join(''), '_tpBands'); setIf('.tp-icons', icons.join(''), '_tpIcons'); }
     P.querySelector('.tp-now').style.left = `calc(${x(now).toFixed(2)}% - 1px)`;
     // şu an etkin olan ya da sıradaki olay
     const active = list.filter((e) => e.endAt && e.at <= now && e.endAt > now && !e.weather && !e.tide);
@@ -347,7 +365,7 @@ export const hud = {
     let txt = '';
     if (active.length) txt = `Şu an: ${active.map((e) => `${e.icon} <b>${e.title}</b>`).join(', ')}`;
     else if (next) txt = `Sıradaki: ${next.icon} <b>${next.title}</b> · ${dur(next.at - now)} sonra`;
-    P.querySelector('.tp-next').innerHTML = txt;
+    setIf('.tp-next', txt, '_tpNext');
   },
 
   // Mini harita: oyuncu merkezde, kamera yönü yukarıda
@@ -437,9 +455,10 @@ export const hud = {
 
   _team() {
     const tl = $('team-list');
-    if (!G.online || !G.remotes.size) { tl.innerHTML = ''; return; }
+    if (!G.online || !G.remotes.size) { if (this._teamHtml !== '') { this._teamHtml = ''; tl.innerHTML = ''; } return; }
     const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     const col = (c) => (/^#[0-9a-fA-F]{3,8}$/.test(c || '') ? c : '#fff');
-    tl.innerHTML = [...G.remotes.values()].map((r) => `<div class="tm"><span style="color:${col(r.color)}">●</span> ${esc(r.name)} <i><b style="width:${clamp(r.hp ?? 100, 0, 100)}%"></b></i>${r.downed ? ' <span style="color:#ff8060">YARALI!</span>' : ''}</div>`).join('');
+    const th = [...G.remotes.values()].map((r) => `<div class="tm"><span style="color:${col(r.color)}">●</span> ${esc(r.name)} <i><b style="width:${clamp(r.hp ?? 100, 0, 100)}%"></b></i>${r.downed ? ' <span style="color:#ff8060">YARALI!</span>' : ''}</div>`).join('');
+    if (th !== this._teamHtml) { this._teamHtml = th; tl.innerHTML = th; }
   },
 };

@@ -130,7 +130,7 @@ async function boot() {
   // davet bağlantısı
   const join = new URLSearchParams(location.search).get('join');
   if (join) menu.joinScreen(join);
-  window.DK = { G, assets, archipelago, physics, islands, bosses, ports, game, input, engine, post, settings, tpCamera, interact, npcs, Ship, kk, Character, handlers, net, ui, creator, quests, treasure, enemies, animals, megafauna, hazards, progress, fish, fishing, shipControl, THREE, save, port, combat, effects, events, worldEvents, sky, time, bodies, weatherfx, details, terrain, ocean, crowd };
+  window.DK = { G, assets, archipelago, physics, islands, bosses, ports, game, input, engine, post, settings, tpCamera, interact, npcs, Ship, kk, Character, handlers, net, ui, creator, hud, quests, treasure, enemies, animals, megafauna, hazards, progress, fish, fishing, shipControl, THREE, save, port, combat, effects, events, worldEvents, sky, time, bodies, weatherfx, details, terrain, ocean, crowd };
   // Test: yalnız 3B tuvali yakala (HUD hariç) — yazılımsal GPU'da sayfa ekran görüntüsünden daha kararlı
   window.DK.snap = (q = 0.85) => { post.render(); return engine.renderer.domElement.toDataURL('image/jpeg', q); };
   // belirli bir bakış açısından yakala (test): from/to = [x,y,z]

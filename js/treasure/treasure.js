@@ -34,6 +34,32 @@ export function rollLoot(tier, r = Math.random) {
   return out;
 }
 
+// Ganimet kesesi ve kazı çukuru için paylaşımlı geometri/malzemeler: önce her kese/çukur kendi geometri ve malzemelerini yaratıyor,
+// kaldırılınca (toplama, 5 dk sonra kaybolma, 40 çukur sınırı) yalnız sahneden çıkarıyordu → her öldürme ve sandıkta ~6 GPU
+// geometrisi kalıcı sızıyordu. Paylaşımlı kaynaklar bir kez yüklenir; kaldırmada bırakılacak bir şey kalmaz.
+const LOOT_RES = {};
+function lootRes() {
+  if (LOOT_RES.ok) return LOOT_RES;
+  return Object.assign(LOOT_RES, {
+    ok: true,
+    coinGeo: new THREE.CylinderGeometry(0.07, 0.07, 0.015, 14),
+    gold: new THREE.MeshStandardMaterial({ color: 0xf2c040, metalness: 0.85, roughness: 0.28, emissive: 0x3a2400 }),
+    sackGeo: new THREE.SphereGeometry(0.16, 12, 10),
+    sackMat: new THREE.MeshStandardMaterial({ color: 0x8a6a42, roughness: 1 }),
+    tieGeo: new THREE.CylinderGeometry(0.05, 0.08, 0.08, 8),
+    tieMat: new THREE.MeshStandardMaterial({ color: 0x6b4a2c, roughness: 1 }),
+    ropeGeo: new THREE.TorusGeometry(0.06, 0.012, 5, 12),
+    ropeMat: new THREE.MeshStandardMaterial({ color: 0xc9a227, metalness: 0.4 }),
+    gemGeo: new THREE.OctahedronGeometry(0.07, 0),
+    gemMats: {},
+    glowGeo: new THREE.RingGeometry(0.3, 0.42, 20),
+    glowMat: new THREE.MeshBasicMaterial({ color: 0xffd060, transparent: true, opacity: 0.6, side: THREE.DoubleSide, depthWrite: false }),
+    holeGeo: new THREE.CircleGeometry(0.55, 12),
+    holeMat: new THREE.MeshStandardMaterial({ color: 0x3a2a18, roughness: 1 }),
+    moundGeo: new THREE.SphereGeometry(0.45, 10, 6, 0, Math.PI * 2, 0, Math.PI / 2),
+  });
+}
+
 export const treasure = {
   name: 'treasure',
   saveKey: 'treasure',
@@ -197,9 +223,10 @@ export const treasure = {
   _hole(x, z, effect) {
     const y = terrain.heightAt(x, z);
     const g = new THREE.Group();
-    const hole = new THREE.Mesh(new THREE.CircleGeometry(0.55, 12), new THREE.MeshStandardMaterial({ color: 0x3a2a18, roughness: 1 }));
+    const R = lootRes();
+    const hole = new THREE.Mesh(R.holeGeo, R.holeMat);
     hole.rotation.x = -Math.PI / 2; hole.position.y = 0.03;
-    const mound = new THREE.Mesh(new THREE.SphereGeometry(0.45, 10, 6, 0, Math.PI * 2, 0, Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0x8a6a42, roughness: 1 }));
+    const mound = new THREE.Mesh(R.moundGeo, R.sackMat);
     mound.scale.set(1, 0.4, 0.8); mound.position.set(0.8, 0, 0.2);
     g.add(hole, mound);
     g.position.set(x, y, z);
@@ -453,7 +480,7 @@ export const treasure = {
     const bag = this._lootModel(filtered, coins);
     inner.add(bag);
     mesh.add(inner);
-    const glow = new THREE.Mesh(new THREE.RingGeometry(0.3, 0.42, 20), new THREE.MeshBasicMaterial({ color: 0xffd060, transparent: true, opacity: 0.6, side: THREE.DoubleSide, depthWrite: false }));
+    const glow = new THREE.Mesh(lootRes().glowGeo, lootRes().glowMat);
     glow.rotation.x = -Math.PI / 2; glow.position.y = 0.02;
     mesh.add(glow);
     mesh.position.copy(pos);
@@ -472,28 +499,28 @@ export const treasure = {
   _lootModel(items, coins) {
     // ganimet türüne göre görünüm: sikke yığını, kese, mücevher
     const g = new THREE.Group();
-    const gold = new THREE.MeshStandardMaterial({ color: 0xf2c040, metalness: 0.85, roughness: 0.28, emissive: 0x3a2400 });
+    const R = lootRes();
     if (coins && items.length === 1) {
       for (let i = 0; i < 7; i++) {
-        const c = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.015, 14), gold);
+        const c = new THREE.Mesh(R.coinGeo, R.gold);
         c.position.set((Math.random() - 0.5) * 0.16, i * 0.016, (Math.random() - 0.5) * 0.16);
         c.rotation.set((Math.random() - 0.5) * 0.3, 0, (Math.random() - 0.5) * 0.3);
         g.add(c);
       }
       return g;
     }
-    const sack = new THREE.Mesh(new THREE.SphereGeometry(0.16, 12, 10), new THREE.MeshStandardMaterial({ color: 0x8a6a42, roughness: 1 }));
+    const sack = new THREE.Mesh(R.sackGeo, R.sackMat);
     sack.scale.set(1, 1.15, 1);
-    const tie = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.08, 0.08, 8), new THREE.MeshStandardMaterial({ color: 0x6b4a2c, roughness: 1 }));
+    const tie = new THREE.Mesh(R.tieGeo, R.tieMat);
     tie.position.y = 0.19;
-    const rope = new THREE.Mesh(new THREE.TorusGeometry(0.06, 0.012, 5, 12), new THREE.MeshStandardMaterial({ color: 0xc9a227, metalness: 0.4 }));
+    const rope = new THREE.Mesh(R.ropeGeo, R.ropeMat);
     rope.rotation.x = Math.PI / 2; rope.position.y = 0.16;
     sack.position.y = 0.05;
     g.add(sack, tie, rope);
     const gem = items.find((i) => ['yakut', 'zumrut', 'elmas', 'inci'].includes(i[0]));
     if (gem) {
       const col = { yakut: 0xd03040, zumrut: 0x30b060, elmas: 0xe8f4ff, inci: 0xf4f0ea }[gem[0]];
-      const gm = new THREE.Mesh(new THREE.OctahedronGeometry(0.07, 0), new THREE.MeshStandardMaterial({ color: col, metalness: 0.2, roughness: 0.1, emissive: col, emissiveIntensity: 0.25 }));
+      const gm = new THREE.Mesh(R.gemGeo, R.gemMats[col] || (R.gemMats[col] = new THREE.MeshStandardMaterial({ color: col, metalness: 0.2, roughness: 0.1, emissive: col, emissiveIntensity: 0.25 })));
       gm.position.set(0.12, 0.2, 0.05);
       g.add(gm);
     }

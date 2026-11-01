@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { buildShipModel, SHIP_TYPES, hullHalfWidth, deckHeight, rowboatMesh } from './shipModel.js';
+import { disposeTree } from '../core/dispose.js';
 import { ocean } from '../world/ocean.js';
 import { terrain } from '../world/terrain.js';
 import { sky } from '../world/sky.js';
@@ -732,7 +733,10 @@ export class Ship {
     this._applyDamageVisuals();
   }
 
-  dispose() { this.scene.remove(this.root); }
+  // GPU kaynakları: gemi modeli her gemi için kendi geometri ve malzemelerini yaratır; önce yalnız sahneden kaldırılıyordu (düşman
+  // gemisi olayı, tüccar gemisi, gemi değiştirme, konukta kaybolan gemi başına onlarca geometri/malzeme sızıyordu). Dokular paylaşımlı
+  // önbellekten (textures.js) gelir ve bırakılmaz.
+  dispose() { this.scene.remove(this.root); disposeTree(this.root); }
 }
 
 // ---- Kürek sandalı ----
