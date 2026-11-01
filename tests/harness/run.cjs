@@ -46,7 +46,7 @@ const reportPath = opt('report', null);
   const finish = async (code) => {
     clearTimeout(killer);
     report.ms = Date.now() - t0;
-    console.log(`errors: ${report.errors.length} pageErrors: ${report.pageErrors.length} fails: ${report.fails}${report.evalErrors ? ` evalErrors: ${report.evalErrors}` : ''} (${(report.ms / 1000).toFixed(1)} s)`);
+    console.log(`errors: ${report.errors.length} pageErrors: ${report.pageErrors.length} fails: ${report.fails}${report.evalErrors ? ` evalErrors: ${report.evalErrors}` : ''}${report.harnessError ? ' HARNESS ERROR (senaryo koşmadı)' : ''}${report.timeout ? ' TIMEOUT' : ''} (${(report.ms / 1000).toFixed(1)} s)`);
     if (reportPath) { fs.mkdirSync(path.dirname(reportPath), { recursive: true }); fs.writeFileSync(reportPath, JSON.stringify(report, null, 1)); }
     try { await b.close(); } catch (e) { /* kapalı */ }
     process.exit(code);

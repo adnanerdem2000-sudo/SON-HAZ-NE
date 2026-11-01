@@ -292,6 +292,38 @@ export function makeRod() {
   g.userData.tip = new THREE.Vector3(0, 1.7, 0);
   return shadowAll(g);
 }
+// zıpkın: ahşap sap, dikenli demir uç, sapa sarılı ip (uç noktası userData.tip)
+export function makeHarpoon() {
+  const g = new THREE.Group();
+  const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.02, 1.5, 6), std('#7a5230'));
+  shaft.position.y = 0.45;
+  const metal = std('#aab2ba', { metalness: 0.7, roughness: 0.35 });
+  const tip = new THREE.Mesh(new THREE.ConeGeometry(0.035, 0.2, 6), metal);
+  tip.position.y = 1.3;
+  const barbA = new THREE.Mesh(new THREE.ConeGeometry(0.014, 0.09, 4), metal);
+  barbA.position.set(0.03, 1.2, 0); barbA.rotation.z = Math.PI * 0.82;
+  const barbB = barbA.clone(); barbB.position.x = -0.03; barbB.rotation.z = -Math.PI * 0.82;
+  const coil = new THREE.Mesh(new THREE.TorusGeometry(0.06, 0.014, 5, 12), std('#d8c08a'));
+  coil.position.y = -0.12; coil.rotation.x = Math.PI / 2;
+  g.add(shaft, tip, barbA, barbB, coil);
+  g.userData.tip = new THREE.Vector3(0, 1.4, 0);
+  return shadowAll(g);
+}
+// toplanmış balık ağı: elde tutulan ağ demeti ve kenar şamandıraları
+export function makeNet() {
+  const g = new THREE.Group();
+  const bundle = new THREE.Mesh(new THREE.ConeGeometry(0.2, 0.45, 10, 3, true), new THREE.MeshStandardMaterial({ color: '#d8c8a0', wireframe: true }));
+  bundle.position.y = -0.18; bundle.rotation.x = Math.PI;
+  g.add(bundle);
+  const fl = std('#d0602a');
+  for (let i = 0; i < 4; i++) {
+    const a = (i / 4) * Math.PI * 2;
+    const f = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 4), fl);
+    f.position.set(Math.cos(a) * 0.17, -0.38, Math.sin(a) * 0.17);
+    g.add(f);
+  }
+  return shadowAll(g);
+}
 export function makeTorch() {
   const g = new THREE.Group();
   const stick = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.025, 0.5, 6), std('#5a3418'));
@@ -378,7 +410,23 @@ export class Character {
     this.build(appearance);
   }
 
+  // Kamera başa çok yaklaşınca karakterin örgüleri gizlenir (ışıklar, ör. meşale, yanmaya devam eder). Önceki görünürlük
+  // saklanır ve geri yüklenir; kök (root) gizlenmez — dürbün kökü ayrıca yönetir.
+  setCamHidden(h) {
+    if (this._camHidden === h) return;
+    this._camHidden = h;
+    this._camHide(this.root, h);
+  }
+  _camHide(obj, h) {
+    obj.traverse((o) => {
+      if (!o.isMesh) return;
+      if (h) { if (o.userData.camVis === undefined) { o.userData.camVis = o.visible; o.visible = false; } }
+      else if (o.userData.camVis !== undefined) { o.visible = o.userData.camVis; delete o.userData.camVis; }
+    });
+  }
+
   build(app) {
+    this._camHidden = false;
     this.app = { ...app };
     if (this.model) { this.mixer?.stopAllAction(); this._disposeModel(); this.root.remove(this.model); }
     const id = baseOf(app);
@@ -602,6 +650,7 @@ export class Character {
         slot.add(it.obj);
         rimAll(it.obj);
         if (i === 0) this.held = it.obj; else this.heldL = it.obj;
+        if (this._camHidden) this._camHide(it.obj, true); // gizliyken ele alınan eşya da gizli
       });
       return;
     }
@@ -610,6 +659,8 @@ export class Character {
     else if (type === 'pistol') o = makePistol();
     else if (type === 'shovel') o = makeShovel();
     else if (type === 'rod') o = makeRod();
+    else if (type === 'harpoon') o = makeHarpoon();
+    else if (type === 'net') o = makeNet();
     else if (type === 'torch') o = makeTorch();
     if (!o) return;
     // KayKit el yuvası: +Y avuçtan dışarı (bilek doğrultusu), +Z başparmak yönü
@@ -619,12 +670,15 @@ export class Character {
     else if (type === 'pistol') { o.rotation.set(-Math.PI / 2, 0, 0); o.position.set(0, 0.0, 0.02); }
     else if (type === 'shovel') { o.rotation.set(0, 0, 0); o.position.set(0, -0.3, 0); }
     else if (type === 'rod') { o.rotation.set(0.25, 0, 0); o.position.set(0, -0.15, 0); }
+    else if (type === 'harpoon') { o.rotation.set(0.2, 0, 0); o.position.set(0, -0.2, 0); }
+    else if (type === 'net') { o.rotation.set(0, 0, 0); o.position.set(0, 0, 0); }
     else if (type === 'torch') { o.rotation.set(0.35, 0, 0); o.position.set(0, -0.1, 0); }
     g.scale.setScalar(1 / this.modelScale);
     rimAll(g);
     this.handR.add(g);
     this.held = g;
     o.userData && (g.userData = o.userData);
+    if (this._camHidden) this._camHide(g, true); // gizliyken ele alınan eşya da gizli
   }
   _kitItem(n) {
     if (!kk.kits.weapons?.[n]) return null;

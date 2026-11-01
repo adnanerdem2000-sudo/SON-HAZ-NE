@@ -6,7 +6,7 @@ export const DEFAULT_BINDINGS = {
   etkilesim: 'KeyE', fener: 'KeyF', isaret: 'KeyQ', envanter: 'Tab', harita: 'KeyM',
   saldiri: 'Mouse0', nisan: 'Mouse2', doldur: 'KeyR', kacin: 'KeyV',
   defter: 'KeyJ', birak: 'KeyG', pusula: 'KeyN', sohbet: 'Enter', durbun: 'KeyZ', yetenek: 'KeyK',
-  slot1: 'Digit1', slot2: 'Digit2', slot3: 'Digit3', slot4: 'Digit4', slot5: 'Digit5', slot0: 'Digit0',
+  slot1: 'Digit1', slot2: 'Digit2', slot3: 'Digit3', slot4: 'Digit4', slot5: 'Digit5', slot6: 'Digit6', slot7: 'Digit7', slot0: 'Digit0',
   duraklat: 'Escape',
 };
 
@@ -15,7 +15,7 @@ export const ACTION_LABELS = {
   egil: 'Eğilme / Dalış', etkilesim: 'Etkileşim', fener: 'Fener', isaret: 'İşaretleme', envanter: 'Envanter',
   harita: 'Dünya haritası', saldiri: 'Saldırı', nisan: 'Nişan / Savunma', doldur: 'Silah doldurma',
   kacin: 'Kaçınma (yuvarlanma)', defter: 'Korsan defteri', yetenek: 'Korsan rütbesi ve yetenekler', birak: 'Taşıdığını bırak', pusula: 'Pusulayı çıkar', durbun: 'Dürbün',
-  sohbet: 'Sohbet', slot1: 'Kılıç', slot2: 'Tabanca', slot3: 'Kürek', slot4: 'Olta', slot5: 'Hazine haritası', slot0: 'Boş el',
+  sohbet: 'Sohbet', slot1: 'Kılıç', slot2: 'Tabanca', slot3: 'Kürek', slot4: 'Olta', slot5: 'Hazine haritası', slot6: 'Zıpkın', slot7: 'Balık ağı', slot0: 'Boş el',
   duraklat: 'Duraklat / Menü',
 };
 

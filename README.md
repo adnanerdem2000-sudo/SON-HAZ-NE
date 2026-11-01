@@ -30,7 +30,7 @@ Gereken: WebGL2 destekli güncel Chrome / Edge / Firefox. Online mod için inter
 | W A S D | Hareket |
 | Shift | Koşma / sprint |
 | Boşluk | Zıplama · suda yukarı yüzme · dümende yelkenleri aç/kapat |
-| Ctrl | Eğilme · suda dalış |
+| C | Eğilme · suda dalış (basılı tut; nefes ≈ 50 sn, dalış maskesiyle ≈ 80 sn) |
 | E | Etkileşim (basılı tut: sandık açma, delik onarma, su boşaltma) |
 | F | Meşale |
 | Q | Haritaya işaret koy |
@@ -38,19 +38,34 @@ Gereken: WebGL2 destekli güncel Chrome / Edge / Firefox. Online mod için inter
 | M | Dünya haritası (sol tık işaret, sağ tık rota) |
 | J | Korsan Defteri |
 | K | Korsan Rütbesi ve yetenek ağacı |
-| Sol fare | Saldırı · kazma · olta atma/sarma · top ateşleme |
-| Sağ fare | Nişan alma (tabanca) · savunma (pala) |
+| Sol fare | Saldırı · kazma · olta atma/sarma · zıpkın fırlatma · ağ atma (basılı tut, bırak) · top ateşleme |
+| Sağ fare | Nişan alma (tabanca, zıpkın) · savunma (pala) |
 | R | Tabanca doldurma · olta yemi değiştirme |
 | V | Kaçınma (yuvarlanma) |
 | G | Taşınan sandığı bırak |
-| 1–5 | Pala, tabanca, kürek, olta, hazine haritası |
-| C | Pusula şeridi |
+| 1–7 | Pala, tabanca, kürek, olta, hazine haritası, zıpkın, balık ağı |
+| N | Pusula şeridi |
 | Z | Dürbün (tekerlek: yakınlaştır; bakılan ada/gemi/canlı ve uzaklığı yazılır) |
 | Enter | Sohbet (online) |
 | Esc | Duraklat menüsü |
 
 Gemide: dümende **A/D** yön, **W/S** yelken miktarı; çapa için baştaki ırgata, toplar için borda boyundaki toplara git.
 Oyun kumandası (standart düzen) desteklenir.
+
+## Dalış, balıkçılık ve deniz ekipmanı
+- **Dalış:** suda **C** basılı tut → dal, **Boşluk** → yüzeye çık. Nefes ≈ 50 sn (ekranda nefes çubuğu ve derinlik); nefes
+  bitince can azalır, yüzeyde nefes dolar. İlk kez suya girince tuşlar ekranda hatırlatılır.
+- **Olta (4):** yem gerekir (R ile yem değiştir). Sol tıkı basılı tut, bırak → at; "VURDU!" yazınca sol tık; mücadelede sol tık
+  basılı = sar, balığın çektiği yönün tersine **A/D** (mücadele sırasında oyuncu yürümez).
+- **Zıpkın (6):** sağ tık nişan, sol tık fırlat. Su altında balığa (sürüye), kıyıdan/güverteden suya atılabilir; köpekbalığına
+  hasar verir; ipiyle geri döner. Yaylı Zıpkın daha uzun menzilli ve güçlüdür.
+- **Balık ağı (7):** kıyıdan/güverteden sol tıkı basılı tut (uzaklık) ve bırak; ağ batar, toplanır. Sürünün üstüne düşerse en
+  çok 6 balık çıkar, sürü yoksa şansa bağlı 1–2 kıyı balığı. Arada yırtılır.
+- **Dalış maskesi** (çantada: nefes ×1,6, su altı daha berrak), **yüzme paleti** (yüzme/dalış hızı ×1,35), **hava kesesi**
+  (nefes +45; nefes tükenmek üzereyken kendiliğinden, envanterden elle de kullanılır).
+- **Nereden bulunur:** Balıkçı Yusuf (zıpkın, ağ, maske, palet, hava kesesi), Tüccar Rıza (hava kesesi), Halil Reis ve
+  Kaçakçı (yaylı zıpkın); hazine sandıkları, denizde yüzen balıkçı varilleri, ada sandıkları (batık şehir dahil) ve
+  Martı Batığı'nın dibindeki batık sandığı (dalıp **E**; ganimet kesesi yüzeye süzülür).
 
 ## 0.3 sürümünde yenilikler
 - **Dünya:** 20 × 20 km akışlı dünya (arazi karoları Web Worker'da, LOD halkaları; adalar yaklaşınca kurulur), 6 bölge ve

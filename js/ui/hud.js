@@ -146,7 +146,8 @@ export const hud = {
     const el = $('fishing-hud');
     if (!f) { el.classList.add('hidden'); return; }
     el.classList.remove('hidden');
-    if (f.mode === 'charge') el.innerHTML = `<div class="fh-title">Atış gücü</div><div class="prog"><i style="width:${f.power * 100}%"></i></div><div class="muted" style="color:#cfe0e2">Yem: ${f.bait || '-'} · Bırak: at · R: yem değiştir</div>`;
+    if (f.mode === 'charge') el.innerHTML = `<div class="fh-title">${f.title || 'Atış gücü'}</div><div class="prog"><i style="width:${f.power * 100}%"></i></div><div class="muted" style="color:#cfe0e2">${f.help || `Yem: ${f.bait || '-'} · Bırak: at · R: yem değiştir`}</div>`;
+    else if (f.mode === 'net') el.innerHTML = `<div class="fh-title">${f.title}</div><div style="color:#cfe0e2">${f.help || ''}</div>`;
     else if (f.mode === 'wait') el.innerHTML = `<div class="fh-title">Balık bekleniyor…</div><div style="color:#cfe0e2">Yem: ${f.bait} · Sol tık: oltayı topla</div>`;
     else if (f.mode === 'bite') el.innerHTML = `<div class="fh-title" style="color:#ff8060;font-size:34px">VURDU! Sol tıkla!</div>`;
     else if (f.mode === 'fight') {
@@ -180,6 +181,8 @@ export const hud = {
       { k: 'slot3', eq: 'shovel', icon: 'kurek', need: ['kurek'] },
       { k: 'slot4', eq: 'rod', icon: 'olta', need: ['olta', 'usta_olta'] },
       { k: 'slot5', eq: 'map', icon: 'hazine_haritasi', need: ['hazine_haritasi'] },
+      { k: 'slot6', eq: 'harpoon', icon: 'zipkin', need: ['zipkin', 'usta_zipkin'] },
+      { k: 'slot7', eq: 'net', icon: 'balik_agi', need: ['balik_agi'] },
     ];
     hb.innerHTML = '';
     for (const s of this.slots) {
@@ -305,7 +308,7 @@ export const hud = {
       if (spHtml !== this._spHtml) { this._spHtml = spHtml; sp.innerHTML = spHtml; }
     }
     // nişangâh
-    $('crosshair').classList.toggle('hidden', !(p.aiming || p.mode === 'cannon'));
+    $('crosshair').classList.toggle('hidden', !(p.aiming || p.mode === 'cannon' || (p.equipped === 'harpoon' && (p.mode === 'ground' || p.mode === 'deck' || p.mode === 'swim'))));
     // meşgul çubuğu
     const bb = $('busy-bar');
     if (p.busy) { bb.classList.remove('hidden'); bb.querySelector('.busy-label').textContent = p.busy.label; bb.querySelector('.fill').style.width = (p.busy.t / p.busy.dur * 100) + '%'; }

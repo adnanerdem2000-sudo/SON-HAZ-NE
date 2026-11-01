@@ -15,8 +15,8 @@ import { bodies } from '../world/bodies.js';
 import { time } from '../world/time.js';
 
 const LOOT = {
-  small: { coins: [60, 140], picks: [1, 2], pool: [['inci', 3], ['gumus_kulce', 3], ['korsan_madalyonu', 1], ['yakut', 1]], map: 0.25 },
-  medium: { coins: [150, 300], picks: [2, 3], pool: [['yakut', 3], ['zumrut', 3], ['gumus_kulce', 2], ['altin_kulce', 2], ['eski_mucevher', 2], ['antik_vazo', 1]], map: 0.3 },
+  small: { coins: [60, 140], picks: [1, 2], pool: [['inci', 3], ['gumus_kulce', 3], ['korsan_madalyonu', 1], ['yakut', 1], ['zipkin', 0.6], ['dalis_maskesi', 0.6], ['hava_kesesi', 1]], map: 0.25 },
+  medium: { coins: [150, 300], picks: [2, 3], pool: [['yakut', 3], ['zumrut', 3], ['gumus_kulce', 2], ['altin_kulce', 2], ['eski_mucevher', 2], ['antik_vazo', 1], ['palet', 0.7], ['dalis_maskesi', 0.6], ['usta_zipkin', 0.25]], map: 0.3 },
   large: { coins: [400, 700], picks: [3, 5], pool: [['altin_kulce', 3], ['elmas', 2], ['altin_heykelcik', 2], ['eski_mucevher', 2], ['eski_kilic', 1], ['kraliyet_taci', 0.35]], map: 0.4 },
   legend: { coins: [1200, 1800], picks: [5, 7], pool: [['elmas', 3], ['altin_heykelcik', 2], ['kraliyet_taci', 1], ['altin_kulce', 3]], map: 0 },
 };

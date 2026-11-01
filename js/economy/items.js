@@ -28,6 +28,13 @@ export const ITEMS = {
   kurek: { name: 'Kürek', cat: 'arac', weight: 2, value: 40, rarity: 'siradan', icon: 'shovel', desc: 'Hazine kazmak için.' },
   olta: { name: 'Basit Olta', cat: 'arac', weight: 1.2, value: 60, rarity: 'siradan', icon: 'rod', rod: { power: 1, line: 1 }, desc: 'Küçük ve orta balıklar için.' },
   usta_olta: { name: 'Usta Oltası', cat: 'arac', weight: 1.4, value: 650, rarity: 'nadir', icon: 'rod', rod: { power: 1.45, line: 1.5 }, desc: 'Sağlam misina ve güçlü makine. Büyük balıklar için.' },
+  // Deniz ekipmanı (zıpkın 6, ağ 7 ile kuşanılır; maske ve palet çantada durdukça işler)
+  zipkin: { name: 'Zıpkın', cat: 'arac', weight: 2.2, value: 180, rarity: 'yaygin', icon: 'harpoon', harpoon: { range: 9, dmg: 30, reload: 1.1 }, desc: 'İpli demir zıpkın. Dalarken ya da kıyıdan/güverteden nişan alıp balığa fırlat. Köpekbalığına da işler.' },
+  usta_zipkin: { name: 'Yaylı Zıpkın', cat: 'arac', weight: 2.6, value: 900, rarity: 'nadir', icon: 'harpoon', harpoon: { range: 13, dmg: 48, reload: 0.8 }, desc: 'Bakır yaylı, uzun menzilli zıpkın. Büyük balıklar ve köpekbalıkları için.' },
+  balik_agi: { name: 'Balık Ağı', cat: 'arac', weight: 2.5, value: 140, rarity: 'yaygin', icon: 'net', desc: 'Kıyıdan ya da güverteden suya at: sürünün üstüne düşerse birkaç balık birden çıkar. Arada yırtılabilir.' },
+  dalis_maskesi: { name: 'Dalış Maskesi', cat: 'arac', weight: 0.5, value: 220, rarity: 'yaygin', icon: 'mask', desc: 'Çantanda durdukça su altında nefesin %60 daha uzun sürer ve su altı daha berrak görünür.' },
+  palet: { name: 'Yüzme Paleti', cat: 'arac', weight: 0.9, value: 160, rarity: 'yaygin', icon: 'fins', desc: 'Çantanda durdukça %35 daha hızlı yüzer, daha hızlı dalıp çıkarsın.' },
+  hava_kesesi: { name: 'Hava Kesesi', cat: 'sarf', weight: 0.3, value: 30, rarity: 'yaygin', icon: 'airbag', stack: true, air: 45, desc: 'Su altında nefes +45. Nefesin tükenmek üzereyken kendiliğinden kullanılır.' },
   fener: { name: 'Meşale', cat: 'arac', weight: 0.6, value: 25, rarity: 'siradan', icon: 'torch', desc: 'Mağaralarda ve gecede yolunu aydınlatır (F).' },
   pusula: { name: 'Pusula', cat: 'arac', weight: 0.3, value: 80, rarity: 'yaygin', icon: 'compass', desc: 'Kuzeyi gösterir. Ekranın üstünde yön göstergesini açar (C).' },
   durbun: { name: 'Dürbün', cat: 'arac', weight: 0.8, value: 300, rarity: 'yaygin', icon: 'spyglass', desc: 'Uzakları görmek için nişan tuşuyla yakınlaştır.' },

@@ -10,12 +10,12 @@ import { time } from '../world/time.js';
 // Tüccar tanımları: ne satarlar, hangi kategorileri hangi çarpanla alırlar
 export const MERCHANTS = {
   general: {
-    name: 'Tüccar Rıza', sells: ['tahta', 'gulle', 'mermi', 'yem_solucan', 'yem_karides', 'ekmek', 'muz', 'merhem', 'fener', 'kurek', 'pusula', 'durbun'],
+    name: 'Tüccar Rıza', sells: ['tahta', 'gulle', 'mermi', 'yem_solucan', 'yem_karides', 'ekmek', 'muz', 'merhem', 'fener', 'kurek', 'pusula', 'durbun', 'hava_kesesi'],
     buys: { ganimet: 0.55, tas: 0.6, koleksiyon: 0.5, balik: 0.5, sarf: 0.5, arac: 0.5, silah: 0.4, mermi: 0.5, harita: 0.5 },
     greet: 'Hoş geldin kaptan! Halat, tahta, gülle, erzak… Ne lazımsa Rıza\'da var.',
   },
   fisher: {
-    name: 'Balıkçı Yusuf', sells: ['olta', 'usta_olta', 'yem_solucan', 'yem_karides', 'yem_yapay'],
+    name: 'Balıkçı Yusuf', sells: ['olta', 'usta_olta', 'yem_solucan', 'yem_karides', 'yem_yapay', 'zipkin', 'balik_agi', 'dalis_maskesi', 'palet', 'hava_kesesi'],
     buys: { balik: 1.0 },
     greet: 'Rüzgâr iyi, balık bol. Tuttuğunu getir, hakkını veririm. Nadir balıklara iyi para öderim!',
   },
@@ -38,12 +38,12 @@ export const MERCHANTS = {
   // Zaman çizelgesindeki ticaret günlerinde limana yanaşan "Altın Martı"nın tüccarı
   // Gizli Korsan Pazarı (yalnız gece)
   smuggler: {
-    name: 'Kaçakçı', sells: ['usta_kilic', 'usta_tabanca', 'durbun', 'gulle', 'mermi', 'merhem', 'yem_yapay', 'hazine_haritasi'], discount: 0.85,
+    name: 'Kaçakçı', sells: ['usta_kilic', 'usta_tabanca', 'durbun', 'gulle', 'mermi', 'merhem', 'yem_yapay', 'hazine_haritasi', 'usta_zipkin'], discount: 0.85,
     buys: { tas: 1.25, ganimet: 1.1, koleksiyon: 1.2, silah: 0.7, harita: 0.9 },
     greet: 'Soru sorma, yalan duyma. Gece pazarında her şeyin bir fiyatı var, kaptan.',
   },
   trader: {
-    name: 'Halil Reis — Altın Martı', sells: ['usta_kilic', 'usta_tabanca', 'usta_olta', 'durbun', 'yem_yapay', 'merhem', 'pusula', 'baharat', 'ipek'],
+    name: 'Halil Reis — Altın Martı', sells: ['usta_kilic', 'usta_tabanca', 'usta_olta', 'usta_zipkin', 'durbun', 'yem_yapay', 'merhem', 'pusula', 'baharat', 'ipek'],
     buys: { tas: 1.2, ganimet: 1.05, koleksiyon: 1.15, balik: 0.7 },
     discount: 0.85,
     greet: 'Uzak limanlardan geldim kaptan: Kara Ali\'nin dövdüğünden iyi palalar, ipek, baharat… Hepsi %15 indirimli. Mücevherine de iyi para veririm — ama yalnızca gün batmadan!',
@@ -107,7 +107,7 @@ export const shop = {
       if (filter && !filter(s)) continue;
       const pr = sellPrice(s, role);
       // 'Tümünü sat' teçhizatı, usta aletleri, dürbünü, hazine haritalarını, cephaneyi ve yemi satmaz
-      const keep = ['kilic', 'tabanca', 'kurek', 'olta', 'pusula', 'fener', 'usta_kilic', 'usta_tabanca', 'usta_olta', 'durbun', 'hazine_haritasi', 'mermi', 'gulle', 'tahta'];
+      const keep = ['kilic', 'tabanca', 'kurek', 'olta', 'pusula', 'fener', 'usta_kilic', 'usta_tabanca', 'usta_olta', 'durbun', 'hazine_haritasi', 'mermi', 'gulle', 'tahta', 'zipkin', 'usta_zipkin', 'balik_agi', 'dalis_maskesi', 'palet', 'hava_kesesi'];
       if (pr > 0 && !keep.includes(s.id) && !s.id.startsWith('yem')) { total += this.sell(s, role); cnt++; }
     }
     if (cnt) G.notify(`${cnt} kalem satıldı: +${total} altın`, 'good');

@@ -15,6 +15,7 @@ import { SHIP_TYPES } from '../ship/shipModel.js';
 import { shipControl } from '../game/shipControl.js';
 import { engine } from '../core/engine.js';
 import { audio } from '../core/audio.js';
+import { seagear } from '../wildlife/seagear.js';
 import { CLOTH_COLORS } from '../player/appearance.js';
 
 function itemTip(s) {
@@ -86,6 +87,7 @@ export const panels = {
     const def = ITEMS[s.id] || {};
     const opts = [];
     if (def.heal) opts.push({ label: `Kullan (Can +${def.heal})`, fn: () => { p.inv.removeStack(s, 1); p.heal(def.heal); if (def.cure) p.poison = 0; audio.play('confirm', { vol: 0.4 }); } });
+    if (def.air) opts.push({ label: `Kullan (Nefes +${def.air})`, fn: () => seagear.useAir(p) });
     if (s.id === 'hazine_haritasi') opts.push({ label: 'Haritayı incele', fn: () => { ui.close(); this.treasureMap(s); } });
     if (s.id === 'sise_mesaj') opts.push({ label: 'Şişeyi kır, mesajı oku', fn: () => { p.inv.removeStack(s, 1); treasure.giveMap(); } });
     if (s.id === 'eski_gunluk') opts.push({ label: 'Günlüğü oku', fn: () => { ui.close(); quests.takeJournal && this.reader('Serdümen Halil\'in Günlüğü', 'Kaptan Mira haritayı dört parçaya böldü. İlk parça Kemik Adası\'nda Morvan\'da…'); } });

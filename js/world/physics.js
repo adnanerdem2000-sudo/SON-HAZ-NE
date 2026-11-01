@@ -97,6 +97,38 @@ export const physics = {
     return g;
   },
 
+  // Kamera görüş hattı: a→b doğru parçası bir platform güvertesinin düzlemini (top − 0.15) platformun izdüşümü içinde kesiyor mu?
+  // (lineBlocked platformları içermez; yapay zekâ/mermi görüşü değişmesin diye ayrı tutuldu)
+  slabBlocked(ax, ay, az, bx, by, bz) {
+    const i0 = Math.floor(Math.min(ax, bx) / CELL), i1 = Math.floor(Math.max(ax, bx) / CELL);
+    const j0 = Math.floor(Math.min(az, bz) / CELL), j1 = Math.floor(Math.max(az, bz) / CELL);
+    for (let i = i0; i <= i1; i++) for (let j = j0; j <= j1; j++) {
+      const a = this.platforms.get(this._key(i, j));
+      if (!a) continue;
+      for (const p of a) {
+        const py = p.top - 0.15;
+        if ((ay - py) * (by - py) >= 0) continue; // iki uç düzlemin aynı tarafında
+        const t = (py - ay) / (by - ay);
+        const [lx, lz] = this._local(p, ax + (bx - ax) * t, az + (bz - az) * t);
+        if (Math.abs(lx) <= p.hw && Math.abs(lz) <= p.hd) return true;
+      }
+    }
+    return false;
+  },
+
+  // groundAt'ın yan etkisiz biçimi (lastPlatform'a dokunmaz; kamera gibi oyuncu dışı sorgular için):
+  // arazi ve tepesi yMax'ı aşmayan, noktanın altındaki platformların en yükseği
+  floorAt(x, z, yMax = 1e9) {
+    let g = terrain.heightAt(x, z);
+    const a = this.platforms.get(this._key(Math.floor(x / CELL), Math.floor(z / CELL)));
+    if (a) for (const p of a) {
+      if (p.top > yMax || p.top <= g) continue;
+      const [lx, lz] = this._local(p, x, z);
+      if (Math.abs(lx) <= p.hw && Math.abs(lz) <= p.hd) g = p.top;
+    }
+    return g;
+  },
+
   // Daireyi çarpıştırıcılardan dışarı iter. pos: {x,z}, y: ayak yüksekliği.
   // Köşe/dar aralıkta bir engelden çıkarken diğerine gömülmemek için en çok 3 geçiş yapılır.
   resolve(pos, radius, y, height = 1.8) {
@@ -156,7 +188,8 @@ export const physics = {
 
   // Görüş hattı: arazi + çarpıştırıcılar (kaya, ağaç gövdesi, duvar, bina). a ve b göz/hedef yükseklikleri.
   // Hücreler DDA ile yalnız doğrunun geçtiği sırayla gezilir: uzunluk sınırı yok (eski 64 hücre erken dönüşü kaldırıldı).
-  // opts: { tMin, tMax, rScale } — mermi süpürmesi için tMin=0, tMax=1, rScale=1 (uçlarda boşluk bırakılmaz).
+  // opts: { tMin, tMax, rScale, camera } — mermi süpürmesi için tMin=0, tMax=1, rScale=1 (uçlarda boşluk bırakılmaz);
+  // camera: noCam işaretli ve 0,2 m'den ince çember engeller atlanır.
   lineBlocked(ax, ay, az, bx, by, bz, opts = null) {
     const tMin = opts?.tMin ?? 0.02, tMax = opts?.tMax ?? 0.98, rScale = opts?.rScale ?? 0.8;
     const dx = bx - ax, dy = by - ay, dz = bz - az;
@@ -181,6 +214,9 @@ export const physics = {
       if (a) for (const c of a) {
         if (seen.has(c)) continue;
         seen.add(c);
+        // kamera: ince/hareketli engeller (fener direği, iskele babası, NPC) görüşü kesmez; yoksa kamera bunlara çarpıp başın
+        // dibine (0,4 m) çekiliyor, siyah şapka ekranı kaplıyordu ("arkama duvar geliyor, ekran kararıyor")
+        if (opts?.camera && (c.noCam || (c.t === 'c' && c.r < 0.2))) continue;
         let t = -1;
         if (c.t === 'c') {
           // doğru parçasının çembere en yakın noktası

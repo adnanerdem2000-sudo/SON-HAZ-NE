@@ -452,10 +452,27 @@ export const props = {
       b.rotation.set(i, i * 2, 0.4);
       g.add(b);
     }
+    // batık sandığı (dalınca E ile açılır, bkz. seagear): demir kuşaklı koyu sandık, kapağı aralık
+    const chest = new THREE.Group();
+    const cw = new THREE.MeshStandardMaterial({ color: 0x3e2a1a, roughness: 0.95 });
+    const iron = new THREE.MeshStandardMaterial({ color: 0x5a5f58, metalness: 0.5, roughness: 0.6 });
+    const box = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.6, 0.7), cw);
+    box.position.y = 0.3;
+    const lid = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.16, 0.7), cw);
+    lid.position.set(0, 0.68, -0.12); lid.rotation.x = -0.35;
+    const band = new THREE.Mesh(new THREE.BoxGeometry(1.14, 0.08, 0.74), iron);
+    band.position.y = 0.42;
+    chest.add(box, lid, band);
+    chest.position.set(1.5, 0.05, -2.6);
+    chest.rotation.y = 0.4;
+    g.add(chest);
     g.position.set(w.x, y, w.z);
     g.rotation.y = 0.6;
     g.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
     scene.add(g);
+    g.updateMatrixWorld(true);
+    this.wreckChest = chest.getWorldPosition(new THREE.Vector3());
+    this.wreckChest.y += 0.4;
   },
 
   update(dt, windStrength) {

@@ -61,6 +61,15 @@ export const assets = {
       });
       // renk düzeltmeleri: Kenney sandık/varil modelleri ahşap tonuna
       if (name === 'crate') gltf.scene.traverse((o) => { if (o.isMesh) { o.material = o.material.clone(); o.material.color.lerp(new THREE.Color(0x8a5a32), 0.75); } });
+      // varil: glTF'de metallicFactor yazılmamış → metalness 1; ortam haritası olmadığından gövde siyah/turuncu yağ varili gibi
+      // görünüyordu. Ahşap gövde + demir çember.
+      if (name === 'barrel') gltf.scene.traverse((o) => {
+        if (!o.isMesh) return;
+        o.material = o.material.clone();
+        o.material.metalness = /metal$/i.test(o.material.name) ? 0.35 : 0.05;
+        o.material.roughness = 0.75;
+        o.material.color.set(/red/i.test(o.material.name) ? 0x7a4a26 : 0x3c3c3a);
+      });
       this.models[name] = gltf;
       done++;
       if (onProgress) onProgress(done / total);

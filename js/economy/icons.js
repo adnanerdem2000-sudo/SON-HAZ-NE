@@ -237,4 +237,33 @@ export const ICONS = {
     `<ellipse cx="13" cy="27" rx="6.5" ry="8.5" fill="#d05a9a" ${o(1.6)}/><ellipse cx="13" cy="27" rx="2.4" ry="3.4" fill="#7a1a4a"/>` +
     `<path d="M20 18.5 C26 22 32 22 40 19 M20 35.5 C27 32 34 32 42 32" stroke="#ff9ad0" stroke-width="1.2" fill="none" opacity=".8"/>` +
     `<path d="M30 36 L34 44 L38 37" fill="#e8c040" ${o(1.3)}/>`,
+  // deniz ekipmanı
+  harpoon: sh(15) +
+    line('M7 43 L33 15', '#8a6238', 3.2) +
+    `<path d="M30.5 13.5 L44 4 L34.5 17.5 Z" fill="#c4ccd4" ${o(1.6)}/>` +
+    `<path d="M35.5 12.5 L32 8.5 L34.5 14.5 Z M37.5 15 L42 17.5 L36 16.5 Z" fill="#8a929a" ${o(1.1)}/>` +
+    `<path d="M14 37 C6 35 7 26 14 28.5 C20 30.5 18.5 38.5 11.5 39.5" stroke="${K}" stroke-width="3.8" fill="none"/>` +
+    `<path d="M14 37 C6 35 7 26 14 28.5 C20 30.5 18.5 38.5 11.5 39.5" stroke="#d8c08a" stroke-width="2" fill="none"/>` +
+    hi('M10 39.5 L31 16.5', 0.35, 1.2),
+  net: sh(17) +
+    `<path d="M6 21 Q24 5 42 21 L36 40 Q24 46 12 40 Z" fill="#c8b48a" fill-opacity=".22" ${o()}/>` +
+    `<path d="M9 28 Q24 19 39 28 M11 35 Q24 28 37 35 M17 12 L16 43 M24 9.5 V44.5 M31 12 L32 43" stroke="#e2d4ac" stroke-width="1.4" fill="none"/>` +
+    [[6, 21], [42, 21], [12, 40], [36, 40], [24, 9.5]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="3.1" fill="#d0602a" ${o(1.2)}/>`).join(''),
+  mask: sh(16) +
+    `<path d="M5 25 Q3 17 10 17 M43 25 Q45 17 38 17" stroke="${K}" stroke-width="4.4" fill="none"/><path d="M5 25 Q3 17 10 17 M43 25 Q45 17 38 17" stroke="#3a3a3a" stroke-width="2.4" fill="none"/>` +
+    `<path d="M10 15 H38 Q42 15 42 20 V29 Q42 35 36 35 H30.5 Q27.5 35 26.5 32 L24 28.5 L21.5 32 Q20.5 35 17.5 35 H12 Q6 35 6 29 V20 Q6 15 10 15 Z" fill="#2a7ab0" ${o()}/>` +
+    `<path d="M11 18.5 H37 Q39 18.5 39 21 V28 Q39 31.5 35.5 31.5 H31 L28 27.5 Q24 24.5 20 27.5 L17 31.5 H12.5 Q9 31.5 9 28 V21 Q9 18.5 11 18.5 Z" fill="#a8e2f4" opacity=".9"/>` +
+    hi('M12.5 21.5 L18 21.5', 0.95, 1.7) + hi('M30 21.5 L34 21.5', 0.7, 1.4) +
+    line('M40.5 7 V18', '#e8a030', 2.4),
+  fins: sh(18) +
+    `<path d="M9 9 Q14.5 5 19 9 L23 37 Q17 44.5 7 42 Q3.5 25 9 9 Z" fill="#e8c020" ${o()}/>` +
+    `<path d="M29 9 Q34.5 5 39 9 L43 37 Q37 44.5 27 42 Q23.5 25 29 9 Z" fill="#e8c020" ${o()}/>` +
+    `<path d="M13 18 L12.5 40 M17 17 L18.5 39.5 M33 18 L32.5 40 M37 17 L38.5 39.5" stroke="#a88010" stroke-width="1.3"/>` +
+    `<path d="M9.5 10.5 Q14 16.5 18.5 10.5 Z M29.5 10.5 Q34 16.5 38.5 10.5 Z" fill="#2a2a2a"/>`,
+  airbag: sh(12) +
+    `<path d="M24 13 C33 13 38 22 38 30 C38 38.5 32 43 24 43 C16 43 10 38.5 10 30 C10 22 15 13 24 13 Z" fill="#9a6a3a" ${o()}/>` +
+    `<rect x="20" y="6.5" width="8" height="7" rx="1.5" fill="#5a3a1a" ${o(1.4)}/>` +
+    `<path d="M17.5 14.5 Q24 18 30.5 14.5" stroke="#5a3a1a" stroke-width="2.2" fill="none"/>` +
+    `<circle cx="36" cy="10" r="3.2" fill="#bfe8ff" ${o(1.2)}/><circle cx="41.5" cy="4.8" r="2" fill="#bfe8ff" ${o(1)}/>` +
+    hi('M15 25 C14.5 31 16.5 36 20 38.5', 0.4, 1.8),
 };

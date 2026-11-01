@@ -349,7 +349,7 @@ export const sky = {
     const fog = this.scene.fog;
     if (this.underwater) {
       fog.color.copy(C(0.05, 0.32, 0.38)).multiplyScalar(0.3 + day * 0.7);
-      fog.density = 0.045;
+      fog.density = this.maskClear ? 0.028 : 0.045; // dalış maskesiyle su altı daha berrak
     } else {
       fog.color.copy(hcol);
       // bölge tonları: kuzey soğuk beyaz, doğu kül, batı sıcak pus

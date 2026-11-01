@@ -25,6 +25,7 @@ import { hazards } from './world/hazards.js';
 import { worldEvents } from './game/worldEvents.js';
 import { fish } from './wildlife/fish.js';
 import { fishing } from './wildlife/fishing.js';
+import { seagear } from './wildlife/seagear.js';
 import { treasure } from './treasure/treasure.js';
 import { net } from './net/net.js';
 import { Ship } from './ship/ship.js';
@@ -99,7 +100,7 @@ async function boot() {
   setLoad(0.02, 'Modeller yükleniyor…');
   await assets.loadAll((f) => setLoad(0.02 + f * 0.33, 'Modeller yükleniyor…'));
 
-  for (const s of [misc, time, bodies, effects, combat, treasure, enemies, animals, megafauna, fish, fishing, npcs, islands, hazards, bosses, quests, progress, events, worldEvents, weatherfx, details, crowd]) game.register(s);
+  for (const s of [misc, time, bodies, effects, combat, treasure, enemies, animals, megafauna, fish, fishing, seagear, npcs, islands, hazards, bosses, quests, progress, events, worldEvents, weatherfx, details, crowd]) game.register(s);
   net.init(engine.scene);
   const q = settings.v.quality;
   await game.buildWorld(q, (f, t) => setLoad(0.35 + f * 0.6, t));
@@ -130,7 +131,7 @@ async function boot() {
   // davet bağlantısı
   const join = new URLSearchParams(location.search).get('join');
   if (join) menu.joinScreen(join);
-  window.DK = { G, assets, archipelago, physics, islands, bosses, ports, game, input, engine, post, settings, tpCamera, interact, npcs, Ship, kk, Character, handlers, net, ui, creator, hud, quests, treasure, enemies, animals, megafauna, hazards, progress, fish, fishing, shipControl, THREE, save, port, combat, effects, events, worldEvents, sky, time, bodies, weatherfx, details, terrain, ocean, crowd };
+  window.DK = { G, assets, archipelago, physics, islands, bosses, ports, game, input, engine, post, settings, tpCamera, interact, npcs, Ship, kk, Character, handlers, net, ui, creator, hud, quests, treasure, enemies, animals, megafauna, hazards, progress, fish, fishing, seagear, shipControl, THREE, save, port, combat, effects, events, worldEvents, sky, time, bodies, weatherfx, details, terrain, ocean, crowd };
   // Test: yalnız 3B tuvali yakala (HUD hariç) — yazılımsal GPU'da sayfa ekran görüntüsünden daha kararlı
   window.DK.snap = (q = 0.85) => { post.render(); return engine.renderer.domElement.toDataURL('image/jpeg', q); };
   // belirli bir bakış açısından yakala (test): from/to = [x,y,z]

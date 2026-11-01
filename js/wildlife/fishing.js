@@ -44,7 +44,7 @@ export const fishing = {
     this.power = 0;
     if (this.bobber) this.bobber.visible = false;
     if (this.line) this.line.visible = false;
-    if (G.player) G.player.fishing = false;
+    if (G.player) { G.player.fishing = false; G.player.fishLock = false; }
     G.emit('fishingHud', null);
   },
 
@@ -105,6 +105,7 @@ export const fishing = {
     }
     if (this.state !== 'idle' && this.state !== 'charge') this._drawLine();
     p.fishing = this.state !== 'idle';
+    p.fishLock = this.state === 'fight';
   },
 
   cast() {
@@ -227,24 +228,35 @@ export const fishing = {
     else if (this.progress <= 0) { G.notify('Balık kaçtı.', 'warn'); this.reset(); }
   },
 
+  // Yakalanan balığın kaydı (olta, zıpkın ve ağ ortak kullanır). how: yem adı ya da 'Zıpkın'/'Ağ'
+  makeCatch(key, weight, pos, how) {
+    const f = FISH[key];
+    const avgW = (f.weight[0] + f.weight[1]) / 2;
+    const lenCm = Math.round(f.len * 100 * Math.pow(weight / avgW, 1 / 3));
+    const value = Math.round(f.value * (0.6 + 0.4 * weight / avgW));
+    const zoneName = terrain.islandAt(pos.x, pos.z, 2.2)?.name || 'Açık deniz';
+    return {
+      key, name: f.name, weight: +weight.toFixed(2), len: lenCm, rarity: f.rarity, value, zone: zoneName,
+      bait: how, time: sky.timeString(), date: new Date().toLocaleDateString('tr-TR'),
+      color: f.colors[0],
+    };
+  },
+  // Balığı çantaya, çanta doluysa (güvertede) gemi ambarına koyar; yer yoksa null (balık bırakılır)
+  store(data) {
+    const p = G.player;
+    if (p.inv.canAdd('balik:' + data.key, 1, data)) { p.inv.add('balik:' + data.key, 1, data); return 'envanterine'; }
+    if (p.mode === 'deck' && p.ship) { p.ship.hold.fish = p.ship.hold.fish || []; p.ship.hold.fish.push(data); return 'gemi ambarına'; }
+    return null;
+  },
+
   catch() {
     const p = G.player;
     const { key, f, weight } = this.fishInfo;
-    const lenCm = Math.round(f.len * 100 * Math.pow(weight / ((f.weight[0] + f.weight[1]) / 2), 1 / 3));
-    const avgW = (f.weight[0] + f.weight[1]) / 2;
-    const value = Math.round(f.value * (0.6 + 0.4 * weight / avgW));
-    const zoneName = terrain.islandAt(this.bobber.position.x, this.bobber.position.z, 2.2)?.name || 'Açık deniz';
-    const data = {
-      key, name: f.name, weight: +weight.toFixed(2), len: lenCm, rarity: f.rarity, value, zone: zoneName,
-      bait: ITEMS[this.bait]?.name, time: sky.timeString(), date: new Date().toLocaleDateString('tr-TR'),
-      color: f.colors[0],
-    };
+    const data = this.makeCatch(key, weight, this.bobber.position, ITEMS[this.bait]?.name);
+    const lenCm = data.len;
     effects.splash(this.bobber.position.x, this.bobber.position.z, 0.6);
-    let where = 'envanterine';
-    if (!p.inv.canAdd('balik:' + key, 1, data)) {
-      if (p.mode === 'deck' && p.ship) { p.ship.hold.fish = p.ship.hold.fish || []; p.ship.hold.fish.push(data); where = 'gemi ambarına'; }
-      else { G.notify(`${f.name} yakaladın ama envanterin dolu — balığı geri bıraktın.`, 'warn'); G.emit('fishCaught', { data, released: true }); this.reset(); return; }
-    } else p.inv.add('balik:' + key, 1, data);
+    const where = this.store(data);
+    if (!where) { G.notify(`${f.name} yakaladın ama envanterin dolu — balığı geri bıraktın.`, 'warn'); G.emit('fishCaught', { data, released: true }); this.reset(); return; }
     G.notify(`${f.name} yakaladın! ${lenCm} cm, ${data.weight} kg → ${where}`, 'good', 4500);
     audio.play('level_up', { vol: 0.5 });
     p.startAction('cheer', 1.2);

@@ -208,6 +208,9 @@ label.set { display: flex; align-items: center; justify-content: space-between; 
 .hb .k { position: absolute; top: 1px; left: 4px; font-size: 13px; color: var(--gold); font-weight: 700; }
 .hb.active { border-color: var(--gold2); box-shadow: 0 0 0 2px var(--gold2), 0 0 14px rgba(243,210,122,.6); }
 .hb.empty { opacity: .35; }
+/* dar ekranda 7 yuvalı araç çubuğu küçülür ve mini haritanın (sağ alt, 176 px) soluna yaslanır: önce yuvalar haritanın altında kalıyordu */
+@media (max-width: 900px) { #hotbar { gap: 4px; } .hb { width: 44px; height: 44px; } .hb .ic { width: 30px; height: 30px; } .hb .k { font-size: 11px; } }
+@media (max-width: 760px) { #hotbar { left: auto; right: 206px; transform: none; } }
 #compass-bar { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); width: max(240px, min(560px, 60vw, calc(100vw - 740px))); height: 34px; overflow: hidden; border-radius: 6px; background: linear-gradient(180deg, rgba(20,12,5,.72), rgba(20,12,5,.5)); border: 2px solid #5a3a1e; box-shadow: 0 0 0 1px var(--bronze); }
 #compass-strip { position: absolute; top: 0; height: 100%; white-space: nowrap; }
 #compass-strip span { position: absolute; top: 4px; transform: translateX(-50%); font-family: var(--title); color: var(--parch); text-shadow: 0 1px 2px #000; font-size: 18px; }

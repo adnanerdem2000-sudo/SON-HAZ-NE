@@ -18,7 +18,7 @@ const _v = new THREE.Vector3();
 const _v2 = new THREE.Vector3();
 const _ikL = new THREE.Vector3(), _ikR = new THREE.Vector3(); // IK el hedefleri (dümen/top)
 
-export const EQUIP_SLOTS = { slot0: 'none', slot1: 'sword', slot2: 'pistol', slot3: 'shovel', slot4: 'rod', slot5: 'map' };
+export const EQUIP_SLOTS = { slot0: 'none', slot1: 'sword', slot2: 'pistol', slot3: 'shovel', slot4: 'rod', slot5: 'map', slot6: 'harpoon', slot7: 'net' };
 
 export class Player {
   constructor(scene, appearance, opts = {}) {
@@ -87,7 +87,7 @@ export class Player {
   // ---- ekipman ----
   equip(slot) {
     if (this.carrying) return;
-    const need = { sword: ['kilic', 'usta_kilic'], pistol: ['tabanca', 'usta_tabanca'], shovel: ['kurek'], rod: ['olta', 'usta_olta'], map: ['hazine_haritasi'] }[slot];
+    const need = { sword: ['kilic', 'usta_kilic'], pistol: ['tabanca', 'usta_tabanca'], shovel: ['kurek'], rod: ['olta', 'usta_olta'], map: ['hazine_haritasi'], harpoon: ['zipkin', 'usta_zipkin'], net: ['balik_agi'] }[slot];
     if (need && !need.some((id) => this.inv.has(id))) {
       G.notify(slot === 'map' ? 'Envanterinde hazine haritası yok.' : 'Bu eşyaya sahip değilsin.', 'warn');
       return;
@@ -96,7 +96,7 @@ export class Player {
     this.equipped = slot;
     this.aiming = false;
     if (slot === 'map') { G.emit('openTreasureMap'); this.equipped = 'none'; }
-    if (this.mode === 'swim' || this.mode === 'climb' || this.mode === 'boat') this.char.hold(null); // çıkışta yeniden elde
+    if ((this.mode === 'swim' && slot !== 'harpoon') || this.mode === 'climb' || this.mode === 'boat') this.char.hold(null); // çıkışta yeniden elde (zıpkın suda da elde)
     else this.char.hold(this.equipped === 'none' || this.equipped === 'map' ? null : this.equipped);
     this._syncTorch();
     G.emit('equip', this.equipped);
@@ -336,7 +336,8 @@ export class Player {
       this.downT -= dt;
       if (this.downT <= 0) { this.downed = false; this.dead = true; G.emit('playerDied', { cause: 'Kimse yardıma gelmedi' }); }
     }
-    const locked = this.dead || this.downed || G.uiOpen;
+    // balıkla mücadelede A/D balığa karşı koymak içindir: oyuncu yürümez (önce iskelede yana yürüyüp suya düşüyor, balık kaçıyordu)
+    const locked = this.dead || this.downed || G.uiOpen || !!this.fishLock;
     if (this.mode === 'ground') this._updateGround(dt, locked);
     else if (this.mode === 'deck') this._updateDeck(dt, locked);
     else if (this.mode === 'swim') this._updateSwim(dt, locked);
@@ -434,7 +435,7 @@ export class Player {
   _commonCombatInput(dt) {
     // nişan / savunma
     const rmb = input.isDown('nisan') && !this.carrying;
-    this.aiming = rmb && this.equipped === 'pistol';
+    this.aiming = rmb && (this.equipped === 'pistol' || this.equipped === 'harpoon');
     // savunma histerezisi: başlamak için dayanıklılık > 10, sürdürmek için > 0 (kare kare açılıp kapanmaz);
     // bırakıldıktan sonra 0.25 sn yeniden başlanamaz (parry penceresi tuş spam'iyle sürekli açık kalmaz)
     this.blockCd = Math.max(0, this.blockCd - dt);
@@ -643,7 +644,7 @@ export class Player {
     this.crouch = false;
     this.aiming = false;
     if (this.carrying && this.carrying.tier !== 'small') G.emit('dropCarry', { player: this, inWater: true });
-    if (this.equipped !== 'none') this.char.hold(null);
+    if (this.equipped !== 'none' && this.equipped !== 'harpoon') this.char.hold(null); // zıpkın suda elde kalır (su altı avı)
     this._syncTorch();
     this.vel.y *= 0.3;
     G.emit('sfx', { name: 'impact', pos: this.pos, vol: 0.4, rate: 0.6 });
@@ -657,10 +658,15 @@ export class Player {
     const surfaceY = wh - 1.35;
     let vy = 0;
     const fast = !locked && input.isDown('kos') && this.stamina > 2;
-    if (!locked && input.isDown('egil')) vy = -2.4;
-    else if (!locked && input.isDown('zipla')) vy = 2.6;
+    // deniz ekipmanı (seagear her 0,5 s'de çantadan okur): palet yüzme ve dalış hızını artırır
+    const fins = this.gear?.fins ? 1.35 : 1;
+    if (!locked && input.isDown('egil')) vy = -2.4 * fins;
+    else if (!locked && input.isDown('zipla')) vy = 2.6 * fins;
     else if (this.pos.y < surfaceY - 0.1) vy = 0.6; // yavaşça yüzeye çık
-    let sp = (this.pos.y < surfaceY - 0.5 ? 2.6 : 2.8) * mag * (fast ? 1.45 : 1);
+    let sp = (this.pos.y < surfaceY - 0.5 ? 2.6 : 2.8) * mag * (fast ? 1.45 : 1) * fins;
+    // zıpkınla nişan (sağ tık): omuz kamerası, gövde kameraya döner
+    this.aiming = !locked && this.equipped === 'harpoon' && input.isDown('nisan');
+    if (this.aiming) { sp *= 0.6; this.yaw = dampAngle(this.yaw, tpCamera.yaw, 12, dt); }
     if (fast && mag > 0.2) this.stamina = Math.max(0, this.stamina - dt * 10);
     if (this.carrying) sp *= 0.6;
     this.vel.x = damp(this.vel.x, d.x * sp, 5, dt);
@@ -685,12 +691,14 @@ export class Player {
     this._shipHullPush();
     this.swimMoving = mag > 0.1 || Math.abs(vy) > 0.5;
     this.swimPhase += dt * (this.swimMoving ? 4.2 : 2.2) * (fast ? 1.3 : 1);
-    if (mag > 0.1) this._faceTowards(d, dt, 6);
+    if (mag > 0.1 && !this.aiming) this._faceTowards(d, dt, 6);
     // derinlik ve oksijen
     this.depth = Math.max(0, wh - (this.pos.y + 1.55));
-    this.underwater = this.pos.y + 1.6 < wh;
+    // histerezis: dalgada yüzerken su altı durumu (oksijen, kamera, sis) kare kare açılıp kapanmasın
+    this.underwater = this.underwater ? this.pos.y + 1.45 < wh : this.pos.y + 1.6 < wh;
     if (this.underwater) {
-      this.oxygen = Math.max(0, this.oxygen - dt * (100 / 50) / (G.mods?.breath || 1));
+      // temel nefes 50 s; dalış maskesi ×1,6, yetenek çarpanı (G.mods.breath) ayrıca uygulanır
+      this.oxygen = Math.max(0, this.oxygen - dt * (100 / 50) / ((G.mods?.breath || 1) * (this.gear?.mask ? 1.6 : 1)));
       if (this.oxygen <= 0) this.hurt(dt * 9, null, { cause: 'Boğuldun' });
     } else this.oxygen = Math.min(100, this.oxygen + dt * 35);
     // görsel: yatay yüzüş
@@ -710,6 +718,7 @@ export class Player {
   exitWater() {
     this._modeT = 0.35;
     this.mode = 'ground';
+    this.aiming = false;
     this.char.model.rotation.x = 0;
     this.char.model.position.y = 0;
     this.char.overlay.lift = 0;

@@ -575,7 +575,15 @@ export const islands = {
     }
   },
 
-  _pier(B, a, b, top) {
+  _pier(B, a0, b, top) {
+    // kara ucu, kum güverteye 0,3 m'den az kalana dek (en çok 12 m; kasaba yapılarına girmesin) kıyıya doğru uzatılır: kökte
+    // 0,9–1,8 m'lik basamak vardı (B-07); kumdan iskeleye zıplamadan çıkılamıyordu. Kalan fark aşağıda basamakla aşılır.
+    const L0 = Math.hypot(b.x - a0.x, b.z - a0.z) || 1;
+    const nx = (b.x - a0.x) / L0, nz = (b.z - a0.z) / L0, qx = nz, qz = -nx; // eksen ve dik
+    const sandAt = (x, z) => Math.min(terrain.heightAt(x + qx * 2.5, z + qz * 2.5), terrain.heightAt(x, z), terrain.heightAt(x - qx * 2.5, z - qz * 2.5));
+    let ext = 0;
+    for (let s = 0; s <= 12; s += 0.5) { ext = s; if (sandAt(a0.x - nx * s, a0.z - nz * s) >= top - 0.3) break; }
+    const a = { x: a0.x - nx * ext, z: a0.z - nz * ext };
     const dx = b.x - a.x, dz = b.z - a.z;
     const L = Math.hypot(dx, dz);
     const yaw = Math.atan2(dx, dz);
@@ -594,7 +602,13 @@ export const islands = {
     const posts = new THREE.InstancedMesh(postGeo, wood, Math.ceil(L / 4) * 2 + 2);
     posts.userData.own = true;
     let k = 0;
-    for (let t = 0; t <= L; t += 4) for (const sx of [-2.3, 2.3]) { _m.makeTranslation(sx, top - 3.7, t - L / 2); posts.setMatrixAt(k++, _m); }
+    const cy = Math.cos(yaw), sy = Math.sin(yaw);
+    for (let t = 0; t <= L; t += 4) for (const sx of [-2.3, 2.3]) {
+      _m.makeTranslation(sx, top - 3.7, t - L / 2); posts.setMatrixAt(k++, _m);
+      // iskele ayağı çarpıştırıcısı (yüzücü için; güverte üstünde yürüyeni etkilemez, kamera çarpmaz)
+      const wx = (a.x + b.x) / 2 + sx * cy + (t - L / 2) * sy, wz = (a.z + b.z) / 2 - sx * sy + (t - L / 2) * cy;
+      physics.addCircle(wx, wz, 0.22, top - 7.2, top - 0.2, B.tag).noCam = true;
+    }
     posts.count = k;
     posts.castShadow = true;
     g.add(posts);
@@ -603,6 +617,30 @@ export const islands = {
     B.group.add(g);
     B.extras.push({ dispose: () => postGeo.dispose() });
     physics.addPlatform(mx, mz, 2.5, L / 2, yaw, top, B.tag);
+    // sığ kesimin (kum −1,95 m üstü) altı tam yükseklikte kapalı: kumda yürüyen/sığda yüzen oyuncu alçak güvertenin içine giremez
+    let sSplit = 0;
+    while (sSplit < L && sandAt(a.x + nx * sSplit, a.z + nz * sSplit) > -1.95) sSplit += 0.5;
+    if (sSplit > 0) physics.addBox(a.x + nx * sSplit / 2, a.z + nz * sSplit / 2, 2.5, sSplit / 2, yaw, -50, top - 0.6, B.tag);
+    // kökte kalan yükseklik farkı (12 m'de kum güverteye yetişmezse) ≤ 0,5 m'lik ahşap basamaklarla kara tarafına iner
+    const gap = top - sandAt(a.x, a.z);
+    if (gap > 0.55) {
+      const K = Math.ceil(gap / 0.5) - 1, h = gap / (K + 1), tread = 0.8;
+      for (let i = 1; i <= K; i++) {
+        const st = top - i * h, sd = (i - 0.5) * tread;
+        const cx = a.x - nx * sd, cz = a.z - nz * sd;
+        const sand = sandAt(cx, cz);
+        if (st <= sand + 0.05) break; // kum basamak hizasına çıktı
+        const base = sand - 0.3;
+        const m = new THREE.Mesh(new THREE.BoxGeometry(5, st - base, tread), wood);
+        m.userData.own = true;
+        m.position.set(cx, (st + base) / 2, cz);
+        m.rotation.y = yaw;
+        m.castShadow = true; m.receiveShadow = true;
+        B.group.add(m);
+        physics.addPlatform(cx, cz, 2.5, tread / 2, yaw, st, B.tag, false);
+        physics.addBox(cx, cz, 2.5, tread / 2, yaw, base, st - 0.6, B.tag); // yandan basamağın içine girilmez
+      }
+    }
     // fenerler
     for (const t of [0.15, 0.95]) {
       const x = a.x + dx * t + Math.cos(yaw) * 2.2, z = a.z + dz * t - Math.sin(yaw) * 2.2;
@@ -681,7 +719,7 @@ export const islands = {
   _chest(B, x, z, yaw, id, kind = 'mid') {
     const y = terrain.heightAt(x, z);
     this._place(B, kind === 'rich' ? 'kk:dungeon:chest_gold' : 'kk:dungeon:chest', x, z, yaw, { s: 0.9, col: true });
-    const table = kind === 'rich' ? [['altin_para', 120, 260], ['altin_kulce', 0.7], ['yakut', 0.4], ['zumrut', 0.3], ['eski_mucevher', 0.6]] : [['altin_para', 40, 110], ['gumus_kulce', 0.6], ['inci', 0.3], ['eski_mucevher', 0.25]];
+    const table = kind === 'rich' ? [['altin_para', 120, 260], ['altin_kulce', 0.7], ['yakut', 0.4], ['zumrut', 0.3], ['eski_mucevher', 0.6], ['usta_zipkin', 0.15], ['palet', 0.25]] : [['altin_para', 40, 110], ['gumus_kulce', 0.6], ['inci', 0.3], ['eski_mucevher', 0.25], ['zipkin', 0.15], ['dalis_maskesi', 0.15], ['hava_kesesi', 0.3]];
     B.inter.push({ id: 'chest:' + id, x, y: y + 0.8, z, r: 2.4, label: 'Sandığı aç', once: true, action: () => {
       if (this.opened?.has(id)) { G.notify('Sandık boş.'); return; }
       (this.opened || (this.opened = new Set())).add(id);
@@ -946,7 +984,9 @@ export const islands = {
     g.rotation.y = R() * 6.28;
     g.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
     B.group.add(g);
-    physics.addBox(x, z, 3, 8, g.rotation.y, y - 2, y + 4, B.tag);
+    // gövdenin 17 m'lik ekseni grubun yerel X'inde (silindir z ekseninde 90° döndürülmüş): çarpıştırıcı da öyle (önce 90° çapraz
+    // duruyordu; oyuncu ve kamera gövdenin iki ucundan içeri giriyordu)
+    physics.addBox(x, z, 8.5, 3.2, g.rotation.y, y - 2, y + 4, B.tag);
     for (let i = 0; i < 4; i++) this._place(B, i % 2 ? 'barrel' : 'crate', x + (R() - 0.5) * 12, z + (R() - 0.5) * 12, R() * 6.28, { h: 1 });
     this._chest(B, x + 4, z + 2, R() * 6.28, f.id, 'mid');
   },

@@ -11,7 +11,7 @@ Bu sürümde düzeltilen önemli hatalar en altta listelenmiştir. Aşağıdakil
 | 4 | Barut fıçıları, sandıklar, kaya tuzakları ada yeniden kurulunca yenilenir | Aynı ada tekrar ziyarette yeniden kullanılabilir | Bulmaca çözümleri ve gizli sandıklar kalıcıdır |
 | 5 | Zar ustasının günlük kesesi oturuma özeldir | Yeniden yüklemede kese dolar | Önemsiz |
 | 6 | Başlangıç limanında ~1 000 çizim çağrısı | Zayıf GPU'da FPS düşebilir | Ayarlardan gölge/ölçek düşürülebilir |
-| 7 | Kamera dar alanlarda (bina arası, güverte altı) nesnelerin içinden görebilir | Görsel | — |
+| 7 | Kamera dar alanlarda (bina arası, güverte altı) nesnelerin içinden görebilir | Görsel | Geliştirme dalında giderildi: güverte/gemi gövdesi altına inmez, başa çok yaklaşınca karakter gizlenir; ince direk/NPC'lerin içinden kısa süre görülebilir (denetim 11. belge #40) |
 | 8 | Bina/kaya çarpışmaları kutu/silindir yaklaşımıdır | Köşelerde küçük boşluklar | — |
 | 9 | Kutup ayısı ve bazı hayvanlar prosedürel modeldir | Diğer hayvanlara göre daha basit görünür | Ağ politikası CC0 hayvan paketlerine erişimi engelledi |
 | 10 | Unreal Fab varlıkları kullanılamadı | Fab hesap girişi ve uasset biçimi ister; ağ politikası da engelliyor | GitHub/npm üzerinden CC0 KayKit/Quaternius/Kenney kullanıldı |

@@ -130,3 +130,31 @@ Soru: "Oyunda donma oluyor mu, yeterli FPS alınıyor mu?" Ayrıntı: 10. belge 
 - Öneri: gerçek makinede Ayarlar → "FPS göster" ile liman, seyir, fırtına ve savaş sahnelerinde el ile kontrol; düşük FPS'te gölge ve
   görüş mesafesi ilk düşürülecek ayarlardır. Gölgelendiriciler başlangıç sahnesi için yüklemede önceden derleniyor; sonradan görünen
   içerik ilk görüldüğünde derleniyor (gerçek GPU'da oturumda bir kez kısa takılma olabilir; bilinen #31).
+
+## 16.9 Ek: İskele/duvar, kamera kararması, dalış, deniz ekipmanı (kullanıcı bildirimi)
+Bildirim: başlangıç iskelesinde gövde tahtanın içinde ("duvarların içine giriyorum"); kamerayı çevirince "arkama duvar
+geliyormuş gibi" siyah ekran; dalış ve sınırlı nefes; zıpkın/olta/ağ gibi deniz ekipmanı ganimeti ve balık tutma; duraklatma
+menüsünde "null" yazısı. Ayrıntı: 03. belge (son bölüm), 12. belge (önce/sonra tablosu), 11. belge #38–#43.
+- **Önemli:** kullanıcının oynadığı yayındaki sürüm v0.3'tür (`claude/hopeful-cray-o1jw6w` @ 762f1c7). Orada iskele yan
+  çarpıştırıcısı ve kamera görüş testi hiç yok, dalış tuşu Sol Ctrl (Ctrl+W sekmeyi kapatır). Düzeltmeler geliştirme dalında ve
+  `dist/` tek dosyasındadır; yayına alma kullanıcı onayı bekler.
+- **İskele (kök neden ölçüldü):** liman kanalı kazısı kumu iskele kökünde 1,49 m'ye indiriyordu → 0,76 m basamak (sınır 0,6).
+  Kök kumla aynı hizaya uzatıldı (z0−9, basamak 0,27 m), sığ kesimin altı tam yükseklikte kapatıldı, direk/baba çarpıştırıcıları
+  eklendi, havada duran yük yığını kuma indirildi, varil malzemesi düzeltildi. Ada limanlarında aynı kural (≤ 12 m uzatma + gerekirse
+  ≤ 0,5 m'lik basamak; 5 limanın 4'ünde uzatma yeterli, Kuzey Fener'de 1 basamak); karaya oturmuş gemi çarpıştırıcısı gövdeyle hizalandı.
+- **Kamera (kök nedenler ölçüldü):** (1) kamera iskele güvertesinin/gemi gövdesinin altına iniyordu (96 açının 61'inde, görüntü
+  parlaklığı 3,5) → güverte düzlemi görüşü keser, üzerinde durulan güverte zemin sayılır: 0/96, parlaklık ≥ 93; (2) iskele feneri
+  gibi ince engeller kamerayı başın 0,56 m dibine çekiyor, siyah şapka ekranı kaplıyordu → ince/hareketli engeller yok sayılır: 4,6 m;
+  (3) duvara yaslanınca kamera 0,4 m'de → karakter örgüleri gizlenir (meşale ışığı sönmez). Ek: su yüzeyi kararı odağa göre,
+  dalışta kamera su altında, mağarada tavan.
+- **Dalış:** zaten vardı (C basılı = dal, Boşluk = çık, nefes 50 sn, boğulma hasarı, nefes çubuğu) ama README "Ctrl" diyordu ve
+  oyunda ipucu yoktu → ilk suya girişte tuş/nefes ipucu, README düzeltildi; dalış maskesi (nefes ×1,6), yüzme paleti (×1,35), hava
+  kesesi (+45, nefes < 12'de kendiliğinden).
+- **Deniz ekipmanı ve balıkçılık:** zıpkın (6; su altında ve kıyıdan nişanla, köpekbalığına hasar), yaylı zıpkın, balık ağı (7;
+  sürüye en çok 6 balık, %5 yırtılma), olta (vardı; uçtan uca doğrulandı, mücadelede A/D oyuncuyu artık yürütmüyor — önce iskeleden
+  suya düşüp balığı kaçırıyordu). Ganimet: Balıkçı Yusuf, Tüccar Rıza, Halil Reis, Kaçakçı; hazine/ada sandıkları, balıkçı varili,
+  Martı Batığı'nın 24 m dibindeki sandık.
+- **Test:** `15_iskele_kamera.js` düzeltme öncesi kodda 12 kontrolün 9'unda kaldı, son kodda hepsi geçti; `14_deniz_ekipmani.js`
+  15 kontrolün hepsi geçti. Dar ekranda (640×360) 7 yuvalı araç çubuğu küçülüp mini haritanın soluna yaslanır (ekran görüntüsüyle doğrulandı).
+- **Doğrulanamayan / sınırlı:** gerçek GPU'da el ile oynanış; gerçek fare ile nişan hissi (testte kamera yönü ve doğrudan yön
+  verildi); co-op'ta zıpkın/ağ atışı diğer oyunculara çizilmez (balık sürüleri istemciye yerel, olta gibi; 11. belge #38).

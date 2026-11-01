@@ -198,7 +198,8 @@ export const events = {
     const give = (items) => { if (mine) treasure.giveItems(items); else G.emit('netGive', { who, items }); };
     const at = mine ? p.pos.clone() : (G.remotes.get(who)?.pos.clone() || f.pos.clone());
     if (f.kind === 'barrel') {
-      const tables = [[['altin_para', 20, 60], ['gulle', 0.5], ['ekmek', 0.5]], [['mermi', 5, 10], ['tahta', 0.6], ['merhem', 0.3]], [['altin_para', 40, 90], ['inci', 0.4]]];
+      const tables = [[['altin_para', 20, 60], ['gulle', 0.5], ['ekmek', 0.5]], [['mermi', 5, 10], ['tahta', 0.6], ['merhem', 0.3]], [['altin_para', 40, 90], ['inci', 0.4]],
+        [['yem_karides', 3, 6], ['balik_agi', 0.45], ['hava_kesesi', 0.6], ['zipkin', 0.2]]]; // balıkçı varili
       const t = tables[Math.floor(Math.random() * tables.length)];
       treasure.spawnLoot(at, t, 'Varil'); // ev sahibinde doğar, herkese yayınlanır
     } else if (f.kind === 'bottle') {

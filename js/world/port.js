@@ -158,16 +158,30 @@ export const port = {
     this.shoreZ = z0;
     const ground = 2.6;
 
-    // İskele
-    const pierLen = 46, pierW = 5, pierTop = 2.25;
-    const pz = z0 - 6 + pierLen / 2;
+    // İskele. Denize bakan uç (zEnd) sabit; kara ucu kumun güverteye 0,3 m'den az kaldığı yere dek uzatılır. Önce kök z0−6'da
+    // sabitti: liman kanalının kazısı kumu orada 1,49 m'ye indiriyor, 0,76 m'lik basamak kalıyordu (basamak sınırı 0,6 m) —
+    // kasabadan iskeleye zıplamadan çıkılamıyor, v0.3'te oyuncu güvertenin altına yürüyüp tahtanın içinde görünüyordu.
+    const pierW = 5, pierTop = 2.25, zEnd = z0 + 40;
+    const sand = (z) => Math.min(terrain.heightAt(10 - pierW / 2, z), terrain.heightAt(10, z), terrain.heightAt(10 + pierW / 2, z));
+    let zRoot = z0 - 6;
+    while (zRoot > z0 - 24 && sand(zRoot) < pierTop - 0.3) zRoot -= 0.5;
+    const pierLen = zEnd - zRoot;
+    const pz = (zRoot + zEnd) / 2;
+    this.pierRoot = zRoot;
     const deckMat = texMat(woodPlanks('#8a6238', 5, 12), 2, pierLen / 4);
     const deck = box(pierW, 0.3, pierLen, deckMat);
     deck.position.set(10, pierTop - 0.15, pz);
     scene.add(deck);
     physics.addPlatform(10, pz, pierW / 2, pierLen / 2, 0, pierTop, 'pier');
-    // T başlık
-    const tW = 18, tD = 5, tz = z0 - 6 + pierLen + tD / 2 - 1;
+    // Güvertenin altı sığ kesimde (kum −1,95 m'den yüksek) tam yükseklikte kapalı: kumda yürüyen ya da sığda yüzen oyuncu alçak
+    // güvertenin altına giremez, gövdesi tahtanın içinden geçmez (yan bant yalnız 0,4 m kalınlıktaydı, altından girenler yana
+    // ışınlanıyordu). Derin kesimde güverte altından yüzülebilir (ayak −1,35, baş güvertenin 1 m altında).
+    let zSplit = zRoot;
+    while (zSplit < zEnd && sand(zSplit) > -1.95) zSplit += 0.5;
+    if (zSplit > zRoot) physics.addBox(10, (zRoot + zSplit) / 2, pierW / 2, (zSplit - zRoot) / 2, 0, -50, pierTop - 0.6, 'pier');
+    this.pierShallowEnd = zSplit;
+    // T başlık (konumu kara ucundan bağımsız: merdiven, demirleme ve biniş noktası yer değiştirmez)
+    const tW = 18, tD = 5, tz = zEnd + tD / 2 - 1;
     const tdeck = box(tW, 0.3, tD, texMat(woodPlanks('#8a6238', 6, 12), tW / 4, 1));
     tdeck.position.set(10, pierTop - 0.15, tz);
     scene.add(tdeck);
@@ -202,8 +216,12 @@ export const port = {
     }
     const postMat = M('post', () => texMat(woodPlanks('#4a321e', 21, 3), 0.4, 2));
     const posts = [];
-    for (let z = z0 - 4; z < z0 - 6 + pierLen; z += 3.2) posts.push([10 - pierW / 2 + 0.2, z], [10 + pierW / 2 - 0.2, z]);
-    for (let x = 10 - tW / 2 + 0.3; x <= 10 + tW / 2; x += 3) posts.push([x, tz - tD / 2 + 0.2], [x, tz + tD / 2 - 0.2]);
+    for (let z = zRoot + 2; z < zEnd; z += 3.2) posts.push([10 - pierW / 2 + 0.2, z], [10 + pierW / 2 - 0.2, z]);
+    for (let x = 10 - tW / 2 + 0.3; x <= 10 + tW / 2; x += 3) {
+      // ana iskelenin T başlığa bağlandığı geçitte (kuzey kenar) ve biniş noktasında (güney kenar) direk yok: yürüme yolunu kesiyordu
+      if (Math.abs(x - 10) >= pierW / 2 + 0.25) posts.push([x, tz - tD / 2 + 0.2]);
+      if (Math.abs(x - 10) >= 1) posts.push([x, tz + tD / 2 - 0.2]);
+    }
     for (const [x, z] of posts) {
       const bottom = terrain.heightAt(x, z);
       const len = pierTop + 0.6 - bottom;
@@ -212,12 +230,16 @@ export const port = {
       p.position.set(x, bottom + len / 2, z);
       p.castShadow = true;
       scene.add(p);
+      // direk çarpıştırıcısı: güvertede korkuluk dikmesi, suda iskele ayağı (önce yalnız görseldi, içinden geçiliyordu).
+      // Kamera bu ince engellere çarpmaz (noCam)
+      physics.addCircle(x, z, 0.22, bottom - 0.5, pierTop + 0.6, 'pier').noCam = true;
     }
     // babalar (halat bağlama)
     for (const x of [10 - tW / 2 + 1, 10 + tW / 2 - 1]) {
       const b = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.28, 0.7, 10), new THREE.MeshStandardMaterial({ color: 0x2a2a2a, roughness: 0.5, metalness: 0.6 }));
       b.position.set(x, pierTop + 0.35, tz + tD / 2 - 0.5);
       scene.add(b);
+      physics.addCircle(x, tz + tD / 2 - 0.5, 0.3, pierTop - 0.3, pierTop + 0.7, 'pier').noCam = true;
     }
     // Demirleme noktası: T başlığın güneyi, gemi doğu-batı doğrultusunda
     this.mooring = { x: 10, z: tz + tD / 2 + 7 + 1.5, yaw: 0 };
@@ -276,15 +298,20 @@ export const port = {
     // Deniz feneri (dönen ışık hüzmesi nedeniyle birleştirilmez)
     this._lighthouse(realScene, 78, z0 - 4);
     // yük yığınları
+    // yığın kumun üstüne konur: önce kasaba düzlüğü yüksekliğine (2,6 m) konuyordu, kıyıdaki kum 0,6–1,25 m olduğundan sandık ve
+    // variller iskelenin yanında havada asılı duruyordu (ekran görüntüsündeki turuncu/beyaz/siyah kutular)
+    let cMin = Infinity, cMax = -Infinity;
     for (let i = 0; i < 10; i++) {
       const name = i % 3 === 0 ? 'barrel' : 'crate';
       const o = assets.prop(name, name === 'barrel' ? 1.0 : 0.9);
       const x = -6 + (i % 4) * 1.3, z = z0 - 3 + Math.floor(i / 4) * 1.4;
-      o.position.set(x, terrain.heightAt(x, z) > 0 ? Math.max(ground, terrain.heightAt(x, z)) : pierTop, z);
+      const h = Math.max(terrain.heightAt(x, z), -0.2);
+      cMin = Math.min(cMin, h); cMax = Math.max(cMax, h);
+      o.position.set(x, h, z);
       o.rotation.y = R() * 3;
       scene.add(o);
     }
-    physics.addBox(-4, z0 - 1.6, 2.8, 2.2, 0, ground - 1, ground + 1, 'cargo');
+    physics.addBox(-4, z0 - 1.6, 2.8, 2.2, 0, cMin - 1, cMax + 1.2, 'cargo');
 
     realScene.add(mergeStatic(scene));
 
@@ -342,7 +369,7 @@ export const port = {
     const y = Math.max(terrain.heightAt(x, z), 2.4) - 0.1;
     g.position.set(x, y, z);
     scene.add(g);
-    for (const sx of [-4, 4]) for (const sz of [-3, 3]) physics.addCircle(x + sx, z + sz, 0.3, y - 1, y + 4, 'post');
+    for (const sx of [-4, 4]) for (const sz of [-3, 3]) physics.addCircle(x + sx, z + sz, 0.3, y - 1, y + 4, 'post').noCam = true;
     physics.addBox(x - 1, z - 2, 2, 0.6, 0, y - 1, y + 1, 'bench');
     physics.addBox(x + 1.5, z + 1.3, 2.3, 0.5, 0, y - 1, y + 0.6, 'lumber');
   },

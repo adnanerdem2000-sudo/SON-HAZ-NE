@@ -18,10 +18,12 @@ import { shipControl } from './shipControl.js';
 import { Ship } from '../ship/ship.js';
 import { post } from '../core/post.js';
 import { clamp, damp, smoothstep } from '../core/util.js';
-import { ISLANDS } from '../world/worldData.js';
+import { ISLANDS, CAVE } from '../world/worldData.js';
 import { enemies } from './enemies.js';
 import { animals } from '../wildlife/animals.js';
 import { settings } from '../core/settings.js';
+
+const _camH = new THREE.Vector3(); // kamera–baş uzaklığı geçicisi
 
 // Oyun oturumu: dünya, oyuncu, gemi, sistemler, döngü
 export const game = {
@@ -319,16 +321,30 @@ export const game = {
     } else if (p.mode === 'boat') {
       head.y += 0.6;
       opts = { dist: 6.5 };
-    } else if (p.aiming) {
-      opts = { dist: 2.3, shoulder: 0.65, fov: 58 };
     } else if (p.mode === 'swim') {
       opts = { underwater: p.underwater };
       head.y = p.pos.y + (p.underwater ? 1.4 : 1.5);
+      if (p.aiming) Object.assign(opts, { dist: 2.3, shoulder: 0.65, fov: 58 }); // zıpkınla su altında nişan
+    } else if (p.aiming) {
+      opts = { dist: 2.3, shoulder: 0.65, fov: 58 };
     }
-    if (p.inCave > 0.3) opts.dist = Math.min(opts.dist ?? tpCamera.targetDist, 3.2);
+    if (p.inCave > 0.3) { opts.dist = Math.min(opts.dist ?? tpCamera.targetDist, 3.2); opts.ceiling = CAVE.floor + CAVE.height - 0.6; } // mağara tavanı
     if (p.dead || p.downed) opts.dist = 6;
     if (G.spyglass) { this._spyglassUpdate(dt); return; }
+    // kamera, oyuncunun üzerinde durduğu iskele/platform güvertesinin altına inmez (ayağın 0,3 m üstüne kadarki platformlar zemin
+    // sayılır; oyuncu güvertenin altındaysa güverte zemin sayılmaz)
+    if (p.mode === 'ground' || p.mode === 'swim') opts.floorMax = p.pos.y + 0.3;
+    // gemide yürürken kamera güverte düzleminin altına (gövdenin içine) inmez (camera.js, opts.deckShip)
+    else if ((p.mode === 'deck' || p.mode === 'helm' || p.mode === 'cannon') && p.ship) opts.deckShip = p.ship;
     tpCamera.update(cam, head, dt, opts);
+    // kamera başa çok yaklaşırsa (dar yerde çarpışma kısaltması) karakterin örgüleri gizlenir: başın/şapkanın içi ekranı
+    // kaplamasın. Eşikte titremesin diye histerezis (0,8 m'de gizle, 1,0 m'de göster); meşale ışığı söndürülmez; dümen/top
+    // kiplerinde her zaman görünür (önce kök gizleniyor, ışık da sönüyor ve dümene geçince oyuncu görünmez kalıyordu).
+    if (p.char?.setCamHidden) {
+      const near = p.mode === 'ground' || p.mode === 'deck' || p.mode === 'swim' || p.mode === 'boat' || p.mode === 'climb';
+      const d = cam.position.distanceTo(p.headPos(_camH));
+      p.char.setCamHidden(near && d < (p.char._camHidden ? 1.0 : 0.8));
+    }
   },
 
   // Ortam: gökyüzü, deniz, sesler, rüzgâr

@@ -4,8 +4,8 @@ import { ocean } from '../world/ocean.js';
 import { physics } from '../world/physics.js';
 import { clamp, damp, lerp } from '../core/util.js';
 
-const CAM_LOS = { tMin: 0.05, tMax: 1, rScale: 1 };
-const _cq = new THREE.Vector3();
+const CAM_LOS = { tMin: 0.05, tMax: 1, rScale: 1, camera: true };
+const _cq = new THREE.Vector3(), _cl = new THREE.Vector3();
 
 // Üçüncü şahıs kamera: oyuncunun arkasında, akıcı takip
 export const tpCamera = {
@@ -42,23 +42,37 @@ export const tpCamera = {
     // nesne çarpışması: baş→kamera doğrusu kaya/duvar/bina çarpıştırıcısına giriyorsa mesafe ikili aramayla kısaltılır
     if (opts.collide !== false) {
       const at = (d, out) => { out.copy(f).addScaledVector(dir, -d).addScaledVector(right, shoulder); out.y += opts.height || 0; return out; };
+      // engel: çarpıştırıcılar + platform güverteleri (kamera güvertenin öbür yüzüne, ör. iskelenin altına geçmesin)
+      const blocked = (q) => physics.lineBlocked(f.x, f.y, f.z, q.x, q.y, q.z, CAM_LOS) || physics.slabBlocked(f.x, f.y, f.z, q.x, q.y, q.z);
       let hit = this.dist + 1;
-      if (physics.lineBlocked(f.x, f.y, f.z, p.x, p.y, p.z, CAM_LOS)) {
+      if (blocked(p)) {
         let lo = 0.4, hi = this.dist;
-        for (let i = 0; i < 6; i++) { const mid = (lo + hi) / 2; at(mid, _cq); if (physics.lineBlocked(f.x, f.y, f.z, _cq.x, _cq.y, _cq.z, CAM_LOS)) hi = mid; else lo = mid; }
+        for (let i = 0; i < 6; i++) { const mid = (lo + hi) / 2; at(mid, _cq); if (blocked(_cq)) hi = mid; else lo = mid; }
         hit = Math.max(0.4, lo - 0.1);
       }
       this._col = hit < this._col ? hit : damp(this._col, hit, 5, dt);
       if (this._col < this.dist) at(this._col, p);
     }
-    // arazi çarpışması (kamera zeminin altına girmesin)
-    const ground = terrain.heightAt(p.x, p.z);
+    // zemin: arazi + (opts.floorMax verilmişse) tepesi floorMax'ı aşmayan platformlar (oyuncunun üzerinde durduğu güverte). İskele güvertesinde kamera aşağıdan
+    // bakınca güvertenin altına iniyor, ekranı koyu güverte tabanı kaplıyordu ("arkama duvar geliyor, ekran kararıyor").
+    const ground = opts.floorMax !== undefined ? physics.floorAt(p.x, p.z, opts.floorMax) : terrain.heightAt(p.x, p.z);
     if (p.y < ground + 0.4) p.y = ground + 0.4;
-    // su yüzeyinin hemen üstü/altı titremesini engelle
-    if (!opts.underwater) {
-      const wh = ocean.heightAt(p.x, p.z);
-      if (p.y < wh + 0.35 && f.y > wh) p.y = wh + 0.35;
+    // gemi güvertesi: kamera güverte düzleminin altına (gövdenin içine) inmez
+    const s = opts.deckShip;
+    if (s) {
+      const lp = s.worldToLocal(p, _cl);
+      if (s.insideDeck(lp.x, lp.z, -0.4)) {
+        const minY = s.deckAt(lp.x, lp.z) + 0.45;
+        if (lp.y < minY) { lp.y = minY; s.localToWorld(lp, p); }
+      }
     }
+    // su yüzeyi: baş sudayken kamera su altında, baş su üstündeyken su üstünde kalır (yüzeyi kesip ekranı karartmasın).
+    // Karar odağın kendi su yüksekliğine göre verilir: önce kameranınkine bakılıyordu; dalgalı denizde yüzerken kamera
+    // dalga tepesinin altına girip su altı sisine (koyu ekran) geçiyordu.
+    const whC = ocean.heightAt(p.x, p.z);
+    if (opts.underwater) {
+      if (p.y > whC - 0.4) p.y = Math.max(whC - 0.4, ground + 0.3);
+    } else if (f.y > ocean.heightAt(f.x, f.z) - 0.1 && p.y < whC + 0.35) p.y = whC + 0.35;
     if (opts.ceiling !== undefined && p.y > opts.ceiling) p.y = opts.ceiling;
     this.pos.copy(p);
     camera.position.copy(p);

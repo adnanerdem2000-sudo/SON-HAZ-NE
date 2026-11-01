@@ -341,9 +341,9 @@ export const menu = {
 
   // ---- Oyun içi duraklatma menüsü ----
   pause(h) {
-    const body = el('div', { class: 'col', style: { width: '380px' } });
     const B = (t, fn, cls = '') => el('button', { class: 'btn ' + cls, onclick: fn }, t);
-    body.append(
+    // el() boş (null) çocukları atlar; önce body.append(...) kullanılıyordu ve tek oyunculuda oda kodu düğmesi yerine "null" metni basılıyordu
+    const body = el('div', { class: 'col', style: { width: '380px' } },
       B('Devam et', () => ui.close(), 'gold'),
       G.isHost ? B('Kaydet', () => { h.saveNow(true); }) : null,
       B('Korsan Defteri', () => { ui.close(); openJournal(); }),

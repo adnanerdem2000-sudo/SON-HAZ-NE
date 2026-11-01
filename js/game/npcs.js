@@ -80,6 +80,7 @@ export const npcs = {
     root.rotation.y = spot.yaw;
     this.scene.add(root);
     const col = physics.addCircle(spot.x, spot.z, 0.35, y - 1, y + 2, spot.tag || 'npc');
+    col.noCam = true; // kamera NPC'ye çarpıp başa çekilmez
     const n = { spot, anim, root, pos: root.position.clone(), baseYaw: spot.yaw, talkT: 0, col, colY: [col.y0, col.y1] };
     this.list.push(n);
     return n;

@@ -127,3 +127,44 @@ Konuk düşmesini kaydeden tanılı kopya 4 koşuda (eski 2, yeni 2) geçti, dü
 kararsızlık. Kodda konuğu birkaç saniyede menüye düşüren tek yol ev sahibiyle WebRTC bağlantısının kapanması; en olası açıklama dört
 sekmenin tek yazılımsal GPU sürecini paylaşırken konuğun 15 sn kalp atışı kuralına takılması (kanıtlanmadı). Bilinen #37.
 
+
+## Kullanıcı bildirimi turu: iskele/duvar, kamera kararması, dalış, deniz ekipmanı
+Yeni senaryolar `15_iskele_kamera.js` (I01–I07, C01–C05, M01) ve `14_deniz_ekipmani.js` (D01–D03, G01–G08, R01, L01–L03).
+`15_iskele_kamera.js` aynı dosyayla düzeltme öncesi koda (`10ba732`) karşı da koşuldu (önce/sonra):
+
+| Kontrol | Düzeltme öncesi (10ba732) | Son kod |
+|---|---|---|
+| I01 kasabadan iskeleye yürüme (3 şerit) | KALDI: üçü de z = 225,7'de 0,76 m basamakta takılıyor | GEÇTİ: zıplamadan güvertede (kök basamağı 0,27 m) |
+| I02 sığ kesimde güverte altına yandan giriş (6 yaklaşma) | KALDI: z = 237'de iki yaklaşmada 60'ar kare gövde güverte altında | GEÇTİ: 0 kare |
+| I03 güverte altından kıyıya yüzme | KALDI: oyuncu güverte altından kıyıya dek yürüdü (55 kare güvertenin içinde) | GEÇTİ: sığ kesim sınırında (z = 240,35) durur |
+| I04 derin kesimde güverte altından yüzme | GEÇTİ | GEÇTİ (baş 0,73 m'de, güverte tabanı 1,95; ışınlanma yok) |
+| I05 direklerin içinden geçiş | KALDI: direk çarpıştırıcısı 0 | GEÇTİ: 39 direk, en yakın 0,55 m |
+| I06 yük yığını | KALDI: çarpıştırıcı 1,6–3,6 m (kum 0,87): havada | GEÇTİ: −0,41–2,45 m |
+| C01 iskelede 96 kamera açısı | KALDI: 61 açıda kamera güverte altında, parlaklık 3,5–6,5 | GEÇTİ: 0 açı; parlaklık 93,8–152 |
+| C02 arkadaki iskele feneri | KALDI: kamera başa 0,56 m'ye çekiliyor | GEÇTİ: 4,6 m |
+| C03 duvara yaslanma (gece, meşale) | KALDI: kamera 0,4 m'de, karakter gizlenmiyor (başın içi ekranda) | GEÇTİ: gizlenir, meşale ışığı yanar, dümende görünür |
+| C04 dalgalı denizde yüzerken kamera (144 açı) | GEÇTİ (bu ölçümde dalga tepesi altına geçiş üretilemedi) | GEÇTİ |
+| C05 dalışta kamera (96 açı) | GEÇTİ | GEÇTİ |
+| M01 duraklatma menüsü | KALDI: "null" yazısı | GEÇTİ |
+
+`14_deniz_ekipmani.js` (son kod) ölçümleri: nefes 2,00/sn → 50 sn, maskeyle 1,25/sn → 80 sn (oran 1,60); nefes bitince 2 sn'de 14,4 can;
+yüzeyde 100'e dolar; ilk suya girişte "Dalmak için C basılı tut, çıkmak için Boşluk · nefes ≈ 50 sn" ipucu. Hava kesesi nefes 11 → 55,7
+(kendiliğinden), su üstünde reddedilir. Palet: yüzey hızı 2,62 → 3,54 m/sn (×1,35). Zıpkın: donmuş sürüde 2,5 m'den isabet; canlı (kaçan)
+sürüye 2,5 m'den 4/6–6/6, 4 m'den 3/6–5/6 (koşudan koşuya); köpekbalığına 30 hasar; iskeleden nişanla atışta yön kamera yönüyle
+cos = 0,999, suya girip geri döner. Ağ: sürü üstüne atışta 4–6 balık ("Ağ" kaydıyla), iskeleye atınca "Ağ suya ulaşmadı", yırtılınca
+envanterden düşer. Olta: iskeleden atış → vuruş → 5 sn mücadele → İstavrit; mücadelede oyuncu 0 m yer değiştirdi. Ganimet: Balıkçı Yusuf
+5 kalem, Rıza/Halil Reis/Kaçakçı; 400 sandık atışında 5 deniz ekipmanı türü; Martı Batığı sandığı (−23,7 m) açılır, kese 24 m yükselir,
+ikinci kez açılmaz; kayıt/yüklemede ekipman korunur.
+
+**Bu turun tam regresyonu (son kod, iki şerit paralel, 640×360; 06 için 960×540):** `00_acilis`, `02_arazi_kurtarma`, `02_arazi_yedek`,
+`03_fizik_dt`, `03_fizik_duzeltmeler`, `04_karakter`, `05_dusman_ai`, `06_arayuz_960`, `07_dunya_kesif`, `07_ekonomi`, `08_kalicilik`,
+`09_performans`, `11_arayuz_sizinti`, `12_kayit_dongusu`, `14_deniz_ekipmani`, `15_iskele_kamera` → 16/16 senaryo geçti (hata, sayfa
+hatası ve adım istisnası 0); Node `archipelago_sabit.mjs` GEÇTİ. Tek başına: `13_donma` 8/8 (P01 en uzun ada karesi 12 ms ≤ 35),
+`coop/06b` (2 oyuncu) 18/18. Tek dosya derleme (21,0 MB) + `02_tek_dosya.js` (file://) 4/4; tek dosyada deniz ekipmanı, iskele
+düzeltmesi ve 7 yuvalı araç çubuğu doğrulandı.
+- İlk tam koşuda (aynı iki şerit) `13_donma` P01 69,5 ms ile kaldı; tek başına yinelendiğinde 6,3 ms ve 12 ms → bu makinede iki tarayıcının
+  işlemci çekişmesi (ölçüm eşiği tek tarayıcı için). Aynı koşuda `14_deniz_ekipmani` 6 kontrolde kaldı: derin suda geçen ~25 sn'de rastgele
+  köpekbalığı saldırısı oyuncuyu bayıltıp arayüz açıyor, sonraki adımların tuş girdisi işlenmiyordu; ağ testi sürünün yalnız 6 üyesini
+  taşıyordu (kalan üyeler sürü merkezini 176 m uzakta tuttu). Senaryo düzeltildi (ölümsüzlük yalnız boğulma ölçümü dışında, köpekbalığı
+  yalnız G04'te, palet ölçümü durgun suda, ağ testinde sürünün tüm üyeleri); oyun kodu değişmedi. `15_iskele_kamera` I07 Kuzey Fener
+  limanında kaldı (kum 20 m içinde güverteye yetişmiyor, kökte 1,38 m kalıyordu) → kök basamağı eklendi (oyun kodu), sonra geçti.
