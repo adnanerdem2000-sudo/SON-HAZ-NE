@@ -1,5 +1,6 @@
 import { G } from '../game/ctx.js';
 import { ui } from './ui.js';
+import { input } from '../core/input.js';
 import { el, fmtGold } from '../core/util.js';
 import { quests, STORY, ACHIEVEMENTS } from '../game/quests.js';
 import { ISLANDS, DIG_SITES, POIS } from '../world/worldData.js';
@@ -47,7 +48,7 @@ function timelineTab(sc, data) {
   for (let d = day; d < day + 7; d++) {
     const ev = time.scheduleFor(d).filter((e) => PERIODIC.some((p) => p.id === e.id));
     cal.appendChild(el('div', { class: 'tl-day' + (d === day ? ' today' : '') }, el('b', {}, d === day ? 'Bugün' : `Gün ${d}`),
-      el('div', { class: 'tl-dayev' }, ev.length ? ev.map((e) => `${e.icon} ${e.title}`).join('<br>') : '<span class="muted">Sakin gün</span>')));
+      el('div', { class: 'tl-dayev' }, ...(ev.length ? ev.map((e) => el('div', {}, `${e.icon} ${e.title}`)) : [el('span', { class: 'muted' }, 'Sakin gün')]))));
   }
   c1.appendChild(cal);
   c1.appendChild(el('div', { class: 'muted', style: { fontSize: '14px' } }, PERIODIC.map((p) => `${p.icon} ${p.title}: her ${p.every} günde bir — ${p.desc}`).join(' · ')));
@@ -185,5 +186,5 @@ export function openJournal(data = null) {
     body.appendChild(sc);
   };
   render();
-  ui.open(ui.panel('Korsan Defteri', body), { kind: 'journal', closeKeys: ['KeyJ'] });
+  ui.open(ui.panel('Korsan Defteri', body), { kind: 'journal', closeKeys: [input.bindings.defter] });
 }

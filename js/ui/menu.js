@@ -192,7 +192,7 @@ export const menu = {
       el('label', { class: 'set' }, 'Oda şifresi', pwIn),
       el('label', { class: 'set' }, 'Dünya / kayıt', sel(slots.map((s) => [s.slot, s.empty ? `Yuva ${s.slot + 1}: Yeni dünya` : `Yuva ${s.slot + 1}: ${s.name} (${fmtDate(s.savedAt)})`]), 0, (v) => { f.slot = +v; })),
       el('label', { class: 'set' }, 'Zorluk', sel([['kolay', 'Kolay'], ['normal', 'Normal'], ['zor', 'Zor']], 'normal', (v) => { f.difficulty = v; })),
-      el('label', { class: 'set' }, 'Dost ateşi', ff),
+      /* 'Dost ateşi' anahtarı kaldırıldı: oyuncular arası hasar yolu yok, işlevsiz seçenek yanıltıcıydı */
       el('div', { class: 'muted' }, 'Arkadaş daveti: oda kurulunca davet bağlantısını ve oda kodunu paylaş.'),
       el('div', { class: 'row', style: { justifyContent: 'flex-end', marginTop: '10px' } },
         el('button', { class: 'btn gold', onclick: async (e) => {
@@ -279,7 +279,7 @@ export const menu = {
     const chatLog = el('div', { style: { maxHeight: '120px', overflow: 'auto', marginTop: '10px', fontSize: '16px' } });
     const chatIn = el('input', { type: 'text', placeholder: 'Lobiye mesaj yaz…', maxlength: 140 });
     chatIn.addEventListener('keydown', (e) => { if (e.code === 'Enter' && chatIn.value.trim()) { net.chat(chatIn.value.trim()); chatIn.value = ''; } });
-    const offChat = G.on('chat', (m) => { chatLog.appendChild(el('div', {}, el('b', { style: { color: '#7a3a10' } }, m.from + ': '), m.text)); chatLog.scrollTop = 1e6; });
+    const offChat = G.on('chat', (m) => { while (chatLog.childElementCount > 200) chatLog.removeChild(chatLog.firstChild); chatLog.appendChild(el('div', {}, el('b', { style: { color: '#7a3a10' } }, m.from + ': '), m.text)); chatLog.scrollTop = 1e6; });
     this._lobbyRender = (roster) => {
       slots.innerHTML = '';
       for (let i = 0; i < (room.max || 4); i++) {
@@ -351,7 +351,7 @@ export const menu = {
       B('Dünya haritası', () => { ui.close(); G.emit('openMap'); }),
       B('Ayarlar', () => openSettings()),
       G.online ? B(`Oda kodu: ${net.room?.code || '-'} (kopyala)`, () => { navigator.clipboard?.writeText(`${location.origin}${location.pathname}?join=${net.room?.code}`); G.notify('Davet bağlantısı kopyalandı.', 'good'); }) : null,
-      B('Kontroller', () => ui.alert('Kontroller', `<span class="kbd">W A S D</span> hareket · <span class="kbd">Shift</span> koşma · <span class="kbd">Boşluk</span> zıpla/yukarı yüz · <span class="kbd">Ctrl</span> eğil/dal · <span class="kbd">E</span> etkileşim (basılı tut: aç/onar) · <span class="kbd">F</span> meşale · <span class="kbd">Q</span> işaret · <span class="kbd">Tab</span> envanter · <span class="kbd">M</span> harita · <span class="kbd">J</span> defter · <span class="kbd">K</span> korsan rütbesi · <span class="kbd">Sol fare</span> saldırı/kaz/at · <span class="kbd">Sağ fare</span> nişan/savunma · <span class="kbd">R</span> doldur/yem · <span class="kbd">V</span> kaçın · <span class="kbd">G</span> sandığı bırak · <span class="kbd">1-5</span> kılıç, tabanca, kürek, olta, harita · <span class="kbd">C</span> pusula<br><br><b>Gemi:</b> dümende A/D yön, W/S yelken miktarı, Boşluk yelkenleri aç/kapat. Çapa için baş taraftaki ırgata, toplar için yanlara git.`)),
+      B('Kontroller', () => ui.alert('Kontroller', `<span class="kbd">W A S D</span> hareket · <span class="kbd">Shift</span> koşma · <span class="kbd">Boşluk</span> zıpla/yukarı yüz · <span class="kbd">C</span> eğil/dal · <span class="kbd">E</span> etkileşim (basılı tut: aç/onar) · <span class="kbd">F</span> meşale · <span class="kbd">Q</span> işaret · <span class="kbd">Tab</span> envanter · <span class="kbd">M</span> harita · <span class="kbd">J</span> defter · <span class="kbd">K</span> korsan rütbesi · <span class="kbd">Sol fare</span> saldırı/kaz/at · <span class="kbd">Sağ fare</span> nişan/savunma · <span class="kbd">R</span> doldur/yem · <span class="kbd">V</span> kaçın · <span class="kbd">G</span> sandığı bırak · <span class="kbd">1-5</span> kılıç, tabanca, kürek, olta, harita · <span class="kbd">N</span> pusula<br><br><b>Gemi:</b> dümende A/D yön, W/S yelken miktarı, Boşluk yelkenleri aç/kapat. Çapa için baş taraftaki ırgata, toplar için yanlara git.`)),
       B('Ana menüye dön', () => ui.confirm(G.isHost ? 'Oyun kaydedilip ana menüye dönülsün mü?' : 'Odadan ayrılıp ana menüye dönülsün mü?', () => h.toMenu()), 'red'),
     );
     ui.open(ui.panel('Duraklatıldı', body), { kind: 'pause' });

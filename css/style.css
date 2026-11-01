@@ -472,3 +472,27 @@ body.spyglass-on #minimap { display: none; }
 .panel .chip { background: #5a3a1e; color: var(--parch); border-color: #3d2614; }
 .panel .chip:hover { background: #7a5028; color: var(--gold); }
 .panel .chip.on { background: var(--gold); color: #2a180b; border-color: #8a5a1a; }
+
+/* Küçük pencereler (960×540 vb.): gemi paneli zaman paneli/görev takipçisinin üstüne binmesin, boss çubuğu zaman paneliyle çakışmasın */
+@media (max-height: 640px) {
+  #ship-panel { bottom: auto; top: 104px; padding: 6px 10px; }
+  #ship-panel .sp-title { font-size: 18px; }
+  #ship-panel .sp-row { font-size: 13px; margin-top: 1px; }
+  #quest-tracker { left: 22px; right: auto; top: 250px; width: 320px; text-align: left; }
+  #quest-tracker .qt-title { font-size: 20px; }
+  /* bildirim yığını sol sütunda, boss çubuğunun altında ve daha dar (sağdaki gemi paneline değmez) */
+  #notify-stack { left: 22px; transform: none; top: 104px; width: min(400px, 36vw); gap: 4px; }
+}
+@media (max-width: 1100px) {
+  #boss-bar { left: 22px; transform: none; width: min(620px, 46vw); text-align: left; }
+  #notify-stack { top: 112px; }
+}
+/* Panel gövdesi pencereye sığmazsa kırpılmak yerine kaydırılır (960×540'ta 'Odayı oluştur' düğmesi erişilemezdi) */
+.panel > div:last-child { min-height: 0; overflow: auto; flex: 0 1 auto; }
+@media (max-height: 640px) {
+  .panel { padding: 12px 20px; }
+  .panel h2 { font-size: calc(30px * var(--ui-scale)); margin-bottom: 6px; }
+  .panel .set { padding: 5px 0; }
+  .panel .set select, .panel .set input { padding: 4px 8px; }
+  .panel .muted { margin: 4px 0; }
+}

@@ -2,10 +2,10 @@
 
 export const DEFAULT_BINDINGS = {
   ileri: 'KeyW', geri: 'KeyS', sol: 'KeyA', sag: 'KeyD',
-  kos: 'ShiftLeft', zipla: 'Space', egil: 'ControlLeft',
+  kos: 'ShiftLeft', zipla: 'Space', egil: 'KeyC', // Sol Ctrl tarayıcı kısayollarıyla (Ctrl+W/Tab/R) çakıştığı için C
   etkilesim: 'KeyE', fener: 'KeyF', isaret: 'KeyQ', envanter: 'Tab', harita: 'KeyM',
   saldiri: 'Mouse0', nisan: 'Mouse2', doldur: 'KeyR', kacin: 'KeyV',
-  defter: 'KeyJ', birak: 'KeyG', pusula: 'KeyC', sohbet: 'Enter', durbun: 'KeyZ', yetenek: 'KeyK',
+  defter: 'KeyJ', birak: 'KeyG', pusula: 'KeyN', sohbet: 'Enter', durbun: 'KeyZ', yetenek: 'KeyK',
   slot1: 'Digit1', slot2: 'Digit2', slot3: 'Digit3', slot4: 'Digit4', slot5: 'Digit5', slot0: 'Digit0',
   duraklat: 'Escape',
 };
@@ -60,6 +60,12 @@ export const input = {
       for (const l of this.listeners) l(e.code, true);
     });
     window.addEventListener('keyup', (e) => { this.down.delete(e.code); });
+    // tuş atama yakalaması: fare düğmeleri ayar paneli açıkken de (tuval dışında) yakalanır
+    window.addEventListener('mousedown', (e) => {
+      if (!this.captureNext) return;
+      e.preventDefault(); e.stopPropagation();
+      const f = this.captureNext; this.captureNext = null; f('Mouse' + e.button);
+    }, true);
     window.addEventListener('blur', () => { this.down.clear(); });
     canvas.addEventListener('mousedown', (e) => {
       if (this.captureNext) { const f = this.captureNext; this.captureNext = null; f('Mouse' + e.button); return; }

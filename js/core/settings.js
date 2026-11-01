@@ -1,4 +1,5 @@
 import { DEFAULT_BINDINGS, input } from './input.js';
+import { terrain } from '../world/terrain.js';
 import { audio } from './audio.js';
 import { engine } from './engine.js';
 import { tpCamera } from '../player/camera.js';
@@ -23,7 +24,12 @@ export const settings = {
   load() {
     try {
       const s = JSON.parse(localStorage.getItem(KEY) || 'null');
-      if (s) this.v = { ...DEFAULT_SETTINGS, ...s, bindings: { ...DEFAULT_BINDINGS, ...(s.bindings || {}) } };
+      if (s) {
+        const b = { ...DEFAULT_BINDINGS, ...(s.bindings || {}) };
+        // eski varsayılan (Sol Ctrl eğil, C pusula) kaydedilmişse yeni varsayılana taşı: Ctrl+W sekmeyi kapatıyordu
+        if (b.egil === 'ControlLeft' && b.pusula === 'KeyC') { b.egil = 'KeyC'; b.pusula = 'KeyN'; }
+        this.v = { ...DEFAULT_SETTINGS, ...s, bindings: b };
+      }
     } catch (e) { /* varsayılan */ }
     return this.v;
   },
@@ -41,11 +47,22 @@ export const settings = {
     audio.vol = { master: v.master, music: v.music, ambient: v.ambient, sfx: v.sfx, voice: v.voice };
     audio.applyVolumes();
     if (engine.renderer) {
-      engine.fpsLimit = v.vsync ? (v.fpsLimit || 0) : (v.fpsLimit || 0);
+      engine.fpsLimit = v.fpsLimit || 0;
       engine.setRenderScale(v.renderScale);
       engine.renderer.shadowMap.enabled = v.shadows !== 'off';
+      // gölge haritası boyutu seviyeye göre (orta 1024, yüksek 2048)
+      const sm = v.shadows === 'high' ? 2048 : 1024;
+      engine.scene?.traverse((o) => {
+        if (o.isDirectionalLight && o.shadow && o.shadow.mapSize.x !== sm) {
+          o.shadow.mapSize.set(sm, sm);
+          if (o.shadow.map) { o.shadow.map.dispose(); o.shadow.map = null; }
+        }
+      });
       engine.camera.far = 1500 + 3500 * v.viewDistance;
       engine.camera.updateProjectionMatrix();
+      // görüş mesafesi: arazi akış/LOD yarıçapı (%30 → 0,79×, %100 → 1,0×)
+      if (terrain.baseLod === undefined) terrain.baseLod = terrain.lodScale || 1;
+      terrain.lodScale = terrain.baseLod * (0.7 + 0.3 * v.viewDistance);
       post.setQuality(v.effects);
     }
     document.documentElement.style.setProperty('--ui-scale', v.uiScale);
