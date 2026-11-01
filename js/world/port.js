@@ -171,6 +171,29 @@ export const port = {
     tdeck.position.set(10, pierTop - 0.15, tz);
     scene.add(tdeck);
     physics.addPlatform(10, tz, tW / 2, tD / 2, 0, pierTop, 'pier');
+    // sudan iskeleye çıkış: T başlığının doğu kenarından denize inen taş merdiven. Yüzen oyuncunun ayağı su yüzeyinin 1.35 m
+    // altındadır (gelgit ±0.55 m; liman kanalı 9 m derin olduğundan dalga sönümsüz, ±1.1 m), 0.6 m'den yüksek basamağa çıkamaz.
+    // Su altı basamakları 0.3 m, su üstü basamakları 0.55 m yükselir; en alt basamak −2.4 m (gelgit −0.55 + dalga çukuru −1.1'de
+    // ayak −3.0 → 0.6 m penceresinde). Taş kolonlar deniz tabanına kadar dolu çizilir; çarpıştırıcı da tam yükseklik
+    // (platform yan bandı yerine), yüzücü/dalgıç taşın içinden geçemez. Önce iskeleye sudan çıkış yoktu.
+    {
+      const stairMat = M('stair', () => texMat(stone('#8d8578', 23), 1, 0.5));
+      const tops = [-2.4, -2.1, -1.8, -1.5, -1.2, -0.9, -0.6, -0.05, 0.5, 1.05, 1.6, 2.15];
+      const width = 2.4;
+      let sx = 10 + tW / 2; // T başlığının doğu kenarı; basamaklar doğuya doğru alçalır
+      for (let i = tops.length - 1; i >= 0; i--) {
+        const top = tops[i], tread = top < -0.3 ? 0.6 : 0.8;
+        sx += tread / 2;
+        const base = Math.min(top - 0.3, terrain.heightAt(sx, tz) - 0.3);
+        const sm = box(tread, top - base, width, stairMat);
+        sm.position.set(sx, (top + base) / 2, tz);
+        sm.receiveShadow = true;
+        scene.add(sm);
+        physics.addPlatform(sx, tz, tread / 2, width / 2, 0, top, 'pier', false);
+        physics.addBox(sx, tz, tread / 2, width / 2, 0, base, top - 0.6, 'pier'); // tam yükseklik yan yüz; üst 0.6 m basamak penceresi
+        sx += tread / 2;
+      }
+    }
     const postMat = M('post', () => texMat(woodPlanks('#4a321e', 21, 3), 0.4, 2));
     const posts = [];
     for (let z = z0 - 4; z < z0 - 6 + pierLen; z += 3.2) posts.push([10 - pierW / 2 + 0.2, z], [10 + pierW / 2 - 0.2, z]);

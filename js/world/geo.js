@@ -44,7 +44,10 @@ function islandH(I, x, z) {
   const d = dist / Re;
   if (d >= 1) {
     const t = smoothstep(1.0, 2.1, d);
-    return SEA_FLOOR * Math.pow(t, 1.25) + fbm(x / 22, z / 22, 2) * 0.9 * (1 - t);
+    // deniz tabanı gürültüsü kıyı çizgisinde sıfırdan başlar: kumsal tarafı d=1'de 0'dır, önce burada ±0.9 m sıçrama (görünür kıyı
+    // basamağı) oluşuyordu. Gürültü d∈[1, 1.3] bandında açılır: daha dar bant (1.12) kıyı ötesinde pozitif gürültüyü su üstüne
+    // çıkarıp kum setleri bırakıyordu (ışınların %15,9'u); 1.3'te taban yeterince derindir (%0,1).
+    return SEA_FLOOR * Math.pow(t, 1.25) + fbm(x / 22, z / 22, 2) * 0.9 * (1 - t) * smoothstep(1.0, 1.3, d);
   }
   const shape = I.shape || 'normal';
   const beachW = shape === 'glacier' || shape === 'spire' ? 0.6 : 1.5;

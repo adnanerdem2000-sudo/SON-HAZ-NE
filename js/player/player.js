@@ -565,10 +565,13 @@ export class Player {
     }
     // suya girdi mi?
     const wh = ocean.heightAt(this.pos.x, this.pos.z);
-    if (this._modeT <= 0 && this.pos.y < wh - 1.15 && g < wh - 1.35) {
-      this.enterWater();
-      return;
-    }
+    // platform (iskele basamağı) üzerinde: derin su kanalında dalga sönümsüzdür (±1.1 m); giriş eşiği 0.3 m daha derin ve 0.5 s
+    // süreklilik aranır, yoksa su hattındaki basamakta duran oyuncu dakikada 16 kez yüzme/yürüme kipi değiştiriyordu
+    const dw = this.onPlatform ? 0.3 : 0;
+    if (this._modeT <= 0 && this.pos.y < wh - 1.15 - dw && g < wh - 1.35 - dw) {
+      this._wetT = (this._wetT || 0) + dt;
+      if (!this.onPlatform || this._wetT >= 0.5) { this._wetT = 0; this.enterWater(); return; }
+    } else this._wetT = 0;
     if (this.onGround && g > 0.5) this.lastSafe.copy(this.pos);
     // animasyon
     const hs = Math.hypot(this.vel.x, this.vel.z);
@@ -671,7 +674,9 @@ export class Player {
     }
     if (this._edgeT > 0) this._edgeT -= dt;
     if (this.pos.y > surfaceY) { this.pos.y = damp(this.pos.y, surfaceY, 8, dt); if (this.vel.y > 0) this.vel.y = 0; }
-    const floor = terrain.heightAt(this.pos.x, this.pos.z);
+    // zemin: arazi + ayak hizasının 0.6 m üstüne kadar olan platformlar (iskele basamağı, batık taş). Önce yalnız arazi
+    // alınıyordu: yüzen oyuncu hiçbir platforma çıkamıyor, sığ basamağın içinden geçiyordu (B-07).
+    const floor = physics.groundAt(this.pos.x, this.pos.z, this.pos.y, 0.6);
     if (this.pos.y < floor + 0.15) this.pos.y = floor + 0.15;
     physics.resolve(this.pos, 0.35, this.pos.y);
     this._shipHullPush();

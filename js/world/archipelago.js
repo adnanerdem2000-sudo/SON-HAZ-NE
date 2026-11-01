@@ -238,6 +238,28 @@ function generate() {
       if (r > 90 && t < 0.38) isl.features.push({ type: 'camp', angle: R() * 6.28, dist: 0.45, enemies: enemiesFor[0], fire: true });
       else if (r > 80 && t < 0.72) isl.features.push({ type: reg === 'hayalet' ? 'graveyard' : 'ruin', angle: R() * 6.28, dist: 0.4, enemies: enemiesFor[1], night: reg === 'hayalet' || reg === 'merkez' ? ['hayalet', 'hayalet_nisanci'] : null });
       if (R() < 0.35) isl.features.push({ type: 'beach_wreck', angle: R() * 6.28, dist: 0.93 });
+      // her adacığın en az bir belirleyici özelliği olsun (ayırt edilebilirlik): biyoma özgü havuz, adacık konumuyla tohumlanmış
+      // ayrı rng (ana akış değişmez → ada yerleşimi v0.3 ile birebir aynı)
+      if (!isl.features.length) {
+        const R2 = rng(Math.abs(isl.x * 73 + isl.z * 151) + 17);
+        const pool = {
+          merkez: ['lighthouse', 'ruin', 'beach_wreck'], buzul: ['ruin', 'beach_wreck', 'camp'], tropik: ['ruin', 'beach_wreck', 'lighthouse'],
+          volkan: ['mine', 'ruin', 'beach_wreck'], col: ['mine', 'ruin', 'camp'], hayalet: ['graveyard', 'ruin'],
+        }[reg];
+        let type = pool[Math.floor(R2() * pool.length)];
+        if (type === 'camp' && r < 90) type = 'ruin';
+        if (type === 'mine' && r < 80) type = 'ruin';
+        if (type === 'graveyard' && r < 100) type = 'ruin';
+        // dik/çukurlu şekillerde (volkan konisi, kaya kulesi, bataklık havuzları) düzlük isteyen yapı kıyıya taşan kaide ya da
+        // su çukuru kenarında kule bırakır (arazi burada sorgulanamaz: geo.js bu modülü içe aktarır) → kıyı özelliği seçilir
+        if (shape === 'volcano' || shape === 'spire' || shape === 'swamp') type = 'beach_wreck';
+        const atoll = shape === 'atoll';
+        // batık 0.82·r: kıyı gürültüsüyle (Re = r·(1+rn)) 0.93 bazen suya düşüyordu
+        const f = { type, auto: true, angle: R2() * 6.28, dist: type === 'beach_wreck' ? 0.82 : atoll ? 0.62 : type === 'lighthouse' ? 0.2 : 0.42 };
+        if (type === 'camp') { f.enemies = enemiesFor[0]; f.fire = true; }
+        else if (type === 'ruin' || type === 'graveyard') { f.enemies = enemiesFor[1]; f.night = reg === 'hayalet' || reg === 'merkez' ? ['hayalet', 'hayalet_nisanci'] : null; }
+        isl.features.push(f);
+      }
       all.push(isl);
       taken.push({ x: isl.x, z: isl.z, r: isl.r });
       made++;
@@ -284,9 +306,13 @@ export const BOSS_SITES = [];
         f.pier = { x: px, z: pz };
         f.mooring = { x: I.x + Math.cos(a) * (I.r * 1.02 + 34), z: I.z + Math.sin(a) * (I.r * 1.02 + 34) };
       } else if (['camp', 'fort', 'ruin', 'graveyard', 'mine', 'market', 'ruined_town', 'prison'].includes(f.type)) {
-        const rr = { camp: 20, fort: 30, ruin: 24, graveyard: 34, mine: 26, market: 22, ruined_town: 46, prison: 44 }[f.type];
+        const rr0 = { camp: 20, fort: 30, ruin: 24, graveyard: 34, mine: 26, market: 22, ruined_town: 46, prison: 44 }[f.type];
+        // küçük adacıkta (otomatik özellik) düzlük yarıçapı adaya göre küçülür: 24+18 m'lik düzlük 56 m'lik adada kıyıya taşıp
+        // denize inen 27 m'lik kaide bırakıyordu (kıyı sıçramaları geri geliyordu)
+        const small = f.auto && I.r < 110;
+        const rr = small ? Math.min(rr0, Math.round(I.r * 0.22)) : rr0;
         f.r = rr;
-        EXTRA_MODS.push({ type: 'flatten', x: f.x, z: f.z, r: rr, h: null, blend: 18, island: I.id });
+        EXTRA_MODS.push({ type: 'flatten', x: f.x, z: f.z, r: rr, h: null, blend: small ? Math.min(18, Math.round(I.r * 0.12)) : 18, island: I.id });
       } else if (f.type === 'temple') {
         f.r = 60;
         EXTRA_MODS.push({ type: 'flatten', x: f.x, z: f.z, r: 62, h: null, blend: 40, island: I.id });
@@ -297,7 +323,9 @@ export const BOSS_SITES = [];
       }
       if (POI_ICON[f.type] && f.type !== 'port') EXTRA_POIS.push({ id: fid, name: f.name || POI_NAME[f.type], x: f.x, z: f.z, icon: POI_ICON[f.type], island: I.id });
       if (f.type === 'port') EXTRA_POIS.push({ id: fid, name: f.name, x: f.x, z: f.z, icon: 'port', island: I.id, port: true });
-      if (f.type === 'beach_wreck' || f.type === 'sunken_city') EXTRA_WRECKS.push({ id: fid, name: POI_NAME[f.type], x: f.x, z: f.z, yaw: R() * 6.28, depth: f.type === 'sunken_city' ? -10 : 0.2, beached: f.type === 'beach_wreck' });
+      // otomatik özellik paylaşımlı R akışını tüketmez: aksi hâlde sonraki adaların kazı noktaları/ipuçları ve batık yönleri kayar
+      // (v0.3 kayıtlarındaki hazine haritaları başka yeri gösterirdi)
+      if (f.type === 'beach_wreck' || f.type === 'sunken_city') EXTRA_WRECKS.push({ id: fid, name: POI_NAME[f.type], x: f.x, z: f.z, yaw: (f.auto ? rng(Math.abs(f.x * 73 + f.z * 151) + 29) : R)() * 6.28, depth: f.type === 'sunken_city' ? -10 : 0.2, beached: f.type === 'beach_wreck' });
     }
     // kazı noktaları: adanın büyüklüğüne göre 1-3 tane, ipucu nesnesiyle
     const n = I.r > 220 ? 3 : I.r > 110 ? 2 : 1;
