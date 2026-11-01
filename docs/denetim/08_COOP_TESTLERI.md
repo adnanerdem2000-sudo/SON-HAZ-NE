@@ -56,9 +56,19 @@ parçacığını doyurmasıydı (çizim durdurulunca aynı senaryo 15 dk yerine 
 | 15 | F-06 Düşman mermileri konukta görsel | GEÇTİ | 1 görsel mermi |
 | 16 | Senaryo sonunda iki taraf oyunda, sayfa hatası yok | GEÇTİ | |
 
-## 8.3 4 oyuncu
-4 oyunculu koşu bellek baskısı nedeniyle doğrulayıcı iş akışları durdurulduktan sonra yapılır (bkz. bilinen sorunlar #9); sonucu
-bu bölüme işlenir.
+## 8.3 4 oyuncu (06c, Aşama 9)
+Senaryo `tests/scenarios/coop/06c_dort_oyuncu.cjs` (4 sekme, 480×270, yerel PeerJS sunucusu). Koşu 423 sn, 7/7 GEÇTİ, sayfa hatası 0.
+
+| # | Kontrol | Sonuç | Ölçüm |
+|---|---|---|---|
+| D4-01 | Lobide 4 kayıt | GEÇTİ | Kaptan, Tayfa, Lostromo, Topçu |
+| D4-02 | 4 oyuncu da oyunda | GEÇTİ | 4 × `playing` |
+| D4-03 | Her oyuncu 3 uzak oyuncu görür | GEÇTİ | [3, 3, 3, 3] |
+| D4-04 | Bir konuğun sohbeti diğer 3 oyuncuya ulaşır | GEÇTİ | her sekmede 1 sohbet olayı |
+| D4-05 | Konuğun hareketi başka bir konukta görünür | GEÇTİ | (8,2; 214) → (14,2; 218): ~7 m |
+| D4-06 | Arayüzdeki "menüye dön" yoluyla ayrılan konuk aynı adla geri gelir | GEÇTİ | ayrılınca roster 3, dönünce 4, çift ad yok, konuk 3 uzak oyuncu görüyor |
+| D4-07 | Sekmesi kapanan konuk herkeste kalkar | GEÇTİ | 13 sn'de (kalp atışı), kalan 3 oyuncuda uzak sayısı 2 |
+
 
 ## 8.4 Gecikme / kayıp / kopma / yeniden bağlanma
 - Kopma: 06a'da bir konuğun sekmesi kapatılır; ev sahibi ve diğer konukta dümen kilidi ve uzak oyuncu temizliği doğrulanır.
@@ -80,3 +90,11 @@ Ekran görüntüleri: `/tmp/p6/ui_oda_kur_960.png`, `/tmp/p6/ui_hud_960.png` (or
 Aynı derlemede (A grubu + Aşama 6 değişiklikleri) `00_acilis`, `03_fizik_duzeltmeler`, `04_karakter`, `05_dusman_ai` yeniden
 koşturuldu: 4/4 senaryo 0 hata, 0 sayfa hatası. Kalıcılık (`08_kalicilik`) 13/13, ekonomi (`07_ekonomi`) 2/2, arayüz
 (`06_arayuz_960`) 2/2.
+
+## 8.7 Aşama 9 tam regresyon (co-op)
+| Senaryo | Oyuncu | Sonuç | Not |
+|---|---|---|---|
+| `06b_esitlik_senkron.cjs` | 2 | 17/18 → düzeltme sonrası 18/18 GEÇTİ (doğal atış yine gelmedi; ev sahibinde oluşturulan mermi konukta görüldü: `vis 1`) | F-06: nişancı bu koşuda 10 sn içinde ateş etmedi (ev sahibinde de mermi 0: senkron hatası değil, kontrol rastlantısaldı). Kontrol, doğal atış gelmezse ev sahibinde doğrudan mermi oluşturacak şekilde belirlenimli yapıldı |
+| `06a_ag_guvenligi.cjs` | 3 | 9/10 → düzeltme sonrası 10/10 GEÇTİ (kopma 14 sn'de algılandı, kilit iki tarafta kalktı) | H13: kontrol kalp atışından önce yazılmıştı (kapanıştan sonra yalnız ~4 sn bekliyordu); 06a2 gibi en çok 30 sn bekleyecek şekilde düzeltildi |
+| `06a2_mesaj_kopma.cjs` | 3 | 3/3 GEÇTİ | büyük ileti düşürme, kopma temizliği |
+| `06c_dort_oyuncu.cjs` | 4 | 7/7 GEÇTİ | §8.3 |

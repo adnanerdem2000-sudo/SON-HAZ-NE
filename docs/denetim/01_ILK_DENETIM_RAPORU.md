@@ -4,8 +4,8 @@ Denetlenen sürüm: commit `762f1c7` (etiket `yedek-v0.3`). Yöntem: sekiz alan 
 
 ## 1.1 Özet
 
-- İncelenen alan grubu: 8 · Bildirilen hata iddiası: 147 · Doğrulanan: 100 · Tartışmalı: 0 · Belirsiz: 45 · Çürütülen: 2 · Ek bulgu: 39
-- Doğrulanan hataların önem dağılımı: Kritik 1, Yüksek 10, Orta 35, Düşük 54
+- İncelenen alan grubu: 8 · Bildirilen hata iddiası: 147 · Doğrulanan: 142 · Tartışmalı: 0 · Belirsiz: 2 · Çürütülen: 3 · Ek bulgu: 51
+- Doğrulanan hataların önem dağılımı: Kritik 2, Yüksek 17, Orta 45, Düşük 78
 
 ## 1.2 Alan durumları
 
@@ -285,3 +285,15 @@ Değişiklik riskleri: Herkese açık odalar + doğrulamasız mesajlar + innerHT
 | H_coop_ui | 5 | 9 | 5 | 3 |
 
 Öncelikli hata listesi ve kök nedenler: `02_HATA_LISTESI.md`. Geliştirme önerileri: `02_HATA_LISTESI.md` sonu.
+
+## 1.9 Doğrulama kapsamı ve dürüstlük notları (Aşama 9'da eklendi)
+- Çift mercekli doğrulama kapsamı: **statik çürütücü** 8/8 grup (D_fizik ve H_coop_ui Aşama 9'da tamamlandı: D 20 iddia → 19 doğru,
+  1 belirsiz, 4 ek bulgu; H 25 iddia → 23 doğru, 1 yanlış (H12: batma konukta da hesaplanıyor; yalnız gülle sayacı sapması), 1 belirsiz
+  (H23: dinleyici ezilmesi normal arayüzden ulaşılamaz), 8 ek bulgu). **Çalıştırarak doğrulayıcı** yalnız A_motor, B_dunya, E_gemi
+  gruplarında koştu; C/D/F/G/H için çalıştırarak doğrulama yapılmadı (iş akışı bellek sınırı nedeniyle durduruldu). Bu grupların
+  iddiaları Aşama 3–8'in senaryolarıyla (03–11 numaralı senaryolar) dolaylı olarak sınandı; 02. belgede her maddenin durumu yazılıdır.
+- Süreç hatası: 31 Ekim 21:43–22:20 arasında bir yama betiğinin "kuru çalıştırması" ana çalışma ağacındaki `js/core/input.js` ve
+  `js/game/game.js` dosyalarını geçici olarak değiştirdi ve `git checkout` ile geri alındı. Bu pencerede koşan E_gemi ve B_dunya
+  çalıştırarak doğrulamalarının bir kısmı değiştirilmiş kodu görmüş olabilir; etkilenebilecek iddialar (kare hızı/giriş ile ilgili
+  olanlar) Aşama 3–4 testleriyle yeniden sınandı.
+- Bu rapordaki durumlar v0.3 kodunu anlatır; düzeltmeler 03. belgede, kalan açık maddeler 11. belgededir.

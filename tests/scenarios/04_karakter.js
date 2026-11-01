@@ -4,6 +4,9 @@
 [
  {js: `DK.G.noAutoPause=true; DK.handlers.startGame({kind:'solo', slot:2, data:null}); 'ok'`},
  {wait: 4000, expect: {js: `DK.G.state`, eq: 'playing', label: 'Oyun başladı'}},
+ // Mantık DK.sim ile sınanır; gerçek zamanlı çizim kısılır (co-op senaryolarındaki gibi). Yazılımsal GPU'da kamera güverteye ışınlanınca
+ // ~1 000 çağrılık kareler 10–15 sn sürüp renderer belleğini 3–6 GB'a çıkarıyordu (Aşama 9 regresyonunda bir kez bellek sınırı).
+ {js: `DK.engine.fpsLimit = 2; 'çizim kısıldı'`},
  // C01: yüzerken gövde kaldırması uygulanıyor (overlay.lift > 0.5 ve model.position.y yükseldi)
  {expect: {js: `(()=>{ const p=DK.G.player; p.mode='ground'; p.ship=null; p.pos.set(-200, -1.3, 300); p.vel.set(0,0,0); DK.sim(0.5,1/60); if (p.mode!=='swim') p.enterWater(); DK.tpCamera.yaw=0; DK.input.down.add('KeyW'); DK.sim(3,1/60); DK.input.down.clear(); const c=p.char; window._swim={mode:p.mode, lift:+(c.overlay.lift||0).toFixed(2), modelY:+c.model.position.y.toFixed(2), baseY:+c.baseY.toFixed(2), pitch:+c.model.rotation.x.toFixed(2)}; return p.mode==='swim' && (c.overlay.lift||0) > 0.5 && c.model.position.y > c.baseY + 0.4; })()`, truthy: true, label: 'C01 Yüzerken gövde kaldırması Character.update tarafından uygulanıyor'}},
  {js: `window._swim`},

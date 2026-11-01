@@ -58,6 +58,7 @@ ortamda FPS'e dönüştürülemediği için yalnız kaynak sayaçlarıyla ölç�
 | `Animal.dispose`: prosedürel geometri/malzeme, glb klonunda Animated.dispose | domuz bölgesi +140 geometri/döngü, timsah +102, yılan +132; yarasa +2 geometri +28 doku/döngü | domuz/timsah/yılan 0/0 (kamerada); yarasa 0/0 (ısınma sonrası) |
 | `hazards._dropSet`: `own()` işaretli geometri/malzemeler | (kamerada ölçülmedi) | ada kur/sök döngüsü büyüme 0 (kamerada) |
 | weatherfx/details/worldEvents dispose | — (kod incelemesi) | — |
+| HUD DOM yazımları değişiklik algılamalı (pusula işaretleri her karede `innerHTML`, istem metinleri kare başına 2 kez) | 60 sn benzetimde 1 800 pusula yazımı; dümende 90 sn'de CDP düğüm sayısı 58 636 | pusula yalnız tür/renk değişince yeniden kurulur; dümende 90 sn'de 784 düğüm |
 | Oluşturucu `onClose` temizliği, harita çift açılış (H23/H24) | açılış başına +1 window dinleyicisi; rAF döngüsü sürüyor; 2 harita | 0 dinleyici; kapanıştan sonra oluşturucu rAF çağrısı yok; 1 harita (`11_arayuz_sizinti.js`) |
 
 Not: `kk.texture` renk atlası önbelleği 96 girişle sınırlıdır (FIFO, eski doku bırakılır); rastgele görünümlü düşmanlarla ilk
@@ -83,3 +84,11 @@ Yöntem: sahnenin üst düzey çocukları tek tek gizlenip çağrı farkı ölç
 - Çizim çağrısı: liman 1 036 → 999; 10.5 dağılımı ve adaylar yol haritasında. Gerçek GPU'da 60 FPS hedefi bu ortamda doğrulanamaz
   (10.1); CPU benzetimi ≤ 2,5 ms/kare.
 
+## 10.7 Bellek: gerçek zamanlı oynanış ve uzun benzetim
+| Ölçüm | Sonuç |
+|---|---|
+| Gerçek zamanlı 3 dk (DK.sim yok, ~10 FPS yazılımsal) | RSS 1,05–1,16 GB düz; JS yığını 41–53 MB; ArrayBuffer ~65 MB; DOM ~745 düğüm |
+| Hızlandırılmış benzetim, 90 sn'lik dilim (çöp toplama yok) | Blink yığını dilim sonunda 430–650 MB, RSS dilim başına ~+0,5 GB → 30 dk'da OOM (test yöntemi sınırı, §4.8) |
+| Aynı, dilimler arasında `gc()` | Blink yığını ~200 MB'a, RSS ~0,8 GB'a döner; tepe ≤ 1,5 GB |
+| 30 dk benzetimli oturum (`10_uzun_oturum.js`, alt dilim + olay döngüsüne teslim + gc) | 5/5 GEÇTİ; RSS tepesi 959 MB (çoğunlukla 0,47–0,85 GB); JS yığını 103–115 MB (kesin ölçüm), Blink yığını 5–46 MB; geometri 4.–16. dilimde 1 143–1 152 (artış medyanı ≤ 1/dilim); doku 236 sabit; kare maliyeti 1,5–1,9 ms |
+| `04_karakter.js` (güverteye/dümene ışınlanma adımları) | Yazılımsal GPU'da gerçek zamanlı çizim açıkken bazı adımlar 10–15 sn sürüp RSS 3–6 GB'a çıkıyordu (bir regresyon koşusunda bellek sınırı); CPU profili ana iş parçacığını çoğunlukla boşta/yerel kodda gösterdi (JS < 0,1 sn). Senaryo DK.sim ile sınadığı için çizim kısıldı (`fpsLimit 2`): 36 sn, RSS ≤ 1,2 GB, iki ardışık koşu 21/21 |

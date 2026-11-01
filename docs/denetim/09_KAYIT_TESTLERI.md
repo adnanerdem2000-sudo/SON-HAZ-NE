@@ -22,3 +22,16 @@ hikâye aşaması ve bayraklar her katılımda ev sahibinden gelir (A7/A16/B06).
 (bilinen sorunlar listesine bakınız).
 
 Kaydedilmeyenler (bilinçli): yuvarlanan kaya konumu (yüklemede yeniden kurulur), yüzen olay nesneleri, ganimet keseleri (oturum geçici).
+
+## 9.1 Üç ardışık kayıt/yükleme döngüsü (Aşama 9, `tests/scenarios/12_kayit_dongusu.js`)
+Her döngüde oyuncu konumu/sağlığı/envanteri, gemi gövde ve pruva hasarı, ada ödülü, kırık sandık ve kamp beklemesi değiştirilir;
+`game.serialize()` → `save.write` → `startGame(data)` ile yüklenip doğrulanır. Sonuç 4/4 GEÇTİ (ilk regresyon koşusunda K01 test
+beklentisi yüzünden kaldı: kamp beklemesi zamanla azalır, kayıttan önce ve yüklemeden sonra geçen 1 sn hesaba katılmamıştı; düzeltildi).
+
+| Döngü | Sağlık | Gemi gövde / pruva | Ada ödülü (birikimli) | Kamp beklemesi (beklenen 100+k−1) | Konum | Kayıt boyutu |
+|---|---|---|---|---|---|---|
+| 1 | 65 ✓ | 51 / 41 ✓ | 1 ✓ | 100,0 ✓ | (−57, 120) ✓ | 16 452 B |
+| 2 | 70 ✓ | 52 / 42 ✓ | 2 ✓ | 101,0 ✓ | (−54, 120) ✓ | 16 536 B |
+| 3 | 75 ✓ | 53 / 43 ✓ | 3 ✓ | 102,0 ✓ | (−51, 120) ✓ | 16 606 B |
+
+Kayıt boyutu döngüler arasında yalnız eklenen durum kadar büyüdü (+84 B, +70 B); yüklemeden sonra oyun açık, sayfa hatası 0.

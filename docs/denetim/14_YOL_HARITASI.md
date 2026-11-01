@@ -6,7 +6,7 @@
 1. **Gerçek GPU doğrulaması**: 60 FPS hedefi, gölge/LOD ayarları ve görsel regresyon yalnız gerçek ekran kartında doğrulanabilir
    (bu ortam SwiftShader). El ile test listesi: 12. belge.
 2. **Boss savaşları uçtan uca**: Kraken/Yılan/Taş Muhafız/Volkanik Dev/Amiral — gerçek oynanış ve co-op (ek-108 rün sütunları).
-3. **4 oyunculu co-op koşusu** ve gecikme/kayıp emülasyonu (tc/netem olan bir makinede).
+3. **Gecikme/kayıp emülasyonu** (tc/netem olan bir makinede) ve farklı ağlardan gerçek 2–4 oyunculu deneme (4 oyunculu yerel koşu Aşama 9'da yapıldı, 08. belge §8.3).
 4. **Ambar otoritesi**: eşya aktarımını niyet iletilerine çevir (bilinen sorunlar #13).
 
 ## Orta vade (co-op dayanıklılığı)
@@ -20,4 +20,13 @@
 
 ## Teknik borç
 10. 120 FPS'te ≤%3 entegrasyon farkı için sabit 1/60 birikimli adım + görsel ara değerleme.
-11. Dinleyici sızıntıları (H23/H24), rijit cisim entegratörü, yedek kipte üretim bütçesi.
+11. Rijit cisim entegratörü, yedek kipte üretim bütçesi. (H23/H24 dinleyici sızıntıları Aşama 8'de kapatıldı.)
+
+## Performans (Aşama 8–9 ölçümlerinden)
+12. **Çizim çağrısı**: kit karakteri 14–29 ayrı örgü (NPC başına 13–32 çağrı) → gövde parçalarının tek iskeletli örgüde
+    birleştirilmesi; prosedürel hayvan parçalarının birleştirilmesi; gölge atan nesne budaması (limanda gölge geçişi 258 çağrı).
+13. **Kare başına Blink çöpü**: mini harita tuvali ve HUD stil yazımları kare başına ~5 KB Blink nesnesi üretir (gerçek zamanlı
+    oynanışta toplanıyor, bellek düz); mini harita çizimini değişmeyen katmanları önbelleğe alarak (taban+sis bir kez, yalnız
+    işaretler her kare) azaltmak.
+14. **Kaynak ömrü kuralı**: yeni sistemlerde `disposeTree` (js/core/dispose.js) ya da paylaşımlı kaynak kullanımı; `09_performans.js`
+    oluştur/kaldır döngüleri her yeni nesne türü için genişletilmeli.

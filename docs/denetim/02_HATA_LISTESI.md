@@ -2,7 +2,7 @@
 
 Sıralama: doğrulanmış hatalar önce, sonra tartışmalı, belirsiz ve tek merceğin eklediği bulgular; her blok önem derecesine göre. Çürütülen iddialar ekte (3. bölüm) kayıt altında tutulur. Dosya:satır değerleri `762f1c7` sürümüne göredir.
 
-## 1. Doğrulanan hatalar (100)
+## 1. Doğrulanan hatalar (142)
 
 ### E-01 — Hızlı yolculuk sonrası eski çapa noktası kalıyor: zincir gemiyi kilometrelerce öteye 800 m/s ile fırlatıyor
 - **Önem:** Kritik · **Grup:** E_gemi · **Yer:** `js/main.js:284` · **Güven:** 0.97
@@ -13,6 +13,15 @@ Sıralama: doğrulanmış hatalar önce, sonra tartışmalı, belirsiz ve tek me
 - Önerilen düzeltme: Gemi taşıyan her yerde (fastTravel, raiseShip, replaceShip, menü) `s.anchorPt = null` ver (gerekirse hemen `s._setAnchorPoint()`). Savunma olarak ship.js'de çekişi sınırla: `const pull = Math.min(d - chain, 8) * 1.6 * dt` ve `d > chain * 4` ise çapayı yeniden konumlandır. Ortak bir `ship.relocate(x, z, yaw, {anchored})` yardımcısı ekle.
 - Statik mercek: main.js:283-285 gemiyi taşıyıp `anchorState='down'; anchorT=1; anchored=true` veriyor ama anchorPt'ye dokunmuyor. ship.js:280 `if (this.anchored && !this.anchorPt) this._setAnchorPoint();` yalnız anchorPt boşken çalışır; demirli her gemi (ana liman dâhil, çünkü 280 orada da çalışır) dolu bir anchorPt taşır. ship.js:324-325 `docked` yalnız Ship.dock'a (<14 m) bakar; Ship.dock tek yerde, shipControl.js:24'te ana liman demir yerine yazılır (Grep: başka yazım yok). Varış ana liman dışıysa ship.js:332-343 zincir dalı çalışır: `pull = (d - chain) * 1.6 * dt` sınırsız; d ≈ 1.9 km → kare başına ~100 m/s eklenir, sönüm yalnız exp(-1.45·dt). quests.js:412-419: hedef listesi keşfedilen TÜM limanlar (core olmayanlar dâhil); koşul yalnız `ports.atShip(G.ship,120) === here`. Koşu kanıtı (önceki tur, r1.json adım 9 'fasttravel-chain'): oldPt (-194.6, 817.9) → varış tuz_pazari_port_0 (1681.8, 808.3); chainDist 1876 m, 3 sn'de sürüklenme 1573 m, azami hız 802 m/s; anchorPt=null ile 0.2 m. Düzeltme notu: iddiadaki 'replaceShip de etkilenir' kısmı yanlış — replaceShip yeni Ship nesnesi kurar (anchorPt tanımsız), sorun yalnız fastTravel ve raiseShip (ana limanda Ship.dock maskeler). Çapa yukarıdayken (anchorPt=null) yola çıkılırsa hata oluşmaz; ancak liman diyaloğu demirli olmayı şart koşmadığı için nadir durumdur, oyuncular genellikle demirler.
 - Çalıştırma merceği: Statik: main.js:283-285 gemiyi taşırken anchorPt sıfırlanmıyor; ship.js:280 _setAnchorPoint yalnız anchorPt boşken çağrılıyor; ship.js:339-343 zincir çekişi `(d - chain) * 1.6 * dt` mesafeyle sınırsız. Çalıştırma (GERÇEK G.emit('fastTravel') yolu; ölçüm arrivedPort olayının yayımlandığı senkron blokta): kirlangic_limani → tuz_pazari_port_0; eski anchorPt {x:10, z:290.38, chain:7.05} varışta aynen duruyor (demir yerine 1750 m); 3 s benzetimde azami hız 790 m/s, demir yerinden 1209 m sürüklenme (iz x 1456→1092→769→573), 'kara' çarpması impact 445 → hp 100→0 (gemi batıyor); oyuncu iskelede kalıyor, gemiye 1205 m, 'Gemiye bin' istemi yok. Aynı konumda anchorPt=null ile 3 s: 0.29 m. Düzeltme notu: replaceShip yeni Ship nesnesi kurduğu için (anchorPt tanımsız → ilk update'te yeniden hesaplanır) ETKİLENMEZ; raiseShip etkilenir ama ana limanda Ship.dock maskeler (E-11 koşusunda anchorPt eski yerde kaldı, docked=true, sürüklenme yok). (ölçüm: fastTravel sonrası 3 s: maxV=790 m/s, disp=1209 m, crash kara:445.1, hp 100→0, shipToPlayer=1205 m; anchorPt=null karşılaştırması: 0.29 m)
+
+### H02 — Oyuncu adı doğrulanmadan HUD takım listesine innerHTML ile basılıyor (eşler arası XSS)
+- **Önem:** Kritik · **Grup:** H_coop_ui · **Yer:** `js/ui/hud.js:441` · **Güven:** 0.95
+- Kod: `tl.innerHTML = [...G.remotes.values()].map((r) => `<div class="tm">... ${r.name} ...`).join('');`
+- Açıklama: Ad, 'hello' mesajından (net.js:214-221) doğrulanmadan roster'a girer ve tüm eşlere yayılır; hud._team bunu innerHTML ile basar. Kötü niyetli bir istemci (herkese açık odalar var) adını '<img src=x onerror=...>' yaparak ev sahibi ve tüm konukların tarayıcısında kod çalıştırabilir (localStorage kayıtlarını silme/değiştirme dahil). Koşuda sahte remote ile window.__xss===1 doğrulandı. hud.js:58 _xpPop da ev sahibi kaynaklı reason'ı innerHTML ile basıyor.
+- Kök neden: Güvenilmeyen ağ verisinin innerHTML şablonuna doğrudan katılması; ev sahibinde ad uzunluğu/karakter doğrulaması yok.
+- Yeniden üretme: Tek sayfa koşusu: G.remotes.set('xx', {name:'<img src=x onerror="window.__xss=1">', ...}); hud._team() → window.__xss === 1 (r_ui.json).
+- Önerilen düzeltme: _team ve _xpPop'ta textContent/el() kullan ya da HTML kaçışı uygula; ev sahibinde hello.name için uzunluk (≤20) ve karakter filtresi, app nesnesi için şema doğrulaması ekle.
+- Statik mercek: hud.js:441 'tl.innerHTML = [...G.remotes.values()].map((r) => `<div class="tm">... ${r.name} ...`)'. Ad kaynağı: net.js:218 'const info = { id: pid, name: m.name, app: m.app, ... }' — 'hello' alanları hiç doğrulanmıyor (uzunluk/karakter yok); roster net.js:221/286 ile tüm eşlere yayılır; net.js:503/516 RemotePlayer name = info.name. _team her 0.5 s çağrılır (hud.js:265). Ayrıca hud.js:58 _xpPop 'd.innerHTML = `+${e.xp} XP <span>${e.reason}</span>`' — reason net.js:434 'xp' mesajının m.r alanı (ev sahibi kaynaklı). Yalnız takım listesi/XP; sohbet (main.js:360), lobi (menu.js:291) ve harita etiketi (canvas) metin olarak güvenli.
 
 ### B-01 — İşçi hatası (onerror) sonrası arazi hattı sonsuza dek asılı kalıyor; yükleme %53'te takılıyor
 - **Önem:** Yüksek · **Grup:** B_dunya · **Yer:** `/home/user/SON-HAZ-NE/js/world/terrain.js:48` · **Güven:** 0.95
@@ -41,6 +50,24 @@ Sıralama: doğrulanmış hatalar önce, sonra tartışmalı, belirsiz ve tek me
 - Yeniden üretme: t1_player.js 'B' adımı
 - Önerilen düzeltme: Savunmaya girmek için stamina > 10, sürdürmek için > 0 iste (histerezis); blok bırakıldıktan sonra 0.6 s yenilenme gecikmesi ekle; blockT'yi yalnız gerçek RMB basışında (input.pressed) sıfırla.
 - Statik mercek: player.js:409-411 `canBlock = ... this.stamina > 3 ...; this.blocking = rmb && canBlock; if (this.blocking) this.stamina -= dt*4` ile player.js:338 `if (!this.sprinting && !this.blocking) this.stamina += dt*18` 3 eşiğinde salınır (adım 1/60, game.js:175). player.js:298 `if (this.blocking) this.blockT += dt; else this.blockT = 0;` her kesintide sıfırlar → hurt() player.js:130-132 `if (this.blockT < 0.24) { this._parry(...); return; }` savunulan her ön yakın dövüş vuruşunda parry; _parry +12 stamina (175) ve 1.7 s sersemletme (181). Üst katman 551/373-374 Block aç-kapa. Uzun savunmada (4/s tüketim) kendiliğinden tetiklenir → yuksek yerinde.
+
+### D-01 — Yüzme ↔ yürüme modu 1.35–1.5 m derinlikte her iki karede bir değişiyor (sıçrama/ses/silah tut-bırak spam'i)
+- **Önem:** Yüksek · **Grup:** D_fizik · **Yer:** `js/player/player.js:649` · **Güven:** 0.95
+- Kod: `if (floor > wh - 1.25 || this.pos.y - floor < 0.3 && floor > wh - 1.5) { this.exitWater(); }   // :531 → if (this.pos.y < wh - 1.15 && g < wh - 1.35) { this.enterWater(); return; }`
+- Açıklama: Yüzme modunda pos.y, floor+0.15'e kıstırılır; floor ∈ (wh-1.5, wh-1.35) iken 'pos.y-floor<0.3 && floor>wh-1.5' hemen exitWater tetikler. Bir sonraki karede yer modunda oyuncu zemine oturur (pos.y=g) ve 'pos.y<wh-1.15 && g<wh-1.35' sağlanır → enterWater. Döngü her 2 karede bir yineler; her girişte 'splash' + 'impact' sfx, vel.y*=0.3, char.hold(null)/hold(equipped), oksijen sıfırlama. Koşu (dalga kapalı, derinlik 1.48 m): 60 karede 27 enterWater / 26 exitWater; gelgit bandı kaydırınca 'swim'de kaldı. Dalgalarla bant kıyı boyunca sürekli gezer; kıyıya çıkan/giren her oyuncu bu banttan geçer.
+- Kök neden: Giriş ve çıkış eşikleri histerezissiz ve örtüşüyor: çıkış 'tabana 0.3 m yakın' koşulunu taban wh-1.5'e kadar kabul ediyor, giriş ise tabanın wh-1.35'ten derin olmasını yeterli sayıyor; yüzücünün tabana yakın olması zaten kıstırma yüzünden her zaman doğru.
+- Yeniden üretme: DK.ocean.waveScale=0; kıyıda terrain.heightAt ∈ (wh-1.5, wh-1.35) bir noktaya oyuncuyu koy (mode 'ground'); p.enterWater sayacını sar; DK.sim(2) → 25+ çağrı.
+- Önerilen düzeltme: Tek bir tutarlı eşik çifti kullanın: exitWater yalnız floor > wh - 1.30 iken (ikinci koşulu kaldırın ya da floor > wh - 1.30 ile sınırlayın); enterWater için g < wh - 1.40. Ek olarak mod değişiminden sonra 0.3 s geri dönüş kilidi (hysteresis timer) koyun.
+- Statik mercek: player.js:531 `if (this.pos.y < wh - 1.15 && g < wh - 1.35) { this.enterWater(); return; }` ile :649 `if (floor > wh - 1.25 || this.pos.y - floor < 0.3 && floor > wh - 1.5) this.exitWater();` örtüşüyor. Yüzmede :628 `if (this.pos.y < floor + 0.15) this.pos.y = floor + 0.15;` nedeniyle pos.y-floor ≤ 0.15 < 0.3 her zaman sağlanır → floor ∈ (wh-1.5, wh-1.35) iken yüzmenin İLK karesinde çıkış. exitWater :659 pos.y=max(pos.y, arazi)=floor+0.15; sonraki yer karesinde :525 `if (this.onGround && this.pos.y - g < 0.35 && this.vel.y <= 0) { this.pos.y = g; …}` (onGround yüzmede değişmez; yürüyerek girende true) → pos.y=g → :531 yeniden sağlanır. Giriş eşiği (1.35) bandın tam kenarı olduğu için yürüyerek HER suya girişte (yamaç eğimi <2 ise) bant kaçınılmaz; her döngüde :604-605 'impact' sfx + 'splash', :601/:660 hold(null)/hold(eq), :603 vel.y*=0.3, :658 oksijen=100. Zıplayarak girende 0.15 m'lik düşüşten (GRAV=-22, ~7 kare) sonra aynı 2 karelik döngü başlar. Koruyucu histerezis/kilit yok.
+
+### D-02 — Oyuncu geri tepmesi (knock) kare hızına bağlı: 60 fps'te 30 fps'in 1.7 katı, 10 fps'in 2.6 katı savrulma
+- **Önem:** Yüksek · **Grup:** D_fizik · **Yer:** `js/player/player.js:466` · **Güven:** 0.95
+- Kod: `if (this.knock) { this.vel.x += this.knock.x; this.vel.z += this.knock.z; this.knock.x *= Math.exp(-9 * dt); this.knock.z *= Math.exp(-9 * dt); ... }`
+- Açıklama: knock her karede hız vektörüne dt ile ölçeklenmeden ekleniyor; toplam eklenen hız ≈ knock/(1-e^{-9dt}) → 60 fps'te 7.2×, 30 fps'te 3.9×, 10 fps'te 1.7× knock. Koşu (knock {5,0}, düz zemin): dt=1/60 → 3.02 m, vmax 12.1 m/s; dt=1/30 → 1.80 m, 7.25 m/s; dt=0.1 → 1.15 m, 5.0 m/s. Tüm düşman/boss darbeleri (kb 2.5–11), fıçı/kaya itkileri ve bloklanan vuruşlar bu yoldan geçer; co-op'ta farklı kare hızlı oyuncular farklı mesafelere savrulur. Düşmanların kendi kb'si (enemies.js:1168 pos+=kb*dt) doğru ölçekli.
+- Kök neden: Sönümlenen bir 'hız itkisi' kare başına eklenen bir ivme gibi uygulanıyor; dt çarpanı eksik.
+- Yeniden üretme: p.knock={x:5,z:0}; DK.sim(1.5, 1/60) ile DK.sim(1.5, 1/30) karşılaştır (önce pos/vel sıfırla).
+- Önerilen düzeltme: Düşmanlardaki gibi knock'u hız olarak entegre edin: this.pos += knock*dt (ya da vel'e tek seferlik ekleyin: hurt() anında vel += knock ve knock=null). Mevcut hissi korumak için knock büyüklüğünü ~7× ölçekleyip bir kez eklemek yeterli.
+- Statik mercek: player.js:465-468 `if (this.knock) { this.vel.x += this.knock.x; this.vel.z += this.knock.z; this.knock.x *= Math.exp(-9 * dt); … }` — dt'siz toplama. Toplam eklenen hız ≈ knock·Σe^{-9dt·n} = knock/(1-e^{-9dt}): 7.18× (1/60), 3.86× (1/30), 1.69× (dt=0.1), 16.5× (144 Hz). Kaynaklar: player.js:165 `k = Math.min(7, 1.5 + amount * 0.12)`, :141 (blok), bosses.js:43 `G.player.knock = { x: dx / d * opts.kb, … }`. Hız sönümü :462 `damp(this.vel.x, wish.x, accel, dt)` sürekli-zaman doğru olduğu için dt→0'da tepe hız ∝ 1/dt; yüksek yenileme hızlı ekranlarda (120–240 Hz) savrulma 60 fps'in 2–4 katı olur. Karşılaştırma: enemies.js:1168 `this.pos.x += this.kb.x * dt` doğru ölçekli. Düzeltici kod yok.
 
 ### E-02 — Delikler ağ anlık görüntüsünde yok: konuklar deliği görmüyor ve onaramıyor
 - **Önem:** Yüksek · **Grup:** E_gemi · **Yer:** `js/ship/ship.js:698` · **Güven:** 0.97
@@ -106,6 +133,51 @@ Sıralama: doğrulanmış hatalar önce, sonra tartışmalı, belirsiz ve tek me
 - Yeniden üretme: /tmp/audit/G_icerik/coop_icerik.cjs kontrol 2-6.
 - Önerilen düzeltme: Konukta spawnLoot/loot olayını toHost({t:"lootReq", table, pos, from}) olarak ilet; ev sahibi spawnLoot yapıp pickupSpawn yayınlasın. hazards: kırılma/sunak/ada sandığı ganimetini yalnız ev sahibi üretsin (konuk tetiklediğinde who=pid ile). giveItems taşması için de aynı yol.
 - Statik mercek: treasure.js:442-447 spawnLoot: gövde yalnız `!G.online || G.isHost`, `netPickupSpawn` relay'i net.js:141 `if (G.isHost) broadcast` → konukta üretilen kese yalnız yerel. collect (483) konukta `netPickupReq` → net.js:250 `treasure.pickups.find(...)` ev sahibinde yok → sessizce yutulur; kese 300 s sonra silinir (124). Konukta G.emit('loot') tetikleyen yollar ev sahibi denetimi içermez: islands.js:568 (eski sandık), 674 (sunak), hazards.js:640 (gizli sandık), hazards.js:267 `breakCrate(h, info.kind !== 'explosion' || !G.online || G.isHost, true)` → konuk kılıcıyla kırınca loot=true yerel kese; ev sahibi netHazard 'break' alır → hazards.js:660 `breakCrate(h, false, false)` → ev sahibinde ganimet hiç üretilmez (kayıp). treasure.js:505 giveItems taşması da (net.js:411 'give' sonrası) konukta yerel kese üretir. _hostData'da 'lootReq' türü yok (grep).
+
+### H01 — Konukta üretilen ganimet keseleri ev sahibine ulaşmıyor → eşya kalıcı olarak kayboluyor
+- **Önem:** Yüksek · **Grup:** H_coop_ui · **Yer:** `js/treasure/treasure.js:447` · **Güven:** 0.95
+- Kod: `G.emit('netPickupSpawn', { pk: {...} });  // relay (net.js:139): if (G.isHost) this.broadcast(...)`
+- Açıklama: Konuk tarafında treasure.spawnLoot çağrılan her yol (panels.js:95 'Yere bırak', treasure.js:505 envanter taşması, hazards.js:267 konuğun kırdığı sandık, islands.js:568/674 ada ve tapınak sandıkları, hazards.js:640 gizli sandık) yalnız konukta yerel bir kese yaratır. Konuk toplamak istediğinde collect() isteği ev sahibine gider (treasure.js:483), ev sahibi pickups listesinde bulamaz ve hiçbir şey olmaz. Co-op koşusunda doğrulandı: h-has-pickup=false, collect sonrası {muz:4, still:true}.
+- Kök neden: netPickupSpawn relay'i yalnız ev sahibinde yayın yapıyor; konuk için 'lootReq' benzeri bir istek yolu yok ve konuk yerel keseyi kendi başına toplayamıyor (collect her zaman ev sahibine yönlendiriliyor).
+- Yeniden üretme: Co-op: konukta DK.treasure.spawnLoot(p.pos.clone(), [['muz',1,1,null]], 'Bırakılan', true) → ev sahibinde DK.treasure.pickups.some(id) false → konukta DK.treasure.collect → kese kalır, eşya gelmez (r_coop2.json).
+- Önerilen düzeltme: Konukta spawnLoot çağrısını ev sahibine 'lootReq' {pos, items, from} olarak gönder; ev sahibi spawnLoot yapıp pickupSpawn yayınlasın. Alternatif: konuk yerel keseye local=true işareti koyup collect'te yerel giveItems yapsın.
+- Statik mercek: treasure.js:446-447 spawnLoot her çağrıda yerel kese yaratıp yalnız G.emit('netPickupSpawn') yapar; net.js:141 relay 'if (G.isHost) this.broadcast(...)' → konukta yayılmaz. Konuk toplama: treasure.js:483 'if (G.online && !G.isHost) { G.emit("netPickupReq", {id}) ; return; }' → net.js:250 ev sahibi 'treasure.pickups.find(...)' bulamaz → hiçbir şey olmaz; konukta kese kalır, envanterden çıkan eşya (panels.js:95 removeStack) geri gelmez. Konukta spawnLoot'a ulaşan yollar: panels.js:95 'Yere bırak'; treasure.js:505 (giveItems taşması — 'give' mesajı envanter doluyken); hazards.js:267 'breakCrate(h, info.kind !== "explosion" || !G.online || G.isHost, true)' → konuk yakın dövüşle kırınca loot=true yerel, ev sahibine giden 'break' hazards.js:665 'breakCrate(h, false, false)' ile ganimetsiz; islands.js:568/674 ve hazards.js:640 G.emit('loot') → treasure.js:52 → spawnLoot, islands.js'te hiç isHost koruması yok (grep). Önem: güvenlik/çökme değil, konuk için eşya kaybı ve ganimete erişemezlik → 'yuksek' yeterli (kritik abartılı).
+
+### H03 — Ambara konan sandık diğer oyuncularda hayalet kalıyor; kopmada ev sahibinde gerçek sandığa dönüşüp çoğalıyor
+- **Önem:** Yüksek · **Grup:** H_coop_ui · **Yer:** `js/net/net.js:143` · **Güven:** 0.85
+- Kod: `relay('netHold', (e) => this.sendGame({ t: 'hold', ship: e.ship, hold: e.hold }));  // treasure.js:359: G.emit('netHold', {..., gone: c.id})`
+- Açıklama: stowInHold (treasure.js:340-360, güvertede drop → stow dahil) sandığı yerelde 'gone' yapıp netHold ile 'gone' kimliğini bildirir; relay 'gone' alanını atar ve netChestGone yayılmaz. Diğer taraflarda sandık 'carried' durumunda kalır ve _updateChest (treasure.js:224-229) onu taşıyanın uzak karakterine yapıştırır (hayalet). Taşıyan konuk ayrılırsa ev sahibinde _dropPeer (net.js:278) sandığı 'ground' yapar → ambardaki kopyanın yanında satılabilir ikinci sandık. Ters yön (ev sahibi ambara koyar) konuklarda da aynı hayaleti bırakır.
+- Kök neden: Ambara koyma yolunda netChestGone/netChestState yayını yok; relay 'gone' bilgisini düşürüyor.
+- Yeniden üretme: Co-op: ev sahibi sandık alıp DK.treasure.stowInHold(DK.G.ship) → konukta DK.treasure.chestById(id) hâlâ {state:'carried', carriers:[hostId]} beklenir (koşu bu adıma ulaşamadan çöktü).
+- Önerilen düzeltme: stowInHold'da G.emit('netChestGone', {id}) ekle ya da relay'de e.gone varsa ek 'chestGone' mesajı gönder; _hostData 'hold' işleyicisinde hold.chests kimliklerini treasure.chests'ten kaldır.
+- Statik mercek: treasure.js:352-359 stowInHold: 'c.state = "gone"; ... this.chests = this.chests.filter(...); G.emit("netHold", { ship, hold, gone: c.id })' — netChestGone/netChestState YOK. net.js:143 relay 'this.sendGame({ t: "hold", ship: e.ship, hold: e.hold })' → gone düşer. net.js:253 ev sahibi 'hold' işleyicisi 's.hold = m.hold' ile treasure.chests'e dokunmaz. Diğer taraflarda sandık 'carried' kalır; treasure.js:232-239 _updateChest taşıyıcının uzak karakterine yapıştırır (hayalet). net.js:278 _dropPeer 'if (!ch.carriers.length) ch.state = "ground"' → ambar kaydı + yere düşen fiziksel sandık = aynı kimlikle iki satılabilir sandık. Ek: güvertede 'G' ile bırakma treasure.js:330-334 'this.stowInHold(p.ship, c, true); return;' → netChestState hiç gönderilmez (ambar doluysa da :346-349 'c.state="ground"' yerel kalır).
+
+### H04 — Ev sahibiyle aynı adlı konuk katılınca ev sahibi listeden düşüyor → konuklarda ev sahibi görünmez
+- **Önem:** Yüksek · **Grup:** H_coop_ui · **Yer:** `js/net/net.js:214` · **Güven:** 0.9
+- Kod: `const existing = this.roster.find((r) => r.name === m.name && !this.conns.has(r.id)); ... if (existing) this.roster = this.roster.filter((r) => r !== existing);`
+- Açıklama: Ev sahibinin kendi roster kaydı conns'ta olmadığı için aynı adlı bir konuk 'existing' olarak ev sahibini eşleştirir ve roster'dan siler. Konuklar welcome/roster'da ev sahibini almaz; _applySnap (net.js:517) 'if (!info.app) continue' ile ev sahibi karakterini hiç yaratmaz; lobide ev sahibi yuvası boş görünür; lobideki 'Karakterimi değiştir' net.roster[0]'ı (artık konuğu) ezer. Varsayılan adlar sabit ('Kaptan Deniz'/'Kaptan Derya', appearance.js:39) olduğundan iki yeni oyuncuda doğrudan tetiklenir.
+- Kök neden: Yeniden bağlanma eşleşmesi ev sahibi kaydını dışlamıyor.
+- Yeniden üretme: Konuk adını ev sahibi adıyla eşitleyip join → ev sahibinde DK.net.roster host:true kaydı yok; konukta DK.G.remotes.size 0 kalır.
+- Önerilen düzeltme: existing aramasına '&& !r.host' ekle; ayrıca aynı adlı bağlı oyunculara otomatik sonek ver (Kaptan Deniz (2)).
+- Statik mercek: net.js:214 'const existing = this.roster.find((r) => r.name === m.name && !this.conns.has(r.id));' — ev sahibinin kaydı net.js:187 '{ id: peer.id, ..., host: true }' olup conns'a hiç eklenmez (:220 yalnız konuklar) → aynı adlı konuk ev sahibini eşler; :217 'this.roster = this.roster.filter((r) => r !== existing)' ev sahibini siler. Konukta net.js:516-517 'const info = this.roster.find(...) || { ..., app: null }; if (!info.app) continue;' → ev sahibi karakteri yaratılmaz. appearance.js:39 varsayılan ad 'Kaptan Deniz'/'Kaptan Derya' sabit → iki yeni oyuncuda doğrudan tetiklenir. menu.js:274 ev sahibi 'Karakterimi değiştir' net.roster[0]'ı (artık konuk) ezer.
+
+### H06 — Varsayılan eğilme/dalış tuşu Sol Ctrl tarayıcı kısayollarıyla çakışıyor (Ctrl+W sekme kapatma, Ctrl+1-5 sekme değiştirme, Ctrl+Tab, Ctrl+R)
+- **Önem:** Yüksek · **Grup:** H_coop_ui · **Yer:** `js/core/input.js:5` · **Güven:** 0.8
+- Kod: `kos: 'ShiftLeft', zipla: 'Space', egil: 'ControlLeft',   // :56 yalnız Ctrl+S/D/F preventDefault`
+- Açıklama: Dalışta/eğilmede Ctrl basılıyken W (ileri) → Chrome/Edge'de Ctrl+W sekmeyi kapatmayı dener (beforeunload sayesinde 'Siteden ayrıl?' iletişim kutusu çıkar, oyun kesilir ve işaretçi kilidi düşer). Ctrl+1..5 (silah yuvaları) ve Ctrl+Tab (envanter) sekme değiştirir ve preventDefault ile engellenemez; Ctrl+R (doldur) sayfayı yenilemeye kalkar; Linux'ta Ctrl+Q (işaret) tarayıcıyı kapatır. keyboard.lock()/fullscreen kullanılmıyor (Grep: yok).
+- Kök neden: Tarayıcı oyunu için ayrılmış Ctrl kombinasyonlarını tetikleyen varsayılan tuş seçimi; yalnız üç Ctrl kısayolu engelleniyor.
+- Yeniden üretme: Chrome (Windows/Linux): oyunda Ctrl basılı tutup W → 'Siteden ayrılmak istiyor musunuz?' iletişim kutusu.
+- Önerilen düzeltme: egil varsayılanını KeyC/KeyX gibi Ctrl dışı bir tuşa al (pusula C ise X), tam ekranda navigator.keyboard.lock(['KeyW','Digit1',...]) dene, keydown'da ctrlKey+oyun tuşu kombinasyonlarını mümkün olanlarda preventDefault et.
+- Statik mercek: input.js:5 'egil: "ControlLeft"', :4 'ileri: "KeyW"'; player.js:614 'if (!locked && input.isDown("egil")) vy = -2.4;' → dalış için Ctrl basılı tutulur, ileri yüzmek W → Ctrl+W. input.js:56 yalnız '(e.ctrlKey && ["KeyS","KeyD","KeyF"])' preventDefault; Ctrl+W/T/N tarayıcı tarafından ayrılmış, preventDefault ile engellenemez; Ctrl+1-5/Tab/R aynı. main.js:373-375 beforeunload 'e.preventDefault(); e.returnValue = ""' → 'Siteden ayrıl?' iletişimi çıkar, işaretçi kilidi düşer. grep keyboard.lock/requestFullscreen: yok. macOS'ta (Cmd) etkilenmez.
+
+### H07 — Ev sahibi konuk mesajlarını doğrulamıyor: keyfî hasar/altın/ambar/sandık içeriği/gemi değişimi/kilit, oran sınırı yok
+- **Önem:** Yüksek · **Grup:** H_coop_ui · **Yer:** `js/net/net.js:263` · **Güven:** 0.9
+- Kod: `case 'gold': this.broadcast(m, pid); G.player.inv.gold += m.amount; ...   // :237 e.applyDamage(m.dmg, ...)  :253 s.hold = m.hold  :251 _applyChestState(m.c)  :254 _shipFull(m)`
+- Açıklama: _hostData yalnız 'm.t' varlığını kontrol eder (net.js:209). Bir konuk {t:'gold', amount:1e9} ile herkese altın verir ya da negatifle siler; hurtEnemy/hurtBoss/hurtAnimal/hurtMarine dmg değeri (Infinity/negatif) olduğu gibi uygulanır; 'hold' ile ambara keyfî eşya enjekte edilir ve limanda satılır; 'chestState' ile içeriği dolu 'legend' sandık yaratılır; 'shipFull' replace:true ev sahibinin gemisini değiştirir ve gemideki ev sahibini limana ışınlar (shipControl.js:49); 'lock' herhangi bir noktayı herhangi bir oyuncu adına kilitler; 'helm' kilit sahibi kontrolü yok; 'dig' konuk konumu kontrol edilmeden uygulanır; 'st' içindeki NaN konumlar düşman AI'ye sızabilir. Mesaj boyutu ve sıklığı sınırsız (chat/marker/st flood).
+- Kök neden: Ev sahibi otoritesi yalnız fizik/AI için uygulanmış; gelen mesaj alanları tür/aralık/sahiplik açısından doğrulanmıyor.
+- Yeniden üretme: Konuk konsolu: DK.net.toHost({t:'gold', amount:999999}) → ev sahibi ve tüm konuklara altın eklenir.
+- Önerilen düzeltme: _hostData'da mesaj türü başına şema ve aralık doğrulaması (dmg ≤ silah maks., amount yalnız ev sahibi hesaplar, hold değişiklikleri işlem bazlı istek), lock/helm için sahiplik kontrolü, dig/pickup için mesafe kontrolü, basit token-bucket oran sınırı ve maksimum mesaj uzunluğu.
+- Statik mercek: net.js:209 'if (!m || !m.t) return;' tek kontrol. :237 'e.applyDamage(m.dmg, ...)' ham dmg; :263 'G.player.inv.gold += m.amount' + yayın; :253 's.hold = m.hold'; :251 '_applyChestState(m.c)' → :455 'spawnChest(c.tier, ..., { contents: c.contents })'; :254 '_shipFull(m)' → :474 'if (m.replace ...) G.emit("netReplaceShip", d)' → main.js:342-345 → shipControl.js:49 gemideki ev sahibi limana 'leaveShipToWorld'; :262 'lock' herhangi id/who; :258 'helm' kilit sahibi kontrolü yok; :242 'dig' mesafe kontrolü yok; _hostData'da sayaç/oran sınırı yok. Ek: 'hello' aynı pid'den tekrar gelirse roster'a yinelenen kayıt (:219).
 
 ### A1 — Gemi direk/top/bölüm hasarı kaydediliyor ama yüklemede sıfırlanıyor
 - **Önem:** Orta · **Grup:** A_motor · **Yer:** `js/game/shipControl.js:25` · **Güven:** 1
@@ -268,6 +340,24 @@ Sıralama: doğrulanmış hatalar önce, sonra tartışmalı, belirsiz ve tek me
 - Yeniden üretme: t3_player.js 'K2' adımı
 - Önerilen düzeltme: Player.setMode(m) yaz: blocking=aiming=sprinting=false, char.stopUpper(), blockT=0, gerekiyorsa hold(equipped); takeHelm/takeCannon/enterBoat/startClimb/enterWater/boardShip bunu kullansın.
 - Statik mercek: _commonCombatInput yalnız 437 (_updateGround) ve 668 (_updateDeck) çağrılır; sprinting yalnız _speedFor 388-390'da yazılır. takeHelm/takeCannon (shipControl.js:172-187), enterBoat (221-230), startClimb (player.js:781-790), enterWater (596-606; yalnız 599 aiming=false) blocking/sprinting'i sıfırlamaz, stopUpper çağırmaz. 338 yenilenme iki bayrağa da bağlı, 298 blockT büyümeye devam eder → istasyonda/yüzmede stamina donar, Block katmanı kalır, hurt() 130'da 'blocking' sayılır. r1 'W' notu: kıyıdan girişte C02 salınımı sprinting'i tesadüfen temizler; derin suya doğrudan girişte kalır.
+
+### D-03 — Barut fıçısı patlaması enkazı ~120 m/s'ye fırlatıyor (3 s'de 220 m uzağa, 254 m yükseğe)
+- **Önem:** Orta · **Grup:** D_fizik · **Yer:** `js/world/hazards.js:211` · **Güven:** 0.95
+- Kod: `this._debris(c, 7, 0x6a4428); ... bodies.impulse(c, R * 1.6, 16);   // bodies.js:61 const k = (1 - d / radius) * strength / b.mass;  (enkaz mass 0.2, r 0.12)`
+- Açıklama: _debris cisimleri (kütle 0.2) patlama merkezinin 0.36 m yakınında oluşturulup hemen ardından bodies.impulse ile strength/mass = 16/0.2 = 80 m/s'lik itki alıyor (+ y'ye 0.6k). Koşu: ilk patlamadan 0.1 s sonra 7 enkazın hızı 115–120.7 m/s (vy 93–97); 3 s sonra 208–222 m uzakta ve 254 m yükseklikte. Hava sürüklemesi olmadığından ~11 s uçuyor, 9–13 s ömür boyunca ekranda hiç görünmüyor; her patlama ayrıca 11.2 m içindeki tüm sandık/eşya cisimlerini savuruyor (combat.js:44 'explosion' olayı da 9/0.2 = 45 m/s). Platformları da deler (bkz. D-07).
+- Kök neden: Kütle bölmeli itki, 0.2 kg'lık kozmetik enkaz için ölçeklenmemiş; impulse çağrısı enkaz oluşturulduktan sonra yapılıyor.
+- Yeniden üretme: h=DK.hazards.list('keg')[0]; DK.hazards.ignite(h,0.02); DK.sim(0.1); DK.hazards.debris.map(d=>d.b.vel.length())
+- Önerilen düzeltme: impulse'u enkaz oluşturmadan önce çağırın ya da enkazı dışlayın; k'yi min kütleye kıstırın (örn. mass = max(mass, 1)) ya da hız artışını clamp edin (≤ 12 m/s); bodies._step'e küçük bir hava sürüklemesi (exp(-0.3*dt)) ekleyin.
+- Statik mercek: hazards.js:207 `this._debris(c, 7, 0x6a4428)` → :248 `bodies.add(mesh, { pos: c.clone().add(new THREE.Vector3(Math.cos(a) * 0.3, 0.2, Math.sin(a) * 0.3)), …, radius: 0.12, …, mass: 0.2, buoyancy: 1.6 … })`; hemen ardından :211 `bodies.impulse(c, R * 1.6, 16)` (R=7 → 11.2 m). bodies.js:61-64 `const k = (1 - d / radius) * strength / b.mass; … b.vel.addScaledVector(_n, k); b.vel.y += k * 0.6;` → d≈0.36 → k≈77.4; n=(0.83cos a, 0.55, 0.83sin a) → düşey ≈ 42.6+46.4+(4..9) ≈ 95 m/s, yatay ≈ 64+(3..8) → |v|≈115–120 m/s (iddianın koşu değerleriyle uyumlu). bodies._step'te su dışında sürükleme yok (:104 yalnız yerçekimi; drag :111 yalnız sub>0) → ~11 s uçuş. Aynı kalıp breakCrate :279 ve combat.js:44 `bodies.impulse(e.pos, e.radius * 2.2, 9)` (9/0.2 = 45 m/s). Enkaz ömrü :249 9–13 s, ekranda görünmez.
+
+### D-04 — lineBlocked'ın %2 uç payı mermi süpürmesinde boşluk yaratıyor: ok/mermi/bıçak duvar ve ağaçtan geçebiliyor
+- **Önem:** Orta · **Grup:** D_fizik · **Yer:** `js/world/physics.js:189` · **Güven:** 0.85
+- Kod: `if (t > 0.02 && t < 0.98) { const y = ay + dy * t; if (y > c.y0 && y < c.y1) return true; }   // enemies.js:1502 physics.lineBlocked(prev.x, prev.y, prev.z, s.pos.x, s.pos.y, s.pos.z)`
+- Açıklama: Uç payları göz/hedef kendi çarpıştırıcısını dışlamak için konmuş; mermi adımı (prev→pos, 95 m/s × 1/30 = 3.2 m) için aynı fonksiyon kullanıldığında girişi adımın ilk/son %2'sine düşen duvarlar görülmüyor ve bir sonraki adım duvarın içinden başladığı için t0=0 → yine görülmüyor. Koşu (0.2 m kalın duvar): giriş t0=0.935 → true; t0=0.99 → false; içinden başlayan adım → false; t0=0.01 → false. Her duvar geçişinde ~%4 kaçırma + daire testinde yarıçap 0.894r'ye küçültülmüş. Siper mekaniği (findCover) bu yüzden zaman zaman delinir.
+- Kök neden: Görüş hattı fonksiyonu süpürme testi olarak yeniden kullanılmış; uç payları parametrik değil.
+- Yeniden üretme: P=DK.physics; P.addBox(5000,5000,0.1,3,0,-50,100,'t'); P.lineBlocked(4996.8,1,5000,4999.93,1,5000) → false; P.lineBlocked(4997,1,5000,5000.1,1,5000) → true
+- Önerilen düzeltme: lineBlocked(…, opts={tMin:0.02,tMax:0.98,rScale:0.8}) yapıp mermi çağrısında tMin=0, tMax=1, rScale=1 verin; ayrıca 'başlangıç kutu içinde' durumunda (t0=0 ve t1>0) engel sayın.
+- Statik mercek: physics.js:189 `if (t > 0.02 && t < 0.98)`; kutu dilim testinde :177 `let t0 = 0, t1 = 1` → doğru parçası kutu İÇİNDEN başlıyorsa t=0 → engel sayılmaz; daire testinde :171 proj [0,len]'e kıstırılır ve :173 `c.r * c.r * 0.8` (etkin yarıçap 0.894r). enemies.js:1461-1462 `const prev = s.pos.clone(); s.pos.addScaledVector(s.vel, dt);` ve :1502 `physics.lineBlocked(prev.x, prev.y, prev.z, s.pos.x, s.pos.y, s.pos.z)` ile süpürme; tabanca 95 m/s (enemies.js:61) → 1/30'da 3.2 m adım. Girişi adımın son %2'sine düşen mermi o adımda sayılmaz, sonraki adım duvarın içinden başlar (t0=0) → kalınlıktan bağımsız olarak binanın TAMAMINI deler; ilk %2'ye düşen giriş de sayılmaz → duvar geçişi başına ~%4 kaçırma. Düzeltme: iddiadaki 'siper mekaniği (findCover) delinir' cümlesi yanlış yönlendirici — findCover (:1366-1383) lineBlocked kullanmaz ve düşmanın oyuncudan saklanmasıdır; oyuncunun kendi atışları combat.js:263 raycast ile çözülür (etkilenmez). Gerçek etki: duvar/ağaç arkasındaki OYUNCUYA düşman mermisi ~%4 geçer. Ana mekanizma doğru.
 
 ### E-04 — Okyanus shader'ının gelgit uniform'u hiç güncellenmiyor: gemi çizilen suya göre ±0.55 m yanlış yükseklikte
 - **Önem:** Orta · **Grup:** E_gemi · **Yer:** `js/world/ocean.js:261` · **Güven:** 0.95
@@ -436,6 +526,78 @@ Sıralama: doğrulanmış hatalar önce, sonra tartışmalı, belirsiz ve tek me
 - Kök neden: events sistemi ev sahibi-yerel yazılmış; netSnapshot/relay tanımı yok.
 - Önerilen düzeltme: spawnFloating/collect için {t:"float", a:"spawn|gone", id, kind, pos} yayınla (konukta body'siz görsel + etkileşim → floatReq host'a); bildirimleri de broadcast et.
 - Statik mercek: events.js:75 `if (!G.isHost) return;` → olay zamanlayıcı ve spawn yalnız ev sahibinde; spawnFloating (144-180) ve collectFloating (182-209) hiçbir net* olayı emit etmez (grep: events.js'de G.emit yalnız rareFind/shipCaptured/enemyShipSunk/netWeather). events sisteminde netSnapshot/applySnapshot/relay tanımı yok; net._hostSnapshot (586) floating listesi içermez. Karşılaştırma: worldEvents.netState/applyNet (304-348) ve net.js:544/586 `m.we` ile eşlenir; worldEvents.applyNet konuk tarafında `remote` bayrağıyla spawnFloating çağrılarını bilinçli olarak atlar (170, 215) → konuk hiçbir yüzen nesneyi/etkileşimi görmez.
+
+### H05 — 960x540'ta 'Oda Kur' ve 'Lobi' panelleri kırpılıyor; 'Odayı oluştur' / 'Oyunu başlat' düğmelerine erişilemiyor
+- **Önem:** Orta · **Grup:** H_coop_ui · **Yer:** `css/style.css:104` · **Güven:** 0.95
+- Kod: `.panel { position: relative; overflow: hidden; ... max-height: 90vh; display: flex; flex-direction: column; ... }`
+- Açıklama: menu.js:181-205 (hostScreen) ve :264-300 (lobby) gövdeleri .scroll sınıfı ya da kaydırılabilir yükseklik kullanmıyor; panel max-height 90vh + overflow hidden olduğundan 540 px yükseklikte alt düğmeler kesiliyor. Ölçüm (960x540): Oda Kur panel alt 513 px, 'Odayı oluştur' düğme alt 588 px; Lobi 'Oyunu başlat' alt 555 px (scrollHeight 525/558 > clientHeight 480). Bu çözünürlükte oda kurmak mümkün değil.
+- Kök neden: Sabit içerikli panel gövdeleri için kaydırma alanı tanımlanmamış; .lobby-slots min-height 150 px ve sohbet alanı dikey alanı aşıyor.
+- Yeniden üretme: 960x540: menu.hostScreen(); panel.getBoundingClientRect().bottom=513, düğme bottom=588 (r_ui.json).
+- Önerilen düzeltme: Lobi/Oda Kur gövdelerini el('div',{class:'col scroll'}) içine al ya da .panel > .col için 'min-height:0; overflow:auto'; .lobby-slots'u 540 px altında 2 sütuna indir ve lslot min-height'ı küçült.
+- Statik mercek: style.css:104-105 '.panel { overflow: hidden; ... max-height: 90vh; display: flex; flex-direction: column; padding: 26px 32px }', :336 '.panel > .col { min-height: 0 }' (overflow yok → gövde küçülür, içerik panel tarafından kırpılır); :108 yalnız '.panel .scroll' kaydırılır. menu.js:182 hostScreen gövdesi 'el("div", { class: "col" })' (.scroll yok); 7 'label.set' satırı (style.css:130 padding 5px + input 18px+5px pad+2px border ≈ 47px → ~330px) + h2 (:106 40px) + panel padding 52 + buton satırı ~52 + 8 boşluk ×8 ≈ 575px > 486px (90vh@540). Lobi menu.js:265-300: .lslot min-height 150 (style.css:327) + başlık + sohbet 120 + eylemler aynı şekilde taşar. Önem düşürüldü: yalnız ~600px'den kısa pencerelerde; Tab ile odaklanıp Enter, tarayıcı yakınlaştırması ya da Ayarlar > Arayüz ölçeği 0.8 geçici çözüm.
+
+### H08 — Dünya olayları (yüzen varil/şişe/sandık/kazazede/gök taşı) yalnız ev sahibinde; konuk görmez ve toplayamaz
+- **Önem:** Orta · **Grup:** H_coop_ui · **Yer:** `js/game/events.js:144` · **Güven:** 0.9
+- Kod: `spawnFloating(kind, pos) { ... this.floating.push(f); return f; }   // :75 if (!G.isHost) return;  — ağ yayını yok`
+- Açıklama: events sistemi netSnapshot/applySnapshot/relay'siz; floating nesneler ve 'Gözcü: ...' bildirimleri yalnız ev sahibinde oluşur. worldEvents._debris (worldEvents.js:290-300) de events.spawnFloating'e dayanır. Konuk bu içeriğe hiç erişemez; kazazede haritası/altın ödülü ve düşman gemisi ele geçirme altını (events.js:265) yalnız ev sahibine gider.
+- Kök neden: events için ağ yolu tasarlanmamış.
+- Yeniden üretme: Co-op: ev sahibinde DK.events.trigger('barrel') → konukta DK.events.floating.length 0.
+- Önerilen düzeltme: floating listesini snapshot'a ekle (id, kind, pos) ve konuk collectFloating'i 'floatReq' ile ev sahibine yönlendir; olay bildirimlerini netStory benzeri 'notify' yayınıyla paylaş.
+- Statik mercek: events.js:75 'if (!G.isHost) return;' (olay zamanlayıcı yalnız ev sahibi); :144-180 spawnFloating hiçbir net olayı yaymaz; :182-210 collectFloating yerel (treasure.spawnLoot / inv.add / giveMap / gold); net.js'te 'floating' ya da ilgili mesaj yok (grep). events.js:247-252 ele geçirme altını 'p.inv.gold += gold' yalnız ev sahibi. worldEvents.js:174/215/297 (buzdağı sandığı, gök taşı, enkaz) events.spawnFloating'e dayanır → konukta hiç oluşmaz.
+
+### H09 — Konuk kazısında geri bildirim yok; hazine bulma mesajları yanlış kişiye gidiyor
+- **Önem:** Orta · **Grup:** H_coop_ui · **Yer:** `js/treasure/treasure.js:168` · **Güven:** 0.9
+- Kod: `G.emit('digResult', { who, ok: false, warm: !!near });  if (who === G.myId) G.notify(near ? 'Kürek bir şeye değmedi…' : 'Burada hiçbir şey yok.', ...)`
+- Açıklama: Konuk kazdığında resolveDig ev sahibinde çalışır; boş kazıda yalnız who===myId için notify var ve 'digResult' olayını Grep'e göre hiç kimse dinlemiyor → konuk sessizlik alır ('yakın olmalısın' ipucu dahil). Hazine bulunduğunda ev sahibi 'Hazine buldun' (treasure.js:181) görür, kazan konuk ise 'Tayfa hazineyi buldu! Haritan kullanıldı.' (net.js:444 mapUsed) alır.
+- Kök neden: Sonuç bildirimi ağa taşınmamış; mesaj metinleri kazanı ayırt etmiyor.
+- Yeniden üretme: Konuk: DK.G.emit('netDig', {x: p.pos.x+1, z: p.pos.z+1}) → konukta hiçbir notify yok (koşu bu adımda çöktü; statik kesin).
+- Önerilen düzeltme: resolveDig sonucunu toPeer(who, {t:'digResult', ok, warm, tier}) ile gönder ve konukta notify et; ev sahibi bildirimini who'ya göre 'X hazine buldu' yap.
+- Statik mercek: treasure.js:154 konuk finishDig → netDig → net.js:242 'treasure.resolveDig(m.x, m.z, pid)'. :168 'G.emit("digResult", {...})' — grep: hiçbir dinleyici yok (yalnız bu satır). :169 'if (who === G.myId) G.notify(...)' → konuk (who=pid) sessiz; 'yakın olmalısın' ipucu da gitmez. Bulunduğunda :181 'G.notify(`Hazine buldun: ...`)' ev sahibinde kazan kim olsa da gösterilir; konuğa :178 netMapUsed → net.js:422 'Tayfa hazineyi buldu! Haritan kullanıldı.' (kendisi kazmış olsa da).
+
+### H10 — Konuğun ambardan aldığı sandık yalnız konukta var: açılamaz, kopmada kaybolur
+- **Önem:** Orta · **Grup:** H_coop_ui · **Yer:** `js/treasure/treasure.js:374` · **Güven:** 0.85
+- Kod: `G.emit('netChestSpawn', { chest: this.chestNet(c) });   // relay (net.js:137): if (G.isHost) this.broadcast(...)`
+- Açıklama: takeFromHold (treasure.js:362-375) konukta sandığı yerel yaratır; netChestSpawn yalnız ev sahibi yayar, netChestState emit edilmez. Ev sahibi sandığı bilmez: konuk 'aç' (chestReq open) isteği bulunamaz, iki kişilik taşıma yardımı imkânsız, konuk kopunca sandık ambardan da çıkmış olur (kayıp). Yalnız konuk yere bırakınca chestState ile ev sahibinde yaratılır.
+- Kök neden: Konuk tarafında sandık yaratma yolu ev sahibine bildirilmiyor.
+- Yeniden üretme: Konuk ambar panelinden sandık al → ev sahibinde DK.treasure.chestById(id) undefined; konuk E basılı tut (aç) → hiçbir şey olmaz.
+- Önerilen düzeltme: Konukta takeFromHold'u 'holdTakeReq' {idx} olarak ev sahibine gönder; ev sahibi spawnChest + _grant yapıp chestSpawn/chestState yayınlasın.
+- Statik mercek: treasure.js:362-375 takeFromHold konukta da çalışır: spawnChest yerel, 'netHold' (ev sahibi ambardan düşürür, net.js:253) ve 'netChestSpawn' yayar; net.js:138 relay 'if (G.isHost) this.broadcast(...)' → ev sahibine ulaşmaz; netChestState emit edilmez. Konuk 'aç': treasure.js:401 → chestReq open → net.js:244-245 'const ch = treasure.chestById(m.id); if (!ch) break;' → sessiz. Yere bırakınca treasure.js:337 netChestState → net.js:455 '_applyChestState' ev sahibinde yaratır (geç eşitleme). Konuk taşırken koparsa sandık hiçbir yerde kalmaz.
+
+### H13 — Bağlantı kopmasında kilit/sandık temizliği diğer konuklara yayılmıyor (dümen/top 'kullanımda' kalır)
+- **Önem:** Orta · **Grup:** H_coop_ui · **Yer:** `js/net/net.js:279` · **Güven:** 0.85
+- Kod: `for (const [k, v] of interact.locks) if (v === pid) interact.locks.delete(k);   // yayın yok`
+- Açıklama: _dropPeer kopan oyuncunun kilitlerini yalnız ev sahibinde siler; 'lock' mesajları yalnız değişimde gönderildiği için kalan konuklarda interact.locks girdisi kalır ve interact.isLocked (interact.js:16-19) dümen/topu 'kullanımda' olarak kilitli bırakır. Taşınan sandık için de chestState yayılmaz (konuklar _updateChest'teki taşıyıcı-yok dalıyla kendini onarır).
+- Kök neden: Kopma temizliği yerel; ilgili durum mesajları yayılmıyor.
+- Yeniden üretme: 3 oyuncu: konuk A dümeni alır ve sekmeyi kapatır → konuk B'de dümen 'Dümene geç (kullanımda)' kalır.
+- Önerilen düzeltme: _dropPeer'da her silinen kilit için broadcast({t:'lock', id:k, on:false}) ve bırakılan sandık için chestState yayını.
+- Statik mercek: net.js:279 'for (const [k, v] of interact.locks) if (v === pid) interact.locks.delete(k);' — yayın yok (:270-283 yalnız _broadcastRoster). 'lock' mesajları yalnız değişimde gönderilir (shipControl.js:176/185/192/197 → net.js:151); _sendWorld (:386-396) kilit içermez. Kalan konuklarda interact.js:16-19 'isLocked' → 'o && o !== G.myId' → dümen/top 'kullanımda' kalır (interact.js:33). Ev sahibi etkilenmez (yerelde silindi).
+
+### H14 — HUD 960x540: gemi paneli görev takipçisinin üstüne biniyor; sohbet kutusu bildirim yığınıyla çakışıyor; boss çubuğu zaman paneliyle çakışıyor
+- **Önem:** Orta · **Grup:** H_coop_ui · **Yer:** `css/style.css:254` · **Güven:** 0.9
+- Kod: `#ship-panel { position: absolute; right: 22px; bottom: 214px; width: 290px; ... }  // :218 #quest-tracker top:128px  :296 #chat-box bottom:300px  :222 #notify-stack top:90px  :250 #boss-bar top:58px width:min(620px,70vw)`
+- Açıklama: Ölçüm (960x540, gemide): ship-panel 81–326 px ile quest-tracker 128–203 px kesişimi 21750 px²; chat-box (boş günlükle) 215–240 px ile notify-stack 90–374 px kesişimi 9500 px² (dolu günlükle 160 px daha). Statik: boss-bar 170–790 px × 58–~100 px ile time-panel 650–942 × 12–99 px kesişir. 1366x768'de ship/quest çakışması yok, chat/notify 6 bildirimde kesişir; 1920x1080'de sorun yok.
+- Kök neden: Sabit px konumlu HUD bloklarının küçük yükseklikte dikey çakışması; yalnız 1100 px genişlik için medya sorgusu var.
+- Yeniden üretme: 960x540 koşusu: overlaps {shipVsQuest:21750, chatVsNotify:9500} (r_ui.json).
+- Önerilen düzeltme: max-height:600px medya sorgusu: ship-panel'i quest-tracker altına (top hesaplı) ya da quest-tracker'ı küçült; chat-box'ı bottom:150px'e ve notify-stack max-height ile sınırla; boss-bar genişliğini calc(100vw - 740px) ile sınırla.
+- Statik mercek: style.css:254 '#ship-panel { right: 22px; bottom: 214px; width: 290px }' ve :218 '#quest-tracker { right: 22px; top: 128px; width: 330px }' aynı kenara bağlı; hud.js:281-289 gemi paneli başlık+7 satır+sp-dmg ≈ 245px → 540px'te üst ≈ 81px → 128-203 ile kesişir. :296 '#chat-box { bottom: 300px }' 540'ta üst ≈ 240-yükseklik, :222 '#notify-stack { top: 90px }' 6 toast'a kadar büyür → kesişir. :250 '#boss-bar { top: 58px; width: min(620px, 70vw) }' 960'ta x 170-790, :275 '#time-panel { right: 18px; top: 12px; width: 344px }' x 598-942 → kesişir. Tek medya sorgusu :382 'max-width: 1100px'; yükseklik sorgusu yok.
+
+### H15 — Korsan Defteri > Zaman Çizelgesi takvim hücreleri HTML'i düz metin olarak gösteriyor
+- **Önem:** Orta · **Grup:** H_coop_ui · **Yer:** `js/ui/journal.js:50` · **Güven:** 0.95
+- Kod: `el('div', { class: 'tl-dayev' }, ev.length ? ev.map((e) => `${e.icon} ${e.title}`).join('<br>') : '<span class="muted">Sakin gün</span>')`
+- Açıklama: util.js:135 el() string çocukları createTextNode ile ekler; bu yüzden takvim günlerinde '🏪 Pazar günü<br>⛵ Ticaret gemisi' ve '<span class="muted">Sakin gün</span>' metinleri aynen görünür. Koşuda doğrulandı (literalHtml=true).
+- Kök neden: html: özniteliği yerine string çocuk kullanımı.
+- Yeniden üretme: Oyunda J → Zaman Çizelgesi → takvim kutularında '<br>' / '<span class="muted">' yazısı.
+- Önerilen düzeltme: el('div', { class: 'tl-dayev', html: ... }) kullan ya da her olay için ayrı el('div') üret.
+- Statik mercek: journal.js:50 'el("div", { class: "tl-dayev" }, ev.length ? ev.map((e) => `${e.icon} ${e.title}`).join("<br>") : "<span class=\"muted\">Sakin gün</span>")' — string çocuk; util.js:135 'e.appendChild(typeof c === "string" ... ? document.createTextNode(String(c)) : c)' → HTML düz metin görünür. Benzer başka yer yok (grep: panels.js:23 itemTip html olarak kullanılıyor).
+
+### H17 — Ayarlar'da fare düğmesi atanamıyor; Esc ile atama iptali paneli de kapatıyor
+- **Önem:** Orta · **Grup:** H_coop_ui · **Yer:** `js/ui/settingsPanel.js:56` · **Güven:** 0.8
+- Kod: `input.captureNext = (code) => { if (code === 'Escape') {...return;} ... };   // input.js:63 canvas.addEventListener('mousedown', ... captureNext ...)  ui.js:18 if (input.captureNext) return;`
+- Açıklama: Fare yakalaması yalnız oyun tuvalinin mousedown'unda yapılır; Ayarlar modalı (#modal z-index 40) tuvali örttüğü için tıklama tuvale ulaşmaz → 'yeni tuşa ya da fare düğmesine bas' yönergesine rağmen Mouse0/1/2 atanamaz. Esc ile iptalde input.js'in window keydown işleyicisi önce çalışıp captureNext'i sıfırlar; ui.js'in 'if (input.captureNext) return' koruması artık geçmez ve Esc paneli kapatır.
+- Kök neden: Yakalama dinleyicisi tuvale bağlı; iki window keydown işleyicisi arasındaki sıra bağımlılığı.
+- Yeniden üretme: Ayarlar > Kontroller > Saldırı'ya tıkla, sol fareye bas → atama olmaz; Esc'e bas → Ayarlar kapanır.
+- Önerilen düzeltme: captureNext aktifken window düzeyinde mousedown (capture:true, preventDefault) dinle; ui.js'de Escape kontrolünü 'captureNext || input._justCaptured' ile ertele.
+- Statik mercek: Fare: input.js:63-64 captureNext yalnız 'canvas.addEventListener("mousedown", ...)' içinde işlenir; style.css:101 '#modal { ... z-index: 40 }' (.screen position fixed inset 0) tuvali örter, Ayarlar 'clear' değil (settingsPanel.js:89) → tıklama tuvale ulaşmaz. Esc: main.js:94 'input.init(...)' :112 'ui.init()'den önce → input.js:53 'this.captureNext = null; f(e.code)' önce çalışır → ui.js:18 'if (input.captureNext) return;' artık geçmez → :24 'this.close()' paneli kapatır.
 
 ### A3 — 'Su kalitesi' ayarı hiçbir kodda okunmuyor
 - **Önem:** Düşük · **Grup:** A_motor · **Yer:** `js/core/settings.js:9` · **Güven:** 1
@@ -731,6 +893,141 @@ Sıralama: doğrulanmış hatalar önce, sonra tartışmalı, belirsiz ve tek me
 - Önerilen düzeltme: data varsa n kadar ayrı yığın ekle (ağırlığı n ile çarp) ya da n>1'de n−1 döndür.
 - Statik mercek: inventory.js:19 `const w = data?.weight ?? (ITEMS[id]?.weight || 0.1) * n` data'lı eşyayı tek adet sayar; 38 `for (let i = 0; i < (data ? 1 : n); i++) this.stacks.push(...)` tek yığın ekler; 41 `return 0` → n−1 adet sessizce kaybolur. Gizli: mevcut çağrılar data'lı eklemeyi n=1 ile yapar (treasure.js:92 giveMap force, fishing.js:247; giveItems 497 haritaları giveMap'e yönlendirir, rollLoot 33 yalnız haritaya data verir).
 
+### D-05 — Gayzer püskürmesi bodies.impulse'u her kare çağırıyor: kare hızına bağlı fırlatma, her kare rastgele dönme
+- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/world/hazards.js:585` · **Güven:** 0.85
+- Kod: `} else if (h.state === 'erupt') { ... bodies.impulse(new THREE.Vector3(h.x, h.y, h.z), 1.6, 3); if (h.t <= 0) ...`
+- Açıklama: 2.4 s'lik 'erupt' durumunda her update'te impulse uygulanır (dt yok): 60 fps'te 144, 30 fps'te 72 itki → gayzer üstündeki sandık/varil 60 fps'te iki kat hıza çıkar (m=1, d=0.5 için kare başına 2.06 m/s → 124 m/s² @60fps, 62 m/s² @30fps). bodies.impulse ayrıca her kare b.angVel'i rastgele sıfırlar ve wake() çağırır. Oyuncu fırlatması (launched) tek seferlik olduğu için doğru.
+- Kök neden: Anlık itki fonksiyonu sürekli kuvvet gibi kullanılıyor.
+- Yeniden üretme: Volkan adasında gayzerin yanına bodies.add ile cisim koy; DK.sim(3,1/60) ve DK.sim(3,1/30) ile max vel.y'yi karşılaştır (test ortamında gayzer kurulmadı).
+- Önerilen düzeltme: Püskürme başında tek impulse (launched gibi bir bayrakla) ya da sürekli kuvvet: b.vel.y += 20*(1-d/1.6)/mass*dt ve angVel'e dokunmayın; bodies'e force(pos,r,acc,dt) yardımcıları ekleyin.
+- Statik mercek: hazards.js:573-586 'erupt' dalında :585 `bodies.impulse(new THREE.Vector3(h.x, h.y, h.z), 1.6, 3);` koşulsuz, her update çağrısında (:572 `h.t = 2.4`). bodies.js:61-66 her çağrıda vel'e k ekler, `b.angVel.set((Math.random() - 0.5) * k, …)` ile dönmeyi rastgele sıfırlar ve wake() çağırır → kare hızına bağlı ivme. Oyuncu fırlatması :579-581 `!h.launched` ile tek seferlik (doğru). Önem düzeltmesi: etkilenenler yalnız gayzerin 1.6 m yarıçapındaki serbest cisimler (treasure.js:245/444 düşen eşya/paket, events.js:177, enkaz) — volkanik adalarda nadir ve kozmetik; 'orta' abartılı, 'dusuk' uygun. Kod iddia edildiği gibi.
+
+### D-06 — Oyuncunun eğim kayması kontrolü physics.lastPlatform'u bayat okuyor (önceki karenin son groundAt çağrısı: hayvan/düşman/cisim)
+- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/player/player.js:471` · **Güven:** 0.8
+- Kod: `if (this.onGround && !physics.lastPlatform) { const gn = terrain.normalAt(this.pos.x, this.pos.z, _v2); if (gn.y < 0.68) { ... this.vel.x += gn.x * slide * dt * 4; ...`
+- Açıklama: physics.lastPlatform global ve groundAt'i çağıran son sistem tarafından yazılır (bodies._step, enemies._place, animals, npcs). Oyuncu update'i karenin başında çalıştığı için bu satır bir önceki karede en son kimin groundAt çağırdığına bağlı. Koşu: oyuncu iskele platformunda dururken DK.sim(1/30) sonrası physics.lastPlatform=null (27 hayvan güncellendi), oyuncunun kendi groundAt çağrısı 'pier' döndürüyor. Sonuç: platform üstündeki oyuncuya platform altındaki arazinin normali uygulanır (iskele altında n.y min 0.957 olduğundan limanda görünmez; dik yamaç üstündeki ada rıhtımı/tapınak sunağında kayma oluşur); tersi durumda dik yamaçta bir kare kayma atlanır.
+- Kök neden: Çağrı sonucu global yan etki olarak taşınıyor; 497. satırdaki kullanım aynı karedeki gOld çağrısına dayandığı için doğru, 471 değil.
+- Yeniden üretme: Oyuncuyu iskeleye koy; DK.sim(1/30); DK.physics.lastPlatform → null; DK.physics.groundAt(p.pos.x,p.pos.z,p.pos.y); DK.physics.lastPlatform.tag → 'pier'
+- Önerilen düzeltme: Kayma kontrolünü 509'daki g=groundAt(...) çağrısının hemen ardına taşıyın ya da bir önceki karede this.onPlatform=!!physics.lastPlatform kaydedip onu kullanın; uzun vadede groundAt bir {g, platform} nesnesi döndürsün.
+- Statik mercek: physics.js:93 `this.lastPlatform = onPlatform;` her groundAt çağrısında yazılır (global yan etki). game.js:187 `p.update(dt)` sistemlerden önce çalışır (:198 `for (const s of this.systems) if (s.update) s.update(dt)`); main.js:102 sırası …bodies, …, enemies, animals, …, crowd → animals.js:613 `physics.groundAt(this.pos.x, this.pos.z, this.pos.y + 1)` ve enemies.js:1177, bodies.js:123 her kare yazar. player.js:471 `if (this.onGround && !physics.lastPlatform)` oyuncunun aynı karedeki ilk groundAt çağrısından (:493) ÖNCE okunur → değer önceki karenin SON sistem çağrısına (çoğunlukla son hayvan/düşman) ait. :497 (gOld :494'ten hemen sonra) ve bodies.js:127 kendi çağrısından sonra okuduğu için doğru. Etki iddiadaki gibi sınırlı (platform üstündeki oyuncuya altındaki arazinin normali).
+
+### D-07 — Hızlı cisimler yürünebilir platformlardan geçiyor (30 fps'te >27 m/s; fıçı enkazı her zaman)
+- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/world/bodies.js:123` · **Güven:** 0.8
+- Kod: `const g = physics.groundAt(p.x, p.z, p.y - b.r + 0.3);   // physics.js:89 if (p.top > yFeet + step) continue;  → taban platform üstünün 0.9 m altına inerse platform yok sayılır`
+- Açıklama: Platform adayı testi yalnız 0.9 m'lik bir pencere (0.3+0.6) kabul ediyor; bir adımda bu pencereden daha fazla inen cisim platformu kaçırır ve arazi/suya düşer. Koşu (iskele, top 2.25): v=40 m/s, dt=1/30 → 1.85 m yukarıdan bırakılan cisim iskeleden geçti (y=1.49), 2.0 m'den bırakılan yakalandı (faz bağımlı, olasılık (adım-0.9)/adım ≈ %34); dt=1/60 → yakalandı. Fıçı enkazı 90+ m/s dikey hızla iner → her zaman deler. Oyuncu için aynı yapı (groundAt(nx,nz,pos.y), pencere 0.6): 30 fps'te 18 m/s'den hızlı düşüş (7.4 m'den yüksekten düşme) ya da dt≥0.07 platformu kaçırır.
+- Kök neden: Platform yakalama, konum örneklemesine dayanıyor; önceki konumdan süpürme yok, pencere sabit.
+- Yeniden üretme: pier=DK.physics.platList.find(p=>p.tag==='pier'); bodies.add(mesh,{pos:(pier.x,pier.top+1.85,pier.z), vel:(0,-40,0), radius:0.15}); DK.sim(1.5,1/30) → pos.y < pier.top
+- Önerilen düzeltme: groundAt çağrısında yFeet olarak önceki karedeki taban yüksekliğini (max(prevBottom, bottom)) verin ya da 'prevY üstte, newY altta' kesişim testi yapın; bodies için adım başına |v*dt| > 0.6 ise alt adım sayısını artırın.
+- Statik mercek: bodies.js:121 `p.addScaledVector(v, dt)` tek konum örneği; :123 `physics.groundAt(p.x, p.z, p.y - b.r + 0.3)` + physics.js:89 `if (p.top > yFeet + step) continue;` (step 0.6) → platform yalnız taban ile taban+0.9 arasındayken yakalanır, önceki konumla süpürme yok. bodies.js:89 `const steps = dt > 0.034 ? 2 : 1` → 1/30 (0.0333) tek adım: 40 m/s×1/30 = 1.33 m > 0.9 → faz bağımlı kaçırma; enkaz ~95 m/s inerken 1/60'ta 1.58 m → her zaman deler. Oyuncu: player.js:506 `this.pos.y += this.vel.y * dt;` sonra :509 `physics.groundAt(this.pos.x, this.pos.z, this.pos.y)` (pencere 0.6); GRAV=-22 (player.js:15) → 18 m/s ≈ 7.4 m düşüş (iddianın hesabı doğru); 1/30'da adım 0.6 m.
+
+### D-08 — Sprint yapan oyuncu uzun bir karede (dt ≥ ~0.069 s) ince duvar/mezar/levha çarpıştırıcılarından geçiyor
+- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/player/player.js:507` · **Güven:** 0.9
+- Kod: `this.pos.y += this.vel.y * dt; physics.resolve(this.pos, 0.33, this.pos.y);   // physics.js:126-130 merkez kutu içindeyse en yakın kenara itilir`
+- Açıklama: resolve tek konum örneği alır; adım (7 m/s × dt) yarıçap+yarı kalınlık (0.33+0.15=0.48 m) değerini aşarsa merkez duvarın orta düzlemini geçer ve 'en yakın kenar' karşı taraf olur. Koşu (hw 0.15 duvar): dt=1/30 → 0.48 m'de durdu; dt=0.077 → geçti; dt=0.1 (engine tavanı) → geçti. Etkilenen çarpıştırıcılar: port.js:359 mezar (hd 0.2), :337 levha (hd 0.2), islands.js:361 duvarlar (min 0.2), lamba r 0.15. Tek bir arazi karosu yükleme takılması bile yeterli.
+- Kök neden: Süpürmesiz ayrık çarpışma; dt tavanı 0.1 s hızlı hareketle birleşince adım>yarıçap.
+- Yeniden üretme: P.addBox(x+6,z,0.15,3,0,h-1,h+3); input.down.add('KeyW'); input.down.add('ShiftLeft'); DK.sim(3,0.1) → pos.x duvarın ötesinde
+- Önerilen düzeltme: Oyuncu/düşman hareketini |v*dt| > 0.3 m olduğunda alt adımlara bölün (n=ceil(|v*dt|/0.3)) ya da 'merkez içeride' dalında bir önceki konuma göre taraf seçin (sign((prev-c)·n)).
+- Statik mercek: player.js:491 `const nx = this.pos.x + this.vel.x * dt`, :504 `this.pos.x = nx`, :507 `physics.resolve(this.pos, 0.33, this.pos.y)` — tek örnek, süpürme yok. physics.js:126-130 merkez kutu içindeyse `const px = c.hw - Math.abs(lx), pz = c.hd - Math.abs(lz); if (px < pz) …` ile EN YAKIN kenara itilir → orta düzlemi geçen merkez karşı tarafa çıkar. _speedFor :390 `sp = 7.0; this.sprinting = true`; engine.js:61 `if (dt > 0.1) dt = 0.1` → adım 0.7 m > 0.33+0.15=0.48 (eşik dt≈0.069). İnce çarpıştırıcılar: port.js:337 `physics.addBox(x, z, 1.25, 0.2, …)`, :350 `addCircle(x, z, 0.15, …)` lamba, islands.js:361 `Math.max(0.2, hw), Math.max(0.2, hd)`. Yalnız ≤14 fps takılmalarda tetiklenir; önem 'dusuk' doğru.
+
+### D-09 — Uyuyan cisim çift çarpışma düzeltmesiyle uyandırılmadan itiliyor (havada/zeminde asılı kalabilir)
+- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/world/bodies.js:187` · **Güven:** 0.85
+- Kod: `a.pos.addScaledVector(_n, pen * ia / (ia + ib)); b.pos.addScaledVector(_n, -pen * ib / (ia + ib)); const vrel = ...; if (vrel < 0) { ... a.wake(); b.wake(); }`
+- Açıklama: Pozisyon düzeltmesi her çiftte uygulanır ama wake() yalnız vrel<0 iken çağrılır. Uyuyan cisim (_step çalışmaz: yerçekimi/zemin yok) hızsız bir komşu tarafından kaydırılırsa yeni konumda zemine oturmadan kalır. Koşu: uyuyan cisim üstüne hızsız cisim konuldu → 10 karede 5 cm itildi, uyku durumu 'ssssssssss'. Eğim/kenar/su üstünde itilince havada asılı ya da zemine gömülü kalır; ayrıca islandDropped/removeTag ile platformu kaldırılan uyuyan cisimler uyandırılmaz.
+- Kök neden: Uyku tanımı yalnız kendi hızına bakıyor; dış konum değişikliği uyandırma saymıyor.
+- Yeniden üretme: A=bodies.add(...); DK.sim(2); B=bodies.add(... pos A+0.3); DK.sim(0.3); A.sleeping===true && A.pos değişti
+- Önerilen düzeltme: Pozisyon düzeltmesi pen>1e-3 ise ilgili cismi wake() edin (ya da sleepT'yi sıfırlayın); physics.removeTag/platform değişiminde yakın cisimleri uyandırın.
+- Statik mercek: bodies.js:181 `if (!b.enabled || (a.sleeping && b.sleeping)) continue;` yalnız İKİSİ uyurken atlar; :187-188 `a.pos.addScaledVector(_n, pen * ia / (ia + ib)); b.pos.addScaledVector(_n, -pen * ib / (ia + ib));` koşulsuz; :190-194 `if (vrel < 0) { … a.wake(); b.wake(); }` → vrel ≥ 0 iken uyuyan cisim kaydırılır ama uyanmaz; :92 `if (b.enabled && !b.sleeping) this._step(b, h)` → uyuyana yerçekimi/zemin/su uygulanmaz. islands.js:305 `G.emit('islandDropped', …)` → yalnız hazards.js:68/92 dinler (removeTag); bodies'te uyandırma dinleyicisi yok.
+
+### D-10 — Gülle isabet testleri nokta örneklemesi: büyük hedef (combat) ve gemi kutusu (effects) için prev→pos süpürmesi yok
+- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/game/effects.js:170` · **Güven:** 0.6
+- Kod: `if (Math.abs(lp.z) < s.T.L / 2 + 0.3 && Math.abs(lp.x) < s.T.B / 2 + 0.2 && lp.y > -1.5 && lp.y < s.T.deckY + 2.5) hit = ...   // combat.js:58 if (_v.distanceTo(e.pos) < t.radius + 0.6)  (e.prev kullanılmıyor)`
+- Açıklama: 58 m/s gülle 1/30'da 1.9 m, dt tavanı 0.1'de 5.8 m adım atar. Sloop gövde kutusu 4.8 m, dokunaç hedefi 1.3+0.6 → 3.8 m çap: 1/30'da güvenli, uzun karelerde (≤10 fps) bordadan geçiş ve dokunaç/sütun ıskalaması mümkün. projectileTest olayı prev konumunu taşıyor ama hiçbir dinleyici kullanmıyor.
+- Kök neden: Ayrık nokta testi; süpürme bilgisi (prev) yok sayılıyor.
+- Yeniden üretme: G.visualOnlyBalls=false; dt=0.1 ile gemiye bordadan 10 gülle at ve isabet oranını 1/60 ile karşılaştır.
+- Önerilen düzeltme: Gemi kutusu için yerel uzayda prev→pos doğru parçası–kutu kesişimi (slab) ve büyük hedefler için segSegDist(prev,pos, hedef ekseni) kullanın.
+- Statik mercek: effects.js:160-161 `const prev = b.m.position.clone(); b.m.position.addScaledVector(b.vel, dt);`; :167-170 gemi testi yalnız p ile kutu `Math.abs(lp.z) < s.T.L / 2 + 0.3 && Math.abs(lp.x) < s.T.B / 2 + 0.2 …` (sloop B=4.4, shipModel.js:7 → 4.8 m genişlik); :172 `G.emit('projectileTest', { pos: p, prev, … })` → tek dinleyici combat.js:54-63 `if (_v.distanceTo(e.pos) < t.radius + 0.6)` (e.prev kullanılmıyor). Çıkış hızı combat.js:296 `dir.clone().multiplyScalar(58)`; engine.js:61 dt tavanı 0.1 → 5.8 m adım > 4.8 m kutu / 3.8 m büyük hedef çapı. 1/30'da 1.93 m güvenli; sorun yalnız ≤10 fps/uzun takılmada → 'dusuk' doğru.
+
+### D-11 — Yuvarlanan kaya, ezmek üzere olduğu fıçı/sandık çarpıştırıcısından önce sekiyor (resolve, ezme kontrolünden önce)
+- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/world/hazards.js:364` · **Güven:** 0.6
+- Kod: `if (physics.resolve(_v, r * 0.85, g + 0.2, r * 1.6)) { ... if (vn < 0) { v.x -= 1.5 * vn * nx / nl; ...; v.multiplyScalar(0.7); ... } }   // ezme: :382-391 aynı karede sonra`
+- Açıklama: Fıçı (r≈0.35) ve sandık (0.5) 'hz:' daire çarpıştırıcıları resolve içinde kayayı geri iter ve hızını %30 keser; aynı karede ezme kontrolü hedefi vurup kırar ama sekme çoktan olmuştur: 2.7 m'lik kaya küçük bir sandıktan sekip rotadan çıkar. Çevrimiçi oyunda her istemci kayayı kendi simüle eder; bir tarafta kırılmış/kaldırılmış çarpıştırıcı diğer tarafta duruyorsa yörüngeler ayrışır (hasar yalnız ev sahibinde).
+- Kök neden: Ezme ve çarpışma sırası; kırılabilir hedeflerin çarpıştırıcıları kaya için filtrelenmiyor.
+- Yeniden üretme: Kamp adasında kayayı sandığa doğru serbest bırak; hız/yön kırılmasını izle (test ortamında kaya kurulmadı).
+- Önerilen düzeltme: Ezme kontrolünü resolve'dan önce yapın ve o karede kırılan hedefleri (tag 'hz:') resolve'dan dışlayın (resolve'a tag filtresi); ağda kaya konumunu ev sahibinden yayınlayın.
+- Statik mercek: hazards.js:364 `if (physics.resolve(_v, r * 0.85, g + 0.2, r * 1.6))` ezme kontrolünden (:382-391) ÖNCE aynı karede; :367 `v.x -= 1.5 * vn * nx / nl; … v.multiplyScalar(0.7)`. Fıçı çarpıştırıcısı :176 `physics.addCircle(x, z, rad, y - 1, y + 1.1, tag)`, sandık :263 `addCircle(x, z, 0.5, y - 1, y + 1, tag)` — aynı kottaki kaya için physics.js:110 y filtresinden geçer. Fıçı: ezme → :388 `t.hurt(1, { kind: 'explosion' })` → yalnız ignite; çarpıştırıcı ancak _explode :196'da kalkar → fitil süresince (0.25–0.6 s) kaya KESİN olarak sekip %30 yavaşlar. Sandık: breakCrate :277 çarpıştırıcıyı hemen kaldırır; ezme yarıçapı 1.35+0.55=1.9 > temas yarıçapı 1.15+0.5=1.65 olduğundan çoğu karede sandık temas öncesi kırılır — 0.25 m'lik bant 1/30'daki 0.73 m adımla atlanırsa (≈%66 olasılık) aynı karede önce sekme olur. Ağ: :598 kaya her istemcide yerel simüle edilir, hasar host'ta (:383/:389). İddia fıçılar için kesin, sandıklar için faz bağımlı doğru.
+
+### D-12 — Yuvarlanan kayanın çarpıştırıcısı yok: oyuncu/düşman kayanın içinde durabilir, tek darbeden sonra itilmez
+- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/world/hazards.js:340` · **Güven:** 0.7
+- Kod: `release(h) { ... h.state = 'roll'; physics.removeTag(h.tag); ...   // :393 if (pl && ... && !h.hit.has(pl) && hypot(...) < r + 0.4)`
+- Açıklama: Serbest bırakılınca daire çarpıştırıcısı kaldırılır ve ancak durunca (slowT>1.5) geri eklenir. Ezme her hedefe bir kez uygulanır (h.hit Set); sonra oyuncu 1.35 m yarıçaplı kayanın içinde yürüyebilir, kaya ona itme uygulamaz. Kaya 'rest'e geçerken oyuncu içindeyse yeni çarpıştırıcı oyuncuyu bir sonraki resolve'da aniden 1.5 m dışarı fırlatır.
+- Kök neden: Hareketli çarpıştırıcı yok; statik dünya ve etkileşim ayrı.
+- Yeniden üretme: Kayayı serbest bırak, oyuncuyu yoluna koy; ilk darbeden sonra kayanın merkezine yürü.
+- Önerilen düzeltme: Yuvarlanırken her kare oyuncu/düşmanları kayanın dairesinden dışa itin (crowd benzeri pen düzeltmesi) ya da kayanın daire çarpıştırıcısını her kare taşıyın (c.x/c.z güncelle + hücre yeniden ekleme).
+- Statik mercek: hazards.js:340 `physics.removeTag(h.tag);` (release) → yuvarlanırken çarpıştırıcı yok; :405-408 yalnız `h.slowT > 1.5` → `physics.addCircle(p.x, p.z, r * 0.9, g - 1, g + r * 2, h.tag)`. Ezme :385 `if (!t.alive || h.hit.has(t)) continue;` ve :393 `!h.hit.has(pl)` tek seferlik. Yuvarlanırken oyuncu/düşmanı daireden dışa iten başka kod yok (grep). Rest'te yeni daire oyuncu içindeyse physics.js:114-116 `pos.x = c.x + (dx / d) * m` → m = 1.215+0.33 ≈ 1.55 m'ye anlık itme (iddianın 1.5 m'si doğru).
+
+### D-13 — Yürünebilir platformların yan yüzü yok: 0.6 m'den yüksek platforma (tapınak sunağı ~5 m, ada rıhtımı) yandan girilince oyuncu bloğun içinde yürüyor
+- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/world/physics.js:69` · **Güven:** 0.6
+- Kod: `addPlatform(x, z, hw, hd, yaw, top, tag = null) { const p = { x, z, hw, hd, ... top, tag }; this._insert(this.platforms, p, ...   // islands.js:641 physics.addPlatform(cx, cz - 12, 6, 6, 0, y0 + 5.1 * S * 0.98, B.tag) ; `
+- Açıklama: groundAt, ayakların 0.6 m üstündeki platformları yok sayar ve platformun kutu çarpıştırıcısı yoktur; oyuncu platform hacmine yandan girip arazide yürür (üstündeki zemin görsel olarak başının üstünde kalır). Tapınak sunağı için rampa/basamak primitifi yok ('kk:dungeon:stairs_wide' col'suz yerleştiriliyor), sunağa çıkış fizikte tanımsız. Liman iskelesi (2.25 m) su/kumsal üstünde olduğu için sorun görünmüyor.
+- Kök neden: Platform primitifi yalnız üst yüzey; basamak/rampa primitifi yok.
+- Yeniden üretme: Tapınak adasında sunağa (cx, cz-12) yandan yürü; pos.y platform üstünün 5 m altında kalır.
+- Önerilen düzeltme: addPlatform ile birlikte y1=top olan bir addBox ekleyin (yan yüz) ve basamaklar için eğimli platform (top(lx,lz) = a+b*lz) ya da birkaç kademeli ince platform (≤0.5 m adım) kullanın.
+- Statik mercek: physics.js:69-75 addPlatform yalnız `{x, z, hw, hd, yaw, …, top}` saklar, yan yüz kutusu eklemez; :89 `if (p.top > yFeet + step) continue;` → ayak+0.6 üstündeki platform yok sayılır. islands.js:640 `this._place(B, 'kk:dungeon:stairs_wide', cx, cz - 2, Math.PI, { s: S, y: y0, tint })` — col yok (:354 `if (opts.col)` dalına girmez) → merdiven yalnız görsel; :641 `physics.addPlatform(cx, cz - 12, 6, 6, 0, y0 + 5.1 * S * 0.98, B.tag)` ≈5 m yukarıda. Oyuncu alttan hacme girip arazide yürür; sunağa fizikte çıkış yolu tanımlı değil (:643 chest_gold y0+5.1*S'te).
+
+### D-14 — Düşmanlar için etkin basamak yüksekliği 1.6 m (oyuncu 0.65): platformlara ve yüksek çıkıntılara zıplamadan 'ışınlanır'
+- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/game/enemies.js:1177` · **Güven:** 0.7
+- Kod: `} else y = physics.groundAt(this.pos.x, this.pos.z, this.pos.y + 1);   // step 0.6 → pos.y+1.6'ya kadar platform kabul`
+- Açıklama: yFeet=pos.y+1 verildiği için düşman ayağının 1.6 m üstündeki platforma anında oturur; eğim sınırı da yoktur (oyuncu n.y<0.6'da tırmanamaz, kayar). İskele/rıhtım/sunak kenarında düşman oyuncunun ulaşamadığı yere çıkar ya da tersine kenardan oyuncunun üstüne 'atlar'. Oyuncu ve düşman arasında ulaşılabilirlik (reachable) kuralları tutarsızlaşır.
+- Kök neden: Platform adayı penceresi için keyfi +1 ofset.
+- Yeniden üretme: Düşmanı 1.4 m yüksek platformun dibine çek; bir karede üstüne çıkar.
+- Önerilen düzeltme: groundAt(this.pos.x, this.pos.z, this.pos.y) (0.6 m basamak) kullanın; dik yamaçta (n.y<0.6) hareket vektörünü oyuncudaki gibi kısıtlayın.
+- Statik mercek: enemies.js:1177 `} else y = physics.groundAt(this.pos.x, this.pos.z, this.pos.y + 1);` + physics.js:89 step 0.6 → ayak+1.6 m'ye kadar platform kabul; :1178 `this.pos.y = … y` anında oturma, geçiş yok. Oyuncu: player.js:493/509 `groundAt(…, this.pos.y)` (0.6) ve :501 `gNew > this.pos.y + 0.65`. _move (:1061-1130) eğim kısıtı içermez (yalnız :1081-1084 su kaçınması); oyuncu :497 `n.y < 0.6` tırmanamaz. Ulaşılabilirlik asimetrisi doğru.
+
+### D-15 — Düşman alay zamanlayıcısı kare sayıyor: tauntT -= 0.016 (60 fps varsayımı)
+- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/game/enemies.js:867` · **Güven:** 0.9
+- Kod: `this.tauntT = (this.tauntT || 4) - 0.016;`
+- Açıklama: _meleeOrStrafe her _act çağrısında sabit 0.016 düşer; 30 fps'te süre 2×, uzak LOD adımında (edt 0.066–0.25) 4–15× uzar. Kozmetik (ulaşılamayan hedefe alay animasyonu).
+- Kök neden: dt parametresi bu fonksiyona geçirilmiyor.
+- Yeniden üretme: Statik: fonksiyon imzasında dt yok.
+- Önerilen düzeltme: _meleeOrStrafe(tgt, d, reachable, boost, dt) ile dt geçirip tauntT -= dt yapın.
+- Statik mercek: enemies.js:867 `this.tauntT = (this.tauntT || 4) - 0.016;` — imza :861 `_meleeOrStrafe(tgt, d, reachable, boost)` dt almaz; çağrı :834/:843 _act içinden, :642 `this._act(dt)` her update'te (LOD'da :1569-1570 edt ile seyrek) → kare sayan zamanlayıcı. Ayrıca :868 `Math.random() < 0.01` de kare başına. Kozmetik (alay animasyonu).
+
+### D-16 — Dik yamaçta tırmanma engeli kare başına sabit çarpan kullanıyor (vel*0.2, pos += n*0.02)
+- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/player/player.js:499` · **Güven:** 0.85
+- Kod: `this.vel.x = this.vel.x * 0.2 + n.x * 1.5; this.vel.z = this.vel.z * 0.2 + n.z * 1.5; this.pos.x += n.x * 0.02; this.pos.z += n.z * 0.02;`
+- Açıklama: Çok dik yamaca (n.y<0.6) itilen oyuncunun hızı her karede %80 kesilip 1.5 m/s geri itme ekleniyor ve konum 2 cm kaydırılıyor: 60 fps'te 30 fps'in iki katı geri kayma hızı (2 cm×60=1.2 m/s vs 0.6 m/s). Kayma ivmesi (471-478) ise doğru dt ölçekli.
+- Kök neden: Kare başına sabit miktar entegrasyonu.
+- Yeniden üretme: Statik: ifade dt içermiyor.
+- Önerilen düzeltme: vel = damp(vel, n*1.5, 20, dt) ve pos += n * 1.2 * dt biçiminde dt ölçekleyin.
+- Statik mercek: player.js:499-500 `this.vel.x = this.vel.x * 0.2 + n.x * 1.5; this.vel.z = this.vel.z * 0.2 + n.z * 1.5; this.pos.x += n.x * 0.02; this.pos.z += n.z * 0.02;` — dt yok; dal :497 `if (this.onGround && climbing && n.y < 0.6 && !physics.lastPlatform)`. Kıyas: :475 kayma `gn.x * slide * dt * 4` doğru ölçekli. Kare başına %80 kesme + 2 cm itme → 60 fps'te 30 fps'in iki katı geri kayma.
+
+### D-18 — Dünya sınırı yalnız gemiler için var; yüzen oyuncu ve kürek sandalı 20 km haritanın dışına çıkabiliyor
+- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/ship/ship.js:370` · **Güven:** 0.7
+- Kod: `const lim = WORLD_HALF - 250; if (Math.abs(this.x) > lim || Math.abs(this.z) > lim) { this.x = clamp(...) ... }   // player.js _updateSwim ve Rowboat.update'te sınır yok`
+- Açıklama: Ship.update 9750 m'de kıstırır ve 'edge' olayı yollar; yüzücü (2.8–4 m/s) ve sandal için eşdeğer kısıt yok. terrain.heightAt HALF dışında SEA_FLOOR döndürdüğü için çökme olmaz ama sonsuz düz okyanusta ilerleme, kayıt/ağ konumlarında anlamsız değerler ve megafauna/olay sistemlerinin kapsama alanı dışına çıkma mümkün.
+- Kök neden: Sınır kontrolü tek varlıkta kodlanmış.
+- Yeniden üretme: p.mode='swim'; p.pos.set(9900, -1, 0); DK.sim(60) ile x artmaya devam eder (uzun koşu, yapılmadı).
+- Önerilen düzeltme: Ortak clampWorld(pos) yardımcısı; _updateSwim/_updateGround ve Rowboat.update'te lim'e kıstırıp aynı 'edge' bildirimini verin.
+- Statik mercek: ship.js:370-375 `const lim = WORLD_HALF - 250; if (Math.abs(this.x) > lim || …) { this.x = clamp(…) … events.push({ t: 'edge' }) }` yalnız Ship.update'te. Rowboat.update (:761-800) yalnız arazi (:777-779) ve gövde (:785-795) testi, sınır yok; player.js _updateSwim (:608-652) ve _updateGround (:433-544) sınır içermez; WORLD_HALF içe aktaranlar yalnız ship.js:7 ve megafauna.js:7 (grep). terrain.js:303 `if (x < -HALF || z < -HALF || x > HALF || z > HALF) return SEA_FLOOR;` → çökme yok, sonsuz düz okyanus.
+
+### D-19 — Deniz bossları (Derinlik Yılanı, Lanetli Amiral hayalet gemisi) arazi/karaya oturma kontrolü yapmıyor; adaların üstünden geçebiliyor
+- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/game/bosses.js:511` · **Güven:** 0.6
+- Kod: `this.pos.x += Math.sin(this.yaw) * v * dt; this.pos.z += Math.cos(this.yaw) * v * dt; } this.pos.y = damp(this.pos.y, wantY, 2, dt);   // :961 gs.x += Math.sin(gs.yaw) * sp * dt (kinematik gemi, _grounding yok)`
+- Açıklama: Yılan gemiyi 48 m yarıçapla çevreler ve 19–25 m/s hücum eder; kinematik hayalet gemi 46 m daire çizer. Kıyıya yakın (tetik d<240) savaşta her ikisi kara üstünden/içinden geçer. Oyun mantığı bozulmaz (hasar kutu testleri gemiye göre), görsel/inandırıcılık sorunu.
+- Kök neden: Kinematik hareket; terrain.heightAt kontrolü yok.
+- Yeniden üretme: Kıyıya 100 m mesafede boss tetikle; yılanın pos'u için terrain.heightAt > 0 kareleri say.
+- Önerilen düzeltme: Hedef noktada terrain.heightAt > ocean.tide - 2 ise açıya ±0.4 rad sapma ekleyip yeniden deneyin; hayalet gemi için Ship._grounding'i kinematik modda da çağırın (hasarsız).
+- Statik mercek: bosses.js:507-513 yılan: `this.pos.x += Math.sin(this.yaw) * v * dt; this.pos.z += Math.cos(this.yaw) * v * dt; } this.pos.y = damp(this.pos.y, wantY, 2, dt);` — wantY mutlak deniz kotu (:433 -1.5, :442 sinüs, :450 0.6, :434 -20), arazi kontrolü yok (grep: bosses.js'te terrain.heightAt yalnız kara bossları :589/:625/:722/:757/:769 ve işaretçi :490). Hayalet gemi :961 `gs.x += Math.sin(gs.yaw) * sp * dt; gs.z += …`; :897 `gs.kinematic = true` → ship.js:270 `if (this.kinematic) { this.updateTransform(dt); return; }` → _grounding (:367) ve _obstacles (:368) atlanır. Görsel/inandırıcılık sorunu; hasar testleri gemiye göre.
+
+### D-20 — Kalabalık itişmesinde güvertedeki oyuncu ajan değil: bordalama düşmanları oyuncunun içinden geçiyor
+- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/game/crowd.js:17` · **Güven:** 0.7
+- Kod: `if (p.mode === 'ground' || p.mode === 'swim') agents.push({ pos: p.pos, r: 0.36, m: 1, dyn: true, y: p.pos.y });`
+- Açıklama: Gemi düşmanları (e.ship) dünya konumlarını her kare local'den yeniden türettiği için crowd'un e.pos düzeltmesi etkisiz, oyuncu 'deck' modunda listeye girmiyor → güvertede düşman ve oyuncu tam üst üste binebilir; vuruş açıları/menzilleri tutarsızlaşır. Karada ayrışma çalışıyor (statik).
+- Kök neden: Güverte için yerel koordinat tabanlı itişme yok.
+- Yeniden üretme: Bordalama sırasında düşmanla oyuncu local konum farkını ölç (<0.3 m uzun süre).
+- Önerilen düzeltme: Ship-local ajan listesi: oyuncu (local) ve e.local'ler arasında aynı pen düzeltmesini uygulayıp clampDeck ile sınırlayın.
+- Statik mercek: crowd.js:17 `if (p.mode === 'ground' || p.mode === 'swim') agents.push({ pos: p.pos, r: 0.36, … })` → 'deck' modunda oyuncu ajan değil. Gemi düşmanı: enemies.js:1102-1108 `this.local.x += …; sh.clampDeck(this.local); this._deckWorld();` ve :1162 `_deckWorld()` her _place'te pos'u local'den yeniden türetir (:1146-1150). crowd, main.js:102 sırasında enemies'ten sonra çalışır ve e.pos'u düzeltir, ama bir sonraki karede pos local'den üretilince düzeltme kaybolur. Düşman-düşman ayrışması :1090-1095 vel üzerinden (local'e aktarılır) çalışır; oyuncu-düşman güvertede hiçbir itişme yok → üst üste binme mümkün.
+
 ### E-10 — Batan gemide güvertedeki oyuncu suyun altına inip 'sunk'a kadar (≈10 s) yüzmeye geçmiyor
 - **Önem:** Düşük · **Grup:** E_gemi · **Yer:** `js/player/player.js:666` · **Güven:** 0.9
 - Kod: `_updateDeck(dt, locked) {     const s = this.ship;     if (!s || s.sunk) { this.leaveShipToWorld(this.pos.clone(), new THREE.Vector3()); return; }   // batarken (sinking) kontrol yok`
@@ -925,303 +1222,23 @@ Sıralama: doğrulanmış hatalar önce, sonra tartışmalı, belirsiz ve tek me
 - Önerilen düzeltme: else dalında this._armed = false; ayrıca best.disabled olduğunda da kolu bırak.
 - Statik mercek: interact.js:44-45 `if (best && this.current && best.id === this.current.id) best = Object.assign(this.current, best); else this.holdT = 0;` → `_armed` sıfırlanmaz; 51-55 `if (this._armed) { holdT += dt; if (holdT >= best.hold) {...holdAction} }` → A sandığında basılı tutarken hedef B sandığına geçerse (iki sandık yan yana, bakış yönü 0.35 ağırlığı) B için sıfırdan 1.4 s sayar ve açar; bırakılırsa 57 `holdT < 0.35 → action` ile B alınır. Tek holdAction kullanıcısı treasure.js:526. Ayrıca holdAction'sız hedefe geçildiğinde `_armed` true kalır (hiçbir dalda temizlenmez). Pratik etki küçük (oyuncu E'yi basılı tutmayı sürdürüyor) → düşük önem doğru.
 
-## 2b. Belirsiz bulgular (45)
-
-### H01 — Konukta üretilen ganimet keseleri ev sahibine ulaşmıyor → eşya kalıcı olarak kayboluyor
-- **Önem:** Kritik · **Grup:** H_coop_ui · **Yer:** `js/treasure/treasure.js:447` · **Güven:** 0.95
-- Kod: `G.emit('netPickupSpawn', { pk: {...} });  // relay (net.js:139): if (G.isHost) this.broadcast(...)`
-- Açıklama: Konuk tarafında treasure.spawnLoot çağrılan her yol (panels.js:95 'Yere bırak', treasure.js:505 envanter taşması, hazards.js:267 konuğun kırdığı sandık, islands.js:568/674 ada ve tapınak sandıkları, hazards.js:640 gizli sandık) yalnız konukta yerel bir kese yaratır. Konuk toplamak istediğinde collect() isteği ev sahibine gider (treasure.js:483), ev sahibi pickups listesinde bulamaz ve hiçbir şey olmaz. Co-op koşusunda doğrulandı: h-has-pickup=false, collect sonrası {muz:4, still:true}.
-- Kök neden: netPickupSpawn relay'i yalnız ev sahibinde yayın yapıyor; konuk için 'lootReq' benzeri bir istek yolu yok ve konuk yerel keseyi kendi başına toplayamıyor (collect her zaman ev sahibine yönlendiriliyor).
-- Yeniden üretme: Co-op: konukta DK.treasure.spawnLoot(p.pos.clone(), [['muz',1,1,null]], 'Bırakılan', true) → ev sahibinde DK.treasure.pickups.some(id) false → konukta DK.treasure.collect → kese kalır, eşya gelmez (r_coop2.json).
-- Önerilen düzeltme: Konukta spawnLoot çağrısını ev sahibine 'lootReq' {pos, items, from} olarak gönder; ev sahibi spawnLoot yapıp pickupSpawn yayınlasın. Alternatif: konuk yerel keseye local=true işareti koyup collect'te yerel giveItems yapsın.
-
-### H02 — Oyuncu adı doğrulanmadan HUD takım listesine innerHTML ile basılıyor (eşler arası XSS)
-- **Önem:** Kritik · **Grup:** H_coop_ui · **Yer:** `js/ui/hud.js:441` · **Güven:** 0.95
-- Kod: `tl.innerHTML = [...G.remotes.values()].map((r) => `<div class="tm">... ${r.name} ...`).join('');`
-- Açıklama: Ad, 'hello' mesajından (net.js:214-221) doğrulanmadan roster'a girer ve tüm eşlere yayılır; hud._team bunu innerHTML ile basar. Kötü niyetli bir istemci (herkese açık odalar var) adını '<img src=x onerror=...>' yaparak ev sahibi ve tüm konukların tarayıcısında kod çalıştırabilir (localStorage kayıtlarını silme/değiştirme dahil). Koşuda sahte remote ile window.__xss===1 doğrulandı. hud.js:58 _xpPop da ev sahibi kaynaklı reason'ı innerHTML ile basıyor.
-- Kök neden: Güvenilmeyen ağ verisinin innerHTML şablonuna doğrudan katılması; ev sahibinde ad uzunluğu/karakter doğrulaması yok.
-- Yeniden üretme: Tek sayfa koşusu: G.remotes.set('xx', {name:'<img src=x onerror="window.__xss=1">', ...}); hud._team() → window.__xss === 1 (r_ui.json).
-- Önerilen düzeltme: _team ve _xpPop'ta textContent/el() kullan ya da HTML kaçışı uygula; ev sahibinde hello.name için uzunluk (≤20) ve karakter filtresi, app nesnesi için şema doğrulaması ekle.
-
-### D-01 — Yüzme ↔ yürüme modu 1.35–1.5 m derinlikte her iki karede bir değişiyor (sıçrama/ses/silah tut-bırak spam'i)
-- **Önem:** Yüksek · **Grup:** D_fizik · **Yer:** `js/player/player.js:649` · **Güven:** 0.95
-- Kod: `if (floor > wh - 1.25 || this.pos.y - floor < 0.3 && floor > wh - 1.5) { this.exitWater(); }   // :531 → if (this.pos.y < wh - 1.15 && g < wh - 1.35) { this.enterWater(); return; }`
-- Açıklama: Yüzme modunda pos.y, floor+0.15'e kıstırılır; floor ∈ (wh-1.5, wh-1.35) iken 'pos.y-floor<0.3 && floor>wh-1.5' hemen exitWater tetikler. Bir sonraki karede yer modunda oyuncu zemine oturur (pos.y=g) ve 'pos.y<wh-1.15 && g<wh-1.35' sağlanır → enterWater. Döngü her 2 karede bir yineler; her girişte 'splash' + 'impact' sfx, vel.y*=0.3, char.hold(null)/hold(equipped), oksijen sıfırlama. Koşu (dalga kapalı, derinlik 1.48 m): 60 karede 27 enterWater / 26 exitWater; gelgit bandı kaydırınca 'swim'de kaldı. Dalgalarla bant kıyı boyunca sürekli gezer; kıyıya çıkan/giren her oyuncu bu banttan geçer.
-- Kök neden: Giriş ve çıkış eşikleri histerezissiz ve örtüşüyor: çıkış 'tabana 0.3 m yakın' koşulunu taban wh-1.5'e kadar kabul ediyor, giriş ise tabanın wh-1.35'ten derin olmasını yeterli sayıyor; yüzücünün tabana yakın olması zaten kıstırma yüzünden her zaman doğru.
-- Yeniden üretme: DK.ocean.waveScale=0; kıyıda terrain.heightAt ∈ (wh-1.5, wh-1.35) bir noktaya oyuncuyu koy (mode 'ground'); p.enterWater sayacını sar; DK.sim(2) → 25+ çağrı.
-- Önerilen düzeltme: Tek bir tutarlı eşik çifti kullanın: exitWater yalnız floor > wh - 1.30 iken (ikinci koşulu kaldırın ya da floor > wh - 1.30 ile sınırlayın); enterWater için g < wh - 1.40. Ek olarak mod değişiminden sonra 0.3 s geri dönüş kilidi (hysteresis timer) koyun.
-
-### D-02 — Oyuncu geri tepmesi (knock) kare hızına bağlı: 60 fps'te 30 fps'in 1.7 katı, 10 fps'in 2.6 katı savrulma
-- **Önem:** Yüksek · **Grup:** D_fizik · **Yer:** `js/player/player.js:466` · **Güven:** 0.95
-- Kod: `if (this.knock) { this.vel.x += this.knock.x; this.vel.z += this.knock.z; this.knock.x *= Math.exp(-9 * dt); this.knock.z *= Math.exp(-9 * dt); ... }`
-- Açıklama: knock her karede hız vektörüne dt ile ölçeklenmeden ekleniyor; toplam eklenen hız ≈ knock/(1-e^{-9dt}) → 60 fps'te 7.2×, 30 fps'te 3.9×, 10 fps'te 1.7× knock. Koşu (knock {5,0}, düz zemin): dt=1/60 → 3.02 m, vmax 12.1 m/s; dt=1/30 → 1.80 m, 7.25 m/s; dt=0.1 → 1.15 m, 5.0 m/s. Tüm düşman/boss darbeleri (kb 2.5–11), fıçı/kaya itkileri ve bloklanan vuruşlar bu yoldan geçer; co-op'ta farklı kare hızlı oyuncular farklı mesafelere savrulur. Düşmanların kendi kb'si (enemies.js:1168 pos+=kb*dt) doğru ölçekli.
-- Kök neden: Sönümlenen bir 'hız itkisi' kare başına eklenen bir ivme gibi uygulanıyor; dt çarpanı eksik.
-- Yeniden üretme: p.knock={x:5,z:0}; DK.sim(1.5, 1/60) ile DK.sim(1.5, 1/30) karşılaştır (önce pos/vel sıfırla).
-- Önerilen düzeltme: Düşmanlardaki gibi knock'u hız olarak entegre edin: this.pos += knock*dt (ya da vel'e tek seferlik ekleyin: hurt() anında vel += knock ve knock=null). Mevcut hissi korumak için knock büyüklüğünü ~7× ölçekleyip bir kez eklemek yeterli.
-
-### H03 — Ambara konan sandık diğer oyuncularda hayalet kalıyor; kopmada ev sahibinde gerçek sandığa dönüşüp çoğalıyor
-- **Önem:** Yüksek · **Grup:** H_coop_ui · **Yer:** `js/net/net.js:143` · **Güven:** 0.85
-- Kod: `relay('netHold', (e) => this.sendGame({ t: 'hold', ship: e.ship, hold: e.hold }));  // treasure.js:359: G.emit('netHold', {..., gone: c.id})`
-- Açıklama: stowInHold (treasure.js:340-360, güvertede drop → stow dahil) sandığı yerelde 'gone' yapıp netHold ile 'gone' kimliğini bildirir; relay 'gone' alanını atar ve netChestGone yayılmaz. Diğer taraflarda sandık 'carried' durumunda kalır ve _updateChest (treasure.js:224-229) onu taşıyanın uzak karakterine yapıştırır (hayalet). Taşıyan konuk ayrılırsa ev sahibinde _dropPeer (net.js:278) sandığı 'ground' yapar → ambardaki kopyanın yanında satılabilir ikinci sandık. Ters yön (ev sahibi ambara koyar) konuklarda da aynı hayaleti bırakır.
-- Kök neden: Ambara koyma yolunda netChestGone/netChestState yayını yok; relay 'gone' bilgisini düşürüyor.
-- Yeniden üretme: Co-op: ev sahibi sandık alıp DK.treasure.stowInHold(DK.G.ship) → konukta DK.treasure.chestById(id) hâlâ {state:'carried', carriers:[hostId]} beklenir (koşu bu adıma ulaşamadan çöktü).
-- Önerilen düzeltme: stowInHold'da G.emit('netChestGone', {id}) ekle ya da relay'de e.gone varsa ek 'chestGone' mesajı gönder; _hostData 'hold' işleyicisinde hold.chests kimliklerini treasure.chests'ten kaldır.
-
-### H04 — Ev sahibiyle aynı adlı konuk katılınca ev sahibi listeden düşüyor → konuklarda ev sahibi görünmez
-- **Önem:** Yüksek · **Grup:** H_coop_ui · **Yer:** `js/net/net.js:214` · **Güven:** 0.9
-- Kod: `const existing = this.roster.find((r) => r.name === m.name && !this.conns.has(r.id)); ... if (existing) this.roster = this.roster.filter((r) => r !== existing);`
-- Açıklama: Ev sahibinin kendi roster kaydı conns'ta olmadığı için aynı adlı bir konuk 'existing' olarak ev sahibini eşleştirir ve roster'dan siler. Konuklar welcome/roster'da ev sahibini almaz; _applySnap (net.js:517) 'if (!info.app) continue' ile ev sahibi karakterini hiç yaratmaz; lobide ev sahibi yuvası boş görünür; lobideki 'Karakterimi değiştir' net.roster[0]'ı (artık konuğu) ezer. Varsayılan adlar sabit ('Kaptan Deniz'/'Kaptan Derya', appearance.js:39) olduğundan iki yeni oyuncuda doğrudan tetiklenir.
-- Kök neden: Yeniden bağlanma eşleşmesi ev sahibi kaydını dışlamıyor.
-- Yeniden üretme: Konuk adını ev sahibi adıyla eşitleyip join → ev sahibinde DK.net.roster host:true kaydı yok; konukta DK.G.remotes.size 0 kalır.
-- Önerilen düzeltme: existing aramasına '&& !r.host' ekle; ayrıca aynı adlı bağlı oyunculara otomatik sonek ver (Kaptan Deniz (2)).
-
-### H05 — 960x540'ta 'Oda Kur' ve 'Lobi' panelleri kırpılıyor; 'Odayı oluştur' / 'Oyunu başlat' düğmelerine erişilemiyor
-- **Önem:** Yüksek · **Grup:** H_coop_ui · **Yer:** `css/style.css:104` · **Güven:** 0.95
-- Kod: `.panel { position: relative; overflow: hidden; ... max-height: 90vh; display: flex; flex-direction: column; ... }`
-- Açıklama: menu.js:181-205 (hostScreen) ve :264-300 (lobby) gövdeleri .scroll sınıfı ya da kaydırılabilir yükseklik kullanmıyor; panel max-height 90vh + overflow hidden olduğundan 540 px yükseklikte alt düğmeler kesiliyor. Ölçüm (960x540): Oda Kur panel alt 513 px, 'Odayı oluştur' düğme alt 588 px; Lobi 'Oyunu başlat' alt 555 px (scrollHeight 525/558 > clientHeight 480). Bu çözünürlükte oda kurmak mümkün değil.
-- Kök neden: Sabit içerikli panel gövdeleri için kaydırma alanı tanımlanmamış; .lobby-slots min-height 150 px ve sohbet alanı dikey alanı aşıyor.
-- Yeniden üretme: 960x540: menu.hostScreen(); panel.getBoundingClientRect().bottom=513, düğme bottom=588 (r_ui.json).
-- Önerilen düzeltme: Lobi/Oda Kur gövdelerini el('div',{class:'col scroll'}) içine al ya da .panel > .col için 'min-height:0; overflow:auto'; .lobby-slots'u 540 px altında 2 sütuna indir ve lslot min-height'ı küçült.
-
-### H06 — Varsayılan eğilme/dalış tuşu Sol Ctrl tarayıcı kısayollarıyla çakışıyor (Ctrl+W sekme kapatma, Ctrl+1-5 sekme değiştirme, Ctrl+Tab, Ctrl+R)
-- **Önem:** Yüksek · **Grup:** H_coop_ui · **Yer:** `js/core/input.js:5` · **Güven:** 0.8
-- Kod: `kos: 'ShiftLeft', zipla: 'Space', egil: 'ControlLeft',   // :56 yalnız Ctrl+S/D/F preventDefault`
-- Açıklama: Dalışta/eğilmede Ctrl basılıyken W (ileri) → Chrome/Edge'de Ctrl+W sekmeyi kapatmayı dener (beforeunload sayesinde 'Siteden ayrıl?' iletişim kutusu çıkar, oyun kesilir ve işaretçi kilidi düşer). Ctrl+1..5 (silah yuvaları) ve Ctrl+Tab (envanter) sekme değiştirir ve preventDefault ile engellenemez; Ctrl+R (doldur) sayfayı yenilemeye kalkar; Linux'ta Ctrl+Q (işaret) tarayıcıyı kapatır. keyboard.lock()/fullscreen kullanılmıyor (Grep: yok).
-- Kök neden: Tarayıcı oyunu için ayrılmış Ctrl kombinasyonlarını tetikleyen varsayılan tuş seçimi; yalnız üç Ctrl kısayolu engelleniyor.
-- Yeniden üretme: Chrome (Windows/Linux): oyunda Ctrl basılı tutup W → 'Siteden ayrılmak istiyor musunuz?' iletişim kutusu.
-- Önerilen düzeltme: egil varsayılanını KeyC/KeyX gibi Ctrl dışı bir tuşa al (pusula C ise X), tam ekranda navigator.keyboard.lock(['KeyW','Digit1',...]) dene, keydown'da ctrlKey+oyun tuşu kombinasyonlarını mümkün olanlarda preventDefault et.
-
-### H07 — Ev sahibi konuk mesajlarını doğrulamıyor: keyfî hasar/altın/ambar/sandık içeriği/gemi değişimi/kilit, oran sınırı yok
-- **Önem:** Yüksek · **Grup:** H_coop_ui · **Yer:** `js/net/net.js:263` · **Güven:** 0.9
-- Kod: `case 'gold': this.broadcast(m, pid); G.player.inv.gold += m.amount; ...   // :237 e.applyDamage(m.dmg, ...)  :253 s.hold = m.hold  :251 _applyChestState(m.c)  :254 _shipFull(m)`
-- Açıklama: _hostData yalnız 'm.t' varlığını kontrol eder (net.js:209). Bir konuk {t:'gold', amount:1e9} ile herkese altın verir ya da negatifle siler; hurtEnemy/hurtBoss/hurtAnimal/hurtMarine dmg değeri (Infinity/negatif) olduğu gibi uygulanır; 'hold' ile ambara keyfî eşya enjekte edilir ve limanda satılır; 'chestState' ile içeriği dolu 'legend' sandık yaratılır; 'shipFull' replace:true ev sahibinin gemisini değiştirir ve gemideki ev sahibini limana ışınlar (shipControl.js:49); 'lock' herhangi bir noktayı herhangi bir oyuncu adına kilitler; 'helm' kilit sahibi kontrolü yok; 'dig' konuk konumu kontrol edilmeden uygulanır; 'st' içindeki NaN konumlar düşman AI'ye sızabilir. Mesaj boyutu ve sıklığı sınırsız (chat/marker/st flood).
-- Kök neden: Ev sahibi otoritesi yalnız fizik/AI için uygulanmış; gelen mesaj alanları tür/aralık/sahiplik açısından doğrulanmıyor.
-- Yeniden üretme: Konuk konsolu: DK.net.toHost({t:'gold', amount:999999}) → ev sahibi ve tüm konuklara altın eklenir.
-- Önerilen düzeltme: _hostData'da mesaj türü başına şema ve aralık doğrulaması (dmg ≤ silah maks., amount yalnız ev sahibi hesaplar, hold değişiklikleri işlem bazlı istek), lock/helm için sahiplik kontrolü, dig/pickup için mesafe kontrolü, basit token-bucket oran sınırı ve maksimum mesaj uzunluğu.
-
-### D-03 — Barut fıçısı patlaması enkazı ~120 m/s'ye fırlatıyor (3 s'de 220 m uzağa, 254 m yükseğe)
-- **Önem:** Orta · **Grup:** D_fizik · **Yer:** `js/world/hazards.js:211` · **Güven:** 0.95
-- Kod: `this._debris(c, 7, 0x6a4428); ... bodies.impulse(c, R * 1.6, 16);   // bodies.js:61 const k = (1 - d / radius) * strength / b.mass;  (enkaz mass 0.2, r 0.12)`
-- Açıklama: _debris cisimleri (kütle 0.2) patlama merkezinin 0.36 m yakınında oluşturulup hemen ardından bodies.impulse ile strength/mass = 16/0.2 = 80 m/s'lik itki alıyor (+ y'ye 0.6k). Koşu: ilk patlamadan 0.1 s sonra 7 enkazın hızı 115–120.7 m/s (vy 93–97); 3 s sonra 208–222 m uzakta ve 254 m yükseklikte. Hava sürüklemesi olmadığından ~11 s uçuyor, 9–13 s ömür boyunca ekranda hiç görünmüyor; her patlama ayrıca 11.2 m içindeki tüm sandık/eşya cisimlerini savuruyor (combat.js:44 'explosion' olayı da 9/0.2 = 45 m/s). Platformları da deler (bkz. D-07).
-- Kök neden: Kütle bölmeli itki, 0.2 kg'lık kozmetik enkaz için ölçeklenmemiş; impulse çağrısı enkaz oluşturulduktan sonra yapılıyor.
-- Yeniden üretme: h=DK.hazards.list('keg')[0]; DK.hazards.ignite(h,0.02); DK.sim(0.1); DK.hazards.debris.map(d=>d.b.vel.length())
-- Önerilen düzeltme: impulse'u enkaz oluşturmadan önce çağırın ya da enkazı dışlayın; k'yi min kütleye kıstırın (örn. mass = max(mass, 1)) ya da hız artışını clamp edin (≤ 12 m/s); bodies._step'e küçük bir hava sürüklemesi (exp(-0.3*dt)) ekleyin.
-
-### D-04 — lineBlocked'ın %2 uç payı mermi süpürmesinde boşluk yaratıyor: ok/mermi/bıçak duvar ve ağaçtan geçebiliyor
-- **Önem:** Orta · **Grup:** D_fizik · **Yer:** `js/world/physics.js:189` · **Güven:** 0.85
-- Kod: `if (t > 0.02 && t < 0.98) { const y = ay + dy * t; if (y > c.y0 && y < c.y1) return true; }   // enemies.js:1502 physics.lineBlocked(prev.x, prev.y, prev.z, s.pos.x, s.pos.y, s.pos.z)`
-- Açıklama: Uç payları göz/hedef kendi çarpıştırıcısını dışlamak için konmuş; mermi adımı (prev→pos, 95 m/s × 1/30 = 3.2 m) için aynı fonksiyon kullanıldığında girişi adımın ilk/son %2'sine düşen duvarlar görülmüyor ve bir sonraki adım duvarın içinden başladığı için t0=0 → yine görülmüyor. Koşu (0.2 m kalın duvar): giriş t0=0.935 → true; t0=0.99 → false; içinden başlayan adım → false; t0=0.01 → false. Her duvar geçişinde ~%4 kaçırma + daire testinde yarıçap 0.894r'ye küçültülmüş. Siper mekaniği (findCover) bu yüzden zaman zaman delinir.
-- Kök neden: Görüş hattı fonksiyonu süpürme testi olarak yeniden kullanılmış; uç payları parametrik değil.
-- Yeniden üretme: P=DK.physics; P.addBox(5000,5000,0.1,3,0,-50,100,'t'); P.lineBlocked(4996.8,1,5000,4999.93,1,5000) → false; P.lineBlocked(4997,1,5000,5000.1,1,5000) → true
-- Önerilen düzeltme: lineBlocked(…, opts={tMin:0.02,tMax:0.98,rScale:0.8}) yapıp mermi çağrısında tMin=0, tMax=1, rScale=1 verin; ayrıca 'başlangıç kutu içinde' durumunda (t0=0 ve t1>0) engel sayın.
-
-### D-05 — Gayzer püskürmesi bodies.impulse'u her kare çağırıyor: kare hızına bağlı fırlatma, her kare rastgele dönme
-- **Önem:** Orta · **Grup:** D_fizik · **Yer:** `js/world/hazards.js:585` · **Güven:** 0.85
-- Kod: `} else if (h.state === 'erupt') { ... bodies.impulse(new THREE.Vector3(h.x, h.y, h.z), 1.6, 3); if (h.t <= 0) ...`
-- Açıklama: 2.4 s'lik 'erupt' durumunda her update'te impulse uygulanır (dt yok): 60 fps'te 144, 30 fps'te 72 itki → gayzer üstündeki sandık/varil 60 fps'te iki kat hıza çıkar (m=1, d=0.5 için kare başına 2.06 m/s → 124 m/s² @60fps, 62 m/s² @30fps). bodies.impulse ayrıca her kare b.angVel'i rastgele sıfırlar ve wake() çağırır. Oyuncu fırlatması (launched) tek seferlik olduğu için doğru.
-- Kök neden: Anlık itki fonksiyonu sürekli kuvvet gibi kullanılıyor.
-- Yeniden üretme: Volkan adasında gayzerin yanına bodies.add ile cisim koy; DK.sim(3,1/60) ve DK.sim(3,1/30) ile max vel.y'yi karşılaştır (test ortamında gayzer kurulmadı).
-- Önerilen düzeltme: Püskürme başında tek impulse (launched gibi bir bayrakla) ya da sürekli kuvvet: b.vel.y += 20*(1-d/1.6)/mass*dt ve angVel'e dokunmayın; bodies'e force(pos,r,acc,dt) yardımcıları ekleyin.
-
-### H08 — Dünya olayları (yüzen varil/şişe/sandık/kazazede/gök taşı) yalnız ev sahibinde; konuk görmez ve toplayamaz
-- **Önem:** Orta · **Grup:** H_coop_ui · **Yer:** `js/game/events.js:144` · **Güven:** 0.9
-- Kod: `spawnFloating(kind, pos) { ... this.floating.push(f); return f; }   // :75 if (!G.isHost) return;  — ağ yayını yok`
-- Açıklama: events sistemi netSnapshot/applySnapshot/relay'siz; floating nesneler ve 'Gözcü: ...' bildirimleri yalnız ev sahibinde oluşur. worldEvents._debris (worldEvents.js:290-300) de events.spawnFloating'e dayanır. Konuk bu içeriğe hiç erişemez; kazazede haritası/altın ödülü ve düşman gemisi ele geçirme altını (events.js:265) yalnız ev sahibine gider.
-- Kök neden: events için ağ yolu tasarlanmamış.
-- Yeniden üretme: Co-op: ev sahibinde DK.events.trigger('barrel') → konukta DK.events.floating.length 0.
-- Önerilen düzeltme: floating listesini snapshot'a ekle (id, kind, pos) ve konuk collectFloating'i 'floatReq' ile ev sahibine yönlendir; olay bildirimlerini netStory benzeri 'notify' yayınıyla paylaş.
-
-### H09 — Konuk kazısında geri bildirim yok; hazine bulma mesajları yanlış kişiye gidiyor
-- **Önem:** Orta · **Grup:** H_coop_ui · **Yer:** `js/treasure/treasure.js:168` · **Güven:** 0.9
-- Kod: `G.emit('digResult', { who, ok: false, warm: !!near });  if (who === G.myId) G.notify(near ? 'Kürek bir şeye değmedi…' : 'Burada hiçbir şey yok.', ...)`
-- Açıklama: Konuk kazdığında resolveDig ev sahibinde çalışır; boş kazıda yalnız who===myId için notify var ve 'digResult' olayını Grep'e göre hiç kimse dinlemiyor → konuk sessizlik alır ('yakın olmalısın' ipucu dahil). Hazine bulunduğunda ev sahibi 'Hazine buldun' (treasure.js:181) görür, kazan konuk ise 'Tayfa hazineyi buldu! Haritan kullanıldı.' (net.js:444 mapUsed) alır.
-- Kök neden: Sonuç bildirimi ağa taşınmamış; mesaj metinleri kazanı ayırt etmiyor.
-- Yeniden üretme: Konuk: DK.G.emit('netDig', {x: p.pos.x+1, z: p.pos.z+1}) → konukta hiçbir notify yok (koşu bu adımda çöktü; statik kesin).
-- Önerilen düzeltme: resolveDig sonucunu toPeer(who, {t:'digResult', ok, warm, tier}) ile gönder ve konukta notify et; ev sahibi bildirimini who'ya göre 'X hazine buldu' yap.
-
-### H10 — Konuğun ambardan aldığı sandık yalnız konukta var: açılamaz, kopmada kaybolur
-- **Önem:** Orta · **Grup:** H_coop_ui · **Yer:** `js/treasure/treasure.js:374` · **Güven:** 0.85
-- Kod: `G.emit('netChestSpawn', { chest: this.chestNet(c) });   // relay (net.js:137): if (G.isHost) this.broadcast(...)`
-- Açıklama: takeFromHold (treasure.js:362-375) konukta sandığı yerel yaratır; netChestSpawn yalnız ev sahibi yayar, netChestState emit edilmez. Ev sahibi sandığı bilmez: konuk 'aç' (chestReq open) isteği bulunamaz, iki kişilik taşıma yardımı imkânsız, konuk kopunca sandık ambardan da çıkmış olur (kayıp). Yalnız konuk yere bırakınca chestState ile ev sahibinde yaratılır.
-- Kök neden: Konuk tarafında sandık yaratma yolu ev sahibine bildirilmiyor.
-- Yeniden üretme: Konuk ambar panelinden sandık al → ev sahibinde DK.treasure.chestById(id) undefined; konuk E basılı tut (aç) → hiçbir şey olmaz.
-- Önerilen düzeltme: Konukta takeFromHold'u 'holdTakeReq' {idx} olarak ev sahibine gönder; ev sahibi spawnChest + _grant yapıp chestSpawn/chestState yayınlasın.
-
 ### H11 — Uzak oyuncu aksiyon efektleri ('act': atış parlaması/sesi) hiçbir konukta gösterilmiyor
-- **Önem:** Orta · **Grup:** H_coop_ui · **Yer:** `js/net/net.js:236` · **Güven:** 0.9
+- **Önem:** Düşük · **Grup:** H_coop_ui · **Yer:** `js/net/net.js:236` · **Güven:** 0.9
 - Kod: `case 'act': this._remoteAct(pid, m); this.broadcast(m, pid, { from: pid }); break;   // broadcast(m, except) — 3. argüman yok sayılır`
 - Açıklama: Konuğun 'act' mesajı diğer konuklara 'from' alanı olmadan yayılır; ev sahibinin kendi netAction'ı da (relay net.js:126 → sendGame) 'from' içermez. _clientData 'act' (net.js:409) m.from undefined → G.remotes.get(undefined) → çıkış. Sonuç: konuklar başkalarının tabanca parlamasını/sesini hiç görmez. Ayrıca _remoteAct yalnız 'shoot'/'slash' işler; emit edilen 'atk' (combat.js:156) ve 'dodge' (player.js:424) işlenmez, 'slash' hiç gönderilmez.
 - Kök neden: broadcast imzası (m, except) ile uyumsuz çağrı; ev sahibi tarafında from eklenmiyor.
 - Yeniden üretme: 3 oyuncu: konuk A ateş eder → konuk B'de effects.flash/ses yok; 2 oyuncu: ev sahibi ateş eder → konukta yok.
 - Önerilen düzeltme: this.broadcast({ ...m, from: pid }, pid) ve relay'de ev sahibi için { ...e, from: G.myId }; _remoteAct'e 'atk' için kılıç sesi ekle.
-
-### H12 — Gemi 'sunk' bayrağı ile gülle/tahta sayıları ağ durumunda yok: batan gemi konukta görünür kalır, gülle sayısı sapar
-- **Önem:** Orta · **Grup:** H_coop_ui · **Yer:** `js/ship/ship.js:701` · **Güven:** 0.85
-- Kod: `applyNet(s) { ... this.sinking = s[11]; ... }   // sunk yalnız update() içinde (ship.js:536); netState'te cannonballs/planks yok`
-- Açıklama: Konukta clientUpdate sunk hesaplamaz; sinking değeri gelir ama 'sunk=true/root.visible=false' ve 'sunk' olayı (events._shipEvent bildirimi, güverteden düşürme) hiç olmaz → konuk batmış gemiye 'Gemiye bin' yapabilir (shipControl.js:159 !ship.sunk). net.js:440 'cannon' işleyicisi ev sahibi atışında konuğun gülle sayısını geri yüklediği için konuk HUD'u ve canFire kontrolü ev sahibinden sapar; yalnız shipFull (dükkân) ile düzelir.
-- Kök neden: netState alanları eksik (sunk, cannonballs, planks); görsel atış için sayaç geri yükleme.
-- Yeniden üretme: Ev sahibi gemisi water=100 → 15 s sonra ev sahibinde sunk=true, konukta sunk=false ve root.visible=true.
-- Önerilen düzeltme: netState'e sunk/cannonballs/planks ekle ve applyNet'te uygula (sunk geçişinde root.visible ve 'sunk' olayı); 'cannon' işleyicisinde keep yerine ev sahibi sayısını kullan.
-
-### H13 — Bağlantı kopmasında kilit/sandık temizliği diğer konuklara yayılmıyor (dümen/top 'kullanımda' kalır)
-- **Önem:** Orta · **Grup:** H_coop_ui · **Yer:** `js/net/net.js:279` · **Güven:** 0.85
-- Kod: `for (const [k, v] of interact.locks) if (v === pid) interact.locks.delete(k);   // yayın yok`
-- Açıklama: _dropPeer kopan oyuncunun kilitlerini yalnız ev sahibinde siler; 'lock' mesajları yalnız değişimde gönderildiği için kalan konuklarda interact.locks girdisi kalır ve interact.isLocked (interact.js:16-19) dümen/topu 'kullanımda' olarak kilitli bırakır. Taşınan sandık için de chestState yayılmaz (konuklar _updateChest'teki taşıyıcı-yok dalıyla kendini onarır).
-- Kök neden: Kopma temizliği yerel; ilgili durum mesajları yayılmıyor.
-- Yeniden üretme: 3 oyuncu: konuk A dümeni alır ve sekmeyi kapatır → konuk B'de dümen 'Dümene geç (kullanımda)' kalır.
-- Önerilen düzeltme: _dropPeer'da her silinen kilit için broadcast({t:'lock', id:k, on:false}) ve bırakılan sandık için chestState yayını.
-
-### H14 — HUD 960x540: gemi paneli görev takipçisinin üstüne biniyor; sohbet kutusu bildirim yığınıyla çakışıyor; boss çubuğu zaman paneliyle çakışıyor
-- **Önem:** Orta · **Grup:** H_coop_ui · **Yer:** `css/style.css:254` · **Güven:** 0.9
-- Kod: `#ship-panel { position: absolute; right: 22px; bottom: 214px; width: 290px; ... }  // :218 #quest-tracker top:128px  :296 #chat-box bottom:300px  :222 #notify-stack top:90px  :250 #boss-bar top:58px width:min(620px,70vw)`
-- Açıklama: Ölçüm (960x540, gemide): ship-panel 81–326 px ile quest-tracker 128–203 px kesişimi 21750 px²; chat-box (boş günlükle) 215–240 px ile notify-stack 90–374 px kesişimi 9500 px² (dolu günlükle 160 px daha). Statik: boss-bar 170–790 px × 58–~100 px ile time-panel 650–942 × 12–99 px kesişir. 1366x768'de ship/quest çakışması yok, chat/notify 6 bildirimde kesişir; 1920x1080'de sorun yok.
-- Kök neden: Sabit px konumlu HUD bloklarının küçük yükseklikte dikey çakışması; yalnız 1100 px genişlik için medya sorgusu var.
-- Yeniden üretme: 960x540 koşusu: overlaps {shipVsQuest:21750, chatVsNotify:9500} (r_ui.json).
-- Önerilen düzeltme: max-height:600px medya sorgusu: ship-panel'i quest-tracker altına (top hesaplı) ya da quest-tracker'ı küçült; chat-box'ı bottom:150px'e ve notify-stack max-height ile sınırla; boss-bar genişliğini calc(100vw - 740px) ile sınırla.
-
-### H15 — Korsan Defteri > Zaman Çizelgesi takvim hücreleri HTML'i düz metin olarak gösteriyor
-- **Önem:** Orta · **Grup:** H_coop_ui · **Yer:** `js/ui/journal.js:50` · **Güven:** 0.95
-- Kod: `el('div', { class: 'tl-dayev' }, ev.length ? ev.map((e) => `${e.icon} ${e.title}`).join('<br>') : '<span class="muted">Sakin gün</span>')`
-- Açıklama: util.js:135 el() string çocukları createTextNode ile ekler; bu yüzden takvim günlerinde '🏪 Pazar günü<br>⛵ Ticaret gemisi' ve '<span class="muted">Sakin gün</span>' metinleri aynen görünür. Koşuda doğrulandı (literalHtml=true).
-- Kök neden: html: özniteliği yerine string çocuk kullanımı.
-- Yeniden üretme: Oyunda J → Zaman Çizelgesi → takvim kutularında '<br>' / '<span class="muted">' yazısı.
-- Önerilen düzeltme: el('div', { class: 'tl-dayev', html: ... }) kullan ya da her olay için ayrı el('div') üret.
+- Statik mercek: net.js:236 'this.broadcast(m, pid, { from: pid })' — imza :368 'broadcast(m, except = null)' üçüncü argümanı yok sayar; konuğun 'act' mesajı (:126 relay '{ t: "act", ...e }') ve ev sahibinin kendi netAction'ı 'from' içermez. :409 '_remoteAct(m.from, m)' → :507 'G.remotes.get(undefined)' → return. _remoteAct yalnız 'shoot'/'slash' (:509-510); emit edilenler combat.js:156 'atk', player.js:424 'dodge', combat.js:260 'shoot'; 'slash' hiç gönderilmez. Etki yalnız görsel/ses (parlama, ses) → orta yerine dusuk.
 
 ### H16 — Konuk ilerlemesi otomatik kaydedilmiyor; duraklat menüsünde konuk için Kaydet yok
-- **Önem:** Orta · **Grup:** H_coop_ui · **Yer:** `js/game/game.js:204` · **Güven:** 0.8
+- **Önem:** Düşük · **Grup:** H_coop_ui · **Yer:** `js/game/game.js:204` · **Güven:** 0.8
 - Kod: `if (this.autosaveT > 120 && G.isHost) { this.autosaveT = 0; G.emit('autosave'); }   // progress.js:87 G.on('autosave', () => this._guestSave())  menu.js:348 G.isHost ? B('Kaydet', ...) : null`
 - Açıklama: 'autosave' yalnız ev sahibinde yayınlandığı için progress._guestSave (XP/seviye/yetenek) konukta yalnız seviye atlama, yetenek öğrenme ve stop'ta çalışır; konuk envanteri yalnız hostLeft/toMenu/beforeunload/visibilitychange'de yazılır. Tarayıcı çökmesi ya da sekme kill'inde son dakikaların envanteri ve XP'si kaybolur; konuk elle de kaydedemez (düğme gizli, oysa saveNow konuğu destekliyor).
 - Kök neden: Autosave koşulu G.isHost; menü düğmesi ev sahibine özel.
 - Yeniden üretme: Konuk olarak 10 dk oyna, sekmeyi zorla kapat → son kayıt yalnız hostLeft/visibility anındaki.
 - Önerilen düzeltme: Autosave'i konukta da (yalnız yerel kayıt) tetikle; duraklat menüsünde konuk için 'Kişisel ilerlemeyi kaydet' göster.
-
-### H17 — Ayarlar'da fare düğmesi atanamıyor; Esc ile atama iptali paneli de kapatıyor
-- **Önem:** Orta · **Grup:** H_coop_ui · **Yer:** `js/ui/settingsPanel.js:56` · **Güven:** 0.8
-- Kod: `input.captureNext = (code) => { if (code === 'Escape') {...return;} ... };   // input.js:63 canvas.addEventListener('mousedown', ... captureNext ...)  ui.js:18 if (input.captureNext) return;`
-- Açıklama: Fare yakalaması yalnız oyun tuvalinin mousedown'unda yapılır; Ayarlar modalı (#modal z-index 40) tuvali örttüğü için tıklama tuvale ulaşmaz → 'yeni tuşa ya da fare düğmesine bas' yönergesine rağmen Mouse0/1/2 atanamaz. Esc ile iptalde input.js'in window keydown işleyicisi önce çalışıp captureNext'i sıfırlar; ui.js'in 'if (input.captureNext) return' koruması artık geçmez ve Esc paneli kapatır.
-- Kök neden: Yakalama dinleyicisi tuvale bağlı; iki window keydown işleyicisi arasındaki sıra bağımlılığı.
-- Yeniden üretme: Ayarlar > Kontroller > Saldırı'ya tıkla, sol fareye bas → atama olmaz; Esc'e bas → Ayarlar kapanır.
-- Önerilen düzeltme: captureNext aktifken window düzeyinde mousedown (capture:true, preventDefault) dinle; ui.js'de Escape kontrolünü 'captureNext || input._justCaptured' ile ertele.
-
-### D-06 — Oyuncunun eğim kayması kontrolü physics.lastPlatform'u bayat okuyor (önceki karenin son groundAt çağrısı: hayvan/düşman/cisim)
-- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/player/player.js:471` · **Güven:** 0.8
-- Kod: `if (this.onGround && !physics.lastPlatform) { const gn = terrain.normalAt(this.pos.x, this.pos.z, _v2); if (gn.y < 0.68) { ... this.vel.x += gn.x * slide * dt * 4; ...`
-- Açıklama: physics.lastPlatform global ve groundAt'i çağıran son sistem tarafından yazılır (bodies._step, enemies._place, animals, npcs). Oyuncu update'i karenin başında çalıştığı için bu satır bir önceki karede en son kimin groundAt çağırdığına bağlı. Koşu: oyuncu iskele platformunda dururken DK.sim(1/30) sonrası physics.lastPlatform=null (27 hayvan güncellendi), oyuncunun kendi groundAt çağrısı 'pier' döndürüyor. Sonuç: platform üstündeki oyuncuya platform altındaki arazinin normali uygulanır (iskele altında n.y min 0.957 olduğundan limanda görünmez; dik yamaç üstündeki ada rıhtımı/tapınak sunağında kayma oluşur); tersi durumda dik yamaçta bir kare kayma atlanır.
-- Kök neden: Çağrı sonucu global yan etki olarak taşınıyor; 497. satırdaki kullanım aynı karedeki gOld çağrısına dayandığı için doğru, 471 değil.
-- Yeniden üretme: Oyuncuyu iskeleye koy; DK.sim(1/30); DK.physics.lastPlatform → null; DK.physics.groundAt(p.pos.x,p.pos.z,p.pos.y); DK.physics.lastPlatform.tag → 'pier'
-- Önerilen düzeltme: Kayma kontrolünü 509'daki g=groundAt(...) çağrısının hemen ardına taşıyın ya da bir önceki karede this.onPlatform=!!physics.lastPlatform kaydedip onu kullanın; uzun vadede groundAt bir {g, platform} nesnesi döndürsün.
-
-### D-07 — Hızlı cisimler yürünebilir platformlardan geçiyor (30 fps'te >27 m/s; fıçı enkazı her zaman)
-- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/world/bodies.js:123` · **Güven:** 0.8
-- Kod: `const g = physics.groundAt(p.x, p.z, p.y - b.r + 0.3);   // physics.js:89 if (p.top > yFeet + step) continue;  → taban platform üstünün 0.9 m altına inerse platform yok sayılır`
-- Açıklama: Platform adayı testi yalnız 0.9 m'lik bir pencere (0.3+0.6) kabul ediyor; bir adımda bu pencereden daha fazla inen cisim platformu kaçırır ve arazi/suya düşer. Koşu (iskele, top 2.25): v=40 m/s, dt=1/30 → 1.85 m yukarıdan bırakılan cisim iskeleden geçti (y=1.49), 2.0 m'den bırakılan yakalandı (faz bağımlı, olasılık (adım-0.9)/adım ≈ %34); dt=1/60 → yakalandı. Fıçı enkazı 90+ m/s dikey hızla iner → her zaman deler. Oyuncu için aynı yapı (groundAt(nx,nz,pos.y), pencere 0.6): 30 fps'te 18 m/s'den hızlı düşüş (7.4 m'den yüksekten düşme) ya da dt≥0.07 platformu kaçırır.
-- Kök neden: Platform yakalama, konum örneklemesine dayanıyor; önceki konumdan süpürme yok, pencere sabit.
-- Yeniden üretme: pier=DK.physics.platList.find(p=>p.tag==='pier'); bodies.add(mesh,{pos:(pier.x,pier.top+1.85,pier.z), vel:(0,-40,0), radius:0.15}); DK.sim(1.5,1/30) → pos.y < pier.top
-- Önerilen düzeltme: groundAt çağrısında yFeet olarak önceki karedeki taban yüksekliğini (max(prevBottom, bottom)) verin ya da 'prevY üstte, newY altta' kesişim testi yapın; bodies için adım başına |v*dt| > 0.6 ise alt adım sayısını artırın.
-
-### D-08 — Sprint yapan oyuncu uzun bir karede (dt ≥ ~0.069 s) ince duvar/mezar/levha çarpıştırıcılarından geçiyor
-- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/player/player.js:507` · **Güven:** 0.9
-- Kod: `this.pos.y += this.vel.y * dt; physics.resolve(this.pos, 0.33, this.pos.y);   // physics.js:126-130 merkez kutu içindeyse en yakın kenara itilir`
-- Açıklama: resolve tek konum örneği alır; adım (7 m/s × dt) yarıçap+yarı kalınlık (0.33+0.15=0.48 m) değerini aşarsa merkez duvarın orta düzlemini geçer ve 'en yakın kenar' karşı taraf olur. Koşu (hw 0.15 duvar): dt=1/30 → 0.48 m'de durdu; dt=0.077 → geçti; dt=0.1 (engine tavanı) → geçti. Etkilenen çarpıştırıcılar: port.js:359 mezar (hd 0.2), :337 levha (hd 0.2), islands.js:361 duvarlar (min 0.2), lamba r 0.15. Tek bir arazi karosu yükleme takılması bile yeterli.
-- Kök neden: Süpürmesiz ayrık çarpışma; dt tavanı 0.1 s hızlı hareketle birleşince adım>yarıçap.
-- Yeniden üretme: P.addBox(x+6,z,0.15,3,0,h-1,h+3); input.down.add('KeyW'); input.down.add('ShiftLeft'); DK.sim(3,0.1) → pos.x duvarın ötesinde
-- Önerilen düzeltme: Oyuncu/düşman hareketini |v*dt| > 0.3 m olduğunda alt adımlara bölün (n=ceil(|v*dt|/0.3)) ya da 'merkez içeride' dalında bir önceki konuma göre taraf seçin (sign((prev-c)·n)).
-
-### D-09 — Uyuyan cisim çift çarpışma düzeltmesiyle uyandırılmadan itiliyor (havada/zeminde asılı kalabilir)
-- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/world/bodies.js:187` · **Güven:** 0.85
-- Kod: `a.pos.addScaledVector(_n, pen * ia / (ia + ib)); b.pos.addScaledVector(_n, -pen * ib / (ia + ib)); const vrel = ...; if (vrel < 0) { ... a.wake(); b.wake(); }`
-- Açıklama: Pozisyon düzeltmesi her çiftte uygulanır ama wake() yalnız vrel<0 iken çağrılır. Uyuyan cisim (_step çalışmaz: yerçekimi/zemin yok) hızsız bir komşu tarafından kaydırılırsa yeni konumda zemine oturmadan kalır. Koşu: uyuyan cisim üstüne hızsız cisim konuldu → 10 karede 5 cm itildi, uyku durumu 'ssssssssss'. Eğim/kenar/su üstünde itilince havada asılı ya da zemine gömülü kalır; ayrıca islandDropped/removeTag ile platformu kaldırılan uyuyan cisimler uyandırılmaz.
-- Kök neden: Uyku tanımı yalnız kendi hızına bakıyor; dış konum değişikliği uyandırma saymıyor.
-- Yeniden üretme: A=bodies.add(...); DK.sim(2); B=bodies.add(... pos A+0.3); DK.sim(0.3); A.sleeping===true && A.pos değişti
-- Önerilen düzeltme: Pozisyon düzeltmesi pen>1e-3 ise ilgili cismi wake() edin (ya da sleepT'yi sıfırlayın); physics.removeTag/platform değişiminde yakın cisimleri uyandırın.
-
-### D-10 — Gülle isabet testleri nokta örneklemesi: büyük hedef (combat) ve gemi kutusu (effects) için prev→pos süpürmesi yok
-- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/game/effects.js:170` · **Güven:** 0.6
-- Kod: `if (Math.abs(lp.z) < s.T.L / 2 + 0.3 && Math.abs(lp.x) < s.T.B / 2 + 0.2 && lp.y > -1.5 && lp.y < s.T.deckY + 2.5) hit = ...   // combat.js:58 if (_v.distanceTo(e.pos) < t.radius + 0.6)  (e.prev kullanılmıyor)`
-- Açıklama: 58 m/s gülle 1/30'da 1.9 m, dt tavanı 0.1'de 5.8 m adım atar. Sloop gövde kutusu 4.8 m, dokunaç hedefi 1.3+0.6 → 3.8 m çap: 1/30'da güvenli, uzun karelerde (≤10 fps) bordadan geçiş ve dokunaç/sütun ıskalaması mümkün. projectileTest olayı prev konumunu taşıyor ama hiçbir dinleyici kullanmıyor.
-- Kök neden: Ayrık nokta testi; süpürme bilgisi (prev) yok sayılıyor.
-- Yeniden üretme: G.visualOnlyBalls=false; dt=0.1 ile gemiye bordadan 10 gülle at ve isabet oranını 1/60 ile karşılaştır.
-- Önerilen düzeltme: Gemi kutusu için yerel uzayda prev→pos doğru parçası–kutu kesişimi (slab) ve büyük hedefler için segSegDist(prev,pos, hedef ekseni) kullanın.
-
-### D-11 — Yuvarlanan kaya, ezmek üzere olduğu fıçı/sandık çarpıştırıcısından önce sekiyor (resolve, ezme kontrolünden önce)
-- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/world/hazards.js:364` · **Güven:** 0.6
-- Kod: `if (physics.resolve(_v, r * 0.85, g + 0.2, r * 1.6)) { ... if (vn < 0) { v.x -= 1.5 * vn * nx / nl; ...; v.multiplyScalar(0.7); ... } }   // ezme: :382-391 aynı karede sonra`
-- Açıklama: Fıçı (r≈0.35) ve sandık (0.5) 'hz:' daire çarpıştırıcıları resolve içinde kayayı geri iter ve hızını %30 keser; aynı karede ezme kontrolü hedefi vurup kırar ama sekme çoktan olmuştur: 2.7 m'lik kaya küçük bir sandıktan sekip rotadan çıkar. Çevrimiçi oyunda her istemci kayayı kendi simüle eder; bir tarafta kırılmış/kaldırılmış çarpıştırıcı diğer tarafta duruyorsa yörüngeler ayrışır (hasar yalnız ev sahibinde).
-- Kök neden: Ezme ve çarpışma sırası; kırılabilir hedeflerin çarpıştırıcıları kaya için filtrelenmiyor.
-- Yeniden üretme: Kamp adasında kayayı sandığa doğru serbest bırak; hız/yön kırılmasını izle (test ortamında kaya kurulmadı).
-- Önerilen düzeltme: Ezme kontrolünü resolve'dan önce yapın ve o karede kırılan hedefleri (tag 'hz:') resolve'dan dışlayın (resolve'a tag filtresi); ağda kaya konumunu ev sahibinden yayınlayın.
-
-### D-12 — Yuvarlanan kayanın çarpıştırıcısı yok: oyuncu/düşman kayanın içinde durabilir, tek darbeden sonra itilmez
-- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/world/hazards.js:340` · **Güven:** 0.7
-- Kod: `release(h) { ... h.state = 'roll'; physics.removeTag(h.tag); ...   // :393 if (pl && ... && !h.hit.has(pl) && hypot(...) < r + 0.4)`
-- Açıklama: Serbest bırakılınca daire çarpıştırıcısı kaldırılır ve ancak durunca (slowT>1.5) geri eklenir. Ezme her hedefe bir kez uygulanır (h.hit Set); sonra oyuncu 1.35 m yarıçaplı kayanın içinde yürüyebilir, kaya ona itme uygulamaz. Kaya 'rest'e geçerken oyuncu içindeyse yeni çarpıştırıcı oyuncuyu bir sonraki resolve'da aniden 1.5 m dışarı fırlatır.
-- Kök neden: Hareketli çarpıştırıcı yok; statik dünya ve etkileşim ayrı.
-- Yeniden üretme: Kayayı serbest bırak, oyuncuyu yoluna koy; ilk darbeden sonra kayanın merkezine yürü.
-- Önerilen düzeltme: Yuvarlanırken her kare oyuncu/düşmanları kayanın dairesinden dışa itin (crowd benzeri pen düzeltmesi) ya da kayanın daire çarpıştırıcısını her kare taşıyın (c.x/c.z güncelle + hücre yeniden ekleme).
-
-### D-13 — Yürünebilir platformların yan yüzü yok: 0.6 m'den yüksek platforma (tapınak sunağı ~5 m, ada rıhtımı) yandan girilince oyuncu bloğun içinde yürüyor
-- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/world/physics.js:69` · **Güven:** 0.6
-- Kod: `addPlatform(x, z, hw, hd, yaw, top, tag = null) { const p = { x, z, hw, hd, ... top, tag }; this._insert(this.platforms, p, ...   // islands.js:641 physics.addPlatform(cx, cz - 12, 6, 6, 0, y0 + 5.1 * S * 0.98, B.tag) ; `
-- Açıklama: groundAt, ayakların 0.6 m üstündeki platformları yok sayar ve platformun kutu çarpıştırıcısı yoktur; oyuncu platform hacmine yandan girip arazide yürür (üstündeki zemin görsel olarak başının üstünde kalır). Tapınak sunağı için rampa/basamak primitifi yok ('kk:dungeon:stairs_wide' col'suz yerleştiriliyor), sunağa çıkış fizikte tanımsız. Liman iskelesi (2.25 m) su/kumsal üstünde olduğu için sorun görünmüyor.
-- Kök neden: Platform primitifi yalnız üst yüzey; basamak/rampa primitifi yok.
-- Yeniden üretme: Tapınak adasında sunağa (cx, cz-12) yandan yürü; pos.y platform üstünün 5 m altında kalır.
-- Önerilen düzeltme: addPlatform ile birlikte y1=top olan bir addBox ekleyin (yan yüz) ve basamaklar için eğimli platform (top(lx,lz) = a+b*lz) ya da birkaç kademeli ince platform (≤0.5 m adım) kullanın.
-
-### D-14 — Düşmanlar için etkin basamak yüksekliği 1.6 m (oyuncu 0.65): platformlara ve yüksek çıkıntılara zıplamadan 'ışınlanır'
-- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/game/enemies.js:1177` · **Güven:** 0.7
-- Kod: `} else y = physics.groundAt(this.pos.x, this.pos.z, this.pos.y + 1);   // step 0.6 → pos.y+1.6'ya kadar platform kabul`
-- Açıklama: yFeet=pos.y+1 verildiği için düşman ayağının 1.6 m üstündeki platforma anında oturur; eğim sınırı da yoktur (oyuncu n.y<0.6'da tırmanamaz, kayar). İskele/rıhtım/sunak kenarında düşman oyuncunun ulaşamadığı yere çıkar ya da tersine kenardan oyuncunun üstüne 'atlar'. Oyuncu ve düşman arasında ulaşılabilirlik (reachable) kuralları tutarsızlaşır.
-- Kök neden: Platform adayı penceresi için keyfi +1 ofset.
-- Yeniden üretme: Düşmanı 1.4 m yüksek platformun dibine çek; bir karede üstüne çıkar.
-- Önerilen düzeltme: groundAt(this.pos.x, this.pos.z, this.pos.y) (0.6 m basamak) kullanın; dik yamaçta (n.y<0.6) hareket vektörünü oyuncudaki gibi kısıtlayın.
-
-### D-15 — Düşman alay zamanlayıcısı kare sayıyor: tauntT -= 0.016 (60 fps varsayımı)
-- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/game/enemies.js:867` · **Güven:** 0.9
-- Kod: `this.tauntT = (this.tauntT || 4) - 0.016;`
-- Açıklama: _meleeOrStrafe her _act çağrısında sabit 0.016 düşer; 30 fps'te süre 2×, uzak LOD adımında (edt 0.066–0.25) 4–15× uzar. Kozmetik (ulaşılamayan hedefe alay animasyonu).
-- Kök neden: dt parametresi bu fonksiyona geçirilmiyor.
-- Yeniden üretme: Statik: fonksiyon imzasında dt yok.
-- Önerilen düzeltme: _meleeOrStrafe(tgt, d, reachable, boost, dt) ile dt geçirip tauntT -= dt yapın.
-
-### D-16 — Dik yamaçta tırmanma engeli kare başına sabit çarpan kullanıyor (vel*0.2, pos += n*0.02)
-- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/player/player.js:499` · **Güven:** 0.85
-- Kod: `this.vel.x = this.vel.x * 0.2 + n.x * 1.5; this.vel.z = this.vel.z * 0.2 + n.z * 1.5; this.pos.x += n.x * 0.02; this.pos.z += n.z * 0.02;`
-- Açıklama: Çok dik yamaca (n.y<0.6) itilen oyuncunun hızı her karede %80 kesilip 1.5 m/s geri itme ekleniyor ve konum 2 cm kaydırılıyor: 60 fps'te 30 fps'in iki katı geri kayma hızı (2 cm×60=1.2 m/s vs 0.6 m/s). Kayma ivmesi (471-478) ise doğru dt ölçekli.
-- Kök neden: Kare başına sabit miktar entegrasyonu.
-- Yeniden üretme: Statik: ifade dt içermiyor.
-- Önerilen düzeltme: vel = damp(vel, n*1.5, 20, dt) ve pos += n * 1.2 * dt biçiminde dt ölçekleyin.
-
-### D-17 — resolve tek geçişli: köşe/dar aralıkta A'dan çıkarken B'ye gömülme, bitişik çarpıştırıcılar arasından sıkışıp geçme
-- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/world/physics.js:104` · **Güven:** 0.6
-- Kod: `for (let i = i0; i <= i1; i++) for (let j = j0; j <= j1; j++) { ... if (seen.has(c)) continue; seen.add(c); ... pos.x = c.x + (dx / d) * m; ...`
-- Açıklama: Her çarpıştırıcı bir kez işlenir ve itme sonrası diğerleri yeniden kontrol edilmez; hücre aralığı da başlangıç konumuna göre hesaplanır. İç köşede (iki duvar) oyuncu bir karede A'dan çıkıp B'ye gömülür, sonraki karede tersi → titreme; iki ağaç 2r'den az aralıklıysa A'nın itmesi merkezi B'nin içine düşürüp B'nin karşı tarafına itebilir (sıkışarak geçiş). Çağrı yerleri: oyuncu, düşman, cisim, kaya, blok.
-- Kök neden: Gauss-Seidel yinelemesi yok (tek iterasyon).
-- Yeniden üretme: İki kutu çarpıştırıcıyla L köşe oluştur; oyuncuyu çapraz köşeye yürüt ve pos titremesini ölç.
-- Önerilen düzeltme: resolve'u hit olduğu sürece en fazla 3 kez yineleyin (seen'i her turda sıfırlayın) ya da en büyük penetrasyonu seçip tekrarlayın.
-
-### D-18 — Dünya sınırı yalnız gemiler için var; yüzen oyuncu ve kürek sandalı 20 km haritanın dışına çıkabiliyor
-- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/ship/ship.js:370` · **Güven:** 0.7
-- Kod: `const lim = WORLD_HALF - 250; if (Math.abs(this.x) > lim || Math.abs(this.z) > lim) { this.x = clamp(...) ... }   // player.js _updateSwim ve Rowboat.update'te sınır yok`
-- Açıklama: Ship.update 9750 m'de kıstırır ve 'edge' olayı yollar; yüzücü (2.8–4 m/s) ve sandal için eşdeğer kısıt yok. terrain.heightAt HALF dışında SEA_FLOOR döndürdüğü için çökme olmaz ama sonsuz düz okyanusta ilerleme, kayıt/ağ konumlarında anlamsız değerler ve megafauna/olay sistemlerinin kapsama alanı dışına çıkma mümkün.
-- Kök neden: Sınır kontrolü tek varlıkta kodlanmış.
-- Yeniden üretme: p.mode='swim'; p.pos.set(9900, -1, 0); DK.sim(60) ile x artmaya devam eder (uzun koşu, yapılmadı).
-- Önerilen düzeltme: Ortak clampWorld(pos) yardımcısı; _updateSwim/_updateGround ve Rowboat.update'te lim'e kıstırıp aynı 'edge' bildirimini verin.
-
-### D-19 — Deniz bossları (Derinlik Yılanı, Lanetli Amiral hayalet gemisi) arazi/karaya oturma kontrolü yapmıyor; adaların üstünden geçebiliyor
-- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/game/bosses.js:511` · **Güven:** 0.6
-- Kod: `this.pos.x += Math.sin(this.yaw) * v * dt; this.pos.z += Math.cos(this.yaw) * v * dt; } this.pos.y = damp(this.pos.y, wantY, 2, dt);   // :961 gs.x += Math.sin(gs.yaw) * sp * dt (kinematik gemi, _grounding yok)`
-- Açıklama: Yılan gemiyi 48 m yarıçapla çevreler ve 19–25 m/s hücum eder; kinematik hayalet gemi 46 m daire çizer. Kıyıya yakın (tetik d<240) savaşta her ikisi kara üstünden/içinden geçer. Oyun mantığı bozulmaz (hasar kutu testleri gemiye göre), görsel/inandırıcılık sorunu.
-- Kök neden: Kinematik hareket; terrain.heightAt kontrolü yok.
-- Yeniden üretme: Kıyıya 100 m mesafede boss tetikle; yılanın pos'u için terrain.heightAt > 0 kareleri say.
-- Önerilen düzeltme: Hedef noktada terrain.heightAt > ocean.tide - 2 ise açıya ±0.4 rad sapma ekleyip yeniden deneyin; hayalet gemi için Ship._grounding'i kinematik modda da çağırın (hasarsız).
-
-### D-20 — Kalabalık itişmesinde güvertedeki oyuncu ajan değil: bordalama düşmanları oyuncunun içinden geçiyor
-- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/game/crowd.js:17` · **Güven:** 0.7
-- Kod: `if (p.mode === 'ground' || p.mode === 'swim') agents.push({ pos: p.pos, r: 0.36, m: 1, dyn: true, y: p.pos.y });`
-- Açıklama: Gemi düşmanları (e.ship) dünya konumlarını her kare local'den yeniden türettiği için crowd'un e.pos düzeltmesi etkisiz, oyuncu 'deck' modunda listeye girmiyor → güvertede düşman ve oyuncu tam üst üste binebilir; vuruş açıları/menzilleri tutarsızlaşır. Karada ayrışma çalışıyor (statik).
-- Kök neden: Güverte için yerel koordinat tabanlı itişme yok.
-- Yeniden üretme: Bordalama sırasında düşmanla oyuncu local konum farkını ölç (<0.3 m uzun süre).
-- Önerilen düzeltme: Ship-local ajan listesi: oyuncu (local) ve e.local'ler arasında aynı pen düzeltmesini uygulayıp clampDeck ile sınırlayın.
+- Statik mercek: game.js:204 'if (this.autosaveT > 120 && G.isHost) { ... G.emit("autosave"); }' → progress.js:87 'G.on("autosave", () => this._guestSave())' ve main.js:246 saveNow konukta hiç tetiklenmez; menu.js:348 'G.isHost ? B("Kaydet", ...) : null'. Ancak konuk kaydı main.js:309 hostLeft, :213 toMenu, :374 beforeunload, :376 visibilitychange'de yazılır; XP progress.js:131 levelUp ve :142 learn'de anında kaydedilir → yalnız çökme/kill senaryosunda kayıp → 'dusuk'.
 
 ### H18 — Ana menü 'DEVAM ET' online kayıt için yuvayı taşımıyor (Oda Kur her zaman yuva 1)
 - **Önem:** Düşük · **Grup:** H_coop_ui · **Yer:** `js/ui/menu.js:181` · **Güven:** 0.7
@@ -1230,6 +1247,7 @@ Sıralama: doğrulanmış hatalar önce, sonra tartışmalı, belirsiz ve tek me
 - Kök neden: hostScreen parametre almıyor; latest.slot aktarılmıyor.
 - Yeniden üretme: Online dünyayı yuva 2'ye kaydet → menüde DEVAM ET → Oda Kur 'Dünya / kayıt' seçimi Yuva 1.
 - Önerilen düzeltme: menu.hostScreen({slot: latest.slot}) ve select varsayılanını f.slot'tan oku.
+- Statik mercek: main.js:169 'if (latest.kind === "online") { menu.hostScreen(); G.notify("... (kayıt yuvası seçili)") }' — parametre yok; menu.js:181 'slot: 0', :193 select varsayılanı 0; save.js:54-60 latest() {kind, slot} döndürür ama slot aktarılmaz; startOnlineHost main.js:177 'save.read("online", room.slot || 0)'.
 
 ### H19 — Ağdan gelen harita işaretleri sınırsız; işaret silme eşitlenmiyor; not iptalinde de işaret konuyor
 - **Önem:** Düşük · **Grup:** H_coop_ui · **Yer:** `js/net/net.js:255` · **Güven:** 0.8
@@ -1238,6 +1256,7 @@ Sıralama: doğrulanmış hatalar önce, sonra tartışmalı, belirsiz ve tek me
 - Kök neden: Ağ yolunda sınır ve silme mesajı yok; prompt dönüşü ayrıştırılmıyor.
 - Yeniden üretme: Konuk 100 işaret gönderir → ev sahibi kaydında 100 işaret; ev sahibi işareti siler → konukta kalır.
 - Önerilen düzeltme: Ağ işleyicisinde 30 sınırı; 'markerDel' mesajı ekle; prompt null ise işaret koyma.
+- Statik mercek: net.js:255 ve :432 'quests.markers.push({...})' sınırsız; quests.js:324-325 yerel 'if (this.markers.length > 30) this.markers.shift()'; :123 markers kayda girer. panels.js:494-495 silme 'quests.markers.splice(near, 1)' yerel, net mesajı yok. :497 'const note = prompt(...) || ""' → iptal (null) → '' → :498-499 işaret konur ve yayılır.
 
 ### H20 — Takım listesi hp=0 iken tam çubuk gösteriyor; XP açılır metni innerHTML
 - **Önem:** Düşük · **Grup:** H_coop_ui · **Yer:** `js/ui/hud.js:441` · **Güven:** 0.9
@@ -1246,6 +1265,7 @@ Sıralama: doğrulanmış hatalar önce, sonra tartışmalı, belirsiz ve tek me
 - Kök neden: Falsy kontrolü; şablonda kaçışsız dize.
 - Yeniden üretme: Co-op: konuk hp 0 ile yaralı düşer → ev sahibi takım listesinde tam kırmızı çubuk + YARALI!.
 - Önerilen düzeltme: r.hp ?? 100 ve textContent/el() kullan.
+- Statik mercek: hud.js:441 'width:${clamp(r.hp || 100, 0, 100)}%'. player.js:170 'if (this.hp <= 0) { this.hp = 0; this.die(...) }' → :193 'this.downed = true'; netState :797 'hp: Math.round(this.hp)' = 0 → net.js:90 'this.hp = t.hp' = 0 → 0 || 100 = 100 → tam çubuk + YARALI!. hud.js:58 _xpPop reason innerHTML (net.js:434 'progress.gain(m.xp, m.r)' → progress.js:111 xpGain).
 
 ### H21 — 'Dost ateşi' oda seçeneği hiçbir şey yapmıyor; oyuncular arası hasar yolu yok
 - **Önem:** Düşük · **Grup:** H_coop_ui · **Yer:** `js/game/game.js:101` · **Güven:** 0.9
@@ -1254,6 +1274,7 @@ Sıralama: doğrulanmış hatalar önce, sonra tartışmalı, belirsiz ve tek me
 - Kök neden: Özellik yalnız ayar düzeyinde eklenmiş.
 - Yeniden üretme: Dost ateşi açık odada tayfaya ateş et → hasar yok.
 - Önerilen düzeltme: Seçeneği gizle ya da uygula: RemotePlayer'ları hedef listesine ekle ve G.friendlyFire ise netHurtPlayer → ev sahibi 'hurt' işleyicisi üzerinden hasar ver.
+- Statik mercek: game.js:101 'G.friendlyFire = !!opts.friendlyFire;'. grep friendlyFire: net.js:172/383, menu.js:181/199, ctx.js:15, main.js:178 — hepsi yazma; okuma yok. net.js'te combat.addTarget çağrısı yok (RemotePlayer hedef değil); _hostData switch (:231-267) 'hurt' durumu içermez; 'netHurtPlayer' relay (:132) yalnız ev sahibi→konuk düşman hasarı.
 
 ### H22 — Sohbet metni uzunluk/oran sınırsız; sohbet günlüğü DOM'u hiç kırpılmıyor
 - **Önem:** Düşük · **Grup:** H_coop_ui · **Yer:** `js/net/net.js:234` · **Güven:** 0.8
@@ -1262,14 +1283,7 @@ Sıralama: doğrulanmış hatalar önce, sonra tartışmalı, belirsiz ve tek me
 - Kök neden: Sunucu tarafı (ev sahibi) doğrulama ve günlük kırpma yok.
 - Yeniden üretme: Konuk: DK.net.toHost({t:'chat', text:'x'.repeat(1e5)}) → herkese yayılır.
 - Önerilen düzeltme: text.slice(0,140), saniyede ≤3 mesaj; chat-log'u 50 satırda kırp.
-
-### H23 — Dünya haritası: yığında ikinci açılış önceki mousemove/keydown dinleyicilerini sızdırır; Space/R üstte başka panel varken de çalışır
-- **Önem:** Düşük · **Grup:** H_coop_ui · **Yer:** `js/ui/panels.js:478` · **Güven:** 0.6
-- Kod: `window.addEventListener('mousemove', this._mm = (e) => {...});  // onClose: removeEventListener('mousemove', this._mm) — this._mm ikinci açılışta ezilir`
-- Açıklama: Normal yolda tüm dinleyiciler onClose'da kaldırılıyor (sızıntı yok). Harita açıkken üstüne başka panel gelip ui.topIs('map') false olduğunda M tekrar basılırsa ikinci harita açılır; this._mm/this._mapKey üzerine yazılır ve ilk haritanın window dinleyicileri (ve draw kapanışı, canvas) kalıcı olur. Space (merkeze dön) ve R (rotayı sil) window dinleyicileri harita altta kalsa bile çalışır.
-- Kök neden: Dinleyici referansları paylaşılan this alanlarında tutuluyor; panel odak kontrolü yok.
-- Yeniden üretme: M → işarete tıkla (prompt) ... → M (ikinci harita) → ilk harita kapanmadan kalır; kapat → window mousemove dinleyicisi sayısı artmış kalır.
-- Önerilen düzeltme: Dinleyici referanslarını kapanış yerel değişkenlerinde tut; worldMap() açılışında yığında 'map' varsa onu kapat; Space/R işleyicilerinde ui.topIs('map') kontrol et.
+- Statik mercek: net.js:234 'case "chat": this.broadcast({ t: "chat", from: c.info.name, text: m.text, ... })' uzunluk/oran yok; index.html:75 maxlength=140 yalnız istemci; main.js:360 'chatLog.appendChild(...)' kırpma yok (menu.js:282 lobi günlüğü de). Metin el() ile metin düğümü → XSS yok.
 
 ### H24 — Karakter oluşturucu: window mouseup dinleyicisi her açılışta birikir; closeAll ile kapanınca rAF döngüsü ve WebGL bağlamı yaşamaya devam eder
 - **Önem:** Düşük · **Grup:** H_coop_ui · **Yer:** `js/ui/creator.js:47` · **Güven:** 0.7
@@ -1278,6 +1292,7 @@ Sıralama: doğrulanmış hatalar önce, sonra tartışmalı, belirsiz ve tek me
 - Kök neden: Temizlik yalnız panelin kendi kapatma yoluna bağlı; ui.open onClose kullanılmıyor.
 - Yeniden üretme: KORSANIM aç → menüden Devam Et ile oyun başlat (ui.closeAll) → creator rAF döngüsü devam eder.
 - Önerilen düzeltme: ui.open(..., { onClose: () => { alive=false; r.dispose(); window.removeEventListener('mouseup', fn); } }).
+- Statik mercek: creator.js:47 'window.addEventListener("mouseup", () => { drag = null; })' hiç kaldırılmaz. :153 'close = () => { alive = false; ui.close(); r.dispose(); ... }' yalnız kendi yolunda; :155 ui.open onClose vermez. Denetimdeki repro (menü → DEVAM ET) ulaşılamaz: #modal (style.css:101, z-index 40) menüyü örter. Ulaşılabilir yol: lobide 'Karakterimi değiştir' açıkken ev sahibi başlatır → menu.js:298 'G.on("netStart", () => { ui.close(); ... })' en üstteki creator'ı creator.close() çağrılmadan kapatır → alive=true, rAF döngüsü (:51-62) ve WebGL bağlamı yaşar; :299 hostLeft aynı.
 
 ### H25 — Snapshot'lar oyun başlamadan (menü/lobide) uygulanıyor: uzak karakterler, gemiler ve düşmanlar menü sahnesine ekleniyor
 - **Önem:** Düşük · **Grup:** H_coop_ui · **Yer:** `js/net/net.js:513` · **Güven:** 0.6
@@ -1286,8 +1301,29 @@ Sıralama: doğrulanmış hatalar önce, sonra tartışmalı, belirsiz ve tek me
 - Kök neden: Snapshot uygulaması oyun durumuna bağlı değil.
 - Yeniden üretme: Oyun sürerken odaya katıl, lobide bekle → DK.G.remotes.size ve DK.enemies.list.length menüde artar.
 - Önerilen düzeltme: _applySnap başında if (G.state !== 'playing' || !G.player) return (ya da son snapshot'ı sakla, sessionStart'ta uygula).
+- Statik mercek: net.js:407 'case "snap": this._applySnap(m)' ve :513-549 G.state/G.player kontrolü yok. Ev sahibi anlık görüntüleri net.js:553-561 'G.state === "playing" && G.player' sağlanır sağlanmaz gider: game.js:96 state='playing', :119 G.player, :137 'await s.start(...)' sırasında döngü çalışır; 'start' yayını ancak main.js:178 'await game.start(...)' bitince :180 'net.startGame()' ile gider → lobideki konuklar 'start'tan önce 'snap' alır (RemotePlayer, netNeedShip, enemies.applySnapshot menü sahnesinde). shipControl.js:26 'id: data?.id || "ship_main"' sabit → gemi kopyası oluşmaz.
 
-## 2c. Ek bulgular (tek mercek, doğrulanmadı) (39)
+## 2b. Belirsiz bulgular (2)
+
+### D-17 — resolve tek geçişli: köşe/dar aralıkta A'dan çıkarken B'ye gömülme, bitişik çarpıştırıcılar arasından sıkışıp geçme
+- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/world/physics.js:104` · **Güven:** 0.6
+- Kod: `for (let i = i0; i <= i1; i++) for (let j = j0; j <= j1; j++) { ... if (seen.has(c)) continue; seen.add(c); ... pos.x = c.x + (dx / d) * m; ...`
+- Açıklama: Her çarpıştırıcı bir kez işlenir ve itme sonrası diğerleri yeniden kontrol edilmez; hücre aralığı da başlangıç konumuna göre hesaplanır. İç köşede (iki duvar) oyuncu bir karede A'dan çıkıp B'ye gömülür, sonraki karede tersi → titreme; iki ağaç 2r'den az aralıklıysa A'nın itmesi merkezi B'nin içine düşürüp B'nin karşı tarafına itebilir (sıkışarak geçiş). Çağrı yerleri: oyuncu, düşman, cisim, kaya, blok.
+- Kök neden: Gauss-Seidel yinelemesi yok (tek iterasyon).
+- Yeniden üretme: İki kutu çarpıştırıcıyla L köşe oluştur; oyuncuyu çapraz köşeye yürüt ve pos titremesini ölç.
+- Önerilen düzeltme: resolve'u hit olduğu sürece en fazla 3 kez yineleyin (seen'i her turda sıfırlayın) ya da en büyük penetrasyonu seçip tekrarlayın.
+- Statik mercek: Tek geçiş olgusu doğru: physics.js:102-109 `seen` ile her çarpıştırıcı bir kez, :104 hücre aralığı başlangıç konumundan. Ancak iddianın sonuçları geometriyle desteklenmiyor: aralıktaki TÜM çarpıştırıcılar aynı geçişte GÜNCELLENMİŞ pos ile işlenir (:107-139), yalnız önceki çarpıştırıcılar yeniden kontrol edilmez. Dik L köşede A'nın itmesi (A normali) B yüzeyine paraleldir → B'ye gömme/titreme oluşmaz. İki daire arasından 'sıkışıp geçme' için merkezin B'nin öbür yarısına taşınması gerekir; A'dan radyal itme bunu sağlamaz (örnek: A(0,0) B(1,0) r=0.5, oyuncu r=0.33 (0.5,0.3) → A sonrası (0.715,0.43) → B sonrası (0.54,0.69): giriş tarafında kalır). Titreme ancak dar açılı/çok yakın çarpıştırıcılarda ve küçük genlikte olası; koşusuz kanıt yok → belirsiz.
+
+### H23 — Dünya haritası: yığında ikinci açılış önceki mousemove/keydown dinleyicilerini sızdırır; Space/R üstte başka panel varken de çalışır
+- **Önem:** Düşük · **Grup:** H_coop_ui · **Yer:** `js/ui/panels.js:478` · **Güven:** 0.6
+- Kod: `window.addEventListener('mousemove', this._mm = (e) => {...});  // onClose: removeEventListener('mousemove', this._mm) — this._mm ikinci açılışta ezilir`
+- Açıklama: Normal yolda tüm dinleyiciler onClose'da kaldırılıyor (sızıntı yok). Harita açıkken üstüne başka panel gelip ui.topIs('map') false olduğunda M tekrar basılırsa ikinci harita açılır; this._mm/this._mapKey üzerine yazılır ve ilk haritanın window dinleyicileri (ve draw kapanışı, canvas) kalıcı olur. Space (merkeze dön) ve R (rotayı sil) window dinleyicileri harita altta kalsa bile çalışır.
+- Kök neden: Dinleyici referansları paylaşılan this alanlarında tutuluyor; panel odak kontrolü yok.
+- Yeniden üretme: M → işarete tıkla (prompt) ... → M (ikinci harita) → ilk harita kapanmadan kalır; kapat → window mousemove dinleyicisi sayısı artmış kalır.
+- Önerilen düzeltme: Dinleyici referanslarını kapanış yerel değişkenlerinde tut; worldMap() açılışında yığında 'map' varsa onu kapat; Space/R işleyicilerinde ui.topIs('map') kontrol et.
+- Statik mercek: Mekanizma kısmen doğru: panels.js:475 'this._mapKey' ve :478 'this._mm' paylaşılan alanlar, ikinci açılışta ezilir; ancak :504 'const onKey' kapanış yereli, düzgün kaldırılır. İkinci açılış koşulu ulaşılamaz: worldMap yalnız game.js:212 '_globalKeys' (:181 'if (!G.uiOpen ...)') ya da menu.js:351 (önce ui.close) ile açılır; ui.js:45 open() oyun içinde 'G.uiOpen = true' yapar → harita yığında iken M işlenmez; ui.js:17 closeKeys yalnız en üst panel için. Space/R dinleyicilerinin ui.topIs('map') kontrolü yok (doğru) ama etkisi zararsız (merkezleme/rota silme).
+
+## 2c. Ek bulgular (tek mercek, doğrulanmadı) (51)
 
 ### B_dunya-ek-statik-34 — Kadim Tapınak sunak platformu (y0+8 m) erişilemez: merdiven parçasına çarpıştırıcı/rampa yok, zıplama 1.24 m
 - **Önem:** Yüksek · **Grup:** B_dunya · **Yer:** `/home/user/SON-HAZ-NE/js/world/islands.js:641` · **Güven:** 0.5
@@ -1297,13 +1333,25 @@ Sıralama: doğrulanmış hatalar önce, sonra tartışmalı, belirsiz ve tek me
 - **Önem:** Yüksek · **Grup:** B_dunya · **Yer:** `/home/user/SON-HAZ-NE/js/world/islands.js:641` · **Güven:** 0.5
 - Açıklama: islands.js:640 `this._place(B, 'kk:dungeon:stairs_wide', cx, cz - 2, Math.PI, { s: S, y: y0, tint })` col'suz (yalnız görsel); 641 `physics.addPlatform(cx, cz - 12, 6, 6, 0, y0 + 5.1 * S * 0.98, B.tag)` → üst y0+8.00; physics.js'te rampa/merdiven ilkel'i yok, groundAt 89 `p.top > yFeet + 0.6 → continue`; player.js:481 `vel.y = 7.4`, GRAV −22 → 1.24 m. Koşu (r_v3): tapınağın tek platformu [{"top":58.05,"hw":6,"hd":6}]; sunak noktasında groundAt(ayak=y0) = 50.05 (arazi; platform yok sayıldı) vs groundAt(sınırsız) = 58.05; sunak etkileşimi 671 `y: y0 + 5.1*S + 0.8` ve _interactables 959 `|it.y − p.pos.y| > 3.5 → continue` → yerden sunulmaz. Sonuç: kapı açılsa da ödül sandığı ('kraliyet_taci', 'elmas'…) ve `templeLooted` normal hareketle alınamaz. Düzeltme: merdiven için ≤0.6 m artışlı platform dizisi ya da platform yüksekliğini düşür.
 
-### E_gemi-ek-statik-108 — `sunk` bayrağı ağa aktarılmıyor: ev sahibi gemiyi kurtarınca konuklarda gemi batık (görünmez, binilemez) kalıyor
+### E_gemi-ek-statik-112 — `sunk` bayrağı ağa aktarılmıyor: ev sahibi gemiyi kurtarınca konuklarda gemi batık (görünmez, binilemez) kalıyor
 - **Önem:** Yüksek · **Grup:** E_gemi · **Yer:** `js/ship/ship.js:698` · **Güven:** 0.5
 - Açıklama: netState (ship.js:696-700) `sinking` gönderir ama `sunk` göndermez; konuk `sunk`'ı yalnız kendi updateTransform'unda (ship.js:536, sinking>14) true yapar ve hiçbir yol geri almaz (Grep 'sunk = false': yalnız events.js:387 — host yerel — ve kurucu). events.js:382-393 raiseShip netShipFull/benzeri bir mesaj yaymaz; _shipFull (net.js:470-479) ve applyNet de sunk'a dokunmaz. Sonuç: host 600 altın ödeyip gemiyi limana getirir, konukta root.visible=false kalır, 'Gemiye bin' istemi `!ship.sunk` (shipControl.js:159) nedeniyle çıkmaz, konuk `sunk` gemiye erişemez; yalnız host gemi tipi değiştirince (netReplaceShip) düzelir. Koşu adımı konuk çöküşü nedeniyle erişilemedi; karar statik (netState alan listesi + 'sunk = false' Grep).
 
-### G_icerik-ek-statik-155 — Tutsak kurtarma etkileşimi serbest bırakmadan sonra kalıyor: E basılı tutulduğunda her 2.5 s +120 altın ve +80 XP yeniden veriliyor
+### G_icerik-ek-statik-159 — Tutsak kurtarma etkileşimi serbest bırakmadan sonra kalıyor: E basılı tutulduğunda her 2.5 s +120 altın ve +80 XP yeniden veriliyor
 - **Önem:** Yüksek · **Grup:** G_icerik · **Yer:** `/home/user/SON-HAZ-NE/js/world/islands.js:764` · **Güven:** 0.5
 - Açıklama: `freed` denetimi yalnız kurulumda yapılır (762 `if (!this.freed?.has(...))`); eylem (764-773) içinde `freed.has` kontrolü yok ve etkileşim B.inter'den çıkarılmaz, `cond` da yok. interact.js:60-64 hold tipi etkileşimlerde tuş basılı kaldıkça `holdT` sıfırlanıp eylem yeniden tetiklenir. Gardiyanlar öldükten sonra E basılı tutulunca: `freed.add` idempotent ama `G.player.inv.gold += 120` ve `G.emit('prisonerFreed')` (progress.js:263 +80 XP) her 2.5 s'de tekrar → ~2900 altın/dk, ~1900 XP/dk. Düzeltme: eylem başında `if (this.freed?.has(key)) return;` ve etkileşimi B.inter'den sil.
+
+### H_coop_ui-ek-statik-190 — Ev sahibi ayrılırken konukta açık panel varsa G.uiOpen true takılı kalır → sonraki oturumda kamera/etkileşim/menü kilitlenir (yeniden yükleme gerekir)
+- **Önem:** Yüksek · **Grup:** H_coop_ui · **Yer:** `js/main.js:307` · **Güven:** 0.5
+- Açıklama: main.js:307-312 hostLeft: 'game.stop(); net.leave(); hud.show(false); menu.show(true); ui.alert(...)' — ui.closeAll() çağrılmaz. Konuk o anda envanter/harita/defter açıksa (ui.js:45 'G.uiOpen = true') panel yığında kalır; game.stop() G.state='menu' yaptığı için panel sonradan kapatılınca ui.js:59-63 'if (G.state === "playing") { G.uiOpen = false; ...}' çalışmaz. G.uiOpen yalnız ui.js:62 ve main.js:353 (sohbet) ile sıfırlanır; game.start (game.js:94-143) ve startGame/startOnlineGuest (main.js:156-195, closeAll boş yığında etkisiz) dokunmaz. Yeni oturumda game.js:181 '_globalKeys' (Tab/M/J/Esc→pause main.js:120, pointerlockchange :370), :184 kamera döndürme, interact.js:23 ve treasure.js:110 hepsi '!G.uiOpen' şartına bağlı → oyuncu hiçbir panel açamaz, etkileşemez, kamerayı döndüremez. Düzeltme: hostLeft'te game.stop() öncesi ui.closeAll(); game.start'ta G.uiOpen=false.
+
+### H_coop_ui-ek-statik-191 — Ev sahibinden gelen 'reject.why' / 'kick.why' metni ui.alert ile innerHTML olarak basılıyor (ev sahibi→konuk XSS)
+- **Önem:** Yüksek · **Grup:** H_coop_ui · **Yer:** `js/ui/ui.js:97` · **Güven:** 0.5
+- Açıklama: ui.js:97-99 alert(title, html) gövdeyi 'el("div", { html })' ile innerHTML yapar. Kaynaklar ağdan: net.js:305 'rej(new Error(m.why))' → menu.js:261 quickJoin 'ui.alert("Hızlı katıl", err.message || String(err))'; net.js:444 'case "kick": G.emit("hostLeft", m.why)' → main.js:311 'ui.alert("Oturum sona erdi", (why || ...) + "<br>...")' ve menu.js:299 'ui.alert("Bağlantı koptu", why || ...)'. Herkese açık odada kötü niyetli ev sahibi katılan herkesin tarayıcısında kod çalıştırabilir. (joinScreen menu.js:226 textContent kullanır, güvenli.)
+
+### H_coop_ui-ek-statik-192 — Gemi adı ağdan doğrulanmadan HUD gemi paneline innerHTML ile basılıyor (herhangi bir eş → ev sahibi/konuk XSS)
+- **Önem:** Yüksek · **Grup:** H_coop_ui · **Yer:** `js/ui/hud.js:281` · **Güven:** 0.5
+- Açıklama: hud.js:281 'sp.innerHTML = `<div class="sp-title">${s.name} ...`' her 0.25 s güvertedeyken. s.name kaynakları: net.js:254 ev sahibi 'shipFull' işleyicisi herhangi konuktan → :475 's.name = d.name' (doğrulama yok); konukta :525 netNeedShip → main.js:339 'name: sd.name' ve applyWorld main.js:324 'sh.name = m.ship.name'. Konuk tersane panelinden bile tetikler: panels.js:548 's.name = nm' + shop.js:232 setShipLook → netShipFull (maxlength 24 ile sınırlı); ham mesajla sınırsız. Ayrıca net.js:440 'cannon' işleyicisinde 's.cannonState[m.i]' indeks kontrolü yok → geçersiz i TypeError fırlatır.
 
 ### B_dunya-ek-statik-35 — Bataklık (swamp) adalarının kıyısı 3 m dik set: mount tabanı 3 m, d→1'de sıfırlanmıyor; su birikintileri d=0.85 halkasında dik kesiliyor
 - **Önem:** Orta · **Grup:** B_dunya · **Yer:** `/home/user/SON-HAZ-NE/js/world/geo.js:79` · **Güven:** 0.5
@@ -1313,25 +1361,33 @@ Sıralama: doğrulanmış hatalar önce, sonra tartışmalı, belirsiz ve tek me
 - **Önem:** Orta · **Grup:** B_dunya · **Yer:** `/home/user/SON-HAZ-NE/js/world/geo.js:79` · **Güven:** 0.5
 - Açıklama: geo.js:79 `mount = 3 + (I.h - 3) * Math.pow(inner, 2) * 0.6;` → inner→0'da mount=3; 82 `return beach + Math.max(0, mount + hills*0.3)` → kıyı içinde h=3 iken dışında (45-47) 0.9·fbm → ~3 m süreksizlik; 81 `pool > 0.3 && d < 0.85 → lerp(…, -1.4, …)` birikintiler kıyıya yakın dik kesilir. Node (node_geo2_out.json, 180 ışın/ada, 5 cm adım, >1 m eşik): timsah_batakligi (r 320) 157/180 ışında ort 3.17 m, maks 5.97 m; ada_tropik_0 (r 135) 154/180 ışında ort 3.18 m, maks 6.14 m; ada_tropik_2 (r 66) 161/180 ışında ort 3.33 m, maks 6.13 m; ada_tropik_3 (r 67) 169/180 ışında ort 3.2 m, maks 6.09 m; ada_tropik_5 (r 180) 180/180 ışında ort 3.24 m, maks 6.14 m (örnek: hIn 3.0 → hOut 0.16). Diğer şekillerde iç limit 0'dır (B-05 ile aynı sınıf ama 4–5 kat büyük); 2 m ızgarada ~56° duvar, kumsal yok; oyuncu düşerse player.js:497 `n.y<0.6` tırmanma yasağıyla çıkması güç. Düzeltme: mount'u `smoothstep(1.0, 0.92, d)` ile kıyıda sıfırla, birikinti kesimini d'ye göre yumuşat.
 
-### E_gemi-ek-statik-109 — Konuk 'Batan gemimi kurtar'ı yerelde çalıştırabiliyor: 600 altın gider, gemi sonraki anlık görüntüde yeniden batar
+### E_gemi-ek-statik-113 — Konuk 'Batan gemimi kurtar'ı yerelde çalıştırabiliyor: 600 altın gider, gemi sonraki anlık görüntüde yeniden batar
 - **Önem:** Orta · **Grup:** E_gemi · **Yer:** `js/game/events.js:382` · **Güven:** 0.5
 - Açıklama: events.js:37 `G.on('raiseShip', ...)` ve raiseShip (382-393) G.isHost denetimi içermez; quests.js:450 batık gemide seçeneği konukta da gösterir. Konuk 600 altın öder, yerel sunk=false/konum=liman yazar; ağ mesajı yok. Host'ta gemi batık kaldığı için anlık görüntü sinking>14 getirir (ship.js:705-706) → konuk updateTransform 536 ile yeniden sunk=true, root gizlenir, 'sunk' olayı tekrar (events.js:366-376: ambar temizlenir, 'battı' bildirimi). Karşılaştırma: fastTravel (main.js:269) ve sleepAtInn (main.js:254) konuk için kilitli; repairShip konukta yalnız netShipFull aktarımı sayesinde işe yarar.
 
-### E_gemi-ek-statik-110 — Konuk tamir/geliştirme yapınca 'shipFull' mesajı konuğun sapmış gülle/tahta/ambar değerlerini ev sahibine yazıyor (otorite tersine dönüyor)
+### E_gemi-ek-statik-114 — Konuk tamir/geliştirme yapınca 'shipFull' mesajı konuğun sapmış gülle/tahta/ambar değerlerini ev sahibine yazıyor (otorite tersine dönüyor)
 - **Önem:** Orta · **Grup:** E_gemi · **Yer:** `js/net/net.js:475` · **Güven:** 0.5
 - Açıklama: shop.js:184/199/232 `G.emit('netShipFull', { ship: s.serialize() })` konukta da çalışır → net.js:144 relay → sendGame → toHost → host net.js:254 `_shipFull(m)` + yayın. _shipFull (475) `s.cannonballs = d.cannonballs; s.planks = d.planks; s.hold = d.hold; s.hp = d.hp; s.holes = d.holes; s.water = d.water` ile konuğun kopyasını host'un otoriter durumunun üzerine yazar. E-06'daki sayaç sapması (host 16 / konuk 19) bu yolla host'a geri yansır; konuktaki eski hold da host'u ezer. Host otoriteli mimariyle çelişir; konuk için yalnız upg/look alanları alınmalı ya da repair/upgrade bir istek (shipCmd) olarak host'ta uygulanmalı.
 
-### E_gemi-ek-statik-111 — Tayfa kiralama (500 altın) konuk için yerel-only: etkisi anlık görüntüyle silinir, host'a ulaşmaz
+### E_gemi-ek-statik-115 — Tayfa kiralama (500 altın) konuk için yerel-only: etkisi anlık görüntüyle silinir, host'a ulaşmaz
 - **Önem:** Orta · **Grup:** E_gemi · **Yer:** `js/game/quests.js:364` · **Güven:** 0.5
 - Açıklama: quests.js:364-368 `G.crewHired = true` ve altın düşümü G.isHost denetimi olmadan çalışır; events.js:68-73 yardımcı konukta yerel su azaltır (applyNet her 66 ms'de s.water'ı ezer) ve konukta delik listesi boş (E-02) olduğundan onarım da yapmaz. Konuk kaydı yalnız envanteri saklar (main.js:201) ve host'un misc.save'inde crewHired false kalır → 500 altın karşılığı kalıcı hiçbir etki yok.
 
-### F_dusman-ek-statik-131 — Co-op: Taş Muhafız rün sütunları konukta hiç oluşmuyor; konuk görünmez %80 hasar direnciyle savaşıyor
+### F_dusman-ek-statik-135 — Co-op: Taş Muhafız rün sütunları konukta hiç oluşmuyor; konuk görünmez %80 hasar direnciyle savaşıyor
 - **Önem:** Orta · **Grup:** F_dusman · **Yer:** `js/game/bosses.js:649` · **Güven:** 0.5
 - Açıklama: Sütunlar yalnız onPhase (:644-665) içinde yaratılır; onPhase BossBase.applyDamage'dan (:112) yalnız ev sahibinde çağrılır (konukta hurt :100 → netHurtBoss). GiantBase.netExtra/clientUpdate (:606-615) sütun bilgisi taşımaz, applyNetExtra tanımlı değil → konuk sütunları görmez ve vuramaz; ev sahibinde damageMul :641 `if (this.pillars.some((p) => p.alive)) k *= 0.2` konuğun vuruşlarına da uygulanır; uyarı (:648 G.notify) yalnız ev sahibinde görünür.
 
-### G_icerik-ek-statik-156 — Konukta 'chestSpawn' durum/taşıyıcı bilgisini yok sayıyor: ev sahibinin ambardan aldığı sandık konukta yerde duran hayalet sandık olarak kalıyor
+### G_icerik-ek-statik-160 — Konukta 'chestSpawn' durum/taşıyıcı bilgisini yok sayıyor: ev sahibinin ambardan aldığı sandık konukta yerde duran hayalet sandık olarak kalıyor
 - **Önem:** Orta · **Grup:** G_icerik · **Yer:** `/home/user/SON-HAZ-NE/js/net/net.js:424` · **Güven:** 0.5
 - Açıklama: treasure.takeFromHold (362-375) sandığı `state='carried'` ile oluşturur ve `netChestSpawn` yayınlar (chestNet state/carriers içerir). net.js:424 işleyici `spawnChest(m.c.tier, pos, { id, contents, siteId, rising: true })` → m.c.state/carriers kullanılmaz; sandık konukta 'ground' + yükselme animasyonuyla ev sahibinin o anki konumunda belirir. Snapshot m.ch (586) yalnız ground/water sandıkları içerir → taşınan sandık düzeltilmez; konuk, ev sahibi bırakıp/ambara koyup netChestState gelene kadar hayalet sandığı görür, 'taşı' isteği gönderebilir (büyük sandıkta uzaktan ortak taşıyıcı olur, _grant 294-308). Düzeltme: işleyicide `_applyChestState(m.c)` benzeri state/carriers uygula, rising'i yalnız siteId varsa ver.
+
+### H_coop_ui-ek-statik-193 — Batan geminin kurtarılması (raiseShip) ağa yayılmıyor: konukta gemi sunk/görünmez kalır
+- **Önem:** Orta · **Grup:** H_coop_ui · **Yer:** `js/game/events.js:382` · **Güven:** 0.5
+- Açıklama: events.js:382-394 raiseShip 's.sunk = false; s.sinking = 0; s.root.visible = true; ...' yalnız yerel; hiçbir net mesajı yok (grep raiseShip: quests.js:450, events.js:37/382). Konukta sunk ship.js:536 ile true olmuştur; applyNet (:701-713) sunk/root.visible'ı asla sıfırlamaz, netShipFull (_shipFull :470-479) de dokunmaz (yalnız replace ile yeni Ship). Sonuç: ev sahibi 600 altın ödeyip gemiyi kurtardıktan sonra konuk gemiyi görmez, shipControl.js:159 '!ship.sunk' nedeniyle binemez; snapshot konumu güncellese de root.visible=false kalır. Konuk da quests.js:450 seçeneğini görüp yerelde 600 altın harcayabilir.
+
+### H_coop_ui-ek-statik-194 — Güvertede bırakılan sandık (ambar dolu olsa da) için netChestState yayılmıyor → diğer eşlerde 'carried' hayalet
+- **Önem:** Orta · **Grup:** H_coop_ui · **Yer:** `js/treasure/treasure.js:330` · **Güven:** 0.5
+- Açıklama: treasure.js:319-338 drop(): 'if (p.mode === "deck" && p.ship) { this.stowInHold(p.ship, c, true); return; }' — :337 'G.emit("netChestState")' satırına ulaşılmaz. stowInHold ambar doluysa :346-349 'G.notify("Ambar dolu!"); if (auto) { c.state = "ground"; } return;' → yerelde yere düşer ama hiçbir mesaj gitmez; diğer taraflarda sandık taşıyıcıya yapışık 'carried' kalır (treasure.js:232-239). H03'ten farklı kök: netHold bile gönderilmez.
 
 ### A_motor-ek-statik-17 — Tuş atama sırasında Esc ile vazgeçmek Ayarlar panelini kapatıyor (ui.js'teki captureNext koruması işlemiyor)
 - **Önem:** Düşük · **Grup:** A_motor · **Yer:** `js/ui/ui.js:18` · **Güven:** 0.5
@@ -1393,59 +1449,87 @@ Sıralama: doğrulanmış hatalar önce, sonra tartışmalı, belirsiz ve tek me
 - **Önem:** Düşük · **Grup:** C_oyuncu · **Yer:** `js/player/player.js:693` · **Güven:** 0.5
 - Açıklama: Karada 480 `... && !this.busy && (!this.action || this.action.type === 'land') && (!this.carrying || this.carrying.tier === 'small')` ile saldırı/sersemleme sırasında ve orta/büyük sandık taşırken zıplama engellenir; güvertede 693 `if (!locked && input.pressed('zipla') && this.localY <= 0.001 && !this.busy) { this.localVy = 6.5; }` yalnız busy'ye bakar → 90 kg sandıkla ya da vuruş/stagger ortasında zıplanır (C09'daki animasyon eksikliğiyle birleşir).
 
-### E_gemi-ek-statik-112 — Kayıttan yüklenen delikler güvertede çizilmiyor: Ship kurucusu _syncHoles çağırmıyor
+### D_fizik-ek-statik-93 — Yüzerken alınan geri tepme (knock) uygulanmıyor ve sönümlenmiyor; karaya çıkınca gecikmeli savrulma
+- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/player/player.js:161` · **Güven:** 0.5
+- Açıklama: hurt() :161-165 `if (from && (this.mode === 'ground' || this.mode === 'swim')) { … this.knock = { x: (dx / d) * k, z: (dz / d) * k }; }` swim modunda da knock atar; knock yalnız _updateGround :465-469'da tüketilir ve sönümlenir, _updateSwim (:608-652) hiç dokunmaz (grep: knock yalnız :141, :165, :465-468 ve bosses.js:43). Köpekbalığı/timsah/mermi darbesi alan yüzücünün knock'u sabit kalır; exitWater sonrası ilk yer karesinde tam şiddetle (D-02 çarpanıyla) uygulanır → kıyıya çıkarken açıklanamaz itme. die()/yeniden doğuşta da sıfırlanmaz.
+
+### D_fizik-ek-statik-94 — Fıçı zincirleme ateşlemesi her istemcide bağımsız rastgele fitille çalışıyor: patlama zamanları peer'lar arasında ayrışır, gereksiz netHazard mesajı
+- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/world/hazards.js:226` · **Güven:** 0.5
+- Açıklama: _explode her istemcide kendi fitil sayacıyla çalışır (:594-597). :222-226 `for (const t of [...combat.targets]) { … if (t.keg) { t.hurt(1, { kind: 'explosion', pos: c }); continue; } if (!host) continue; …}` — zincirleme, host kontrolünden (:227) ÖNCE → her istemci :180 `0.25 + Math.random() * 0.35` ile kendi fitilini başlatır ve :190 `G.emit('netHazard', { a: 'ignite', f })` yayınlar; alıcılar zaten 'fuse' durumunda olduğu için :186 `if (h.state !== 'idle') return;` ile yok sayar. Zincirin her halkasında istemciler arası 0–0.35 s kayma birikir; oyuncu hasarı yerel (:213-219), düşman/gemi hasarı host zamanında (:227-233) → patlama anı, kamera sarsıntısı ve enkaz peer'lar arasında tutarsız; ayrıca her halka için N istemciden N mesaj.
+
+### D_fizik-ek-statik-95 — Basınç plakası taş bloğunun fizik çarpıştırıcısı yok: düşman, hayvan, uzak oyuncu ve cisimler 1.5 m'lik bloğun içinden geçer
+- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/world/hazards.js:485` · **Güven:** 0.5
+- Açıklama: _puzzleSite yalnız kafes için `if (!solved) physics.addBox(C.x, C.z, 1.3, 1.3, yaw, cy - 1, cy + 2.4, tag);` ekler (:485); blok (bpos, yarım kenar 0.75 — :509 `half = 0.75`) için çarpıştırıcı yok ve hareket ettiğinde güncellenecek bir yapı da bulunmuyor. _pushBlock (:506-518) yalnız yerel oyuncuyu (`G.player`, mode 'ground') bloğun dışına iter; enemies._move resolve'u (enemies.js:1112), animals, G.remotes ve bodies bloğu görmez → bulmaca alanında düşmanlar bloğun içinden saldırır, cisimler içinden yuvarlanır.
+
+### D_fizik-ek-statik-96 — Uyuyan cisimler gelgit yükselince uyanmıyor: kumsalda uyuyan yüzer cisim (enkaz, düşen eşya) su altında hareketsiz kalır
+- **Önem:** Düşük · **Grup:** D_fizik · **Yer:** `js/world/bodies.js:92` · **Güven:** 0.5
+- Açıklama: :92 `for (const b of this.list) if (b.enabled && !b.sleeping) this._step(b, h);` → uyuyan cisim için su/kaldırma kuvveti hesabı (:106-120) hiç çalışmaz. Uyku :163 `if (b.grounded && sub === 0 && …)` ile su DIŞINDAYKEN girilir; sonra ocean.heightAt gelgitle (ship.js:777 `ocean.tide`) yükselse de wake() yalnız push/impulse/çift çarpışmasında (:66, :82, :194) çağrılır. Gelgit çizgisinin altında uyuyan buoyancy>1 cisimler (enkaz 1.6, hazine düşüşleri) yüzmeye başlamaz, suyun altında asılı kalır. Aynı mekanizma, platformu removeTag ile kaldırılan uyuyan cismi havada bırakır (D-09'un bahsettiği durum; burada tetikleyici gelgit).
+
+### E_gemi-ek-statik-116 — Kayıttan yüklenen delikler güvertede çizilmiyor: Ship kurucusu _syncHoles çağırmıyor
 - **Önem:** Düşük · **Grup:** E_gemi · **Yer:** `js/ship/ship.js:36` · **Güven:** 0.5
 - Açıklama: Kurucu (ship.js:26-53) `this.holes = opts.holes || []` atar ama `_syncHoles()` çağırmaz (Grep: çağrılar yalnız rebuild 70, addHole 222, repairHole 229, net.js:478, events.js:388, main.js:324). createPlayerShip (shipControl.js:25-30) holes'u kurucudan geçirir → yükleme sonrası delikler fizikte vardır (sızıntı, 'Deliği onar' istemi) ama holeMeshes boş; ilk addHole/repairHole/rebuild'e kadar görsel yok. Ağ yolu (main.js:324, net.js:478) `_syncHoles()`'u ayrıca çağırarak aynı eksiği örtüyor; kurucuya tek satır eklenmeli.
 
-### E_gemi-ek-calistir-113 — Batık gemide rebuild() enkazı deniz dibinde yeniden görünür kılıyor
+### E_gemi-ek-calistir-117 — Batık gemide rebuild() enkazı deniz dibinde yeniden görünür kılıyor
 - **Önem:** Düşük · **Grup:** E_gemi · **Yer:** `js/ship/ship.js:65` · **Güven:** 0.5
 - Açıklama: _build() (ship.js:56-63) her çağrıda visible=true yeni bir root kurar, rebuild() (65-73) sunk durumunu (root.visible=false, ship.js:536) geri yüklemez. Batık gemide shop.repairShip (shop.js:181), setShipLook (shop.js:230), net _shipFull/mastFix (net.js:477/489) çağrılınca enkaz y≈−(sinking²·0.12)≈−23.5 m'de görünür olur. Çalıştırma (E-08 koşusu): batık gemide shop.repairShip() sonrası root.visible=true, sunk=true, sinking=14.0.
 
-### E_gemi-ek-calistir-114 — Zorla gemiden indirmede dümen/top kilidi bırakılmıyor; co-op'ta istasyon 'kullanımda' kalıyor
+### E_gemi-ek-calistir-118 — Zorla gemiden indirmede dümen/top kilidi bırakılmıyor; co-op'ta istasyon 'kullanımda' kalıyor
 - **Önem:** Düşük · **Grup:** E_gemi · **Yer:** `js/game/shipControl.js:188` · **Güven:** 0.5
 - Açıklama: interact.locks yalnız leaveStation (shipControl.js:191/196) ve eşin bağlantısı kopunca (net.js:279) silinir. Oyuncu dümende/topta iken gemi batarsa (events.js:371 leaveShipToWorld), hızlı yolculuk (main.js:287), konuk teleport (net.js:416), replaceShip (shipControl.js:49) ve respawn (main.js:228) oyuncuyu doğrudan 'ground' moduna alır (player.js:281-288) ama kilit `<ship>:helm → oyuncuId` kalır; diğer oyuncular 'Dümene geç (kullanımda)' görür (interact.js:17-19, 33) — kilit sahibi istasyonu yeniden alıp bırakana ya da odadan ayrılana dek. Tek oyunculuda zararsız (isLocked kendi kimliğini saymaz). Statik okuma; çalıştırılmadı.
 
-### F_dusman-ek-statik-132 — Batan düşman gemisinin canlı tayfası silinmiyor; deniz dibinde kalıcı düşmanlar kalıyor
+### F_dusman-ek-statik-136 — Batan düşman gemisinin canlı tayfası silinmiyor; deniz dibinde kalıcı düşmanlar kalıyor
 - **Önem:** Düşük · **Grup:** F_dusman · **Yer:** `js/game/enemies.js:1154` · **Güven:** 0.5
 - Açıklama: Enemy._place :1154 `if (this.ship.sunk) { this.ship = null; return; }`. Kare sırası: game.js:189-194 gemiler (ship.js:376 updateTransform → :536 `this.sunk = true`) → sistemler: enemies (main.js:102 listede 7.) → events (18.). Aynı karede güncellenen canlı tayfa (LOD adımı 0, oyuncuya <45 m) ship=null olur; events.js:352 `for (const c of this.crew || []) { if (c.ship === e) { c.remove = true; c.alive = false; } }` tutmaz → tayfa canlı kalır, _place zemin dalıyla (physics.groundAt) deniz tabanına iner; homeR=999 (:250) olduğundan tasma yok, _move :1083 kıyıya çıkamaz; enemies.list'te süresiz kalır (snapshot, near/alliesNear, token hesaplarına girer). 45-90 m'de LOD nedeniyle rastgele, >90 m'de çoğunlukla düzgün silinir.
 
-### F_dusman-ek-statik-133 — Boğulmuş Denizci'nin 'yakalama' yavaşlatması etkisiz: player.slowT hiç okunmuyor
+### F_dusman-ek-statik-137 — Boğulmuş Denizci'nin 'yakalama' yavaşlatması etkisiz: player.slowT hiç okunmuyor
 - **Önem:** Düşük · **Grup:** F_dusman · **Yer:** `js/game/enemies.js:994` · **Güven:** 0.5
 - Açıklama: `G.player.slowT = 2.2; G.notify('Boğulmuş denizci seni yakaladı — yavaşladın!')` — player.js'te slowT geçmiyor (grep: yalnız enemies.js:1100 düşmanın kendi slowT'si ve hazards.js). _speedFor :386-403 slowT'ye bakmaz → mesaj var, etki yok.
 
-### F_dusman-ek-statik-134 — Co-op: patlama (gülle) hasarı yalnız yerel oyuncuya uygulanıyor; konuklar gülle patlamalarından bağışık
+### F_dusman-ek-statik-138 — Co-op: patlama (gülle) hasarı yalnız yerel oyuncuya uygulanıyor; konuklar gülle patlamalarından bağışık
 - **Önem:** Düşük · **Grup:** F_dusman · **Yer:** `js/game/combat.js:51` · **Güven:** 0.5
 - Açıklama: explosion dinleyicisi :43-53: hedefler (targets) için hurt, oyuncu için yalnız `const p = G.player; if (p && p.pos.distanceTo(e.pos) < e.radius && e.owner !== G.ship) p.hurt(...)`. G.remotes taranmaz, netHurtPlayer yok. Konukta gülleler görseldir (effects.js:117 `visual = (G.online && !G.isHost) || !!G.visualOnlyBalls`) → :180 explosion emit edilmez. Sonuç: düşman gemisinin araziye düşen gülleleri konuğa hasar vermez; ev sahibi yanar.
 
-### F_dusman-ek-statik-135 — Co-op: zehir (venom) etkisi uzak oyunculara iletilmiyor
+### F_dusman-ek-statik-139 — Co-op: zehir (venom) etkisi uzak oyunculara iletilmiyor
 - **Önem:** Düşük · **Grup:** F_dusman · **Yer:** `js/game/enemies.js:1421` · **Güven:** 0.5
 - Açıklama: `if (s.kind === 'venom' && t.id === G.myId) t.ref.poison = Math.max(t.ref.poison || 0, 6);` yalnız yerel; _hitPlayer → netHurtPlayer ve net.js:132 'hurt' mesajı poison alanı taşımaz (player.hurt :157 `opts.poison` destekliyor). Derinlik Yılanı tükürüğü (bosses.js:480) konukta yalnız 12 hasar verir, zehirlemez.
 
-### F_dusman-ek-statik-136 — Konukta boss.hurt() hasar vermeyen vuruşlar için de 'hit' döndürüyor (yanlış vuruş geri bildirimi)
+### F_dusman-ek-statik-140 — Konukta boss.hurt() hasar vermeyen vuruşlar için de 'hit' döndürüyor (yanlış vuruş geri bildirimi)
 - **Önem:** Düşük · **Grup:** F_dusman · **Yer:** `js/game/bosses.js:100` · **Güven:** 0.5
 - Açıklama: `if (G.online && !G.isHost) { G.emit('netHurtBoss', {...}); return 'hit'; }` — ev sahibinde damageMul 0 olan durumlar (Kraken :205 derin baş, Yılan :420 su altı, Amiral :913 bordalanmış, Taş Muhafız :641 rün ×0.2) konukta kan kıvılcımı (combat.js:197) + hitMarker (:250) üretir; dmgNumber yalnız ev sahibinde emit edilir (:109) → konuk 'vurdum' sanır ama sayı görmez. _hurtTentacle :212 aynı deseni izler.
 
-### F_dusman-ek-statik-137 — callHelp/rally pusu vuruşuyla hiç tetiklenmiyor (tasarım olabilir)
+### F_dusman-ek-statik-141 — callHelp/rally pusu vuruşuyla hiç tetiklenmiyor (tasarım olabilir)
 - **Önem:** Düşük · **Grup:** F_dusman · **Yer:** `js/game/enemies.js:415` · **Güven:** 0.5
 - Açıklama: _aggro :415 patrol/suspicious/investigate/return → doğrudan 'chase'; _think :653-661 callHelp dalı yalnız `seen && state ∈ {patrol, suspicious, investigate, return}` iken çalışır → ilk temas hasar olan kaptan/boss (haydut_kaptani, kizil_hancer, iskelet_kaptan, lanetli_amiral, hayalet_kaptan) 'callHelp'e hiç girmez; yalnız _groupAlert(30) çalışır (45 m değil), rally (+%20 hasar, :1347) verilmez.
 
-### G_icerik-ek-statik-157 — hold.fish değişiklikleri netHold ile yayınlanmıyor: konuğun ambara koyduğu/aldığı balıklar sonraki ambar senkronunda kayboluyor
+### G_icerik-ek-statik-161 — hold.fish değişiklikleri netHold ile yayınlanmıyor: konuğun ambara koyduğu/aldığı balıklar sonraki ambar senkronunda kayboluyor
 - **Önem:** Düşük · **Grup:** G_icerik · **Yer:** `/home/user/SON-HAZ-NE/js/wildlife/fishing.js:245` · **Güven:** 0.5
 - Açıklama: fishing.catch güvertede envanter doluyken `hold.fish.push(data)` yapar ama netHold emit etmez; panels.js:130 ambardan balık 'Al' da (`hold.fish.splice`) emit etmez (panels.js:94 ve 127 eşya yolları emit ediyor). net.js:253/430 'hold' → `s.hold = m.hold` tüm nesneyi değiştirir → konuğun balıkları ilk netHold'da silinir; ev sahibi kaydı (otomatik kayıt) bunları hiç içermez. Düzeltme: iki yola `G.emit('netHold', { ship, hold })` ekle.
 
-### G_icerik-ek-statik-158 — Konuk ambardan sandık alırken netChestSpawn yutuluyor: ev sahibinde sandık nesnesi yok, bırakılınca oluşuyor
+### G_icerik-ek-statik-162 — Konuk ambardan sandık alırken netChestSpawn yutuluyor: ev sahibinde sandık nesnesi yok, bırakılınca oluşuyor
 - **Önem:** Düşük · **Grup:** G_icerik · **Yer:** `/home/user/SON-HAZ-NE/js/treasure/treasure.js:374` · **Güven:** 0.5
 - Açıklama: takeFromHold konukta da çalışır (panels.js:115) ve `G.emit('netChestSpawn')` eder; relay net.js:138 `if (G.isHost)` → ev sahibine ulaşmaz. Ev sahibi netHold ile ambarın boşaldığını öğrenir ama treasure.chests'te sandık yoktur; ev sahibi konuğu taşıma pozunda (RemotePlayer carry overlay) ama sandık meshsiz görür; kimse 'Birlikte taşı' yapamaz. Konuk bırakınca/ambara koyunca netChestState/_applyChestState (455) ile kendini onarır. Düzeltme: konukta takeFromHold'u chestReq benzeri ev sahibi isteğine çevir ya da netChestSpawn relay'ini sendGame yap.
 
-### G_icerik-ek-statik-159 — Bazı altın ödülleri shop.earn dışından veriliyor: co-op'ta paylaşılmıyor ve stats.earned/başarımlara sayılmıyor
+### G_icerik-ek-statik-163 — Bazı altın ödülleri shop.earn dışından veriliyor: co-op'ta paylaşılmıyor ve stats.earned/başarımlara sayılmıyor
 - **Önem:** Düşük · **Grup:** G_icerik · **Yer:** `/home/user/SON-HAZ-NE/js/world/islands.js:769` · **Güven:** 0.5
 - Açıklama: islands.js:769 tutsak `G.player.inv.gold += 120`; events.js:207 kazazede `pl.inv.gold += 50`; events.js:264-265 gemi ele geçirme `p.inv.gold += gold` (220-480). shop.earn (shop.js:113-122) paylaşım + `goldEarned` → quests.js:148 `stats.earned` → 'Altın Kesesi'/'Korsan Kralı Adayı' başarımları (quests.js:46-47). Bu yollar istatistiğe girmez; events ev sahibi-yerel olduğundan gemi ele geçirme altını ve shipCaptured/enemyShipSunk XP'si (progress.js:261-262) yalnız ev sahibine gider.
 
-### G_icerik-ek-statik-160 — Sonradan katılan konuğa hazards.solved/looted ve islands.opened/freed aktarılmıyor: çözülmüş bulmaca konukta çözülmemiş, kafes çarpıştırıcısı yerinde
+### G_icerik-ek-statik-164 — Sonradan katılan konuğa hazards.solved/looted ve islands.opened/freed aktarılmıyor: çözülmüş bulmaca konukta çözülmemiş, kafes çarpıştırıcısı yerinde
 - **Önem:** Düşük · **Grup:** G_icerik · **Yer:** `/home/user/SON-HAZ-NE/js/net/net.js:386` · **Güven:** 0.5
 - Açıklama: _sendWorld (386-397) ship/chests/pickups/quests/time/rowboat gönderir; hazards ve islands durumu yok. Konukta hazards.start(data) (72-79) `data.hazards` olmadığından solved/looted boş → _puzzleSite (479-486) kafesi ve `physics.addBox` çarpıştırıcısını kurar; ev sahibinde aynı bulmaca çözülmüşse konuk görünmez/yanlış engele çarpar, bloğu yeniden itebilir (netHazard 'solve' ev sahibinde `if (h.solved) return`), gizli sandığı yerel olarak 'açabilir' (toplanamaz kese, B03). Aynı şekilde ada sandıkları/sunak/tutsaklar konukta yeniden görünür. Düzeltme: world mesajına hazards.save() ve islands opened/freed listelerini ekle.
 
-## 3. Çürütülen iddialar (kayıt) (2)
+### H_coop_ui-ek-statik-195 — Konuğun 'Gemiye yükle' (gülle/tahta) işlemi ev sahibine bildirilmiyor
+- **Önem:** Düşük · **Grup:** H_coop_ui · **Yer:** `js/ui/panels.js:92` · **Güven:** 0.5
+- Açıklama: panels.js:92-93 'G.ship.cannonballs += n' / 'G.ship.planks += n' yalnız yerel (netHold/netShipFull yok); shop.js:226-233 buyForShip de emit yapmaz. Ev sahibi otoriter sayaçlar (fireCannon combat.js:290-292, repairHole) değişmez; konuk envanterinden gülle düşer ama gemi gerçekte gülle kazanmaz; konuğun sayacı shipFull/applyWorld'e kadar sapar.
+
+### H_coop_ui-ek-statik-196 — XP paylaşımı tutarsız: konuk öldürünce diğer konuklar pay almaz, ev sahibi öldürünce herkes alır
+- **Önem:** Düşük · **Grup:** H_coop_ui · **Yer:** `js/game/progress.js:68` · **Güven:** 0.5
+- Açıklama: progress.js:68 'if (by && by !== G.myId && G.online) { G.emit("netXp", { id: by, xp, reason }); this.gain(Math.round(xp / 3), "Tayfa payı"); }' — katil konuk tam XP, ev sahibi 1/3, diğer konuklar 0. :69 ev sahibi öldürünce 'for (const id of G.remotes.keys()) G.emit("netXp", { id, xp: Math.round(xp / 3) })' → tüm konuklar 1/3. 3+ oyunculu oturumda ilerleme dengesizliği.
+
+### H_coop_ui-ek-statik-197 — Konuk dümeni bırakır/koparken basılı tuttuğu dümen açısı ev sahibinde kalır (gemi dönmeye devam eder)
+- **Önem:** Düşük · **Grup:** H_coop_ui · **Yer:** `js/net/net.js:564` · **Güven:** 0.5
+- Açıklama: net.js:564 'helm' mesajı yalnız 'p.mode === "helm"' iken 15 Hz gönderilir. shipControl.js:190-193 leaveStation 's.setRudder(0)' yerel; aynı karede mod 'deck' olduğu için rudder=0 ev sahibine hiç gitmez. ship.js:207/286 rudderInput kalıcı, update'te girişi sıfırlayan yok; net.js:270-283 _dropPeer de setRudder(0) yapmaz. player.js:729-730 giriş her karede eksenden alındığı için yalnız A/D basılıyken E'ye basma ya da kopma anında tetiklenir (düşük olasılık).
+
+## 3. Çürütülen iddialar (kayıt) (3)
 
 ### C19 — Ragdoll sonrası dirilişte ayağa kalkış animasyonu yok (koşul tersine görünüyor), Idle'a anlık sıçrama
 - **Önem:** Düşük · **Grup:** C_oyuncu · **Yer:** `js/player/player.js:222` · **Güven:** 0.6
@@ -1462,6 +1546,15 @@ Sıralama: doğrulanmış hatalar önce, sonra tartışmalı, belirsiz ve tek me
 - Kök neden: Ekipman durumu birden fazla yerden yazılıyor, olay yalnız birinden yayılıyor.
 - Önerilen düzeltme: _applyCarry'de `p.equip('none')` kullan ya da `G.emit('equip', 'none')` ekle.
 - Statik mercek: hud.js:229-230 `if (this._t % 0.5 < dt) { this._hotbarActive(); ...}` hud.update içinde her 0.5 s'de `p.equipped`'tan vurguyu yeniden hesaplar (187-194 `s.el.classList.toggle('active', p.equipped === s.eq)`); 'equip' olayı (44) yalnız anlık güncelleme içindir. treasure._applyCarry (312) olayı yaymasa da vurgu ≤0.5 s içinde kendiliğinden düzelir; 'eski slotta kalıyor' iddiası geçersiz.
+
+### H12 — Gemi 'sunk' bayrağı ile gülle/tahta sayıları ağ durumunda yok: batan gemi konukta görünür kalır, gülle sayısı sapar
+- **Önem:** Düşük · **Grup:** H_coop_ui · **Yer:** `js/ship/ship.js:701` · **Güven:** 0.85
+- Kod: `applyNet(s) { ... this.sinking = s[11]; ... }   // sunk yalnız update() içinde (ship.js:536); netState'te cannonballs/planks yok`
+- Açıklama: Konukta clientUpdate sunk hesaplamaz; sinking değeri gelir ama 'sunk=true/root.visible=false' ve 'sunk' olayı (events._shipEvent bildirimi, güverteden düşürme) hiç olmaz → konuk batmış gemiye 'Gemiye bin' yapabilir (shipControl.js:159 !ship.sunk). net.js:440 'cannon' işleyicisi ev sahibi atışında konuğun gülle sayısını geri yüklediği için konuk HUD'u ve canFire kontrolü ev sahibinden sapar; yalnız shipFull (dükkân) ile düzelir.
+- Kök neden: netState alanları eksik (sunk, cannonballs, planks); görsel atış için sayaç geri yükleme.
+- Yeniden üretme: Ev sahibi gemisi water=100 → 15 s sonra ev sahibinde sunk=true, konukta sunk=false ve root.visible=true.
+- Önerilen düzeltme: netState'e sunk/cannonballs/planks ekle ve applyNet'te uygula (sunk geçişinde root.visible ve 'sunk' olayı); 'cannon' işleyicisinde keep yerine ev sahibi sayısını kullan.
+- Statik mercek: Ana iddia yanlış: konukta game.js:191 's.clientUpdate(dt)' → ship.js:571 'this.updateTransform(dt)' → :531-536 'if (this.sinking) { this.sinking += dt; ... if (this.sinking > 14 && !this.sunk) { this.sunk = true; this.root.visible = false; this.events.push({ t: "sunk" }); } }' konukta da çalışır; applyNet :706 'this.sinking = s[11]' ev sahibinin sinking değerini taşır. Yani batan gemi konukta da görünmez olur, 'sunk' olayı game.js:193 → events.js:356-369 ile işlenir, shipControl.js:159 '!ship.sunk' konukta da engeller. Doğru kalan küçük kısım: netState :696-699 cannonballs/planks içermez ve net.js:440 'cannon' işleyicisi 'const keep = s.cannonballs; ... s.cannonballs = keep' → başkalarının atışlarında konuk sayacı düşmez (yalnız HUD/canFire sapması, shipFull/applyWorld ile düzelir).
 
 ## 4. Geliştirme önerileri (hata değil)
 

@@ -59,3 +59,26 @@ geçiyor, sığ su çıkış koşulu (`floor > wh − 1,25`) hiç sağlanmıyord
 oldu (15. belge §15.3 koşu geçmişi). Düzeltme: yüzme zemini de `groundAt(x, z, pos.y, 0.6)` ile alınır (yürüme kipiyle aynı
 0,6 m basamak kuralı). İkinci kök neden: limanda denize inen merdiven yoktu; eklendi.
 
+## 4.8 Benzetimli uzun oturumda başsız sekme bellek sınırında çöküyordu (tutulan sızıntı değil; çöp toplama fırsatı)
+Belirti: `10_uzun_oturum.js` (30 dk oyun zamanı, `DK.sim` ile çizimsiz) 9.–16. dilim arasında "Target crashed"; `dmesg` bellek
+cgroup OOM, renderer RSS 6,9–7,1 GB. Teşhis adımları ve ölçümler:
+- GL sayaçları (geometri/doku), arazi karosu, sahne nesnesi sayısı dilimler boyunca sabit; CDP JS yığını 37–75 MB, ArrayBuffer
+  (backing store) ~65 MB sabit. Büyüyen tek bölge Blink'in gömülü yığını (Oilpan; DOM/CSS/tuval nesneleri): 90 sn'lik dilim
+  sonunda 430–650 MB, zorunlu `gc()` sonrası ~200 MB (ya da ~4 MB). Dilimler arasında `gc()` çağrılınca RSS ≤ 1,5 GB'ta kaldı.
+- Gerçek zamanlı 3 dk oynanış (DK.sim yok): RSS ~1,05–1,16 GB'ta düz, DOM düğümü ~745, JS yığını ~45 MB.
+Kök neden: `DK.sim` binlerce kareyi tek bir JS görevi içinde koşar; Blink'in çöp toplayıcısı görevler arası/boşta çalıştığı için
+kare başına üretilen çöp hızlandırılmış benzetimde toplanamadan birikiyordu. Tutulan (sızan) bellek yok.
+Bu teşhis sırasında gerçek oyunu da etkileyen bir israf bulundu ve giderildi: HUD her karede DOM yazıyordu — pusula işaretleri
+`innerHTML` (her kare), etkileşim istemi üç metin (gösterildiği sürece kare başına 2 kez), zaman paneli/görev takipçisi/takım
+listesi (0,5 sn'de bir, içerik değişmese de). Tümü değişiklik algılamalı yapıldı (pusula öğeleri yeniden kullanılır, yalnız konum
+güncellenir; zaman paneli çizgileri 2 oyun dakikasında bir). Ölçüm: dümende 90 sn'lik benzetimde CDP düğüm sayısı 58 636 → 784.
+Test değişikliği: uzun oturum senaryosu 30 sn'lik alt dilimlerden sonra `gc()` çağırır (`DK_JSFLAGS=--expose-gc`), gerçek zamanlı
+oynanışın verdiği çöp toplama fırsatını taklit eder; ek kontrol U04 (çöp toplama sonrası JS yığını sınırı).
+
+## 4.9 Uzun oturumda GPU geometri sayacı basamaklı artıyordu (kese, çukur, gemi, boss kaynakları bırakılmıyordu)
+Çöp toplama düzeltildikten sonra `10_uzun_oturum.js` tamamlandı ama `renderer.info.memory.geometries` 588 → 1 546'ya basamaklı
+arttı (savaş dilimlerinde dilim başına +32, kraken sonrası +103/+246). Sahne farkı ölçüldü: her öldürülen düşmanın bıraktığı ganimet
+kesesi kendi geometri ve malzemelerini yaratıyor, kese toplandığında ya da 5 dk sonra kaybolduğunda yalnız sahneden çıkarılıyordu;
+kazı çukurları (40 sınırı) aynı biçimde; `Ship.dispose` yalnız sahneden kaldırıyordu (gemi başına 80 geometri); boss temizliği
+prosedürel parçaları bırakmıyordu. Kök neden B14 ile aynı sınıf: three.js'te sahneden kaldırma GPU kaynağını bırakmaz. Düzeltme:
+kese/çukur paylaşımlı kaynaklarla kurulur (kaldırmada bırakılacak bir şey kalmaz); gemi ve boss `disposeTree` ile bırakılır.

@@ -131,10 +131,17 @@ module.exports = async ({ pages, host, guests, ev: ev0, tick: tick0, check, log 
   // 9) mermi görselleri konukta (F-06): nişancı konuğa ok atar
   log('9 mermiler @ ' + stamp());
   await ev(host, `(()=>{ window.__e.dispose(); window.__e.removed=true; DK.enemies.list=DK.enemies.list.filter(x=>x!==window.__e); const e=DK.enemies.spawn('haydut_nisanci', ${gpos[0]}+8, ${gpos[2]}, {role:'sentry'}); e.pos.set(${gpos[0]}+8, DK.terrain.heightAt(${gpos[0]}+8, ${gpos[2]}), ${gpos[2]}); e.awareness=1; const r=DK.G.remotes.get('${gid}'); e.target=e._targetInfo(r, '${gid}'); e._setState('chase'); window.__a=e; return e.id; })()`, 'archer');
-  let vis = 0;
+  let vis = 0, natural = true, shotsHost = 0;
   for (let i = 0; i < 10 && !vis; i++) { await tick(1); vis = await ev(g, `(DK.enemies._visShots || []).length`); }
-  const shotsHost = await ev(host, `DK.enemies.shots.length`);
-  check('F-06 Düşman mermileri konukta görsel olarak izlenir', vis > 0, { vis, shotsHost });
+  if (!vis) {
+    // nişancı bu sürede ateş etmediyse (görüş/mesafe kararı rastlantısal) mermi ev sahibinde doğrudan oluşturulur: kontrolün amacı
+    // mermi görselinin konuğa aktarılmasıdır, yapay zekânın ateş kararı değil (o 05_dusman_ai.js'te sınanır)
+    natural = false;
+    shotsHost = await ev(host, `(()=>{ const T=DK.THREE, e=window.__a, r=DK.G.remotes.get('${gid}'); const from=new T.Vector3(e.pos.x, e.pos.y+1.4, e.pos.z); const to=new T.Vector3(r.pos.x, r.pos.y+1.2, r.pos.z); const dir=to.sub(from).normalize(); DK.enemies.shoot({ from, dir, speed: 6, kind: 'bolt', dmg: 0, owner: e }); return DK.enemies.shots.length; })()`, 'forced-shot');
+    for (let i = 0; i < 5 && !vis; i++) { await tick(0.4); vis = await ev(g, `(DK.enemies._visShots || []).length`); }
+  }
+  if (!shotsHost) shotsHost = await ev(host, `DK.enemies.shots.length`);
+  check('F-06 Düşman mermileri konukta görsel olarak izlenir', vis > 0, { vis, shotsHost, natural });
   await ev(host, `(()=>{ const e=window.__a; e.dispose(); e.removed=true; DK.enemies.list=DK.enemies.list.filter(x=>x!==e); return 'ok'; })()`);
   const errs = await Promise.all(pages.map((p) => ev(p, `DK.G.state`)));
   check('Senaryo sonunda iki taraf da oyunda', errs.every((s) => s === 'playing'), errs);

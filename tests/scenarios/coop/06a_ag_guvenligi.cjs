@@ -70,10 +70,13 @@ module.exports = async ({ pages, host, guests, ev: ev0, tick: tick0, check, log 
   await tick(1.5);
   const lockBefore = await ev(g2, `DK.interact.locks.get('${shipId}:helm') || null`, 'g2-lock-before');
   await g1.context().close();
-  await tick(4);
+  // kopma algısı gerçek zamanlıdır: WebRTC 'close' gecikebilir; uygulama kalp atışı 15 sn sessizlikte düşürür → en çok 30 sn beklenir
+  let waited = 0;
+  while (waited < 30000 && (await ev(host, `DK.G.remotes.size`)) !== 1) { await host.waitForTimeout(1000); waited += 1000; await tick(0.2); }
+  await tick(1);
   const lockHost = await ev(host, `DK.interact.locks.get('${shipId}:helm') || null`);
   const lockG2 = await ev(g2, `DK.interact.locks.get('${shipId}:helm') || null`);
   const remotesHost = await ev(host, `DK.G.remotes.size`);
-  check('H13 Kopan konuğun dümen kilidi ev sahibinde ve diğer konukta kalkar', lockBefore && !lockHost && !lockG2 && remotesHost === 1, { lockBefore, lockHost, lockG2, remotesHost });
+  check('H13 Kopan konuğun dümen kilidi ev sahibinde ve diğer konukta kalkar', lockBefore && !lockHost && !lockG2 && remotesHost === 1, { lockBefore, lockHost, lockG2, remotesHost, waitedMs: waited });
   log('6a tamam');
 };
