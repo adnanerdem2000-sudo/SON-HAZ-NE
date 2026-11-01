@@ -14,3 +14,11 @@
 | 10 | Yedek (işçisiz) kipte ana iş parçacığı üretimi 60 FPS'lik gerçek makinede kare süresini uzatır (dilim 10–20 ms) | Açık (tasarım) | Yalnız işçi kurulamayan ortamlar; tek dosya sürümü artık data: URL işçisiyle çalışıyor |
 | 11 | F-09 geniş engel dolaşma: yalnız statik doğrulandı | Açık (test) | Çalışma zamanı dolaşma senaryosu yazılmadı |
 | 12 | Boss savaşları (Kraken/Yılan/Taş Muhafız/Volkanik Dev/Amiral) bu ortamda uçtan uca oynanmadı | Açık (test) | Evre/ödül mantığı birim düzeyinde test edildi; tam savaş gerçek GPU'da el ile doğrulanmalı |
+| 13 | Ambar içeriği (`hold`) konuk tarafından bildirilir; ev sahibi sınır/yakınlık doğrular ama tam ev sahibi otoritesi yok | Açık (orta) | Eşya aktarımını niyet iletilerine (put/take) çevirmek gerekir; yol haritasında |
+| 14 | Taş Muhafız rün sütunları konukta oluşmuyor (ek-108) | Açık (orta) | Boss `netExtra` ile sütun durumu yayınlanmalı |
+| 15 | Düşman telgraf halkaları ve iniş işaretleri konukta görünmüyor (mermiler görünüyor) | Açık (düşük) | F-06'nın ikinci yarısı |
+| 16 | Ambardaki sandığı ev sahibi ve konuk aynı anda satabilir (B16) | Açık (düşük) | Satış niyeti ev sahibinde sıraya alınmalı |
+| 17 | Ana menü 'DEVAM ET' online kayıt yuvasını taşımıyor (H18) | Açık (düşük) | |
+| 18 | Dünya haritası/karakter oluşturucu dinleyici sızıntıları (H23/H24) | Açık (düşük) | Aşama 8'de ele alınacak |
+| 19 | Yuvarlanan kaya durumu kaydedilmiyor (yüklemede yeniden kurulur) | Açık (düşük) | |
+| 20 | Dost ateşi seçeneği kaldırıldı; oyuncular arası hasar yok (tasarım kararı) | Kapalı (kayıt) | İleride PvP istenirse yakın dövüş/ışın uzak oyuncuları hedef almalı |
