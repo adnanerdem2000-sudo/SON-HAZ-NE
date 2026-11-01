@@ -30,6 +30,8 @@ değildir ve 60 FPS hedefi bu ortamda doğrulanamaz — yalnız CPU tarafı benz
 Ek senaryolar (19 listesi dışında, Aşama 7): `07_dunya_kesif.js` D01–D07 — dünya boyutu, kıyı dikişi (önce/sonra, 1 mm inceltme), iskeleye
 sudan çıkış (3 gelgit × çukur/tepe + sağanak), adacık özellikleri, arazi uygunluğu, çalışma zamanı kurulumu, liman barınağı; `tests/node/archipelago_sabit.mjs` —
 dünya üretiminin v0.3 sabitiyle determinizmi (kazı noktaları/hazine haritaları değişmez); sonuçlar 15. belgede.
+Aşama 8: `09_performans.js` (çizim çağrısı/üçgen/kaynak sayaçları, benzetim maliyeti; ada/hayvan/düşman kur-sök sızıntı döngüleri),
+`11_arayuz_sizinti.js` (oluşturucu rAF/dinleyici/WebGL temizliği, harita çift açılış); sonuçlar 10. belgede.
 
 Her koşuda kaydedilen: geçti/kaldı, konsol/sayfa hataları (`pageErrors`), ölçümler (metre/saniye/sayaç), ekran görüntüleri
 (`shot`/`snapjs` adımları), bellek (`performance.memory`, yalnız 09. senaryo), yeniden üretme adımları (senaryo dosyasının kendisi).
