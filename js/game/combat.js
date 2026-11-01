@@ -80,6 +80,7 @@ export const combat = {
   noise(pos, radius, kind) {
     if (!pos) return;
     G.emit('noise', { x: pos.x, y: pos.y, z: pos.z, radius, kind, t: this.time });
+    if (G.online && !G.isHost && pos === G.player?.pos) G.emit('netNoise', { radius, kind }); // konuğun sesi ev sahibi AI'sına ulaşır
   },
 
   update(dt) {

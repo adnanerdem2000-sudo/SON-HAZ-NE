@@ -1462,6 +1462,13 @@ export const enemies = {
         f.hitT = (f.hitT || 0) - dt;
         if (f.hitT <= 0) { f.hitT = 0.5; p.hurt(7, null, { cause: 'Lav ateşinde yandın' }); }
       }
+      // co-op: uzak oyuncular da yanar (ev sahibi bildirir; oyuncu başına zamanlayıcı)
+      if (G.online && G.isHost) for (const [id, r] of G.remotes) {
+        if (Math.hypot(r.pos.x - f.x, r.pos.z - f.z) < f.r && Math.abs(r.pos.y - f.y) < 2) {
+          const k = 'hit_' + id; f[k] = (f[k] || 0) - dt;
+          if (f[k] <= 0) { f[k] = 0.5; G.emit('netHurtPlayer', { id, dmg: 7, from: null, cause: 'Lav ateşinde yandın', unblockable: true }); }
+        }
+      }
     }
     this.firePools = this.firePools.filter((f) => f.t > 0);
   },
@@ -1631,6 +1638,14 @@ export const enemies = {
 
   // ağ
   netSnapshot() { return this.list.filter((e) => !e.removed).map((e) => e.net()); },
+  // mermiler: konuklar yalnız görsel kopya tutar (isabet ev sahibinde)
+  netShots() { return this.shots.filter((s) => !s.dead).slice(0, 40).map((s) => [s.kind || 'arrow', +s.pos.x.toFixed(2), +s.pos.y.toFixed(2), +s.pos.z.toFixed(2)]); },
+  applyShots(arr) {
+    const vis = this._visShots || (this._visShots = []);
+    while (vis.length < arr.length) { const kind = arr[vis.length][0]; const m = projMesh(kind); this.scene.add(m); vis.push({ mesh: m, kind }); }
+    while (vis.length > arr.length) { const v = vis.pop(); this.scene.remove(v.mesh); }
+    arr.forEach((a, i) => { const v = vis[i]; if (v.kind !== a[0]) { this.scene.remove(v.mesh); v.kind = a[0]; v.mesh = projMesh(a[0]); this.scene.add(v.mesh); } v.mesh.position.set(a[1], a[2], a[3]); });
+  },
   applySnapshot(arr) {
     const seen = new Set();
     for (const s of arr) {

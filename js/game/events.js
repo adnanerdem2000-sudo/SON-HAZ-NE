@@ -30,7 +30,7 @@ export const events = {
         if (f.gone) continue;
         const d = Math.hypot(p.pos.x - f.pos.x, p.pos.z - f.pos.z);
         const reach = p.mode === 'boat' ? 3.5 : p.mode === 'deck' ? 0 : 2.6;
-        if (d < reach) out.push({ id: 'fl' + f.id, pos: f.pos, radius: reach, priority: 3, label: f.label, action: () => this.collectFloating(f) });
+        if (d < reach) out.push({ id: 'fl' + f.id, pos: f.pos, radius: reach, priority: 3, label: f.label, action: () => this.collectFloating(f, G.myId) });
       }
     });
     G.on('shipEvent', (e) => this._shipEvent(e));
@@ -53,7 +53,13 @@ export const events = {
     for (const f of this.floating) {
       f.t += dt;
       if (f.body) f.pos.copy(f.body.pos);
-      else {
+      else if (f.net) {
+        // konuk: konum ev sahibinin anlık görüntüsünden (yumuşatılmış); 4 sn görüntüde yoksa kaldırılır
+        if (f.netPos) f.pos.lerp(f.netPos, 1 - Math.exp(-8 * dt));
+        f.mesh.position.copy(f.pos);
+        f.mesh.rotation.set(Math.sin(f.t) * 0.2, f.t * 0.2, Math.cos(f.t * 1.3) * 0.2);
+        if ((f.netMiss || 0) > 45) f.gone = true; // ~3 sn boyunca hiçbir anlık görüntüde yoksa
+      } else {
         f.pos.y = ocean.heightAt(f.pos.x, f.pos.z) - 0.15;
         f.pos.x += Math.cos(sky.windDir) * dt * 0.15; f.pos.z += Math.sin(sky.windDir) * dt * 0.15;
         f.mesh.position.copy(f.pos);
@@ -62,7 +68,7 @@ export const events = {
       if (f.t > 420) f.gone = true;
     }
     const rm = this.floating.filter((f) => f.gone);
-    for (const f of rm) this.scene.remove(f.mesh);
+    for (const f of rm) { this.scene.remove(f.mesh); if (f.body) bodies.remove(f.body); if (G.online && G.isHost) G.emit('netFloatGone', { id: f.id }); }
     if (rm.length) this.floating = this.floating.filter((f) => !f.gone);
     // tayfa yardımcısı
     if (G.crewHired && G.ship && !G.ship.sunk) {
@@ -141,7 +147,7 @@ export const events = {
     }
   },
 
-  spawnFloating(kind, pos) {
+  spawnFloating(kind, pos, opts = {}) {
     let mesh;
     if (kind === 'barrel') mesh = assets.prop('barrel', 1.0);
     else if (kind === 'bottle') {
@@ -170,42 +176,65 @@ export const events = {
     mesh.traverse((o) => { if (o.isMesh) o.castShadow = true; });
     this.scene.add(mesh);
     const labels = { barrel: 'Yüzen varili al', bottle: 'Şişeyi al', chest: 'Yüzen sandığı yakala', survivor: 'Kazazedeyi kurtar', meteor: 'Gök taşı parçasını al' };
-    const f = { id: uid('f'), kind, pos: pos.clone(), mesh, t: 0, label: labels[kind] };
-    // yüzen cisim: dalgalarla sallanır, rüzgârla sürüklenir, kıyıya vurur
-    const rad = { barrel: 0.45, bottle: 0.2, chest: 0.4, survivor: 1.1 }[kind] || 0.4;
+    const f = { id: opts.id || uid('f'), kind, pos: pos.clone(), mesh, t: 0, label: labels[kind], net: !!opts.net };
     mesh.position.set(pos.x, ocean.heightAt(pos.x, pos.z), pos.z);
-    f.body = bodies.add(mesh, { pos: new THREE.Vector3(pos.x, ocean.heightAt(pos.x, pos.z) + 0.2, pos.z), radius: rad, offsetY: rad * 0.6, mass: kind === 'survivor' ? 4 : 1, buoyancy: 1.9, drift: 1.1, restitution: 0.2 });
+    if (!opts.net) {
+      // yüzen cisim (ev sahibi / tek oyuncu): dalgalarla sallanır, rüzgârla sürüklenir, kıyıya vurur
+      const rad = { barrel: 0.45, bottle: 0.2, chest: 0.4, survivor: 1.1 }[kind] || 0.4;
+      f.body = bodies.add(mesh, { pos: new THREE.Vector3(pos.x, ocean.heightAt(pos.x, pos.z) + 0.2, pos.z), radius: rad, offsetY: rad * 0.6, mass: kind === 'survivor' ? 4 : 1, buoyancy: 1.9, drift: 1.1, restitution: 0.2 });
+      if (G.online && G.isHost) G.emit('netFloatSpawn', { id: f.id, kind, x: +pos.x.toFixed(2), z: +pos.z.toFixed(2) });
+    } else { f.pos.y = ocean.heightAt(pos.x, pos.z) - 0.15; f.netMiss = 0; }
     this.floating.push(f);
     return f;
   },
 
-  collectFloating(f) {
+  // Toplama: konukta istek ev sahibine gider (ev sahibi doğrular, ödülü konuğa iletir); ev sahibinde/tek oyunculuda yerel.
+  collectFloating(f, who = G.myId) {
+    if (f.gone) return;
+    if (G.online && !G.isHost) { G.emit('netFloatReq', { id: f.id }); return; }
     f.gone = true;
+    const mine = who === G.myId;
     const p = G.player;
+    const give = (items) => { if (mine) treasure.giveItems(items); else G.emit('netGive', { who, items }); };
+    const at = mine ? p.pos.clone() : (G.remotes.get(who)?.pos.clone() || f.pos.clone());
     if (f.kind === 'barrel') {
       const tables = [[['altin_para', 20, 60], ['gulle', 0.5], ['ekmek', 0.5]], [['mermi', 5, 10], ['tahta', 0.6], ['merhem', 0.3]], [['altin_para', 40, 90], ['inci', 0.4]]];
       const t = tables[Math.floor(Math.random() * tables.length)];
-      treasure.spawnLoot(p.pos.clone(), t, 'Varil');
+      treasure.spawnLoot(at, t, 'Varil'); // ev sahibinde doğar, herkese yayınlanır
     } else if (f.kind === 'bottle') {
-      p.inv.add('sise_mesaj', 1, null, true);
-      G.notify('Şişede mesaj aldın! Haritacı Nevra açabilir ya da envanterden kullan.', 'good', 4500);
+      give([['sise_mesaj', 1]]);
+      if (mine) G.notify('Şişede mesaj aldın! Haritacı Nevra açabilir ya da envanterden kullan.', 'good', 4500);
     } else if (f.kind === 'meteor') {
-      p.inv.add('gok_tasi', 1, null, true);
-      G.notify('Gök Taşı Parçası aldın! Hâlâ ılık ve mor bir ışıkla parlıyor.', 'good', 4500);
-      G.emit('rareFind', { kind: 'meteor' });
+      give([['gok_tasi', 1]]);
+      if (mine) { G.notify('Gök Taşı Parçası aldın! Hâlâ ılık ve mor bir ışıkla parlıyor.', 'good', 4500); G.emit('rareFind', { kind: 'meteor' }); }
     } else if (f.kind === 'chest') {
       const c = treasure.spawnChest(Math.random() < 0.7 ? 'small' : 'medium', f.pos.clone());
       c.state = 'water';
-      treasure.pickUp(p, c);
+      if (mine) treasure.pickUp(p, c);
+      else if (treasure._grant(c, who)) G.emit('netCarryOk', { who, id: c.id });
     } else {
-      shop_reward(p);
+      if (mine) { G.notify('Kazazede: "Hayatımı kurtardın! Al bu haritayı, bir zamanlar benim de bir gemim vardı…"', 'good', 6000); treasure.giveMap(); p.inv.gold += 50; }
+      else { give([['hazine_haritasi', 1, { site: treasure.randomSite().id }]]); G.emit('netGold', { who, amount: 50 }); }
     }
-    audio.play('confirm', { vol: 0.5 });
-    function shop_reward(pl) {
-      G.notify('Kazazede: "Hayatımı kurtardın! Al bu haritayı, bir zamanlar benim de bir gemim vardı…"', 'good', 6000);
-      treasure.giveMap();
-      pl.inv.gold += 50;
+    if (mine) audio.play('confirm', { vol: 0.5 });
+  },
+  // ev sahibi: konuğun yüzen nesne isteği (6 m içinde olmalı)
+  collectFloatingById(id, who, pos) {
+    const f = this.floating.find((x) => x.id === id && !x.gone);
+    if (!f || Math.hypot(f.pos.x - pos.x, f.pos.z - pos.z) > 6) return;
+    this.collectFloating(f, who);
+  },
+  removeFloating(id) { const f = this.floating.find((x) => x.id === id); if (f) f.gone = true; },
+  netFloats() { return this.floating.filter((f) => !f.gone).map((f) => [f.id, +f.pos.x.toFixed(2), +f.pos.y.toFixed(2), +f.pos.z.toFixed(2)]); },
+  applyFloats(arr) {
+    const seen = new Set();
+    for (const [id, x, y, z] of arr) {
+      const f = this.floating.find((o) => o.id === id);
+      if (!f) continue; // floatSpawn iletisi henüz gelmedi
+      (f.netPos || (f.netPos = new THREE.Vector3())).set(x, y, z);
+      f.netMiss = 0; seen.add(id);
     }
+    for (const f of this.floating) if (f.net && !seen.has(f.id)) f.netMiss = (f.netMiss || 0) + 1;
   },
 
   // ---- Düşman korsan gemisi ----

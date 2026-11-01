@@ -438,6 +438,8 @@ export const hud = {
   _team() {
     const tl = $('team-list');
     if (!G.online || !G.remotes.size) { tl.innerHTML = ''; return; }
-    tl.innerHTML = [...G.remotes.values()].map((r) => `<div class="tm"><span style="color:${r.color}">●</span> ${r.name} <i><b style="width:${clamp(r.hp || 100, 0, 100)}%"></b></i>${r.downed ? ' <span style="color:#ff8060">YARALI!</span>' : ''}</div>`).join('');
+    const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const col = (c) => (/^#[0-9a-fA-F]{3,8}$/.test(c || '') ? c : '#fff');
+    tl.innerHTML = [...G.remotes.values()].map((r) => `<div class="tm"><span style="color:${col(r.color)}">●</span> ${esc(r.name)} <i><b style="width:${clamp(r.hp ?? 100, 0, 100)}%"></b></i>${r.downed ? ' <span style="color:#ff8060">YARALI!</span>' : ''}</div>`).join('');
   },
 };

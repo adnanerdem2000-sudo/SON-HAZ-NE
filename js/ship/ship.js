@@ -697,12 +697,14 @@ export class Ship {
       hold: this.hold, cannonballs: this.cannonballs, planks: this.planks, sailTarget: this.sailTarget,
       parts: this.parts, mastHp: this.mastHp, cannonHp: this.cannonHp,
       anchorState: this.anchorState === 'lowering' ? 'down' : this.anchorState === 'raising' ? 'up' : this.anchorState,
+      sunk: !!this.sunk,
     };
   }
   netState() {
     const P = this.parts;
     return [+this.x.toFixed(2), +this.z.toFixed(2), +this.yaw.toFixed(4), +this.speed.toFixed(2), +this.rudder.toFixed(2), +this.sail.toFixed(2), this.sailTarget, +this.anchorT.toFixed(2), this.anchorState, Math.round(this.hp), Math.round(this.water), this.sinking, +(this.vx || 0).toFixed(2), +(this.vz || 0).toFixed(2), +(this.yawRate || 0).toFixed(3),
-      [P.pruva, P.kic, P.iskele, P.sancak, P.dumen, P.yelken].map(Math.round), this.mastHp.map(Math.round), this.cannonHp.map(Math.round), this.fires.map((f) => [+f.x.toFixed(1), +f.z.toFixed(1), +f.s.toFixed(2), f.id])];
+      [P.pruva, P.kic, P.iskele, P.sancak, P.dumen, P.yelken].map(Math.round), this.mastHp.map(Math.round), this.cannonHp.map(Math.round), this.fires.map((f) => [+f.x.toFixed(1), +f.z.toFixed(1), +f.s.toFixed(2), f.id]),
+      this.sunk ? 1 : 0, this.cannonballs | 0, this.planks | 0, this.holes.map((h) => [h.id, +h.x.toFixed(2), +h.z.toFixed(2), +(h.size || 1).toFixed(2)])];
   }
   applyNet(s) {
     this.netTarget = { x: s[0], z: s[1], yaw: s[2], vx: s[12] || 0, vz: s[13] || 0, yawRate: s[14] || 0, at: performance.now() };
@@ -712,9 +714,21 @@ export class Ship {
     this.sinking = s[11];
     this.anchored = this.anchorState === 'down';
     if (s[15]) { const [a, b, c, d, e, f] = s[15]; Object.assign(this.parts, { pruva: a, kic: b, iskele: c, sancak: d, dumen: e, yelken: f }); }
-    if (s[16]) { const was = this.mastHp.join(); this.mastHp = s[16]; if (was !== this.mastHp.join()) this._applyDamageVisuals(); }
+    if (s[16]) {
+      const was = this.mastHp.join();
+      const restored = this.mastHp.some((h, i) => h <= 0 && s[16][i] > 0); // direk onarıldı: devrik görseli geri al
+      this.mastHp = s[16];
+      if (restored) this.rebuild({}); else if (was !== this.mastHp.join()) this._applyDamageVisuals();
+    }
     if (s[17]) this.cannonHp = s[17];
     if (s[18]) this.fires = s[18].map(([x, z, sz, id]) => ({ x, z, s: sz, id, t: 0 }));
+    if (s[19] !== undefined) { const sunk = !!s[19]; if (sunk !== this.sunk) { this.sunk = sunk; this.root.visible = !sunk; } }
+    if (s[20] !== undefined) this.cannonballs = s[20];
+    if (s[21] !== undefined) this.planks = s[21];
+    if (Array.isArray(s[22])) {
+      const key = s[22].map((h) => h[0]).join();
+      if (key !== this.holes.map((h) => h.id).join()) { this.holes = s[22].map(([id, x, z, size]) => ({ id, x, z, size })); this._syncHoles(); } // konuk delikleri görür ve onarabilir
+    }
     this._applyDamageVisuals();
   }
 

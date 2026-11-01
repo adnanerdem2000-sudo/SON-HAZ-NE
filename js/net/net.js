@@ -19,6 +19,7 @@ import { quests } from '../game/quests.js';
 import { sky } from '../world/sky.js';
 import { time } from '../world/time.js';
 import { weatherfx } from '../world/weatherfx.js';
+import { events } from '../game/events.js';
 import { audio } from '../core/audio.js';
 import { damp, dampAngle, clamp } from '../core/util.js';
 
@@ -33,6 +34,18 @@ function makeCode() {
   for (let i = 0; i < 6; i++) s += A[Math.floor(Math.random() * A.length)];
   return s;
 }
+// ---- Konuk mesajı doğrulama (ev sahibi otoritesi) ----
+// Her mesaj türü için izin verilen alanlar/aralıklar; dışındakiler kırpılır ya da yok sayılır. Oyuncu adları HTML'den arındırılır.
+const num = (v, lo, hi, def = 0) => (typeof v === 'number' && Number.isFinite(v) ? Math.min(hi, Math.max(lo, v)) : def);
+const str = (v, max = 64) => (typeof v === 'string' ? v.slice(0, max) : '');
+export const cleanName = (v) => (typeof v === 'string' ? v.replace(/<[^>]*>?/g, '').replace(/[<>&"'`\\]/g, '').replace(/\s+/g, ' ').trim().slice(0, 20) : '') || 'Korsan';
+const MAX_MSG_BYTES = 64 * 1024;      // tek mesaj (JSON) üst sınırı
+const RATE_PER_SEC = 120;             // konuk başına saniyede mesaj (durum mesajları hariç)
+const GOLD_PER_MIN = 20000;           // konuk başına dakikada paylaşılabilecek altın (abartılı 'gold' iletileri düşürülür)
+const DMG_MAX = { hurtEnemy: 160, hurtBoss: 220, hurtAnimal: 160, hurtMarine: 160 }; // en güçlü silah × ağır vuruş çarpanı üstü
+const KNOWN = new Set(['hello', 'ping', 'ready', 'app', 'chat', 'st', 'act', 'hurtEnemy', 'hurtBoss', 'stunEnemy', 'hurtAnimal', 'hurtMarine', 'dig', 'chestReq', 'pickupReq', 'chestState', 'chestGone', 'hold', 'shipFull', 'marker', 'hazard', 'shipCmd', 'helm', 'fire', 'boat', 'boatSt', 'lock', 'gold', 'maps', 'downed', 'revive', 'floatReq', 'inter', 'prog', 'lootReq', 'holdTake', 'noise', 'story']);
+function approxBytes(m) { try { return JSON.stringify(m).length; } catch (e) { return Infinity; } }
+
 function peerOpts() {
   const q = new URLSearchParams(location.search);
   const o = { debug: 0 };
@@ -88,6 +101,8 @@ class RemotePlayer {
     this.vel.set((this.pos.x - px) / Math.max(dt, 1e-3), 0, (this.pos.z - pz) / Math.max(dt, 1e-3));
     this.yaw = dampAngle(this.yaw, t.yaw, 14, dt);
     this.mode = t.mode; this.hp = t.hp; this.downed = t.down;
+    this.onGround = !t.air;
+    this.ship = t.ship && (t.mode === 'deck' || t.mode === 'helm' || t.mode === 'cannon') ? (G.ships.find((x) => x.id === t.ship) || null) : null;
     const c = this.char;
     c.root.position.copy(this.pos);
     c.root.rotation.y = this.yaw;
@@ -113,6 +128,8 @@ class RemotePlayer {
 export const net = {
   peer: null,
   conns: new Map(), // host: peerId -> {conn, info}
+  _rate: new Map(), // host: peerId -> { t, n } (oran sınırı)
+  _gold: new Map(), // host: peerId -> { t, sum } (altın paylaşım bütçesi)
   hostConn: null,
   roster: [],
   room: null,
@@ -124,33 +141,42 @@ export const net = {
     this.scene = scene;
     // oyun içi olayları ağa aktar
     const relay = (evt, fn) => G.on(evt, (e) => { if (G.online) fn(e); });
-    relay('netAction', (e) => this.sendGame({ t: 'act', ...e }));
+    relay('netAction', (e) => this.sendGame({ t: 'act', from: G.myId, ...e })); // ev sahibinin eylemleri de konuklarda gösterilir
     relay('netHurtEnemy', (e) => this.toHost({ t: 'hurtEnemy', ...e }));
     relay('netHurtAnimal', (e) => this.toHost({ t: 'hurtAnimal', ...e }));
     relay('netHurtMarine', (e) => this.toHost({ t: 'hurtMarine', ...e }));
     relay('netHazard', (e) => this.sendGame({ t: 'hazard', ...e }));
     relay('netXp', (e) => { if (G.isHost) this.toPeer(e.id, { t: 'xp', xp: e.xp, r: e.reason }); });
-    relay('netHurtPlayer', (e) => this.toPeer(e.id, { t: 'hurt', dmg: e.dmg, from: e.from, cause: e.cause, melee: e.melee ? 1 : 0, ub: e.unblockable ? 1 : 0, aid: e.attackerId || null, bullet: e.bullet ? 1 : 0 }));
+    relay('netHurtPlayer', (e) => this.toPeer(e.id, { t: 'hurt', dmg: e.dmg, from: e.from, cause: e.cause, melee: e.melee ? 1 : 0, ub: e.unblockable ? 1 : 0, aid: e.attackerId || null, bullet: e.bullet ? 1 : 0, kb: e.kb || 0 }));
     relay('netStunEnemy', (e) => this.toHost({ t: 'stunEnemy', id: e.id, dur: e.dur }));
     relay('netHurtBoss', (e) => this.toHost({ t: 'hurtBoss', ...e }));
     relay('netDig', (e) => this.toHost({ t: 'dig', ...e }));
     relay('netChestReq', (e) => this.toHost({ t: 'chestReq', ...e }));
     relay('netPickupReq', (e) => this.toHost({ t: 'pickupReq', ...e }));
+    relay('netLootReq', (e) => this.toHost({ t: 'lootReq', ...e }));
+    relay('netHoldTake', (e) => this.toHost({ t: 'holdTake', ...e }));
+    relay('netFloatReq', (e) => this.toHost({ t: 'floatReq', ...e }));
+    relay('netFloatSpawn', (e) => { if (G.isHost) this.broadcast({ t: 'floatSpawn', ...e }); });
+    relay('netFloatGone', (e) => { if (G.isHost) this.broadcast({ t: 'floatGone', id: e.id }); });
+    relay('netGive', (e) => { if (G.isHost) this.toPeer(e.who, { t: 'give', items: e.items }); });
+    relay('netGold', (e) => { if (G.isHost) this.toPeer(e.who, { t: 'gold', amount: e.amount }); });
+    relay('netCarryOk', (e) => { if (G.isHost) this.toPeer(e.who, { t: 'carryOk', id: e.id }); });
+    relay('netNoise', (e) => { if (!G.isHost) this.toHost({ t: 'noise', radius: e.radius, kind: e.kind }); });
     relay('netChestSpawn', (e) => { if (G.isHost) this.broadcast({ t: 'chestSpawn', c: e.chest }); });
     relay('netChestState', (e) => this.sendGame({ t: 'chestState', c: e.chest }));
     relay('netChestGone', (e) => this.sendGame({ t: 'chestGone', id: e.id }));
     relay('netPickupSpawn', (e) => { if (G.isHost) this.broadcast({ t: 'pickupSpawn', pk: e.pk }); });
     relay('netPickupGone', (e) => { if (G.isHost) { this.broadcast({ t: 'pickupGone', id: e.id }); if (e.who !== G.myId) this.toPeer(e.who, { t: 'give', items: e.items }); } });
-    relay('netHold', (e) => this.sendGame({ t: 'hold', ship: e.ship, hold: e.hold }));
+    relay('netHold', (e) => this.sendGame({ t: 'hold', ship: e.ship, hold: e.hold, gone: e.gone || null })); // ambara konan sandığın kimliği de gider (hayalet sandık yok)
     relay('netShipFull', (e) => this.sendGame({ t: 'shipFull', ship: e.ship, replace: e.replace }));
     relay('netMarker', (e) => this.sendGame({ t: 'marker', ...e }));
-    relay('netStory', (e) => { if (G.isHost) this.broadcast({ t: 'story', ...e }); });
+    relay('netStory', (e) => { if (G.isHost) this.broadcast({ t: 'story', ...e }); else this.toHost({ t: 'story', stage: e.stage, flags: e.flags }); });
     relay('netShareGold', (e) => this.sendGame({ t: 'gold', amount: e.amount }));
     relay('netWeather', (e) => this.broadcast({ t: 'weather', w: e.w }));
     relay('shipCmd', (e) => { if (!G.isHost) this.toHost({ t: 'shipCmd', ...e }); else this.broadcast({ t: 'shipCmdFx', ...e }); });
     relay('boatCmd', (e) => this.sendGame({ t: 'boat', ...e }));
     relay('lock', (e) => this.sendGame({ t: 'lock', ...e, who: G.myId }));
-    relay('cannonFired', (e) => { if (G.isHost) this.broadcast({ t: 'cannon', ship: e.ship, i: e.index, by: e.by }); });
+    relay('cannonFired', (e) => { if (G.isHost) { const sh = G.ships.find((x) => x.id === e.ship); const pv = sh?.model?.cannons?.[e.index]?.mesh?.userData?.pivot; this.broadcast({ t: 'cannon', ship: e.ship, i: e.index, by: e.by, yaw: pv ? +pv.rotation.y.toFixed(3) : 0, pitch: pv ? +(-pv.rotation.x).toFixed(3) : 0 }); } });
     relay('fireCannon', (e) => { if (!G.isHost && e.by === G.myId) this.toHost({ t: 'fire', ship: e.ship.id, i: e.index, yaw: G.player.cannonYaw, pitch: G.player.cannonPitch }); });
     relay('mapGained', () => this.sendGame({ t: 'maps', sites: G.player.inv.stacks.filter((s) => s.id === 'hazine_haritasi').map((s) => s.data?.site) }));
     relay('playerDowned', () => this.sendGame({ t: 'downed' }));
@@ -207,18 +233,31 @@ export const net = {
   },
 
   _hostData(conn, m) {
-    if (!m || !m.t) return;
+    if (!m || typeof m !== 'object' || typeof m.t !== 'string' || !KNOWN.has(m.t)) return;
     const pid = conn.peer;
+    { const cc = this.conns.get(pid); if (cc) { cc.lastSeen = performance.now(); if (m.t === 'st') cc.inGame = true; } } // kalp atışı: her geçerli ileti; ilk 'st' = konuk dünyayı yükledi
+    // oran ve boyut sınırı: durum ('st') ve ping dışındaki mesajlar saniyede RATE_PER_SEC ile sınırlı; aşırı büyük mesaj düşürülür
+    if (m.t !== 'st' && m.t !== 'ping') {
+      const now = performance.now();
+      const r = this._rate.get(pid) || { t: now, n: 0 };
+      if (now - r.t > 1000) { r.t = now; r.n = 0; }
+      r.n++;
+      this._rate.set(pid, r);
+      if (r.n > RATE_PER_SEC) { if (r.n === RATE_PER_SEC + 1) console.warn('Ağ: oran sınırı aşıldı', pid, m.t); return; }
+      if (approxBytes(m) > MAX_MSG_BYTES) { console.warn('Ağ: aşırı büyük mesaj düşürüldü', pid, m.t); return; }
+    }
     if (m.t === 'hello') {
       if (m.ver !== VER) { conn.send({ t: 'reject', why: 'Oyun sürümü farklı.' }); return; }
       if (this.room.pw && m.pw !== this.room.pw) { conn.send({ t: 'reject', why: 'Oda şifresi yanlış.' }); return; }
-      const existing = this.roster.find((r) => r.name === m.name && !this.conns.has(r.id));
+      m.name = cleanName(m.name);
+      // yeniden katılım eşleşmesi: yalnız bağlantısı kopmuş konuklar; ev sahibinin kendi kaydı asla düşürülmez
+      const existing = this.roster.find((r) => r.name === m.name && r.id !== G.myId && !this.conns.has(r.id));
       if (this.roster.length >= this.room.max && !existing) { conn.send({ t: 'reject', why: 'Oda dolu.' }); return; }
       const color = COLORS[this.roster.length % COLORS.length];
       if (existing) this.roster = this.roster.filter((r) => r !== existing);
       const info = { id: pid, name: m.name, app: m.app, color, ready: false };
       this.roster.push(info);
-      this.conns.set(pid, { conn, info });
+      this.conns.set(pid, { conn, info, lastSeen: performance.now() });
       conn.send({ t: 'welcome', id: pid, color, room: { name: this.room.name, code: this.room.code, difficulty: this.room.difficulty }, roster: this.roster, started: G.state === 'playing' });
       if (G.state === 'playing') this._sendWorld(conn);
       this._broadcastRoster();
@@ -232,14 +271,23 @@ export const net = {
     switch (m.t) {
       case 'ready': c.info.ready = m.v; this._broadcastRoster(); break;
       case 'app': c.info.app = m.app; c.info.name = m.name; this._broadcastRoster(); break;
-      case 'chat': this.broadcast({ t: 'chat', from: c.info.name, text: m.text, color: c.info.color }); G.emit('chat', { from: c.info.name, text: m.text, color: c.info.color }); break;
+      case 'chat': { const text = str(m.text, 240); if (!text.trim()) break; this.broadcast({ t: 'chat', from: c.info.name, text, color: c.info.color }); G.emit('chat', { from: c.info.name, text, color: c.info.color }); break; }
       case 'st': this._remoteState(pid, c.info, m.s); break;
       case 'act': this._remoteAct(pid, m); this.broadcast(m, pid, { from: pid }); break;
-      case 'hurtEnemy': { const e = enemies.list.find((x) => x.id === m.id); if (e) e.applyDamage(m.dmg, { kind: m.kind, by: pid, pos: G.remotes.get(pid)?.pos, heavy: m.heavy, finisher: m.fin, counter: m.ctr, guardBreak: m.gb, kb: m.kb, yaw: m.yaw }); break; }
-      case 'hurtBoss': G.emit('netHurtBossApply', m); break;
-      case 'stunEnemy': { const e = enemies.list.find((x) => x.id === m.id); if (e && e.alive) e.stun(m.dur || 1.5, 'parry'); break; }
-      case 'hurtAnimal': { const a = animals.byId(m.id); if (a && a.alive) a.applyDamage(m.dmg, {}); break; }
-      case 'hurtMarine': { const e = megafauna.byId(m.id); if (e && e.alive) megafauna.applyDamage(e, m.dmg, { by: pid, attacker: G.remotes.get(pid) }); break; }
+      case 'hurtEnemy': {
+        const e = enemies.list.find((x) => x.id === m.id);
+        const r = G.remotes.get(pid);
+        // ev sahibi otoritesi: hasar silah üst sınırına kırpılır; konuk hedefe makul uzaklıkta olmalı (yakın 6 m, mermi 80 m)
+        if (!e || !r) break;
+        const d = Math.hypot(e.pos.x - r.pos.x, e.pos.z - r.pos.z);
+        if (d > (m.kind === 'bullet' ? 80 : 6)) break;
+        e.applyDamage(num(m.dmg, 0, DMG_MAX.hurtEnemy), { kind: str(m.kind, 16), by: pid, pos: r.pos, heavy: !!m.heavy, finisher: !!m.fin, counter: !!m.ctr, guardBreak: !!m.gb, kb: num(m.kb, 0, 12), yaw: num(m.yaw, -7, 7) });
+        break;
+      }
+      case 'hurtBoss': G.emit('netHurtBossApply', { ...m, dmg: num(m.dmg, 0, DMG_MAX.hurtBoss), by: pid }); break;
+      case 'stunEnemy': { const e = enemies.list.find((x) => x.id === m.id); const r = G.remotes.get(pid); if (e && e.alive && r && e.pos.distanceTo(r.pos) < 8) e.stun(num(m.dur, 0.2, 3, 1.5), 'parry'); break; }
+      case 'hurtAnimal': { const a = animals.byId(m.id); const r = G.remotes.get(pid); if (a && a.alive && r && a.pos.distanceTo(r.pos) < 80) a.applyDamage(num(m.dmg, 0, DMG_MAX.hurtAnimal), { pos: r.pos }); break; }
+      case 'hurtMarine': { const e = megafauna.byId(m.id); const r = G.remotes.get(pid); if (e && e.alive && r && e.pos.distanceTo(r.pos) < 120) megafauna.applyDamage(e, num(m.dmg, 0, DMG_MAX.hurtMarine), { by: pid, attacker: r }); break; }
       case 'dig': treasure._hole(m.x, m.z, true); treasure.resolveDig(m.x, m.z, pid); this.broadcast({ t: 'hole', x: m.x, z: m.z }, pid); break;
       case 'chestReq': {
         const ch = treasure.chestById(m.id);
@@ -249,19 +297,84 @@ export const net = {
         break;
       }
       case 'pickupReq': { const pk = treasure.pickups.find((x) => x.id === m.id); if (pk) treasure._collect(pk, pid); break; }
-      case 'chestState': this._applyChestState(m.c); this.broadcast(m, pid); break;
-      case 'chestGone': this._chestGone(m.id); this.broadcast(m, pid); break;
-      case 'hold': { const s = G.ships.find((x) => x.id === m.ship); if (s) s.hold = m.hold; this.broadcast(m, pid); break; }
+      case 'lootReq': {
+        // konuk ganimeti (kırık sandık, ada sandığı, envanter taşması): ev sahibi doğrular ve kendi dünyasında doğurur
+        const r = G.remotes.get(pid); if (!r || !Array.isArray(m.table) || !Array.isArray(m.pos)) break;
+        const pos = new THREE.Vector3(num(m.pos[0], -10000, 10000), num(m.pos[1], -100, 400), num(m.pos[2], -10000, 10000));
+        if (pos.distanceTo(r.pos) > 30) break;
+        const table = m.table.slice(0, 10).map((row) => (Array.isArray(row) ? [str(row[0], 40), num(row[1], 0, 999), row[2] === undefined ? undefined : num(row[2], 0, 999), row[3] && typeof row[3] === 'object' ? row[3] : undefined] : null)).filter((row) => row && row[0]);
+        if (table.length) treasure.spawnLoot(pos, table, str(m.from, 40), !!m.exact);
+        break;
+      }
+      case 'holdTake': {
+        const s = G.ships.find((x) => x.id === m.ship); const r = G.remotes.get(pid);
+        if (!s || !r) break;
+        const onShip = r.target && r.target.ship === s.id;
+        if (!onShip && Math.hypot(s.x - r.pos.x, s.z - r.pos.z) > 12) break;
+        const c = treasure.takeFromHoldFor(s, Math.round(num(m.idx, 0, 39)), pid, r.pos.clone());
+        if (c) this.toPeer(pid, { t: 'carryOk', id: c.id });
+        break;
+      }
+      case 'floatReq': { const r = G.remotes.get(pid); if (r) events.collectFloatingById(str(m.id, 40), pid, r.pos); break; }
+      case 'noise': { const r = G.remotes.get(pid); if (r) combat.noise(r.pos, num(m.radius, 0, 80), str(m.kind, 16)); break; }
+      case 'story': {
+        // konuk hikâyeyi ilerletti: en fazla bir aşama ileri; bayraklar yalnız true olarak birleşir (geri alma yok)
+        const to = Math.round(num(m.stage, 0, 99));
+        if (m.flags && typeof m.flags === 'object') for (const k in m.flags) if (m.flags[k] === true && typeof k === 'string' && k.length < 40) quests.flags[k] = true;
+        if (to === quests.stage + 1) quests.advance(to); // advance → netStory → yayın + kayıt
+        else this.broadcast({ t: 'story', stage: quests.stage, flags: quests.flags });
+        break;
+      }
+      case 'chestState': {
+        // yalnız sandığı taşıyan ya da 8 m içindeki konuk durum bildirebilir
+        const ch = m.c && treasure.chestById(m.c.id); const r = G.remotes.get(pid);
+        if (!ch || !r || !(ch.carriers.includes(pid) || ch.pos.distanceTo(r.pos) < 8)) break;
+        this._applyChestState(m.c); this.broadcast(m, pid); break;
+      }
+      case 'chestGone': {
+        const ch = treasure.chestById(m.id); const r = G.remotes.get(pid);
+        if (!ch || !r || !(ch.carriers.includes(pid) || ch.pos.distanceTo(r.pos) < 8)) break;
+        this._chestGone(m.id); this.broadcast(m, pid); break;
+      }
+      case 'hold': {
+        const s = G.ships.find((x) => x.id === m.ship); const r = G.remotes.get(pid);
+        if (!s || !r || !m.hold || typeof m.hold !== 'object') break;
+        // konuk gemide (güverte/dümen) ya da 12 m içinde olmalı; eşya sayıları ve sandık listesi sınırlı
+        const onShip = r.target && r.target.ship === s.id;
+        if (!onShip && Math.hypot(s.x - r.pos.x, s.z - r.pos.z) > 12) break;
+        const items = {}; for (const k in (m.hold.items || {})) if (typeof k === 'string' && k.length < 40) items[k] = Math.round(num(m.hold.items[k], 0, 999));
+        s.hold = { items, chests: Array.isArray(m.hold.chests) ? m.hold.chests.slice(0, 40) : [] };
+        // ambara konan sandık: ev sahibindeki (ve diğer konuklardaki) dünya kopyası kaldırılır (hayalet sandık yok)
+        const gone = m.gone ? str(m.gone, 40) : null;
+        if (gone) { const ch = treasure.chestById(gone); if (ch && (ch.carriers.includes(pid) || ch.pos.distanceTo(r.pos) < 8)) this._chestGone(gone); }
+        this.broadcast({ t: 'hold', ship: s.id, hold: s.hold, gone }, pid); break;
+      }
       case 'shipFull': this._shipFull(m); this.broadcast(m, pid); break;
-      case 'marker': quests.markers.push({ x: m.x, z: m.z, by: m.by, note: m.note || '', color: c.info.color }); this.broadcast(m, pid); G.notify(`${m.by} haritaya işaret koydu.`, 'info', 2000); break;
+      case 'marker': { if (quests.markers.length > 60) quests.markers.shift(); const mk = { t: 'marker', x: num(m.x, -10000, 10000), z: num(m.z, -10000, 10000), by: c.info.name, note: str(m.note, 80) }; quests.markers.push({ x: mk.x, z: mk.z, by: mk.by, note: mk.note, color: c.info.color }); this.broadcast(mk, pid); G.notify(`${c.info.name} haritaya işaret koydu.`, 'info', 2000); break; }
       case 'hazard': hazards.netApply(m); this.broadcast(m, pid); break;
       case 'shipCmd': this._shipCmd(m, pid); break;
-      case 'helm': { const s = G.ships.find((x) => x.id === m.ship); if (s) { s.setRudder(m.rudder); s.sailTarget = m.sail; s.backing = m.back; } break; }
-      case 'fire': { const s = G.ships.find((x) => x.id === m.ship); if (s) { s.aimCannon(m.i, m.yaw, m.pitch); combat.fireCannon(s, m.i, pid); } break; }
+      case 'helm': { const s = G.ships.find((x) => x.id === m.ship); if (s && interact.locks.get(s.id + ':helm') === pid) { s.setRudder(num(m.rudder, -1, 1)); s.sailTarget = num(m.sail, 0, 1); s.backing = !!m.back; } break; }
+      case 'fire': { const s = G.ships.find((x) => x.id === m.ship); const i = Math.round(num(m.i, 0, 15)); if (s && s.cannonState[i] && interact.locks.get(s.id + ':cannon' + i) === pid) { s.aimCannon(i, num(m.yaw, -7, 7), num(m.pitch, -1, 1)); combat.fireCannon(s, i, pid); } break; }
       case 'boat': this._boatCmd(m, pid); this.broadcast(m, pid); break;
       case 'boatSt': { const b = G.rowboat; if (b && b.driver === pid) { b.x = m.x; b.z = m.z; b.yaw = m.yaw; b.speed = m.sp; b.rowPhase = m.rp; b.state = 'water'; } break; }
-      case 'lock': if (m.on) interact.locks.set(m.id, m.who); else interact.locks.delete(m.id); this.broadcast(m, pid); break;
-      case 'gold': this.broadcast(m, pid); G.player.inv.gold += m.amount; G.notify(`Tayfa kazancı: +${m.amount} altın`, 'good', 2500); break;
+      case 'lock': {
+        // kilit yalnız gönderen adına açılır/kapanır; başkasının kilidi kaldırılamaz
+        const id = str(m.id, 64); if (!id) break;
+        if (m.on) { if (!interact.locks.has(id)) interact.locks.set(id, pid); }
+        else if (interact.locks.get(id) === pid) interact.locks.delete(id);
+        this.broadcast({ t: 'lock', id, on: !!m.on, who: pid }, pid); break;
+      }
+      case 'gold': {
+        // tayfa payı: pozitif, tek seferde ≤5000 ve dakikada ≤GOLD_PER_MIN (abartılı iletiler düşürülür)
+        const amount = Math.round(num(m.amount, 0, 5000));
+        if (amount <= 0) break;
+        const now = performance.now();
+        const g = this._gold.get(pid) || { t: now, sum: 0 };
+        if (now - g.t > 60000) { g.t = now; g.sum = 0; }
+        if (g.sum + amount > GOLD_PER_MIN) { this._gold.set(pid, g); break; }
+        g.sum += amount; this._gold.set(pid, g);
+        this.broadcast({ t: 'gold', amount }, pid); G.player.inv.gold += amount; G.notify(`Tayfa kazancı: +${amount} altın`, 'good', 2500); break;
+      }
       case 'maps': c.info.maps = m.sites; G.remoteMapSites = [...this.conns.values()].flatMap((x) => x.info.maps || []); break;
       case 'downed': G.notify(`${c.info.name} yaralı düştü! Yanına gidip E ile kaldır.`, 'boss', 5000); break;
       case 'revive': if (m.target === G.myId) { G.player.revive(); G.notify('Bir tayfa arkadaşın seni ayağa kaldırdı!', 'good'); } else this.toPeer(m.target, m); break;
@@ -275,10 +388,10 @@ export const net = {
     this.roster = this.roster.filter((r) => r.id !== pid);
     const r = G.remotes.get(pid);
     if (r) { r.dispose(this.scene); G.remotes.delete(pid); }
-    // taşıdığı sandığı bırak, kilitleri kaldır
-    for (const ch of treasure.chests) if (ch.carriers.includes(pid)) { ch.carriers = ch.carriers.filter((x) => x !== pid); if (!ch.carriers.length) ch.state = 'ground'; }
-    for (const [k, v] of interact.locks) if (v === pid) interact.locks.delete(k);
-    if (G.rowboat?.driver === pid) G.rowboat.driver = null;
+    // taşıdığı sandığı bırak, kilitleri kaldır — ve bunları diğer konuklara da bildir (dümen/top 'kullanımda' kalmasın)
+    for (const ch of treasure.chests) if (ch.carriers.includes(pid)) { ch.carriers = ch.carriers.filter((x) => x !== pid); if (!ch.carriers.length) ch.state = 'ground'; this.broadcast({ t: 'chestState', c: treasure.chestNet(ch) }); }
+    for (const [k, v] of interact.locks) if (v === pid) { interact.locks.delete(k); this.broadcast({ t: 'lock', id: k, on: false, who: pid }); }
+    if (G.rowboat?.driver === pid) { G.rowboat.driver = null; this.broadcast({ t: 'boat', cmd: 'driver', who: null, from: pid }); }
     G.notify(`${c.info.name} oyundan ayrıldı.`, 'warn');
     this._broadcastRoster();
   },
@@ -355,6 +468,7 @@ export const net = {
 
   leave() {
     clearInterval(this._pingIv);
+    this._snapSeen = false; this._lastHostMsg = 0;
     if (this.peer) { try { this.peer.destroy(); } catch (e) { /* */ } }
     this.peer = null; this.hostConn = null;
     this.conns.clear();
@@ -381,10 +495,14 @@ export const net = {
     if (G.isHost) { this.broadcast({ t: 'chat', from: G.playerName, text, color: COLORS[0] }); G.emit('chat', { from: G.playerName, text, color: COLORS[0] }); }
     else this.toHost({ t: 'chat', text });
   },
-  startGame(startData) { this.broadcast({ t: 'start', difficulty: this.room.difficulty, friendlyFire: this.room.friendlyFire }); void startData; },
+  startGame(startData) {
+    for (const [, c] of this.conns) c.inGame = false; // konuklar dünyayı yüklerken sessiz kalır; zaman aşımı ilk 'st' ile başlar
+    this.broadcast({ t: 'start', difficulty: this.room.difficulty, friendlyFire: this.room.friendlyFire }); void startData;
+  },
 
   // Oyun başlayınca dünya durumunu gönder
   _sendWorld(conn) {
+    { const cc = this.conns.get(conn.peer); if (cc) cc.inGame = false; } // yükleme süresince kalp atışı sayılmaz
     const s = G.ship;
     conn.send({
       t: 'world',
@@ -400,15 +518,22 @@ export const net = {
 
   // ---------------- İstemci verisi ----------------
   _clientData(m) {
+    this._lastHostMsg = performance.now(); this._weakWarned = false; // ev sahibi kalp atışı
     switch (m.t) {
       case 'pong': G.ping = Math.round(performance.now() - m.ts); break;
-      case 'roster': this.roster = m.roster; G.emit('roster', m.roster); break;
-      case 'start': G.emit('netStart', m); break;
-      case 'world': G.emit('netWorld', m); break;
-      case 'snap': this._applySnap(m); break;
+      case 'roster': this.roster = (Array.isArray(m.roster) ? m.roster : []).map((r) => ({ ...r, name: cleanName(r.name) })); G.emit('roster', this.roster); break;
+      case 'start': this._snapSeen = false; G.emit('netStart', m); break;
+      case 'world': this._snapSeen = false; G.emit('netWorld', m); break;
+      case 'snap': if (G.state === 'playing' && G.player) { this._snapSeen = true; this._applySnap(m); } break; // menü/lobide uzak nesneler sahneye eklenmez
       case 'chat': G.emit('chat', m); break;
       case 'act': this._remoteAct(m.from, m); break;
-      case 'hurt': G.player.hurt(m.dmg, m.from ? new THREE.Vector3(...m.from) : null, { cause: m.cause, melee: !!m.melee, unblockable: !!m.ub, attackerId: m.aid, bullet: !!m.bullet }); break;
+      case 'hurt': {
+        G.player.hurt(m.dmg, m.from ? new THREE.Vector3(...m.from) : null, { cause: m.cause, melee: !!m.melee, unblockable: !!m.ub, attackerId: m.aid, bullet: !!m.bullet });
+        if (m.kb && m.from) { const p = G.player; const dx = p.pos.x - m.from[0], dz = p.pos.z - m.from[2], d = Math.hypot(dx, dz) || 1; p.knock = { x: dx / d * m.kb, z: dz / d * m.kb }; } // boss süpürmesi geri tepmesi
+        break;
+      }
+      case 'floatSpawn': if (!events.floating.some((f) => f.id === m.id)) events.spawnFloating(m.kind, new THREE.Vector3(m.x, 0, m.z), { id: m.id, net: true }); break;
+      case 'floatGone': events.removeFloating(m.id); break;
       case 'give': treasure.giveItems(m.items); break;
       case 'teleport': {
         // oda sahibi hızlı yolculuk yaptı: tayfa da varış limanına taşınır
@@ -428,7 +553,7 @@ export const net = {
       case 'pickupSpawn': if (!treasure.pickups.some((p) => p.id === m.pk.id)) { const pk = treasure.spawnLootLocal ? null : null; void pk; this._spawnPickup(m.pk); } break;
       case 'pickupGone': { const pk = treasure.pickups.find((p) => p.id === m.id); if (pk) pk.remove = true; break; }
       case 'hole': treasure._hole(m.x, m.z, true); break;
-      case 'hold': { const s = G.ships.find((x) => x.id === m.ship); if (s) s.hold = m.hold; break; }
+      case 'hold': { const s = G.ships.find((x) => x.id === m.ship); if (s) s.hold = m.hold; if (m.gone) this._chestGone(m.gone); break; }
       case 'shipFull': this._shipFull(m); break;
       case 'marker': quests.markers.push({ x: m.x, z: m.z, by: m.by, note: m.note || '', color: '#6ad0f0' }); G.notify(`${m.by} haritaya işaret koydu.`, 'info', 2000); break;
       case 'hazard': hazards.netApply(m); break;
@@ -438,7 +563,7 @@ export const net = {
       case 'weather': sky.setWeather(m.w); break;
       case 'sleep': time.day = m.day; sky.hour = m.hour; time._prevHour = m.hour; G.player.hp = G.player.maxHp; G.emit('sleepFade', m); break;
       case 'lock': if (m.on) interact.locks.set(m.id, m.who); else interact.locks.delete(m.id); break;
-      case 'cannon': { const s = G.ships.find((x) => x.id === m.ship); if (s && m.by !== G.myId) { const st = s.cannonState[m.i]; st.reload = 0; const keep = s.cannonballs; s.cannonballs = Math.max(1, s.cannonballs); G.visualOnlyBalls = true; combat.fireCannon(s, m.i, m.by); G.visualOnlyBalls = false; s.cannonballs = keep; } break; }
+      case 'cannon': { const s = G.ships.find((x) => x.id === m.ship); if (s && m.by !== G.myId) { if (m.yaw !== undefined) s.aimCannon(m.i, m.yaw, m.pitch); const st = s.cannonState[m.i]; st.reload = 0; const keep = s.cannonballs; s.cannonballs = Math.max(1, s.cannonballs); G.visualOnlyBalls = true; combat.fireCannon(s, m.i, m.by); G.visualOnlyBalls = false; s.cannonballs = keep; } break; }
       case 'boat': this._boatCmd(m, m.from); break;
       case 'shipCmdFx': if (m.cmd === 'anchor') audio.play('impact', { vol: 0.4, rate: 0.5 }); break;
       case 'revive': if (m.target === G.myId || !m.target) { G.player.revive(); G.notify('Bir tayfa arkadaşın seni ayağa kaldırdı!', 'good'); } break;
@@ -484,7 +609,9 @@ export const net = {
     if (m.cmd === 'anchor') s.toggleAnchor();
     else if (m.cmd === 'sails') s.sailTarget = m.v;
     else if (m.cmd === 'bail') s.water = Math.max(0, s.water - 12);
-    else if (m.cmd === 'repair') s.repairHole(m.hole);
+    else if (m.cmd === 'repair') { s.repairHole(m.hole); if (s.planks > 0) s.planks--; }
+    else if (m.cmd === 'addBalls') s.cannonballs = Math.min(999, (s.cannonballs || 0) + Math.round(num(m.n, 0, 200)));
+    else if (m.cmd === 'addPlanks') s.planks = Math.min(999, (s.planks || 0) + Math.round(num(m.n, 0, 200)));
     else if (m.cmd === 'extinguish') s.extinguish(m.id);
     else if (m.cmd === 'cannonFix') s.cannonHp[m.i] = 70;
     else if (m.cmd === 'mastFix') { s.mastHp[m.i] = 35; s.rebuild({}); }
@@ -512,6 +639,8 @@ export const net = {
   },
 
   _applySnap(m) {
+    if (m.floats) events.applyFloats(m.floats);
+    if (m.shots) enemies.applyShots(m.shots);
     for (const id in m.players) {
       if (id === G.myId) continue;
       const info = this.roster.find((r) => r.id === id) || { id, name: 'Korsan', app: null, color: '#fff' };
@@ -552,6 +681,17 @@ export const net = {
   // ---------------- Döngü ----------------
   update(dt) {
     if (!G.online || G.state !== 'playing') return;
+    // Kalp atışı zaman aşımı: sekme kapanışı/ağ kopması WebRTC 'close' olayını geç (30 sn+) getirebilir; uygulama katmanında
+    // ev sahibi 15 sn sessiz konuğu düşürür, konuk 25 sn sessiz ev sahibini 'ayrıldı' sayar (ping/pong setInterval ile
+    // sürdüğü için arka plan sekmesi hemen düşmez). Dünya yüklenirken (ilk 'st'/ilk 'snap' öncesi) sayılmaz: yavaş makinede
+    // yükleme 15 sn'yi aşabilir ve konuk haksız yere düşürülürdü (06a2 koşusunda görüldü).
+    const nowMs = performance.now();
+    if (G.isHost) {
+      for (const [pid, c] of [...this.conns]) if (c.inGame && c.lastSeen && nowMs - c.lastSeen > 15000) { console.warn('Ağ: konuk 15 sn sessiz, bağlantı düşürülüyor', pid); try { c.conn.close(); } catch (e) { /* */ } this._dropPeer(pid); }
+    } else if (this.hostConn && this._snapSeen && this._lastHostMsg) { // ilk anlık görüntüden sonra: ev sahibi de yükleniyor olabilir
+      if (nowMs - this._lastHostMsg > 25000) { this._lastHostMsg = 0; G.emit('hostLeft', 'Ev sahibinden 25 saniyedir veri gelmiyor (bağlantı koptu).'); }
+      else if (nowMs - this._lastHostMsg > 6000 && !this._weakWarned) { this._weakWarned = true; G.notify('Ev sahibiyle bağlantı zayıf…', 'warn', 3000); }
+    }
     for (const [, r] of G.remotes) r.update(dt);
     const p = G.player;
     if (!p) return;
@@ -581,7 +721,7 @@ export const net = {
     this.snapT = (this.snapT || 0) + 1;
     const players = { [G.myId]: myState };
     for (const [id, r] of G.remotes) if (r.target) players[id] = r.target;
-    const m = { t: 'snap', players, ships: G.ships.filter((s) => !s.kinematic).map((s) => ({ id: s.id, typeId: s.typeId, look: s.look, name: s.name, st: s.netState() })) };
+    const m = { t: 'snap', players, ships: G.ships.filter((s) => !s.kinematic).map((s) => ({ id: s.id, typeId: s.typeId, look: s.look, name: s.name, st: s.netState() })), floats: events.netFloats(), shots: enemies.netShots() };
     const b = G.rowboat;
     if (b) m.rb = [b.state, +b.x.toFixed(2), +b.z.toFixed(2), +b.yaw.toFixed(3), +b.rowPhase.toFixed(2), b.cargo, b.driver];
     if (this.snapT % 2 === 0) { m.en = enemies.netSnapshot(); m.bo = bosses.netSnapshot(); m.an = animals.netSnapshot(); m.mf = megafauna.netSnapshot(); m.time = [sky.hour, sky.weatherKey, sky.windDir, time.day, sky.forecast.map((f) => [f.key, +f.at.toFixed(2)]), +sky.wetness.toFixed(2)]; m.wfx = weatherfx.netState(); m.we = worldEvents.netState(); m.ch = treasure.chests.filter((c) => c.state === 'water' || c.state === 'ground').map((c) => [c.id, +c.pos.x.toFixed(2), +c.pos.y.toFixed(2), +c.pos.z.toFixed(2), c.state]); }

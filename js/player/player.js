@@ -880,7 +880,7 @@ export class Player {
     return {
       x: +this.pos.x.toFixed(2), y: +this.pos.y.toFixed(2), z: +this.pos.z.toFixed(2), yaw: +this.yaw.toFixed(2),
       anim: this.char.currentName, up: this.char.upperName || null, loop: this.char.current ? (this.char.current.loop === THREE.LoopRepeat ? 1 : 0) : 1, mode: this.mode, eq: this.equipped, carry: this.carrying ? this.carrying.id : null,
-      hp: Math.round(this.hp), torch: this.torch, down: this.downed, swimP: +(this.char.model.rotation.x).toFixed(2),
+      hp: Math.round(this.hp), torch: this.torch, down: this.downed, swimP: +(this.char.model.rotation.x).toFixed(2), air: this.onGround ? 0 : 1,
       ship: this.ship ? this.ship.id : null, lx: +this.local.x.toFixed(2), lz: +this.local.z.toFixed(2), ly: +this.localY.toFixed(2),
     };
   }

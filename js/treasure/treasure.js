@@ -49,7 +49,11 @@ export const treasure = {
     G.on('stowCarry', (e) => this.stowInHold(e.ship));
     G.on('stowCarryBoat', (e) => this.stowInBoat(e.boat));
     G.on('boatRecall', (e) => this.boatToHold(e.boat, e.ship));
-    G.on('loot', (e) => this.spawnLoot(e.pos, e.table, e.from));
+    // konukta üretilen ganimet ev sahibinde doğar (tek otorite): kese herkes için görünür ve alınabilir
+    G.on('loot', (e) => {
+      if (G.online && !G.isHost) G.emit('netLootReq', { pos: e.pos.toArray(), table: e.table, from: e.from || '', exact: !!e.exact });
+      else this.spawnLoot(e.pos, e.table, e.from, !!e.exact);
+    });
     this.holeGroup = new THREE.Group();
     scene.add(this.holeGroup);
   },
@@ -72,7 +76,8 @@ export const treasure = {
   save() {
     return {
       found: this.found,
-      chests: this.chests.filter((c) => c.state === 'ground' || c.state === 'water').map((c) => ({ id: c.id, tier: c.tier, x: c.pos.x, y: c.pos.y, z: c.pos.z, contents: c.contents, siteId: c.siteId })),
+      // taşınan ve kayıktaki sandıklar da kaydedilir (bulundukları konumda yere konmuş olarak yüklenir)
+      chests: this.chests.filter((c) => ['ground', 'water', 'carried', 'boat'].includes(c.state)).map((c) => ({ id: c.id, tier: c.tier, x: c.pos.x, y: c.state === 'carried' ? Math.max(c.pos.y - 0.75, terrain.heightAt(c.pos.x, c.pos.z)) : c.pos.y, z: c.pos.z, contents: c.contents, siteId: c.siteId })),
       holes: this.holes.slice(-20).map((h) => ({ x: h.x, z: h.z })),
     };
   },
@@ -224,6 +229,7 @@ export const treasure = {
       rising: opts.rising ? 1 : 0, vy: 0,
     };
     this.chests.push(c);
+    if (G.online && G.isHost && !opts.rising && !opts.silent) G.emit('netChestSpawn', { chest: this.chestNet(c) }); // ev sahibinde doğan her sandık konuklarda da doğar
     return c;
   },
 
@@ -363,6 +369,7 @@ export const treasure = {
   takeFromHold(ship, idx) {
     const p = G.player;
     if (p.carrying) return;
+    if (G.online && !G.isHost) { G.emit('netHoldTake', { ship: ship.id, idx }); return; } // ev sahibi çıkarır, sandık herkeste doğar, carryOk gelir
     const h = ship.hold.chests[idx];
     if (!h) return;
     ship.hold.chests.splice(idx, 1);
@@ -373,6 +380,19 @@ export const treasure = {
     this._applyCarry(p, c);
     G.emit('netHold', { ship: ship.id, hold: ship.hold });
     G.emit('netChestSpawn', { chest: this.chestNet(c) });
+  },
+
+  // ev sahibi: konuk adına ambardan sandık çıkarır (sandık konuğun yanında doğar, konuk taşıyıcı olur)
+  takeFromHoldFor(ship, idx, who, pos) {
+    const h = ship.hold.chests[idx];
+    if (!h) return null;
+    ship.hold.chests.splice(idx, 1);
+    const c = this.spawnChest(h.tier, pos, { id: h.id, contents: h.contents, siteId: h.siteId });
+    c.state = 'carried';
+    c.carriers = [who];
+    G.emit('netHold', { ship: ship.id, hold: ship.hold });
+    G.emit('netChestState', { chest: this.chestNet(c) });
+    return c;
   },
 
   stowInBoat(boat) {
@@ -503,7 +523,7 @@ export const treasure = {
     if (got.length) { G.notify(`${from ? from + ': ' : ''}${got.join(', ')}`, 'good', 4500); audio.play('coin', { vol: 0.6 }); }
     if (left.length) {
       G.notify('Envanterin dolu! Bazı eşyalar yere bırakıldı.', 'warn');
-      this.spawnLoot(p.pos.clone(), left.map((l) => [l[0], 1, l[1], l[2]]), from, true);
+      G.emit('loot', { pos: p.pos.clone(), table: left.map((l) => [l[0], 1, l[1], l[2]]), from, exact: true }); // konukta ev sahibine yönlenir
     }
     G.emit('itemsGained', { items });
   },

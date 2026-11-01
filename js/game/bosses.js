@@ -39,7 +39,7 @@ function players() {
 }
 function hitPlayer(t, dmg, from, cause, opts = {}) {
   if (t.id === G.myId) G.player.hurt(dmg, from, { cause, melee: !!opts.melee, unblockable: opts.unblockable !== false });
-  else G.emit('netHurtPlayer', { id: t.id, dmg, from: [from.x, from.y, from.z], cause, unblockable: opts.unblockable !== false });
+  else G.emit('netHurtPlayer', { id: t.id, dmg, from: [from.x, from.y, from.z], cause, unblockable: opts.unblockable !== false, melee: !!opts.melee, kb: opts.kb || 0 });
   if (t.id === G.myId && opts.kb && from) { const dx = t.pos.x - from.x, dz = t.pos.z - from.z, d = Math.hypot(dx, dz) || 1; G.player.knock = { x: dx / d * opts.kb, z: dz / d * opts.kb }; }
 }
 // kemiğe dünya ölçeğinden bağımsız boyutta nesne bağla (model uzayında verilen konuma)
@@ -371,6 +371,8 @@ class Kraken extends BossBase {
     for (const t of this.tentacles) if (t.netTip) t.tip.lerp(_v.set(t.netTip[0], t.netTip[1], t.netTip[2]), 1 - Math.exp(-8 * dt));
     const ship = G.ship;
     this._updateTentacles(0, null);
+    // konuk: dokunaç hedefleri ağdaki duruma göre canlı kalır (yerel güncelleme onları 'gone' sayıp vurulamaz yapıyordu)
+    for (const t of this.tentacles) if (t.netTip && t.target) t.target.alive = this.alive && !!t.netTip[3];
     void ship;
   }
 }
