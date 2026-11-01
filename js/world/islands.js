@@ -24,6 +24,18 @@ import { woodPlanks } from '../core/textures.js';
 // etiketiyle eklenir ve boşaltmada kaldırılır. Her ada kendi tohumuyla her seferinde aynı kurulur.
 
 const BUILD_D = 750, DROP_D = 1150;
+// Ada içeriği arka planda karelere bölünerek kurulur: kare başına STEP_MS ms iş (tek karede 40–140 ms
+// takılma yerine). Oyuncu adanın kıyısına NEAR_D m'den yakınsa (ışınlanma, kayıt yükleme, hızlı yolculuk)
+// kurulum beklemeden aynı karede tamamlanır.
+const STEP_MS = 3, NEAR_D = 250;
+
+// Tapınak bulmacasının kalıcı durumu { seq, done }. Eski kayıtlarda (ve yeniden kurulmuş adalarda) çalışma zamanı sarmalayıcısı
+// { state, gate, cx, ... } — iç içe olabilir — kaydedilmiş olabilir: en içteki durum çıkarılır.
+function puzzleState(v) {
+  let s = v;
+  for (let i = 0; i < 16 && s && typeof s === 'object' && !Array.isArray(s.seq) && s.state; i++) s = s.state;
+  return s && typeof s === 'object' && Array.isArray(s.seq) ? { seq: s.seq.filter((x) => x === 0 || x === 1 || x === 2), done: s.done === true } : { seq: [], done: false };
+}
 const _m = new THREE.Matrix4(), _q = new THREE.Quaternion(), _s = new THREE.Vector3(), _p = new THREE.Vector3(), _e = new THREE.Euler();
 const _n = new THREE.Vector3();
 
@@ -77,7 +89,9 @@ class Batch {
     b.list.push({ x, y, z, sc, yaw, rx, rz });
     return sc;
   }
-  build(group, matsOut) {
+  build(group, matsOut) { const it = this.steps(group, matsOut); while (!it.next().done); }
+  // build'in adım adım hâli: her örnek grubundan sonra durulabilir (zaman dilimli ada kurulumu)
+  *steps(group, matsOut) {
     const tinted = new Map();
     for (const b of this.map.values()) {
       for (const part of b.P.parts) {
@@ -108,6 +122,7 @@ class Batch {
         group.add(im);
         this.cells.push(im);
       }
+      yield;
     }
   }
 }
@@ -222,14 +237,19 @@ export const islands = {
   },
 
   start(data) {
-    // oturum başında tüm ada içeriği boşaltılır; yaklaşınca yeniden kurulur
+    // oturum başında tüm ada içeriği boşaltılır (yarım kalmış arka plan kurulumu dahil); yaklaşınca yeniden kurulur
+    this._cancelJob();
     for (const id of [...this.built.keys()]) this._drop(id);
+    this.failed = new Set();
     this.checkT = 0;
     // kalıcı ada durumu: açılmış sandıklar/sunaklar, kurtarılmış tutsaklar, çözülmüş tapınak mekanizmaları
     const d = data?.islands;
     this.opened = new Set(d?.opened || []);
     this.freed = new Set(d?.freed || []);
-    this.templeState = d?.temples ? JSON.parse(JSON.stringify(d.temples)) : {};
+    // templeState yalnız kalıcı bulmaca durumunu ({ seq, done }) tutar; eski kayıtlardaki sarmalayıcı biçim onarılır
+    this.templeState = {};
+    for (const [id, v] of Object.entries(d?.temples || {})) this.templeState[id] = puzzleState(v);
+    this.temples = {}; // çalışma zamanı: kapı, avlu konumu (bosslar okur); ada kurulunca dolar
   },
   stop() { this.start(null); },
   save() { return { opened: [...(this.opened || [])], freed: [...(this.freed || [])], temples: this.templeState || {} }; },
@@ -240,17 +260,33 @@ export const islands = {
     this.checkT -= dt;
     if (this.checkT <= 0) {
       this.checkT = 0.4;
-      let built = 0;
-      // en yakın kurulmamış ada önce (karede en fazla bir ada kurulur)
+      // en yakın kurulmamış ada önce (denetim başına en fazla bir yeni ada)
       const cand = [];
       for (const I of EXTRA_ISLANDS) {
         const d = Math.hypot(I.x - cam.x, I.z - cam.z) - I.r;
         const has = this.built.has(I.id);
-        if (!has && d < BUILD_D) cand.push([d, I]);
+        if (this.job?.I === I) { if (d > DROP_D) this._cancelJob(); }
+        else if (!has && d < BUILD_D && !this.failed?.has(I.id)) cand.push([d, I]);
         else if (has && d > DROP_D) this._drop(I.id);
       }
       cand.sort((a, b) => a[0] - b[0]);
-      for (const [, I] of cand) { if (built++ >= 1) break; this._build(I); }
+      const c = cand[0];
+      // oyuncu adanın kıyısında/içinde (ışınlanma, yükleme): beklemeden kur; değilse arka planda (tek iş)
+      if (c && c[0] < NEAR_D) {
+        try { this._build(c[1]); } catch (e) { console.error('Ada kurulamadı', c[1].id, e); this.failed?.add(c[1].id); }
+      } else if (c && !this.job) this.job = this._newJob(c[1]);
+    }
+    if (this.job) {
+      const J = this.job;
+      const near = Math.hypot(J.I.x - cam.x, J.I.z - cam.z) - J.I.r < NEAR_D;
+      try {
+        if (this._runJob(J, near ? Infinity : STEP_MS)) this.job = null;
+      } catch (e) {
+        // beklenmeyen hata: yarım içerik temizlenir, ada bu oturumda yeniden denenmez (her denetimde hata yağmuru olmasın)
+        console.error('Ada kurulamadı', J.I.id, e);
+        this._cancelJob();
+        this.failed?.add(J.I.id);
+      }
     }
     this._updateLamps(dt);
     this._updateLava(dt);
@@ -259,30 +295,94 @@ export const islands = {
   },
 
   // ---------------------------------------------------------------------------
+  // Eşzamanlı kurulum (testler, ışınlanma/yükleme): aynı adanın yarım kalmış arka plan işi varsa o tamamlanır.
+  // Hata olursa yarım içerik bırakılır ve hata yukarı iletilir (update yakalayıp adayı bu oturumda yeniden denemez).
   _build(I) {
-    const t0 = performance.now();
+    let J = this.job;
+    if (J?.I === I) this.job = null;
+    else J = this._newJob(I);
+    try {
+      this._runJob(J, Infinity);
+    } catch (e) {
+      J.it.return();
+      if (this.built.get(I.id) !== J.B) this._release(J.B);
+      throw e;
+    }
+  },
+
+  _newJob(I) {
     const group = new THREE.Group();
     group.name = 'island:' + I.id;
-    const B = { I, group, batch: new Batch(), mats: [], tag: 'isl:' + I.id, obstacles: [], npcs: [], lamps: [], inter: [], tick: [], lavas: [], extras: [] };
+    const B = { I, group, batch: new Batch(), mats: [], tag: 'isl:' + I.id, obstacles: [], npcs: [], lamps: [], inter: [], tick: [], lavas: [], extras: [], defer: [], prof: {} };
+    const J = { I, B, phase: 'veg', work: 0, frames: 0, maxFrame: 0 };
+    J.it = this._buildGen(J);
+    return J;
+  },
+
+  // Ada içeriği üreteci. Her `yield` bir bölünme noktasıdır: bitki örtüsü 64 örnekte bir, her yapı, her NPC,
+  // her örnek grubu. Eşzamanlı kurulum aynı üreteci sonuna dek çalıştırdığından iki yolun sonucu (rastgele
+  // sayı sırası, konumlar, çarpıştırıcılar) aynıdır. Grup sahneye yalnız iş bitince eklenir.
+  *_buildGen(J) {
+    const { I, B } = J;
     const R = rng(I.seed * 31 + 7);
-    const prof = B.prof = {};
-    let tp = performance.now();
-    const mark = (k) => { const t = performance.now(); prof[k] = (prof[k] || 0) + Math.round(t - tp); tp = t; };
-    this._vegetation(B, R); mark('veg');
+    J.phase = 'veg';
+    yield* this._vegetation(B, R);
+    yield;
     for (const f of I.features) {
+      J.phase = f.type;
       try { this._feature(B, f, R); } catch (e) { console.error('Ada yapısı kurulamadı', I.id, f.type, e); }
-      mark(f.type);
+      yield;
+      // karakter modelleri pahalıdır (tanesi 1–10 ms): her NPC ayrı adımda
+      while (B.defer.length) {
+        const fn = B.defer.shift();
+        try { fn(); } catch (e) { console.error('Ada NPC kurulamadı', I.id, f.type, e); }
+        yield;
+      }
     }
-    this._digLandmarks(B); mark('dig');
-    this._seaStacks(B, R); mark('stacks');
-    if (I.shape === 'volcano') this._lava(B);
-    B.batch.build(group, B.mats); mark('batch');
+    J.phase = 'dig'; this._digLandmarks(B); yield;
+    J.phase = 'stacks'; this._seaStacks(B, R); yield;
+    if (I.shape === 'volcano') { J.phase = 'lava'; this._lava(B); yield; }
+    J.phase = 'batch';
+    yield* B.batch.steps(B.group, B.mats);
+    J.phase = 'rim';
     B.cells = B.batch.cells;
-    rimAll(group); mark('rim');
-    this.scene.add(group);
+    rimAll(B.group);
+  },
+
+  // İşi bütçe (ms) dolana dek ilerletir; bittiyse adayı sahneye ekleyip true döner.
+  _runJob(J, budget) {
+    const t0 = performance.now();
+    const prof = J.B.prof;
+    let t = t0, done = false;
+    J.frames++;
+    for (;;) {
+      done = J.it.next().done;
+      const now = performance.now();
+      // üreteç her evrenin başında J.phase'i ayarlar: adımın süresi o evreye yazılır
+      prof[J.phase] = (prof[J.phase] || 0) + (now - t);
+      t = now;
+      if (done || now - t0 >= budget) break;
+    }
+    const spent = t - t0;
+    J.work += spent;
+    if (spent > J.maxFrame) J.maxFrame = spent;
+    if (!done) return false;
+    const { I, B } = J;
+    if (this.job === J) this.job = null; // tamamlanan iş bekleyen iş olarak kalmasın (sonraki _drop onu iptal etmeye çalışmasın)
+    for (const k in prof) prof[k] = Math.round(prof[k]);
+    this.scene.add(B.group);
     this.built.set(I.id, B);
-    B.ms = performance.now() - t0;
+    B.ms = J.work; B.frames = J.frames; B.maxFrameMs = J.maxFrame;
     G.emit('islandBuilt', { id: I.id, ms: B.ms });
+    return true;
+  },
+
+  _cancelJob() {
+    const J = this.job;
+    if (!J) return;
+    this.job = null;
+    J.it.return();
+    this._release(J.B);
   },
 
   // hücre LOD: uzak hücreler gizlenir, gölgeler yalnız yakında
@@ -299,8 +399,16 @@ export const islands = {
   },
 
   _drop(id) {
+    if (this.job?.I.id === id) this._cancelJob();
     const B = this.built.get(id);
     if (!B) return;
+    this._release(B);
+    this.built.delete(id);
+    G.emit('islandDropped', { id });
+  },
+
+  // ada içeriğinin tüm kaynaklarını bırakır (kurulmuş ya da yarıda kesilmiş)
+  _release(B) {
     this.scene.remove(B.group);
     B.group.traverse((o) => { if (o.isInstancedMesh) o.dispose(); else if (o.isMesh && o.userData.own) { o.geometry.dispose(); } });
     for (const m of B.mats) m.dispose();
@@ -308,12 +416,10 @@ export const islands = {
     if (B.obstacles.length) Ship.obstacles = Ship.obstacles.filter((o) => !B.obstacles.includes(o));
     for (const n of B.npcs) npcs.remove(n);
     for (const e of B.extras) e.dispose?.();
-    this.built.delete(id);
-    G.emit('islandDropped', { id });
   },
 
-  // ---- bitki örtüsü ----
-  _vegetation(B, R) {
+  // ---- bitki örtüsü (üreteç: 64 örnekte bir durulabilir) ----
+  *_vegetation(B, R) {
     const I = B.I;
     const table = VEG[I.biome] || VEG.tropik;
     const tot = table.reduce((s, v) => s + v.w, 0);
@@ -325,6 +431,7 @@ export const islands = {
     for (const s of DIG_SITES) if (s.island === I.id) keep.push({ x: s.x, z: s.z, r: 6 });
     const pp = ports.list.find((p) => p.island === I.id);
     for (let i = 0; i < n; i++) {
+      if ((i & 63) === 63) yield;
       const a = R() * Math.PI * 2, rr = Math.sqrt(R()) * I.r * 1.15;
       const x = I.x + Math.cos(a) * rr * I.ex, z = I.z + Math.sin(a) * rr * I.ez;
       const h = terrain.heightAt(x, z);
@@ -399,7 +506,11 @@ export const islands = {
     const look = { ...LOOK_POOL[Math.floor(R() * LOOK_POOL.length)], ...(extra.look || {}) };
     const id = `${B.I.id}_${role}_${Math.round(x)}_${Math.round(z)}`;
     const titles = { general: 'Genel Tüccar', treasure: 'Hazine Alıcısı', travel: 'Rota Kaptanı — hızlı yolculuk', shipwright: 'Gemi Ustası', smuggler: 'Gizli Pazar Kaçakçısı', prisoner: 'Tutsak', gambler: 'Zar Ustası — Korsan Zarı' };
-    npcs.add({ id, role, name, title: extra.title || titles[role] || '', x, z, yaw, app: look, minY: -50, tag: B.tag, port: extra.port || null, anim: extra.anim, dynamic: true });
+    const spot = { id, role, name, title: extra.title || titles[role] || '', x, z, yaw, app: look, minY: -50, tag: B.tag, port: extra.port || null, anim: extra.anim, dynamic: true };
+    // karakter modeli kurulum üretecinde ayrı bir adımda oluşturulur (B.defer); zemin yüksekliği şimdiki
+    // çarpıştırıcılarla burada hesaplanır, böylece NPC eşzamanlı kurulumdakiyle aynı yere konur
+    spot.y = Math.max(physics.groundAt(x, z), spot.minY);
+    if (B.defer) B.defer.push(() => npcs.add(spot)); else npcs.add(spot);
     B.npcs.push(id);
     return id;
   },
@@ -653,7 +764,9 @@ export const islands = {
     const order = [0, 1, 2].sort(() => R() - 0.5);
     const names = ['Güneş', 'Ay', 'Yıldız'];
     const levers = [[-26, 42], [26, 42], [0, 52]];
-    const state = (this.templeState || (this.templeState = {}))[f.id] || (this.templeState[f.id] = { seq: [], done: false });
+    const ts = this.templeState || (this.templeState = {});
+    if (!ts[f.id] || !Array.isArray(ts[f.id].seq)) ts[f.id] = puzzleState(ts[f.id]);
+    const state = ts[f.id];
     if (state.done) { gate.opening = true; gate.open = 1; gateObj.position.y = y0 - 6.2; gateCol.y1 = -999; } // kayıttan: kapı açık
     levers.forEach(([lx, lz], i) => {
       const x = cx + lx, z = cz + lz;
@@ -682,8 +795,9 @@ export const islands = {
       G.emit('loot', { pos: new THREE.Vector3(cx, y0 + 5.1 * S + 0.5, cz - 13), table: [['altin_para', 400, 700], ['kraliyet_taci', 0.6], ['altin_heykelcik', 1], ['elmas', 0.5], ['antik_vazo', 1]], from: 'Kadim Tapınak' });
       G.emit('templeLooted', { id: f.id });
     } });
-    this.templeState = this.templeState || {};
-    this.templeState[f.id] = { state, gate, cx, cz, y0, top: y0 + 5.1 * S };
+    // çalışma zamanı bilgisi (kapı, avlu) ayrı tutulur. Önce templeState[f.id] bu sarmalayıcıyla eziliyordu: ada yeniden
+    // kurulunca (uzaklaşıp dönme, kayıt yükleme) bulmaca durumu yerine sarmalayıcı okunuyor, levyeler hata veriyordu.
+    (this.temples || (this.temples = {}))[f.id] = { state, gate, cx, cz, y0, top: y0 + 5.1 * S };
     if (f.boss) BOSS_SITES.find((b) => b.id === f.boss) || BOSS_SITES.push({ id: f.boss, x: cx, z: cz - 6, island: B.I.id, land: true, temple: f.id });
   },
 

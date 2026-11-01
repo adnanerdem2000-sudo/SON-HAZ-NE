@@ -74,7 +74,8 @@ export const npcs = {
       anim.play(spot.anim || 'Idle', 0);
     }
     const root = anim.root;
-    const y = Math.max(physics.groundAt(spot.x, spot.z), spot.minY ?? 2.4);
+    // spot.y: çağıran zemini önceden hesapladıysa (ada kurulumu NPC'yi sonraki bir karede oluşturur)
+    const y = spot.y ?? Math.max(physics.groundAt(spot.x, spot.z), spot.minY ?? 2.4);
     root.position.set(spot.x, y, spot.z);
     root.rotation.y = spot.yaw;
     this.scene.add(root);

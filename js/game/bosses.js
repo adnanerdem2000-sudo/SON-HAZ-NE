@@ -636,7 +636,7 @@ class StoneGuardian extends GiantBase {
     super('tas_muhafiz', site, scene, 'orc_brute', 6.6, null, 0x0a2830);
     // taş görünümü: gri, hafif mavi parıltı
     this.anim.model.traverse((o) => { if (o.isMesh) { const ms = Array.isArray(o.material) ? o.material : [o.material]; for (const m of ms) { m.color.setHex(0xb4b0a4); m.roughness = 0.95; m.flatShading = true; m.needsUpdate = true; } } });
-    const ts = islands.templeState?.[site.temple];
+    const ts = islands.temples?.[site.temple];
     this.arena = ts ? { x: ts.cx, z: ts.cz, y: ts.y0 } : { x: site.x, z: site.z, y: terrain.heightAt(site.x, site.z) };
     this.pos.set(this.arena.x, this.arena.y, this.arena.z - 4);
     this.yaw = 0;
@@ -1081,7 +1081,7 @@ export const bosses = {
       let trig = false;
       for (const q of pts) {
         const d = Math.hypot(q.pos.x - site.x, q.pos.z - site.z);
-        if (site.id === 'tas_muhafiz') { const ts = islands.templeState?.[site.temple]; trig = trig || (ts && ts.state.done && d < 26 && Math.abs(q.pos.y - ts.y0) < 8); }
+        if (site.id === 'tas_muhafiz') { const ts = islands.temples?.[site.temple]; trig = trig || (ts && ts.state.done && d < 26 && Math.abs(q.pos.y - ts.y0) < 8); }
         else if (site.id === 'volkanik_dev') { const I = EXTRA_ISLANDS.find((i) => i.id === site.island); trig = trig || (I && Math.hypot(q.pos.x - I.x, q.pos.z - I.z) < I.r * 0.24); }
         else if (def.sea) trig = trig || (d < 240 && G.ship && !G.ship.sunk && (q.mode === 'deck' || q.mode === 'helm' || q.mode === 'cannon' || q.mode === 'swim'));
       }

@@ -295,6 +295,12 @@ function swimMaterial(tex, opts = {}) {
   return m;
 }
 
+// update() için kare başına yeniden kullanılan geçici nesneler: her balık/sürü için her karede yeni vektör ya da dizi
+// üretilmez (~200 balıkla kare başına ~100 KB çöple ayırma profilinin en büyük kalemiydi; şimdi ~35 KB).
+const _acc = new THREE.Vector3(), _tmp = new THREE.Vector3(), _sep = new THREE.Vector3();
+const _coh = new THREE.Vector3(), _ali = new THREE.Vector3(), _thr = new THREE.Vector3();
+const _threats = [];
+
 export const fish = {
   name: 'fish',
   schools: [],
@@ -382,11 +388,12 @@ export const fish = {
     this.spawnT -= dt;
     if (this.spawnT <= 0) { this.spawnT = 2; this._populate(); }
     const p = G.player;
-    const threats = [];
-    if (p && (p.mode === 'swim')) threats.push(p.pos.clone().setY(p.pos.y + 1));
+    const threats = _threats;
+    threats.length = 0;
+    if (p && (p.mode === 'swim')) threats.push(_thr.copy(p.pos).setY(p.pos.y + 1));
     if (this.shark && this.shark.visible) threats.push(this.shark.position);
     for (const k in this.species) this.species[k].n = 0;
-    const tmp = new THREE.Vector3(), sep = new THREE.Vector3(), coh = new THREE.Vector3(), ali = new THREE.Vector3();
+    const tmp = _tmp, sep = _sep, coh = _coh, ali = _ali;
     for (const s of this.schools) {
       s.t += dt;
       const sp = s.sp;
@@ -395,19 +402,30 @@ export const fish = {
         s.t = 0;
         s.target = s.home.clone().add(new THREE.Vector3((Math.random() - 0.5) * 30, (Math.random() - 0.5) * 2, (Math.random() - 0.5) * 30));
       }
-      const alive = s.members.filter((m) => m.alive);
+      // canlı üyeler yerinde süzülür (sıra ve toplama sırası filter() ile aynı: sonuç değişmez)
+      const ms = s.members;
+      let nAlive = 0;
       coh.set(0, 0, 0); ali.set(0, 0, 0);
-      for (const m of alive) { coh.add(m.p); ali.add(m.v); }
-      if (alive.length) { coh.divideScalar(alive.length); ali.divideScalar(alive.length); }
+      for (const m of ms) { if (!m.alive) continue; nAlive++; coh.add(m.p); ali.add(m.v); }
+      if (nAlive) { coh.divideScalar(nAlive); ali.divideScalar(nAlive); }
       s.center.copy(coh);
-      for (const m of alive) {
-        const acc = new THREE.Vector3();
+      for (const m of ms) {
+        if (!m.alive) continue;
+        const acc = _acc.set(0, 0, 0);
         acc.addScaledVector(tmp.copy(coh).sub(m.p), 0.4);
         acc.addScaledVector(tmp.copy(ali).sub(m.v), 0.5);
         acc.addScaledVector(tmp.copy(s.target).sub(m.p).normalize(), 0.6);
         // ayrılma
-        sep.set(0, 0, 0);
-        for (const o of alive) { if (o === m) continue; tmp.copy(m.p).sub(o.p); const d = tmp.length(); if (d < sp.len * 2.2 && d > 0) sep.addScaledVector(tmp, 1 / (d * d)); }
+        // (skaler: sürü içi her çift için yöntem çağrısı/kutulanmış ondalık üretmez; işlem sırası Vector3 sürümüyle aynı)
+        const px = m.p.x, py = m.p.y, pz = m.p.z, lim = sp.len * 2.2;
+        let sx = 0, sy = 0, sz = 0;
+        for (const o of ms) {
+          if (o === m || !o.alive) continue;
+          const dx = px - o.p.x, dy = py - o.p.y, dz = pz - o.p.z;
+          const d = Math.sqrt(dx * dx + dy * dy + dz * dz);
+          if (d < lim && d > 0) { const w = 1 / (d * d); sx += dx * w; sy += dy * w; sz += dz * w; }
+        }
+        sep.set(sx, sy, sz);
         acc.addScaledVector(sep, 0.04);
         // tehditlerden kaç
         let fleeing = false;
@@ -427,28 +445,29 @@ export const fish = {
         if (floor > -1.3) { tmp.copy(s.home).sub(m.p).setY(0).normalize(); acc.addScaledVector(tmp, 5); }
         const maxSp = sp.speed * (fleeing ? 2.6 : 1);
         m.v.addScaledVector(acc, dt * 2.2);
-        const l = m.v.length();
+        const l = Math.sqrt(m.v.x * m.v.x + m.v.y * m.v.y + m.v.z * m.v.z);
         if (l > maxSp) m.v.multiplyScalar(maxSp / l);
         if (l < sp.speed * 0.3) m.v.multiplyScalar(1.2);
         m.p.addScaledVector(m.v, dt);
         m.p.y = clamp(m.p.y, floor + 0.35, surf);
       }
       // yırtıcılar
-      if (sp.predator && alive.length && Math.random() < dt * 0.15) {
+      if (sp.predator && nAlive && Math.random() < dt * 0.15) {
         const prey = this.schools.find((o) => o !== s && !o.sp.predator && o.sp.len < 0.3 && o.center.distanceTo(s.center) < 25);
         if (prey) { s.target = prey.center.clone(); const victim = prey.members.find((m) => m.alive && m.p.distanceTo(s.center) < 3); if (victim) { victim.alive = false; effects.bubbles(victim.p.x, victim.p.y, victim.p.z); } }
       }
       // örnekleri yaz
       const S = this.species[s.key];
-      for (const m of alive) {
+      for (const m of ms) {
+        if (!m.alive) continue;
         if (S.n >= S.im.instanceMatrix.count) break;
         this.dummy.position.copy(m.p);
         this.dummy.rotation.set(0, Math.atan2(m.v.x, m.v.z), 0);
-        this.dummy.rotateX(-Math.atan2(m.v.y, Math.hypot(m.v.x, m.v.z)) * 0.7);
+        this.dummy.rotateX(-Math.atan2(m.v.y, Math.sqrt(m.v.x * m.v.x + m.v.z * m.v.z)) * 0.7);
         this.dummy.scale.setScalar(m.size);
         this.dummy.updateMatrix();
         S.im.setMatrixAt(S.n, this.dummy.matrix);
-        S.speedA[S.n] = clamp(m.v.length() / 4, 0, 1);
+        S.speedA[S.n] = clamp(Math.sqrt(m.v.x * m.v.x + m.v.y * m.v.y + m.v.z * m.v.z) / 4, 0, 1);
         S.puff[S.n] = m.puff;
         S.n++;
       }
