@@ -380,10 +380,11 @@ export class Character {
 
   build(app) {
     this.app = { ...app };
-    if (this.model) { this.mixer?.stopAllAction(); this.root.remove(this.model); }
+    if (this.model) { this.mixer?.stopAllAction(); this._disposeModel(); this.root.remove(this.model); }
     const id = baseOf(app);
     this.baseId = id;
     const model = kk.clone(id);
+    model.traverse((o) => { if (o.isMesh) o.userData.kit = true; }); // kit örgüleri: geometri/atlas paylaşımlı (bırakılmaz)
     const info = kk.info[id];
     const s = TARGET_H / info.height;
     this.modelScale = s;
@@ -401,7 +402,7 @@ export class Character {
     model.traverse((o) => {
       if (!o.isMesh) return;
       o.castShadow = true; o.receiveShadow = true; o.frustumCulled = false;
-      o.material = o.material.clone();
+      o.material = o.material.clone(); o.userData.ownMat = true; // dispose(): yalnız bu klon malzemeler bırakılır (elde tutulan eşyalar kit ile paylaşımlı)
       if (o.isSkinnedMesh && tex) o.material.map = tex;
       if (/Cape$/.test(o.name) && tex) o.material.map = tex;
       if (/_Hat$|_Helmet$|_Hood$/.test(o.name) && !o.isSkinnedMesh) o.visible = app.hat === 'orijinal';
@@ -416,8 +417,30 @@ export class Character {
     this.ragdoll = null;
     this._accessories();
     this._bodyShape();
+    // prosedürel aksesuarlar (şapka, sakal, göz bandı, küpe, kolye, yara...) her karakter için kendi geometri/malzemesini yaratır
+    this.model.traverse((o) => {
+      if (!o.isMesh || o.userData.kit) return;
+      o.userData.ownGeo = true; o.userData.ownMat = true;
+      // küpe, düğme, göz bandı kayışı gibi küçük parçalar gölge atmaz (görünür gölgesi yok; gölge geçişinde ayrı çizim çağrısıydı)
+      if (!o.geometry.boundingSphere) o.geometry.computeBoundingSphere();
+      if (o.geometry.boundingSphere.radius * Math.max(o.scale.x, o.scale.y, o.scale.z) < 0.07) o.castShadow = false;
+    });
     rimAll(this.root);
     this.play('Idle', 0);
+  }
+
+  // GPU kaynakları (B14): klon malzemeler, klon iskeletin kemik dokusu ve prosedürel aksesuar geometrileri bırakılır; kit
+  // geometrisi ve atlas dokuları (kk.texture önbelleği) paylaşımlıdır, bırakılmaz. build() yeniden çağrılınca (oluşturucu) ve
+  // dispose()'ta kullanılır. Önce her düşman/NPC/uzak oyuncu kaldırılışında ve her görünüm değişikliğinde bunlar sızıyordu.
+  _disposeModel() {
+    if (!this.model) return;
+    this.mixer?.uncacheRoot(this.model);
+    this.model.traverse((o) => {
+      if (o.isSkinnedMesh) o.skeleton?.dispose?.();
+      if (!o.isMesh) return;
+      if (o.userData.ownGeo) o.geometry.dispose();
+      if (o.userData.ownMat) for (const m of [].concat(o.material)) m.dispose();
+    });
   }
 
   has(name) { return !!kk.clip(name); }
@@ -838,6 +861,7 @@ export class Character {
   dispose() {
     this.root.parent?.remove(this.root);
     this.mixer.stopAllAction();
+    this._disposeModel();
   }
 }
 
@@ -853,7 +877,7 @@ export class Animated {
     m.traverse((o) => {
       if (o.isMesh) {
         o.castShadow = true; o.receiveShadow = true; o.frustumCulled = false;
-        o.material = Array.isArray(o.material) ? o.material.map((x) => x.clone()) : o.material.clone();
+        o.material = Array.isArray(o.material) ? o.material.map((x) => x.clone()) : o.material.clone(); o.userData.ownMat = true;
       }
     });
     this.model = m;
@@ -873,6 +897,15 @@ export class Animated {
     this.current = null;
   }
   has(n) { return !!this.clips[n]; }
+  dispose() {
+    this.root.parent?.remove(this.root);
+    this.mixer.stopAllAction();
+    this.mixer.uncacheRoot(this.model);
+    this.model.traverse((o) => {
+      if (o.isSkinnedMesh) o.skeleton?.dispose?.();
+      if (o.isMesh && o.userData.ownMat) for (const m of [].concat(o.material)) m.dispose();
+    });
+  }
   play(name, fade = 0.2, opts = {}) {
     const clip = this.clips[name];
     if (!clip) return null;

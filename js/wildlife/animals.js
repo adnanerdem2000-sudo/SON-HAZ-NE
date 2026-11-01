@@ -402,6 +402,14 @@ class Animal {
     } else {
       this.m = kind === 'boar' ? boarModel(seed) : kind === 'monkey' ? monkeyModel(seed) : kind === 'croc' ? crocModel(seed) : kind === 'parrot' ? parrotModel(seed) : kind === 'polar' ? polarModel(seed) : snakeModel(seed);
       this.root = this.m.root;
+      // küçük parçalar (göz, burun ucu, diş, toynak) gölge atmaz: görünür gölgesi olmayan parçalar gölge geçişinde ayrı çizim
+      // çağrısıydı (domuz: 20 çağrının ~8'i); limanda 7 domuz için ~56 çağrı
+      this.root.traverse((o) => {
+        if (!o.isMesh) return;
+        if (!o.geometry.boundingSphere) o.geometry.computeBoundingSphere();
+        const r = o.geometry.boundingSphere.radius * Math.max(o.scale.x, o.scale.y, o.scale.z);
+        if (r < 0.07) o.castShadow = false;
+      });
       if (kind === 'croc') this.root.scale.setScalar(1.25);
     }
     if (kind === 'parrot' || kind === 'bat') { this.pos.y += 6; this.flyH = kind === 'bat' ? CAVE.floor + 2.5 : 8 + Math.random() * 6; }
@@ -721,7 +729,16 @@ class Animal {
     if (this.stateT > 30) this.remove = true;
   }
 
-  dispose() { combat.removeTarget(this); this.scene.remove(this.root); }
+  dispose() {
+    combat.removeTarget(this);
+    this.scene.remove(this.root);
+    // GPU kaynakları (B14): prosedürel modeller her hayvan için kendi geometri ve malzemelerini yaratır → hepsi bırakılır;
+    // glb klonlarında geometri kaynak modelle paylaşımlıdır, yalnız klonlanan malzemeler bırakılır ve mixer durdurulur.
+    if (this.anim) this.anim.dispose();
+    else {
+      this.root.traverse((o) => { if (o.isMesh) { o.geometry.dispose(); for (const m of [].concat(o.material)) m.dispose(); } });
+    }
+  }
   net() { return [this.id, this.kind, +this.pos.x.toFixed(2), +this.pos.y.toFixed(2), +this.pos.z.toFixed(2), +this.yaw.toFixed(2), +this.speed.toFixed(1), this.state, this.alive ? 1 : 0]; }
 }
 

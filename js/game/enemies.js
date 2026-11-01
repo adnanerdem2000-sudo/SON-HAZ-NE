@@ -1232,6 +1232,7 @@ export class Enemy {
     combat.removeTarget(this);
     this._releaseToken();
     this.scene.remove(this.root);
+    this.char.dispose(); // klon malzemeler + kemik dokusu + mixer (B14: her ölüm/kaldırmada sızıyordu)
     if (this._ring) { this.scene.remove(this._ring); this._ring.geometry.dispose(); this._ring.material.dispose(); }
     this.hud.icon.material.dispose(); this.hud.fill.material.dispose();
   }

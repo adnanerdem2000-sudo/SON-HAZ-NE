@@ -47,6 +47,14 @@ function icebergMesh(r, seed) {
   return g;
 }
 
+// Olay nesnelerinin GPU kaynakları: geometri ve malzemeler nesneye özeldir (dokular paylaşımlı önbellekten gelir ve bırakılmaz)
+function disposeObj(o) {
+  o.traverse((c) => {
+    if (c.geometry) c.geometry.dispose();
+    if (c.material) for (const m of [].concat(c.material)) m.dispose();
+  });
+}
+
 export const worldEvents = {
   name: 'worldEvents',
   icebergs: [],
@@ -59,11 +67,11 @@ export const worldEvents = {
   start() { this.clear(); },
   stop() { this.clear(); },
   clear() {
-    for (const b of this.icebergs) { this.scene.remove(b.mesh); Ship.obstacles = Ship.obstacles.filter((o) => o !== b.ob); }
+    for (const b of this.icebergs) { this.scene.remove(b.mesh); disposeObj(b.mesh); Ship.obstacles = Ship.obstacles.filter((o) => o !== b.ob); }
     this.icebergs = [];
-    if (this.wisps) for (const w of this.wisps.orbs) this.scene.remove(w);
-    if (this.meteor) this.scene.remove(this.meteor.mesh);
-    if (this.volcanic?.plume) this.scene.remove(this.volcanic.plume.grp);
+    if (this.wisps) for (const w of this.wisps.orbs) { this.scene.remove(w); disposeObj(w); }
+    if (this.meteor) { this.scene.remove(this.meteor.mesh); disposeObj(this.meteor.mesh); }
+    if (this.volcanic?.plume) { this.scene.remove(this.volcanic.plume.grp); disposeObj(this.volcanic.plume.grp); }
     this.wisps = this.meteor = this.volcanic = this.plankton = null;
   },
 
@@ -167,16 +175,16 @@ export const worldEvents = {
       o.material.opacity = 0.75 + Math.sin(W.t * 3 + i) * 0.25;
     });
     if (Math.random() < dt * 6) effects.spawn(W.lead.x, ocean.heightAt(W.lead.x, W.lead.z) + 1.5, W.lead.z, (Math.random() - 0.5) * 0.6, 0.4, (Math.random() - 0.5) * 0.6, 1.6, 0.3, 0.55, 1, 0.85, 0, 0.4, 0.2);
-    if (W.remote) { if (W.t > W.life) { for (const o of W.orbs) this.scene.remove(o); this.wisps = null; } return; }
+    if (W.remote) { if (W.t > W.life) { for (const o of W.orbs) { this.scene.remove(o); disposeObj(o); } this.wisps = null; } return; }
     if (dTo < 1.5 && Math.hypot(W.to.x - me.x, W.to.z - me.z) < 30) {
-      for (const o of W.orbs) this.scene.remove(o);
+      for (const o of W.orbs) { this.scene.remove(o); disposeObj(o); }
       effects.glitter(W.to.x, ocean.heightAt(W.to.x, W.to.z) + 1, W.to.z, [0.6, 1, 0.9]);
       events.spawnFloating('chest', W.to);
       G.notify('Işıklar bir anda söndü… yerlerinde dalgalarla sallanan eski bir sandık var!', 'good', 5000);
       G.emit('rareFind', { kind: 'wisps' });
       this.wisps = null;
     } else if (W.t > W.life) {
-      for (const o of W.orbs) this.scene.remove(o);
+      for (const o of W.orbs) { this.scene.remove(o); disposeObj(o); }
       this.wisps = null;
     }
   },
@@ -206,7 +214,7 @@ export const worldEvents = {
     const p = M.mesh.position;
     for (let i = 0; i < 3; i++) effects.spawn(p.x, p.y, p.z, (Math.random() - 0.5) * 3, (Math.random() - 0.5) * 3, (Math.random() - 0.5) * 3, 1.4, 4 + Math.random() * 4, 1, 0.7 + Math.random() * 0.2, 0.4, 0, 0.2, 2);
     if (k >= 1) {
-      this.scene.remove(M.mesh);
+      this.scene.remove(M.mesh); disposeObj(M.mesh);
       effects.splash(M.to.x, M.to.z, 4);
       effects.smoke(M.to.x, ty + 1, M.to.z, 30, 3, 0.85);
       audio.boom(0.9, M.to);
@@ -283,7 +291,7 @@ export const worldEvents = {
       const vel = new THREE.Vector3((tgt.x - top.x) / T, (tgt.y - top.y) / T + 0.5 * 9.8 * T, (tgt.z - top.z) / T);
       if (vel.length() < 400) { G.visualOnlyBalls = !!V.remote; effects.cannonball(top, vel, null, 0.6, { lava: true }); G.visualOnlyBalls = false; }
     }
-    if (V.t <= 0 && !V.remote) { this.scene.remove(V.plume.grp); this.volcanic = null; G.notify('Volkan yatıştı; kül bulutu dağılıyor.', 'info', 3000); }
+    if (V.t <= 0 && !V.remote) { this.scene.remove(V.plume.grp); disposeObj(V.plume.grp); this.volcanic = null; G.notify('Volkan yatıştı; kül bulutu dağılıyor.', 'info', 3000); }
   },
 
   // ---- fırtına enkazı ----
@@ -332,7 +340,7 @@ export const worldEvents = {
       this._wisps({ ...c, at: { x: s.wisp[0], z: s.wisp[1] } });
     }
     if (this.wisps && s.wisp) { this.wisps.lead.set(s.wisp[0], 0, s.wisp[1]); this.wisps.to.set(s.wisp[2], 0, s.wisp[3]); this.wisps.remote = true; }
-    if (!s.wisp && this.wisps) { for (const o of this.wisps.orbs) this.scene.remove(o); this.wisps = null; }
+    if (!s.wisp && this.wisps) { for (const o of this.wisps.orbs) { this.scene.remove(o); disposeObj(o); } this.wisps = null; }
     if (s.met && !this.meteor) {
       const [fx, fy, fz, tx, tz, t] = s.met;
       const mesh = new THREE.Group();
@@ -342,7 +350,7 @@ export const worldEvents = {
       this.meteor = { mesh, from: new THREE.Vector3(fx, fy, fz), to: new THREE.Vector3(tx, 0, tz), t, dur: 3.2, remote: true };
     }
     if (s.vol && !this.volcanic) { const I = EXTRA_ISLANDS.find((x) => x.id === s.vol); if (I) this.volcanic = { t: 30, next: 0.5, I, remote: true }; }
-    if (!s.vol && this.volcanic) { if (this.volcanic.plume) this.scene.remove(this.volcanic.plume.grp); this.volcanic = null; }
+    if (!s.vol && this.volcanic) { if (this.volcanic.plume) { this.scene.remove(this.volcanic.plume.grp); disposeObj(this.volcanic.plume.grp); } this.volcanic = null; }
     if (s.pl && !this.plankton) this.plankton = { t: 150 };
     if (!s.pl) this.plankton = null;
   },
@@ -360,7 +368,7 @@ export const worldEvents = {
       if (b.t > 600 || Math.hypot(b.ob.x - p.pos.x, b.ob.z - p.pos.z) > 1400) b.gone = true;
     }
     if (this.icebergs.some((b) => b.gone)) {
-      for (const b of this.icebergs.filter((x) => x.gone)) { this.scene.remove(b.mesh); Ship.obstacles = Ship.obstacles.filter((o) => o !== b.ob); }
+      for (const b of this.icebergs.filter((x) => x.gone)) { this.scene.remove(b.mesh); disposeObj(b.mesh); Ship.obstacles = Ship.obstacles.filter((o) => o !== b.ob); }
       this.icebergs = this.icebergs.filter((b) => !b.gone);
     }
     if (this.wisps) this._updateWisps(dt);

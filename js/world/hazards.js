@@ -53,6 +53,10 @@ function mats() {
   return MAT;
 }
 
+// Bu dosyada yaratılan (kit kopyası olmayan) geometri ve klon malzemeler: set sökülünce GPU kaynakları bırakılır (B14)
+const OWN = new WeakSet();
+const own = (r) => { OWN.add(r); return r; };
+
 export const hazards = {
   name: 'hazards',
   sets: new Map(), // ada/kamp id -> nesne listesi
@@ -94,6 +98,7 @@ export const hazards = {
       this.byId.delete(h.id);
     }
     this.scene.remove(s.group);
+    s.group.traverse((o) => { if (o.isMesh) { if (OWN.has(o.geometry)) o.geometry.dispose(); for (const m of [].concat(o.material)) if (OWN.has(m)) m.dispose(); } });
     this.sets.delete(id);
   },
 
@@ -149,7 +154,7 @@ export const hazards = {
     o.traverse((m) => {
       if (!m.isMesh) return;
       m.castShadow = true; m.receiveShadow = true;
-      if (tint) { m.material = m.material.clone(); m.material.color.multiply(new THREE.Color(tint)); }
+      if (tint) { m.material = own(m.material.clone()); m.material.color.multiply(new THREE.Color(tint)); }
     });
     return o;
   },
@@ -166,9 +171,9 @@ export const hazards = {
     body.scale.multiplyScalar(k);
     const rad = Math.max(sz.x, sz.z) * k / 2;
     g.add(body);
-    const band = new THREE.Mesh(new THREE.CylinderGeometry(rad * 0.97, rad * 0.97, 0.11, 16, 1, true), new THREE.MeshStandardMaterial({ color: 0xa01810, roughness: 0.7, side: THREE.DoubleSide }));
+    const band = new THREE.Mesh(own(new THREE.CylinderGeometry(rad * 0.97, rad * 0.97, 0.11, 16, 1, true)), new THREE.MeshStandardMaterial({ color: 0xa01810, roughness: 0.7, side: THREE.DoubleSide }));
     band.position.y = 0.62;
-    const fuse = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.25, 5), new THREE.MeshStandardMaterial({ color: 0x2a2018 }));
+    const fuse = new THREE.Mesh(own(new THREE.CylinderGeometry(0.018, 0.018, 0.25, 5)), new THREE.MeshStandardMaterial({ color: 0x2a2018 }));
     fuse.position.set(rad * 0.35, 1.08, 0); fuse.rotation.z = 0.4;
     g.add(band, fuse);
     g.position.set(x, y, z);
@@ -200,7 +205,7 @@ export const hazards = {
     const c = new THREE.Vector3(h.x, h.y + 0.6, h.z);
     const R = 7;
     // görsel: parlama küresi, kıvılcım, duman, toprak, tahta parçaları
-    const fl = new THREE.Mesh(new THREE.SphereGeometry(1, 16, 10), mats().flash.clone());
+    const fl = new THREE.Mesh(own(new THREE.SphereGeometry(1, 16, 10)), own(mats().flash.clone()));
     fl.position.copy(c);
     this.scene.add(fl);
     this.flashes.push({ m: fl, t: 0 });
@@ -243,7 +248,7 @@ export const hazards = {
     const m = mats().plank.clone();
     m.color.setHex(color);
     for (let i = 0; i < n; i++) {
-      const mesh = new THREE.Mesh(new THREE.BoxGeometry(0.5 + Math.random() * 0.4, 0.06, 0.14), m);
+      const mesh = new THREE.Mesh(own(new THREE.BoxGeometry(0.5 + Math.random() * 0.4, 0.06, 0.14)), m);
       mesh.castShadow = true;
       mesh.position.copy(c);
       this.scene.add(mesh);
@@ -446,7 +451,7 @@ export const hazards = {
       // kafes + sandık
       const cy = terrain.heightAt(C.x, C.z);
       const cage = new THREE.Group();
-      const barG = new THREE.CylinderGeometry(0.035, 0.035, 2.2, 6);
+      const barG = own(new THREE.CylinderGeometry(0.035, 0.035, 2.2, 6));
       for (let side = 0; side < 4; side++) {
         for (let k = 0; k < 8; k++) {
           const u = -1.2 + (k + 0.5) * 0.3;
@@ -458,10 +463,10 @@ export const hazards = {
         }
       }
       for (const yy of [0.05, 2.2]) {
-        const ring = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.08, 2.5), M.iron);
+        const ring = new THREE.Mesh(own(new THREE.BoxGeometry(2.5, 0.08, 2.5)), M.iron);
         ring.position.y = yy;
         if (yy > 1) cage.add(ring);
-        else { const fr = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.1, 0.1), M.iron); for (const [x, z, r] of [[0, 1.2, 0], [0, -1.2, 0], [1.2, 0, 1], [-1.2, 0, 1]]) { const q = fr.clone(); q.position.set(x, 0.05, z); q.rotation.y = r * Math.PI / 2; cage.add(q); } }
+        else { const fr = new THREE.Mesh(own(new THREE.BoxGeometry(2.5, 0.1, 0.1)), M.iron); for (const [x, z, r] of [[0, 1.2, 0], [0, -1.2, 0], [1.2, 0, 1], [-1.2, 0, 1]]) { const q = fr.clone(); q.position.set(x, 0.05, z); q.rotation.y = r * Math.PI / 2; cage.add(q); } }
       }
       cage.position.set(C.x, cy, C.z);
       cage.rotation.y = yaw;
@@ -471,19 +476,19 @@ export const hazards = {
       // plaka
       const py = terrain.heightAt(P.x, P.z);
       const plate = new THREE.Group();
-      const slab = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.14, 1.8), M.plate);
+      const slab = new THREE.Mesh(own(new THREE.BoxGeometry(1.8, 0.14, 1.8)), M.plate);
       slab.position.y = 0.07; slab.receiveShadow = true;
-      const rune = new THREE.Mesh(new THREE.RingGeometry(0.32, 0.46, 24), M.rune.clone());
+      const rune = new THREE.Mesh(own(new THREE.RingGeometry(0.32, 0.46, 24)), own(M.rune.clone()));
       rune.rotation.x = -Math.PI / 2; rune.position.y = 0.145;
-      const dot = new THREE.Mesh(new THREE.CircleGeometry(0.14, 16), rune.material);
+      const dot = new THREE.Mesh(own(new THREE.CircleGeometry(0.14, 16)), rune.material);
       dot.rotation.x = -Math.PI / 2; dot.position.y = 0.146;
       plate.add(slab, rune, dot);
       plate.position.set(P.x, py, P.z);
       plate.rotation.y = yaw;
       // taş blok
-      const block = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.5, 1.5), M.stone);
+      const block = new THREE.Mesh(own(new THREE.BoxGeometry(1.5, 1.5, 1.5)), M.stone);
       block.castShadow = true; block.receiveShadow = true;
-      const glyph = new THREE.Mesh(new THREE.CircleGeometry(0.28, 3), rune.material);
+      const glyph = new THREE.Mesh(own(new THREE.CircleGeometry(0.28, 3)), rune.material);
       glyph.position.set(0, 0.1, 0.752);
       const glyph2 = glyph.clone(); glyph2.position.z = -0.752; glyph2.rotation.y = Math.PI;
       block.add(glyph, glyph2);
@@ -553,16 +558,16 @@ export const hazards = {
     const y = terrain.heightAt(x, z);
     const M = mats();
     const g = new THREE.Group();
-    const ring = new THREE.Mesh(new THREE.TorusGeometry(1.1, 0.38, 8, 18), M.basalt);
+    const ring = new THREE.Mesh(own(new THREE.TorusGeometry(1.1, 0.38, 8, 18)), M.basalt);
     ring.rotation.x = -Math.PI / 2; ring.position.y = 0.15; ring.castShadow = true; ring.receiveShadow = true;
-    const vent = new THREE.Mesh(new THREE.CircleGeometry(0.85, 18), M.vent);
+    const vent = new THREE.Mesh(own(new THREE.CircleGeometry(0.85, 18)), M.vent);
     vent.rotation.x = -Math.PI / 2; vent.position.y = 0.12;
     g.add(ring, vent);
     for (let i = 0; i < 6; i++) { // çevresinde kükürt lekeleri
       const a = (i / 6) * 6.28 + R() * 0.5, d = 1.8 + R() * 1.2;
       const hy = terrain.heightAt(x + Math.cos(a) * d, z + Math.sin(a) * d);
       if (Math.abs(hy - y) > 0.5) continue; // dik yamaçta havada kalmasın
-      const s = new THREE.Mesh(new THREE.CircleGeometry(0.25 + R() * 0.3, 8), SULFUR || (SULFUR = new THREE.MeshStandardMaterial({ color: 0xc8b030, roughness: 1, polygonOffset: true, polygonOffsetFactor: -2 })));
+      const s = new THREE.Mesh(own(new THREE.CircleGeometry(0.25 + R() * 0.3, 8)), SULFUR || (SULFUR = new THREE.MeshStandardMaterial({ color: 0xc8b030, roughness: 1, polygonOffset: true, polygonOffsetFactor: -2 })));
       s.rotation.x = -Math.PI / 2; s.position.set(Math.cos(a) * d, hy - y + 0.03, Math.sin(a) * d);
       g.add(s);
     }

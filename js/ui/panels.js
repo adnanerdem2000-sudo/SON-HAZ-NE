@@ -353,6 +353,7 @@ export const panels = {
   // ---------------- Dünya haritası ----------------
   worldMap() {
     if (ui.topIs('map')) { ui.close(); return; }
+    if (ui.stack.some((p) => p.kind === 'map')) return; // üstte başka panel varken ikinci harita açılmaz (H23: this._mm/_mapKey ezilip sızıyordu)
     const wrap = el('div', { class: 'map-wrap' });
     const W = 1400, H = 1000;
     const cv = document.createElement('canvas');

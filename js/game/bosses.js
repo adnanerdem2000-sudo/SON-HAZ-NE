@@ -124,6 +124,7 @@ class BossBase {
     combat.removeTarget(this);
     for (const r of this.rings) { this.scene.remove(r); r.geometry.dispose(); r.material.dispose(); }
     for (const o of this.parts) this.scene.remove(o);
+    this.anim?.dispose?.(); // animasyonlu model (Animated): klon malzemeler + kemik dokusu
   }
   net() { return { id: this.id, hp: Math.round(this.hp), max: Math.round(this.maxHp), x: +this.pos.x.toFixed(1), y: +this.pos.y.toFixed(1), z: +this.pos.z.toFixed(1), ph: this.phase, a: this.alive ? 1 : 0, ...(this.netExtra?.() || {}) }; }
   applyNet(s) { this.hp = s.hp; this.maxHp = s.max; this.phase = s.ph; this.alive = !!s.a; this.netT = s; this.applyNetExtra?.(s); }

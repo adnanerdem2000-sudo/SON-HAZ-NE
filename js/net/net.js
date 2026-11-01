@@ -122,7 +122,7 @@ class RemotePlayer {
     c.overlay.lift = t.mode === 'swim' ? damp(c.overlay.lift || 0, (t.swimP || 0) > 0.6 ? 1.0 : 0, 6, dt) : 0;
     c.update(dt);
   }
-  dispose(scene) { scene.remove(this.char.root); }
+  dispose(scene) { scene.remove(this.char.root); this.char.dispose(); }
 }
 
 export const net = {

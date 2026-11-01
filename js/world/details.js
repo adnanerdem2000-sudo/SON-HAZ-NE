@@ -179,7 +179,7 @@ class Wake {
     const g = this.mesh.geometry;
     g.attributes.position.needsUpdate = true; g.attributes.alpha.needsUpdate = true; g.attributes.uv.needsUpdate = true;
   }
-  dispose(scene) { scene.remove(this.mesh); }
+  dispose(scene) { scene.remove(this.mesh); this.mesh.geometry.dispose(); } // malzeme paylaşımlı (Wake.material), geometri gemiye özel
 }
 
 export const details = {

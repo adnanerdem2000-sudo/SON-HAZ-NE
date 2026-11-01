@@ -34,8 +34,9 @@ export const creator = {
     floor.position.y = -0.04; scene.add(floor);
     const cam = new THREE.PerspectiveCamera(30, 1, 0.1, 50);
     let rotY = 0.4, zoom = 1, char = null, alive = true;
+    const disposeChar = () => { if (!char) return; char.dispose(); char = null; }; // Character.dispose: sahneden kaldırır, klon malzeme/iskelet bırakır
     const rebuild = () => {
-      if (char) scene.remove(char.root);
+      disposeChar();
       char = new Character(app);
       char.root.rotation.y = rotY;
       scene.add(char.root);
@@ -44,7 +45,8 @@ export const creator = {
     rebuild();
     let drag = null;
     canvas.addEventListener('mousedown', (e) => { drag = e.clientX; });
-    window.addEventListener('mouseup', () => { drag = null; });
+    const onMouseUp = () => { drag = null; };
+    window.addEventListener('mouseup', onMouseUp); // kapanışta kaldırılır (H24: her açılışta birikiyordu)
     canvas.addEventListener('mousemove', (e) => { if (drag !== null) { rotY += (e.clientX - drag) * 0.01; drag = e.clientX; } });
     canvas.addEventListener('wheel', (e) => { e.preventDefault(); zoom = Math.min(2.6, Math.max(0.8, zoom * (e.deltaY < 0 ? 1.1 : 0.9))); }, { passive: false });
     let last = performance.now();
@@ -150,8 +152,12 @@ export const creator = {
       close();
       onDone && onDone({ ...app });
     };
-    const close = () => { alive = false; ui.close(); r.dispose(); r.forceContextLoss?.(); };
+    // Temizlik ui.open onClose ile bağlanır: panel closeAll ile (oyun başlatma, ölüm, menüye dönüş) kapansa da rAF döngüsü,
+    // WebGL bağlamı ve window dinleyicisi serbest kalır (H24). close() yalnız paneli kapatır; onClose temizliği bir kez yapar.
+    let cleaned = false;
+    const cleanup = () => { if (cleaned) return; cleaned = true; alive = false; window.removeEventListener('mouseup', onMouseUp); disposeChar(); floor.geometry.dispose(); floor.material.dispose(); r.dispose(); r.forceContextLoss?.(); };
+    const close = () => { if (!cleaned && ui.topIs('creator')) ui.close(); else cleanup(); };
     sections();
-    ui.open(ui.panel(title, wrap, { onX: () => { close(); onCancel && onCancel(); } }), { kind: 'creator', onEsc: () => { close(); onCancel && onCancel(); } });
+    ui.open(ui.panel(title, wrap, { onX: () => { close(); onCancel && onCancel(); } }), { kind: 'creator', onEsc: () => { close(); onCancel && onCancel(); }, onClose: cleanup });
   },
 };

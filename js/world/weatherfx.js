@@ -140,7 +140,7 @@ export const weatherfx = {
   },
 
   start() {
-    for (const s of this.spouts) this.scene.remove(s.mesh);
+    for (const s of this.spouts) { this.scene.remove(s.mesh); s.mesh.geometry.dispose(); }
     this.spouts = [];
     this.spoutT = 40;
     this.rainbowT = 0;
@@ -288,7 +288,7 @@ export const weatherfx = {
       const b = this.bolts[i];
       b.t += dt;
       b.mat.opacity = b.t < 0.08 ? 1 : b.t < 0.14 ? 0.2 : b.t < 0.22 ? 0.9 : Math.max(0, 1 - (b.t - 0.22) * 6);
-      if (b.t > 0.45) { this.scene.remove(b.group); b.group.traverse((o) => o.geometry?.dispose()); this.bolts.splice(i, 1); }
+      if (b.t > 0.45) { this.scene.remove(b.group); b.group.traverse((o) => o.geometry?.dispose()); b.mat.dispose(); this.bolts.splice(i, 1); }
     }
     this.boltLight.intensity = Math.max(0, this.boltLight.intensity - dt * 40000);
     // ---- gökkuşağı ----
@@ -348,7 +348,7 @@ export const weatherfx = {
   // ağ: oda sahibi hortum konumlarını paylaşır
   netState() { return this.spouts.map((s) => [+s.x.toFixed(1), +s.z.toFixed(1), +s.t.toFixed(1), +s.life.toFixed(1)]); },
   applyNet(arr) {
-    while (this.spouts.length > arr.length) { const s = this.spouts.pop(); this.scene.remove(s.mesh); }
+    while (this.spouts.length > arr.length) { const s = this.spouts.pop(); this.scene.remove(s.mesh); s.mesh.geometry.dispose(); }
     arr.forEach((a, i) => {
       let s = this.spouts[i];
       if (!s) {
