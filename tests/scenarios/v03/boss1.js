@@ -1,5 +1,5 @@
 [
- {js: `DK.G.noAutoPause=true; DK.handlers.startGame({kind:'solo', slot:2, data:null}); 'ok'`},
+ {js: `DK.G.noAutoPause=true; DK.handlers.startGame({kind:'solo', slot:2, data:null}); DK.G.godMode=true; 'ok'`}, // ölümsüz: oyuncu ölüp limanda doğarsa bosslar 650 m kuralıyla çekiliyor, sonraki adımlar boş boss'a erişiyordu
  {wait: 2000, js: `(async()=>{ const s=DK.G.ship; const p=DK.G.player; s.x=-200; s.z=700; s.yaw=0; s.anchored=false; s.anchorState='up'; s.anchorT=0; await DK.terrain.prepare(s.x, s.z, {radius:300}); s.updateTransform(0); p.boardShip(s, s.model.stations.helm.clone()); p.mode='deck'; DK.sim(0.5); const b = DK.bosses.spawn('kraken'); DK.sim(6); return {hp: Math.round(b.hp), ten: b.tentacles.map(t=>t.state), headY: b.headY.toFixed(1), shipHp: Math.round(s.hp), holes: s.holes.length, phit: Math.round(p.hp)}; })()`},
  {js: `const b=DK.bosses.active; const s=DK.G.ship; DK.sim(8); ({ten: b.tentacles.map(t=>t.state), shipHp: Math.round(s.hp), holes: s.holes.length, php: Math.round(DK.G.player.hp)})`},
  {js: `DK.tpCamera.pitch=0.35; DK.tpCamera.targetDist=26; DK.sim(0.3); 'cam'`},

@@ -298,6 +298,7 @@ export const islands = {
   // Eşzamanlı kurulum (testler, ışınlanma/yükleme): aynı adanın yarım kalmış arka plan işi varsa o tamamlanır.
   // Hata olursa yarım içerik bırakılır ve hata yukarı iletilir (update yakalayıp adayı bu oturumda yeniden denemez).
   _build(I) {
+    if (this.built.has(I.id)) return; // zaten kurulu: ikinci kopya kurulmaz
     let J = this.job;
     if (J?.I === I) this.job = null;
     else J = this._newJob(I);
@@ -372,6 +373,7 @@ export const islands = {
     for (const k in prof) prof[k] = Math.round(prof[k]);
     this.scene.add(B.group);
     this.built.set(I.id, B);
+    this._lodT = 0; // yeni adanın uzak hücreleri/gölgeleri aynı karede ayıklansın (sonraki LOD geçişini beklemeden)
     B.ms = J.work; B.frames = J.frames; B.maxFrameMs = J.maxFrame;
     G.emit('islandBuilt', { id: I.id, ms: B.ms });
     return true;
@@ -767,6 +769,8 @@ export const islands = {
     const ts = this.templeState || (this.templeState = {});
     if (!ts[f.id] || !Array.isArray(ts[f.id].seq)) ts[f.id] = puzzleState(ts[f.id]);
     const state = ts[f.id];
+    // yarım dizi kurulumlar arasında taşınmaz: levye sırası kurulumdaki arazi ayrıntı düzeyine bağlı değişebilir (bilinen #35)
+    if (!state.done) state.seq = [];
     if (state.done) { gate.opening = true; gate.open = 1; gateObj.position.y = y0 - 6.2; gateCol.y1 = -999; } // kayıttan: kapı açık
     levers.forEach(([lx, lz], i) => {
       const x = cx + lx, z = cz + lz;

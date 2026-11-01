@@ -1,6 +1,6 @@
 [
  {js: `DK.G.noAutoPause=true; DK.handlers.startGame({kind:'solo', slot:2, data:null}); window.goto = async (x, z) => { await DK.terrain.prepare(x, z, {radius: 400}); const p=DK.G.player; p.mode='ground'; p.ship=null; p.pos.set(x, DK.terrain.heightAt(x,z)+1, z); p.vel.set(0,0,0); DK.sky.hour = 11; DK.sim(0.3); DK.islands.checkT=0; DK.sim(1.5); return 1; }; window.F=(id,k=0)=>DK.archipelago.EXTRA_ISLANDS.find(i=>i.id===id).features[k]; DK.G.godMode=true; 'ok'`},
- {wait: 1500, js: `(async()=>{ const t=F('kadim_tapinak',0); await goto(t.x+2, t.z+40); const ts=DK.islands.templeState[t.id]; ts.state.done=true; ts.gate.opening=true; DK.sim(5); await goto(t.x+3, t.z+12); DK.sim(1.5); const b=DK.bosses.active; return {boss: b && b.id, gate: ts.gate.open.toFixed(2), hp: b && Math.round(b.hp)}; })()`},
+ {wait: 1500, js: `(async()=>{ const t=F('kadim_tapinak',0); await goto(t.x+2, t.z+40); const ts=DK.islands.temples[t.id]; ts.state.done=true; ts.gate.opening=true; DK.sim(5); await goto(t.x+3, t.z+12); DK.sim(1.5); const b=DK.bosses.active; return {boss: b && b.id, gate: ts.gate.open.toFixed(2), hp: b && Math.round(b.hp)}; })()`},
  {js: `const b=DK.bosses.active; DK.sim(6); ({state:b.state, php: Math.round(DK.G.player.hp), shots: DK.enemies.shots.length})`},
  {js: `const b=DK.bosses.active; const p=DK.G.player; DK.tpCamera.yaw=Math.atan2(b.pos.x-p.pos.x, b.pos.z-p.pos.z)+Math.PI; DK.tpCamera.pitch=0.2; DK.tpCamera.targetDist=14; DK.sim(0.3); 'cam'`},
  {wait: 1500, snap: '/tmp/preview/p2/boss_guardian.jpg'},

@@ -30,7 +30,7 @@ const reportPath = opt('report', null);
 
 (async () => {
   const t0 = Date.now();
-  const report = { scenario: scenarioPath, url, size: [W, H], steps: [], errors: [], pageErrors: [], fails: 0, readyMs: null };
+  const report = { scenario: scenarioPath, url, size: [W, H], steps: [], errors: [], pageErrors: [], fails: 0, evalErrors: 0, readyMs: null };
   // DK_JSFLAGS ortam değişkeni (örn. --expose-gc) V8'e iletilir: bellek teşhisi için
   const extra = process.env.DK_JSFLAGS ? ['--js-flags=' + process.env.DK_JSFLAGS] : [];
   const b = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--disable-gpu-watchdog', '--autoplay-policy=no-user-gesture-required', '--enable-precise-memory-info', ...extra] }); // kesin performance.memory (başsızda nicemlenmiş değer döner)
@@ -46,7 +46,7 @@ const reportPath = opt('report', null);
   const finish = async (code) => {
     clearTimeout(killer);
     report.ms = Date.now() - t0;
-    console.log(`errors: ${report.errors.length} pageErrors: ${report.pageErrors.length} fails: ${report.fails} (${(report.ms / 1000).toFixed(1)} s)`);
+    console.log(`errors: ${report.errors.length} pageErrors: ${report.pageErrors.length} fails: ${report.fails}${report.evalErrors ? ` evalErrors: ${report.evalErrors}` : ''} (${(report.ms / 1000).toFixed(1)} s)`);
     if (reportPath) { fs.mkdirSync(path.dirname(reportPath), { recursive: true }); fs.writeFileSync(reportPath, JSON.stringify(report, null, 1)); }
     try { await b.close(); } catch (e) { /* kapalı */ }
     process.exit(code);
@@ -64,7 +64,8 @@ const reportPath = opt('report', null);
       if (s.wait) await p.waitForTimeout(s.wait);
       if (s.js) {
         try { const r = await p.evaluate(s.js); rec.result = r; if (r !== undefined) console.log('R:', JSON.stringify(r)?.slice(0, 1500)); }
-        catch (e) { rec.error = e.message.slice(0, 600); console.log('EVALERR', e.message.slice(0, 500)); }
+        // js adımı istisna atarsa senaryo amaçladığını yapmamıştır: başarısızlık sayılır (önce yalnız yazdırılıyordu, çıkış kodu 0 kalıyordu)
+        catch (e) { rec.error = e.message.slice(0, 600); report.evalErrors++; report.fails++; console.log('EVALERR', e.message.slice(0, 500)); }
       }
       if (s.expect) {
         const E = s.expect;

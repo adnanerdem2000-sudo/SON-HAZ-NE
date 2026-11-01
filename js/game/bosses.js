@@ -769,7 +769,9 @@ class VolcanicGiant extends GiantBase {
     super('volkanik_dev', site, scene, 'demon', 9.5, 0x5a3a30, 0x601808);
     const I = EXTRA_ISLANDS.find((i) => i.id === site.island);
     this.crater = { x: I ? I.x : site.x, z: I ? I.z : site.z, r: I ? I.r * 0.13 : 60 };
-    this.lavaY = islands.built.get(site.island)?.lavas?.[0]?.y ?? terrain.heightAt(this.crater.x, this.crater.z) + 1.5;
+    const L = islands.built.get(site.island)?.lavas?.[0];
+    this.lavaY = L?.y ?? terrain.heightAt(this.crater.x, this.crater.z) + 1.5;
+    this._lavaReal = !!L; // ada içeriği henüz kurulmadıysa (ör. konukta arka plan kurulumu sürerken) update gerçek düzeye geçer
     this.pos.set(this.crater.x, this.lavaY - 10, this.crater.z);
     this.rise = 0;
     const core = new THREE.Mesh(new THREE.SphereGeometry(0.7, 12, 10), new THREE.MeshStandardMaterial({ color: 0xffd080, emissive: 0xffa020, emissiveIntensity: 1 }));
@@ -798,6 +800,7 @@ class VolcanicGiant extends GiantBase {
   }
   update(dt) {
     this.t += dt; this.st += dt;
+    if (!this._lavaReal) { const L = islands.built.get(this.site.island)?.lavas?.[0]; if (L) { this.lavaY = L.y; this._lavaReal = true; } }
     this.anim.update(dt);
     this.exposed = Math.max(0, (this.exposed || 0) - dt);
     this.core.material.emissiveIntensity = this.exposed > 0 ? 4 + Math.sin(this.t * 12) : 1;
