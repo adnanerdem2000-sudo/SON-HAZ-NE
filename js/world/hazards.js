@@ -73,12 +73,13 @@ export const hazards = {
     for (const id of [...this.sets.keys()]) this._dropSet(id);
     this.solved = new Set(data?.hazards?.solved || []);
     this.looted = new Set(data?.hazards?.looted || []);
+    this.gone = new Set(data?.hazards?.gone || []); // patlamış fıçılar ve kırılmış sandıklar yüklemede yeniden kurulmaz
     for (const c of CORE_SETS) this._buildCore(c);
     // bu sistemden önce kurulmuş adalar
     for (const id of islands.built.keys()) this._buildIsland(id);
   },
   stop() { for (const id of [...this.sets.keys()]) this._dropSet(id); },
-  save() { return { solved: [...this.solved], looted: [...this.looted] }; },
+  save() { return { solved: [...this.solved], looted: [...this.looted], gone: [...(this.gone || [])] }; },
   saveKey: 'hazards',
 
   // ---- kurulum ---------------------------------------------------------------
@@ -155,6 +156,7 @@ export const hazards = {
 
   // ---- barut fıçısı ----
   _keg(S, id, x, z) {
+    if (this.gone?.has(id)) return null;
     const y = terrain.heightAt(x, z);
     const g = new THREE.Group();
     // dik duran barut fıçısı (~1 m), kırmızı uyarı bandı ve fitil
@@ -192,6 +194,7 @@ export const hazards = {
 
   _explode(h) {
     h.state = 'gone';
+    (this.gone || (this.gone = new Set())).add(h.id);
     h.mesh.visible = false;
     physics.removeTag(h.tag);
     const c = new THREE.Vector3(h.x, h.y + 0.6, h.z);
@@ -252,6 +255,7 @@ export const hazards = {
 
   // ---- kırılabilir sandık ----
   _crate(S, id, x, z, i) {
+    if (this.gone?.has(id)) return null;
     const y = terrain.heightAt(x, z);
     const name = ['box_large', 'box_small', 'box_stacked'][i % 3];
     const mesh = this._kitMesh('dungeon', name, 1);
@@ -272,6 +276,7 @@ export const hazards = {
   breakCrate(h, loot = true, net = false) {
     if (h.state !== 'idle') return;
     h.state = 'gone';
+    (this.gone || (this.gone = new Set())).add(h.id);
     h.target.alive = false;
     h.mesh.visible = false;
     physics.removeTag(h.tag);

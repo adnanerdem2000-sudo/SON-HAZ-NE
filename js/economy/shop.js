@@ -61,8 +61,12 @@ export function sellPrice(stack, role) {
   // zaman çizelgesi: pazar günü ve ticaret gemisi günlerinde satış fiyatları artar
   v *= 1 + time.priceBonus();
   v *= G.mods?.price || 1; // Pazarlıkçı yeteneği
+  // al-sat döngüsü yok: bir tüccardan satın alınabilen eşya hiçbir yere liste değerinin %90'ından pahalıya satılamaz
+  // (alış fiyatı en az %97,75); ganimet/balık/koleksiyon gibi satın alınamayan eşyalarda çarpanlar korunur
+  if (PURCHASABLE.has(stack.id)) v = Math.min(v, (ITEMS[stack.id]?.value || 1) * 0.9);
   return Math.max(1, Math.round(v));
 }
+const PURCHASABLE = new Set(Object.values(MERCHANTS).flatMap((m) => m.sells || []));
 export function buyPrice(id, role) { return Math.round((ITEMS[id]?.value || 1) * 1.15 * (MERCHANTS[role]?.discount || 1)); }
 
 export const shop = {
@@ -71,7 +75,7 @@ export const shop = {
     const price = buyPrice(id, role) * n;
     if (p.inv.gold < price) { G.notify('Yeterli altının yok.', 'warn'); audio.play('ui', { vol: 0.3, rate: 0.6 }); return false; }
     // gülle ve tahta doğrudan gemiye de konabilir
-    if (id === 'gulle' && G.ship) { G.ship.cannonballs += n; p.inv.gold -= price; G.notify(`${n} gülle gemine yüklendi (toplam ${G.ship.cannonballs}).`, 'good'); audio.play('coin', { vol: 0.5 }); this._afterTrade(); return true; }
+    if (id === 'gulle' && G.ship) { G.ship.cannonballs += n; if (G.online && !G.isHost) G.emit('shipCmd', { ship: G.ship.id, cmd: 'addBalls', n }); p.inv.gold -= price; G.notify(`${n} gülle gemine yüklendi (toplam ${G.ship.cannonballs}).`, 'good'); audio.play('coin', { vol: 0.5 }); this._afterTrade(); return true; }
     if (!p.inv.canAdd(id, n)) { G.notify('Envanterde yer yok (ağırlık sınırı).', 'warn'); return false; }
     if (!ITEMS[id].stack && p.inv.has(id) && ITEMS[id].cat !== 'sarf') { G.notify('Bundan zaten bir tane var.', 'info'); return false; }
     p.inv.gold -= price;
@@ -102,7 +106,9 @@ export const shop = {
     for (const s of [...p.inv.stacks]) {
       if (filter && !filter(s)) continue;
       const pr = sellPrice(s, role);
-      if (pr > 0 && !['kilic', 'tabanca', 'kurek', 'olta', 'pusula', 'fener'].includes(s.id)) { total += this.sell(s, role); cnt++; }
+      // 'Tümünü sat' teçhizatı, usta aletleri, dürbünü, hazine haritalarını, cephaneyi ve yemi satmaz
+      const keep = ['kilic', 'tabanca', 'kurek', 'olta', 'pusula', 'fener', 'usta_kilic', 'usta_tabanca', 'usta_olta', 'durbun', 'hazine_haritasi', 'mermi', 'gulle', 'tahta'];
+      if (pr > 0 && !keep.includes(s.id) && !s.id.startsWith('yem')) { total += this.sell(s, role); cnt++; }
     }
     if (cnt) G.notify(`${cnt} kalem satıldı: +${total} altın`, 'good');
     else G.notify('Bu tüccara satılacak bir şeyin yok.', 'info');
@@ -220,6 +226,7 @@ export const shop = {
     if (p.inv.gold < price) { G.notify('Yeterli altının yok.', 'warn'); return; }
     p.inv.gold -= price;
     if (kind === 'gulle') s.cannonballs += n; else s.planks += n;
+    if (G.online && !G.isHost) G.emit('shipCmd', { ship: s.id, cmd: kind === 'gulle' ? 'addBalls' : 'addPlanks', n });
     audio.play('coin', { vol: 0.5 });
     G.notify(`${n} ${kind === 'gulle' ? 'gülle' : 'tamir tahtası'} gemiye yüklendi.`, 'good');
   },

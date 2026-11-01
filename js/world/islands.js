@@ -221,11 +221,18 @@ export const islands = {
     this.ready = true;
   },
 
-  start() {
+  start(data) {
     // oturum başında tüm ada içeriği boşaltılır; yaklaşınca yeniden kurulur
     for (const id of [...this.built.keys()]) this._drop(id);
     this.checkT = 0;
+    // kalıcı ada durumu: açılmış sandıklar/sunaklar, kurtarılmış tutsaklar, çözülmüş tapınak mekanizmaları
+    const d = data?.islands;
+    this.opened = new Set(d?.opened || []);
+    this.freed = new Set(d?.freed || []);
+    this.templeState = d?.temples ? JSON.parse(JSON.stringify(d.temples)) : {};
   },
+  stop() { this.start(null); },
+  save() { return { opened: [...(this.opened || [])], freed: [...(this.freed || [])], temples: this.templeState || {} }; },
 
   update(dt) {
     if (!this.ready) return;
@@ -646,7 +653,8 @@ export const islands = {
     const order = [0, 1, 2].sort(() => R() - 0.5);
     const names = ['Güneş', 'Ay', 'Yıldız'];
     const levers = [[-26, 42], [26, 42], [0, 52]];
-    const state = { seq: [], done: false };
+    const state = (this.templeState || (this.templeState = {}))[f.id] || (this.templeState[f.id] = { seq: [], done: false });
+    if (state.done) { gate.opening = true; gate.open = 1; gateObj.position.y = y0 - 6.2; gateCol.y1 = -999; } // kayıttan: kapı açık
     levers.forEach(([lx, lz], i) => {
       const x = cx + lx, z = cz + lz;
       const yy = terrain.heightAt(x, z);

@@ -242,7 +242,7 @@ export const fishing = {
     effects.splash(this.bobber.position.x, this.bobber.position.z, 0.6);
     let where = 'envanterine';
     if (!p.inv.canAdd('balik:' + key, 1, data)) {
-      if (p.mode === 'deck' && p.ship) { const k = 'balik:' + key; p.ship.hold.items[k] = (p.ship.hold.items[k] || 0); p.ship.hold.fish = p.ship.hold.fish || []; p.ship.hold.fish.push(data); where = 'gemi ambarına'; }
+      if (p.mode === 'deck' && p.ship) { p.ship.hold.fish = p.ship.hold.fish || []; p.ship.hold.fish.push(data); where = 'gemi ambarına'; }
       else { G.notify(`${f.name} yakaladın ama envanterin dolu — balığı geri bıraktın.`, 'warn'); G.emit('fishCaught', { data, released: true }); this.reset(); return; }
     } else p.inv.add('balik:' + key, 1, data);
     G.notify(`${f.name} yakaladın! ${lenCm} cm, ${data.weight} kg → ${where}`, 'good', 4500);
