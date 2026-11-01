@@ -120,10 +120,10 @@ lav düzeyi eski kodda yedek değerde (77,7) kalırken yeni kodda gerçek lav y�
 (bu koşuda 14/14), `05_dusman_ai`, `07_dunya_kesif`, `08_kalicilik`, `09_performans`, `11_arayuz_sizinti`, `12_kayit_dongusu`, `13_donma` (8/8),
 tek dosya derleme (21,0 MB) + `02_tek_dosya.js` → hepsi geçti; hata, sayfa hatası ve adım istisnası 0.
 
-**Co-op, son kod:** `06b` (2 oyuncu) 18/18, `06a` (3 oyuncu) 10/10, `06a2` (3 oyuncu) 3/3. `06c` (4 oyuncu) son kodla 5 koşunun 3'ünde
+**Co-op, son kod:** `06b` (2 oyuncu) 18/18, `06a` (3 oyuncu) 10/10, `06a2` (3 oyuncu) 3/3. `06c` (4 oyuncu) son kodla 7 koşunun 5'inde
 geçti; kalan 2'sinde başlangıçta ilk başlatılan konuk(lar) birkaç saniye içinde menüye düştü, sonraki kontroller bu yüzden kaldı (sayfa
-hatası 0). Aynı orijinal senaryo **eski kodda** (`e56f49a`, bu turdan önce) da birebir aynı biçimde kaldı (ilk konuk menüde). Konuk
-düşmesini kaydeden tanılı kopya 4 koşuda (eski 2, yeni 2) geçti, düşme kaydı yok. Sonuç: değişiklikten bağımsız, bu ortama bağlı
+hatası 0). **Eski kod** (`e56f49a`, bu turdan önce) 4 koşunun 3'ünde geçti; kalan koşuda birebir aynı biçimde kaldı (ilk konuk menüde).
+Konuk düşmesini kaydeden tanılı kopya 4 koşuda (eski 2, yeni 2) geçti, düşme kaydı yok. Sonuç: değişiklikten bağımsız, bu ortama bağlı
 kararsızlık. Kodda konuğu birkaç saniyede menüye düşüren tek yol ev sahibiyle WebRTC bağlantısının kapanması; en olası açıklama dört
 sekmenin tek yazılımsal GPU sürecini paylaşırken konuğun 15 sn kalp atışı kuralına takılması (kanıtlanmadı). Bilinen #37.
 
