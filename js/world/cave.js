@@ -4,6 +4,9 @@ import { physics } from './physics.js';
 import { assets } from '../core/assets.js';
 import { noise2, rng } from '../core/util.js';
 import { distToCavePath } from './terrain.js';
+import { cloneMat } from '../core/nearfade.js';
+
+const _sec = { e: 0, kind: 'free', cx: 0, cz: 0, yd: 0 };
 
 export const cave = {
   build(scene) {
@@ -45,6 +48,12 @@ export const cave = {
     const tube = new THREE.Mesh(geo, mat);
     tube.castShadow = true; tube.receiveShadow = true;
     scene.add(tube);
+    // kamera için tünel kesiti örnekleri (camE): merkez çizgisi + o noktadaki yarı genişlik/yükseklik
+    this._samples = [];
+    for (let i = 0; i <= segs; i++) {
+      const t = i / segs, p = curve.getPointAt(t), mouth = Math.max(0, 1 - t * 6);
+      this._samples.push({ x: p.x, z: p.z, w: W * (1 + mouth * 0.5), h: H * (1 + mouth * 0.35) });
+    }
 
     // Oda kubbesi
     const ch = CAVE.chamber;
@@ -99,7 +108,7 @@ export const cave = {
       if (new THREE.Vector2(x - ch.x, z - ch.z).normalize().dot(dir) > 0.8) continue;
       const c = assets.prop('crystal', 0.8 + R() * 0.8);
       c.traverse((o) => {
-        if (o.isMesh) { o.material = o.material.clone(); o.material.emissive = new THREE.Color(0x8a4dff); o.material.emissiveIntensity = 0.9; }
+        if (o.isMesh) { o.material = cloneMat(o.material); o.material.emissive = new THREE.Color(0x8a4dff); o.material.emissiveIntensity = 0.9; }
       });
       c.position.set(x, F - 0.1, z);
       c.rotation.set(R() * 0.4, R() * 6, R() * 0.4);
@@ -143,7 +152,7 @@ export const cave = {
       const side = new THREE.Vector3(-tan.z, 0, tan.x).normalize();
       r.position.set(e[0] + side.x * s * (W * 1.6 + R() * 1.5) - tan.x * (i % 3) * 2.5, F - 0.8, e[1] + side.z * s * (W * 1.6 + R() * 1.5) - tan.z * (i % 3) * 2.5);
       r.rotation.y = R() * 6;
-      r.traverse((o) => { if (o.isMesh) { o.material = o.material.clone(); o.material.color.multiplyScalar(0.75); } });
+      r.traverse((o) => { if (o.isMesh) { o.material = cloneMat(o.material); o.material.color.multiplyScalar(0.75); } }); // kopyada da yakın-kamera silinmesi (ağız kayalarının çarpıştırıcısı yok)
       scene.add(r);
     }
     // Eşyalar: eski sandıklar, variller
@@ -159,6 +168,47 @@ export const cave = {
     table.castShadow = true;
     scene.add(table);
     physics.addBox(this.journalSpot.x, this.journalSpot.z, 0.7, 0.45, 0, F - 1, F + 1, 'table');
+  },
+
+  // Kamera için mağara boşluğu. Tünel yarım elips kesitli, oda yarım elipsoit; duvardan 0,55 m pay bırakılmış kesite göre
+  // normalleştirilmiş elips değeri e (≤ 1 içeride). Duvar çarpıştırıcıları dikey silindir olduğundan eğri tavanı temsil etmiyordu:
+  // kamera tavan eğrisinden kayanın içine çıkıyor, tünelin koyu dış yüzü ekranı kaplıyordu.
+  // _camSec: { e, kind: 'free' (ağzın önü) | 'dome' | 'tun', cx, cz (kesit merkezi), yd }
+  _camSec(x, y, z, out) {
+    const S = this._samples;
+    const F = CAVE.floor, ch = CAVE.chamber, base = F - 0.4;
+    const R = (ch.r + 1) * 0.88 - 0.3, Hd = (ch.r + 1) * 0.62 * 0.88 - 0.3;
+    const dc = Math.hypot(x - ch.x, z - ch.z), yd = Math.max(0, y - base);
+    const eDome = (dc / R) * (dc / R) + (yd / Hd) * (yd / Hd);
+    let best = Infinity, bi = 0, bu = 0;
+    for (let i = 0; i < S.length - 1; i++) {
+      const A = S[i], B = S[i + 1], ex = B.x - A.x, ez = B.z - A.z, L2 = ex * ex + ez * ez;
+      const u = L2 > 0 ? Math.max(0, Math.min(1, ((x - A.x) * ex + (z - A.z) * ez) / L2)) : 0;
+      const px = A.x + ex * u - x, pz = A.z + ez * u - z, d2 = px * px + pz * pz;
+      if (d2 < best) { best = d2; bi = i; bu = u; }
+    }
+    out.yd = yd;
+    // giriş ağzının önü: mağaranın dışı
+    if (bi === 0 && bu === 0 && (x - S[0].x) * (S[1].x - S[0].x) + (z - S[0].z) * (S[1].z - S[0].z) < 0) { out.e = -1; out.kind = 'free'; return out; }
+    const A = S[bi], B = S[bi + 1];
+    const w = A.w + (B.w - A.w) * bu - 0.55, h = A.h + (B.h - A.h) * bu - 0.55;
+    const d = Math.sqrt(best);
+    const eTun = (d / w) * (d / w) + (yd / h) * (yd / h);
+    if (eDome <= eTun) { out.e = eDome; out.kind = 'dome'; out.cx = ch.x; out.cz = ch.z; }
+    else { out.e = eTun; out.kind = 'tun'; out.cx = A.x + (B.x - A.x) * bu; out.cz = A.z + (B.z - A.z) * bu; }
+    return out;
+  },
+  // e değeri (ağzın önünde −1)
+  camE(x, y, z) { return this._samples ? this._camSec(x, y, z, _sec).e : -1; },
+  // kamera noktasını kesitin içine çeker: e > 1 ise (yanal uzaklık, taban üstü yükseklik) kesit merkezine doğru 1/√e ile ölçeklenir.
+  // Kısaltma yerine taşıma: baş duvara yakınken kamera başın dibine çökmesin (yükselen kamera yalnız eğri tavanın altına iner).
+  camClamp(p) {
+    if (!this._samples) return p;
+    const c = this._camSec(p.x, p.y, p.z, _sec);
+    if (c.kind === 'free' || c.e <= 1) return p;
+    const k = 1 / Math.sqrt(c.e);
+    p.x = c.cx + (p.x - c.cx) * k; p.z = c.cz + (p.z - c.cz) * k; p.y = CAVE.floor - 0.4 + c.yd * k;
+    return p;
   },
 
   // Oyuncu mağara içinde mi? (0..1 karanlık)

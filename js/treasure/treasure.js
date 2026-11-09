@@ -13,6 +13,7 @@ import { CHEST_TIERS, ITEMS, itemName } from '../economy/items.js';
 import { clamp, damp, uid, rng } from '../core/util.js';
 import { bodies } from '../world/bodies.js';
 import { time } from '../world/time.js';
+import { cloneMat } from '../core/nearfade.js';
 
 const LOOT = {
   small: { coins: [60, 140], picks: [1, 2], pool: [['inci', 3], ['gumus_kulce', 3], ['korsan_madalyonu', 1], ['yakut', 1], ['zipkin', 0.6], ['dalis_maskesi', 0.6], ['hava_kesesi', 1]], map: 0.25 },
@@ -266,7 +267,7 @@ export const treasure = {
     const mesh = assets.prop('chest', 0.9 * T.scale);
     mesh.traverse((o) => {
       if (o.isMesh) {
-        o.material = o.material.clone();
+        o.material = cloneMat(o.material); // yakın-kamera silinmesi kopyada da kalsın
         if (tier === 'legend') { o.material.color.multiply(new THREE.Color(0x8a6aff)); o.material.emissive = new THREE.Color(0x201040); }
         else if (tier === 'large') o.material.color.multiply(new THREE.Color(0xd8c0a0));
       }

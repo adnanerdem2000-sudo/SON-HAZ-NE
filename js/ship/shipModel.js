@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { woodPlanks, cloth, flagTexture } from '../core/textures.js';
+import { nearFade } from '../core/nearfade.js';
 
 // Gemi tipleri (veri odaklı)
 export const SHIP_TYPES = {
@@ -204,11 +205,11 @@ export function cannonMesh() {
 export function rowboatMesh(color = '#7a5232') {
   const g = new THREE.Group();
   const T = { L: 3.6, B: 1.3, deckY: 0.35, keel: -0.3, sheer: 0.3 };
-  const wood = new THREE.MeshStandardMaterial({ map: woodPlanks(color, 71, 6), vertexColors: true, roughness: 0.9, side: THREE.DoubleSide });
+  const wood = nearFade(new THREE.MeshStandardMaterial({ map: woodPlanks(color, 71, 6), vertexColors: true, roughness: 0.9, side: THREE.DoubleSide }), 'rail');
   const hull = new THREE.Mesh(hullGeometry({ ...T }), wood);
   hull.scale.set(1, 0.55, 1);
   g.add(hull);
-  const seatMat = new THREE.MeshStandardMaterial({ map: woodPlanks('#8a6238', 72, 3), roughness: 0.9 });
+  const seatMat = nearFade(new THREE.MeshStandardMaterial({ map: woodPlanks('#8a6238', 72, 3), roughness: 0.9 }), 'rail');
   for (const z of [-0.6, 0.5]) {
     const s = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.06, 0.28), seatMat);
     s.position.set(0, 0.25, z);
@@ -277,6 +278,7 @@ export function buildShipModel(T, look = {}) {
   deck.receiveShadow = true;
   root.add(deck);
   const railMat = new THREE.MeshStandardMaterial({ map: woodPlanks('#7a5232', 9, 4), roughness: 0.85, side: THREE.DoubleSide });
+  nearFade(railMat, 'rail'); // küpeşte/kıç duvarı/gözcü yuvası: kamera dönerken içinden geçince ekranı kaplamasın (nearfade.js)
   const rails = new THREE.Mesh(railGeometry(T), railMat);
   rails.castShadow = true; rails.receiveShadow = true;
   root.add(rails);
@@ -289,6 +291,7 @@ export function buildShipModel(T, look = {}) {
 
   const metal = new THREE.MeshStandardMaterial({ color: 0x2b2b2b, metalness: 0.7, roughness: 0.45 });
   const spar = new THREE.MeshStandardMaterial({ map: woodPlanks('#5a3c22', 13, 3), roughness: 0.8 });
+  nearFade(spar, 'rail'); // direk, seren, bumba, başüstü
   // baş direği (bowsprit)
   const bz = T.L / 2;
   const bs = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.14, T.bowsprit, 8), spar);
@@ -300,6 +303,7 @@ export function buildShipModel(T, look = {}) {
   // direkler ve yelkenler
   const sails = [];
   const sailMat = new THREE.MeshStandardMaterial({ map: cloth(sailColor, look.sailStripe || null, 11), side: THREE.DoubleSide, roughness: 0.95 });
+  nearFade(sailMat, 'sail'); // yelken: kamera yelkenin içinden geçerken ekranı bez kaplamasın
   const ropeMat = new THREE.LineBasicMaterial({ color: 0x3a2a1a });
   const ropes = [];
   const mastGroups = [];
@@ -402,7 +406,7 @@ export function buildShipModel(T, look = {}) {
     if (M === T.masts[0]) {
       const flagGeo = new THREE.PlaneGeometry(1.6, 1.0, 10, 4);
       flagGeo.translate(0.8, 0, 0);
-      const flag = new THREE.Mesh(flagGeo, new THREE.MeshStandardMaterial({ map: flagTexture(look.flag || 'skull'), side: THREE.DoubleSide, roughness: 1 }));
+      const flag = new THREE.Mesh(flagGeo, nearFade(new THREE.MeshStandardMaterial({ map: flagTexture(look.flag || 'skull'), side: THREE.DoubleSide, roughness: 1 }), 'sail'));
       flag.position.set(0, my + M.h + 0.3, M.z);
       root.add(flag);
       root.userData.flag = flag;

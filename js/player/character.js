@@ -4,6 +4,7 @@ import { SKIN_TONES, HAIR_COLORS, EYE_COLORS } from './appearance.js';
 import { woodPlanks } from '../core/textures.js';
 import { clamp, lerp } from '../core/util.js';
 import { rimAll } from '../core/rim.js';
+import { nearFadeAll } from '../core/nearfade.js';
 import { kk, KK_ROLES } from '../core/kk.js';
 import { Ragdoll } from './ragdoll.js';
 
@@ -479,6 +480,9 @@ export class Character {
       if (o.geometry.boundingSphere.radius * Math.max(o.scale.x, o.scale.y, o.scale.z) < 0.07) o.castShadow = false;
     });
     rimAll(this.root);
+    // kamera karakterin içinden/yanından geçerken (NPC, düşman, uzak oyuncu; oyuncu için 'self') ekranı kaplamasın: yakın
+    // parçalar titreşimle silinir (nearfade.js)
+    nearFadeAll(this.root, this.opts.fade || 'char');
     this.play('Idle', 0);
   }
 
@@ -654,6 +658,8 @@ export class Character {
         const slot = (it.slot === 'handslotl' || i > 0) ? this.handL : this.handR;
         slot.add(it.obj);
         rimAll(it.obj);
+        // kit silahı/kalkanı tüm taşıyıcılarla paylaşımlı malzeme: herkes için aynı kategori ('char'), gövde silinirken kalkan ekranı kaplamasın
+        nearFadeAll(it.obj, 'char');
         if (i === 0) this.held = it.obj; else this.heldL = it.obj;
         if (this._camHidden) this._camHide(it.obj, true); // gizliyken ele alınan eşya da gizli
       });
@@ -680,6 +686,7 @@ export class Character {
     else if (type === 'torch') { o.rotation.set(0.35, 0, 0); o.position.set(0, -0.1, 0); }
     g.scale.setScalar(1 / this.modelScale);
     rimAll(g);
+    nearFadeAll(g, this.opts.fade || 'char');
     this.handR.add(g);
     this.held = g;
     o.userData && (g.userData = o.userData);
@@ -964,6 +971,7 @@ export class Animated {
     this.model = m;
     this.root.add(m);
     rimAll(m);
+    nearFadeAll(m, 'char'); // hayvan/canavar: kamera içinden geçerken ekranı kaplamasın
     this.mixer = new THREE.AnimationMixer(m);
     this.clips = {};
     for (const c of assets.animations(name)) {

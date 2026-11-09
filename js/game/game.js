@@ -22,8 +22,10 @@ import { ISLANDS, CAVE } from '../world/worldData.js';
 import { enemies } from './enemies.js';
 import { animals } from '../wildlife/animals.js';
 import { settings } from '../core/settings.js';
+import { NF_FOCUS } from '../core/nearfade.js';
 
 const _camH = new THREE.Vector3(); // kamera–baş uzaklığı geçicisi
+const _nfF = new THREE.Vector3(); // görüş çizgisi silindiri odağı (görüş uzayı)
 
 // Oyun oturumu: dünya, oyuncu, gemi, sistemler, döngü
 export const game = {
@@ -273,11 +275,14 @@ export const game = {
     if (G.uiOpen || p.underwater || p.dead || p.downed || p.carrying || p.mode === 'cannon') { this.toggleSpyglass(false); return; }
     if (input.wheel) this.spyZoom = clamp(this.spyZoom + input.wheel * 2, 6, 30);
     const cam = engine.camera;
-    const head = p.pos.clone(); head.y += p.mode === 'swim' ? 0.5 : 1.62;
+    const head = p.pos.clone();
+    // yüzerken göz su yüzeyinin üstünde (önce ayak + 0,5 m = suyun ~0,85 m altıydı: dürbün görüntüsü düz su altı yeşiliydi)
+    head.y = p.mode === 'swim' ? Math.max(p.pos.y + 1.5, ocean.heightAt(p.pos.x, p.pos.z) + 0.25) : head.y + 1.62;
     const dir = tpCamera.lookDir();
     // hafif el titremesi
     const t = performance.now() / 1000;
     cam.position.copy(head).addScaledVector(dir, 0.35);
+    if (p.mode === 'swim') cam.position.y = Math.max(cam.position.y, ocean.heightAt(cam.position.x, cam.position.z) + 0.2); // aşağı bakınca da göz su üstünde
     cam.lookAt(cam.position.x + dir.x * 10 + Math.sin(t * 1.3) * 0.012 * this.spyZoom, cam.position.y + dir.y * 10 + Math.sin(t * 1.9) * 0.01 * this.spyZoom, cam.position.z + dir.z * 10);
     if (Math.abs(cam.fov - this.spyZoom) > 0.01) { cam.fov = this.spyZoom; cam.updateProjectionMatrix(); }
     // hedef tanımlama
@@ -322,21 +327,44 @@ export const game = {
       head.y += 0.6;
       opts = { dist: 6.5 };
     } else if (p.mode === 'swim') {
-      opts = { underwater: p.underwater };
+      // kamera su altına yalnız dalışta geçer: dalış tuşuyla ya da yüksekten suya düşüşle başlayan dalış (yüzeye çıkıp 0,4 sn geçince
+      // biter). Dalış yokken kamera her zaman su üstünde (surface). Yüzeyde yüzerken kabaran dalga başın üstünden geçince p.underwater
+      // kısa süre doğru oluyor, kamera su altına zorlanıp ekran 1–5 sn su altı sisiyle kararıyordu; fırtınada dalga tepesi yüzücüden
+      // hızlı yükseldiği için derinliğe dayalı bir eşik yetmiyordu (pasif yüzücünün dikey hızı hiç belirgin eksiye düşmez).
+      // derinde başlama (ışınlanma, kayıt yükleme): ortalama su düzeyine (alçak geçiren, p._wlp) göre yüzme hizasının 4 m altı;
+      // fırtınada dalga gecikmesi ortalamanın en çok ~3 m altına iner, yanlış dalış başlatmaz
+      const deep = p.pos.y < (p._wlp ?? ocean.heightAt(p.pos.x, p.pos.z)) - 1.35 - 4;
+      if (input.isDown('egil') || (p.underwater && (p.vel.y < -2.5 || deep))) this._camDive = true;
+      if (p.underwater) this._surfT = 0; else if ((this._surfT = (this._surfT || 0) + dt) > 0.4) this._camDive = false;
+      opts = { underwater: p.underwater && this._camDive, surface: !this._camDive };
       head.y = p.pos.y + (p.underwater ? 1.4 : 1.5);
       if (p.aiming) Object.assign(opts, { dist: 2.3, shoulder: 0.65, fov: 58 }); // zıpkınla su altında nişan
     } else if (p.aiming) {
       opts = { dist: 2.3, shoulder: 0.65, fov: 58 };
     }
     if (p.inCave > 0.3) { opts.dist = Math.min(opts.dist ?? tpCamera.targetDist, 3.2); opts.ceiling = CAVE.floor + CAVE.height - 0.6; } // mağara tavanı
+    // mağara tüneli/odası: kamera yarım elips kesitin içinde kalır (tavan eğrisinden kayaya çıkıp ekranı koyu dış yüz kaplamasın)
+    if (p.inCave > 0.05) opts.cave = cave;
+    // gemi gövdeleri kamera için katı (güvertede, iskelede, yüzerken kamera gövdenin dışına/içine girip ekranı kaplamasın)
+    opts.hulls = G.ships;
+    // dümende: uzak takip kamerası (odak güvertenin 5 m üstü) kendi geminin kıç küpeştesine/kayığına takılıp 23 m'den 7–13 m'ye çekilmesin
+    opts.skipHull = p.mode === 'helm' ? p.ship : null;
+    opts.dockedBoat = p.mode !== 'helm' && G.rowboat && G.rowboat.state === 'docked' ? G.rowboat : null; // kıçta asılı kayık da katı
     if (p.dead || p.downed) opts.dist = 6;
-    if (G.spyglass) { this._spyglassUpdate(dt); return; }
+    if (G.spyglass) { NF_FOCUS.value.w = 0; this._spyglassUpdate(dt); return; }
     // kamera, oyuncunun üzerinde durduğu iskele/platform güvertesinin altına inmez (ayağın 0,3 m üstüne kadarki platformlar zemin
     // sayılır; oyuncu güvertenin altındaysa güverte zemin sayılmaz)
     if (p.mode === 'ground' || p.mode === 'swim') opts.floorMax = p.pos.y + 0.3;
     // gemide yürürken kamera güverte düzleminin altına (gövdenin içine) inmez (camera.js, opts.deckShip)
     else if ((p.mode === 'deck' || p.mode === 'helm' || p.mode === 'cannon') && p.ship) opts.deckShip = p.ship;
     tpCamera.update(cam, head, dt, opts);
+    // görüş çizgisi silindiri (nearfade.js): kamerayla oyuncunun başı arasındaki bitki örtüsü 0,95 m yarıçapta seyrelir; dümen/top
+    // kiplerinde odak oyuncu değil, kapalı
+    if (p.mode === 'ground' || p.mode === 'deck' || p.mode === 'swim' || p.mode === 'boat' || p.mode === 'climb') {
+      cam.updateMatrixWorld();
+      _nfF.copy(tpCamera._focus).applyMatrix4(cam.matrixWorldInverse);
+      NF_FOCUS.value.set(_nfF.x, _nfF.y, _nfF.z, 0.95);
+    } else NF_FOCUS.value.w = 0;
     // kamera başa çok yaklaşırsa (dar yerde çarpışma kısaltması) karakterin örgüleri gizlenir: başın/şapkanın içi ekranı
     // kaplamasın. Eşikte titremesin diye histerezis (0,8 m'de gizle, 1,0 m'de göster); meşale ışığı söndürülmez; dümen/top
     // kiplerinde her zaman görünür (önce kök gizleniyor, ışık da sönüyor ve dümene geçince oyuncu görünmez kalıyordu).
@@ -352,7 +380,9 @@ export const game = {
     const cam = engine.camera;
     terrain.update(cam.position.x, cam.position.z);
     const wh = ocean.heightAt(cam.position.x, cam.position.z);
-    sky.underwater = cam.position.y < wh - 0.05;
+    // su altı geçişi histerezisli: kamera yüzeyin hemen altında/üstünde dalgayla gidip gelirken su altı sisi her karede açılıp
+    // kapanıyor, ekran bir anlığına koyu yeşile kararıyordu
+    sky.underwater = sky.underwater ? cam.position.y < wh + 0.03 : cam.position.y < wh - 0.12;
     const p = G.player;
     sky.inCave = G.state === 'playing' && p ? damp(sky.inCave, p.inCave, 3, dt) : 0;
     sky.update(dt, focus, cam, G.isHost);

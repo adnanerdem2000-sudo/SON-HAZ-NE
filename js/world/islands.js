@@ -17,6 +17,7 @@ import { audio } from '../core/audio.js';
 import { effects } from '../game/effects.js';
 import { rng, clamp, smoothstep } from '../core/util.js';
 import { rimAll } from '../core/rim.js';
+import { nearFade, inheritNearFade, nearFadeCatForModel } from '../core/nearfade.js';
 import { woodPlanks } from '../core/textures.js';
 
 // Büyük dünyanın adaları: oyuncu yaklaşınca (≈750 m) içerik kurulur, uzaklaşınca boşaltılır.
@@ -76,6 +77,7 @@ function partsOf(id) {
 // Örnekler 160 m'lik hücrelere bölünür: hücre başına ayrı InstancedMesh → görüş konisi ayıklaması ve
 // uzaklığa göre gizleme/gölge kapatma (LOD) hücre düzeyinde yapılır.
 const VCELL = 160;
+const KIT_NF = new Map(); // kalıcı kit kopyaları (yakın-kamera silinmeli)
 class Batch {
   constructor() { this.map = new Map(); this.cells = []; }
   // h: istenen yükseklik (m) ya da s: doğrudan ölçek; small: yalnız yakında çizilen küçük süs
@@ -94,11 +96,18 @@ class Batch {
   *steps(group, matsOut) {
     const tinted = new Map();
     for (const b of this.map.values()) {
+      // yakın-kamera silinmesi (nearfade.js): GLB malzemeleri yüklemede kancalanır, boyalı kopyalar kategoriyi devralır. KayKit
+      // kitlerinde tüm parçalar tek atlas malzemesini paylaşır: kuru ağaç gibi bitkiler için kancayı yalnız kendi kopyaları alır
+      // (duvar/yapı parçaları silinmesin).
+      const kit = b.id.startsWith('kk:');
+      const kitCat = kit ? nearFadeCatForModel(b.id.split(':')[2]) : null;
       for (const part of b.P.parts) {
         let mat = part.material;
-        if (b.tint !== null || b.moss !== null || b.boost !== 1) {
-          const tk = part.material.uuid + '|' + b.tint + '|' + b.moss + '|' + b.boost;
-          mat = tinted.get(tk);
+        if (b.tint !== null || b.moss !== null || b.boost !== 1 || kitCat) {
+          const tk = part.material.uuid + '|' + b.tint + '|' + b.moss + '|' + b.boost + (kitCat ? '|nf:' + kitCat : '');
+          // kit kopyaları (kuru ağaç, sandık, varil, çit…) adalar arasında paylaşılır ve ada kaldırılınca bırakılmaz: son ada
+          // kaldırılınca gölgelendirici programı da yok oluyor, sonraki adada yeniden derlenip bir kare takılıyordu
+          mat = kitCat ? KIT_NF.get(tk) : tinted.get(tk);
           if (!mat) {
             mat = part.material.clone();
             const c = mat.color;
@@ -106,7 +115,12 @@ class Batch {
             if (b.moss !== null && c.g > c.r * 1.15 && c.g > c.b * 1.15) c.set(b.moss);
             else if (b.tint !== null) c.multiply(new THREE.Color(b.tint));
             if (b.boost !== 1) c.multiplyScalar(b.boost);
-            matsOut.push(mat); tinted.set(tk, mat);
+            if (kitCat) {
+              nearFade(mat, kitCat);
+              // boyasız kit parçası önce paylaşımlı atlası kullanıp kenar ışığı alıyordu; kopyaya atlasın userData.rim'i geçer, ışık alınmaz
+              if (b.tint === null && b.moss === null && b.boost === 1) delete mat.userData.rim;
+            } else if (!kit) inheritNearFade(mat, part.material);
+            if (kitCat) KIT_NF.set(tk, mat); else { matsOut.push(mat); tinted.set(tk, mat); }
           }
         }
         const im = new THREE.InstancedMesh(part.geometry, mat, b.list.length);
@@ -866,6 +880,13 @@ export const islands = {
     dark.position.set(ex + Math.sin(yaw) * 0.6, terrain.heightAt(ex, ez) + 2.6, ez + Math.cos(yaw) * 0.6);
     dark.rotation.y = yaw + Math.PI;
     B.group.add(dark);
+    // kemer + karanlık düzlem katıdır: önce çarpıştırıcıları yoktu, oyuncu düzlemin içinden geçebiliyor, kamera düzlemin görünen
+    // yüzüne geçince ekranı tümden siyah kaplıyordu. Kutu kemerin genişliğinde, düzlemi de içine alır.
+    {
+      const ab = partsOf('kk:dungeon:wall_arched').box;
+      const ahw = Math.max(2.3, (ab.max.x - ab.min.x) * 1.5 * 0.5), gy = terrain.heightAt(ex, ez);
+      physics.addBox(ex + Math.sin(yaw) * 0.1, ez + Math.cos(yaw) * 0.1, ahw, 0.85, yaw, gy - 1, gy + 5.6, B.tag); // duvar (±0,75 m) + düzlem (+0,6 m)
+    }
     for (let i = 0; i < 8; i++) {
       const a = R() * 6.28, rr = 5 + R() * 12;
       const pick = ['kk:town:resource_stone', 'kk:town:wheelbarrow', 'kk:dungeon:crates_stacked', 'kk:town:crate_long_A', 'kk:dungeon:rubble_half', 'kk:town:sack'][i % 6];

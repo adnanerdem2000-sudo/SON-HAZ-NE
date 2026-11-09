@@ -7,6 +7,7 @@ import { assets } from '../core/assets.js';
 import { woodPlanks, roofTiles, thatch, stone, cloth, makeLabelTexture } from '../core/textures.js';
 import { rng } from '../core/util.js';
 import { mergeStatic } from '../core/batch.js';
+import { nearFade } from '../core/nearfade.js';
 
 const mats = {};
 function M(key, make) { return mats[key] || (mats[key] = make()); }
@@ -125,7 +126,7 @@ export function makeBuilding(o) {
 
 export function makeStall(color = '#c0392b', seed = 1) {
   const g = new THREE.Group();
-  const wood = M('stallwood', () => texMat(woodPlanks('#7a5232', 17, 6), 1, 1));
+  const wood = nearFade(M('stallwood', () => texMat(woodPlanks('#7a5232', 17, 6), 1, 1)), 'rail'); // ince direkler: kamera içinden geçince ekranı kaplamasın
   const counter = box(3.2, 1.0, 1.1, wood);
   counter.position.y = 0.5;
   g.add(counter);
@@ -134,7 +135,7 @@ export function makeStall(color = '#c0392b', seed = 1) {
     p.position.set(sx, 1.35, sz);
     g.add(p);
   }
-  const awn = new THREE.Mesh(new THREE.BoxGeometry(3.6, 0.06, 2.6), new THREE.MeshStandardMaterial({ map: cloth('#f1e7d2', color, seed), roughness: 0.9 }));
+  const awn = new THREE.Mesh(new THREE.BoxGeometry(3.6, 0.06, 2.6), nearFade(new THREE.MeshStandardMaterial({ map: cloth('#f1e7d2', color, seed), roughness: 0.9 }), 'sail'));
   awn.position.set(0, 2.75, 0.55);
   awn.rotation.x = -0.18;
   awn.castShadow = true;
@@ -344,8 +345,8 @@ export const port = {
 
   _shipwright(scene, x, z) {
     const g = new THREE.Group();
-    const wood = texMat(woodPlanks('#6b4a2c', 51, 6), 1, 1);
-    const roof = texMat(thatch(4), 2, 2);
+    const wood = nearFade(texMat(woodPlanks('#6b4a2c', 51, 6), 1, 1), 'rail');
+    const roof = nearFade(texMat(thatch(4), 2, 2), 'sail'); // ince saman çatı: kamera içinden geçerken ekranı kaplamasın
     for (const sx of [-4, 4]) for (const sz of [-3, 3]) {
       const p = box(0.3, 4, 0.3, wood); p.position.set(sx, 2, sz); g.add(p);
     }
@@ -395,7 +396,7 @@ export const port = {
 
   _lantern(scene, x, z, y) {
     const g = new THREE.Group();
-    const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.09, 3, 6), new THREE.MeshStandardMaterial({ color: 0x2b2b2b, metalness: 0.5, roughness: 0.6 }));
+    const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.09, 3, 6), nearFade(new THREE.MeshStandardMaterial({ color: 0x2b2b2b, metalness: 0.5, roughness: 0.6 }), 'rail'));
     pole.position.y = 1.5;
     const bulbMat = new THREE.MeshStandardMaterial({ color: 0xffd28a, emissive: 0xffa040, emissiveIntensity: 0.0 });
     const lamp = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.45, 0.35), bulbMat);

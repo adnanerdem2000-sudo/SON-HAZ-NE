@@ -12,6 +12,7 @@ import { props } from '../world/props.js';
 import { SPAWN_ZONES, CAVE } from '../world/worldData.js';
 import { EXTRA_ISLANDS } from '../world/archipelago.js';
 import { clamp, damp, dampAngle, lerp, rng, uid, wrapAngle } from '../core/util.js';
+import { nearFadeAll } from '../core/nearfade.js';
 
 const std = (c, o = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: 0.85, ...o });
 const sh = (m) => { m.castShadow = true; m.receiveShadow = true; return m; };
@@ -414,6 +415,7 @@ class Animal {
     }
     if (kind === 'parrot' || kind === 'bat') { this.pos.y += 6; this.flyH = kind === 'bat' ? CAVE.floor + 2.5 : 8 + Math.random() * 6; }
     if (kind === 'snake') this.trail = Array.from({ length: 20 }, () => this.pos.clone());
+    nearFadeAll(this.root, 'char'); // kamera hayvanın içinden geçerken ekranı kaplamasın (nearfade.js)
     scene.add(this.root);
     combat.addTarget(this);
   }

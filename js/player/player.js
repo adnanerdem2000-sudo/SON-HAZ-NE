@@ -12,6 +12,7 @@ import { G } from '../game/ctx.js';
 import { ITEMS } from '../economy/items.js';
 import { hullHalfWidth } from '../ship/shipModel.js';
 import { WORLD_HALF } from '../world/archipelago.js';
+import { nearFadeAll } from '../core/nearfade.js';
 
 const GRAV = -22;
 const _v = new THREE.Vector3();
@@ -26,7 +27,7 @@ const EQUIP_NEED = { sword: ['kilic', 'usta_kilic'], pistol: ['tabanca', 'usta_t
 export class Player {
   constructor(scene, appearance, opts = {}) {
     this.scene = scene;
-    this.char = new Character(appearance);
+    this.char = new Character(appearance, { fade: 'self' }); // kendi modeli: kamera başa çok yaklaşınca titreşimle silinir
     scene.add(this.char.root);
     this.appearance = appearance;
     this.pos = new THREE.Vector3(opts.x || 0, opts.y || 5, opts.z || 0);
@@ -129,6 +130,7 @@ export class Player {
       if (!c._torchObj || c._torchObj.parent !== c.handL) {
         const t = makeTorch();
         t.rotation.set(Math.PI / 2 - 0.4, 0, 0);
+        nearFadeAll(t, 'self'); // gövdeyle birlikte kameraya çok yaklaşınca titreşimle silinsin
         c.handL.add(t);
         c._torchObj = t;
       }

@@ -15,6 +15,7 @@ import { islands } from '../world/islands.js';
 import { tpCamera } from '../player/camera.js';
 import { time } from '../world/time.js';
 import { clamp, damp, dampAngle, wrapAngle, lerp } from '../core/util.js';
+import { cloneMat } from '../core/nearfade.js';
 
 // Efsanevi bosslar: Kraken, Derinlik Yılanı, Taş Muhafız, Lanetli Amiral, Volkanik Dev.
 // Her biri evreli, saldırıları önceden işaretlenen (kırmızı halka/parıltı) ve zayıf noktası olan
@@ -916,7 +917,7 @@ class CursedAdmiral extends BossBase {
     gs.root.traverse((o) => {
       if (!o.isMesh) return;
       const ms = Array.isArray(o.material) ? o.material : [o.material];
-      o.material = ms.map((m) => { const c = m.clone(); c.transparent = true; c.opacity = 0.58; c.depthWrite = false; c.color?.lerp(new THREE.Color(0x80ffd0), 0.5); if (c.emissive) { c.emissive.setHex(0x1a6a50); c.emissiveIntensity = 0.8; } return c; });
+      o.material = ms.map((m) => { const c = cloneMat(m); c.transparent = true; c.opacity = 0.58; c.depthWrite = false; c.color?.lerp(new THREE.Color(0x80ffd0), 0.5); if (c.emissive) { c.emissive.setHex(0x1a6a50); c.emissiveIntensity = 0.8; } return c; });
       if (o.material.length === 1) o.material = o.material[0];
       o.castShadow = false;
     });

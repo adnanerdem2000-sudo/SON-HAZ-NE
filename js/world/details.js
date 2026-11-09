@@ -17,6 +17,7 @@ import { Character } from '../player/character.js';
 import { defaultAppearance } from '../player/appearance.js';
 import { colorize, mergeGeos } from './props.js';
 import { rng, clamp, lerp, damp, dampAngle, noise2, wrapAngle } from '../core/util.js';
+import { cloneMat } from '../core/nearfade.js';
 
 const _m = new THREE.Matrix4(), _q = new THREE.Quaternion(), _s = new THREE.Vector3(), _p = new THREE.Vector3(), _e = new THREE.Euler();
 
@@ -295,7 +296,7 @@ export const details = {
         const rock = assets.prop('rock_tall', hgt);
         rock.position.set(x, h - 1, z);
         rock.rotation.y = R() * 6;
-        rock.traverse((o) => { if (o.isMesh) { o.material = o.material.clone(); o.material.color.multiplyScalar(0.8); o.castShadow = true; } });
+        rock.traverse((o) => { if (o.isMesh) { o.material = cloneMat(o.material); o.material.color.multiplyScalar(0.8); o.castShadow = true; } });
         scene.add(rock);
         const rad = hgt * 0.32;
         Ship.obstacles.push({ x, z, r: rad });

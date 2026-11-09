@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import './shaderfix.js'; // NaN üreten sıfır normal koruması: hiçbir malzeme derlenmeden önce
 import { post } from './post.js';
 
 export const engine = {

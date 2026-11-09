@@ -49,6 +49,8 @@ export const events = {
     this.eventT = 90 + Math.random() * 60;
     if (this.enemyShip) { this._removeEnemyShip(); }
     this.crewT = 0;
+    // düşman gemisi tayfası hiç doğmamışken (gemi başka yoldan atanmışsa) _updateEnemyShip `crew.filter`'da çöküyordu
+    if (!this.crew) this.crew = [];
   },
   stop() { this.start(); },
 
@@ -293,7 +295,8 @@ export const events = {
     if (!me || me.sunk) { e.setRudder(0.3); return; } // gemi zaten oyun döngüsünde güncelleniyor (çift hız yok)
     const dx = me.x - e.x, dz = me.z - e.z;
     const dist = Math.hypot(dx, dz);
-    const crewAlive = this.crew.filter((c) => c.alive);
+    const crew = this.crew || (this.crew = []);
+    const crewAlive = crew.filter((c) => c.alive);
     // ele geçirme: tayfanın tamamı düştüyse
     if (!this.captured && this.crew.length && !crewAlive.length) {
       this.captured = true;

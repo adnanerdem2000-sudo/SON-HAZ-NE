@@ -74,6 +74,16 @@ export const post = {
     c.setSize(r.domElement.clientWidth || window.innerWidth, r.domElement.clientHeight || window.innerHeight);
     c.addPass(new RenderPass(this.scene, this.camera));
     this.bloom = new UnrealBloomPass(new THREE.Vector2(size.x / 2, size.y / 2), 0.32, 0.55, 0.88);
+    // parlama girişi NaN/Inf'ten arındırılır: sahnedeki tek bir bozuk piksel (taşan yansıma, sıfır normal…) parlamanın en küçük
+    // ara görüntüsünde ekranın tamamına yayılıyor, ton eşlemeden sonra kare tümden siyah çıkıyordu (ölçümlerde ~2 400 karede
+    // bir, konumdan bağımsız). Bozuk piksel artık yalnız kendi yerinde kalır.
+    const hp = this.bloom.materialHighPassFilter;
+    if (hp && hp.fragmentShader.includes('vec4 texel = texture2D( tDiffuse, vUv );')) {
+      hp.fragmentShader = hp.fragmentShader.replace('vec4 texel = texture2D( tDiffuse, vUv );', `vec4 texel = texture2D( tDiffuse, vUv );
+        if ( isnan( texel.r ) || isnan( texel.g ) || isnan( texel.b ) || isinf( texel.r ) || isinf( texel.g ) || isinf( texel.b ) || !( texel.r + texel.g + texel.b >= 0.0 ) ) texel = vec4( 0.0 );
+        texel.rgb = clamp( texel.rgb, 0.0, 6.0e4 );`);
+      hp.needsUpdate = true;
+    }
     c.addPass(this.bloom);
     this.grade = new ShaderPass(GradeShader);
     c.addPass(this.grade);

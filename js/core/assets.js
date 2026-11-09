@@ -3,6 +3,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { clone as skeletonClone } from 'three/addons/utils/SkeletonUtils.js';
 import { kk } from './kk.js';
+import { nearFade, nearFadeCatForModel } from './nearfade.js';
 
 // CC0 modeller (Quaternius & Kenney) — bkz. CREDITS.md
 export const MODEL_LIST = [
@@ -69,6 +70,16 @@ export const assets = {
         const size = Math.max(bb.max.x - bb.min.x, bb.max.z - bb.min.z, 1e-6);
         if (Math.hypot(cx, cz) > size) { for (const ch of gltf.scene.children) { ch.position.x -= cx; ch.position.z -= cz; } gltf.scene.updateMatrixWorld(true); }
       }
+      // Kenney doğa/yapı modellerinde (ağaç, palmiye, çalı, kaya, kütük, sütun, çadır…) glTF'e metallicFactor yazılmamış;
+      // glTF varsayılanı 1 → MeshStandardMaterial tam metal sayılıyor. Sahnede ortam haritası olmadığından metalin dağınık
+      // ışığı sıfır: güneş almayan yüzler simsiyah çiziliyordu. Kamera dönerken bir çalı/palmiye/kaya yüzü ekranı
+      // kaplayınca ekran kararıyor, kamera geçince düzeliyordu. Metal haritası olmayan tam-metal malzemeler mat yapılır.
+      gltf.scene.traverse((o) => {
+        if (!o.isMesh) return;
+        for (const m of Array.isArray(o.material) ? o.material : [o.material]) {
+          if (m && m.isMeshStandardMaterial && m.metalness === 1 && !m.metalnessMap) { m.metalness = 0; m.roughness = Math.min(m.roughness, 0.9); }
+        }
+      });
       // renk düzeltmeleri: Kenney sandık/varil modelleri ahşap tonuna
       if (name === 'crate') gltf.scene.traverse((o) => { if (o.isMesh) { o.material = o.material.clone(); o.material.color.lerp(new THREE.Color(0x8a5a32), 0.75); } });
       // varil: glTF'de metallicFactor yazılmamış → metalness 1; ortam haritası olmadığından gövde siyah/turuncu yağ varili gibi
@@ -80,6 +91,10 @@ export const assets = {
         o.material.roughness = 0.75;
         o.material.color.set(/red/i.test(o.material.name) ? 0x7a4a26 : 0x3c3c3a);
       });
+      // kameraya çok yaklaşınca titreşimli silinme (nearfade.js): bu malzemeyi paylaşan tüm kopyalar (örnekli bitki örtüsü,
+      // assets.prop) kancayı taşır; renk için klonlanan malzemeler kategoriyi inheritNearFade ile alır
+      const nfCat = nearFadeCatForModel(name);
+      if (nfCat) gltf.scene.traverse((o) => { if (o.isMesh) for (const m of [].concat(o.material)) nearFade(m, nfCat); });
       this.models[name] = gltf;
       done++;
       if (onProgress) onProgress(done / total);

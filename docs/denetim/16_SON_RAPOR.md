@@ -198,3 +198,41 @@ Bildirim: "bazen karakter koşarken takılır gibi oluyor", "bazen karakter yere
 - **Doğrulanamayan / sınırlı:** gerçek GPU'da el ile oynanış ve görsel his (çömelme/kürek eğimi, basamak yumuşatma), gerçek fareyle
   sıçrama süzgeci; harita karosu takılmasının gerçek GPU'daki süresi. Yayındaki sürüm (v0.3) bu düzeltmeleri içermez; yayına alma
   kullanıcı onayı bekler.
+
+## 16.11 Ek: Kamera dönerken ekran kararması (kullanıcı bildirimi)
+Bildirim: "kamera açısı dönünce ekrana karartı geliyor sonra düzeliyor fakat bu ciddi bir sorun". Ayrıntı: 03. belge (son bölüm),
+12. belge (önce/sonra tablosu), 11. belge #7 ve #40 (kapandı), #53–#57.
+- **Önemli:** kullanıcının oynadığı yayındaki sürüm v0.3'tür (`claude/hopeful-cray-o1jw6w` @ 762f1c7). Orada kamera görüş testi
+  hiç yok; bu turun düzeltmeleri de yalnız geliştirme dalında ve `dist/` tek dosyasındadır. Yayına alma kullanıcı onayı bekler.
+- **Ölçüm yöntemi:** 6 grupta 24 konumda kamera oyuncu gibi tam tur döndürüldü (2–4 eğim × 48–96 açı), her karenin ortalama
+  parlaklığı okundu; "karanlık kare" = konumun medyanının %60'ının altı. Tam siyah tek kareler için ayrıca av testi: siyah kare
+  yakalanınca sahne yarım kayan noktalı hedefe çizilip NaN/Inf pikseller sayıldı, görünür nesneler ikiye bölünerek suçlu bulundu.
+- **Bulunan nedenler (ölçüldü):** (1) Kenney doğa/yapı modelleri glTF varsayılanıyla tam metal (metalness 1) yükleniyordu; ortam
+  haritası olmadığından gölge yüzleri simsiyahtı. (2) Kamera, çarpıştırıcısı olmayan ya da kamerayı bilerek çekmeyen nesnelerin
+  (ağaç gövdesi, çalı, NPC, yelken, bumba, küpeşte, tente, fener direği) içinden geçiyor, ekranı birkaç kare bu nesnenin gölgedeki
+  yüzü kaplıyordu (ormanda 96 karenin 42'si karanlık, en düşük 17). (3) Güvertede alttan bakışta kamera gövdenin dışına, küpeşte
+  hizasının altına çıkıyordu (kıç direkte 96 karenin 17'si karanlık, en düşük 17). (4) Mağarada kamera eğri tavandan kayanın içine
+  çıkıyordu (tünelde 72 kamera konumunun 53'ü kesitin dışında). (5) Yüzerken dalga başın üstünden geçince kamera su altına
+  zorlanıyordu. (6) **Tam siyah tek kare:** ölçümlerde ~2 400 karede bir tüm ekran siyah (önce: pazar, açık deniz; ara sürüm: iskele feneri) —
+  düz gölgeli orman ağacında türevden hesaplanan normal bazı piksellerde NaN oluyor, parlama (bloom) bu tek pikseli tüm ekrana
+  yayıyordu (av testi: 3 456 karede 1 siyah kare, 3 bozuk piksel, suçlu 264 örnekli rüzgârlı ağaç). (7) Ada madeni girişinde
+  çarpıştırıcısız siyah düzlem.
+- **Düzeltmeler:** mat Kenney malzemeleri; yakın-kamera titreşimli silinme (bitki, karakter, oyuncu, yelken, küpeşte, direk, tente,
+  kayık) ve bitki örtüsünde kamerayla oyuncu arasındaki görüş çizgisi silindiri (kalın gövde oyuncuyu gizleyip ekranı kaplamasın); gemi gövdesi ve kıçtaki kayık kamera için katı; mağara kesitine çekme; yüzeyde yüzerken kamera hep su üstünde, su altı sisi
+  histerezisli, dürbün gözü su üstünde; sıfır/NaN normal koruması (`shaderfix.js`) ve parlama girişini arındırma (`post.js`);
+  maden girişine çarpıştırıcı.
+- **Bağımsız inceleme (çürütme turlu):** 3 boyutta (gölgelendirici/malzeme, kamera mantığı, oyun/test geçerliliği) 14 bulgu, her biri
+  ayrı bir doğrulayıcıya çürütmeye verildi. Bulgular düzeltmeler sürerken yazıldığından doğrulayıcıların 12'si "mevcut kodda zaten
+  giderilmiş" dedi (incelemeyle eşzamanlı uygulananlar: klonlanan malzemelerin kancayı kaybetmesi, mağara kısıtının duvar dibinde
+  kalkması, yüzeyde fırtınada kameranın yine suya girmesi, kıçtaki kayık, dürbün gözü, test ölçümünde FXAA, aday noktanın su/güverte
+  sınırından önce denenmesi, kit kopyalarının ada kaldırılınca yeniden derlenmesi, maden kutusu); doğrulanan son bulgu (dümende uzak
+  kameranın kendi kıç küpeştesine takılması) da düzeltildi.
+- **Ölçülen sonuç (26 konum, önce → sonra):** mağara hariç karanlık kare 139 → 36, parlaklık düşüşü 71 → 8, tam siyah kare 2 → 0;
+  güvertede kıç direk 17 → 0 (en düşük 17 → 77), yelken açık 16 → 0, orman ağaç dibi en düşük 17 → 42, Zümrüt Koy ormanı 44 → 8
+  (en düşük 5,8 → 39,7). Kalanlar karartma değil (gölgeli orman zemini, ağaç tacının içi yeşil, yapıya yaslanan kamera); ayrıntı 12. belge.
+- **Test:** `17_kamera_kararma.js` (K01–K12) eski kodda K01–K11'in 10'unda kaldı (K12'nin modülü eski kodda yok), son kodda 12/12.
+- **Tam regresyon (son kod):** 17 senaryo geçti (16 olay düzeltmesinden sonra 22/22), `09_performans` 9/9, `13_donma` 9/9, `coop/06b`
+  18/18, `coop/06d` 9/9, Node determinizm testi; tek dosya `02_tek_dosya` 4/4 ve tek dosyada K01/K09/K10/K11 doğrulandı.
+- **Doğrulanamayan / sınırlı:** gerçek GPU'da el ile oynanış ve titreşimli silinmenin görsel hissi; `discard`'ın bitki örtüsünde gerçek
+  ekran kartındaki maliyeti; Kenney modellerinin mat hâlinin biyom renkleriyle uyumu (gözle). Yayındaki sürüm (v0.3) bu düzeltmeleri
+  içermez; yayına alma kullanıcı onayı bekler.

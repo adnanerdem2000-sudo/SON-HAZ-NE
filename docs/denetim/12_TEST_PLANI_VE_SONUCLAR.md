@@ -213,3 +213,87 @@ göstergesi doğrulandı.
   aşıldı, çekirdek sayfaları sonlandırdı (11. belge #52); (2) ikinci koşu, inceleme bulgusu için yapılan kamera düzeltmesindeki bir hatayı
   yakaladı: `_col` başlangıçtaki sonsuz değerden sönümlenince NaN oluyor, kamera duvarlarda hiç yaklaşmıyordu (04 C07, 15 C03 kaldı) →
   düzeltildi, son koşuda ikisi de geçti.
+
+## Kullanıcı bildirimi turu: kamera dönerken ekran kararması
+Senaryo: `tests/scenarios/17_kamera_kararma.js` (K01–K12). "Önce" sütunu aynı test kodunun önceki sürümde (HEAD 78c9103, 8080)
+koşturulmasıdır; başsız Chromium + SwiftShader, 640×360. Parlaklık testleri (K05, K08) sahneyi 160×90'lık yarım kayan noktalı hedefe
+çizip okur (11. belge #57), K10 son işlemli ekranı okur.
+
+| Kontrol | Önce (HEAD 78c9103) | Sonra (son kod) |
+|---|---|---|
+| K01 Kenney modellerinde tam metal malzeme (18 model) | KALDI: tüm malzemeler metalness 1 | GEÇTİ: 0 |
+| K02 yakın-kamera silinme kancaları | KALDI (modül yok) | GEÇTİ: 11 örnekli bitki çizimi, gemi `sail`+`rail`, oyuncu `self`, NPC/hayvan `char` |
+| K03 silinme gölgelendiricisi (siyah düzlem 0,3 / 1,1 / 4 m) | KALDI (modül yok) | GEÇTİ: 0,3 m'de görüntü düzlemsizle aynı (siyah oranı 0,027), 1,1 m'de 0,533, 4 m'de 1,0 |
+| K04 güverte 4 nokta × 2 eğim × 24 açı: görüş hattı gövdeyi kesiyor | KALDI: 4 / 5 / 10 / 6 ihlal (ambar, baş, kıç direk, yelken açık) | GEÇTİ: 0 |
+| K05 güverte alttan bakış (−0,25), 3 nokta × 16 açı | KALDI: kıç direkte en düşük 36 (medyan 85), 3 karanlık kare | GEÇTİ: en düşük 80–85, karanlık 0 |
+| K06 iskelede gemi yanında 2 × 24 açı | KALDI: 1 ihlal | GEÇTİ: 0 |
+| K07 mağara: kamera tünel kesitinin dışında (72 konumdan) | KALDI: tünel 53, tünel-2 56, duvar dibi 47, oda 35 | GEÇTİ: 0 / 0 / 0 / 0; kamera–baş medyanı 2,45 / 2,51 / 0,97 / 2,77 m |
+| K08 orman (2 × 32 açı) ve palmiyeler (2 × 16) | KALDI: ormanda en düşük 38 (medyan 66), 1 karanlık kare | GEÇTİ: en düşük 56,6 (medyan 70), 0 |
+| K09 su altı histerezisi (+50 / −6 / −20 / −2 / +5 cm) | KALDI: −6 cm'de sis açılıyor, −2 cm'de kapanıyor | GEÇTİ: kapalı / kapalı / açık / açık / kapalı |
+| K10 kameranın 1 m önünde NaN / Inf yazan 5 cm'lik yüzey | KALDI: kare tümden siyah (parlaklık 131 → 0 / 0) | GEÇTİ: 131,6 / 131,6 (değişmez) |
+| K11 sıfır normalli yüzey: yarım kayan noktalı hedefte bozuk piksel | KALDI: yumuşak gölgede 768 NaN/Inf piksel | GEÇTİ: 0 (yumuşak ve düz gölge) |
+| K12 görüş çizgisi silindiri: 2,6 m'deki siyah bitki düzlemi (ekran ortası 1/8) | KALDI (modül yok) | GEÇTİ: silindir açıkken düzlem ortada görünmez (siyah oranı 0,125 = düzlemsiz), kapalıyken 1,0 |
+
+Toplam: eski kodda K01–K11'in 10'u kaldı (K12 eski kodda da kalır: modül yok), son kodda 12/12 (tepe bellek 2,3 GB).
+
+**Tam siyah kare avı:** 4 konumda (iskele feneri, pazar, gemi başı, gemi yanında iskele) 3 tur × 3 eğim × 96 açı = 3 456 kare; her
+siyah karede sahne yarım kayan noktalı hedefe çizilip NaN/Inf pikseller sayıldı ve görünür nesneler ikiye bölünerek suçlu arandı. Eski
+kodda 1 siyah kare yakalandı (pazar, eğim −0,25): 3 bozuk piksel (ekranın sol kenarı), 11 adımda suçlu tek nesneye indi — rüzgârla
+sallanan, düz gölgeli prosedürel orman ağacı (264 örnek, MeshStandardMaterial, roughness 0,9). Önceki taramalarda aynı türden tek
+siyah kareler: pazar ve açık deniz (eski kod), iskele feneri (ara sürüm). Düzeltme: sıfır/NaN normal koruması + parlama girişini
+arındırma (K10, K11). Aynı av, normal korumasından önceki ara sürümde paralel koşuldu ve siyah kare yakalamadan 1 877 sn'de tarayıcı
+belleği yüzünden çöktü (ekran arabelleği okumaları, 11. belge #57); son kodla av yinelenmedi. Siyah kare seyrek (tüm ölçümlerde
+~9 500 karede 4 kez, yaklaşık 2 400 karede bir) olduğundan düzeltme olasılıksal av yerine K10/K11'in belirlenimci denemeleriyle doğrulandı.
+
+**Bu turun tam regresyonu (son kod, iki şerit paralel, 640×360; 06 için 960×540):** `00_acilis` 6/6, `02_arazi_kurtarma` 7/7,
+`02_arazi_yedek` 12/12, `03_fizik_dt` (hata 0), `03_fizik_duzeltmeler` 14/14, `04_karakter` 21/21, `05_dusman_ai` 18/18,
+`06_arayuz_960` 4/4, `07_dunya_kesif` 10/10, `07_ekonomi` 3/3, `08_kalicilik` 12/12, `11_arayuz_sizinti` 6/6, `12_kayit_dongusu` 4/4,
+`14_deniz_ekipmani` 16/16, `15_iskele_kamera` 14/14, `17_kamera_kararma` 13/13 (sayılar başlangıç kontrolü dahil) → hata, sayfa
+hatası, adım istisnası 0. Görüş çizgisi silindiri ve derinde başlama dalış kuralı bu koşudan sonra eklendi; çizime ve yüzmeye
+duyarlı senaryolar son kodla yinelendi: `04_karakter` 21/21, `14_deniz_ekipmani` 16/16, `15_iskele_kamera` 14/14, `17` 13/13,
+`13_donma` 9/9, `09_performans` 9/9. `16_kosu_poz_ganimet` ilk koşuda T04'ten sonra 9 kontrolde kaldı: rastgele başlayan düşman gemisi olayında
+`events.crew` hiç başlatılmamıştı, sonraki her güncelleme `crew.filter`'da çöktü (önceden var olan, rastgeleliğe bağlı hata) →
+`events.js` düzeltildi, tek başına 23/23; o yolu bilerek tetikleyen deneme eski kodda çöküyor, yenide çökmüyor. Tek başına:
+`09_performans` 9/9, `13_donma` 9/9, `coop/06b` 18/18, `coop/06d` 9/9; Node `archipelago_sabit.mjs` GEÇTİ.
+
+**Parlaklık taraması (önce / sonra):** 26 konumda kamera oyuncu gibi tam tur döndürüldü (her eğimde 48 açı; 2 eğim, açık denizde
+2 × 96), 320×180, saat 11:00, açık hava; son işlemli ekranın ortalama parlaklığı (Rec.709 luma, 0–255). "Karanlık" = parlaklık
+konumun medyanının %60'ının altında ya da piksellerin yarısından fazlası koyu (luma < 28); parantezdeki sayı yalnız parlaklık
+düşüşü ölçütü. Önce: HEAD 78c9103 (ek adalar grubu, ağaç bulma hatası düzeltilmiş tarama betiğiyle yinelendi); sonra: son kod.
+
+| Konum | Kare | Önce: medyan / en düşük / karanlık (parlaklık düşüşü) | Sonra: medyan / en düşük / karanlık (parlaklık düşüşü) |
+|---|---|---|---|
+| Kasaba (doğuş) | 96 | 127,4 / 104,1 / 0 (0) | 127,4 / 104,1 / 0 (0) |
+| İskele ortası | 96 | 129,1 / 95,3 / 0 (0) | 129 / 95,3 / 0 (0) |
+| İskele, gemi yanı | 96 | 119,7 / 69,8 / 1 (1) | 120,1 / 83,8 / 0 (0) |
+| İskele feneri | 96 | 128,7 / 115,1 / 0 (0) | 128,6 / 115,1 / 0 (0) |
+| Güverte, ambar | 96 | 103,7 / 49 / 5 (2) | 108,3 / 93,3 / 0 (0) |
+| Güverte, baş | 96 | 113,7 / 64,4 / 1 (1) | 118,1 / 100,7 / 0 (0) |
+| Güverte, kıç direk | 96 | 97,7 / 16,9 / 17 (14) | 102,1 / 77 / 0 (0) |
+| Güverte, yelken açık | 96 | 81,1 / 26,4 / 16 (5) | 97,1 / 63,7 / 0 (0) |
+| Yüzme, gemi yanı | 96 | 135,9 / 112,9 / 0 (0) | 135,9 / 113 / 0 (0) |
+| Yüzme, iskele yanı | 96 | 118,9 / 85,8 / 0 (0) | 118,8 / 85,7 / 0 (0) |
+| Kayık | 96 | 134,4 / 113,1 / 0 (0) | 134,4 / 113,2 / 0 (0) |
+| Açık deniz (tabandan yükselme) | 192 | 128,6 / 0 / 1 (1) | 128,8 / 114,1 / 0 (0) |
+| Orman (ağaç dibi) | 96 | 55,5 / 17 / 42 (8) | 60,1 / 41,7 / 26 (0) |
+| Orman (gövdeden 4 m) | 96 | 69,9 / 32,3 / 4 (1) | 71,3 / 43,2 / 0 (0) |
+| Kumsal palmiyeleri | 96 | 103,9 / 77,8 / 0 (0) | 107,5 / 80,2 / 0 (0) |
+| Kasaba NPC (Nevra) | 96 | 115,7 / 92,1 / 0 (0) | 115,7 / 93,6 / 0 (0) |
+| Pazar tezgâhı | 96 | 118,9 / 0 / 1 (1) | 119 / 101,7 / 0 (0) |
+| Tersane çatısı | 96 | 87 / 66,1 / 0 (0) | 87 / 66,2 / 0 (0) |
+| Gözcü tepesi | 96 | 105,4 / 84,5 / 0 (0) | 105,4 / 84,9 / 0 (0) |
+| Kamp | 96 | 121,2 / 48,6 / 2 (2) | 123,3 / 91,7 / 0 (0) |
+| Mağara ağzı | 96 | 41,5 / 24,8 / 80 (2) | 46,5 / 25,9 / 72 (7) |
+| Mağara tüneli | 96 | 4,1 / 1,8 / 96 (25) | 2,5 / 2 / 96 (0) |
+| Mağara odası | 96 | 4,7 / 3,5 / 96 (0) | 4,3 / 3 / 96 (0) |
+| Zümrüt Koy ormanı | 96 | 50,7 / 5,8 / 44 (32) | 72,2 / 39,7 / 8 (8) |
+| Zümrüt Koy limanı | 96 | 82,6 / 50,6 / 2 (0) | 82,7 / 50,8 / 2 (0) |
+| Kurt Adası ormanı | 96 | 107,6 / 43,7 / 3 (3) | 126,8 / 92,6 / 0 (0) |
+
+Mağara hariç toplam: karanlık kare 139 → 36, parlaklık düşüşü 71 → 8; tam siyah kare (en düşük 0) 2 → 0. Görsel: `gorseller/17_kamera_kararma_once_sonra.jpg`
+(dört konumda tam turdaki en koyu kare, önce/sonra). Kalanlar: ağaç dibinde 26
+kare yalnız "pikselerin yarısı koyu" ölçütüne takılıyor (gölgeli orman zemini; en koyu karede oyuncu ortada görünüyor), Zümrüt Koy'da
+kamera büyük bir ağaç tacının içinden geçerken çevreyi yeşil yapraklar sarıyor (önce siyah, en düşük 5,8 → 39,7), limandaki 2 kare
+kameranın bir yapıya yaslandığı an (önce de aynı). Mağara tasarım gereği karanlık (meşale yokken medyan 2–5): parlaklık ölçütü
+burada anlamsız, mağara K07'nin geometrik testiyle doğrulandı (tünelde kesitin dışına çıkan kamera 53–56/72 → 0); ağızda
+parlaklık düşüşü 2 → 7, çünkü kamera artık kayanın içinden dışarıyı göstermiyor, tünelin içinde kalıyor.

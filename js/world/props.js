@@ -5,6 +5,7 @@ import { physics } from './physics.js';
 import { CORE_ISLANDS as ISLANDS, CORE_DIG_SITES as DIG_SITES, TERRAIN_MODS, CAVE, POIS } from './worldData.js';
 import { rng, noise2, smoothstep } from '../core/util.js';
 import { stone, woodPlanks } from '../core/textures.js';
+import { nearFade, inheritNearFade } from '../core/nearfade.js';
 
 const _m = new THREE.Matrix4();
 const _q = new THREE.Quaternion();
@@ -20,11 +21,11 @@ function instanced(name, transforms, scene, opts = {}) {
   for (const part of parts) {
     let mat = part.material;
     if (opts.recolor && opts.recolor[mat.name]) {
-      mat = mat.clone();
+      mat = inheritNearFade(mat.clone(), part.material);
       mat.color.set(opts.recolor[mat.name]);
     }
     if (opts.tint) {
-      mat = mat.clone();
+      mat = inheritNearFade(mat.clone(), part.material);
       mat.color.multiply(new THREE.Color(opts.tint));
     }
     const im = new THREE.InstancedMesh(part.geometry, mat, transforms.length);
@@ -253,6 +254,7 @@ export const props = {
     const tg = jungleTreeGeometry(7);
     const tmat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.9, flatShading: true });
     this._addWind(tmat, 0.06);
+    nearFade(tmat, 'veg'); // kamera gövdenin/tacın içinden geçerken ekranı kaplamasın (nearfade.js)
     const tim = new THREE.InstancedMesh(tg, tmat, Math.max(1, trees.length));
     trees.forEach((t, i) => {
       _q.setFromEuler(_e.set(0, t.yaw, 0)); _s.setScalar(t.s); _p.set(t.x, t.y, t.z);
@@ -304,6 +306,7 @@ export const props = {
 
   _inst(scene, geo, mat, list, shadow) {
     if (!list.length) return;
+    nearFade(mat, 'veg'); // eğrelti/ot/kuru ağaç: kamera içinden geçerken ekranı kaplamasın
     const im = new THREE.InstancedMesh(geo, mat, list.length);
     list.forEach((t, i) => {
       _q.setFromEuler(_e.set(0, t.yaw, 0)); _s.setScalar(t.s); _p.set(t.x, t.y, t.z);
