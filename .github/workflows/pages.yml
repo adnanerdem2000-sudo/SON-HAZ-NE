@@ -15,7 +15,7 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   check:
@@ -32,12 +32,18 @@ jobs:
 
   deploy:
     needs: check
-    if: needs.check.outputs.enabled == 'true'
+    if: needs.check.outputs.enabled == 'true' && github.ref == 'refs/heads/claude/hopeful-cray-o1jw6w'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      # Ref denetimi (K-03, Y9a): GitHub ifadelerinde == harfe duyarsızdır; yukarıdaki if, yayın dalının harf varyantı olan başka bir
+      # dalı da kabul eder. Harfe duyarlı bu kabuk denetimi o dalları ve if koşulunun ileride gevşetilmesini kırmızıyla durdurur.
+      - name: Ref denetimi (yalnız yayın dalı yayınlanır)
+        env:
+          YAYIN_DALI: claude/hopeful-cray-o1jw6w
+        run: test "$GITHUB_REF" = "refs/heads/$YAYIN_DALI" || { echo "::error::Yalnız $YAYIN_DALI yayınlanır ($GITHUB_REF)"; exit 1; }
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
       # tek dosyalık çevrimdışı sürüm (indirilip çift tıklanarak oynanır)
