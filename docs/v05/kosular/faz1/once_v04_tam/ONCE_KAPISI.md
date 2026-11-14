@@ -37,7 +37,7 @@ Bellek 2 saniyede bir örneklendi (`tekrar/bellek.txt`). Ölçülen değer, cgro
 
 | Koşu | Yeni koşucu (GEÇTİ/koşu) | Eski koşucu (GEÇTİ/koşu) | İlk kalmanın nedeni |
 |---|---|---|---|
-| 17_kamera_kararma | **2/3**: tam koşu KALDI, 2 tekrar 13/13 | 1/1: Faz 0 tabanı. Eski koşucuyla tekrarlanmadı (neden kesin). | **Bellek (OOM):** 09:49:57'de cgroup sınırı aşıldı ve `chrome-headless` öldürüldü (anon-rss 5,2 GB, aşağıdaki dmesg satırı). Sayfa çöktü, sonraki 8 kontrol "Target crashed" verdi. |
+| 17_kamera_kararma | **2/3**: tam koşu KALDI, 2 tekrar 13/13 | 1/1: Faz 0 tabanı. Bu tekrarlarda eski koşucuyla koşulmadı. | **Bellek (OOM):** 09:49:57'de cgroup sınırı aşıldı ve `chrome-headless` öldürüldü (anon-rss 5,2 GB, aşağıdaki dmesg satırı). Sayfa çöktü, sonraki 8 kontrol "Target crashed" verdi. **Koşucuyla ilişkisi araştırılıyor;** aşağıdaki düzeltmeye bakın. |
 | 14_deniz_ekipmani | **3/4**: tam koşu KALDI, 3 tekrar 16/16 | **3/3**: Faz 0 tabanı ve 2 tekrar, 16/16 | **Çanta rastgele doldu.** Ayrıntı aşağıda. |
 | coop_06a2 | **3/4**: tam koşu KALDI, 3 tekrar 3/3 | **3/3**: Faz 0 tabanı ve 2 tekrar, 3/3 | **Konuk menüye düştü:** `["playing","menu","playing"]`. Belirti KI-233 ile aynı; kök neden kanıtlanmadı. Koşu sırasında OOM yok. Ayrıntı aşağıda. |
 
@@ -54,7 +54,28 @@ Eski koşucu 14 ve 06a2'de 3/3, yeni koşucu 3/4 geçti. Bu örneklem büyüklü
 
 Koşu raporunda `hatalar.sayfa = ["SAYFA ÇÖKTÜ (renderer crash)"]` görünüyor. K05–K12 "page.evaluate: Target crashed" verdi. Yazılımsal GL (SwiftShader) tek sayfada 5–7 GB bellek kullanabiliyor.
 
-Bu ortam kaynaklı bir sorun, oyun mantığı değil. Bellek konusu Faz 8'e ve test ortamı notlarına aktarılacak.
+~~Bu ortam kaynaklı bir sorun, oyun mantığı değil.~~ **Düzeltme (aynı gün, A2 sonrası):** Bu hüküm geri çekildi.
+
+A2 iş akışı çöküşü değişmemiş v0.4'te daralttı (`../a2/inceleme/17_*`):
+
+| Koşucu | Sonuç |
+|---|---|
+| Eski koşucu | 13/13 |
+| Yeni koşucu | 5/13, çöküş |
+| Başlatma betiği kapalı | 13/13 |
+| Yalnız rAF sarmalayıcısı kapalı | 13/13 |
+| Yalnız `game.update` sarmalayıcısı kapalı | KALDI, çöküş |
+| w2'de rAF'sız kopya | 13/13 |
+
+Bütün çöküşler cgroup OOM öldürmesiyle aynı ana denk geliyor: 09:49:57, 11:44:13, 11:59:39 ve 12:10:24.
+
+Bellek davranışı iki uçlu:
+- Bu klasördeki iki geçen tekrarda, koşu penceresinde bütün cgroup en çok 5,9 ve 4,2 GB'a çıktı (`tekrar/bellek_tepe_duzeltme.txt`).
+- Kalan koşularda 13,6 GB'lık sınıra ulaşıldı.
+
+Kaba sayım: rAF sarmalayıcılı koşularda 4/6 çöküş, sarmalayıcısız ya da eski koşucuyla 0/5 çöküş (tek yönlü Fisher ≈ 0,045). Bu, kalmanın **A1 koşucusunun `requestAnimationFrame` sarmalayıcısıyla ilişkili** olabileceğini gösteriyor; mekanizma bilinmiyor.
+
+Süreç belleği ölçümlü ayrı bir inceleme ve gerekirse koşucu düzeltmesi yapılıyor. Kesin hüküm o inceleme bitince buraya ve FIX_REPORT'a yazılacak.
 
 ### 14: çanta kapasitesi (test ön koşulu eksik)
 
@@ -105,11 +126,14 @@ Bu yüzden 06a2, Faz 5'te KI-233 ele alınırken iki koşucuyla da tekrarlı öl
 
 `17_kamera_kararma`, `14_deniz_ekipmani` ve `coop_06a2` yeni koşucuyla **KARARSIZ** diye kaydedildi:
 
-- **17:** 2/3 (tek kalma bellek kaynaklı).
+- **17:** 2/3 (kalma bellek çökmesi; koşucunun rAF sarmalayıcısıyla ilişkisi araştırılıyor, yukarıya bakın).
 - **14:** 3/4.
 - **06a2:** 3/4.
 
-Bunlar GEÇTİ sayılmadı. Yeni koşucunun kendisinden kaynaklanan bir regresyon bulunmadı.
+Bunlar GEÇTİ sayılmadı.
+
+- **14 ve 06a2:** Yeni koşucunun kendisinden kaynaklanan bir regresyon bulunmadı.
+- **17:** Koşucu kaynaklı olma ihtimali açık; araştırılıyor.
 
 Faz 1 "sonra" kapısında w2 aynı araçla karşılaştırılacak. Bu üç koşudan biri kalırsa, yukarıdaki k/N ve nedenlerle birlikte yeniden koşulup kaydedilecek. 14'ün test sağlamlaştırmasından sonra belirlenimli geçmesi beklenir; bu ayrıca sınanacak. `09_performans` ve `coop_06c` Faz 0'dan beri kararsız diye kayıtlı.
 
@@ -118,7 +142,9 @@ Faz 1 "sonra" kapısında w2 aynı araçla karşılaştırılacak. Bu üç koşu
 - `summary.txt`: tam koşunun satırları.
 - `<koşu>.json` / `.log`: ham raporlar.
 - `taban_karsilastirma.txt` / `.json`: Faz 0 tabanıyla kontrol kontrol karşılaştırma.
-- `tekrar/summary.txt`: tekrarlar; her satırda koşu süresince cgroup tepe belleği var. Betikteki `grep oom_kill` iki satırı yakaladı:
+- `tekrar/summary.txt`: tekrarlar.
+  - **Satırlardaki `tepe=` değerleri YANLIŞ:** betikteki awk sayıları metin olarak karşılaştırdı ("993" > "7347"). Doğru, sayısal değerler `tekrar/bellek_tepe_duzeltme.txt` içinde.
+  - Ayrıca betikteki `grep oom_kill` iki satırı yakaladı:
   - Satırdaki `oom=0` aslında `oom_kill_disable` değeri.
   - Bir sonraki satırın başındaki `6`, `oom_kill` sayacı. Bu sayaç tüm tekrarlar boyunca 6'da kaldı.
   - Eski koşucu `SONUC` satırı yazmaz, bu yüzden PASS/FAIL sayıları günlükten alındı.

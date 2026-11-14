@@ -127,7 +127,7 @@ Uygulamadan sonra ayrı bir inceleme 13 bulgu çıkardı. Ayrı bir düzeltici 1
 
 | Koşu | Yeni koşucu | Eski koşucu | İlk kalmanın nedeni |
 |---|---|---|---|
-| `17_kamera_kararma` | 2/3 | — | Bellek: cgroup OOM sayfayı çökertti. |
+| `17_kamera_kararma` | 2/3 | — | Bellek: cgroup OOM sayfayı çökertti. A2'nin daraltmasına göre koşucunun rAF sarmalayıcısıyla ilişkili olabilir; araştırılıyor. |
 | `14_deniz_ekipmani` | 3/4 | 3/3 | Testin ön koşulu eksik: çanta önceki adımların rastgele balıklarıyla doluyor. |
 | `coop_06a2` | 3/4 | 3/3 | Konuk menüye düştü (KI-233 belirtisi); kök neden kanıtlanmadı. |
 
