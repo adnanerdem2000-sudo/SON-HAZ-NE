@@ -46,6 +46,9 @@ Tarih: 13 Kasım 2026. Bu belge, v0.5 sağlamlaştırma çalışmasına başlama
 | 00_acilis | 6/6 geçti | 32 sn | |
 | 02_arazi_yedek | 12/12 | 68 sn | **Yalnız normal (işçili) kipte koştu.** Senaryo işçisiz kipler için yazılmış, ama taban betiği `?terrain=` parametresi vermedi ve senaryo etkin kipi doğrulamıyor. İşçisiz kipler (`noworker`, `badurl`, `crash`) bu kayıtta **denenmedi**; Faz 1'in "önce" ölçümünde v0.4 üzerinde ayrıca koşulacak (düzeltme, 14 Kasım 2026; denetim K) |
 | 02_arazi_kurtarma | 7/7 | 52 sn | İşçi çökmesi |
+| 02_arazi_yedek `?terrain=noworker` (ek koşu, 14 Kasım) | 12/12 | 74 sn | İşçi yok, yedek açık (`workers 0`, `fallback true`). Uzak bölge `prepare` 1,6 sn |
+| 02_arazi_yedek `?terrain=badurl` (ek koşu) | 12/12 | 61 sn | 3 işçinin yüklemesi başarısız (`net::ERR_FAILED`, 3 kayıt), yedek açık. Uzak bölge `prepare` 1,8 sn |
+| 02_arazi_yedek `?terrain=crash` (ek koşu) | 12/12 | 81 sn | İşçiler ilk işte çöküyor, yedek açık. **Uzak bölge `prepare` 28,8 sn** (normal kipte 0,6 sn, `noworker` kipinde 1,6 sn); 45 sn sınırına yakın. Faz 1'de kök nedeni aranacak |
 | 02_tek_dosya | 4/4 | 28 sn | `file://` tek HTML (dist, v0.4) |
 | 03_fizik_dt | ölçüm | 49 sn | Kontrolü yok. 15/30/60 FPS'te yürüme 12,596 m, 120 FPS'te 12,585 m. Zıplama tepesi 1,183 m, 120 FPS'te 1,214 m (%2,6). Gemi 12 sn'de 87,5–87,8 m, 120 FPS'te 82,64 m (**%5,7 eksik**). Dönüş 163–174°. Fizik kare hızından tam bağımsız değil (Faz 3). |
 | 03_fizik_duzeltmeler | 14/14 | 39 sn | |

@@ -1,0 +1,23 @@
+NETFAIL: http://localhost:8080/js/world/terrainWorker.missing.js
+NETFAIL: http://localhost:8080/js/world/terrainWorker.missing.js
+NETFAIL: http://localhost:8080/js/world/terrainWorker.missing.js
+ready in 5.4 s
+PASS Sayfa hazır (yükleme ekranı aşıldı) → true
+R: {"mode":"badurl","workers":0,"fallback":true,"failures":["işçi 0: hata: yükleme/çalışma hatası","işçi 1: hata: yükleme/çalışma hatası","işçi 2: hata: yükleme/çalışma hatası","hata: yükleme/çalışma hatası"],"stats":{"tiles":125,"meshes":125,"hires":15,"tris":311168,"queue":0,"jobs":0,"workers":0,"fallback":true,"failures":4,"mode":"badurl"}}
+PASS Menü sahnesinde karo ağları üretildi → 125
+PASS Okyanus derinlik penceresi hazır → true
+R: "ok"
+PASS Oyun başladı → "playing"
+R: {"startMs":240,"pendingJobs":3,"queue":2}
+PASS Oyuncu zemine basıyor → true
+PASS Yüksek çözünürlüklü karolar (yükseklik ızgarası + ağ) → 25
+PASS Uzak bölge prepare() sonuçlanıyor (askıda kalmıyor) → true
+PASS Derinlik penceresi yeni bölgeye taşındı → true
+R: {"prepMs":1815,"prepUnder45s":true,"stats":{"tiles":129,"meshes":129,"hires":31,"tris":518400,"queue":0,"jobs":0,"workers":0,"fallback":true,"failures":4,"mode":"badurl"}}
+PASS Tuz Pazarı çevresinde karo ağları var → 21
+PASS Harita ızgarası isteği sonuçlanıyor → true
+PASS Uzak adada yürüme (zemin sorgusu tutarlı) → true
+R: "ok"
+PASS Kuyruk ilerliyor (askıda iş yok) → true
+R: {"jobsBefore":132,"jobsAfter8s":0,"fallback":true}
+errors: 3 pageErrors: 0 fails: 0 (61.0 s)
