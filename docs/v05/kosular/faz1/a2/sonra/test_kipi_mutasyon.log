@@ -1,0 +1,62 @@
+# test_kipi.mjs mutasyon sınaması (2026-11-14T10:58:16+00:00): her satırda js/ ağacının bir kopyasına tek bir kural ihlali eklenir;
+# araç --agac <kopya> --taban-main <44d548c main.js> ile koşar. Beklenen: M0 ve M13c GECTI, diğerleri çıkış 1 ve adı geçen denetim KALDI.
+# betik:
+#   #!/bin/bash
+#   # test_kipi.mjs mutasyon sınaması: her mutasyon ayrı bir js/ kopyasında yapılır; araç KALMALI ve beklenen denetim kalmalı.
+#   W=/home/user/SON-HAZ-NE-w2; S=$(dirname "$0")
+#   kos() { # ad, beklenen_kalan_denetim, komut...
+#     local ad=$1 bek=$2; shift 2
+#     rm -rf $S/agac && mkdir -p $S/agac && cp -r $W/js $S/agac/js
+#     ( cd $S/agac && eval "$@" )
+#     local cikti; cikti=$(node $W/tests/node/test_kipi.mjs --agac $S/agac --taban-main $S/taban_main.js 2>&1); local rc=$?
+#     local kalan; kalan=$(echo "$cikti" | grep '^SONUC' | sed 's/.*kalan: //')
+#     local k2=",${kalan// /},"
+#     local ok=HAYIR
+#     if [[ $bek == "-" ]]; then [[ $rc -eq 0 ]] && ok=EVET; echo "$ad | çıkış $rc | $(echo "$cikti" | grep '^SONUC') | beklenen GECTI: $ok"; return; fi
+#     [[ $rc -eq 1 && "$k2" == *",$bek,"* ]] && ok=EVET
+#     echo "$ad | çıkış $rc | kalan: $kalan | beklenen $bek kaldı: $ok"
+#   }
+#   kos M0_degisiklik_yok - "true"
+#   kos M1_oyun_kodunda_DK_atamasi K1 "sed -i '1a window.DK.x = 1;' js/game/game.js"
+#   kos M2_oyun_kodunda_DK_okuma K3 "sed -i '1a const zz = window.DK && 1;' js/game/game.js"
+#   kos M2b_ciplak_DK K3 "sed -i '1a function qq() { return DK.sim(1); }' js/game/game.js"
+#   kos M3_statik_kanca_import K2 "sed -i \"1a import { install as kur } from '../test/kancalar.js';\" js/game/game.js"
+#   kos M4_kosul_veya K2 "sed -i 's/if (TEST) {/if (TEST || true) {/' js/main.js"
+#   kos M5_kosulsuz_import K2 "sed -i 's/  if (TEST) {/  {/' js/main.js"
+#   kos M6_yerel_TEST K2 "sed -i \"s#import { TEST } from './core/testmode.js';#const TEST = true;#\" js/main.js"
+#   kos M7_location_search K4 "sed -i \"1a const pp = new URLSearchParams(location.search).get('x');\" js/ui/menu.js"
+#   kos M8_main_join_disi K4 "sed -i \"s/get('join')/get('joinx')/\" js/main.js"
+#   kos M9_govde_degisti AP3 "sed -i 's#const n = Math.round(seconds / dt);#const n = Math.round(seconds / dt) + 1;#' js/test/kancalar.js"
+#   kos M10_alan_eksik AP2 "sed -i 's/ocean, crowd, audio });/ocean, audio });/' js/main.js"
+#   kos M11_fazla_alan AP2 "sed -i 's/ocean, crowd, audio });/ocean, crowd, audio, fazla: 1 });/' js/main.js"
+#   kos M12_ready_once ZM "sed -i 's/^  if (TEST) {/  window.__ready = true;\n  if (TEST) {/' js/main.js"
+#   kos M13_bekletilmeyen_soz ZM "sed -i 's/const { install } = await kancaSozu;/const { install } = kancaSozu;/' js/main.js"
+#   kos M13b_import_test_disinda K2 "sed -i 's/if (TEST) { kancaSozu = import/{ kancaSozu = import/' js/main.js"
+#   kos M13c_dogrudan_await_import_de_gecer - "sed -i \"s#const { install } = await kancaSozu;#const { install } = await import('./test/kancalar.js');#\" js/main.js"
+#   kos M14_testmode_has DT07 "sed -i \"s/.get('test') !== '1'/.has('test') !== true/\" js/core/testmode.js"
+#   kos M15_yerel_genis DT16 "sed -i \"s/'\\[::1\\]'\\]);/'[::1]', '0.0.0.0']);/\" js/core/testmode.js"
+#   kos M16_testParam_hep_acik TP01 "sed -i 's/  if (!TEST) return null;//' js/core/testmode.js"
+#   kos M17_fazla_disa_aktarim K2 "echo 'export const sizinti = 1;' >> js/test/kancalar.js"
+#   kos M18_testmode_yok DT "rm js/core/testmode.js"
+M0_degisiklik_yok | çıkış 0 | SONUC: GECTI (37/37 denetim) | beklenen GECTI: EVET
+M1_oyun_kodunda_DK_atamasi | çıkış 1 | kalan: K1, K3 | beklenen K1 kaldı: EVET
+M2_oyun_kodunda_DK_okuma | çıkış 1 | kalan: K3 | beklenen K3 kaldı: EVET
+M2b_ciplak_DK | çıkış 1 | kalan: K3 | beklenen K3 kaldı: EVET
+M3_statik_kanca_import | çıkış 1 | kalan: K2 | beklenen K2 kaldı: EVET
+M4_kosul_veya | çıkış 1 | kalan: K2 | beklenen K2 kaldı: EVET
+M5_kosulsuz_import | çıkış 1 | kalan: K2 | beklenen K2 kaldı: EVET
+M6_yerel_TEST | çıkış 1 | kalan: K2 | beklenen K2 kaldı: EVET
+M7_location_search | çıkış 1 | kalan: K4 | beklenen K4 kaldı: EVET
+M8_main_join_disi | çıkış 1 | kalan: K4 | beklenen K4 kaldı: EVET
+M9_govde_degisti | çıkış 1 | kalan: AP3 | beklenen AP3 kaldı: EVET
+M10_alan_eksik | çıkış 1 | kalan: AP2 | beklenen AP2 kaldı: EVET
+M11_fazla_alan | çıkış 1 | kalan: AP2 | beklenen AP2 kaldı: EVET
+M12_ready_once | çıkış 1 | kalan: ZM | beklenen ZM kaldı: EVET
+M13_bekletilmeyen_soz | çıkış 1 | kalan: ZM | beklenen ZM kaldı: EVET
+M13b_import_test_disinda | çıkış 1 | kalan: K2 | beklenen K2 kaldı: EVET
+M13c_dogrudan_await_import_de_gecer | çıkış 0 | SONUC: GECTI (37/37 denetim) | beklenen GECTI: EVET
+M14_testmode_has | çıkış 1 | kalan: DT07, DT08 | beklenen DT07 kaldı: EVET
+M15_yerel_genis | çıkış 1 | kalan: DT16 | beklenen DT16 kaldı: EVET
+M16_testParam_hep_acik | çıkış 1 | kalan: TP01, TP02, TP05 | beklenen TP01 kaldı: EVET
+M17_fazla_disa_aktarim | çıkış 1 | kalan: K2 | beklenen K2 kaldı: EVET
+M18_testmode_yok | çıkış 1 | kalan: K4, DT | beklenen DT kaldı: EVET

@@ -1,0 +1,28 @@
+# 2026-11-14T12:45:11+00:00 HEAD 29315b5 + çalışma ağacı (Y3 son hâli; senaryoda B0'ın AYK/AYS kontrolleri var); w2 ?terrain=crash (koşucu test=1 ekler)
+ready in 5.9 s
+PASS AYK-01 Etkin arazi kipi URL ile aynı (?terrain → DK.terrain.mode) → true
+PASS AYK-02 Kipin beklenen işçi/yedek durumu (normal: işçi ≥ 1, yedek kapalı, hata yok; noworker: işçi 0 + yedek; ctorthrow/badurl/crash: işçi 0 + yedek + hata kaydı; crash1: yedek kapalı + çökme kaydı; hang/noready: zaman aşımı kaydı + yedek) → true
+R: {"k":"crash","mode":"crash","workers":0,"fallback":true,"failures":["işçi 2: hata: Uncaught Error: Test: arazi işçisi çökmesi","işçi 1: hata: Uncaught Error: Test: arazi işçisi çökmesi","işçi 0: hata: Uncaught Error: Test: arazi işçisi çökmesi","hata: Uncaught Error: Test: arazi işçisi çökmesi"],"beklemeMs":0}
+PASS Sayfa hazır (yükleme ekranı aşıldı) → true
+R: {"mode":"crash","workers":0,"fallback":true,"failures":["işçi 2: hata: Uncaught Error: Test: arazi işçisi çökmesi","işçi 1: hata: Uncaught Error: Test: arazi işçisi çökmesi","işçi 0: hata: Uncaught Error: Test: arazi işçisi çökmesi","hata: Uncaught Error: Test: arazi işçisi çökmesi"],"stats":{"tiles":125,"meshes":125,"hires":15,"tris":311168,"queue":0,"jobs":0,"workers":0,"fallback":true,"failures":4,"mode":"crash"}}
+PASS Menü sahnesinde karo ağları üretildi → 125
+PASS Okyanus derinlik penceresi hazır → true
+R: "ok"
+PASS Oyun başladı → "playing"
+R: {"startMs":226,"pendingJobs":22,"queue":20}
+PASS Oyuncu zemine basıyor → true
+PASS Yüksek çözünürlüklü karolar (yükseklik ızgarası + ağ) → 22
+R: {"jobs":0,"kuyruk":0,"kuyrukTur":[],"seritler":[null,null],"isci":[]}
+PASS Uzak bölge prepare() sonuçlanıyor (askıda kalmıyor) → true
+R: {"prepMs":255,"dilimSayisi":17,"dilimToplamMs":201,"enUzunDilim":20.7,"boslukToplamMs":53,"enUzunBosluk":50.4,"kareSayisi":1,"enUzunKareMs":81,"once":{"jobs":0,"kuyruk":0,"kuyrukTur":[],"seritler":[null,null],"isci":[]}}
+PASS Derinlik penceresi yeni bölgeye taşındı → true
+R: {"prepMs":255,"prepUnder45s":true,"stats":{"tiles":129,"meshes":129,"hires":31,"tris":518400,"queue":0,"jobs":0,"workers":0,"fallback":true,"failures":4,"mode":"crash"}}
+PASS AYS-01 Uzak bölge prepare(1900, 950, r300) süresi kip sınırı içinde: normal ≤ 2 sn; işçisiz/çöken kiplerde (crash, crash1 dahil) ≤ 3 sn (KI-234: v0.4 crash 28,8 sn, badurl 13,9 sn ölçülmüştü) → true
+PASS Tuz Pazarı çevresinde karo ağları var → 21
+PASS Harita ızgarası isteği sonuçlanıyor → true
+PASS Uzak adada yürüme (zemin sorgusu tutarlı) → true
+R: "ok"
+PASS Kuyruk ilerliyor (askıda iş yok) → true
+R: {"jobsBefore":110,"jobsAfter8s":0,"fallback":true}
+errors: 0 pageErrors: 0 fails: 0 (75.1 s)
+SONUC: GECTI (çıkış 0) kontrol 15/15, onay 15 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 6 farklı/38

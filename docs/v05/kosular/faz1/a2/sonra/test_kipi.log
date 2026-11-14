@@ -1,0 +1,41 @@
+# komut: cd /home/user/SON-HAZ-NE-w2 && node tests/node/test_kipi.mjs --rapor docs/v05/kosular/faz1/a2/sonra/test_kipi.json
+# zaman: 2026-11-14T10:58:25+00:00  HEAD: 5479e3b + çalışma ağacı (Y3 uygulandı; kancalar sözü boot başında başlatılıyor)
+GECTI C0 Çözümleyici js/** dosyalarının hepsini dengeli çözdü — 80 dosya
+GECTI K1 Teste özgü kod (window.DK kurulumu, __sayac, işaret) yalnız js/test/ ya da saplanan netTest/netShape dosyalarında — 79 oyun dosyası tarandı
+GECTI K2 Test modülleri yalnız if (TEST …) arkasındaki dinamik import() ile yükleniyor; yalnız install (kancalar.js: + MARK) dışa aktarıyor; statik içe aktarma yok — test modülleri: js/test/kancalar.js
+GECTI K3 Oyun kodu window.DK'yi hiçbir yerde okumuyor (js/test/ dışı) — erişim yok
+GECTI K4 location.search yalnız js/core/testmode.js'te ve js/main.js'te (?join) okunuyor — yalnız izinli yerler
+GECTI DT01 TEST: http://localhost:8080/?test=1 — {"url":"http://localhost:8080/?test=1","beklenenTEST":true,"TEST":true}
+GECTI DT02 TEST: http://127.0.0.1:9/?test=1 — {"url":"http://127.0.0.1:9/?test=1","beklenenTEST":true,"TEST":true}
+GECTI DT03 TEST: http://[::1]:8080/?test=1 — {"url":"http://[::1]:8080/?test=1","beklenenTEST":true,"TEST":true}
+GECTI DT04 TEST: file:///x.html?test=1 — {"url":"file:///x.html?test=1","beklenenTEST":true,"TEST":true}
+GECTI DT05 TEST: https://adnanerdem2000-sudo.github.io/SON-HAZ-NE/?test=1 — {"url":"https://adnanerdem2000-sudo.github.io/SON-HAZ-NE/?test=1","beklenenTEST":false,"TEST":false}
+GECTI DT06 TEST: http://192.168.1.5:8080/?test=1 — {"url":"http://192.168.1.5:8080/?test=1","beklenenTEST":false,"TEST":false}
+GECTI DT07 TEST: http://localhost:8080/?test=0 — {"url":"http://localhost:8080/?test=0","beklenenTEST":false,"TEST":false}
+GECTI DT08 TEST: http://localhost:8080/?test=true — {"url":"http://localhost:8080/?test=true","beklenenTEST":false,"TEST":false,"not":"?test=true"}
+GECTI DT09 TEST: http://localhost:8080/?test=1&test=0 — {"url":"http://localhost:8080/?test=1&test=0","beklenenTEST":true,"TEST":true,"not":"get ilk değeri alır"}
+GECTI DT10 TEST: http://localhost:8080/?join=X&test=1 — {"url":"http://localhost:8080/?join=X&test=1","beklenenTEST":true,"TEST":true}
+GECTI DT11 TEST: http://localhost.evil.com/?test=1 — {"url":"http://localhost.evil.com/?test=1","beklenenTEST":false,"TEST":false,"not":"localhost önekli yabancı alan adı"}
+GECTI DT12 TEST: https://127.0.0.1.nip.io/?test=1 — {"url":"https://127.0.0.1.nip.io/?test=1","beklenenTEST":false,"TEST":false,"not":"127.0.0.1 önekli yabancı alan adı"}
+GECTI DT13 TEST: http://localhost:8080/index.html — {"url":"http://localhost:8080/index.html","beklenenTEST":false,"TEST":false,"not":"test parametresi yok"}
+GECTI DT14 TEST: https://oyun.ornek/index.html?test=1&peerhost=kotu.ornek&terrain=crash — {"url":"https://oyun.ornek/index.html?test=1&peerhost=kotu.ornek&terrain=crash","beklenenTEST":false,"TEST":false,"not":"TK05 sahte kökeni"}
+GECTI DT15 TEST: http://127.0.0.2:8080/?test=1 — {"url":"http://127.0.0.2:8080/?test=1","beklenenTEST":false,"TEST":false,"not":"yalnız 127.0.0.1 geri döngü sayılır"}
+GECTI DT16 TEST: http://0.0.0.0:8080/?test=1 — {"url":"http://0.0.0.0:8080/?test=1","beklenenTEST":false,"TEST":false}
+GECTI DT17 TEST: http://localhost:8080/#?test=1 — {"url":"http://localhost:8080/#?test=1","beklenenTEST":false,"TEST":false,"not":"test yalnız parça (#) içinde"}
+GECTI DT18 TEST: http://[::ffff:127.0.0.1]:8080/?test=1 — {"url":"http://[::ffff:127.0.0.1]:8080/?test=1","beklenenTEST":false,"TEST":false,"not":"IPv4 eşlemeli IPv6"}
+GECTI DT19 TEST: http://LOCALHOST:8080/?test=1 — {"url":"http://LOCALHOST:8080/?test=1","beklenenTEST":true,"TEST":true,"not":"tarayıcı gibi URL konak adını küçültür"}
+GECTI DT20 TEST: firlatan — {"url":"(firlatan)","beklenenTEST":false,"TEST":false,"not":"location erişimi istisna atıyor"}
+GECTI DT21 TEST: tanimsiz — {"url":"(tanimsiz)","beklenenTEST":false,"TEST":false,"not":"location tanımsız"}
+GECTI TP01 testParam: https://oyun.ornek/index.html?test=1&peerhost=kotu.ornek&terrain=crash — {"url":"https://oyun.ornek/index.html?test=1&peerhost=kotu.ornek&terrain=crash","beklenenTEST":false,"TEST":false,"testParam":{"peerhost":null,"terrain":null,"test":null},"not":"yerel olmayan köken: hepsi null"}
+GECTI TP02 testParam: http://localhost:8080/?peerhost=127.0.0.1&terrain=crash — {"url":"http://localhost:8080/?peerhost=127.0.0.1&terrain=crash","beklenenTEST":false,"TEST":false,"testParam":{"peerhost":null,"terrain":null},"not":"test kipi kapalı (test=1 yok): null"}
+GECTI TP03 testParam: http://localhost:8080/?test=1&peerhost=127.0.0.1&peerport=9000&terrain=noworker — {"url":"http://localhost:8080/?test=1&peerhost=127.0.0.1&peerport=9000&terrain=noworker","beklenenTEST":true,"TEST":true,"testParam":{"peerhost":"127.0.0.1","peerport":"9000","terrain":"noworker","yok":null}}
+GECTI TP04 testParam: file:///x.html?test=1&terrain=badurl — {"url":"file:///x.html?test=1&terrain=badurl","beklenenTEST":true,"TEST":true,"testParam":{"terrain":"badurl"}}
+GECTI TP05 testParam: http://192.168.1.5/?test=1&peerhost=127.0.0.1 — {"url":"http://192.168.1.5/?test=1&peerhost=127.0.0.1","beklenenTEST":false,"TEST":false,"testParam":{"peerhost":null}}
+GECTI TP06 testParam: firlatan — {"url":"(firlatan)","beklenenTEST":false,"TEST":false,"testParam":{"peerhost":null},"not":"location istisna atıyor"}
+GECTI AP1 Taban (44d548c) main.js window.DK nesnesi: 49 anahtar — {"kaynak":"git show 44d548c:js/main.js","sayi":49,"satir":134}
+GECTI AP1b Taban main.js'te 5 yardımcı (snap, snapFrom, sim, tap, press) birer kez atanıyor (satır 136-152) — {"snap":[136],"snapFrom":[138],"sim":[145],"tap":[150],"press":[152]}
+GECTI AP2 API eşliği: taban 49 alan + 5 yardımcı eksiksiz; fazla tam olarak audio, mod, __sayac — {"eksik":[],"fazla":["audio","__sayac","mod"],"izinsizFazla":[],"kurulmayanEk":[],"kurulanSayi":57,"apiSirasiAyni":true}
+GECTI AP3 snap/snapFrom/sim/tap/press gövdeleri taban main.js:136-152 ile aynı (boşluk normalleştirilerek) — {"snap":"aynı (taban satır 136, kancalar satır 37)","snapFrom":"aynı (taban satır 138, kancalar satır 39)","sim":"aynı (taban satır 145, kancalar satır 46)","tap":"aynı (taban satır 150, kancalar satır 51)","press":"aynı (taban satır 152, kancalar satır 53)","serbestAdlar":"post, engine, game, hud, net, input install(api) parametresinden"}
+GECTI ZM Zamanlama: kancalar modülünün sözü bekleniyor (await), install ondan sonra, window.__ready install'dan sonra yazılıyor — {"kancaImport":{"satir":91},"bekleme":{"tur":"await kancaSozu (söz 91. satırda başlatıldı)","satir":147},"installSatir":148,"readySatirlari":[150]}
+SONUC: GECTI (37/37 denetim)
+# cikis=0

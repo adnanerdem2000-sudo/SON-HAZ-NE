@@ -1,0 +1,437 @@
+{
+ "arac": "tests/node/test_kipi.mjs",
+ "tur": "node",
+ "agac": "/home/user/SON-HAZ-NE-w2",
+ "taban": "44d548c",
+ "commit": "5479e3b76bb33a517efa9ec60c418105a98bcec6",
+ "kirli": true,
+ "tarih": "2026-11-14T10:58:25.632Z",
+ "node": "v22.22.0",
+ "sonuc": {
+  "durum": "GECTI",
+  "gecen": 37,
+  "toplam": 37,
+  "kalan": []
+ },
+ "denetimler": [
+  {
+   "id": "C0",
+   "ad": "Çözümleyici js/** dosyalarının hepsini dengeli çözdü",
+   "ok": true,
+   "ayrinti": "80 dosya"
+  },
+  {
+   "id": "K1",
+   "ad": "Teste özgü kod (window.DK kurulumu, __sayac, işaret) yalnız js/test/ ya da saplanan netTest/netShape dosyalarında",
+   "ok": true,
+   "ayrinti": "79 oyun dosyası tarandı"
+  },
+  {
+   "id": "K2",
+   "ad": "Test modülleri yalnız if (TEST …) arkasındaki dinamik import() ile yükleniyor; yalnız install (kancalar.js: + MARK) dışa aktarıyor; statik içe aktarma yok",
+   "ok": true,
+   "ayrinti": "test modülleri: js/test/kancalar.js"
+  },
+  {
+   "id": "K3",
+   "ad": "Oyun kodu window.DK'yi hiçbir yerde okumuyor (js/test/ dışı)",
+   "ok": true,
+   "ayrinti": "erişim yok"
+  },
+  {
+   "id": "K4",
+   "ad": "location.search yalnız js/core/testmode.js'te ve js/main.js'te (?join) okunuyor",
+   "ok": true,
+   "ayrinti": "yalnız izinli yerler"
+  },
+  {
+   "id": "DT01",
+   "ad": "TEST: http://localhost:8080/?test=1",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://localhost:8080/?test=1",
+    "beklenenTEST": true,
+    "TEST": true
+   }
+  },
+  {
+   "id": "DT02",
+   "ad": "TEST: http://127.0.0.1:9/?test=1",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://127.0.0.1:9/?test=1",
+    "beklenenTEST": true,
+    "TEST": true
+   }
+  },
+  {
+   "id": "DT03",
+   "ad": "TEST: http://[::1]:8080/?test=1",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://[::1]:8080/?test=1",
+    "beklenenTEST": true,
+    "TEST": true
+   }
+  },
+  {
+   "id": "DT04",
+   "ad": "TEST: file:///x.html?test=1",
+   "ok": true,
+   "ayrinti": {
+    "url": "file:///x.html?test=1",
+    "beklenenTEST": true,
+    "TEST": true
+   }
+  },
+  {
+   "id": "DT05",
+   "ad": "TEST: https://adnanerdem2000-sudo.github.io/SON-HAZ-NE/?test=1",
+   "ok": true,
+   "ayrinti": {
+    "url": "https://adnanerdem2000-sudo.github.io/SON-HAZ-NE/?test=1",
+    "beklenenTEST": false,
+    "TEST": false
+   }
+  },
+  {
+   "id": "DT06",
+   "ad": "TEST: http://192.168.1.5:8080/?test=1",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://192.168.1.5:8080/?test=1",
+    "beklenenTEST": false,
+    "TEST": false
+   }
+  },
+  {
+   "id": "DT07",
+   "ad": "TEST: http://localhost:8080/?test=0",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://localhost:8080/?test=0",
+    "beklenenTEST": false,
+    "TEST": false
+   }
+  },
+  {
+   "id": "DT08",
+   "ad": "TEST: http://localhost:8080/?test=true",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://localhost:8080/?test=true",
+    "beklenenTEST": false,
+    "TEST": false,
+    "not": "?test=true"
+   }
+  },
+  {
+   "id": "DT09",
+   "ad": "TEST: http://localhost:8080/?test=1&test=0",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://localhost:8080/?test=1&test=0",
+    "beklenenTEST": true,
+    "TEST": true,
+    "not": "get ilk değeri alır"
+   }
+  },
+  {
+   "id": "DT10",
+   "ad": "TEST: http://localhost:8080/?join=X&test=1",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://localhost:8080/?join=X&test=1",
+    "beklenenTEST": true,
+    "TEST": true
+   }
+  },
+  {
+   "id": "DT11",
+   "ad": "TEST: http://localhost.evil.com/?test=1",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://localhost.evil.com/?test=1",
+    "beklenenTEST": false,
+    "TEST": false,
+    "not": "localhost önekli yabancı alan adı"
+   }
+  },
+  {
+   "id": "DT12",
+   "ad": "TEST: https://127.0.0.1.nip.io/?test=1",
+   "ok": true,
+   "ayrinti": {
+    "url": "https://127.0.0.1.nip.io/?test=1",
+    "beklenenTEST": false,
+    "TEST": false,
+    "not": "127.0.0.1 önekli yabancı alan adı"
+   }
+  },
+  {
+   "id": "DT13",
+   "ad": "TEST: http://localhost:8080/index.html",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://localhost:8080/index.html",
+    "beklenenTEST": false,
+    "TEST": false,
+    "not": "test parametresi yok"
+   }
+  },
+  {
+   "id": "DT14",
+   "ad": "TEST: https://oyun.ornek/index.html?test=1&peerhost=kotu.ornek&terrain=crash",
+   "ok": true,
+   "ayrinti": {
+    "url": "https://oyun.ornek/index.html?test=1&peerhost=kotu.ornek&terrain=crash",
+    "beklenenTEST": false,
+    "TEST": false,
+    "not": "TK05 sahte kökeni"
+   }
+  },
+  {
+   "id": "DT15",
+   "ad": "TEST: http://127.0.0.2:8080/?test=1",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://127.0.0.2:8080/?test=1",
+    "beklenenTEST": false,
+    "TEST": false,
+    "not": "yalnız 127.0.0.1 geri döngü sayılır"
+   }
+  },
+  {
+   "id": "DT16",
+   "ad": "TEST: http://0.0.0.0:8080/?test=1",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://0.0.0.0:8080/?test=1",
+    "beklenenTEST": false,
+    "TEST": false
+   }
+  },
+  {
+   "id": "DT17",
+   "ad": "TEST: http://localhost:8080/#?test=1",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://localhost:8080/#?test=1",
+    "beklenenTEST": false,
+    "TEST": false,
+    "not": "test yalnız parça (#) içinde"
+   }
+  },
+  {
+   "id": "DT18",
+   "ad": "TEST: http://[::ffff:127.0.0.1]:8080/?test=1",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://[::ffff:127.0.0.1]:8080/?test=1",
+    "beklenenTEST": false,
+    "TEST": false,
+    "not": "IPv4 eşlemeli IPv6"
+   }
+  },
+  {
+   "id": "DT19",
+   "ad": "TEST: http://LOCALHOST:8080/?test=1",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://LOCALHOST:8080/?test=1",
+    "beklenenTEST": true,
+    "TEST": true,
+    "not": "tarayıcı gibi URL konak adını küçültür"
+   }
+  },
+  {
+   "id": "DT20",
+   "ad": "TEST: firlatan",
+   "ok": true,
+   "ayrinti": {
+    "url": "(firlatan)",
+    "beklenenTEST": false,
+    "TEST": false,
+    "not": "location erişimi istisna atıyor"
+   }
+  },
+  {
+   "id": "DT21",
+   "ad": "TEST: tanimsiz",
+   "ok": true,
+   "ayrinti": {
+    "url": "(tanimsiz)",
+    "beklenenTEST": false,
+    "TEST": false,
+    "not": "location tanımsız"
+   }
+  },
+  {
+   "id": "TP01",
+   "ad": "testParam: https://oyun.ornek/index.html?test=1&peerhost=kotu.ornek&terrain=crash",
+   "ok": true,
+   "ayrinti": {
+    "url": "https://oyun.ornek/index.html?test=1&peerhost=kotu.ornek&terrain=crash",
+    "beklenenTEST": false,
+    "TEST": false,
+    "testParam": {
+     "peerhost": null,
+     "terrain": null,
+     "test": null
+    },
+    "not": "yerel olmayan köken: hepsi null"
+   }
+  },
+  {
+   "id": "TP02",
+   "ad": "testParam: http://localhost:8080/?peerhost=127.0.0.1&terrain=crash",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://localhost:8080/?peerhost=127.0.0.1&terrain=crash",
+    "beklenenTEST": false,
+    "TEST": false,
+    "testParam": {
+     "peerhost": null,
+     "terrain": null
+    },
+    "not": "test kipi kapalı (test=1 yok): null"
+   }
+  },
+  {
+   "id": "TP03",
+   "ad": "testParam: http://localhost:8080/?test=1&peerhost=127.0.0.1&peerport=9000&terrain=noworker",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://localhost:8080/?test=1&peerhost=127.0.0.1&peerport=9000&terrain=noworker",
+    "beklenenTEST": true,
+    "TEST": true,
+    "testParam": {
+     "peerhost": "127.0.0.1",
+     "peerport": "9000",
+     "terrain": "noworker",
+     "yok": null
+    }
+   }
+  },
+  {
+   "id": "TP04",
+   "ad": "testParam: file:///x.html?test=1&terrain=badurl",
+   "ok": true,
+   "ayrinti": {
+    "url": "file:///x.html?test=1&terrain=badurl",
+    "beklenenTEST": true,
+    "TEST": true,
+    "testParam": {
+     "terrain": "badurl"
+    }
+   }
+  },
+  {
+   "id": "TP05",
+   "ad": "testParam: http://192.168.1.5/?test=1&peerhost=127.0.0.1",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://192.168.1.5/?test=1&peerhost=127.0.0.1",
+    "beklenenTEST": false,
+    "TEST": false,
+    "testParam": {
+     "peerhost": null
+    }
+   }
+  },
+  {
+   "id": "TP06",
+   "ad": "testParam: firlatan",
+   "ok": true,
+   "ayrinti": {
+    "url": "(firlatan)",
+    "beklenenTEST": false,
+    "TEST": false,
+    "testParam": {
+     "peerhost": null
+    },
+    "not": "location istisna atıyor"
+   }
+  },
+  {
+   "id": "AP1",
+   "ad": "Taban (44d548c) main.js window.DK nesnesi: 49 anahtar",
+   "ok": true,
+   "ayrinti": {
+    "kaynak": "git show 44d548c:js/main.js",
+    "sayi": 49,
+    "satir": 134
+   }
+  },
+  {
+   "id": "AP1b",
+   "ad": "Taban main.js'te 5 yardımcı (snap, snapFrom, sim, tap, press) birer kez atanıyor (satır 136-152)",
+   "ok": true,
+   "ayrinti": {
+    "snap": [
+     136
+    ],
+    "snapFrom": [
+     138
+    ],
+    "sim": [
+     145
+    ],
+    "tap": [
+     150
+    ],
+    "press": [
+     152
+    ]
+   }
+  },
+  {
+   "id": "AP2",
+   "ad": "API eşliği: taban 49 alan + 5 yardımcı eksiksiz; fazla tam olarak audio, mod, __sayac",
+   "ok": true,
+   "ayrinti": {
+    "eksik": [],
+    "fazla": [
+     "audio",
+     "__sayac",
+     "mod"
+    ],
+    "izinsizFazla": [],
+    "kurulmayanEk": [],
+    "kurulanSayi": 57,
+    "apiSirasiAyni": true
+   }
+  },
+  {
+   "id": "AP3",
+   "ad": "snap/snapFrom/sim/tap/press gövdeleri taban main.js:136-152 ile aynı (boşluk normalleştirilerek)",
+   "ok": true,
+   "ayrinti": {
+    "snap": "aynı (taban satır 136, kancalar satır 37)",
+    "snapFrom": "aynı (taban satır 138, kancalar satır 39)",
+    "sim": "aynı (taban satır 145, kancalar satır 46)",
+    "tap": "aynı (taban satır 150, kancalar satır 51)",
+    "press": "aynı (taban satır 152, kancalar satır 53)",
+    "serbestAdlar": "post, engine, game, hud, net, input install(api) parametresinden"
+   }
+  },
+  {
+   "id": "ZM",
+   "ad": "Zamanlama: kancalar modülünün sözü bekleniyor (await), install ondan sonra, window.__ready install'dan sonra yazılıyor",
+   "ok": true,
+   "ayrinti": {
+    "kancaImport": {
+     "satir": 91
+    },
+    "bekleme": {
+     "tur": "await kancaSozu (söz 91. satırda başlatıldı)",
+     "satir": 147
+    },
+    "installSatir": 148,
+    "readySatirlari": [
+     150
+    ]
+   }
+  }
+ ]
+}

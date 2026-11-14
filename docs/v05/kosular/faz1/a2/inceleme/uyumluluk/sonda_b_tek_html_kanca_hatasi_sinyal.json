@@ -1,0 +1,364 @@
+{
+ "basla": "2026-11-14T13:27:50.352Z",
+ "sayfalar": {
+  "T1_tek_test": {
+   "url": "file:///home/user/SON-HAZ-NE-w2/dist/DenizKorsanlari-SonHazine.html?test=1",
+   "konsolHata": [],
+   "sayfaHata": [],
+   "istek4xx": [],
+   "ws": [],
+   "disIstek": [],
+   "disWs": [],
+   "hazirMs": 6060,
+   "ic": {
+    "hazirAnindaki": {
+     "dkTipi": "object",
+     "t": 6049
+    },
+    "dk": "object",
+    "durum": {
+     "surum": "0.5.0",
+     "derleme": "gelistirme",
+     "hazir": true,
+     "test": true,
+     "kati": false,
+     "tekDosya": true,
+     "isci": 3,
+     "yedek": false,
+     "isciHata": 0,
+     "araziKip": "",
+     "eksikVarlik": 0,
+     "kk": true,
+     "sinyal": "varsayilan"
+    },
+    "anahtarSayisi": 57,
+    "capraz": {
+     "ports": true,
+     "treasure": true,
+     "quests": true,
+     "assets": true,
+     "audio": true,
+     "seagear": true
+    },
+    "menuAyniNesne": [
+     false,
+     true
+    ],
+    "shop": {
+     "merchants": "object",
+     "buyPrice": "function",
+     "anahtarlar": 4
+    },
+    "modHata": "DK.mod: bilinmeyen modül 'yok/boyle' (kayıtlı: economy/shop,",
+    "sim": 3,
+    "pressCagri": [
+     [
+      0.1
+     ],
+     [
+      0.03333333333333333
+     ]
+    ],
+    "sayac": {
+     "sim": 3,
+     "adim": 7,
+     "press": 1,
+     "tap": 0
+    },
+    "oyun": {
+     "durum": "playing",
+     "oyuncu": true,
+     "sureMs": 478
+    }
+   }
+  },
+  "T2_tek_testsiz": {
+   "url": "file:///home/user/SON-HAZ-NE-w2/dist/DenizKorsanlari-SonHazine.html",
+   "konsolHata": [],
+   "sayfaHata": [],
+   "istek4xx": [],
+   "ws": [],
+   "disIstek": [],
+   "disWs": [],
+   "hazirMs": 4753,
+   "ic": {
+    "hazirAnindaki": {
+     "dkTipi": "undefined",
+     "t": 4744
+    },
+    "dk": "undefined",
+    "isaret": "undefined",
+    "durum": {
+     "surum": "0.5.0",
+     "derleme": "gelistirme",
+     "hazir": true,
+     "test": false,
+     "kati": false,
+     "tekDosya": true,
+     "isci": 3,
+     "yedek": false,
+     "isciHata": 0,
+     "araziKip": "",
+     "eksikVarlik": 0,
+     "kk": true,
+     "sinyal": "varsayilan"
+    },
+    "menu": true
+   }
+  },
+  "T4_tek_testsiz_crash": {
+   "url": "file:///home/user/SON-HAZ-NE-w2/dist/DenizKorsanlari-SonHazine.html?terrain=crash&peerhost=10.9.9.9",
+   "konsolHata": [],
+   "sayfaHata": [],
+   "istek4xx": [],
+   "ws": [],
+   "disIstek": [],
+   "disWs": [],
+   "hazirMs": 4718,
+   "ic": {
+    "hazirAnindaki": {
+     "dkTipi": "undefined",
+     "t": 4711
+    },
+    "dk": "undefined",
+    "isaret": "undefined",
+    "durum": {
+     "surum": "0.5.0",
+     "derleme": "gelistirme",
+     "hazir": true,
+     "test": false,
+     "kati": false,
+     "tekDosya": true,
+     "isci": 3,
+     "yedek": false,
+     "isciHata": 0,
+     "araziKip": "",
+     "eksikVarlik": 0,
+     "kk": true,
+     "sinyal": "varsayilan"
+    },
+    "menu": true
+   }
+  },
+  "T3_tek_test_noworker": {
+   "url": "file:///home/user/SON-HAZ-NE-w2/dist/DenizKorsanlari-SonHazine.html?test=1&terrain=noworker",
+   "konsolHata": [],
+   "sayfaHata": [],
+   "istek4xx": [],
+   "ws": [],
+   "disIstek": [],
+   "disWs": [],
+   "hazirMs": 4519,
+   "ic": {
+    "dk": "object",
+    "durum": {
+     "surum": "0.5.0",
+     "derleme": "gelistirme",
+     "hazir": true,
+     "test": true,
+     "kati": false,
+     "tekDosya": true,
+     "isci": 0,
+     "yedek": true,
+     "isciHata": 1,
+     "araziKip": "noworker",
+     "eksikVarlik": 0,
+     "kk": true,
+     "sinyal": "varsayilan"
+    }
+   }
+  },
+  "F1_kancalar_404": {
+   "url": "http://localhost:8081/index.html?test=1",
+   "konsolHata": [
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "TypeError: Failed to fetch dynamically imported module: http://localhost:8081/js/test/kancalar.js"
+   ],
+   "sayfaHata": [],
+   "istek4xx": [
+    "404 http://localhost:8081/js/test/kancalar.js"
+   ],
+   "ws": [],
+   "disIstek": [],
+   "disWs": [],
+   "menuMs": 4179,
+   "ic": {
+    "hazirAnindaki": null,
+    "dk": "undefined",
+    "menu": true,
+    "yukleme": false,
+    "yukText": "Oyun başlatılamadı: Failed to fetch dynamically imported module: http://localhost:8081/js/test/kancalar.jsWebGL destekli güncel bir tarayıcı (Chrome, Edge, Firefox) gerekiyor.",
+    "yukGorunur": false,
+    "durum": {
+     "surum": "0.5.0",
+     "derleme": "gelistirme",
+     "hazir": false,
+     "test": true,
+     "kati": true,
+     "tekDosya": false,
+     "isci": 3,
+     "yedek": false,
+     "isciHata": 0,
+     "araziKip": "",
+     "eksikVarlik": 0,
+     "kk": true,
+     "sinyal": "varsayilan"
+    }
+   },
+   "beklemeSonrasiMs": 16187
+  },
+  "F2_kancalar_sozdizimi": {
+   "url": "http://localhost:8081/index.html?test=1",
+   "konsolHata": [
+    "SyntaxError: Unexpected token ';'"
+   ],
+   "sayfaHata": [],
+   "istek4xx": [],
+   "ws": [],
+   "disIstek": [],
+   "disWs": [],
+   "menuMs": 4742,
+   "ic": {
+    "hazirAnindaki": null,
+    "dk": "undefined",
+    "menu": true,
+    "yukleme": false,
+    "yukText": "Oyun başlatılamadı: Unexpected token ';'WebGL destekli güncel bir tarayıcı (Chrome, Edge, Firefox) gerekiyor.",
+    "yukGorunur": false,
+    "durum": {
+     "surum": "0.5.0",
+     "derleme": "gelistirme",
+     "hazir": false,
+     "test": true,
+     "kati": true,
+     "tekDosya": false,
+     "isci": 3,
+     "yedek": false,
+     "isciHata": 0,
+     "araziKip": "",
+     "eksikVarlik": 0,
+     "kk": true,
+     "sinyal": "varsayilan"
+    }
+   },
+   "beklemeSonrasiMs": 16751
+  },
+  "F3_kancalar_install_istisna": {
+   "url": "http://localhost:8081/index.html?test=1",
+   "konsolHata": [
+    "Error: inceleme: install istisnasi\n    at install (http://localhost:8081/js/test/kancalar.js:2:35)\n    at boot (http://localhost:8081/js/main.js:148:5)"
+   ],
+   "sayfaHata": [],
+   "istek4xx": [],
+   "ws": [],
+   "disIstek": [],
+   "disWs": [],
+   "menuMs": 4003,
+   "ic": {
+    "hazirAnindaki": null,
+    "dk": "undefined",
+    "menu": true,
+    "yukleme": false,
+    "yukText": "Oyun başlatılamadı: inceleme: install istisnasiWebGL destekli güncel bir tarayıcı (Chrome, Edge, Firefox) gerekiyor.",
+    "yukGorunur": false,
+    "durum": {
+     "surum": "0.5.0",
+     "derleme": "gelistirme",
+     "hazir": false,
+     "test": true,
+     "kati": true,
+     "tekDosya": false,
+     "isci": 3,
+     "yedek": false,
+     "isciHata": 0,
+     "araziKip": "",
+     "eksikVarlik": 0,
+     "kk": true,
+     "sinyal": "varsayilan"
+    }
+   },
+   "beklemeSonrasiMs": 16010
+  },
+  "S1_ev_test_yerel": {
+   "url": "http://localhost:8081/index.html?test=1&peerhost=127.0.0.1&peerport=9000",
+   "konsolHata": [],
+   "sayfaHata": [],
+   "istek4xx": [],
+   "ws": [
+    "ws://127.0.0.1:9000/peerjs?key=peerjs&id=dksh-v1-4NXWTX&token=29md52pi6gv&version=1.5.5",
+    "ws://127.0.0.1:9000/peerjs?key=peerjs&id=dksh-v1-4NXWTX&token=29md52pi6gv&version=1.5.5"
+   ],
+   "disIstek": [],
+   "disWs": [],
+   "hazirMs": 4838,
+   "ic": {
+    "sinyal": "127.0.0.1:9000",
+    "kod": "4NXWTX",
+    "peer": true,
+    "acik": true
+   },
+   "roster": [
+    {
+     "host": true
+    },
+    {
+     "host": false
+    }
+   ]
+  },
+  "S2_konuk_test_yerel": {
+   "url": "http://localhost:8081/index.html?test=1&peerhost=127.0.0.1&peerport=9000",
+   "konsolHata": [],
+   "sayfaHata": [],
+   "istek4xx": [],
+   "ws": [
+    "ws://127.0.0.1:9000/peerjs?key=peerjs&id=15129bff-a73d-47d8-acb7-af265620f179&token=3wbcblol2bw&version=1.5.5"
+   ],
+   "disIstek": [],
+   "disWs": [],
+   "hazirMs": 15052,
+   "ic": {
+    "oda": "İnceleme",
+    "online": true,
+    "host": false
+   }
+  },
+  "S3_testsiz_peerhost_yerel": {
+   "url": "http://localhost:8081/index.html?peerhost=127.0.0.1&peerport=9000",
+   "konsolHata": [],
+   "sayfaHata": [],
+   "istek4xx": [],
+   "ws": [],
+   "disIstek": [],
+   "disWs": [
+    "wss://0.peerjs.com/peerjs?key=peerjs&id=dksh-v1-WEAKZT&token=5nmd4tz7gpa&version=1.5.5"
+   ],
+   "hazirMs": 4821,
+   "ic": {
+    "sinyal": "varsayilan",
+    "test": false,
+    "dk": "undefined",
+    "hata": "Lost connection to server."
+   }
+  },
+  "S4_test_peerhost_yabanci": {
+   "url": "http://localhost:8081/index.html?test=1&peerhost=10.9.9.9&peerport=1",
+   "konsolHata": [],
+   "sayfaHata": [],
+   "istek4xx": [],
+   "ws": [],
+   "disIstek": [],
+   "disWs": [
+    "wss://0.peerjs.com/peerjs?key=peerjs&id=dksh-v1-HJ2GJH&token=donwdj330kg&version=1.5.5"
+   ],
+   "hazirMs": 4778,
+   "ic": {
+    "sinyal": "varsayilan",
+    "test": true,
+    "dk": "object",
+    "hata": "Lost connection to server."
+   }
+  }
+ },
+ "bitis": "2026-11-14T13:31:15.618Z"
+}

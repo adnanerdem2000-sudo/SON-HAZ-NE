@@ -1,0 +1,10 @@
+# 2026-11-14T10:04:28+00:00 HEAD 5479e3b + çalışma ağacı (Y3); w2
+ready in 10.7 s
+R: "ok"
+PASS Oyun başladı → "playing"
+PASS B01 Hiçbir tüccar çifti için satış fiyatı alış fiyatına ulaşmıyor (al-sat döngüsü yok) → true
+R: {"exploit":false,"roles":["general","fisher","weapons","treasure","cartographer","smuggler","trader"],"pairs":[]}
+PASS B07 Tümünü sat: usta kılıç, dürbün, mermi, gülle ve hazine haritası kalır; inci satılır → true
+R: {"role":"general","before":["kilic","tabanca","mermi","kurek","olta","yem_solucan","fener","pusula","muz","ekmek","usta_kilic","durbun","gulle","hazine_haritasi","inci"],"after":["kilic","tabanca","mermi","kurek","olta","yem_solucan","fener","pusula","usta_kilic","durbun","gulle","hazine_haritasi"]}
+errors: 0 pageErrors: 0 fails: 0 (30.8 s)
+SONUC: GECTI (çıkış 0) kontrol 3/3, onay 3 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34

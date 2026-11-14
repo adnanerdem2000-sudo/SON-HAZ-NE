@@ -1,0 +1,599 @@
+{
+ "tabanDizin": "docs/v05/taban_kosusu_44d548c",
+ "yeniDizin": "docs/v05/kosular/faz1/a2/sonra",
+ "ozet": {
+  "tabanTamKosu": 12,
+  "tamKorunanKosu": 10,
+  "tabanGecenKontrol": 134,
+  "korunan": 129,
+  "ek": {
+   "tabanGecenKontrol": 36,
+   "korunan": 36,
+   "tabanTamKosu": 3,
+   "tamKorunanKosu": 2
+  },
+  "regresyon": 5,
+  "kayip": 0,
+  "eksik": [
+   "02_arazi_kurtarma",
+   "03_fizik_dt",
+   "03_fizik_duzeltmeler",
+   "04_karakter",
+   "05_dusman_ai",
+   "06_arayuz_960",
+   "07_dunya_kesif",
+   "09_performans",
+   "11_arayuz_sizinti",
+   "13_donma",
+   "coop_06a",
+   "coop_06a2",
+   "coop_06c"
+  ],
+  "eksikResmi": [
+   "02_arazi_kurtarma",
+   "03_fizik_dt",
+   "03_fizik_duzeltmeler",
+   "04_karakter",
+   "05_dusman_ai",
+   "06_arayuz_960",
+   "07_dunya_kesif",
+   "09_performans",
+   "11_arayuz_sizinti",
+   "13_donma",
+   "coop_06a",
+   "coop_06a2",
+   "coop_06c"
+  ]
+ },
+ "sorunlar": [
+  "00_acilis: tabanda tümüyle geçen koşu yeni koşuda KALDI (başarısız kontrol ya da adım: 2)",
+  "02_arazi_yedek_noworker: tabanda tümüyle geçen koşu yeni koşuda KALDI (başarısız kontrol ya da adım: 1)",
+  "17_kamera_kararma: REGRESYON — K08 Ormanda (2 eğim × 32 açı) ve palmiyelerin arasında (2 × 16) karanlık kare yok (taban true → yeni \"page.evaluate: Target crashed \")",
+  "17_kamera_kararma: REGRESYON — K09 Su altı geçişi histerezisli (−6 cm: açılmaz, −20 cm: açılır, −2 cm: kapanmaz, +5 cm: kapanır) (taban true → yeni \"page.evaluate: Target crashed \")",
+  "17_kamera_kararma: REGRESYON — K10 Tek bir NaN/Inf yazan yüzey parlamayla tüm ekrana yayılıp kareyi karartmaz (parlaklık temel değerin ≥ %80'i) (taban true → yeni \"page.evaluate: Target crashed \")",
+  "17_kamera_kararma: REGRESYON — K11 Sıfır normalli yüzey (yumuşak ve düz gölgeli) yarım kayan noktalı hedefte NaN/Inf piksel üretmez (taban true → yeni \"page.evaluate: Target crashed \")",
+  "17_kamera_kararma: REGRESYON — K12 Kamerayla oyuncu arasındaki bitki örtüsü görüş çizgisi çevresinde seyrelir (2,6 m uzaktaki siyah düzlem: ekran ortası silindir açıkken görünür, kapalıyken > %97 siyah) (taban true → yeni \"page.evaluate: Target crashed \")",
+  "17_kamera_kararma: tabanda tümüyle geçen koşu yeni koşuda KALDI (başarısız kontrol ya da adım: 11; sayfa hatası (pageerror): 1; adım istisnası (evalErrors): 6)"
+ ],
+ "kosular": [
+  {
+   "yeni": "00_acilis",
+   "taban": "00_acilis",
+   "resmi": true,
+   "kararsiz": false,
+   "tabanGecen": 6,
+   "tabanToplam": 6,
+   "yeniGecen": 6,
+   "yeniToplam": 8,
+   "durum": "KALDI",
+   "cikis": 1,
+   "neden": [
+    "başarısız kontrol ya da adım: 2"
+   ],
+   "izinsizKonsol": 0,
+   "izinsizAg": 0,
+   "izinliKonsol": 0,
+   "izinliAg": 0,
+   "evalErrors": 0,
+   "tur": {
+    "tarayici": 5,
+    "tarayici+benzetim": 3
+   },
+   "regresyon": [],
+   "kayip": [],
+   "duzelen": [],
+   "fazla": [
+    {
+     "etiket": "AC01 G.state 'playing'e yalnız oyuncu kurulduktan (bölge hazırlığı bittikten) sonra geçer (A-10; eski 'Oyun başladı' kontrolü prepare'den önce atanan değeri görüyordu)",
+     "ok": false
+    },
+    {
+     "etiket": "AC02 Bölge hazırlığı (prepare) süresince G.state 'loading' (A-10)",
+     "ok": false
+    }
+   ],
+   "tabanTam": true,
+   "tamKorundu": false
+  },
+  {
+   "yeni": "02_arazi_yedek_badurl",
+   "taban": "02_arazi_yedek_badurl",
+   "resmi": false,
+   "kararsiz": false,
+   "tabanGecen": 12,
+   "tabanToplam": 12,
+   "yeniGecen": 15,
+   "yeniToplam": 15,
+   "durum": "GECTI",
+   "cikis": 0,
+   "neden": [],
+   "izinsizKonsol": 0,
+   "izinsizAg": 0,
+   "izinliKonsol": 0,
+   "izinliAg": 6,
+   "evalErrors": 0,
+   "tur": {
+    "tarayici": 6,
+    "tarayici+benzetim": 9
+   },
+   "regresyon": [],
+   "kayip": [],
+   "duzelen": [],
+   "fazla": [
+    {
+     "etiket": "AYK-01 Etkin arazi kipi URL ile aynı (?terrain → DK.terrain.mode)",
+     "ok": true
+    },
+    {
+     "etiket": "AYK-02 Kipin beklenen işçi/yedek durumu (normal: işçi ≥ 1, yedek kapalı, hata yok; noworker: işçi 0 + yedek; ctorthrow/badurl/crash: işçi 0 + yedek + hata kaydı; crash1: yedek kapalı + çökme kaydı; hang/noready: zaman aşımı kaydı + yedek)",
+     "ok": true
+    },
+    {
+     "etiket": "AYS-01 Uzak bölge prepare(1900, 950, r300) süresi kip sınırı içinde: normal ≤ 2 sn; işçisiz/çöken kiplerde (crash, crash1 dahil) ≤ 3 sn (KI-234: v0.4 crash 28,8 sn, badurl 13,9 sn ölçülmüştü)",
+     "ok": true
+    }
+   ],
+   "tabanTam": true,
+   "tamKorundu": true
+  },
+  {
+   "yeni": "02_arazi_yedek_crash",
+   "taban": "02_arazi_yedek_crash",
+   "resmi": false,
+   "kararsiz": false,
+   "tabanGecen": 12,
+   "tabanToplam": 12,
+   "yeniGecen": 15,
+   "yeniToplam": 15,
+   "durum": "GECTI",
+   "cikis": 0,
+   "neden": [],
+   "izinsizKonsol": 0,
+   "izinsizAg": 0,
+   "izinliKonsol": 0,
+   "izinliAg": 0,
+   "evalErrors": 0,
+   "tur": {
+    "tarayici": 6,
+    "tarayici+benzetim": 9
+   },
+   "regresyon": [],
+   "kayip": [],
+   "duzelen": [],
+   "fazla": [
+    {
+     "etiket": "AYK-01 Etkin arazi kipi URL ile aynı (?terrain → DK.terrain.mode)",
+     "ok": true
+    },
+    {
+     "etiket": "AYK-02 Kipin beklenen işçi/yedek durumu (normal: işçi ≥ 1, yedek kapalı, hata yok; noworker: işçi 0 + yedek; ctorthrow/badurl/crash: işçi 0 + yedek + hata kaydı; crash1: yedek kapalı + çökme kaydı; hang/noready: zaman aşımı kaydı + yedek)",
+     "ok": true
+    },
+    {
+     "etiket": "AYS-01 Uzak bölge prepare(1900, 950, r300) süresi kip sınırı içinde: normal ≤ 2 sn; işçisiz/çöken kiplerde (crash, crash1 dahil) ≤ 3 sn (KI-234: v0.4 crash 28,8 sn, badurl 13,9 sn ölçülmüştü)",
+     "ok": true
+    }
+   ],
+   "tabanTam": true,
+   "tamKorundu": true
+  },
+  {
+   "yeni": "02_arazi_yedek_normal",
+   "taban": "02_arazi_yedek",
+   "resmi": true,
+   "kararsiz": false,
+   "tabanGecen": 12,
+   "tabanToplam": 12,
+   "yeniGecen": 15,
+   "yeniToplam": 15,
+   "durum": "GECTI",
+   "cikis": 0,
+   "neden": [],
+   "izinsizKonsol": 0,
+   "izinsizAg": 0,
+   "izinliKonsol": 0,
+   "izinliAg": 0,
+   "evalErrors": 0,
+   "tur": {
+    "tarayici": 6,
+    "tarayici+benzetim": 9
+   },
+   "regresyon": [],
+   "kayip": [],
+   "duzelen": [],
+   "fazla": [
+    {
+     "etiket": "AYK-01 Etkin arazi kipi URL ile aynı (?terrain → DK.terrain.mode)",
+     "ok": true
+    },
+    {
+     "etiket": "AYK-02 Kipin beklenen işçi/yedek durumu (normal: işçi ≥ 1, yedek kapalı, hata yok; noworker: işçi 0 + yedek; ctorthrow/badurl/crash: işçi 0 + yedek + hata kaydı; crash1: yedek kapalı + çökme kaydı; hang/noready: zaman aşımı kaydı + yedek)",
+     "ok": true
+    },
+    {
+     "etiket": "AYS-01 Uzak bölge prepare(1900, 950, r300) süresi kip sınırı içinde: normal ≤ 2 sn; işçisiz/çöken kiplerde (crash, crash1 dahil) ≤ 3 sn (KI-234: v0.4 crash 28,8 sn, badurl 13,9 sn ölçülmüştü)",
+     "ok": true
+    }
+   ],
+   "tabanTam": true,
+   "tamKorundu": true
+  },
+  {
+   "yeni": "02_arazi_yedek_noworker",
+   "taban": "02_arazi_yedek_noworker",
+   "resmi": false,
+   "kararsiz": false,
+   "tabanGecen": 12,
+   "tabanToplam": 12,
+   "yeniGecen": 14,
+   "yeniToplam": 15,
+   "durum": "KALDI",
+   "cikis": 1,
+   "neden": [
+    "başarısız kontrol ya da adım: 1"
+   ],
+   "izinsizKonsol": 0,
+   "izinsizAg": 0,
+   "izinliKonsol": 0,
+   "izinliAg": 0,
+   "evalErrors": 0,
+   "tur": {
+    "tarayici": 6,
+    "tarayici+benzetim": 9
+   },
+   "regresyon": [],
+   "kayip": [],
+   "duzelen": [],
+   "fazla": [
+    {
+     "etiket": "AYK-01 Etkin arazi kipi URL ile aynı (?terrain → DK.terrain.mode)",
+     "ok": true
+    },
+    {
+     "etiket": "AYK-02 Kipin beklenen işçi/yedek durumu (normal: işçi ≥ 1, yedek kapalı, hata yok; noworker: işçi 0 + yedek; ctorthrow/badurl/crash: işçi 0 + yedek + hata kaydı; crash1: yedek kapalı + çökme kaydı; hang/noready: zaman aşımı kaydı + yedek)",
+     "ok": true
+    },
+    {
+     "etiket": "AYS-01 Uzak bölge prepare(1900, 950, r300) süresi kip sınırı içinde: normal ≤ 2 sn; işçisiz/çöken kiplerde (crash, crash1 dahil) ≤ 3 sn (KI-234: v0.4 crash 28,8 sn, badurl 13,9 sn ölçülmüştü)",
+     "ok": false
+    }
+   ],
+   "tabanTam": true,
+   "tamKorundu": false
+  },
+  {
+   "yeni": "02_tek_dosya",
+   "taban": "02_tek_dosya",
+   "resmi": true,
+   "kararsiz": false,
+   "tabanGecen": 4,
+   "tabanToplam": 4,
+   "yeniGecen": 4,
+   "yeniToplam": 4,
+   "durum": "GECTI",
+   "cikis": 0,
+   "neden": [],
+   "izinsizKonsol": 0,
+   "izinsizAg": 0,
+   "izinliKonsol": 0,
+   "izinliAg": 0,
+   "evalErrors": 0,
+   "tur": {
+    "tarayici": 3,
+    "tarayici+benzetim": 1
+   },
+   "regresyon": [],
+   "kayip": [],
+   "duzelen": [],
+   "fazla": [],
+   "tabanTam": true,
+   "tamKorundu": true
+  },
+  {
+   "yeni": "07_ekonomi",
+   "taban": "07_ekonomi",
+   "resmi": true,
+   "kararsiz": false,
+   "tabanGecen": 3,
+   "tabanToplam": 3,
+   "yeniGecen": 3,
+   "yeniToplam": 3,
+   "durum": "GECTI",
+   "cikis": 0,
+   "neden": [],
+   "izinsizKonsol": 0,
+   "izinsizAg": 0,
+   "izinliKonsol": 0,
+   "izinliAg": 0,
+   "evalErrors": 0,
+   "tur": {
+    "tarayici": 3
+   },
+   "regresyon": [],
+   "kayip": [],
+   "duzelen": [],
+   "fazla": [],
+   "tabanTam": true,
+   "tamKorundu": true
+  },
+  {
+   "yeni": "08_kalicilik",
+   "taban": "08_kalicilik",
+   "resmi": true,
+   "kararsiz": false,
+   "tabanGecen": 12,
+   "tabanToplam": 12,
+   "yeniGecen": 12,
+   "yeniToplam": 12,
+   "durum": "GECTI",
+   "cikis": 0,
+   "neden": [],
+   "izinsizKonsol": 0,
+   "izinsizAg": 0,
+   "izinliKonsol": 0,
+   "izinliAg": 0,
+   "evalErrors": 0,
+   "tur": {
+    "tarayici": 1,
+    "tarayici+benzetim": 11
+   },
+   "regresyon": [],
+   "kayip": [],
+   "duzelen": [],
+   "fazla": [],
+   "tabanTam": true,
+   "tamKorundu": true
+  },
+  {
+   "yeni": "12_kayit_dongusu",
+   "taban": "12_kayit_dongusu",
+   "resmi": true,
+   "kararsiz": false,
+   "tabanGecen": 4,
+   "tabanToplam": 4,
+   "yeniGecen": 4,
+   "yeniToplam": 4,
+   "durum": "GECTI",
+   "cikis": 0,
+   "neden": [],
+   "izinsizKonsol": 0,
+   "izinsizAg": 0,
+   "izinliKonsol": 0,
+   "izinliAg": 0,
+   "evalErrors": 0,
+   "tur": {
+    "tarayici": 1,
+    "tarayici+benzetim": 3
+   },
+   "regresyon": [],
+   "kayip": [],
+   "duzelen": [],
+   "fazla": [],
+   "tabanTam": true,
+   "tamKorundu": true
+  },
+  {
+   "yeni": "14_deniz_ekipmani",
+   "taban": "14_deniz_ekipmani",
+   "resmi": true,
+   "kararsiz": false,
+   "tabanGecen": 16,
+   "tabanToplam": 16,
+   "yeniGecen": 16,
+   "yeniToplam": 16,
+   "durum": "GECTI",
+   "cikis": 0,
+   "neden": [],
+   "izinsizKonsol": 0,
+   "izinsizAg": 0,
+   "izinliKonsol": 0,
+   "izinliAg": 0,
+   "evalErrors": 0,
+   "tur": {
+    "tarayici": 1,
+    "tarayici+benzetim": 15
+   },
+   "regresyon": [],
+   "kayip": [],
+   "duzelen": [],
+   "fazla": [],
+   "tabanTam": true,
+   "tamKorundu": true
+  },
+  {
+   "yeni": "14_deniz_ekipmani_kosu2",
+   "taban": null,
+   "not": "tabanda karşılığı yok (yeni koşu)"
+  },
+  {
+   "yeni": "15_iskele_kamera",
+   "taban": "15_iskele_kamera",
+   "resmi": true,
+   "kararsiz": false,
+   "tabanGecen": 14,
+   "tabanToplam": 14,
+   "yeniGecen": 14,
+   "yeniToplam": 14,
+   "durum": "GECTI",
+   "cikis": 0,
+   "neden": [],
+   "izinsizKonsol": 0,
+   "izinsizAg": 0,
+   "izinliKonsol": 0,
+   "izinliAg": 0,
+   "evalErrors": 0,
+   "tur": {
+    "tarayici": 1,
+    "tarayici+benzetim": 13
+   },
+   "regresyon": [],
+   "kayip": [],
+   "duzelen": [],
+   "fazla": [],
+   "tabanTam": true,
+   "tamKorundu": true
+  },
+  {
+   "yeni": "16_kosu_poz_ganimet",
+   "taban": "16_kosu_poz_ganimet",
+   "resmi": true,
+   "kararsiz": false,
+   "tabanGecen": 23,
+   "tabanToplam": 23,
+   "yeniGecen": 23,
+   "yeniToplam": 23,
+   "durum": "GECTI",
+   "cikis": 0,
+   "neden": [],
+   "izinsizKonsol": 0,
+   "izinsizAg": 0,
+   "izinliKonsol": 0,
+   "izinliAg": 0,
+   "evalErrors": 0,
+   "tur": {
+    "tarayici": 1,
+    "tarayici+benzetim": 22
+   },
+   "regresyon": [],
+   "kayip": [],
+   "duzelen": [],
+   "fazla": [],
+   "tabanTam": true,
+   "tamKorundu": true
+  },
+  {
+   "yeni": "17_kamera_kararma",
+   "taban": "17_kamera_kararma",
+   "resmi": true,
+   "kararsiz": false,
+   "tabanGecen": 13,
+   "tabanToplam": 13,
+   "yeniGecen": 8,
+   "yeniToplam": 13,
+   "durum": "KALDI",
+   "cikis": 1,
+   "neden": [
+    "başarısız kontrol ya da adım: 11",
+    "sayfa hatası (pageerror): 1",
+    "adım istisnası (evalErrors): 6"
+   ],
+   "izinsizKonsol": 0,
+   "izinsizAg": 0,
+   "izinliKonsol": 0,
+   "izinliAg": 0,
+   "evalErrors": 6,
+   "tur": {
+    "tarayici": 3,
+    "tarayici+benzetim": 5,
+    "null": 5
+   },
+   "regresyon": [
+    {
+     "etiket": "K08 Ormanda (2 eğim × 32 açı) ve palmiyelerin arasında (2 × 16) karanlık kare yok",
+     "tabanDeger": true,
+     "yeniDeger": "page.evaluate: Target crashed "
+    },
+    {
+     "etiket": "K09 Su altı geçişi histerezisli (−6 cm: açılmaz, −20 cm: açılır, −2 cm: kapanmaz, +5 cm: kapanır)",
+     "tabanDeger": true,
+     "yeniDeger": "page.evaluate: Target crashed "
+    },
+    {
+     "etiket": "K10 Tek bir NaN/Inf yazan yüzey parlamayla tüm ekrana yayılıp kareyi karartmaz (parlaklık temel değerin ≥ %80'i)",
+     "tabanDeger": true,
+     "yeniDeger": "page.evaluate: Target crashed "
+    },
+    {
+     "etiket": "K11 Sıfır normalli yüzey (yumuşak ve düz gölgeli) yarım kayan noktalı hedefte NaN/Inf piksel üretmez",
+     "tabanDeger": true,
+     "yeniDeger": "page.evaluate: Target crashed "
+    },
+    {
+     "etiket": "K12 Kamerayla oyuncu arasındaki bitki örtüsü görüş çizgisi çevresinde seyrelir (2,6 m uzaktaki siyah düzlem: ekran ortası silindir açıkken görünür, kapalıyken > %97 siyah)",
+     "tabanDeger": true,
+     "yeniDeger": "page.evaluate: Target crashed "
+    }
+   ],
+   "kayip": [],
+   "duzelen": [],
+   "fazla": [],
+   "tabanTam": true,
+   "tamKorundu": false
+  },
+  {
+   "yeni": "53_test_kipi",
+   "taban": null,
+   "not": "tabanda karşılığı yok (yeni koşu)"
+  },
+  {
+   "yeni": "coop_06b",
+   "taban": "coop_06b",
+   "resmi": true,
+   "kararsiz": false,
+   "tabanGecen": 18,
+   "tabanToplam": 18,
+   "yeniGecen": 18,
+   "yeniToplam": 18,
+   "durum": "GECTI",
+   "cikis": 0,
+   "neden": [],
+   "izinsizKonsol": 0,
+   "izinsizAg": 0,
+   "izinliKonsol": 0,
+   "izinliAg": 0,
+   "evalErrors": 0,
+   "kapaliAtlama": 0,
+   "regresyon": [],
+   "kayip": [],
+   "duzelen": [],
+   "fazla": [],
+   "tabanTam": true,
+   "tamKorundu": true
+  },
+  {
+   "yeni": "coop_06d",
+   "taban": "coop_06d",
+   "resmi": true,
+   "kararsiz": false,
+   "tabanGecen": 9,
+   "tabanToplam": 9,
+   "yeniGecen": 9,
+   "yeniToplam": 9,
+   "durum": "GECTI",
+   "cikis": 0,
+   "neden": [],
+   "izinsizKonsol": 0,
+   "izinsizAg": 0,
+   "izinliKonsol": 0,
+   "izinliAg": 0,
+   "evalErrors": 0,
+   "kapaliAtlama": 0,
+   "regresyon": [],
+   "kayip": [],
+   "duzelen": [],
+   "fazla": [],
+   "tabanTam": true,
+   "tamKorundu": true
+  },
+  {
+   "yeni": "test_kipi",
+   "taban": null,
+   "not": "tabanda karşılığı yok (yeni koşu)"
+  },
+  {
+   "yeni": "uretim_kisa_dist",
+   "taban": null,
+   "not": "tabanda karşılığı yok (yeni koşu)"
+  },
+  {
+   "yeni": "uretim_kisa_w2",
+   "taban": null,
+   "not": "tabanda karşılığı yok (yeni koşu)"
+  },
+  {
+   "yeni": "yayin_ref",
+   "taban": null,
+   "not": "tabanda karşılığı yok (yeni koşu)"
+  }
+ ]
+}

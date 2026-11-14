@@ -1,0 +1,33 @@
+ready in 7.3 s
+PASS GA01 __dkDurum(): erişimci yok, değiştirilemez, yalnız ilkel, dondurulmuş; değiştirme denemesi TypeError ve sonraki anlık görüntüyü etkilemez → {"erisimci":[],"degistirilebilir":[],"ilkelOlmayan":[],"donuk":true,"atama":"TypeError","ek":"TypeError","tanim":"TypeError","proto":true,"sembol":0,"sonrakiTest":true}
+PASS GA02 __dkDurum() 200 kez çağrıldı: oyun durumu değişmedi, çıktı kararlı (yan etkisiz) → {"durumAyni":true,"ciktiKararli":true}
+PASS GA03 terrain.mode nesne olsa da araziKip dizgeye çevrilir (nesne başvurusu dönmez) → {"tur":"string","deger":"nesne","geriAlindi":true}
+PASS GB01 Test kipinde peerhost yalnız tam geri döngü dizgesiyle kabul edilir: önek/sonek, büyük harf, sonda nokta, onaltılık/ondalık/kısa IPv4, IPv4 eşlemeli IPv6, kullanıcı bilgisi, boşluk ve çift parametre yok sayılır → {"test=1&peerhost=127.0.0.1.kotu.ornek&peerport=9000":"varsayilan","test=1&peerhost=localhost.kotu.ornek":"varsayilan","test=1&peerhost=LOCALHOST":"varsayilan","test=1&peerhost=localhost.":"varsayilan","test=1&peerhost=0x7f000001":"varsayilan","test=1&peerhost=2130706433":"varsayilan","test=1&peerho
+ROTA https://0.peerjs.com → /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a2_guvenlik/bos
+ROTA https://kotu.ornek → /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a2_guvenlik/bos
+GOTO http://localhost:8081/index.html?join=ABCDEF&test=1&peerhost=10.9.9.9&peerport=1
+HTTP 404 https://0.peerjs.com/peerjs/id?ts=17946630970860.7038569028512213&version=1.5.5
+ERR: Failed to load resource: the server responded with a status of 404 (Not Found)
+PASS GE01 localhost + ?join&test=1&peerhost=10.9.9.9: test kipi açık, katılma ekranı açıldı, oda taraması bitti, sinyal varsayılan → {"koken":"http://localhost:8081","test":true,"dk":"object","sinyal":"varsayilan","katilmaEkrani":true,"taramaBitti":true}
+PASS GE02 Geri döngü dışı peerhost (10.9.9.9) test kipinde de hiç istek almadı (K9-20) → 0
+PASS GE03 Oda taramasının sinyal isteği varsayılan PeerJS sunucusuna gitti (tarama gerçekten çalıştı) → 1
+ROTA https://localhost.oyun.ornek → /home/user/SON-HAZ-NE-w2
+GOTO https://localhost.oyun.ornek/index.html?test=1&terrain=crash&peerhost=127.0.0.1&peerport=9000
+PASS GC01 https://localhost.oyun.ornek (localhost önekli yabancı alan): test kipi kapalı, DK yok, ?terrain ve ?peerhost yok sayılır → {"koken":"https://localhost.oyun.ornek","dk":"undefined","test":false,"araziKip":"","isciVar":true,"sinyal":"varsayilan","isaret":"undefined"}
+PASS GC01b localhost önekli kökende js/test/ istenmedi → 0
+ROTA https://127.0.0.1.oyun.ornek → /home/user/SON-HAZ-NE-w2
+GOTO https://127.0.0.1.oyun.ornek/index.html?test=1&terrain=crash&peerhost=127.0.0.1&peerport=9000
+PASS GC02 https://127.0.0.1.oyun.ornek (127.0.0.1 önekli yabancı alan): test kipi kapalı, DK yok, ?terrain ve ?peerhost yok sayılır → {"koken":"https://127.0.0.1.oyun.ornek","dk":"undefined","test":false,"araziKip":"","isciVar":true,"sinyal":"varsayilan","isaret":"undefined"}
+ROTA https://oyun.ornek → /home/user/SON-HAZ-NE-w2
+GOTO https://oyun.ornek/index.html?join=ABCDEF&test=1&peerhost=kotu.ornek&peerport=443&peersecure=1&terrain=crash
+HTTP 404 https://0.peerjs.com/peerjs/id?ts=17946631259770.22846949296284913&version=1.5.5
+ERR: Failed to load resource: the server responded with a status of 404 (Not Found)
+PASS GD01a (TK05 ile aynı tanı onayı) DK yok, test kipi kapalı, araziKip boş, __dkDurum().sinyal varsayılan → {"koken":"https://oyun.ornek","guvenli":true,"dk":"undefined","test":false,"araziKip":"","sinyal":"varsayilan"}
+PASS GD01b Davet bağlantısı katılma ekranını açtı ve oda taraması (sinyal sunucusuna bağlantı) kendiliğinden çalışıp bitti → {"katilmaEkrani":true,"taramaBitti":true}
+PASS GD02 Saldırganın sinyal sunucusuna (kotu.ornek) hiçbir istek gitmedi (K-08 uçtan uca) → 0
+PASS GD03 Tarama isteği varsayılan PeerJS sunucusuna gitti → 1
+errors: 2 pageErrors: 0 fails: 0 (52.4 s)
+IZINLI ×1 (0\.peerjs\.com/peerjs/): 404 https://0.peerjs.com/peerjs/id?ts=17946630970860.7038569028512213&version=1.5.5
+IZINLI ×1 (0\.peerjs\.com/peerjs/): 404 https://0.peerjs.com/peerjs/id?ts=17946631259770.22846949296284913&version=1.5.5
+IZIN ×2 (meta, hepsi) 0\.peerjs\.com/peerjs/ — Varsayılan PeerJS bulut sunucusu bu koşuda rotaKok ile boş bir yerel dizine bağlandı: /peerjs/id 404 döner ve CORS başlığı olmadığı için tarayıcı konsola CORS/y
+SONUC: GECTI (çıkış 0) kontrol 14/14, onay 14 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 2 | uyarı 2 farklı/170

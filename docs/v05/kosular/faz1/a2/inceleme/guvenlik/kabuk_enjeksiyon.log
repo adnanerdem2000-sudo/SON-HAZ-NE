@@ -1,0 +1,22 @@
+# Ref denetimi adımının kabuk enjeksiyonu sınaması (2026-11-14T13:41:03Z). Adım metni pages.yml'den PyYAML ile okundu:
+#   test "$GITHUB_REF" = "refs/heads/$YAYIN_DALI" || { echo "::error::Yalnız $YAYIN_DALI yayınlanır ($GITHUB_REF)"; exit 1; }
+# 1) git check-ref-format: hangi kötü niyetli dal adları git'te GEÇERLİ (GitHub'a itilebilir)?
+  refs/heads/x\$\(touch\ /tmp/PWN1\)               → GECERSIZ
+  refs/heads/x\`touch\$\{IFS\}/tmp/PWN2\`          → GECERLI
+  refs/heads/x\;touch\$\{IFS\}/tmp/PWN3            → GECERLI
+  refs/heads/x%0A::set-output\ name=enabled::true  → GECERSIZ
+  refs/heads/-n                                    → GECERLI
+  refs/heads/x::error::y                           → GECERSIZ
+  $'refs/heads/x\n::warning::y'                    → GECERSIZ
+  refs/heads/a\ b                                  → GECERSIZ
+# 2) Geçerli adlarla adımın bash'te koşturulması (GitHub varsayılan kabuğu: bash --noprofile --norc -eo pipefail):
+  GITHUB_REF=refs/heads/x\$\(touch\ /tmp/PWN1\)               → çıkış 1 | çıktı satırı: ::error::Yalnız claude/hopeful-cray-o1jw6w yayınlanır (refs/heads/x$(touch /tmp/PWN1)) | satır sayısı 1
+  GITHUB_REF=refs/heads/x\`touch\$\{IFS\}/tmp/PWN2\`          → çıkış 1 | çıktı satırı: ::error::Yalnız claude/hopeful-cray-o1jw6w yayınlanır (refs/heads/x`touch${IFS}/tmp/PWN2`) | satır sayısı 1
+  GITHUB_REF=refs/heads/x\;touch\$\{IFS\}/tmp/PWN3            → çıkış 1 | çıktı satırı: ::error::Yalnız claude/hopeful-cray-o1jw6w yayınlanır (refs/heads/x;touch${IFS}/tmp/PWN3) | satır sayısı 1
+  GITHUB_REF=refs/heads/x%0A::set-output\ name=enabled::true  → çıkış 1 | çıktı satırı: ::error::Yalnız claude/hopeful-cray-o1jw6w yayınlanır (refs/heads/x%0A::set-output name=enabled::true) | satır sayısı 1
+  GITHUB_REF=refs/heads/-n                                    → çıkış 1 | çıktı satırı: ::error::Yalnız claude/hopeful-cray-o1jw6w yayınlanır (refs/heads/-n) | satır sayısı 1
+  GITHUB_REF=refs/heads/claude/hopeful-cray-o1jw6w            → çıkış 0 | çıktı satırı:  | satır sayısı 0
+# 3) Yan etki dosyaları (oluşmamalı):
+  ls: cannot access '/tmp/PWN1': No such file or directory
+  ls: cannot access '/tmp/PWN2': No such file or directory
+  ls: cannot access '/tmp/PWN3': No such file or directory

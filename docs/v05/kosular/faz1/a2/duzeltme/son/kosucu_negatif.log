@@ -1,0 +1,47 @@
+PASS (a) console.error('x 404 y'): beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI
+PASS (b) olmayan görsel isteği (HTTP 404): beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI
+PASS (c) onaysız senaryo: beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI
+PASS (d) meta.olcum (onaysız ölçüm): beklenen çıkış 0/OLCUM, gelen çıkış 0/OLCUM
+PASS (e) izin listesindeki hatalar (meta.izinliHatalar; metin + adres): beklenen çıkış 0/GECTI, gelen çıkış 0/GECTI
+PASS (f) co-op ev() istisnası: beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI
+PASS (g) kapatılmış sayfada tick(): beklenen çıkış 0/GECTI, gelen çıkış 0/GECTI
+PASS (e2) izinler komut satırından (--izin-hata): beklenen çıkış 0/GECTI, gelen çıkış 0/GECTI
+PASS (h) başlatma betiği (meta.baslatma) localStorage → SecurityError: beklenen çıkış 0/GECTI, gelen çıkış 0/GECTI
+PASS (i) aynı beklenti başlatma betiği olmadan (olumsuz kontrol) + ilk başarısızlık görüntüsü: beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI
+PASS (j) başlatma betiği dosyadan (--baslatma): beklenen çıkış 0/GECTI, gelen çıkış 0/GECTI
+PASS (k) test=1 kendiliğinden + parametre koruma + tür ölçümü: beklenen çıkış 0/GECTI, gelen çıkış 0/GECTI
+PASS (l) test kipi istendi ama window.DK yok: beklenen çıkış 1/KOSUCU_HATASI, gelen çıkış 1/KOSUCU_HATASI
+PASS (m) --uretim: test parametresi yok, U00 geçer: beklenen çıkış 0/GECTI, gelen çıkış 0/GECTI
+PASS (m2) --uretim ama sayfada DK var: U00 kalır: beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI
+PASS (n) yeni adım türleri (olumlu): beklenen çıkış 0/GECTI, gelen çıkış 0/GECTI
+PASS (o) yeni adım türleri (olumsuz): beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI
+PASS (s) yazım hatalı adım alanı ('expext'): beklenen çıkış 1/KOSUCU_HATASI, gelen çıkış 1/KOSUCU_HATASI
+PASS (p) co-op başlatma betiği (meta.baslatma): beklenen çıkış 0/GECTI, gelen çıkış 0/GECTI
+PASS (q) co-op onaysız senaryo: beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI
+PASS (r) co-op konsol hatası: beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI
+PASS (t) zaman aşımı: ZAMAN_ASIMI, rapor yazılır, kalan adım koşmaz: beklenen çıkış 1/ZAMAN_ASIMI, gelen çıkış 1/ZAMAN_ASIMI
+PASS (t2) co-op zaman aşımı: geç gelen kontrol sayılmaz: beklenen çıkış 1/ZAMAN_ASIMI, gelen çıkış 1/ZAMAN_ASIMI
+PASS (u) yakalanmamış sayfa hatası (pageerror): beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI
+PASS (v) bağlantı reddedildi (requestfailed, HTTP yanıtı yok): beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI
+PASS (w) sözdizimi bozuk senaryo: beklenen çıkış 1/KOSUCU_HATASI, gelen çıkış 1/KOSUCU_HATASI
+PASS (x) döngüsel ve BigInt js dönüş değerleri: rapor yazılır, süreç kendiliğinden biter: beklenen çıkış 0/GECTI, gelen çıkış 0/GECTI
+PASS (x2) yazılamayan --report yolu: süreç asılı kalmaz, çıkış 1: beklenen çıkış 1/rapor yok, gelen çıkış 1/rapor yok
+PASS (x3) co-op: yazılamayan --report yolu: süreç asılı kalmaz, çıkış 1: beklenen çıkış 1/rapor yok, gelen çıkış 1/rapor yok
+PASS (y1) expect'te yazım hatalı karşılaştırıcı ('truthly'): beklenen çıkış 1/KOSUCU_HATASI, gelen çıkış 1/KOSUCU_HATASI
+PASS (y2) bütün karşılaştırıcılar uygulanır; gte/lte yalnız sonlu sayıyla: beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI
+PASS (y3) karşılaştırıcısız expect: beklenen çıkış 1/KOSUCU_HATASI, gelen çıkış 1/KOSUCU_HATASI
+PASS (y4) sınırsız agSay: beklenen çıkış 1/KOSUCU_HATASI, gelen çıkış 1/KOSUCU_HATASI
+PASS (z) tür ölçümü: rAF döngüsü, doğrudan game.update, DK.sim, sayfanın kendi yeniden yüklemesi: beklenen çıkış 0/GECTI, gelen çıkış 0/GECTI
+PASS (ka) kanıt adımları: sayfa istisnası ve data: olmayan dönüş adım hatası; dosya yazımı yalnız uyarı: beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI
+PASS (aa) co-op check()'e söz (await unutuldu): beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI
+PASS (ab) son adımdan sonra gelen eşzamansız sayfa hatası (yerleşme): beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI
+PASS (ac) co-op: senaryodan sonra gelen eşzamansız sayfa hatası (yerleşme): beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI
+PASS (ad) gerekçesiz izin (meta): beklenen çıkış 1/KOSUCU_HATASI, gelen çıkış 1/KOSUCU_HATASI
+PASS (ae) her şeyle eşleşen izin deseni ('.*'): beklenen çıkış 1/KOSUCU_HATASI, gelen çıkış 1/KOSUCU_HATASI
+PASS (af) ağ için yazılmış izin, betiğin bastığı konsol hatasını (konum adresi) izinli yapmaz: beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI
+PASS (ag) bozuk --izin-hata düzenli ifadesi: kullanım hatası (çıkış 2): beklenen çıkış 2/rapor yok, gelen çıkış 2/rapor yok
+PASS (ag2) co-op: bozuk --izin-hata düzenli ifadesi: kullanım hatası (çıkış 2): beklenen çıkış 2/rapor yok, gelen çıkış 2/rapor yok
+PASS (ah) gerekçesiz --izin-hata: kullanım hatası (çıkış 2): beklenen çıkış 2/rapor yok, gelen çıkış 2/rapor yok
+PASS (ai) co-op: aynı adla mk() ile yeniden katılım önceki sekmenin sayfa hatasını silmez: beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI
+
+kosucu_negatif: GECTI — kalan: []; çekirdekte kalan: []; koşucunun yanlışlıkla geçirdiği: [] (koşucu dizini tests/harness)

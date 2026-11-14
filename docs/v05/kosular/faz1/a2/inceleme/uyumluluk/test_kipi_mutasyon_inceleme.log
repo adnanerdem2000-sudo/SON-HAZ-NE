@@ -1,0 +1,50 @@
+# test_kipi.mjs mutasyon sınaması (2026-11-14T13:48:58+00:00); w2 js/ kopyasına tek satır eklenir, araç --agac <kopya> --taban-main <44d548c main.js> ile koşar. Beklenen: her mutasyonda KALDI.
+# betik:
+#   #!/bin/bash
+#   # test_kipi.mjs'in yanlış negatiflerini sınar: her mutasyon w2 js/ kopyasına tek satır ekler; araç KALDI vermeli.
+#   S=/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a2_uyumluluk
+#   W=/home/user/SON-HAZ-NE-w2
+#   kos() {   # $1 ad, $2 dosya (js/ altı), $3 eklenecek satır (dosya sonuna) ya da BAS: ile başa
+#     rm -rf $S/mut/$1 && mkdir -p $S/mut/$1 && cp -r $W/js $S/mut/$1/js
+#     if [[ "$3" == BAS:* ]]; then printf '%s\n' "${3#BAS:}" | cat - $S/mut/$1/js/$2 > $S/mut/$1/tmp && mv $S/mut/$1/tmp $S/mut/$1/js/$2; else printf '\n%s\n' "$3" >> $S/mut/$1/js/$2; fi
+#     out=$(node $W/tests/node/test_kipi.mjs --agac $S/mut/$1 --taban-main $S/v04/js/main.js 2>&1); rc=$?
+#     echo "[$1] cikis=$rc | $(echo "$out" | grep '^SONUC') | eklenen: $3"
+#     echo "$out" | grep '^KALDI' | cut -c1-260 | sed 's/^/      /'
+#   }
+#   kos M0_degisiklik_yok ui/hud.js '// degisiklik yok'
+#   kos M1_opsiyonel_zincir ui/hud.js 'export function _m1() { return window?.DK?.G; }'
+#   kos M2_yikici_atama ui/hud.js 'export function _m2() { const { DK } = window; return DK && DK.G; }'
+#   kos M3_top_DK ui/hud.js 'export function _m3() { return top.DK.G; }'
+#   kos M4_mutlak_dinamik_import ui/hud.js "export function _m4() { return import('/js/test/kancalar.js'); }"
+#   kos M5_mutlak_statik_import ui/hud.js "BAS:import { install as _kur } from '/js/test/kancalar.js';"
+#   kos M6_location_href net/net.js "export function _m6() { return new URL(location.href).searchParams.get('peerhost'); }"
+#   kos M7_goreli_dinamik_import_kontrol ui/hud.js "export function _m7() { return import('../test/kancalar.js'); }"
+#   kos M8_window_DK_okuma_kontrol ui/hud.js 'export function _m8() { return window.DK && window.DK.G; }'
+#   kos M9_document_URL net/net.js "export function _m9() { return new URLSearchParams(document.URL.split('?')[1]).get('peerhost'); }"
+[M0_degisiklik_yok] cikis=0 | SONUC: GECTI (37/37 denetim) | eklenen: // degisiklik yok
+[M1_opsiyonel_zincir] cikis=0 | SONUC: GECTI (37/37 denetim) | eklenen: export function _m1() { return window?.DK?.G; }
+[M2_yikici_atama] cikis=1 | SONUC: KALDI (36/37 denetim) | kalan: K3 | eklenen: export function _m2() { const { DK } = window; return DK && DK.G; }
+      KALDI K3 Oyun kodu window.DK'yi hiçbir yerde okumuyor (js/test/ dışı) — ["js/ui/hud.js:472 çıplak DK erişimi"]
+[M3_top_DK] cikis=0 | SONUC: GECTI (37/37 denetim) | eklenen: export function _m3() { return top.DK.G; }
+[M4_mutlak_dinamik_import] cikis=0 | SONUC: GECTI (37/37 denetim) | eklenen: export function _m4() { return import('/js/test/kancalar.js'); }
+[M5_mutlak_statik_import] cikis=0 | SONUC: GECTI (37/37 denetim) | eklenen: BAS:import { install as _kur } from '/js/test/kancalar.js';
+[M6_location_href] cikis=0 | SONUC: GECTI (37/37 denetim) | eklenen: export function _m6() { return new URL(location.href).searchParams.get('peerhost'); }
+[M7_goreli_dinamik_import_kontrol] cikis=1 | SONUC: KALDI (36/37 denetim) | kalan: K2 | eklenen: export function _m7() { return import('../test/kancalar.js'); }
+      KALDI K2 Test modülleri yalnız if (TEST …) arkasındaki dinamik import() ile yükleniyor; yalnız install (kancalar.js: + MARK) dışa aktarıyor; statik içe aktarma yok — ["js/ui/hud.js:472 test modülü (../test/kancalar.js) if (TEST …) bloğu dış
+[M8_window_DK_okuma_kontrol] cikis=1 | SONUC: KALDI (36/37 denetim) | kalan: K3 | eklenen: export function _m8() { return window.DK && window.DK.G; }
+      KALDI K3 Oyun kodu window.DK'yi hiçbir yerde okumuyor (js/test/ dışı) — ["js/ui/hud.js:472 window.DK && window.DK.G","js/ui/hud.js:472 window.DK.G; }"]
+[M9_document_URL] cikis=0 | SONUC: GECTI (37/37 denetim) | eklenen: export function _m9() { return new URLSearchParams(document.URL.split('?')[1]).get('peerhost'); }
+
+# ek sınamalar (API eşliği, zamanlama):
+1
+KALDI AP1 Taban (44d548c) main.js window.DK nesnesi: 49 anahtar — {"kaynak":"/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a2_uyumluluk/mut2/main_fazla
+KALDI AP2 API eşliği: taban 49 alan + 5 yardımcı eksiksiz; fazla tam olarak audio, mod, __sayac — {"eksik":["fazla"],"fazla":["audio","__sayac","mod"],"izinsizFazla":[],"kurulmayanEk":[],"kurula
+SONUC: KALDI (35/37 denetim) | kalan: AP1, AP2
+SONUC: GECTI (37/37 denetim)
+KALDI AP3 snap/snapFrom/sim/tap/press gövdeleri taban main.js:136-152 ile aynı (boşluk normalleştirilerek) — {"snap":"aynı (taban satır 136, kancalar satır 37)","snapFrom":"aynı (taban satı
+SONUC: KALDI (36/37 denetim) | kalan: AP3
+1
+SONUC: GECTI (37/37 denetim)
+1
+KALDI ZM Zamanlama: kancalar modülünün sözü bekleniyor (await), install ondan sonra, window.__ready install'dan sonra yazılıyor — {"kancaImport":{"satir":91},"bekleme":{"tur":"await kancaSozu
+SONUC: KALDI (36/37 denetim) | kalan: ZM

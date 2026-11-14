@@ -1,0 +1,136 @@
+// Sonda B (bağımsız inceleme, Faz 1 A2 — uyumluluk):
+//  T1–T4 tek HTML (dist, file://): ?test=1 → DK, DK.mod kimliği, davranış, oyun başlatma; test parametresiz → DK yok;
+//        ?test=1&terrain=noworker uygulanır; test parametresiz ?terrain=crash yok sayılır.
+//  F1–F3 modüler w2 ?test=1, js/test/kancalar.js yüklenemez (404 / sözdizimi hatası / install istisnası): açılış ne olur.
+//  S1–S4 sinyal sunucusu seçimi GERÇEK bağlantı girişimiyle: test kipinde 127.0.0.1:9000 (ev sahibi + konuk), test kipsiz
+//        ?peerhost=127.0.0.1 ve test kipinde ?peerhost=10.9.9.9 → varsayılan sunucu denenir. Yerel olmayan her HTTP isteği ve
+//        WebSocket kesilir (dışarıya bağlanılmaz), adresi kaydedilir.
+const { chromium } = require('playwright');
+const fs = require('fs');
+const OUT = process.argv[2];
+const DIST = 'file:///home/user/SON-HAZ-NE-w2/dist/DenizKorsanlari-SonHazine.html';
+const sonuc = { basla: new Date().toISOString(), sayfalar: {} };
+const yaz = () => fs.writeFileSync(OUT, JSON.stringify(sonuc, null, 1));
+const ARGS = ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--disable-gpu-watchdog', '--autoplay-policy=no-user-gesture-required', '--allow-file-access-from-files'];
+const yerel = (u) => /^(https?|wss?):\/\/(127\.0\.0\.1|localhost)(:\d+)?\//.test(u) || /^(file|data|blob):/.test(u);
+
+async function baglam(b, kayit) {
+  const ctx = await b.newContext({ viewport: { width: 640, height: 360 } });
+  kayit.disIstek = []; kayit.disWs = [];
+  await ctx.route((u) => !yerel(u.href), (r) => { kayit.disIstek.push(r.request().url().slice(0, 200)); r.abort(); });
+  await ctx.routeWebSocket((u) => !yerel(u.href), (ws) => { kayit.disWs.push(ws.url().slice(0, 200)); ws.close({ code: 1011, reason: 'inceleme: dış bağlantı kesildi' }); });
+  return ctx;
+}
+async function sayfa(b, ad, url, { yolla = null, hazirBekle = true, hazirZaman = 90000 } = {}) {
+  const kayit = { url, konsolHata: [], sayfaHata: [], istek4xx: [], ws: [] };
+  const ctx = await baglam(b, kayit);
+  if (yolla) await ctx.route('**/js/test/kancalar.js', yolla);
+  const p = await ctx.newPage();
+  p.on('console', (m) => { if (m.type() === 'error') kayit.konsolHata.push(m.text().slice(0, 300)); });
+  p.on('pageerror', (e) => kayit.sayfaHata.push(String(e.message).slice(0, 300)));
+  p.on('response', (r) => { if (r.status() >= 400) kayit.istek4xx.push(r.status() + ' ' + r.url().slice(0, 150)); });
+  p.on('websocket', (w) => kayit.ws.push(w.url().slice(0, 200)));
+  await p.addInitScript(() => { let h; window.__incHazir = null; Object.defineProperty(window, '__ready', { configurable: true, enumerable: true, get() { return h; }, set(v) { h = v; if (v && !window.__incHazir) window.__incHazir = { dkTipi: typeof window.DK, t: Math.round(performance.now()) }; } }); });
+  const t0 = Date.now();
+  await p.goto(url);
+  if (hazirBekle) { try { await p.waitForFunction('window.__ready === true', null, { timeout: hazirZaman }); kayit.hazirMs = Date.now() - t0; } catch (e) { kayit.hazirHata = e.message.slice(0, 160); } }
+  sonuc.sayfalar[ad] = kayit;
+  return { ctx, p, kayit };
+}
+
+(async () => {
+  const b = await chromium.launch({ args: ARGS });
+  try {
+    // ---------------- T1 tek HTML ?test=1
+    {
+      const { ctx, p, kayit } = await sayfa(b, 'T1_tek_test', DIST + '?test=1');
+      kayit.ic = await p.evaluate(async () => {
+        const D = window.DK; const o = { hazirAnindaki: window.__incHazir, dk: typeof D, durum: window.__dkDurum ? window.__dkDurum() : 'yok' };
+        if (!D) return o;
+        o.anahtarSayisi = Object.keys(D).length;
+        o.capraz = { ports: D.mod('world/ports').ports === D.ports, treasure: D.mod('treasure/treasure').treasure === D.treasure, quests: D.mod('game/quests').quests === D.quests,
+          assets: D.mod('core/assets').assets === D.assets, audio: D.mod('core/audio').audio === D.audio, seagear: D.mod('wildlife/seagear').seagear === D.seagear };
+        const m = D.mod('ui/menu').menu; m.show(false); const a = document.getElementById('menu').classList.contains('active'); m.show(true); const c = document.getElementById('menu').classList.contains('active');
+        o.menuAyniNesne = [a, c];
+        const sh = D.mod('economy/shop'); o.shop = { merchants: typeof sh.MERCHANTS, buyPrice: typeof sh.buyPrice, anahtarlar: Object.keys(sh).length };
+        try { D.mod('yok/boyle'); o.modHata = 'atmadı'; } catch (e) { o.modHata = String(e.message).slice(0, 60); }
+        o.sim = D.sim(0.1);
+        const asil = window.DK.sim, cagri = []; window.DK.sim = function (...x) { cagri.push(x); return asil.apply(this, x); }; D.press('F24', 0.1); window.DK.sim = asil; o.pressCagri = cagri;
+        o.sayac = { ...D.__sayac };
+        D.G.noAutoPause = true;
+        const s = D.handlers.startGame({ kind: 'solo', slot: 2, data: null });
+        const t0 = performance.now(); while (D.G.state !== 'playing' && performance.now() - t0 < 60000) await new Promise((r) => setTimeout(r, 250)); await s;
+        D.sim(1); o.oyun = { durum: D.G.state, oyuncu: !!D.G.player, sureMs: Math.round(performance.now() - t0) };
+        return o;
+      }).catch((e) => ({ hata: e.message.slice(0, 300) }));
+      yaz(); await ctx.close();
+    }
+    // ---------------- T2 tek HTML test parametresiz ve ?terrain=crash (test yok)
+    for (const [ad, ek] of [['T2_tek_testsiz', ''], ['T4_tek_testsiz_crash', '?terrain=crash&peerhost=10.9.9.9']]) {
+      const { ctx, p, kayit } = await sayfa(b, ad, DIST + ek);
+      await p.waitForTimeout(1500);
+      kayit.ic = await p.evaluate(() => ({ hazirAnindaki: window.__incHazir, dk: typeof window.DK, isaret: typeof window.__DK_TEST_KIPI, durum: window.__dkDurum ? window.__dkDurum() : 'yok', menu: document.getElementById('menu').classList.contains('active') })).catch((e) => ({ hata: e.message.slice(0, 300) }));
+      yaz(); await ctx.close();
+    }
+    // ---------------- T3 tek HTML ?test=1&terrain=noworker
+    {
+      const { ctx, p, kayit } = await sayfa(b, 'T3_tek_test_noworker', DIST + '?test=1&terrain=noworker');
+      kayit.ic = await p.evaluate(() => ({ dk: typeof window.DK, durum: window.__dkDurum ? window.__dkDurum() : 'yok' })).catch((e) => ({ hata: e.message.slice(0, 300) }));
+      yaz(); await ctx.close();
+    }
+    // ---------------- F1–F3 kancalar.js yüklenemez
+    const DURUM = () => ({ hazir: window.__ready, hazirAnindaki: window.__incHazir, dk: typeof window.DK, menu: document.getElementById('menu').classList.contains('active'),
+      yukleme: document.getElementById('loading').classList.contains('active'), yukText: (document.getElementById('load-text')?.innerText || '').slice(0, 200),
+      yukGorunur: !!document.getElementById('load-text')?.offsetParent, durum: window.__dkDurum ? window.__dkDurum() : 'yok' });
+    const HATALAR = [
+      ['F1_kancalar_404', (r) => r.fulfill({ status: 404, contentType: 'text/plain', body: 'yok' })],
+      ['F2_kancalar_sozdizimi', (r) => r.fulfill({ status: 200, contentType: 'text/javascript', body: 'export const MARK = ;\nexport function install() {}\n' })],
+      ['F3_kancalar_install_istisna', (r) => r.fulfill({ status: 200, contentType: 'text/javascript', body: "export const MARK = 'x';\nexport function install() { throw new Error('inceleme: install istisnasi'); }\n" })],
+    ];
+    for (const [ad, yolla] of HATALAR) {
+      const { ctx, p, kayit } = await sayfa(b, ad, 'http://localhost:8081/index.html?test=1', { yolla, hazirBekle: false });
+      const t0 = Date.now();
+      try { await p.waitForFunction(() => document.getElementById('menu').classList.contains('active'), null, { timeout: 60000 }); kayit.menuMs = Date.now() - t0; } catch (e) { kayit.menuHata = e.message.slice(0, 120); }
+      await p.waitForTimeout(12000);
+      kayit.ic = await p.evaluate(DURUM).catch((e) => ({ hata: e.message.slice(0, 300) }));
+      kayit.beklemeSonrasiMs = Date.now() - t0;
+      yaz(); await ctx.close();
+    }
+    // ---------------- S1/S2 test kipinde yerel sinyal: ev sahibi + konuk
+    {
+      const U = 'http://localhost:8081/index.html?test=1&peerhost=127.0.0.1&peerport=9000';
+      const ev = await sayfa(b, 'S1_ev_test_yerel', U);
+      ev.kayit.ic = await ev.p.evaluate(async () => {
+        const d = window.__dkDurum();
+        try { const r = await DK.net.host({ name: 'İnceleme', public: false, max: 4, pw: '', difficulty: 'normal', slot: 2 }); return { sinyal: d.sinyal, kod: r.code, peer: !!DK.net.peer, acik: DK.net.peer && DK.net.peer.open }; } catch (e) { return { sinyal: d.sinyal, hata: String(e.message || e).slice(0, 200) }; }
+      }).catch((e) => ({ hata: e.message.slice(0, 300) }));
+      yaz();
+      const kod = ev.kayit.ic && ev.kayit.ic.kod;
+      const konuk = await sayfa(b, 'S2_konuk_test_yerel', U);
+      konuk.kayit.ic = await konuk.p.evaluate(async (kod) => {
+        try { const r = await Promise.race([DK.net.join(kod, ''), new Promise((_, j) => setTimeout(() => j(new Error('15 sn zaman aşımı')), 15000))]); return { oda: r && r.room && r.room.name, online: DK.G.online, host: DK.G.isHost }; } catch (e) { return { hata: String(e.message || e).slice(0, 200) }; }
+      }, kod).catch((e) => ({ hata: e.message.slice(0, 300) }));
+      await ev.p.waitForTimeout(1000);
+      ev.kayit.roster = await ev.p.evaluate(() => DK.net.roster ? DK.net.roster.map((r) => ({ host: !!r.host })) : null).catch((e) => 'hata ' + e.message.slice(0, 100));
+      yaz();
+      await konuk.p.evaluate(() => DK.net.leave()).catch(() => {});
+      await ev.p.evaluate(() => DK.net.leave()).catch(() => {});
+      await konuk.ctx.close(); await ev.ctx.close();
+    }
+    // ---------------- S3 test kipsiz ?peerhost=127.0.0.1, S4 test kipinde ?peerhost=10.9.9.9 → varsayılan sunucu denenir
+    for (const [ad, url, testli] of [['S3_testsiz_peerhost_yerel', 'http://localhost:8081/index.html?peerhost=127.0.0.1&peerport=9000', false],
+      ['S4_test_peerhost_yabanci', 'http://localhost:8081/index.html?test=1&peerhost=10.9.9.9&peerport=1', true]]) {
+      const { ctx, p, kayit } = await sayfa(b, ad, url);
+      kayit.ic = await p.evaluate(async (testli) => {
+        const d = window.__dkDurum();
+        const net = testli ? window.DK.net : (await import('./js/net/net.js')).net;
+        try { const r = await Promise.race([net.host({ name: 'İnceleme', public: false, max: 4, pw: '', difficulty: 'normal', slot: 2 }), new Promise((_, j) => setTimeout(() => j(new Error('10 sn zaman aşımı')), 10000))]); return { sinyal: d.sinyal, test: d.test, dk: typeof window.DK, kod: r.code }; } catch (e) { return { sinyal: d.sinyal, test: d.test, dk: typeof window.DK, hata: String(e.message || e.type || e).slice(0, 200) }; }
+      }, testli).catch((e) => ({ hata: e.message.slice(0, 300) }));
+      yaz(); await ctx.close();
+    }
+  } catch (e) { sonuc.hata = e.message.slice(0, 500); }
+  sonuc.bitis = new Date().toISOString();
+  yaz();
+  await b.close();
+  console.log('SONDA_B_BITTI ' + OUT);
+})();

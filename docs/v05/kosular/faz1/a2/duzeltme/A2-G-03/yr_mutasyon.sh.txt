@@ -1,0 +1,30 @@
+#!/bin/bash
+# A2 düzeltici: yayin_ref.mjs karşıt mutasyon sınaması (güvenlik incelemesinin R0–R2 mutasyonları aynen).
+#   yr_mutasyon.sh <yayin_ref.mjs yolu> <özgün pages.yml> <çıktı günlüğü>
+# Not: yayin_ref.mjs YR7 için tabanı aracın kendi ağacındaki git'ten okur; araç w2 dışındaki bir kopyadan koşarsa YR7 ATLANDI olur.
+ARAC=$1; PY=$2; OUT=$3
+S=$(dirname "$(readlink -f "$0")")
+: > "$OUT"
+echo "# yayin_ref mutasyon sınaması $(date -u +%FT%TZ) | araç: $ARAC (sha256 $(sha256sum "$ARAC" | cut -c1-12)) | pages.yml: $PY (sha256 $(sha256sum "$PY" | cut -c1-12))" >> "$OUT"
+kos() { local ad=$1; shift
+  cp "$PY" "$S/p_$ad.yml"; ( cd "$S" && eval "${@//p.yml/p_$ad.yml}" )
+  local fark; fark=$(diff "$PY" "$S/p_$ad.yml" | grep '^>' | head -2 | cut -c1-200 | tr '\n' ' ')
+  if [ "$ad" != "R0_degisiklik_yok" ] && [ -z "$fark" ]; then echo "$ad | MUTASYON UYGULANMADI (fark yok)" >> "$OUT"; return; fi
+  local c; c=$(node "$ARAC" --dosya "$S/p_$ad.yml" 2>&1); local rc=$?
+  local kalan; kalan=$(echo "$c" | grep '^KALDI' | cut -d' ' -f2 | tr '\n' ',' | sed 's/,$//')
+  echo "$ad | çıkış $rc | $(echo "$c" | grep '^SONUC') | KALDI: ${kalan:-yok} | fark: $fark" >> "$OUT"; }
+kos R0_degisiklik_yok "true"
+kos R1_kabuk_harf_duyarsiz "sed -i 's#run: test \"\$GITHUB_REF\" = \"refs/heads/\$YAYIN_DALI\"#run: test \"\${GITHUB_REF,,}\" = \"refs/heads/\${YAYIN_DALI,,}\"#' p.yml"
+kos R2_kabuk_nocasematch "sed -i 's#run: test \"\$GITHUB_REF\" = \"refs/heads/\$YAYIN_DALI\" ||#run: shopt -s nocasematch; [[ \$GITHUB_REF == \"refs/heads/\$YAYIN_DALI\" ]] ||#' p.yml"
+# Kabuk davranışı (GitHub'ın varsayılan run kabuğu: bash --noprofile --norc -eo pipefail): gerçek adım ve R1 betiği harf varyantı ref'te
+GERCEK=$(grep -o 'run: test "\$GITHUB_REF".*' "$PY" | sed 's/^run: //')
+R1B=$(grep -o 'run: test "\${GITHUB_REF,,}".*' "$S/p_R1_kabuk_harf_duyarsiz.yml" | sed 's/^run: //')
+for ref in refs/heads/claude/hopeful-cray-o1jw6w refs/heads/Claude/Hopeful-Cray-O1JW6W REFS/HEADS/CLAUDE/HOPEFUL-CRAY-O1JW6W; do
+  for ad in GERCEK R1B; do
+    b=${!ad}
+    env -i PATH="$PATH" GITHUB_REF="$ref" YAYIN_DALI=claude/hopeful-cray-o1jw6w bash --noprofile --norc -eo pipefail -c "$b" >/dev/null 2>&1; rc=$?
+    echo "kabuk | ref=$ref | betik=$ad | çıkış $rc" >> "$OUT"
+  done
+done
+echo "# bitti $(date -u +%FT%TZ)" >> "$OUT"
+cat "$OUT"

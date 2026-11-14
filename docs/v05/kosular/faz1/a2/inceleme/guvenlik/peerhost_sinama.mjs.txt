@@ -1,0 +1,51 @@
+// K9-20 geri döngü denetiminin karşıt sınaması (güvenlik incelemesi). Tarayıcı açmaz.
+// 1) js/net/net.js'teki GERCEK GERI_DONGU ve testSinyali() kaynak metni ayıklanır, node:vm'de taklit testParam ile koşulur.
+// 2) Kabul edilen seçenekler vendor/peerjs/peerjs.min.js'teki GERCEK yol normalleştirme ve URL kurma ifadeleriyle (metinden ayıklanıp)
+//    HTTP (id isteği) ve WebSocket adreslerine çevrilir; adresin konağı ayrıştırılır.
+import fs from 'node:fs';
+import vm from 'node:vm';
+const W = '/home/user/SON-HAZ-NE-w2';
+const net = fs.readFileSync(W + '/js/net/net.js', 'utf8');
+const gd = /const GERI_DONGU = new Set\(\[.*?\]\);/.exec(net)[0];
+const ts = /function testSinyali\(\) \{[\s\S]*?\n\}/.exec(net)[0];
+const peer = fs.readFileSync(W + '/vendor/peerjs/peerjs.min.js', 'utf8');
+const norm = /this\._options\.path&&\("\/"!==this\._options\.path\[0\]&&\(this\._options\.path="\/"\+this\._options\.path\),"\/"!==this\._options\.path\[this\._options\.path\.length-1\]&&\(this\._options\.path\+="\/"\)\)/.exec(peer)[0];
+const httpUrl = /new URL\(`\$\{t\}:\/\/\$\{n\}:\$\{r\}\$\{i\}\$\{s\}\/\$\{e\}`\)/.exec(peer)[0];
+const wsUrl = /\(e\?"wss:\/\/":"ws:\/\/"\)\+t\+":"\+n\+r\+"peerjs\?key="\+i/.exec(peer)[0];
+console.log('net.js:', gd); console.log('net.js testSinyali:', ts.replace(/\s+/g, ' '));
+console.log('peerjs normalleştirme:', norm); console.log('peerjs http:', httpUrl); console.log('peerjs ws:', wsUrl);
+const betik = new vm.Script(`(function(){ ${gd}\n${ts}\n return testSinyali; })()`);
+const normF = new Function(`return (function(){ ${norm}; return this._options; })`)();
+const httpF = new Function('t', 'n', 'r', 'i', 's', 'e', `return ${httpUrl};`);
+const wsF = new Function('e', 't', 'n', 'r', 'i', `return ${wsUrl};`);
+const DURUMLAR = [
+  'peerhost=127.0.0.1&peerport=9000', 'peerhost=localhost', 'peerhost=%5B%3A%3A1%5D', 'peerhost=::1',
+  'peerhost=127.0.0.1.kotu.ornek', 'peerhost=localhost.kotu.ornek', 'peerhost=LOCALHOST', 'peerhost=Localhost', 'peerhost=localhost.',
+  'peerhost=0x7f000001', 'peerhost=2130706433', 'peerhost=127.1', 'peerhost=0177.0.0.1', 'peerhost=%5B%3A%3Affff%3A127.0.0.1%5D', 'peerhost=%5B0%3A0%3A0%3A0%3A0%3A0%3A0%3A1%5D',
+  'peerhost=localhost%3A80%40kotu.ornek', 'peerhost=kotu.ornek%23127.0.0.1', 'peerhost=127.0.0.1%2Fkotu.ornek', 'peerhost=%20127.0.0.1', 'peerhost=127.0.0.1%00', 'peerhost=10.9.9.9',
+  'peerhost=kotu.ornek&peerhost=127.0.0.1', 'peerhost=127.0.0.1&peerhost=kotu.ornek',
+  // geri döngü konağı + yol/kapı ile yönlendirme denemeleri
+  'peerhost=127.0.0.1&peerport=9000&peerpath=%40kotu.ornek%2F', 'peerhost=127.0.0.1&peerpath=%2F%2Fkotu.ornek%2F', 'peerhost=127.0.0.1&peerpath=%5C%5Ckotu.ornek%2F',
+  'peerhost=127.0.0.1&peerpath=..%2F..%2F%40kotu.ornek', 'peerhost=127.0.0.1&peerpath=%3F%40kotu.ornek', 'peerhost=localhost&peerport=80%40kotu.ornek', 'peerhost=localhost&peerport=443%2Fkotu.ornek',
+  'peerhost=localhost&peerport=0x1BB', 'peerhost=localhost&peerport=1e3', 'peerhost=localhost&peerport=-1', 'peerhost=127.0.0.1&peersecure=1&peerpath=%40kotu.ornek',
+];
+let hata = 0;
+for (const q of DURUMLAR) {
+  const sp = new URLSearchParams('test=1&' + q);
+  const testSinyali = betik.runInContext(vm.createContext({ testParam: (ad) => sp.get(ad), Set }));
+  const s = testSinyali();
+  let sonuc;
+  if (!s) sonuc = 'yok sayıldı → varsayılan PeerJS sunucusu';
+  else {
+    const o = normF.call({ _options: { ...s, key: 'peerjs' } });
+    let h, w;
+    try { const u = httpF(o.secure ? 'https' : 'http', o.host, o.port, o.path, o.key, 'id'); h = `${u.href} (konak ${u.hostname})`; if (!['127.0.0.1', 'localhost', '[::1]'].includes(u.hostname)) { hata++; h += ' ← GERİ DÖNGÜ DIŞI!'; } }
+    catch (e) { h = `URL kurulamadı: ${e.message} (bağlantı yok)`; }
+    try { const ws = wsF(o.secure, o.host, o.port, o.path, o.key); const u = new URL(ws); w = `${ws} (konak ${u.hostname})`; if (!['127.0.0.1', 'localhost', '[::1]'].includes(u.hostname)) { hata++; w += ' ← GERİ DÖNGÜ DIŞI!'; } }
+    catch (e) { w = `WS adresi geçersiz: ${e.message}`; }
+    sonuc = `kabul {host:${JSON.stringify(s.host)}, port:${s.port}, path:${JSON.stringify(s.path)} → ${JSON.stringify(o.path)}, secure:${s.secure}} | http: ${h} | ws: ${w}`;
+  }
+  console.log(`?${q.padEnd(56)} → ${sonuc}`);
+}
+console.log(`SONUC: ${hata === 0 ? 'GECTI' : 'KALDI'} (${DURUMLAR.length} durum; geri döngü dışına giden adres: ${hata})`);
+process.exit(hata ? 1 : 0);

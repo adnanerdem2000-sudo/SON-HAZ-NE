@@ -1,0 +1,29 @@
+ready in 6.1 s
+R: {"adres":"http://127.0.0.1:8097/index.html?test=1","dk":"object","durum":{"surum":"0.5.0","derleme":"gelistirme","hazir":true,"test":true,"kati":true,"tekDosya":false,"isci":3,"yedek":false,"isciHata":0,"araziKip":"","eksikVarlik":0,"kk":true,"sinyal":"varsayilan"},"isaret":"dk-test-kancalari-v1"}
+PASS TK01 Test kipinde DK var: 49 alan + 5 yardımcı + mod/audio/__sayac (fazlası yok); __dkDurum().test === true → {"dk":"object","alan":49,"eksik":[],"yardimci":5,"ek":{"audio":"object","mod":"function","__sayac":"object"},"fazla":[],"test":true,"isaret":"dk-test-kancalari-v1"}
+PASS TK01b __dkDurum() salt-okur tanı: 13 alan, yalnız ilkel değerler, dondurulmuş yeni nesne; sürüm 0.5.0, katı kip → {"alanlar":["araziKip","derleme","eksikVarlik","hazir","isci","isciHata","kati","kk","sinyal","surum","tekDosya","test","yedek"],"ilkelOlmayan":[],"donuk":true,"yeniNesne":true,"surum":"0.5.0","derleme":"string","hazir":true,"kati":true}
+PASS TK01c Test kipinde kancalar modülü (js/test/kancalar.js) yüklendi → 1
+PASS TK06 DK.mod aynı modül örneğini verir: economy/shop MERCHANTS === import() ile gelen; 14 kayıtlı adın hepsi aynı ad alanı nesnesi → {"ayniMerchants":true,"kayitli":14,"farkli":[]}
+PASS TK06b DK.mod bilinmeyen adda açık hata atar (ad iletide) → {"hataAtti":true,"adGeciyor":true}
+PASS TK01d DK.__sayac sim/press/tap çağrılarını sayar (press içindeki iki sim dahil); dönüş değerleri tabanla aynı → {"simDonus":3,"simFark":1,"adimFark":3,"pressDonus":"undefined","pressSonrasiSim":3,"pressSonrasiAdim":7,"press":1,"tapDonus":"undefined","tap":1,"anahtarlar":["adim","press","sim","tap"]}
+GOTO http://127.0.0.1:8097/index.html
+R: {"adres":"http://127.0.0.1:8097/index.html","dk":"undefined","durum":{"surum":"0.5.0","derleme":"gelistirme","hazir":true,"test":false,"kati":true,"tekDosya":false,"isci":3,"yedek":false,"isciHata":0,"araziKip":"","eksikVarlik":0,"kk":true,"sinyal":"varsayilan"},"kip":null}
+PASS TK02 Test parametresiz açılış: DK yok, __ready, __dkDurum().test === false, menü görünür → {"dk":"undefined","hazir":true,"test":false,"menu":true,"isaret":"undefined"}
+PASS TK02b Test kipsiz açılışta js/test/ altından hiçbir dosya istenmedi → 0
+GOTO http://127.0.0.1:8097/index.html?terrain=crash&peerhost=10.9.9.9&peerport=1
+R: {"adres":"http://127.0.0.1:8097/index.html?terrain=crash&peerhost=10.9.9.9&peerport=1","dk":"undefined","durum":{"surum":"0.5.0","derleme":"gelistirme","hazir":true,"test":false,"kati":true,"tekDosya":false,"isci":3,"yedek":false,"isciHata":0,"araziKip":"","eksikVarlik":0,"kk":true,"sinyal":"varsayilan"},"kip":null,"isci":null,"yedek":null}
+PASS TK03 Test kipi yok: ?terrain=crash ve ?peerhost=10.9.9.9 yok sayılır (araziKip boş, işçi ≥ 1, sinyal varsayılan) → {"test":false,"araziKip":"","isciVar":true,"sinyal":"varsayilan","dk":"undefined"}
+GOTO http://127.0.0.1:8097/index.html?test=1&terrain=noworker&peerhost=127.0.0.1&peerport=9000
+R: {"adres":"http://127.0.0.1:8097/index.html?test=1&terrain=noworker&peerhost=127.0.0.1&peerport=9000","dk":"object","durum":{"surum":"0.5.0","derleme":"gelistirme","hazir":true,"test":true,"kati":true,"tekDosya":false,"isci":0,"yedek":true,"isciHata":1,"araziKip":"noworker","eksikVarlik":0,"kk":true,"sinyal":"127.0.0.1:9000"},"kip":"noworker","yedek":true}
+PASS TK04 Test kipinde ?terrain=noworker ve ?peerhost=127.0.0.1 uygulanır (yedek açık, sinyal 127.0.0.1:9000) → {"test":true,"araziKip":"noworker","yedek":true,"sinyal":"127.0.0.1:9000","dk":"object"}
+GOTO http://127.0.0.1:8097/index.html?test=1&peerhost=10.9.9.9&peerport=1
+DEGISKEN tk08ilk = {"sinyal":"varsayilan","test":true}
+GOTO http://127.0.0.1:8097/index.html?test=1&peerhost=127.0.0.1&peerport=9000
+PASS TK08 Test kipinde peerhost=10.9.9.9 yok sayılır (varsayılan), peerhost=127.0.0.1 kabul edilir (127.0.0.1:9000) → {"ilk":"varsayilan","ilkTest":true,"ikinci":"127.0.0.1:9000","ikinciTest":true}
+ROTA https://oyun.ornek → /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a2fix/agaclar/k08_once
+GOTO https://oyun.ornek/index.html?test=1&peerhost=kotu.ornek&peerport=443&peersecure=1&terrain=crash
+R: {"adres":"https://oyun.ornek/index.html?test=1&peerhost=kotu.ornek&peerport=443&peersecure=1&terrain=crash","guvenli":true,"dk":"undefined","durum":{"surum":"0.5.0","derleme":"gelistirme","hazir":true,"test":false,"kati":true,"tekDosya":false,"isci":3,"yedek":false,"isciHata":0,"araziKip":"","eksikVarlik":0,"kk":true,"sinyal":"varsayilan"},"kip":null,"isci":null,"yedek":null}
+PASS TK05 Yerel olmayan https kökeninde ?test=1&peerhost=kotu.ornek&terrain=crash: DK yok, test kipi kapalı, araziKip boş, sinyal varsayılan → {"koken":"https://oyun.ornek","guvenli":true,"dk":"undefined","test":false,"araziKip":"","isciVar":true,"sinyal":"varsayilan","isaret":"undefined"}
+PASS TK05b Yerel olmayan kökende js/test/ altından hiçbir dosya istenmedi → 0
+errors: 0 pageErrors: 0 fails: 0 (67.9 s)
+SONUC: GECTI (çıkış 0) kontrol 13/13, onay 13 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 3 farklı/239

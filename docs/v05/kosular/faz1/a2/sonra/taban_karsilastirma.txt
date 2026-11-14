@@ -1,0 +1,57 @@
+00_acilis                    taban 6/6  yeni 6/8  KALDI         çıkış 1  izinsiz k/a 0/0  izinli k/a 0/0
+    yeni kontrol: KALDI AC01 G.state 'playing'e yalnız oyuncu kurulduktan (bölge hazırlığı bittikten) sonra geçer (A-10; eski 'Oyun başladı' kontrolü prepare'den önce atanan değeri görüyordu)
+    yeni kontrol: KALDI AC02 Bölge hazırlığı (prepare) süresince G.state 'loading' (A-10)
+    neden: başarısız kontrol ya da adım: 2
+[ek] 02_arazi_yedek_badurl   taban 12/12  yeni 15/15  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/6
+    yeni kontrol: GEÇTİ AYK-01 Etkin arazi kipi URL ile aynı (?terrain → DK.terrain.mode)
+    yeni kontrol: GEÇTİ AYK-02 Kipin beklenen işçi/yedek durumu (normal: işçi ≥ 1, yedek kapalı, hata yok; noworker: işçi 0 + yedek; ctorthrow/badurl/crash: işçi 0 + yedek + hata kaydı; crash1: yedek kapalı + çökme kaydı; hang/noready: zaman aşımı kaydı + yedek)
+    yeni kontrol: GEÇTİ AYS-01 Uzak bölge prepare(1900, 950, r300) süresi kip sınırı içinde: normal ≤ 2 sn; işçisiz/çöken kiplerde (crash, crash1 dahil) ≤ 3 sn (KI-234: v0.4 crash 28,8 sn, badurl 13,9 sn ölçülmüştü)
+[ek] 02_arazi_yedek_crash    taban 12/12  yeni 15/15  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0
+    yeni kontrol: GEÇTİ AYK-01 Etkin arazi kipi URL ile aynı (?terrain → DK.terrain.mode)
+    yeni kontrol: GEÇTİ AYK-02 Kipin beklenen işçi/yedek durumu (normal: işçi ≥ 1, yedek kapalı, hata yok; noworker: işçi 0 + yedek; ctorthrow/badurl/crash: işçi 0 + yedek + hata kaydı; crash1: yedek kapalı + çökme kaydı; hang/noready: zaman aşımı kaydı + yedek)
+    yeni kontrol: GEÇTİ AYS-01 Uzak bölge prepare(1900, 950, r300) süresi kip sınırı içinde: normal ≤ 2 sn; işçisiz/çöken kiplerde (crash, crash1 dahil) ≤ 3 sn (KI-234: v0.4 crash 28,8 sn, badurl 13,9 sn ölçülmüştü)
+02_arazi_yedek_normal        taban 12/12  yeni 15/15  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0
+    yeni kontrol: GEÇTİ AYK-01 Etkin arazi kipi URL ile aynı (?terrain → DK.terrain.mode)
+    yeni kontrol: GEÇTİ AYK-02 Kipin beklenen işçi/yedek durumu (normal: işçi ≥ 1, yedek kapalı, hata yok; noworker: işçi 0 + yedek; ctorthrow/badurl/crash: işçi 0 + yedek + hata kaydı; crash1: yedek kapalı + çökme kaydı; hang/noready: zaman aşımı kaydı + yedek)
+    yeni kontrol: GEÇTİ AYS-01 Uzak bölge prepare(1900, 950, r300) süresi kip sınırı içinde: normal ≤ 2 sn; işçisiz/çöken kiplerde (crash, crash1 dahil) ≤ 3 sn (KI-234: v0.4 crash 28,8 sn, badurl 13,9 sn ölçülmüştü)
+[ek] 02_arazi_yedek_noworker taban 12/12  yeni 14/15  KALDI         çıkış 1  izinsiz k/a 0/0  izinli k/a 0/0
+    yeni kontrol: GEÇTİ AYK-01 Etkin arazi kipi URL ile aynı (?terrain → DK.terrain.mode)
+    yeni kontrol: GEÇTİ AYK-02 Kipin beklenen işçi/yedek durumu (normal: işçi ≥ 1, yedek kapalı, hata yok; noworker: işçi 0 + yedek; ctorthrow/badurl/crash: işçi 0 + yedek + hata kaydı; crash1: yedek kapalı + çökme kaydı; hang/noready: zaman aşımı kaydı + yedek)
+    yeni kontrol: KALDI AYS-01 Uzak bölge prepare(1900, 950, r300) süresi kip sınırı içinde: normal ≤ 2 sn; işçisiz/çöken kiplerde (crash, crash1 dahil) ≤ 3 sn (KI-234: v0.4 crash 28,8 sn, badurl 13,9 sn ölçülmüştü)
+    neden: başarısız kontrol ya da adım: 1
+02_tek_dosya                 taban 4/4  yeni 4/4  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0
+07_ekonomi                   taban 3/3  yeni 3/3  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0
+08_kalicilik                 taban 12/12  yeni 12/12  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0
+12_kayit_dongusu             taban 4/4  yeni 4/4  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0
+14_deniz_ekipmani            taban 16/16  yeni 16/16  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0
+14_deniz_ekipmani_kosu2      tabanda karşılığı yok (yeni koşu)
+15_iskele_kamera             taban 14/14  yeni 14/14  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0
+16_kosu_poz_ganimet          taban 23/23  yeni 23/23  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0
+17_kamera_kararma            taban 13/13  yeni 8/13  KALDI         çıkış 1  izinsiz k/a 0/0  izinli k/a 0/0
+    REGRESYON: K08 Ormanda (2 eğim × 32 açı) ve palmiyelerin arasında (2 × 16) karanlık kare yok
+    REGRESYON: K09 Su altı geçişi histerezisli (−6 cm: açılmaz, −20 cm: açılır, −2 cm: kapanmaz, +5 cm: kapanır)
+    REGRESYON: K10 Tek bir NaN/Inf yazan yüzey parlamayla tüm ekrana yayılıp kareyi karartmaz (parlaklık temel değerin ≥ %80'i)
+    REGRESYON: K11 Sıfır normalli yüzey (yumuşak ve düz gölgeli) yarım kayan noktalı hedefte NaN/Inf piksel üretmez
+    REGRESYON: K12 Kamerayla oyuncu arasındaki bitki örtüsü görüş çizgisi çevresinde seyrelir (2,6 m uzaktaki siyah düzlem: ekran ortası silindir açıkken görünür, kapalıyken > %97 siyah)
+    neden: başarısız kontrol ya da adım: 11; sayfa hatası (pageerror): 1; adım istisnası (evalErrors): 6
+53_test_kipi                 tabanda karşılığı yok (yeni koşu)
+coop_06b                     taban 18/18  yeni 18/18  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0  kapaliAtlama 0 evalErr 0
+coop_06d                     taban 9/9  yeni 9/9  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0  kapaliAtlama 0 evalErr 0
+test_kipi                    tabanda karşılığı yok (yeni koşu)
+uretim_kisa_dist             tabanda karşılığı yok (yeni koşu)
+uretim_kisa_w2               tabanda karşılığı yok (yeni koşu)
+yayin_ref                    tabanda karşılığı yok (yeni koşu)
+
+Yeni koşuda raporu OLMAYAN taban koşuları: 02_arazi_kurtarma, 03_fizik_dt, 03_fizik_duzeltmeler, 04_karakter, 05_dusman_ai, 06_arayuz_960, 07_dunya_kesif, 09_performans, 11_arayuz_sizinti, 13_donma, coop_06a, coop_06a2, coop_06c
+
+ÖZET (resmî taban kümesi, 25 koşu): tabanda tümüyle geçen 12 koşunun 10'i yeni koşuda da tümüyle geçti; tabanda geçen 134 kontrolün 129'i geçti.
+EK koşular (işçisiz kipler vb.): tümüyle geçen 3 koşunun 2'i; geçen 36 kontrolün 36'i. Toplam regresyon 5, kayıp 0, raporu eksik resmî koşu 13.
+SORUNLAR:
+  - 00_acilis: tabanda tümüyle geçen koşu yeni koşuda KALDI (başarısız kontrol ya da adım: 2)
+  - 02_arazi_yedek_noworker: tabanda tümüyle geçen koşu yeni koşuda KALDI (başarısız kontrol ya da adım: 1)
+  - 17_kamera_kararma: REGRESYON — K08 Ormanda (2 eğim × 32 açı) ve palmiyelerin arasında (2 × 16) karanlık kare yok (taban true → yeni "page.evaluate: Target crashed ")
+  - 17_kamera_kararma: REGRESYON — K09 Su altı geçişi histerezisli (−6 cm: açılmaz, −20 cm: açılır, −2 cm: kapanmaz, +5 cm: kapanır) (taban true → yeni "page.evaluate: Target crashed ")
+  - 17_kamera_kararma: REGRESYON — K10 Tek bir NaN/Inf yazan yüzey parlamayla tüm ekrana yayılıp kareyi karartmaz (parlaklık temel değerin ≥ %80'i) (taban true → yeni "page.evaluate: Target crashed ")
+  - 17_kamera_kararma: REGRESYON — K11 Sıfır normalli yüzey (yumuşak ve düz gölgeli) yarım kayan noktalı hedefte NaN/Inf piksel üretmez (taban true → yeni "page.evaluate: Target crashed ")
+  - 17_kamera_kararma: REGRESYON — K12 Kamerayla oyuncu arasındaki bitki örtüsü görüş çizgisi çevresinde seyrelir (2,6 m uzaktaki siyah düzlem: ekran ortası silindir açıkken görünür, kapalıyken > %97 siyah) (taban true → yeni "page.evaluate: Target crashed ")
+  - 17_kamera_kararma: tabanda tümüyle geçen koşu yeni koşuda KALDI (başarısız kontrol ya da adım: 11; sayfa hatası (pageerror): 1; adım istisnası (evalErrors): 6)

@@ -1,0 +1,14 @@
+// K-08 mutantı: v0.4'teki savunmasız satır (net.js:50-53, ?peerhost doğrudan URL'den) location.search yerine
+// new URL(document.URL) ile yeniden yazılır; testSinyali() ve sinyalSunucusu() (tanı) DEĞİŞMEZ.
+import fs from 'node:fs';
+const f = process.argv[2];
+let s = fs.readFileSync(f, 'utf8');
+const eski = "  if (s) { o.host = s.host; o.port = s.port; o.path = s.path; o.secure = s.secure; }\n  return o;";
+if (!s.includes(eski)) { console.error('mutasyon noktası bulunamadı'); process.exit(1); }
+s = s.replace(eski, "  if (s) { o.host = s.host; o.port = s.port; o.path = s.path; o.secure = s.secure; }\n" +
+  "  // MUTANT (inceleme): v0.4 net.js:52 aynen, yalnız location.search yerine document.URL\n" +
+  "  const q = new URL(document.URL).searchParams;\n" +
+  "  if (q.get('peerhost')) { o.host = q.get('peerhost'); o.port = +(q.get('peerport') || 9000); o.path = q.get('peerpath') || '/'; o.secure = q.get('peersecure') === '1'; }\n" +
+  "  return o;");
+fs.writeFileSync(f, s);
+console.log('mutasyon uygulandı:', f);

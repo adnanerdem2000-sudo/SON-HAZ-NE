@@ -1,0 +1,144 @@
+{
+ "arac": "tests/node/test_kipi.mjs",
+ "tur": "node",
+ "agac": "/home/user/SON-HAZ-NE-w2",
+ "taban": "44d548c",
+ "commit": "5479e3b76bb33a517efa9ec60c418105a98bcec6",
+ "kirli": true,
+ "tarih": "2026-11-14T09:50:41.356Z",
+ "node": "v22.22.0",
+ "sonuc": {
+  "durum": "KALDI",
+  "gecen": 3,
+  "toplam": 11,
+  "kalan": [
+   "K1",
+   "K2",
+   "K3",
+   "K4",
+   "DT",
+   "AP2",
+   "AP3",
+   "ZM"
+  ]
+ },
+ "denetimler": [
+  {
+   "id": "C0",
+   "ad": "Çözümleyici js/** dosyalarının hepsini dengeli çözdü",
+   "ok": true,
+   "ayrinti": "77 dosya"
+  },
+  {
+   "id": "K1",
+   "ad": "Teste özgü kod (window.DK kurulumu, __sayac, işaret) yalnız js/test/ ya da saplanan netTest/netShape dosyalarında",
+   "ok": false,
+   "ayrinti": [
+    "js/main.js:134 window.DK kurulumu/ataması",
+    "js/main.js:136 window.DK kurulumu/ataması",
+    "js/main.js:138 window.DK kurulumu/ataması",
+    "js/main.js:145 window.DK kurulumu/ataması",
+    "js/main.js:150 window.DK kurulumu/ataması",
+    "js/main.js:152 window.DK kurulumu/ataması"
+   ]
+  },
+  {
+   "id": "K2",
+   "ad": "Test modülleri yalnız if (TEST …) arkasındaki dinamik import() ile yükleniyor; yalnız install (kancalar.js: + MARK) dışa aktarıyor; statik içe aktarma yok",
+   "ok": false,
+   "ayrinti": [
+    "js/test/kancalar.js yok (test kancaları modülü kurulmamış)",
+    "js/main.js js/test/kancalar.js'ı if (TEST …) arkasında dinamik import() ile yüklemiyor"
+   ]
+  },
+  {
+   "id": "K3",
+   "ad": "Oyun kodu window.DK'yi hiçbir yerde okumuyor (js/test/ dışı)",
+   "ok": false,
+   "ayrinti": [
+    "js/main.js:134 window.DK = { G, assets,",
+    "js/main.js:136 window.DK.snap = (q = 0.",
+    "js/main.js:138 window.DK.snapFrom = (fr",
+    "js/main.js:145 window.DK.sim = (seconds",
+    "js/main.js:150 window.DK.tap = (code) =",
+    "js/main.js:152 window.DK.press = (code,",
+    "js/main.js:152 window.DK.sim(dur); inpu",
+    "js/main.js:152 window.DK.sim(1 / 30); }"
+   ]
+  },
+  {
+   "id": "K4",
+   "ad": "location.search yalnız js/core/testmode.js'te ve js/main.js'te (?join) okunuyor",
+   "ok": false,
+   "ayrinti": [
+    "js/core/testmode.js yok",
+    "js/net/net.js:50 location.search",
+    "js/world/terrain.js:249 location.search"
+   ]
+  },
+  {
+   "id": "DT",
+   "ad": "Doğruluk tablosu (gerçek testmode.js, node:vm)",
+   "ok": false,
+   "ayrinti": "js/core/testmode.js yok: tablo koşulamadı"
+  },
+  {
+   "id": "AP1",
+   "ad": "Taban (44d548c) main.js window.DK nesnesi: 49 anahtar",
+   "ok": true,
+   "ayrinti": {
+    "kaynak": "git show 44d548c:js/main.js",
+    "sayi": 49,
+    "satir": 134
+   }
+  },
+  {
+   "id": "AP1b",
+   "ad": "Taban main.js'te 5 yardımcı (snap, snapFrom, sim, tap, press) birer kez atanıyor (satır 136-152)",
+   "ok": true,
+   "ayrinti": {
+    "snap": [
+     136
+    ],
+    "snapFrom": [
+     138
+    ],
+    "sim": [
+     145
+    ],
+    "tap": [
+     150
+    ],
+    "press": [
+     152
+    ]
+   }
+  },
+  {
+   "id": "AP2",
+   "ad": "API eşliği: taban 49 alan + 5 yardımcı eksiksiz; fazla tam olarak audio, mod, __sayac",
+   "ok": false,
+   "ayrinti": [
+    "js/test/kancalar.js yok"
+   ]
+  },
+  {
+   "id": "AP3",
+   "ad": "snap/snapFrom/sim/tap/press gövdeleri taban main.js:136-152 ile aynı",
+   "ok": false,
+   "ayrinti": "js/test/kancalar.js yok ya da çözümlenemedi"
+  },
+  {
+   "id": "ZM",
+   "ad": "Zamanlama: install bekleniyor (await import) ve window.__ready ondan sonra yazılıyor",
+   "ok": false,
+   "ayrinti": {
+    "kancaImport": "yok",
+    "installSatir": "yok",
+    "readySatirlari": [
+     153
+    ]
+   }
+  }
+ ]
+}

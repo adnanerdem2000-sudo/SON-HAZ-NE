@@ -1,0 +1,8 @@
+G0_degisiklik_yok | çıkış 0 | SONUC: GECTI (37/37 denetim) | etki: yok | fark: 
+G1_terrain_href | çıkış 0 | SONUC: GECTI (37/37 denetim) | etki: üretimde ?terrain=crash uygulanır | fark: >     this.mode = new URL(location.href).searchParams.get('terrain') || ''; 
+G2_peerhost_documentURL | çıkış 0 | SONUC: GECTI (37/37 denetim) | etki: üretimde ?peerhost=kotu.ornek sinyal sunucusu olur | fark: >   const u = new URL(document.URL).searchParams; const s = u.get('peerhost') ? { host: u.get('peerhost'), port: +(u.get('peerport') || 443), path: '/', secure: true } : testSinyali(); 
+G3_location_koseli | çıkış 0 | SONUC: GECTI (37/37 denetim) | etki: üretimde ?peerhost okunur | fark: >   const q = new URLSearchParams(location['search']); const s = q.get('peerhost') ? { host: q.get('peerhost'), port: 443, path: '/', secure: true } : testSinyali(); 
+G4_DK_TERRAIN_MODE_kosulsuz | çıkış 0 | SONUC: GECTI (37/37 denetim) | etki: üretimde window.__DK_TERRAIN_MODE uygulanır | fark: >     this.mode = window.__DK_TERRAIN_MODE || testParam('terrain') || ''; 
+G5_TEST_anlamsiz_kosul | çıkış 0 | SONUC: GECTI (37/37 denetim) | etki: üretimde window.DK kurulur | fark: >   if (TEST !== undefined) { kancaSozu = import('./test/kancalar.js'); kancaSozu.catch(() => {}); } >   if (TEST !== undefined) { 
+G6_geri_dongu_yok | çıkış 0 | SONUC: GECTI (37/37 denetim) | etki: localhost'ta ?test=1&peerhost=kotu.ornek sinyal sunucusu olur (K9-20) | fark: >   if (!h) return null; 
+G7_object_assign_DK | çıkış 0 | SONUC: GECTI (37/37 denetim) | etki: üretimde window.DK (G nesnesi) var | fark: > Object.assign(window, { DK: { G: 1 } }); 

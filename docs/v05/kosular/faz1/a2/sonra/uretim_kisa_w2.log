@@ -1,0 +1,8 @@
+# 2026-11-14T13:00:13+00:00 --uretim; w2 http://localhost:8081/index.html (test parametresiz)
+ready in 5.5 s
+PASS U00 Üretimde test kancası yok → true
+R: {"adres":"http://localhost:8081/index.html","durum":{"surum":"0.5.0","derleme":"gelistirme","hazir":true,"test":false,"kati":true,"tekDosya":false,"isci":3,"yedek":false,"isciHata":0,"araziKip":"","eksikVarlik":0,"kk":true,"sinyal":"varsayilan"}}
+PASS UK01 Test parametresiz açılış: DK yok, __ready true, __dkDurum().test === false, işaret yok, menü görünür → {"dk":"undefined","hazir":true,"test":false,"isaret":"undefined","menu":true}
+PASS UK02 js/test/ altından hiçbir dosya istenmedi → 0
+errors: 0 pageErrors: 0 fails: 0 (11.0 s)
+SONUC: GECTI (çıkış 0) kontrol 3/3, onay 2 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34

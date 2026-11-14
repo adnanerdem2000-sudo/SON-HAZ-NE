@@ -1,0 +1,53 @@
+# A2 düzeltici (A2-UY-04): docs/v05/raporlar/durum.json'u KNOWN_ISSUES.md (ana tablo + "Kapanan maddeler") ve FIX_REPORT.md
+# başlıklarıyla karşılaştırır. Salt okur. Çıkış: çelişki yoksa 0, varsa 1.
+#   python3 -I durum_denetle.py <ağaç kökü>
+import json, re, sys, collections
+AGAC = sys.argv[1]
+ki = open(f'{AGAC}/docs/v05/raporlar/KNOWN_ISSUES.md', encoding='utf8').read()
+fx = open(f'{AGAC}/docs/v05/raporlar/FIX_REPORT.md', encoding='utf8').read()
+dj = json.load(open(f'{AGAC}/docs/v05/raporlar/durum.json', encoding='utf8'))
+ana_metin, _, kapanan_metin = ki.partition('## Kapanan maddeler')
+ana = {}
+for l in ana_metin.splitlines():
+    if l.startswith('| KI-'):
+        h = [x.strip() for x in l.strip().strip('|').split('|')]
+        if len(h) == 8: ana[h[0]] = h
+kapanan = {}
+for l in kapanan_metin.splitlines():
+    if l.startswith('| KI-'):
+        h = [x.strip() for x in l.strip().strip('|').split('|')]
+        kapanan[h[0]] = h
+def ki_durum(k):
+    if k in kapanan: return 'duzeltildi'
+    d = ana[k][6]
+    if d.startswith('Kısmen düzeltildi'): return 'kismi'
+    if d.startswith('Açık'): return 'acik'
+    return 'bilinmeyen:' + d[:40]
+fix = {}
+for m in re.finditer(r'^#### (KI-\d{3}) .*?— \*\*(düzeltildi|kısmen düzeltildi)\*\*', fx, re.M):
+    fix[m.group(1)] = 'duzeltildi' if m.group(2) == 'düzeltildi' else 'kismi'
+celiski = []
+S = dj['sorunlar']
+for k in sorted(set(ana) | set(kapanan)):
+    beklenen = ki_durum(k)
+    v = S.get(k)
+    if v is None: celiski.append(f'{k}: durum.json\'da yok'); continue
+    if v['durum'] != beklenen: celiski.append(f"{k}: durum.json '{v['durum']}' ↔ KNOWN_ISSUES '{beklenen}'" + (f" (FIX_REPORT: {fix[k]})" if k in fix else ''))
+    if k in fix and fix[k] != beklenen: celiski.append(f'{k}: KNOWN_ISSUES {beklenen} ↔ FIX_REPORT {fix[k]}')
+    if beklenen == 'duzeltildi':
+        for alan in ('commit', 'kanit'):
+            if not v.get(alan): celiski.append(f'{k}: düzeltildi ama {alan} boş')
+        if not v.get('testler'): celiski.append(f'{k}: düzeltildi ama testler boş')
+        if k in kapanan and v.get('commit') and v['commit'] not in kapanan[k][3]: celiski.append(f"{k}: commit {v['commit']} ↔ Kapanan maddeler {kapanan[k][3]}")
+for k in S:
+    if k not in ana and k not in kapanan: celiski.append(f'{k}: KNOWN_ISSUES\'ta yok')
+say = collections.Counter(v['durum'] for v in S.values())
+if dict(sorted(say.items())) != dict(sorted(dj['ozet']['durum'].items())): celiski.append(f"ozet.durum {dj['ozet']['durum']} ↔ kayıtlardan sayılan {dict(say)}")
+acik_ki = sum(1 for k in ana if ki_durum(k) in ('acik', 'kismi'))
+m = re.search(r'\*\*Özet:\*\* (\d+) açık sorun', ki)
+if m and int(m.group(1)) != say.get('acik', 0) + say.get('kismi', 0): celiski.append(f"KNOWN_ISSUES özeti {m.group(1)} açık ↔ durum.json acik+kismi {say.get('acik', 0) + say.get('kismi', 0)}")
+print(f'KNOWN_ISSUES: ana tablo {len(ana)} (açık {sum(1 for k in ana if ki_durum(k) == "acik")}, kısmi {sum(1 for k in ana if ki_durum(k) == "kismi")}), kapanan {len(kapanan)}; FIX_REPORT başlıkları {fix}')
+print(f'durum.json: {len(S)} kayıt, ozet.durum {dj["ozet"]["durum"]}, sayılan {dict(say)}')
+for c in celiski: print('ÇELİŞKİ', c)
+print(f"SONUC: {'GECTI' if not celiski else 'KALDI'} ({len(celiski)} çelişki)")
+sys.exit(1 if celiski else 0)

@@ -1,0 +1,29 @@
+ready in 5.5 s
+R: {"adres":"http://localhost:8080/index.html?test=1","dk":"object","durum":"yok","isaret":null}
+FAIL TK01 Test kipinde DK var: 49 alan + 5 yardımcı + mod/audio/__sayac (fazlası yok); __dkDurum().test === true → {"dk":"object","alan":49,"eksik":[],"yardimci":5,"ek":{"audio":"undefined","mod":"undefined","__sayac":"object"},"fazla":[],"test":"__dkDurum yok","isaret":null}
+FAIL TK01b __dkDurum() salt-okur tanı: 13 alan, yalnız ilkel değerler, dondurulmuş yeni nesne; sürüm 0.5.0, katı kip → {"hata":"__dkDurum yok"}
+FAIL TK01c Test kipinde kancalar modülü (js/test/kancalar.js) yüklendi → 0
+FAIL TK06 DK.mod aynı modül örneğini verir: economy/shop MERCHANTS === import() ile gelen; 14 kayıtlı adın hepsi aynı ad alanı nesnesi → {"hata":"DK.mod yok","dk":"object"}
+FAIL TK06b DK.mod bilinmeyen adda açık hata atar (ad iletide) → {"hata":"DK.mod yok"}
+FAIL TK01d DK.__sayac sim/press/tap çağrılarını sayar (press içindeki iki sim dahil); dönüş değerleri tabanla aynı → {"simDonus":3,"simFark":1,"adimFark":3,"pressDonus":"undefined","pressSonrasiSim":3,"pressSonrasiAdim":7,"press":1,"tapDonus":"undefined","tap":1,"anahtarlar":["adim","frames","press","sim","simSteps","tap"]}
+GOTO http://localhost:8080/index.html
+R: {"adres":"http://localhost:8080/index.html","dk":"object","durum":"yok","kip":""}
+FAIL TK02 Test parametresiz açılış: DK yok, __ready, __dkDurum().test === false, menü görünür → {"dk":"object","hazir":true,"test":"__dkDurum yok","menu":true,"isaret":"undefined"}
+PASS TK02b Test kipsiz açılışta js/test/ altından hiçbir dosya istenmedi → 0
+GOTO http://localhost:8080/index.html?terrain=crash&peerhost=10.9.9.9&peerport=1
+R: {"adres":"http://localhost:8080/index.html?terrain=crash&peerhost=10.9.9.9&peerport=1","dk":"object","durum":"yok","kip":"crash","isci":0,"yedek":true}
+FAIL TK03 Test kipi yok: ?terrain=crash ve ?peerhost=10.9.9.9 yok sayılır (araziKip boş, işçi ≥ 1, sinyal varsayılan) → {"hata":"__dkDurum yok","dk":"object","kip":"crash"}
+GOTO http://localhost:8080/index.html?test=1&terrain=noworker&peerhost=127.0.0.1&peerport=9000
+R: {"adres":"http://localhost:8080/index.html?test=1&terrain=noworker&peerhost=127.0.0.1&peerport=9000","dk":"object","durum":"yok","kip":"noworker","yedek":true}
+FAIL TK04 Test kipinde ?terrain=noworker ve ?peerhost=127.0.0.1 uygulanır (yedek açık, sinyal 127.0.0.1:9000) → {"hata":"__dkDurum yok","dk":"object","kip":"noworker"}
+GOTO http://localhost:8080/index.html?test=1&peerhost=10.9.9.9&peerport=1
+DEGISKEN tk08ilk = {"sinyal":"__dkDurum yok","test":null}
+GOTO http://localhost:8080/index.html?test=1&peerhost=127.0.0.1&peerport=9000
+FAIL TK08 Test kipinde peerhost=10.9.9.9 yok sayılır (varsayılan), peerhost=127.0.0.1 kabul edilir (127.0.0.1:9000) → {"ilk":"__dkDurum yok","ilkTest":null,"ikinci":"__dkDurum yok","ikinciTest":null}
+ROTA https://oyun.ornek → /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a2fix_onceki/agac
+GOTO https://oyun.ornek/index.html?test=1&peerhost=kotu.ornek&peerport=443&peersecure=1&terrain=crash
+R: {"adres":"https://oyun.ornek/index.html?test=1&peerhost=kotu.ornek&peerport=443&peersecure=1&terrain=crash","guvenli":true,"dk":"undefined","durum":{"surum":"0.5.0","derleme":"gelistirme","hazir":true,"test":false,"kati":true,"tekDosya":false,"isci":3,"yedek":false,"isciHata":0,"araziKip":"","eksikVarlik":0,"kk":true,"sinyal":"varsayilan"},"kip":null,"isci":null,"yedek":null}
+PASS TK05 Yerel olmayan https kökeninde ?test=1&peerhost=kotu.ornek&terrain=crash: DK yok, test kipi kapalı, araziKip boş, sinyal varsayılan → {"koken":"https://oyun.ornek","guvenli":true,"dk":"undefined","test":false,"araziKip":"","isciVar":true,"sinyal":"varsayilan","isaret":"undefined"}
+PASS TK05b Yerel olmayan kökende js/test/ altından hiçbir dosya istenmedi → 0
+errors: 0 pageErrors: 0 fails: 10 (67.2 s)
+SONUC: KALDI (çıkış 1) kontrol 3/13, onay 13 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 7 farklı/243 | neden: başarısız kontrol ya da adım: 10

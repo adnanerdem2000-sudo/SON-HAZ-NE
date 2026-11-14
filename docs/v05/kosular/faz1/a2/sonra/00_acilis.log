@@ -1,0 +1,16 @@
+# 2026-11-14T12:27:05+00:00 HEAD 29315b5 + çalışma ağacı (Y3 son hâli); w2
+ready in 6.3 s
+PASS Ana menü görünür → true
+PASS Menü düğmeleri → 8
+R: {"durum":"menu"}
+R: "ok"
+PASS Oyun başladı → "playing"
+R: [{"t":3,"from":"menu","to":"playing","oyuncu":false}]
+FAIL AC01 G.state 'playing'e yalnız oyuncu kurulduktan (bölge hazırlığı bittikten) sonra geçer (A-10; eski 'Oyun başladı' kontrolü prepare'den önce atanan değeri görüyordu) → false
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/goruntu/00_acilis_2026-11-14T12-31-47-819Z_1711/ilk_kalan.png
+FAIL AC02 Bölge hazırlığı (prepare) süresince G.state 'loading' (A-10) → false
+PASS Oyuncu dünyada → true
+PASS Arazi karoları yüklendi → 129
+PASS Arazi işçileri çalışıyor → 3
+errors: 0 pageErrors: 0 fails: 2 (63.1 s)
+SONUC: KALDI (çıkış 1) kontrol 6/8, onay 8 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34 | neden: başarısız kontrol ya da adım: 2

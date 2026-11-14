@@ -1,0 +1,32 @@
+// inceleme_a2 (güvenlik merceği) — tek HTML paketinde (dist/, w2'den derlenmiş, saplamasız) test kipinin kapısı. KOŞU GİRDİSİDİR.
+// Koşu (çalışma dizini w2 kökü):
+//   cd /home/user/SON-HAZ-NE-w2 && node tests/harness/run.cjs <bu dosya> --url file:///home/user/SON-HAZ-NE-w2/dist/DenizKorsanlari-SonHazine.html --size 640x360
+// Koşucu ilk adrese test=1 ekler: file: + ?test=1 → test kipi AÇIK olmalı (tasarım: file: yerel sayılır; üretim saplaması Y4'te).
+// GT01 bunu KAYDEDER (tek HTML'de kancaların file:?test=1 ile açıldığının kanıtı). GT02–GT04: aynı paket https://oyun.ornek
+// (github.io benzeri) kökeninden ?join&test=1&peerhost=kotu.ornek&terrain=crash ile açılınca kanca yok, kipler yok sayılır ve
+// tarama isteği saldırgana gitmez.
+[
+ {meta: {testler: [], dosyalar: ['js/core/testmode.js', 'js/main.js', 'js/net/net.js', 'js/world/terrain.js', 'tools/build-single-html.mjs'],
+   aciklama: 'Faz 1 A2 güvenlik incelemesi: tek HTML paketinde test kipi kapısı',
+   izinliHatalar: [
+     {desen: '0\\.peerjs\\.com/peerjs/', tur: 'hepsi', gerekce: 'Varsayılan PeerJS bulut sunucusu rotaKok ile boş bir yerel dizine bağlandı: /peerjs/id 404 + CORS hatası beklenir. Tarama isteğinin saldırgana değil varsayılan sunucuya gittiğinin kanıtıdır (GT04).'},
+   ]}},
+ {expect: {js: `(()=>{ const d = window.__dkDurum(); return { protokol: location.protocol, tekDosya: d.tekDosya, test: d.test, dk: typeof window.DK, mod: typeof (window.DK && window.DK.mod), sim: typeof (window.DK && window.DK.sim), isaret: window.__DK_TEST_KIPI || null }; })()`,
+   eq: {protokol: 'file:', tekDosya: true, test: true, dk: 'object', mod: 'function', sim: 'function', isaret: 'dk-test-kancalari-v1'},
+   label: 'GT01 (kayıt) Tek HTML file:?test=1 ile açılınca test kancaları (DK, DK.mod, DK.sim) etkin: paket saplamasız'}},
+ {rotaKok: {kok: 'https://0.peerjs.com', dizin: '/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a2_guvenlik/bos'}},
+ {rotaKok: {kok: 'https://kotu.ornek', dizin: '/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a2_guvenlik/bos'}},
+ {rotaKok: {kok: 'https://oyun.ornek', dizin: '.'}},
+ {goto: {url: 'https://oyun.ornek/dist/DenizKorsanlari-SonHazine.html?join=ABCDEF&test=1&peerhost=kotu.ornek&peerport=443&peersecure=1&terrain=crash', testParam: false}},
+ {expect: {js: `(()=>{ const d = window.__dkDurum(); return { koken: location.origin, guvenli: window.isSecureContext, tekDosya: d.tekDosya, dk: typeof window.DK, test: d.test, araziKip: d.araziKip, isciVar: d.isci >= 1, sinyal: d.sinyal, isaret: typeof window.__DK_TEST_KIPI }; })()`,
+   eq: {koken: 'https://oyun.ornek', guvenli: true, tekDosya: true, dk: 'undefined', test: false, araziKip: '', isciVar: true, sinyal: 'varsayilan', isaret: 'undefined'},
+   label: 'GT02 Tek HTML yerel olmayan https kökeninde ?test=1&peerhost=kotu.ornek&terrain=crash: DK yok, test kipi kapalı, araziKip boş, işçi var, sinyal varsayılan'}},
+ {expect: {js: `(async()=>{
+   const t0 = performance.now();
+   const liste = () => [...document.querySelectorAll('.panel .col .muted, .col .muted')].map((e) => e.textContent).join(' | ');
+   while (performance.now() - t0 < 25000 && !/Sinyal sunucusuna bağlanılamadı|açık oda yok/.test(liste())) await new Promise((r) => setTimeout(r, 250));
+   return { katilmaEkrani: !!document.querySelector('input[placeholder^="Oda kodu"]'), taramaBitti: /Sinyal sunucusuna bağlanılamadı|açık oda yok/.test(liste()) };
+ })()`, eq: {katilmaEkrani: true, taramaBitti: true}, label: 'GT03 Davet bağlantısı katılma ekranını açtı, oda taraması çalışıp bitti'}},
+ {agSay: {desen: '^[a-z]+://kotu\\.ornek[:/]', enCok: 0, sonGezinmeden: true, label: 'GT04a Tek HTML: saldırganın sinyal sunucusuna (kotu.ornek) hiçbir istek gitmedi'}},
+ {agSay: {desen: '^https://0\\.peerjs\\.com/peerjs/id', enAz: 1, sonGezinmeden: true, label: 'GT04b Tek HTML: tarama isteği varsayılan PeerJS sunucusuna gitti'}},
+]

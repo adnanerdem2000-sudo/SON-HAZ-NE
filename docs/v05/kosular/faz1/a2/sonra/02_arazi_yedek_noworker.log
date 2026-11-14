@@ -1,0 +1,29 @@
+# 2026-11-14T12:41:45+00:00 HEAD 29315b5 + çalışma ağacı (Y3 son hâli; senaryoda B0'ın AYK/AYS kontrolleri var); w2 ?terrain=noworker (koşucu test=1 ekler)
+ready in 6.4 s
+PASS AYK-01 Etkin arazi kipi URL ile aynı (?terrain → DK.terrain.mode) → true
+PASS AYK-02 Kipin beklenen işçi/yedek durumu (normal: işçi ≥ 1, yedek kapalı, hata yok; noworker: işçi 0 + yedek; ctorthrow/badurl/crash: işçi 0 + yedek + hata kaydı; crash1: yedek kapalı + çökme kaydı; hang/noready: zaman aşımı kaydı + yedek) → true
+R: {"k":"noworker","mode":"noworker","workers":0,"fallback":true,"failures":["test kipi: işçi yok"],"beklemeMs":0}
+PASS Sayfa hazır (yükleme ekranı aşıldı) → true
+R: {"mode":"noworker","workers":0,"fallback":true,"failures":["test kipi: işçi yok"],"stats":{"tiles":125,"meshes":125,"hires":15,"tris":311168,"queue":0,"jobs":0,"workers":0,"fallback":true,"failures":1,"mode":"noworker"}}
+PASS Menü sahnesinde karo ağları üretildi → 125
+PASS Okyanus derinlik penceresi hazır → true
+R: "ok"
+PASS Oyun başladı → "playing"
+R: {"startMs":232,"pendingJobs":3,"queue":2}
+PASS Oyuncu zemine basıyor → true
+PASS Yüksek çözünürlüklü karolar (yükseklik ızgarası + ağ) → 25
+R: {"jobs":26,"kuyruk":24,"kuyrukTur":["grid:512","tile:32","tile:8"],"seritler":[null,null],"isci":[]}
+PASS Uzak bölge prepare() sonuçlanıyor (askıda kalmıyor) → true
+R: {"prepMs":9373,"dilimSayisi":45,"dilimToplamMs":549,"enUzunDilim":16.2,"boslukToplamMs":25869,"enUzunBosluk":14235.8,"kareSayisi":29,"enUzunKareMs":11045,"once":{"jobs":26,"kuyruk":24,"kuyrukTur":["grid:512","tile:32","tile:8"],"seritler":[null,null],"isci":[]}}
+PASS Derinlik penceresi yeni bölgeye taşındı → true
+R: {"prepMs":9373,"prepUnder45s":true,"stats":{"tiles":129,"meshes":129,"hires":31,"tris":518400,"queue":0,"jobs":0,"workers":0,"fallback":true,"failures":1,"mode":"noworker"}}
+FAIL AYS-01 Uzak bölge prepare(1900, 950, r300) süresi kip sınırı içinde: normal ≤ 2 sn; işçisiz/çöken kiplerde (crash, crash1 dahil) ≤ 3 sn (KI-234: v0.4 crash 28,8 sn, badurl 13,9 sn ölçülmüştü) → false
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_arazi_yedek_2026-11-14T12-42-50-211Z_4765/ilk_kalan.png
+PASS Tuz Pazarı çevresinde karo ağları var → 21
+PASS Harita ızgarası isteği sonuçlanıyor → true
+PASS Uzak adada yürüme (zemin sorgusu tutarlı) → true
+R: "ok"
+PASS Kuyruk ilerliyor (askıda iş yok) → true
+R: {"jobsBefore":120,"jobsAfter8s":0,"fallback":true}
+errors: 0 pageErrors: 0 fails: 1 (127.7 s)
+SONUC: KALDI (çıkış 1) kontrol 14/15, onay 15 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 3 farklı/35 | neden: başarısız kontrol ya da adım: 1

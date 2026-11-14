@@ -1,0 +1,26 @@
+# Uzak dallar ve pages.yml korumaları (2026-11-14T13:40:21Z); git ls-remote origin (salt okuma):
+762f1c76674cad279931e28b5148a94933832b43	HEAD
+44d548cf0011c51158d6aaf3bcc79304c157f3ba	refs/heads/claude/denetim-v0.4
+762f1c76674cad279931e28b5148a94933832b43	refs/heads/claude/hopeful-cray-o1jw6w
+29315b5c24bfc89ae51a6a156de961b98b08fb15	refs/heads/claude/v0.5-saglamlastirma
+== origin/claude/hopeful-cray-o1jw6w (762f1c7) .github/workflows/pages.yml:
+8:    branches: [main, master, 'claude/**']
+9:  workflow_dispatch:
+18:  cancel-in-progress: true
+35:    if: needs.check.outputs.enabled == 'true'
+== origin/claude/denetim-v0.4 (44d548c) .github/workflows/pages.yml:
+8:    branches: [main, master, 'claude/hopeful-cray-o1jw6w']
+9:  workflow_dispatch:
+18:  cancel-in-progress: true
+35:    if: needs.check.outputs.enabled == 'true'
+== origin/claude/v0.5-saglamlastirma (29315b5) .github/workflows/pages.yml:
+8:    branches: [main, master, 'claude/hopeful-cray-o1jw6w']
+9:  workflow_dispatch:
+18:  cancel-in-progress: true
+35:    if: needs.check.outputs.enabled == 'true'
+== çalışma ağacı (commit'lenmemiş Y9a) .github/workflows/pages.yml:
+8:    branches: [main, master, 'claude/hopeful-cray-o1jw6w']
+9:  workflow_dispatch:
+18:  cancel-in-progress: false
+35:    if: needs.check.outputs.enabled == 'true' && github.ref == 'refs/heads/claude/hopeful-cray-o1jw6w'
+45:        run: test "$GITHUB_REF" = "refs/heads/$YAYIN_DALI" || { echo "::error::Yalnız $YAYIN_DALI yayınlanır ($GITHUB_REF)"; exit 1; }

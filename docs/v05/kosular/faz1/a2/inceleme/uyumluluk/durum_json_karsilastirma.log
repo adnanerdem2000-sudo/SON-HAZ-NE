@@ -1,0 +1,93 @@
+# durum.json ↔ KNOWN_ISSUES.md (HEAD 29315b5) karşılaştırması (2026-11-14T13:48:58+00:00)
+# betik: durum_karsilastir.py, durum_kaynak.py (aşağıda)
+HUCRE SAYISI 5 | KI-225 | coop.cjs adım istisnalarını yutuyor; konsol uyarıları kaydedilmiyor |
+md satir: 233 yinelenen: []
+json sorun: 234
+md'de olup json'da olmayan: []
+json'da olup md'de olmayan: ['KI-225']
+md oncelik: {'kritik': 13, 'yüksek': 20, 'orta': 121, 'düşük': 79}
+md birincil faz: {1: 27, 2: 33, 3: 22, 4: 20, 5: 20, 6: 21, 7: 43, 8: 32, 9: 15}
+md durum: {'Açık': 229, 'Açık (yalnız canlı v0.3 dalında; v0.4 dalında giderildi)': 1, "Kısmen düzeltildi: koşucu kısmı Faz 1 A1'de (`b2748cc`, FIX_REPORT). Kalan: tek dosya varlık ve ses denetimi (Faz 9, tasarım §4.6)": 1, 'Kısmen düzeltildi: onaysız senaryo KALDI, ölçüm OLCUM (Faz 1 A1, `b2748cc`, FIX_REPORT). Kalan: açığı kabul eden kontroller (06a H07, Faz 2) ve belgelerdeki eski kayıtlar (Faz 9 katalog)': 1, "Açık (başlangıç kaydı 8d8fb8a'da düzeltildi ve işçisiz kipler f80f205'te tabana eklendi; senaryonun etkin kipi doğrulamaması açık)": 1}
+ozet: {"toplam": 234, "durum": {"acik": 234}, "oncelik": {"düşük": 80, "kritik": 13, "orta": 121, "yüksek": 20}, "birincilFaz": {"Faz 1": 28, "Faz 2": 33, "Faz 3": 22, "Faz 4": 20, "Faz 5": 20, "Faz 6": 21, "Faz 7": 43, "Faz 8": 32, "Faz 9": 15}}
+json'dan sayilan oncelik: {'kritik': 13, 'yüksek': 20, 'orta': 121, 'düşük': 80}
+json'dan sayilan faz: {1: 28, 2: 33, 3: 22, 4: 20, 5: 20, 6: 21, 7: 43, 8: 32, 9: 15}
+kaynak sütunu farkı: 1
+  ('KI-233', [], [], [], ['K-M01'], 'Taban koşusu (docs/v05/taban_kosusu_44d548c/coop_06c.json, 2/7)')
+----- durum_karsilastir.py
+import json, re, collections, sys
+kok = "/home/user/SON-HAZ-NE-w2/"
+md = open(kok+"docs/v05/raporlar/KNOWN_ISSUES.md", encoding="utf8").read().splitlines()
+d = json.load(open(kok+"docs/v05/raporlar/durum.json", encoding="utf8"))
+rows = {}
+dup = []
+for ln in md:
+    if not ln.startswith("| KI-"): continue
+    # split on unescaped |
+    cells = [c.strip() for c in re.split(r'(?<!\\)\|', ln)[1:-1]]
+    if len(cells) != 8: print("HUCRE SAYISI", len(cells), ln[:80]); continue
+    kid = cells[0]
+    if kid in rows: dup.append(kid)
+    rows[kid] = dict(baslik=cells[1], oncelik=cells[2], alan=cells[3], dosya=cells[4], faz=cells[5], durum=cells[6], kaynak=cells[7])
+print("md satir:", len(rows), "yinelenen:", dup)
+S = d["sorunlar"]
+print("json sorun:", len(S))
+print("md'de olup json'da olmayan:", sorted(set(rows)-set(S)))
+print("json'da olup md'de olmayan:", sorted(set(S)-set(rows)))
+onc = collections.Counter(r["oncelik"] for r in rows.values())
+print("md oncelik:", dict(onc))
+def birincil(f):
+    m = re.search(r'Faz\s*(\d)', f); return int(m.group(1)) if m else None
+fz = collections.Counter(birincil(r["faz"]) for r in rows.values())
+print("md birincil faz:", dict(sorted(fz.items(), key=lambda x: (x[0] is None, x[0]))))
+durum = collections.Counter(r["durum"] for r in rows.values())
+print("md durum:", dict(durum))
+# alan bazli karsilastirma
+farklar = collections.defaultdict(list)
+for k, r in rows.items():
+    j = S.get(k)
+    if not j: continue
+    if j.get("oncelik") != r["oncelik"]: farklar["oncelik"].append((k, r["oncelik"], j.get("oncelik")))
+    if j.get("fazMetni") != r["faz"]: farklar["fazMetni"].append((k, r["faz"], j.get("fazMetni")))
+    if j.get("faz") != birincil(r["faz"]): farklar["faz"].append((k, r["faz"], j.get("faz")))
+    ek = sorted(set(int(x) for x in re.findall(r'Faz\s*(\d)', r["faz"])) - {birincil(r["faz"])})
+    if sorted(j.get("fazEk") or []) != ek: farklar["fazEk"].append((k, r["faz"], j.get("fazEk")))
+    if j.get("baslik") != r["baslik"]: farklar["baslik"].append((k, r["baslik"][:60], (j.get("baslik") or "")[:60]))
+    if j.get("dosya") != r["dosya"]: farklar["dosya"].append((k, r["dosya"], j.get("dosya")))
+    alanlar = [a.strip() for a in r["alan"].split(",")]
+    if j.get("alan") != alanlar: farklar["alan"].append((k, r["alan"], j.get("alan")))
+    if j.get("durum") != "acik": farklar["durum"].append((k, j.get("durum")))
+for f, v in farklar.items():
+    print("FARK", f, len(v)); [print("   ", x) for x in v[:12]]
+oz = d["ozet"]
+print("ozet:", json.dumps(oz, ensure_ascii=False))
+jo = collections.Counter(v["oncelik"] for v in S.values()); jf = collections.Counter(v["faz"] for v in S.values())
+print("json'dan sayilan oncelik:", dict(jo)); print("json'dan sayilan faz:", dict(sorted(jf.items())))
+----- durum_kaynak.py
+import json, re, subprocess
+kok = "/home/user/SON-HAZ-NE-w2/"
+md = open(kok+"docs/v05/raporlar/KNOWN_ISSUES.md", encoding="utf8").read().splitlines()
+eski = subprocess.run(["git","-C",kok,"show","5479e3b:docs/v05/raporlar/KNOWN_ISSUES.md"],capture_output=True,text=True).stdout.splitlines()
+d = json.load(open(kok+"docs/v05/raporlar/durum.json", encoding="utf8"))["sorunlar"]
+def satirlar(L):
+    out = {}
+    for ln in L:
+        if not ln.startswith("| KI-"): continue
+        c = [x.strip() for x in re.split(r'(?<!\\)\|', ln)[1:-1]]
+        if len(c) == 8: out[c[0]] = c
+    return out
+R = satirlar(md); R.update({k:v for k,v in satirlar(eski).items() if k not in R})
+ID = r'[A-K]-(?:M)?\d+|B-M\d+|[A-K]-M\d+'
+fark = []
+for k, c in R.items():
+    kaynak = c[7].split(" / eski:")[0]
+    parcalar = [p.strip() for p in kaynak.split(";")]
+    den, ilg = [], []
+    for p in parcalar:
+        m = re.match(r'(ilgili:\s*)?([A-K]-(?:M)?\d+)', p)
+        if not m: continue
+        (ilg if m.group(1) else den).append(m.group(2))
+    j = d[k]
+    if j["denetim"] != den or j["ilgili"] != ilg:
+        fark.append((k, den, ilg, j["denetim"], j["ilgili"], kaynak[:120]))
+print("kaynak sütunu farkı:", len(fark))
+for f in fark[:15]: print(" ", f)

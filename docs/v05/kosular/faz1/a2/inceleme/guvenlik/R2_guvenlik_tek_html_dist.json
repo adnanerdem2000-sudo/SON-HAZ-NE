@@ -1,0 +1,392 @@
+{
+ "scenario": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a2_guvenlik/guvenlik_tek_html.js",
+ "url": "file:///home/user/SON-HAZ-NE-w2/dist/DenizKorsanlari-SonHazine.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "GT01 (kayıt) Tek HTML file:?test=1 ile açılınca test kancaları (DK, DK.mod, DK.sim) etkin: paket saplamasız",
+    "ok": true,
+    "value": {
+     "protokol": "file:",
+     "tekDosya": true,
+     "test": true,
+     "dk": "object",
+     "mod": "function",
+     "sim": "function",
+     "isaret": "dk-test-kancalari-v1"
+    }
+   },
+   "ms": 23
+  },
+  {
+   "n": 2,
+   "label": null,
+   "rotaKok": {
+    "kok": "https://0.peerjs.com",
+    "dizin": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a2_guvenlik/bos"
+   },
+   "ms": 7
+  },
+  {
+   "n": 3,
+   "label": null,
+   "rotaKok": {
+    "kok": "https://kotu.ornek",
+    "dizin": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a2_guvenlik/bos"
+   },
+   "ms": 1
+  },
+  {
+   "n": 4,
+   "label": null,
+   "rotaKok": {
+    "kok": "https://oyun.ornek",
+    "dizin": "/home/user/SON-HAZ-NE-w2"
+   },
+   "ms": 1
+  },
+  {
+   "n": 5,
+   "label": null,
+   "goto": {
+    "url": "https://oyun.ornek/dist/DenizKorsanlari-SonHazine.html?join=ABCDEF&test=1&peerhost=kotu.ornek&peerport=443&peersecure=1&terrain=crash"
+   },
+   "ms": 11709
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "GT02 Tek HTML yerel olmayan https kökeninde ?test=1&peerhost=kotu.ornek&terrain=crash: DK yok, test kipi kapalı, araziKip boş, işçi var, sinyal varsayılan",
+    "ok": true,
+    "value": {
+     "koken": "https://oyun.ornek",
+     "guvenli": true,
+     "tekDosya": true,
+     "dk": "undefined",
+     "test": false,
+     "araziKip": "",
+     "isciVar": true,
+     "sinyal": "varsayilan",
+     "isaret": "undefined"
+    }
+   },
+   "ms": 27
+  },
+  {
+   "n": 7,
+   "label": null,
+   "expect": {
+    "label": "GT03 Davet bağlantısı katılma ekranını açtı, oda taraması çalışıp bitti",
+    "ok": true,
+    "value": {
+     "katilmaEkrani": true,
+     "taramaBitti": true
+    }
+   },
+   "ms": 4
+  },
+  {
+   "n": 8,
+   "label": null,
+   "agSay": {
+    "label": "GT04a Tek HTML: saldırganın sinyal sunucusuna (kotu.ornek) hiçbir istek gitmedi",
+    "ok": true,
+    "value": 0
+   },
+   "ms": 2
+  },
+  {
+   "n": 9,
+   "label": null,
+   "agSay": {
+    "label": "GT04b Tek HTML: tarama isteği varsayılan PeerJS sunucusuna gitti",
+    "ok": true,
+    "value": 1
+   },
+   "ms": 2
+  }
+ ],
+ "errors": [
+  "Failed to load resource: the server responded with a status of 404 (Not Found)"
+ ],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 6358,
+ "ms": 23589,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "../../../tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a2_guvenlik/guvenlik_tek_html.js",
+ "meta": {
+  "testler": [],
+  "dosyalar": [
+   "js/core/testmode.js",
+   "js/main.js",
+   "js/net/net.js",
+   "js/world/terrain.js",
+   "tools/build-single-html.mjs"
+  ],
+  "aciklama": "Faz 1 A2 güvenlik incelemesi: tek HTML paketinde test kipi kapısı",
+  "izinliHatalar": [
+   {
+    "desen": "0\\.peerjs\\.com/peerjs/",
+    "tur": "hepsi",
+    "gerekce": "Varsayılan PeerJS bulut sunucusu rotaKok ile boş bir yerel dizine bağlandı: /peerjs/id 404 + CORS hatası beklenir. Tarama isteğinin saldırgana değil varsayılan sunucuya gittiğinin kanıtıdır (GT04)."
+   }
+  ]
+ },
+ "hedef": {
+  "tip": "tek-test",
+  "url": "file:///home/user/SON-HAZ-NE-w2/dist/DenizKorsanlari-SonHazine.html?test=1",
+  "verilenUrl": "file:///home/user/SON-HAZ-NE-w2/dist/DenizKorsanlari-SonHazine.html",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "29315b5c24bfc89ae51a6a156de961b98b08fb15",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T13:37:46.075Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a2_guvenlik/guvenlik_tek_html.js --url file:///home/user/SON-HAZ-NE-w2/dist/DenizKorsanlari-SonHazine.html --size 640x360 --timeout 520 --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a2/inceleme/guvenlik/R2_guvenlik_tek_html_dist.json",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [],
+  "commit": "29315b5c24bfc89ae51a6a156de961b98b08fb15-kirli",
+  "senaryoSha256": "48e8187df821913b7407abda1131270aa708a6c50e80709a59d0771f5d3e690b",
+  "adim": null,
+  "url": "file:///home/user/SON-HAZ-NE-w2/dist/DenizKorsanlari-SonHazine.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 1,
+   "id": "GT01",
+   "etiket": "GT01 (kayıt) Tek HTML file:?test=1 ile açılınca test kancaları (DK, DK.mod, DK.sim) etkin: paket saplamasız",
+   "ok": true,
+   "deger": {
+    "protokol": "file:",
+    "tekDosya": true,
+    "test": true,
+    "dk": "object",
+    "mod": "function",
+    "sim": "function",
+    "isaret": "dk-test-kancalari-v1"
+   },
+   "beklenen": {
+    "eq": {
+     "protokol": "file:",
+     "tekDosya": true,
+     "test": true,
+     "dk": "object",
+     "mod": "function",
+     "sim": "function",
+     "isaret": "dk-test-kancalari-v1"
+    }
+   },
+   "sure_ms": 16,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 6,
+   "id": "GT02",
+   "etiket": "GT02 Tek HTML yerel olmayan https kökeninde ?test=1&peerhost=kotu.ornek&terrain=crash: DK yok, test kipi kapalı, araziKip boş, işçi var, sinyal varsayılan",
+   "ok": true,
+   "deger": {
+    "koken": "https://oyun.ornek",
+    "guvenli": true,
+    "tekDosya": true,
+    "dk": "undefined",
+    "test": false,
+    "araziKip": "",
+    "isciVar": true,
+    "sinyal": "varsayilan",
+    "isaret": "undefined"
+   },
+   "beklenen": {
+    "eq": {
+     "koken": "https://oyun.ornek",
+     "guvenli": true,
+     "tekDosya": true,
+     "dk": "undefined",
+     "test": false,
+     "araziKip": "",
+     "isciVar": true,
+     "sinyal": "varsayilan",
+     "isaret": "undefined"
+    }
+   },
+   "sure_ms": 25,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 7,
+   "id": "GT03",
+   "etiket": "GT03 Davet bağlantısı katılma ekranını açtı, oda taraması çalışıp bitti",
+   "ok": true,
+   "deger": {
+    "katilmaEkrani": true,
+    "taramaBitti": true
+   },
+   "beklenen": {
+    "eq": {
+     "katilmaEkrani": true,
+     "taramaBitti": true
+    }
+   },
+   "sure_ms": 3,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 8,
+   "id": "GT04a",
+   "etiket": "GT04a Tek HTML: saldırganın sinyal sunucusuna (kotu.ornek) hiçbir istek gitmedi",
+   "ok": true,
+   "deger": 0,
+   "beklenen": {
+    "enCok": 0
+   },
+   "sure_ms": 0,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 9,
+   "id": "GT04b",
+   "etiket": "GT04b Tek HTML: tarama isteği varsayılan PeerJS sunucusuna gitti",
+   "ok": true,
+   "deger": 1,
+   "beklenen": {
+    "enAz": 1
+   },
+   "sure_ms": 0,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 1,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [
+   {
+    "oyuncu": null,
+    "tur": "yanit",
+    "url": "https://0.peerjs.com/peerjs/id?ts=17946634855220.3234544262363618&version=1.5.5",
+    "durum": 404,
+    "metin": "Not Found",
+    "kaynakTuru": "fetch",
+    "izin": "0\\.peerjs\\.com/peerjs/",
+    "sayi": 1
+   }
+  ],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "file:///home/user/SON-HAZ-NE-w2/dist/DenizKorsanlari-SonHazine.html?test=1",
+   "sayi": 66
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "file:///home/user/SON-HAZ-NE-w2/dist/DenizKorsanlari-SonHazine.html?test=1",
+   "sayi": 2
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 2,
+  "toplam": 68,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  },
+  {
+   "desen": "0\\.peerjs\\.com/peerjs/",
+   "gerekce": "Varsayılan PeerJS bulut sunucusu rotaKok ile boş bir yerel dizine bağlandı: /peerjs/id 404 + CORS hatası beklenir. Tarama isteğinin saldırgana değil varsayılan sunucuya gittiğinin kanıtıdır (GT04).",
+   "tur": "hepsi",
+   "kaynak": "meta",
+   "eslesme": 1
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 29,
+ "sonuc": {
+  "durum": "GECTI",
+  "cikisKodu": 0,
+  "neden": [],
+  "onaySayisi": 5,
+  "kontrolSayisi": 5,
+  "gecen": 5,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 1,
+  "tur": "tarayici",
+  "turSayim": {
+   "tarayici": 5
+  }
+ },
+ "sure": {
+  "hazirMs": 6358,
+  "toplamMs": 23589,
+  "yerlesmeMs": 1001
+ }
+}

@@ -1,0 +1,13 @@
+#!/bin/bash
+# yayin_ref.mjs karşıt mutasyon sınaması (güvenlik incelemesi): pages.yml'nin bir kopyası bozulur, araç --dosya ile koşar.
+W=/home/user/SON-HAZ-NE-w2; S=$(dirname "$(readlink -f "$0")")
+kos() { local ad=$1 etki=$2; shift 2
+  cp "$W/.github/workflows/pages.yml" "$S/p.yml"; ( cd "$S" && eval "$@" )
+  local fark; fark=$(diff "$W/.github/workflows/pages.yml" "$S/p.yml" | grep '^>' | head -2 | cut -c1-220 | tr '\n' ' ')
+  local c; c=$(node "$W/tests/node/yayin_ref.mjs" --dosya "$S/p.yml" 2>&1); local rc=$?
+  echo "$ad | çıkış $rc | $(echo "$c" | grep '^SONUC') | etki: $etki | fark: $fark"; }
+kos R0_degisiklik_yok "yok" "true"
+# R1: kabuk denetimi büyük/küçük harfe duyarsız yapılır. GitHub ifadelerinde == zaten duyarsız olduğundan iki katman da
+#     'refs/heads/Claude/Hopeful-Cray-O1JW6W' gibi BAŞKA bir dalı kabul eder.
+kos R1_kabuk_harf_duyarsiz "if: ve kabuk ikisi de harf varyantı dalı kabul eder" "sed -i 's#run: test \"\$GITHUB_REF\" = \"refs/heads/\$YAYIN_DALI\"#run: test \"\${GITHUB_REF,,}\" = \"refs/heads/\${YAYIN_DALI,,}\"#' p.yml"
+kos R2_kabuk_nocasematch "aynı (shopt nocasematch)" "sed -i 's#run: test \"\$GITHUB_REF\" = \"refs/heads/\$YAYIN_DALI\" ||#run: shopt -s nocasematch; [[ \$GITHUB_REF == \"refs/heads/\$YAYIN_DALI\" ]] ||#' p.yml"

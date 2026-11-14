@@ -1,0 +1,12 @@
+# komut: node tests/node/yayin_ref.mjs --dosya <HEAD 29315b5 .github/workflows/pages.yml kopyası>  (aracın SON sürümü; Y9a öncesi)
+# zaman: 2026-11-14T13:02:39+00:00
+GECTI YR0 pages.yml ayrıştırıldı (küçük blok YAML ayrıştırıcısı) — üst anahtarlar: name, on, permissions, concurrency, jobs
+GECTI YR1 Tetikleyiciler değişmedi: push (main, master, yayın dalı) ve girdisiz workflow_dispatch — {"on":{"push":{"branches":["main","master","claude/hopeful-cray-o1jw6w"]},"workflow_dispatch":null},"beklenen":{"push":{"branches":["main","master","claude/hopeful-cray-o1jw6w"]},"workflow_dispatch":null}}
+GECTI YR2 İş listesi değişmedi: check, deploy — ["check","deploy"]
+KALDI YR3 deploy.if: mevcut koşul korunuyor ve && github.ref == 'refs/heads/claude/hopeful-cray-o1jw6w' — {"deployIf":"needs.check.outputs.enabled == 'true'","beklenen":"needs.check.outputs.enabled == 'true' && github.ref == 'refs/heads/claude/hopeful-cray-o1jw6w'","eskiKosulKorunuyor":true,"refKosulu":false,"veyaVar":false}
+KALDI YR4 deploy'un ilk adımı GITHUB_REF'i kabukta denetliyor (bash'te koşturuldu: yayın dalında 0, başka ref'te 1 + ::error::) — {"ilkAdim":"actions/checkout@v4","sorun":["ilk adım bir run betiği değil (actions/checkout@v4)"]}
+KALDI YR5 concurrency.cancel-in-progress: false (grup pages) — {"group":"pages","cancel-in-progress":true}
+GECTI YR6 deploy'un geri kalanı değişmedi (needs check, github-pages ortamı, 5 yayın adımı) — {"needs":"check","ortam":{"name":"github-pages","url":"${{ steps.deployment.outputs.page_url }}"},"korumaAdimiDisarida":false,"adimlar":["actions/checkout@v4","actions/configure-pages@v5","Tek dosya HTML sürümü","actions/upload-pages-artifact@v3","actions/deploy-pages@v4"]}
+GECTI YR7 Taban (44d548c) ile fark yalnız Y9a'nın üç değişikliği (eklenen ref adımı, deploy.if, cancel-in-progress) — {"eklenenSatir":0,"degisen":[],"ilkFark":null}
+SONUC: KALDI (5/8 denetim) | kalan: YR3, YR4, YR5
+# cikis=1

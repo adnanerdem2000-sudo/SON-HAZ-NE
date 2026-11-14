@@ -1,0 +1,851 @@
+{
+ "scenario": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a2_guvenlik/guvenlik_test_kipi.js",
+ "url": "http://localhost:8081/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "GA01 __dkDurum(): erişimci yok, değiştirilemez, yalnız ilkel, dondurulmuş; değiştirme denemesi TypeError ve sonraki anlık görüntüyü etkilemez",
+    "ok": true,
+    "value": {
+     "erisimci": [],
+     "degistirilebilir": [],
+     "ilkelOlmayan": [],
+     "donuk": true,
+     "atama": "TypeError",
+     "ek": "TypeError",
+     "tanim": "TypeError",
+     "proto": true,
+     "sembol": 0,
+     "sonrakiTest": true
+    }
+   },
+   "ms": 7
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "GA02 __dkDurum() 200 kez çağrıldı: oyun durumu değişmedi, çıktı kararlı (yan etkisiz)",
+    "ok": true,
+    "value": {
+     "durumAyni": true,
+     "ciktiKararli": true
+    }
+   },
+   "ms": 7
+  },
+  {
+   "n": 3,
+   "label": null,
+   "expect": {
+    "label": "GA03 terrain.mode nesne olsa da araziKip dizgeye çevrilir (nesne başvurusu dönmez)",
+    "ok": true,
+    "value": {
+     "tur": "string",
+     "deger": "nesne",
+     "geriAlindi": true
+    }
+   },
+   "ms": 5
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "GB01 Test kipinde peerhost yalnız tam geri döngü dizgesiyle kabul edilir: önek/sonek, büyük harf, sonda nokta, onaltılık/ondalık/kısa IPv4, IPv4 eşlemeli IPv6, kullanıcı bilgisi, boşluk ve çift parametre yok sayılır",
+    "ok": true,
+    "value": {
+     "test=1&peerhost=127.0.0.1.kotu.ornek&peerport=9000": "varsayilan",
+     "test=1&peerhost=localhost.kotu.ornek": "varsayilan",
+     "test=1&peerhost=LOCALHOST": "varsayilan",
+     "test=1&peerhost=localhost.": "varsayilan",
+     "test=1&peerhost=0x7f000001": "varsayilan",
+     "test=1&peerhost=2130706433": "varsayilan",
+     "test=1&peerhost=127.1": "varsayilan",
+     "test=1&peerhost=%5B%3A%3Affff%3A127.0.0.1%5D": "varsayilan",
+     "test=1&peerhost=%5B0%3A0%3A0%3A0%3A0%3A0%3A0%3A1%5D": "varsayilan",
+     "test=1&peerhost=localhost%3A80%40kotu.ornek": "varsayilan",
+     "test=1&peerhost=%20127.0.0.1": "varsayilan",
+     "test=1&peerhost=kotu.ornek&peerhost=127.0.0.1": "varsayilan",
+     "test=1&peerhost=10.9.9.9": "varsayilan",
+     "test=1&peerhost=127.0.0.1&peerport=9000": "127.0.0.1:9000",
+     "test=1&peerhost=%5B%3A%3A1%5D&peerport=9000": "[::1]:9000",
+     "test=1&peerhost=localhost&peerport=9000": "localhost:9000",
+     "geriAlindi": true
+    }
+   },
+   "ms": 13
+  },
+  {
+   "n": 5,
+   "label": null,
+   "rotaKok": {
+    "kok": "https://0.peerjs.com",
+    "dizin": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a2_guvenlik/bos"
+   },
+   "ms": 12
+  },
+  {
+   "n": 6,
+   "label": null,
+   "rotaKok": {
+    "kok": "https://kotu.ornek",
+    "dizin": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a2_guvenlik/bos"
+   },
+   "ms": 0
+  },
+  {
+   "n": 7,
+   "label": null,
+   "goto": {
+    "url": "http://localhost:8081/index.html?join=ABCDEF&test=1&peerhost=10.9.9.9&peerport=1"
+   },
+   "ms": 11033
+  },
+  {
+   "n": 8,
+   "label": null,
+   "expect": {
+    "label": "GE01 localhost + ?join&test=1&peerhost=10.9.9.9: test kipi açık, katılma ekranı açıldı, oda taraması bitti, sinyal varsayılan",
+    "ok": true,
+    "value": {
+     "koken": "http://localhost:8081",
+     "test": true,
+     "dk": "object",
+     "sinyal": "varsayilan",
+     "katilmaEkrani": true,
+     "taramaBitti": true
+    }
+   },
+   "ms": 29
+  },
+  {
+   "n": 9,
+   "label": null,
+   "agSay": {
+    "label": "GE02 Geri döngü dışı peerhost (10.9.9.9) test kipinde de hiç istek almadı (K9-20)",
+    "ok": true,
+    "value": 0
+   },
+   "ms": 2
+  },
+  {
+   "n": 10,
+   "label": null,
+   "agSay": {
+    "label": "GE03 Oda taramasının sinyal isteği varsayılan PeerJS sunucusuna gitti (tarama gerçekten çalıştı)",
+    "ok": true,
+    "value": 1
+   },
+   "ms": 1
+  },
+  {
+   "n": 11,
+   "label": null,
+   "rotaKok": {
+    "kok": "https://localhost.oyun.ornek",
+    "dizin": "/home/user/SON-HAZ-NE-w2"
+   },
+   "ms": 1
+  },
+  {
+   "n": 12,
+   "label": null,
+   "goto": {
+    "url": "https://localhost.oyun.ornek/index.html?test=1&terrain=crash&peerhost=127.0.0.1&peerport=9000"
+   },
+   "ms": 8724
+  },
+  {
+   "n": 13,
+   "label": null,
+   "expect": {
+    "label": "GC01 https://localhost.oyun.ornek (localhost önekli yabancı alan): test kipi kapalı, DK yok, ?terrain ve ?peerhost yok sayılır",
+    "ok": true,
+    "value": {
+     "koken": "https://localhost.oyun.ornek",
+     "dk": "undefined",
+     "test": false,
+     "araziKip": "",
+     "isciVar": true,
+     "sinyal": "varsayilan",
+     "isaret": "undefined"
+    }
+   },
+   "ms": 15
+  },
+  {
+   "n": 14,
+   "label": null,
+   "agSay": {
+    "label": "GC01b localhost önekli kökende js/test/ istenmedi",
+    "ok": true,
+    "value": 0
+   },
+   "ms": 2
+  },
+  {
+   "n": 15,
+   "label": null,
+   "rotaKok": {
+    "kok": "https://127.0.0.1.oyun.ornek",
+    "dizin": "/home/user/SON-HAZ-NE-w2"
+   },
+   "ms": 0
+  },
+  {
+   "n": 16,
+   "label": null,
+   "goto": {
+    "url": "https://127.0.0.1.oyun.ornek/index.html?test=1&terrain=crash&peerhost=127.0.0.1&peerport=9000"
+   },
+   "ms": 8821
+  },
+  {
+   "n": 17,
+   "label": null,
+   "expect": {
+    "label": "GC02 https://127.0.0.1.oyun.ornek (127.0.0.1 önekli yabancı alan): test kipi kapalı, DK yok, ?terrain ve ?peerhost yok sayılır",
+    "ok": true,
+    "value": {
+     "koken": "https://127.0.0.1.oyun.ornek",
+     "dk": "undefined",
+     "test": false,
+     "araziKip": "",
+     "isciVar": true,
+     "sinyal": "varsayilan",
+     "isaret": "undefined"
+    }
+   },
+   "ms": 26
+  },
+  {
+   "n": 18,
+   "label": null,
+   "rotaKok": {
+    "kok": "https://oyun.ornek",
+    "dizin": "/home/user/SON-HAZ-NE-w2"
+   },
+   "ms": 1
+  },
+  {
+   "n": 19,
+   "label": null,
+   "goto": {
+    "url": "https://oyun.ornek/index.html?join=ABCDEF&test=1&peerhost=kotu.ornek&peerport=443&peersecure=1&terrain=crash"
+   },
+   "ms": 10964
+  },
+  {
+   "n": 20,
+   "label": null,
+   "expect": {
+    "label": "GD01a (TK05 ile aynı tanı onayı) DK yok, test kipi kapalı, araziKip boş, __dkDurum().sinyal varsayılan",
+    "ok": true,
+    "value": {
+     "koken": "https://oyun.ornek",
+     "guvenli": true,
+     "dk": "undefined",
+     "test": false,
+     "araziKip": "",
+     "sinyal": "varsayilan"
+    }
+   },
+   "ms": 29
+  },
+  {
+   "n": 21,
+   "label": null,
+   "expect": {
+    "label": "GD01b Davet bağlantısı katılma ekranını açtı ve oda taraması (sinyal sunucusuna bağlantı) kendiliğinden çalışıp bitti",
+    "ok": true,
+    "value": {
+     "katilmaEkrani": true,
+     "taramaBitti": true
+    }
+   },
+   "ms": 16
+  },
+  {
+   "n": 22,
+   "label": null,
+   "agSay": {
+    "label": "GD02 Saldırganın sinyal sunucusuna (kotu.ornek) hiçbir istek gitmedi (K-08 uçtan uca)",
+    "ok": true,
+    "value": 0
+   },
+   "ms": 2
+  },
+  {
+   "n": 23,
+   "label": null,
+   "agSay": {
+    "label": "GD03 Tarama isteği varsayılan PeerJS sunucusuna gitti",
+    "ok": true,
+    "value": 1
+   },
+   "ms": 5
+  }
+ ],
+ "errors": [
+  "Failed to load resource: the server responded with a status of 404 (Not Found)",
+  "Failed to load resource: the server responded with a status of 404 (Not Found)"
+ ],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 7332,
+ "ms": 52387,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "../../../tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a2_guvenlik/guvenlik_test_kipi.js",
+ "meta": {
+  "testler": [],
+  "dosyalar": [
+   "js/core/testmode.js",
+   "js/net/net.js",
+   "js/main.js",
+   "js/world/terrain.js"
+  ],
+  "aciklama": "Faz 1 A2 güvenlik incelemesi: test kipi atlatma denemeleri ve K-08/K9-20 uçtan uca",
+  "izinliHatalar": [
+   {
+    "desen": "0\\.peerjs\\.com/peerjs/",
+    "tur": "hepsi",
+    "gerekce": "Varsayılan PeerJS bulut sunucusu bu koşuda rotaKok ile boş bir yerel dizine bağlandı: /peerjs/id 404 döner ve CORS başlığı olmadığı için tarayıcı konsola CORS/yükleme hatası yazar. Bu istek, davet bağlantısının tarama isteğinin saldırgana değil varsayılan sunucuya gittiğinin kanıtıdır (GD03, GE03)."
+   }
+  ]
+ },
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8081/index.html?test=1",
+  "verilenUrl": "http://localhost:8081/index.html",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "29315b5c24bfc89ae51a6a156de961b98b08fb15",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T13:31:17.787Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a2_guvenlik/guvenlik_test_kipi.js --url http://localhost:8081/index.html --size 640x360 --timeout 520 --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a2/inceleme/guvenlik/R1_guvenlik_test_kipi_w2.json",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://localhost:8081 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8081"
+  ],
+  "commit": "29315b5c24bfc89ae51a6a156de961b98b08fb15-kirli",
+  "senaryoSha256": "9fe55d06bf5e7201fadde05dbb266a0f12eba30b6233686ec6e06a129b6fb42e",
+  "adim": null,
+  "url": "http://localhost:8081/index.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 1,
+   "id": "GA01",
+   "etiket": "GA01 __dkDurum(): erişimci yok, değiştirilemez, yalnız ilkel, dondurulmuş; değiştirme denemesi TypeError ve sonraki anlık görüntüyü etkilemez",
+   "ok": true,
+   "deger": {
+    "erisimci": [],
+    "degistirilebilir": [],
+    "ilkelOlmayan": [],
+    "donuk": true,
+    "atama": "TypeError",
+    "ek": "TypeError",
+    "tanim": "TypeError",
+    "proto": true,
+    "sembol": 0,
+    "sonrakiTest": true
+   },
+   "beklenen": {
+    "eq": {
+     "erisimci": [],
+     "degistirilebilir": [],
+     "ilkelOlmayan": [],
+     "donuk": true,
+     "atama": "TypeError",
+     "ek": "TypeError",
+     "tanim": "TypeError",
+     "proto": true,
+     "sembol": 0,
+     "sonrakiTest": true
+    }
+   },
+   "sure_ms": 4,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 2,
+   "id": "GA02",
+   "etiket": "GA02 __dkDurum() 200 kez çağrıldı: oyun durumu değişmedi, çıktı kararlı (yan etkisiz)",
+   "ok": true,
+   "deger": {
+    "durumAyni": true,
+    "ciktiKararli": true
+   },
+   "beklenen": {
+    "eq": {
+     "durumAyni": true,
+     "ciktiKararli": true
+    }
+   },
+   "sure_ms": 5,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 3,
+   "id": "GA03",
+   "etiket": "GA03 terrain.mode nesne olsa da araziKip dizgeye çevrilir (nesne başvurusu dönmez)",
+   "ok": true,
+   "deger": {
+    "tur": "string",
+    "deger": "nesne",
+    "geriAlindi": true
+   },
+   "beklenen": {
+    "eq": {
+     "tur": "string",
+     "deger": "nesne",
+     "geriAlindi": true
+    }
+   },
+   "sure_ms": 3,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 4,
+   "id": "GB01",
+   "etiket": "GB01 Test kipinde peerhost yalnız tam geri döngü dizgesiyle kabul edilir: önek/sonek, büyük harf, sonda nokta, onaltılık/ondalık/kısa IPv4, IPv4 eşlemeli IPv6, kullanıcı bilgisi, boşluk ve çift parametre yok sayılır",
+   "ok": true,
+   "deger": {
+    "test=1&peerhost=127.0.0.1.kotu.ornek&peerport=9000": "varsayilan",
+    "test=1&peerhost=localhost.kotu.ornek": "varsayilan",
+    "test=1&peerhost=LOCALHOST": "varsayilan",
+    "test=1&peerhost=localhost.": "varsayilan",
+    "test=1&peerhost=0x7f000001": "varsayilan",
+    "test=1&peerhost=2130706433": "varsayilan",
+    "test=1&peerhost=127.1": "varsayilan",
+    "test=1&peerhost=%5B%3A%3Affff%3A127.0.0.1%5D": "varsayilan",
+    "test=1&peerhost=%5B0%3A0%3A0%3A0%3A0%3A0%3A0%3A1%5D": "varsayilan",
+    "test=1&peerhost=localhost%3A80%40kotu.ornek": "varsayilan",
+    "test=1&peerhost=%20127.0.0.1": "varsayilan",
+    "test=1&peerhost=kotu.ornek&peerhost=127.0.0.1": "varsayilan",
+    "test=1&peerhost=10.9.9.9": "varsayilan",
+    "test=1&peerhost=127.0.0.1&peerport=9000": "127.0.0.1:9000",
+    "test=1&peerhost=%5B%3A%3A1%5D&peerport=9000": "[::1]:9000",
+    "test=1&peerhost=localhost&peerport=9000": "localhost:9000",
+    "geriAlindi": true
+   },
+   "beklenen": {
+    "eq": {
+     "test=1&peerhost=127.0.0.1.kotu.ornek&peerport=9000": "varsayilan",
+     "test=1&peerhost=localhost.kotu.ornek": "varsayilan",
+     "test=1&peerhost=LOCALHOST": "varsayilan",
+     "test=1&peerhost=localhost.": "varsayilan",
+     "test=1&peerhost=0x7f000001": "varsayilan",
+     "test=1&peerhost=2130706433": "varsayilan",
+     "test=1&peerhost=127.1": "varsayilan",
+     "test=1&peerhost=%5B%3A%3Affff%3A127.0.0.1%5D": "varsayilan",
+     "test=1&peerhost=%5B0%3A0%3A0%3A0%3A0%3A0%3A0%3A1%5D": "varsayilan",
+     "test=1&peerhost=localhost%3A80%40kotu.ornek": "varsayilan",
+     "test=1&peerhost=%20127.0.0.1": "varsayilan",
+     "test=1&peerhost=kotu.ornek&peerhost=127.0.0.1": "varsayilan",
+     "test=1&peerhost=10.9.9.9": "varsayilan",
+     "test=1&peerhost=127.0.0.1&peerport=9000": "127.0.0.1:9000",
+     "test=1&peerhost=%5B%3A%3A1%5D&peerport=9000": "[::1]:9000",
+     "test=1&peerhost=localhost&peerport=9000": "localhost:9000",
+     "geriAlindi": true
+    }
+   },
+   "sure_ms": 11,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 8,
+   "id": "GE01",
+   "etiket": "GE01 localhost + ?join&test=1&peerhost=10.9.9.9: test kipi açık, katılma ekranı açıldı, oda taraması bitti, sinyal varsayılan",
+   "ok": true,
+   "deger": {
+    "koken": "http://localhost:8081",
+    "test": true,
+    "dk": "object",
+    "sinyal": "varsayilan",
+    "katilmaEkrani": true,
+    "taramaBitti": true
+   },
+   "beklenen": {
+    "eq": {
+     "koken": "http://localhost:8081",
+     "test": true,
+     "dk": "object",
+     "sinyal": "varsayilan",
+     "katilmaEkrani": true,
+     "taramaBitti": true
+    }
+   },
+   "sure_ms": 27,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 9,
+   "id": "GE02",
+   "etiket": "GE02 Geri döngü dışı peerhost (10.9.9.9) test kipinde de hiç istek almadı (K9-20)",
+   "ok": true,
+   "deger": 0,
+   "beklenen": {
+    "enCok": 0
+   },
+   "sure_ms": 0,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 10,
+   "id": "GE03",
+   "etiket": "GE03 Oda taramasının sinyal isteği varsayılan PeerJS sunucusuna gitti (tarama gerçekten çalıştı)",
+   "ok": true,
+   "deger": 1,
+   "beklenen": {
+    "enAz": 1
+   },
+   "sure_ms": 0,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 13,
+   "id": "GC01",
+   "etiket": "GC01 https://localhost.oyun.ornek (localhost önekli yabancı alan): test kipi kapalı, DK yok, ?terrain ve ?peerhost yok sayılır",
+   "ok": true,
+   "deger": {
+    "koken": "https://localhost.oyun.ornek",
+    "dk": "undefined",
+    "test": false,
+    "araziKip": "",
+    "isciVar": true,
+    "sinyal": "varsayilan",
+    "isaret": "undefined"
+   },
+   "beklenen": {
+    "eq": {
+     "koken": "https://localhost.oyun.ornek",
+     "dk": "undefined",
+     "test": false,
+     "araziKip": "",
+     "isciVar": true,
+     "sinyal": "varsayilan",
+     "isaret": "undefined"
+    }
+   },
+   "sure_ms": 13,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 14,
+   "id": "GC01b",
+   "etiket": "GC01b localhost önekli kökende js/test/ istenmedi",
+   "ok": true,
+   "deger": 0,
+   "beklenen": {
+    "enCok": 0
+   },
+   "sure_ms": 0,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 17,
+   "id": "GC02",
+   "etiket": "GC02 https://127.0.0.1.oyun.ornek (127.0.0.1 önekli yabancı alan): test kipi kapalı, DK yok, ?terrain ve ?peerhost yok sayılır",
+   "ok": true,
+   "deger": {
+    "koken": "https://127.0.0.1.oyun.ornek",
+    "dk": "undefined",
+    "test": false,
+    "araziKip": "",
+    "isciVar": true,
+    "sinyal": "varsayilan",
+    "isaret": "undefined"
+   },
+   "beklenen": {
+    "eq": {
+     "koken": "https://127.0.0.1.oyun.ornek",
+     "dk": "undefined",
+     "test": false,
+     "araziKip": "",
+     "isciVar": true,
+     "sinyal": "varsayilan",
+     "isaret": "undefined"
+    }
+   },
+   "sure_ms": 14,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 20,
+   "id": "GD01a",
+   "etiket": "GD01a (TK05 ile aynı tanı onayı) DK yok, test kipi kapalı, araziKip boş, __dkDurum().sinyal varsayılan",
+   "ok": true,
+   "deger": {
+    "koken": "https://oyun.ornek",
+    "guvenli": true,
+    "dk": "undefined",
+    "test": false,
+    "araziKip": "",
+    "sinyal": "varsayilan"
+   },
+   "beklenen": {
+    "eq": {
+     "koken": "https://oyun.ornek",
+     "guvenli": true,
+     "dk": "undefined",
+     "test": false,
+     "araziKip": "",
+     "sinyal": "varsayilan"
+    }
+   },
+   "sure_ms": 25,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 21,
+   "id": "GD01b",
+   "etiket": "GD01b Davet bağlantısı katılma ekranını açtı ve oda taraması (sinyal sunucusuna bağlantı) kendiliğinden çalışıp bitti",
+   "ok": true,
+   "deger": {
+    "katilmaEkrani": true,
+    "taramaBitti": true
+   },
+   "beklenen": {
+    "eq": {
+     "katilmaEkrani": true,
+     "taramaBitti": true
+    }
+   },
+   "sure_ms": 7,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 22,
+   "id": "GD02",
+   "etiket": "GD02 Saldırganın sinyal sunucusuna (kotu.ornek) hiçbir istek gitmedi (K-08 uçtan uca)",
+   "ok": true,
+   "deger": 0,
+   "beklenen": {
+    "enCok": 0
+   },
+   "sure_ms": 0,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 23,
+   "id": "GD03",
+   "etiket": "GD03 Tarama isteği varsayılan PeerJS sunucusuna gitti",
+   "ok": true,
+   "deger": 1,
+   "beklenen": {
+    "enAz": 1
+   },
+   "sure_ms": 0,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 2,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [
+   {
+    "oyuncu": null,
+    "tur": "yanit",
+    "url": "https://0.peerjs.com/peerjs/id?ts=17946630970860.7038569028512213&version=1.5.5",
+    "durum": 404,
+    "metin": "Not Found",
+    "kaynakTuru": "fetch",
+    "izin": "0\\.peerjs\\.com/peerjs/",
+    "sayi": 1
+   },
+   {
+    "oyuncu": null,
+    "tur": "yanit",
+    "url": "https://0.peerjs.com/peerjs/id?ts=17946631259770.22846949296284913&version=1.5.5",
+    "durum": 404,
+    "metin": "Not Found",
+    "kaynakTuru": "fetch",
+    "izin": "0\\.peerjs\\.com/peerjs/",
+    "sayi": 1
+   }
+  ],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8081/vendor/three/three.core.js",
+   "sayi": 165
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8081/vendor/three/three.core.js",
+   "sayi": 5
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 2,
+  "toplam": 170,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  },
+  {
+   "desen": "0\\.peerjs\\.com/peerjs/",
+   "gerekce": "Varsayılan PeerJS bulut sunucusu bu koşuda rotaKok ile boş bir yerel dizine bağlandı: /peerjs/id 404 döner ve CORS başlığı olmadığı için tarayıcı konsola CORS/yükleme hatası yazar. Bu istek, davet bağlantısının tarama isteğinin saldırgana değil varsayılan sunucuya gittiğinin kanıtıdır (GD03, GE03).",
+   "tur": "hepsi",
+   "kaynak": "meta",
+   "eslesme": 2
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 985,
+ "sonuc": {
+  "durum": "GECTI",
+  "cikisKodu": 0,
+  "neden": [],
+  "onaySayisi": 14,
+  "kontrolSayisi": 14,
+  "gecen": 14,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 2,
+  "tur": "tarayici",
+  "turSayim": {
+   "tarayici": 14
+  }
+ },
+ "sure": {
+  "hazirMs": 7332,
+  "toplamMs": 52387,
+  "yerlesmeMs": 1000
+ }
+}

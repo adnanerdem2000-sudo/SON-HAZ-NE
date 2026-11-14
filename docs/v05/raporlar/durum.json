@@ -1,0 +1,4893 @@
+{
+ "sema": "dk-durum/1",
+ "aciklama": "v0.5 sorun durumu kaydı (Faz 9 tasarımı §7.3, K9-14, K9-16). Anahtar: KNOWN_ISSUES.md kimliği (KI-xxx). Faz 1–8 kapanışlarında ELLE güncellenir: bir sorun düzeltildiğinde durum, commit, testler (senaryo:kontrol ya da tests/node aracı:denetim) ve kanıt (docs/v05/kosular/faz<N>/ altındaki ham rapor yolu) yazılır ve FIX_REPORT.md girdisiyle eşleşir. Y7 (Faz 9) tools/faz-kapisi.mjs ve rapor-uret.mjs bu dosyayı okur. Sorunun ayrıntısı (kök neden, tekrar üretme, kabul) AUDIT_CURRENT.md §5 ve docs/v05/denetim_bulgulari.json içinde denetim kimliğiyle durur.",
+ "kaynak": {
+  "bilinenSorunlar": "docs/v05/raporlar/KNOWN_ISSUES.md (29315b5); KI-225 alanları 5479e3b sürümünden",
+  "denetim": "docs/v05/raporlar/AUDIT_CURRENT.md, docs/v05/denetim_bulgulari.json (Faz 0, taban 44d548c)"
+ },
+ "olusturma": {
+  "tarih": "2026-11-14T14:44:04+00:00",
+  "adim": "Faz 1 A2 (A5)",
+  "not": "İskelet: 234 sorun yüklendi. Durumlar KNOWN_ISSUES.md'den: HEAD'de kapanmış ya da kısmen düzeltilmiş görünen Faz 1 A1 maddeleri (KI-225 duzeltildi; KI-146, KI-147 kismi; b2748cc) FIX_REPORT.md girdileriyle işlendi (A2-UY-04). A2'nin kendi kapattığı maddeler commit'e dek 'acik' kalır (ana oturum commit sonrası günceller)."
+ },
+ "durumlar": {
+  "acik": "Düzeltilmedi.",
+  "duzeltildi": "Kabul testleri GEÇTİ; commit, testler ve kanıt dolu; KNOWN_ISSUES.md \"Kapanan maddeler\" ve FIX_REPORT.md'de kayıtlı.",
+  "kismi": "Bir kısmı düzeltildi; \"not\" alanı kalanı ve sahibi olan fazı yazar.",
+  "ertelendi": "Bilinçli olarak sonraki bir faza bırakıldı; \"faz\" yeni sahip fazdır, \"not\" gerekçeyi yazar.",
+  "muaf": "Düzeltilmeyecek (kapsam dışı, kabul edilen kalıntı); gerekçe \"not\" alanında, gerekiyorsa tests/kabul/bilinen_sorunlar.json'da."
+ },
+ "alanlar": {
+  "durum": "acik | duzeltildi | kismi | ertelendi | muaf",
+  "faz": "Birincil sahip faz (1–9); KNOWN_ISSUES.md \"Hedef faz\" sütununun ilk fazı",
+  "fazEk": "İkincil fazlar (\"(+Faz n)\")",
+  "fazMetni": "KNOWN_ISSUES.md \"Hedef faz\" sütunu aynen",
+  "oncelik": "kritik | yüksek | orta | düşük",
+  "alan": "Denetim alanları (A–K)",
+  "baslik": "Kısa tanım",
+  "dosya": "KNOWN_ISSUES.md \"Dosya\" sütunu",
+  "denetim": "Birincil denetim kimlikleri (AUDIT_CURRENT.md §5, ör. K-11, A-02, B-M01)",
+  "ilgili": "Kısmen örtüşen (ilgili:) denetim kimlikleri",
+  "commit": "Düzelten commit (kısa sha) ya da null",
+  "testler": "Kanıt testleri: \"senaryo:kontrol\" (ör. \"53_test_kipi:TK05\") ya da \"tests/node/<araç>:<denetim>\"",
+  "kanit": "Ham rapor yolu (docs/v05/kosular/faz<N>/…) ya da null",
+  "not": "Serbest not (kalan kısım, gerekçe, kaynak çelişkisi)"
+ },
+ "ozet": {
+  "toplam": 234,
+  "durum": {
+   "acik": 231,
+   "duzeltildi": 1,
+   "kismi": 2
+  },
+  "oncelik": {
+   "düşük": 80,
+   "kritik": 13,
+   "orta": 121,
+   "yüksek": 20
+  },
+  "birincilFaz": {
+   "Faz 1": 28,
+   "Faz 2": 33,
+   "Faz 3": 22,
+   "Faz 4": 20,
+   "Faz 5": 20,
+   "Faz 6": 21,
+   "Faz 7": 43,
+   "Faz 8": 32,
+   "Faz 9": 15
+  },
+  "not": "oncelik ve birincilFaz sayımları kapanan maddeler dahil 234 kaydın hepsini sayar; KNOWN_ISSUES.md'nin özeti yalnız ana tablodaki (açık + kısmen düzeltilmiş) maddeleri sayar (233; düşük 79, Faz 1 27). Fark KI-225'tir (düşük, Faz 1, duzeltildi)."
+ },
+ "sorunlar": {
+  "KI-001": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [],
+   "fazMetni": "Faz 2",
+   "oncelik": "kritik",
+   "alan": [
+    "B",
+    "E"
+   ],
+   "baslik": "Konuktan gelen 'shipFull' iletisi doğrulanmıyor: ev sahibinin gemisi değiştirilebiliyor ya da silinebiliyor, ambar ve kaynaklar keyfî yazılıyor; kapanış kaydıyla kayıp kalıcı",
+   "dosya": "js/net/net.js",
+   "denetim": [
+    "B-01",
+    "E-01"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-002": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [],
+   "fazMetni": "Faz 2",
+   "oncelik": "kritik",
+   "alan": [
+    "B",
+    "E"
+   ],
+   "baslik": "shipCmd alanları doğrulanmıyor: cannonFix/mastFix indeksiyle ev sahibi sekmesi kilitlenir, yelken NaN/1e9 olur, gülle/tahta ücretsiz gelir, tahtasız onarım ve uzaktan çapa/kova mümkün",
+   "dosya": "js/net/net.js",
+   "denetim": [
+    "B-02"
+   ],
+   "ilgili": [
+    "E-03"
+   ],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-003": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [],
+   "fazMetni": "Faz 2",
+   "oncelik": "kritik",
+   "alan": [
+    "B",
+    "E"
+   ],
+   "baslik": "Kayık: konuk kendini sürücü atayabiliyor, boatSt'nin ham değerleri ev sahibinin anlık görüntü yayınını kalıcı olarak kesiyor",
+   "dosya": "js/net/net.js",
+   "denetim": [
+    "B-03"
+   ],
+   "ilgili": [
+    "E-03"
+   ],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-004": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [],
+   "fazMetni": "Faz 2",
+   "oncelik": "kritik",
+   "alan": [
+    "B",
+    "E"
+   ],
+   "baslik": "'st' durum iletisi şemasız ve oran sınırı dışında: sahte ya da NaN konum yakınlık denetimlerini aşıyor, bozuk 'eq' ağ döngüsünü kesiyor",
+   "dosya": "js/net/net.js",
+   "denetim": [
+    "B-04",
+    "E-04"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-005": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [],
+   "fazMetni": "Faz 2",
+   "oncelik": "kritik",
+   "alan": [
+    "B",
+    "E"
+   ],
+   "baslik": "hold/lootReq/holdTake ile sınırsız ganimet ve altın üretimi: sandık içerikleri ve ganimet tabloları konuğun beyanı",
+   "dosya": "js/net/net.js",
+   "denetim": [
+    "B-05"
+   ],
+   "ilgili": [
+    "E-03",
+    "E-02"
+   ],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-006": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [],
+   "fazMetni": "Faz 2",
+   "oncelik": "kritik",
+   "alan": [
+    "B"
+   ],
+   "baslik": "Ağdan gelen eşya verisi (balık color/name) kaçışsız innerHTML'e giriyor: ev sahibine ve diğer konuklara saklı XSS",
+   "dosya": "js/economy/items.js",
+   "denetim": [
+    "B-06"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-007": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [],
+   "fazMetni": "Faz 2",
+   "oncelik": "kritik",
+   "alan": [
+    "B",
+    "H",
+    "E"
+   ],
+   "baslik": "Savaş sonuçlarını konuk belirliyor: hasar, boss hasarı ve sersemletme mesafe, tür ve konum doğrulamasız",
+   "dosya": "js/net/net.js",
+   "denetim": [
+    "B-07",
+    "H-03"
+   ],
+   "ilgili": [
+    "E-03"
+   ],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-008": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [],
+   "fazMetni": "Faz 2",
+   "oncelik": "kritik",
+   "alan": [
+    "B",
+    "E"
+   ],
+   "baslik": "Altın paylaşımı konuğun beyanı: 'gold' iletisiyle konuk başına saatte 1,2 M altın ev sahibine ve tayfaya aktarılıyor; satış doğrulaması, işlem kimliği ve tekrar koruması yok",
+   "dosya": "js/net/net.js",
+   "denetim": [
+    "B-08"
+   ],
+   "ilgili": [
+    "E-03"
+   ],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-009": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [
+    5
+   ],
+   "fazMetni": "Faz 2 (+Faz 5)",
+   "oncelik": "kritik",
+   "alan": [
+    "B",
+    "E"
+   ],
+   "baslik": "PeerJS 16 300 baytlık gönderim sınırı ve koşulsuz _dropPeer: tek büyük ileti bütün konukları düşürüyor, konuklar pong aldığı için donuk dünyada kalıyor",
+   "dosya": "js/net/net.js",
+   "denetim": [
+    "B-M01",
+    "E-M01"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-010": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [],
+   "fazMetni": "Faz 2",
+   "oncelik": "kritik",
+   "alan": [
+    "B",
+    "E"
+   ],
+   "baslik": "Gemi adıyla kalıcı (stored) XSS: ad hud.js:302/311 ve Usta Bora diyaloğunda (panels.js:220) kaçışsız innerHTML'e giriyor",
+   "dosya": "js/ui/hud.js",
+   "denetim": [
+    "B-M02"
+   ],
+   "ilgili": [
+    "E-01",
+    "B-06"
+   ],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-011": {
+   "durum": "acik",
+   "faz": 4,
+   "fazEk": [
+    2
+   ],
+   "fazMetni": "Faz 4 (+Faz 2)",
+   "oncelik": "kritik",
+   "alan": [
+    "D",
+    "G"
+   ],
+   "baslik": "Tutsak kurtarma ödülü sınırsız tekrarlanıyor: kalıcı 'freed' durumu denetlenmiyor, konukta gardiyan koşulu işlemiyor",
+   "dosya": "js/world/islands.js",
+   "denetim": [
+    "D-01",
+    "G-01"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-012": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [
+    4,
+    5
+   ],
+   "fazMetni": "Faz 2 (+Faz 4, Faz 5)",
+   "oncelik": "kritik",
+   "alan": [
+    "D",
+    "G",
+    "E"
+   ],
+   "baslik": "Co-op'ta dünya kalıcılık durumu eşitlenmiyor: konuk her katılışta sandık, sunak, tutsak ve bulmaca ödüllerini yeniden alıyor; konuk eylemleri ev sahibi kaydına girmiyor",
+   "dosya": "js/net/net.js; js/world/islands.js",
+   "denetim": [
+    "D-03",
+    "G-02",
+    "E-05",
+    "E-06"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-013": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [
+    4
+   ],
+   "fazMetni": "Faz 2 + Faz 4",
+   "oncelik": "kritik",
+   "alan": [
+    "F",
+    "D"
+   ],
+   "baslik": "Konuk kaydındaki başka dünyaların hikâye bayrakları ev sahibine sızıyor; 'gunluk' bayrağı 2. aşamayı kalıcı kilitliyor (v0.4 gerilemesi)",
+   "dosya": "js/main.js",
+   "denetim": [
+    "F-01",
+    "D-02"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-014": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [],
+   "fazMetni": "Faz 2",
+   "oncelik": "yüksek",
+   "alan": [
+    "B",
+    "E"
+   ],
+   "baslik": "Ana döngüde hata yalıtımı yok: tek bozuk ileti ya da nesne benzetimi, anlık görüntüyü ve girdi temizliğini durduruyor",
+   "dosya": "js/main.js; js/net/net.js",
+   "denetim": [
+    "B-09",
+    "E-M02"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-015": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [],
+   "fazMetni": "Faz 2",
+   "oncelik": "yüksek",
+   "alan": [
+    "B",
+    "E"
+   ],
+   "baslik": "Sandık, kese, kazı ve yüzen nesne etkileşimleri uzaktan yapılabiliyor; 'maps' ile tüm kazı alanları sahiplenilebiliyor; başkasının taşıdığı sandık yazılabiliyor",
+   "dosya": "js/net/net.js",
+   "denetim": [
+    "B-10"
+   ],
+   "ilgili": [
+    "E-03"
+   ],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-016": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [],
+   "fazMetni": "Faz 2",
+   "oncelik": "yüksek",
+   "alan": [
+    "B",
+    "E"
+   ],
+   "baslik": "Tehlike/bulmaca iletisi (hazard) hiç doğrulanmıyor: uzaktan fıçı patlatma, kaya salma, bulmaca bloğunu ışınlama ve bulmacayı çözme mümkün",
+   "dosya": "js/net/net.js",
+   "denetim": [
+    "B-11"
+   ],
+   "ilgili": [
+    "E-03"
+   ],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-017": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [],
+   "fazMetni": "Faz 2",
+   "oncelik": "yüksek",
+   "alan": [
+    "B",
+    "F",
+    "E"
+   ],
+   "baslik": "'story' iletisi yalnız '+1 aşama' kuralıyla doğrulanıyor: yeniden gönderimle tüm aşamalar atlanıyor, bayraklar koşulsuz birleşiyor",
+   "dosya": "js/net/net.js",
+   "denetim": [
+    "B-12",
+    "F-06"
+   ],
+   "ilgili": [
+    "E-03"
+   ],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-018": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [],
+   "fazMetni": "Faz 2",
+   "oncelik": "yüksek",
+   "alan": [
+    "B"
+   ],
+   "baslik": "Dümen ve top kilitleri uzaktan ve sınırsız alınabiliyor: ev sahibi kendi gemisinin dışında kalıyor, konuk gemiyi her yerden sürüp ateşleyebiliyor",
+   "dosya": "js/net/net.js",
+   "denetim": [
+    "B-13"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-019": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [],
+   "fazMetni": "Faz 2",
+   "oncelik": "yüksek",
+   "alan": [
+    "B",
+    "E"
+   ],
+   "baslik": "revive iletisi koşulsuz uygulanıyor: ev sahibi ve konuklar uzaktan sürekli 'kalkma' animasyonuna ve 45 cana kilitlenebiliyor",
+   "dosya": "js/net/net.js",
+   "denetim": [
+    "B-14"
+   ],
+   "ilgili": [
+    "E-03"
+   ],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-020": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [],
+   "fazMetni": "Faz 2",
+   "oncelik": "yüksek",
+   "alan": [
+    "B"
+   ],
+   "baslik": "lootReq ile sınırsız kese ve fizik cismi: O(n²) çarpışma döngüsü ev sahibini dakikalar içinde kilitliyor, konuklarda çizim yükü patlıyor",
+   "dosya": "js/net/net.js",
+   "denetim": [
+    "B-M03"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-021": {
+   "durum": "acik",
+   "faz": 3,
+   "fazEk": [],
+   "fazMetni": "Faz 3",
+   "oncelik": "yüksek",
+   "alan": [
+    "C"
+   ],
+   "baslik": "Top nişan hızı alt adım sayısıyla çarpılıyor (kare hızına bağlı nişan)",
+   "dosya": "js/game/shipControl.js",
+   "denetim": [
+    "C-03"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-022": {
+   "durum": "acik",
+   "faz": 4,
+   "fazEk": [],
+   "fazMetni": "Faz 4",
+   "oncelik": "yüksek",
+   "alan": [
+    "D"
+   ],
+   "baslik": "İçe aktarma doğrulamasız, atomik değil ve onaysız: eski ya da bozuk bir dosya yuvaları .bak yedekleriyle birlikte sessizce eziyor",
+   "dosya": "js/core/save.js",
+   "denetim": [
+    "D-04"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-023": {
+   "durum": "acik",
+   "faz": 4,
+   "fazEk": [],
+   "fazMetni": "Faz 4",
+   "oncelik": "yüksek",
+   "alan": [
+    "D"
+   ],
+   "baslik": "v0.4 gerilemesi: gemi satın alınınca eski geminin direk ve top can dizileri yeni tipe taşınıyor; Brigantine'in ikinci direği teslimde devrik, 4 topu ve 2. direği hasar almıyor, bozuk dizi kayda yazılıyor",
+   "dosya": "js/game/shipControl.js",
+   "denetim": [
+    "D-M01"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-024": {
+   "durum": "acik",
+   "faz": 4,
+   "fazEk": [],
+   "fazMetni": "Faz 4",
+   "oncelik": "yüksek",
+   "alan": [
+    "D"
+   ],
+   "baslik": "İçe aktarılan profil ilkel bir değer içeriyorsa oyun bir daha açılmıyor (boot'ta TypeError, oyun içinden kurtarma yok)",
+   "dosya": "js/main.js",
+   "denetim": [
+    "D-M02"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-025": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [],
+   "fazMetni": "Faz 2",
+   "oncelik": "yüksek",
+   "alan": [
+    "E",
+    "B"
+   ],
+   "baslik": "Ambar konuktan tam nesne olarak kabul ediliyor: balıklar siliniyor (v0.4 gerilemesi), son yazan kazanıyor, keyfî eşya giriyor",
+   "dosya": "js/net/net.js",
+   "denetim": [
+    "E-02",
+    "B-M05"
+   ],
+   "ilgili": [
+    "E-M03"
+   ],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-026": {
+   "durum": "acik",
+   "faz": 6,
+   "fazEk": [],
+   "fazMetni": "Faz 6",
+   "oncelik": "yüksek",
+   "alan": [
+    "F"
+   ],
+   "baslik": "Ana hikâye 5. aşamada çıkmaz sokakta bitiyor: metin kalan parçaları mevcut bosslara işaret ediyor ama aradaki bağ, 6–10. aşamalar ve final yok",
+   "dosya": "js/game/quests.js",
+   "denetim": [
+    "F-03"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-027": {
+   "durum": "acik",
+   "faz": 6,
+   "fazEk": [],
+   "fazMetni": "Faz 6",
+   "oncelik": "yüksek",
+   "alan": [
+    "G"
+   ],
+   "baslik": "Kadim Tapınak sunak sandığı erişilemez: 8 m'lik sunak platformunun merdiveni yalnız görsel",
+   "dosya": "js/world/islands.js",
+   "denetim": [
+    "G-03"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-028": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "yüksek",
+   "alan": [
+    "H"
+   ],
+   "baslik": "Kraken dokunacının vuruş hedefi ucun gerisinde (R=38 m'de 8,8–16,9 m, R=30 m'de 6,1–14,2 m): güverteye inen dokunaç kılıçla çoğu durumda kesilemiyor",
+   "dosya": "js/game/bosses.js",
+   "denetim": [
+    "H-01"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-029": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "yüksek",
+   "alan": [
+    "H"
+   ],
+   "baslik": "Art arda (zincir) saldırıda stateT sıfırlanmıyor: Avcı ve dört insan bossun ikinci hamlesi hazırlıksız (0,02–0,05 sn) vuruyor",
+   "dosya": "js/game/enemies.js",
+   "denetim": [
+    "H-M01"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-030": {
+   "durum": "acik",
+   "faz": 3,
+   "fazEk": [],
+   "fazMetni": "Faz 3",
+   "oncelik": "yüksek",
+   "alan": [
+    "I"
+   ],
+   "baslik": "Nişan alırken omuz kamerası sağdaki duvarın içine yerleşiyor; kameradan çıkan tabanca ışını duvar arkasına isabet ediyor",
+   "dosya": "js/player/camera.js",
+   "denetim": [
+    "I-02"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-031": {
+   "durum": "acik",
+   "faz": 9,
+   "fazEk": [],
+   "fazMetni": "Faz 9",
+   "oncelik": "yüksek",
+   "alan": [
+    "K"
+   ],
+   "baslik": "Canlı (varsayılan) dalın pages.yml'si 'claude/**' dallarına yapılan push'larda hâlâ üretim yayın iş akışını tetikliyor",
+   "dosya": ".github/workflows/pages.yml:8 ve 33-52 (claude/hopeful-cray-o1jw6w @ 762f1c7, deponun varsayılan dalı)",
+   "denetim": [
+    "K-02"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": "KNOWN_ISSUES.md durum notu: (yalnız canlı v0.3 dalında; v0.4 dalında giderildi)"
+  },
+  "KI-032": {
+   "durum": "acik",
+   "faz": 9,
+   "fazEk": [],
+   "fazMetni": "Faz 9",
+   "oncelik": "yüksek",
+   "alan": [
+    "K"
+   ],
+   "baslik": "Üretim yayınından önce test ve PR kapısı yok; canlı dal korumasız",
+   "dosya": ".github/workflows/pages.yml:41-52 (depodaki tek iş akışı)",
+   "denetim": [
+    "K-04"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-033": {
+   "durum": "acik",
+   "faz": 9,
+   "fazEk": [],
+   "fazMetni": "Faz 9",
+   "oncelik": "yüksek",
+   "alan": [
+    "K"
+   ],
+   "baslik": "Aynı commit için iki yayıncı var: dal tabanlı Jekyll yayını iş akışı yayınını eziyor",
+   "dosya": "Depo Pages ayarı",
+   "denetim": [
+    "K-05"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-034": {
+   "durum": "acik",
+   "faz": 1,
+   "fazEk": [],
+   "fazMetni": "Faz 1",
+   "oncelik": "orta",
+   "alan": [
+    "A"
+   ],
+   "baslik": "Harita ızgarası isteği reddedilirse açılış düşüyor: initMapBase ve boot hatayı yakalamıyor",
+   "dosya": "js/main.js:109, 388-392",
+   "denetim": [
+    "A-02"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-035": {
+   "durum": "acik",
+   "faz": 1,
+   "fazEk": [],
+   "fazMetni": "Faz 1",
+   "oncelik": "orta",
+   "alan": [
+    "A"
+   ],
+   "baslik": "Hızlı yolculuk işleyicisi test edilmemiş; yeniden girişe ve bekleme sırasındaki durum değişimine korumasız",
+   "dosya": "js/main.js:270-301",
+   "denetim": [
+    "A-03"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-036": {
+   "durum": "acik",
+   "faz": 1,
+   "fazEk": [],
+   "fazMetni": "Faz 1",
+   "oncelik": "orta",
+   "alan": [
+    "A"
+   ],
+   "baslik": "Açılışta genel hata yakalayıcı yok: modül grafiği yüklenemezse yükleme ekranı sonsuza dek 'Rüzgâr bekleniyor…' yazar",
+   "dosya": "index.html:10-12, 20-28, 82-83",
+   "denetim": [
+    "A-04"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-037": {
+   "durum": "acik",
+   "faz": 1,
+   "fazEk": [],
+   "fazMetni": "Faz 1",
+   "oncelik": "orta",
+   "alan": [
+    "A"
+   ],
+   "baslik": "Site verisi (localStorage) engelliyken oyun hiç açılmıyor: boot, save.profile() ve menu.render'da SecurityError ile düşüyor; 'kayıtsız oyna' yedeği ölü kod (v0.3 ve v0.4)",
+   "dosya": "js/main.js:82-93, 114, 388-392",
+   "denetim": [
+    "A-M01"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-038": {
+   "durum": "acik",
+   "faz": 1,
+   "fazEk": [],
+   "fazMetni": "Faz 1",
+   "oncelik": "orta",
+   "alan": [
+    "A",
+    "J"
+   ],
+   "baslik": "Ayar sırası: kayıtlı görüş mesafesi açılışta araziye uygulanmıyor, herhangi bir ayar değişince arazi LOD ön ayarı sıfırlanıyor",
+   "dosya": "js/core/settings.js:63-65; js/core/settings.js",
+   "denetim": [
+    "A-M02",
+    "J-10"
+   ],
+   "ilgili": [
+    "J-09"
+   ],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-039": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [],
+   "fazMetni": "Faz 2",
+   "oncelik": "orta",
+   "alan": [
+    "B",
+    "E"
+   ],
+   "baslik": "Oturum iletileri ('hello', 'app', 'ping') doğrulanmıyor: roster şişiyor, ad temizlenmiyor, bozuk görünüm geç katılan konuğun dünyasını donduruyor",
+   "dosya": "js/net/net.js",
+   "denetim": [
+    "B-15",
+    "B-M06"
+   ],
+   "ilgili": [
+    "E-03"
+   ],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-040": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [],
+   "fazMetni": "Faz 2",
+   "oncelik": "orta",
+   "alan": [
+    "B"
+   ],
+   "baslik": "Protokol sürümü artırılmadı: v0.3 ve v0.4 aynı 'dksh-v1' kimliğiyle birbirine bağlanıyor, yeni iletiler sessizce yutuluyor",
+   "dosya": "js/net/net.js",
+   "denetim": [
+    "B-16"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-041": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [],
+   "fazMetni": "Faz 2",
+   "oncelik": "orta",
+   "alan": [
+    "B",
+    "E"
+   ],
+   "baslik": "Kötü niyetli bağlantıya yaptırım yok: ihlal puanı ve 'tayfayı at' yok; açık odalar 12 öngörülebilir yuvayla sınırlı",
+   "dosya": "js/net/net.js",
+   "denetim": [
+    "B-17",
+    "E-22"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-042": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [],
+   "fazMetni": "Faz 2",
+   "oncelik": "orta",
+   "alan": [
+    "B"
+   ],
+   "baslik": "Konuk ev sahibi iletilerini hiç doğrulamıyor: kötü niyetli ev sahibi konuğun yerel kaydını bozabilir ve XP açılır metniyle XSS çalıştırabilir",
+   "dosya": "js/net/net.js",
+   "denetim": [
+    "B-18"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-043": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [],
+   "fazMetni": "Faz 2",
+   "oncelik": "orta",
+   "alan": [
+    "B"
+   ],
+   "baslik": "Konuk envanteri ve ilerlemesi istemci yetkili: değiştirilmiş konuk kendi altınını, XP'sini ve eşyasını sınırsız yazıp ev sahibinin dünyasına aktarabiliyor",
+   "dosya": "js/main.js",
+   "denetim": [
+    "B-19"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-044": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [],
+   "fazMetni": "Faz 2",
+   "oncelik": "orta",
+   "alan": [
+    "B",
+    "E"
+   ],
+   "baslik": "Altın paylaşım sınırı dürüst büyük satışlarda konuk ve tayfa payını kırpıyor; kırpılan altın yok oluyor",
+   "dosya": "js/net/net.js",
+   "denetim": [
+    "B-M04",
+    "E-19"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-045": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [],
+   "fazMetni": "Faz 2",
+   "oncelik": "orta",
+   "alan": [
+    "B"
+   ],
+   "baslik": "06a/06a2 güvenlik testlerinin iki kontrolü iddia ettiği mekanizmayı sınamıyor: altın bütçesi oran sınırına, '200 KB sohbet' PeerJS'in gönderici sınırına takılıyor; 08 ve 12 bunları geçti sayıyor",
+   "dosya": "tests/scenarios/coop/06a_ag_guvenligi.cjs",
+   "denetim": [
+    "B-M07"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-046": {
+   "durum": "acik",
+   "faz": 3,
+   "fazEk": [],
+   "fazMetni": "Faz 3",
+   "oncelik": "orta",
+   "alan": [
+    "C"
+   ],
+   "baslik": "Döngü gerçek bir sabit adım değil: alt adım boyu kare süresine bağlı (h = dt/n); biriktirici ve ara değerleme yok",
+   "dosya": "js/game/game.js",
+   "denetim": [
+    "C-01"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-047": {
+   "durum": "acik",
+   "faz": 3,
+   "fazEk": [],
+   "fazMetni": "Faz 3",
+   "oncelik": "orta",
+   "alan": [
+    "C"
+   ],
+   "baslik": "Alt adım sayısı kareden kareye gidip geliyor (1e-6 eşiği): 60 Hz'de 1↔2, 30 FPS'te 2↔3, 15 FPS'te 4↔5",
+   "dosya": "js/game/game.js",
+   "denetim": [
+    "C-02"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-048": {
+   "durum": "acik",
+   "faz": 3,
+   "fazEk": [],
+   "fazMetni": "Faz 3",
+   "oncelik": "orta",
+   "alan": [
+    "C"
+   ],
+   "baslik": "lineBlocked yüksekliği tek noktada sınıyor (2,5B): eğik görüş hattında sonuç yöne bağlı ve hatalı",
+   "dosya": "js/world/physics.js",
+   "denetim": [
+    "C-04"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-049": {
+   "durum": "acik",
+   "faz": 3,
+   "fazEk": [],
+   "fazMetni": "Faz 3",
+   "oncelik": "orta",
+   "alan": [
+    "C"
+   ],
+   "baslik": "Gülle statik çarpıştırıcıları (bina, deniz kayalığı, fener, iskele, duvar, ağaç) yok sayıyor",
+   "dosya": "js/game/effects.js",
+   "denetim": [
+    "C-05"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-050": {
+   "durum": "acik",
+   "faz": 3,
+   "fazEk": [],
+   "fazMetni": "Faz 3",
+   "oncelik": "orta",
+   "alan": [
+    "C"
+   ],
+   "baslik": "Görüş ve mermi kuralları tek sistemde değil: gemi gövdesi ve platform güvertesi yalnız kamera için engel, tabanca ışını kameradan çıkıyor, düşman mermisinde oyuncu isabeti engelden önce sınanıyor",
+   "dosya": "js/game/combat.js",
+   "denetim": [
+    "C-06"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-051": {
+   "durum": "acik",
+   "faz": 3,
+   "fazEk": [],
+   "fazMetni": "Faz 3",
+   "oncelik": "orta",
+   "alan": [
+    "C"
+   ],
+   "baslik": "Güverte, dümen ve top kipinde oyuncu gemiden bir alt adım geride konumlanıyor ve gemiye göre titriyor",
+   "dosya": "js/game/game.js",
+   "denetim": [
+    "C-08",
+    "C-M03"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-052": {
+   "durum": "acik",
+   "faz": 3,
+   "fazEk": [],
+   "fazMetni": "Faz 3",
+   "oncelik": "orta",
+   "alan": [
+    "C"
+   ],
+   "baslik": "Ambar doluyken güverteye bırakılan sandık güvertenin içinden denize düşüyor (rijit cisim dünyasında gemi yok)",
+   "dosya": "js/treasure/treasure.js",
+   "denetim": [
+    "C-09"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-053": {
+   "durum": "acik",
+   "faz": 3,
+   "fazEk": [],
+   "fazMetni": "Faz 3",
+   "oncelik": "orta",
+   "alan": [
+    "C"
+   ],
+   "baslik": "Gemi ve kayık iskele, direk ve bina çarpıştırıcılarını yok sayıyor",
+   "dosya": "js/ship/ship.js",
+   "denetim": [
+    "C-10"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-054": {
+   "durum": "acik",
+   "faz": 3,
+   "fazEk": [],
+   "fazMetni": "Faz 3",
+   "oncelik": "orta",
+   "alan": [
+    "C",
+    "I",
+    "G"
+   ],
+   "baslik": "Kamera ve oyuncu ada yapılarının içine giriyor: çarpıştırıcı kutuları görselden küçük, kamera çarpışması yarıçapsız",
+   "dosya": "js/player/camera.js; js/world/islands.js",
+   "denetim": [
+    "C-13",
+    "I-13",
+    "G-13"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-055": {
+   "durum": "acik",
+   "faz": 3,
+   "fazEk": [
+    8
+   ],
+   "fazMetni": "Faz 3 (+Faz 8)",
+   "oncelik": "orta",
+   "alan": [
+    "C",
+    "J"
+   ],
+   "baslik": "Alt adım döngüsü görsel, arayüz ve animasyon işlerini de her alt adımda yapıyor: maliyet alt adım sayısıyla katlanıyor",
+   "dosya": "js/game/game.js",
+   "denetim": [
+    "C-14",
+    "C-M04",
+    "J-26"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-056": {
+   "durum": "acik",
+   "faz": 3,
+   "fazEk": [],
+   "fazMetni": "Faz 3",
+   "oncelik": "orta",
+   "alan": [
+    "C"
+   ],
+   "baslik": "Fizik testlerinin kanıt gücü zayıf: 03_fizik_dt beklenti içermiyor, #6 eski 64 hücre hatasını ayırt etmiyor, istenen test türleri eksik",
+   "dosya": "tests/scenarios/03_fizik_dt.js",
+   "denetim": [
+    "C-18"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-057": {
+   "durum": "acik",
+   "faz": 3,
+   "fazEk": [],
+   "fazMetni": "Faz 3",
+   "oncelik": "orta",
+   "alan": [
+    "C"
+   ],
+   "baslik": "Düşman yapay zekâsındaki çağrı başına (dt'siz) olasılıklar alt adım hızıyla ölçekleniyor; saldırganlık ekran tazeleme hızına bağlı",
+   "dosya": "js/game/enemies.js",
+   "denetim": [
+    "C-M01"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-058": {
+   "durum": "acik",
+   "faz": 3,
+   "fazEk": [],
+   "fazMetni": "Faz 3",
+   "oncelik": "orta",
+   "alan": [
+    "C",
+    "I"
+   ],
+   "baslik": "Tabanca ışını kameradan çıkıyor: oyuncunun arkasındaki düşman vuruluyor, kamera ile oyuncu arasındaki noCam engeller atışı boşa çıkarıyor",
+   "dosya": "js/game/combat.js",
+   "denetim": [
+    "C-M02",
+    "I-M01"
+   ],
+   "ilgili": [
+    "C-06",
+    "I-02"
+   ],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-059": {
+   "durum": "acik",
+   "faz": 4,
+   "fazEk": [],
+   "fazMetni": "Faz 4",
+   "oncelik": "orta",
+   "alan": [
+    "D"
+   ],
+   "baslik": "Kayıt sürümü işlevsiz: v0.3 ve v0.4 aynı 'version: 1' damgasını yazıyor, değer okunmuyor, migrasyon yok; bilinmeyen sürüm sorgusuz yüklenip eski şemayla yeniden yazılıyor",
+   "dosya": "js/game/game.js",
+   "denetim": [
+    "D-05"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-060": {
+   "durum": "acik",
+   "faz": 4,
+   "fazEk": [],
+   "fazMetni": "Faz 4",
+   "oncelik": "orta",
+   "alan": [
+    "D"
+   ],
+   "baslik": "Yükleme sırasında bir sistemin start() istisnası oturumu yarım bırakıyor; otomatik kayıt bu karışık durumu yuvanın üstüne yazıyor",
+   "dosya": "js/game/game.js",
+   "denetim": [
+    "D-06"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-061": {
+   "durum": "acik",
+   "faz": 4,
+   "fazEk": [],
+   "fazMetni": "Faz 4",
+   "oncelik": "orta",
+   "alan": [
+    "D"
+   ],
+   "baslik": "Düşman kampının 'spawned' bayrağı kayıttan geri yükleniyor ama düşmanlar kaydedilmiyor: kampın yakınında kaydedilip yüklenen oyunda kamp boş kalıyor",
+   "dosya": "js/game/enemies.js",
+   "denetim": [
+    "D-07"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-062": {
+   "durum": "acik",
+   "faz": 4,
+   "fazEk": [],
+   "fazMetni": "Faz 4",
+   "oncelik": "orta",
+   "alan": [
+    "D",
+    "G"
+   ],
+   "baslik": "Martı Batığı sandığı kayda yazılmıyor: kaydet-yükle ile sınırsız açılabiliyor",
+   "dosya": "js/wildlife/seagear.js",
+   "denetim": [
+    "D-08",
+    "G-05"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-063": {
+   "durum": "acik",
+   "faz": 4,
+   "fazEk": [],
+   "fazMetni": "Faz 4",
+   "oncelik": "orta",
+   "alan": [
+    "D",
+    "E"
+   ],
+   "baslik": "Konuk ilerlemesi periyodik kaydedilmiyor; eski konuk kaydı daha yeni ilerlemeyi ezebiliyor",
+   "dosya": "js/game/game.js; js/game/progress.js",
+   "denetim": [
+    "D-09",
+    "E-15"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-064": {
+   "durum": "acik",
+   "faz": 4,
+   "fazEk": [],
+   "fazMetni": "Faz 4",
+   "oncelik": "orta",
+   "alan": [
+    "D"
+   ],
+   "baslik": "İçe aktarma ve yuva silme sonrasında bayat oturum/menü verisi diske geri yazılıyor",
+   "dosya": "js/ui/settingsPanel.js",
+   "denetim": [
+    "D-10"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-065": {
+   "durum": "acik",
+   "faz": 4,
+   "fazEk": [],
+   "fazMetni": "Faz 4",
+   "oncelik": "orta",
+   "alan": [
+    "D",
+    "E"
+   ],
+   "baslik": "Çoklu sekme kilidi yok: aynı yuva ya da konuk kaydı iki sekmede birbirini eziyor",
+   "dosya": "js/core/save.js",
+   "denetim": [
+    "D-11",
+    "E-23"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-066": {
+   "durum": "acik",
+   "faz": 4,
+   "fazEk": [],
+   "fazMetni": "Faz 4",
+   "oncelik": "orta",
+   "alan": [
+    "D"
+   ],
+   "baslik": "Yedekleme tek kuşak ve doğrulamasız; kurtarma sessiz; JSON.stringify hata yakalamanın dışında",
+   "dosya": "js/core/save.js",
+   "denetim": [
+    "D-12"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-067": {
+   "durum": "acik",
+   "faz": 5,
+   "fazEk": [],
+   "fazMetni": "Faz 5",
+   "oncelik": "orta",
+   "alan": [
+    "E"
+   ],
+   "baslik": "Ev sahibi sekmesi arka plandayken dünya ve anlık görüntüler donuyor; konuklar uyarılmıyor",
+   "dosya": "js/core/engine.js",
+   "denetim": [
+    "E-07"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-068": {
+   "durum": "acik",
+   "faz": 5,
+   "fazEk": [],
+   "fazMetni": "Faz 5",
+   "oncelik": "orta",
+   "alan": [
+    "E"
+   ],
+   "baslik": "Uzak varlık yumuşatması zaman damgasız ve ara belleksiz: tıkanmada lastik bant etkisi ve ışınlanma oluyor",
+   "dosya": "js/net/net.js",
+   "denetim": [
+    "E-08"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-069": {
+   "durum": "acik",
+   "faz": 5,
+   "fazEk": [],
+   "fazMetni": "Faz 5",
+   "oncelik": "orta",
+   "alan": [
+    "E"
+   ],
+   "baslik": "İlgi alanı yönetimi yok: tüm varlıklar her konuğa aynı sıklıkta ve tam liste olarak gidiyor",
+   "dosya": "js/net/net.js",
+   "denetim": [
+    "E-09"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-070": {
+   "durum": "acik",
+   "faz": 5,
+   "fazEk": [],
+   "fazMetni": "Faz 5",
+   "oncelik": "orta",
+   "alan": [
+    "E"
+   ],
+   "baslik": "Konuk dümende: yelken komutu anlık görüntüyle eziliyor (basışların yarıdan fazlası kayboluyor), dümen bırakılınca dümen açısı ev sahibinde kalıyor",
+   "dosya": "js/ship/ship.js",
+   "denetim": [
+    "E-10"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-071": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [],
+   "fazMetni": "Faz 2",
+   "oncelik": "orta",
+   "alan": [
+    "E"
+   ],
+   "baslik": "Konuğun tersanede yaptığı tam tamir ev sahibine yalnız gövde/delik/su olarak ulaşıyor; direk, top, bölge hasarı ve yangın onarılmıyor ama ücret tam alınıyor",
+   "dosya": "js/net/net.js",
+   "denetim": [
+    "E-12"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-072": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [],
+   "fazMetni": "Faz 2",
+   "oncelik": "orta",
+   "alan": [
+    "E"
+   ],
+   "baslik": "Konuğun 'Batan gemimi kurtar' (600 altın) ve 'Tayfa kirala' (500 altın) işlemleri yalnız yerelde çalışıyor; ödenen altın boşa gidiyor",
+   "dosya": "js/game/events.js",
+   "denetim": [
+    "E-13"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-073": {
+   "durum": "acik",
+   "faz": 5,
+   "fazEk": [],
+   "fazMetni": "Faz 5",
+   "oncelik": "orta",
+   "alan": [
+    "E"
+   ],
+   "baslik": "Ev sahibi ayrılınca açık paneller ve G.uiOpen temizlenmiyor; sonraki oturumda girdi kilitli başlıyor",
+   "dosya": "js/main.js",
+   "denetim": [
+    "E-14"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-074": {
+   "durum": "acik",
+   "faz": 5,
+   "fazEk": [],
+   "fazMetni": "Faz 5",
+   "oncelik": "orta",
+   "alan": [
+    "E"
+   ],
+   "baslik": "Otomatik yeniden bağlanma yok; aynı adla eşleşme ölü kod; dolu odada hayalet yuva; renk çakışması; düşürme nedeni bildirilmiyor",
+   "dosya": "js/net/net.js",
+   "denetim": [
+    "E-16"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-075": {
+   "durum": "acik",
+   "faz": 5,
+   "fazEk": [],
+   "fazMetni": "Faz 5",
+   "oncelik": "orta",
+   "alan": [
+    "E"
+   ],
+   "baslik": "Olaylar ev sahibi merkezli: konuk çevresinde olay çıkmıyor; bildirim, ödül ve XP konuğa ulaşmıyor",
+   "dosya": "js/game/events.js",
+   "denetim": [
+    "E-17"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-076": {
+   "durum": "acik",
+   "faz": 5,
+   "fazEk": [],
+   "fazMetni": "Faz 5",
+   "oncelik": "orta",
+   "alan": [
+    "E",
+    "H"
+   ],
+   "baslik": "Co-op'ta bazı savaş etkileri konuklara uygulanmıyor (gülle ve lav patlaması, zehir, yakalama, geri itme)",
+   "dosya": "js/game/combat.js; js/game/enemies.js",
+   "denetim": [
+    "E-18",
+    "H-17"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-077": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [],
+   "fazMetni": "Faz 2",
+   "oncelik": "orta",
+   "alan": [
+    "E"
+   ],
+   "baslik": "Konuk ambardan balığı yalnız kendi kopyasından alıyor: ev sahibinin ambarı değişmiyor, balık normal oyunda çoğaltılabiliyor",
+   "dosya": "js/ui/panels.js",
+   "denetim": [
+    "E-M03"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-078": {
+   "durum": "acik",
+   "faz": 5,
+   "fazEk": [],
+   "fazMetni": "Faz 5",
+   "oncelik": "orta",
+   "alan": [
+    "E"
+   ],
+   "baslik": "Ganimet kesesinin konumu doğuştan sonra eşitlenmiyor: ev sahibinde sekip suda sürüklenen kese konukta doğduğu yerde kalıyor",
+   "dosya": "js/treasure/treasure.js",
+   "denetim": [
+    "E-M04"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-079": {
+   "durum": "acik",
+   "faz": 6,
+   "fazEk": [
+    4
+   ],
+   "fazMetni": "Faz 6 (+Faz 4)",
+   "oncelik": "orta",
+   "alan": [
+    "F",
+    "D",
+    "H"
+   ],
+   "baslik": "Hikâye bossunun doğuş bayrağı kayda yazılıyor: boss alanının 200 m içinde yüklenen oyunda Morvan ya da Kızıl Hançer doğmuyor",
+   "dosya": "js/game/quests.js",
+   "denetim": [
+    "F-02",
+    "D-17"
+   ],
+   "ilgili": [
+    "H-18"
+   ],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-080": {
+   "durum": "acik",
+   "faz": 6,
+   "fazEk": [
+    5
+   ],
+   "fazMetni": "Faz 6 (+Faz 5)",
+   "oncelik": "orta",
+   "alan": [
+    "F",
+    "H"
+   ],
+   "baslik": "Co-op: hikâye bossu tetikleyicisi yalnız yerel oyuncunun konumuna bakıyor; konukta sahte boss doğup siliniyor",
+   "dosya": "js/game/quests.js",
+   "denetim": [
+    "F-04",
+    "F-M02"
+   ],
+   "ilgili": [
+    "H-18"
+   ],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-081": {
+   "durum": "acik",
+   "faz": 6,
+   "fazEk": [
+    2
+   ],
+   "fazMetni": "Faz 6 (+Faz 2)",
+   "oncelik": "orta",
+   "alan": [
+    "F"
+   ],
+   "baslik": "Co-op 1. aşama: Martı sandığını konuk satarsa hikâye ilerlemiyor ('chestSold' ağda yok)",
+   "dosya": "js/game/quests.js",
+   "denetim": [
+    "F-05",
+    "F-M03"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-082": {
+   "durum": "acik",
+   "faz": 6,
+   "fazEk": [],
+   "fazMetni": "Faz 6",
+   "oncelik": "orta",
+   "alan": [
+    "F"
+   ],
+   "baslik": "1. aşamada Martı sandığını açan oyuncu yönlendirilmiyor; 2. aşama yalnız kapalı sandığın satışıyla açılıyor",
+   "dosya": "js/game/quests.js",
+   "denetim": [
+    "F-07"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-083": {
+   "durum": "acik",
+   "faz": 6,
+   "fazEk": [],
+   "fazMetni": "Faz 6",
+   "oncelik": "orta",
+   "alan": [
+    "F",
+    "H"
+   ],
+   "baslik": "Hikâye ve insan bossları öldürülünce XP vermiyor; tanımlı xp değerleri kullanılmıyor",
+   "dosya": "js/game/progress.js",
+   "denetim": [
+    "F-08",
+    "H-21"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-084": {
+   "durum": "acik",
+   "faz": 5,
+   "fazEk": [
+    6
+   ],
+   "fazMetni": "Faz 5 (+Faz 6)",
+   "oncelik": "orta",
+   "alan": [
+    "F"
+   ],
+   "baslik": "Co-op: konuğun 'öldür' türü yan görevleri (Kemiklerin Huzuru, Kızıl Tehdit) hiç ilerlemiyor; v0.4'te kalıcı konuk kaydı bu görevlerle 4 görev yuvasını kilitliyor",
+   "dosya": "js/game/quests.js",
+   "denetim": [
+    "F-M01"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-085": {
+   "durum": "acik",
+   "faz": 6,
+   "fazEk": [],
+   "fazMetni": "Faz 6",
+   "oncelik": "orta",
+   "alan": [
+    "G"
+   ],
+   "baslik": "6 üretilmiş kazı noktası su altında (atol lagünü/bataklık havuzu): bu hazine haritaları kazılamıyor",
+   "dosya": "js/world/archipelago.js",
+   "denetim": [
+    "G-04"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-086": {
+   "durum": "acik",
+   "faz": 6,
+   "fazEk": [],
+   "fazMetni": "Faz 6",
+   "oncelik": "orta",
+   "alan": [
+    "G"
+   ],
+   "baslik": "Tekrar hissi: 44 yordamsal adacıkta yalnız 3 yapı türü var, tüm dünyada aynı şablonlar kullanılıyor (harabe 22, batık 26, kamp 11, liman 5)",
+   "dosya": "js/world/archipelago.js",
+   "denetim": [
+    "G-06"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-087": {
+   "durum": "acik",
+   "faz": 6,
+   "fazEk": [],
+   "fazMetni": "Faz 6",
+   "oncelik": "orta",
+   "alan": [
+    "G"
+   ],
+   "baslik": "Ada yerleşimi kurulum anındaki arazi LOD'una bağlı: bitki, yapı yönü, NPC adı ve tapınak levye sırası değişebiliyor; co-op'ta iki istemci farklı yerleşim görüyor",
+   "dosya": "js/world/islands.js",
+   "denetim": [
+    "G-07"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-088": {
+   "durum": "acik",
+   "faz": 6,
+   "fazEk": [],
+   "fazMetni": "Faz 6",
+   "oncelik": "orta",
+   "alan": [
+    "G"
+   ],
+   "baslik": "Yeni 5 limanın iskelesinde sudan çıkış merdiveni ve liman barınağı yok",
+   "dosya": "js/world/islands.js",
+   "denetim": [
+    "G-08"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-089": {
+   "durum": "acik",
+   "faz": 6,
+   "fazEk": [],
+   "fazMetni": "Faz 6",
+   "oncelik": "orta",
+   "alan": [
+    "G"
+   ],
+   "baslik": "Karaya oturmuş gemi sandığı gövde çarpıştırıcısının içinde kalabiliyor: batıkların yaklaşık %16'sında 'Sandığı aç' istemi hiç çıkmıyor",
+   "dosya": "js/world/islands.js",
+   "denetim": [
+    "G-M01"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-090": {
+   "durum": "acik",
+   "faz": 5,
+   "fazEk": [],
+   "fazMetni": "Faz 5",
+   "oncelik": "orta",
+   "alan": [
+    "G"
+   ],
+   "baslik": "Co-op: ada içeriği yalnız yerel oyuncunun çevresinde kuruluyor; ev sahibinden uzaktaki konuğun adasında ev sahibi otoriteli düşmanlar duvar ve bina çarpıştırıcısı olmadan çalışıyor, konuğun fıçısı ve kaya tuzağı düşmana işlemiyor",
+   "dosya": "js/world/islands.js",
+   "denetim": [
+    "G-M02"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-091": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "orta",
+   "alan": [
+    "H"
+   ],
+   "baslik": "Taş Muhafız ve Volkanik Dev'in hasarı vuruş animasyonundan sonra geliyor (denetimde 0,4–0,7 sn; Faz 7 ölçümüyle 0,33–0,57 sn)",
+   "dosya": "js/game/bosses.js",
+   "denetim": [
+    "H-02"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-092": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "orta",
+   "alan": [
+    "H"
+   ],
+   "baslik": "Uyarı halkası gerçek hasar alanından küçük: Kraken ezmesi (halka 2,45–2,8 m, hasar 3,4 m), Derinlik Yılanı dalışı (halka 4,5 m, hasar ~6,2 m)",
+   "dosya": "js/game/bosses.js",
+   "denetim": [
+    "H-04"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-093": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "orta",
+   "alan": [
+    "H"
+   ],
+   "baslik": "Kaçınılan ya da engellenen saldırının yan etkileri yine uygulanıyor (Boğulmuş Denizci yavaşlatması, düşman ve boss geri itmesi)",
+   "dosya": "js/game/enemies.js",
+   "denetim": [
+    "H-05"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-094": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "orta",
+   "alan": [
+    "H"
+   ],
+   "baslik": "Saldırgan hayvanların ısırığı uyarısız ve bloklanamıyor; hasar animasyondan önce, görüş hattı ve yön kontrolü olmadan geliyor",
+   "dosya": "js/wildlife/animals.js",
+   "denetim": [
+    "H-06"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-095": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "orta",
+   "alan": [
+    "H"
+   ],
+   "baslik": "Hayalet Nişancı'nın güdümlü küresi kaçınmadan sonra geri dönüp vurabiliyor",
+   "dosya": "js/game/enemies.js",
+   "denetim": [
+    "H-07"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-096": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "orta",
+   "alan": [
+    "H"
+   ],
+   "baslik": "Yakın dövüş ve alan saldırıları duvarın ya da kayanın arkasına geçiyor (düşmandan oyuncuya ve oyuncudan düşmana)",
+   "dosya": "js/game/enemies.js",
+   "denetim": [
+    "H-08"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-097": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "orta",
+   "alan": [
+    "H"
+   ],
+   "baslik": "Düşman hamlelerinde hasar anı animasyonun vuruş karesiyle uyuşmuyor (kesme/doğrama hamleleri 0,13–0,21 sn, DASH 0,33 sn geç; çift bıçak kesiği erken); sersemlik ve insan çağırmasında donuk poz",
+   "dosya": "js/game/enemies.js",
+   "denetim": [
+    "H-09"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-098": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "orta",
+   "alan": [
+    "H"
+   ],
+   "baslik": "Hayalet Kaptan'ın hamle (DASH) saldırısı hiç tetiklenmiyor; verisi de animasyonla uyumsuz",
+   "dosya": "js/game/enemies.js",
+   "denetim": [
+    "H-10"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-099": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "orta",
+   "alan": [
+    "H"
+   ],
+   "baslik": "Nişancının siperi kendi görüş hattını kapatıyor: siperden ateş etmiyor, 2,5 sn sonra hedefi kaybedip araştırmaya çıkıyor",
+   "dosya": "js/game/enemies.js",
+   "denetim": [
+    "H-11"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-100": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "orta",
+   "alan": [
+    "H"
+   ],
+   "baslik": "Kovalayan düşman görüş kesildikten sonra 2,5–6 sn boyunca oyuncunun canlı konumunu izliyor",
+   "dosya": "js/game/enemies.js",
+   "denetim": [
+    "H-12"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-101": {
+   "durum": "acik",
+   "faz": 5,
+   "fazEk": [],
+   "fazMetni": "Faz 5",
+   "oncelik": "orta",
+   "alan": [
+    "H"
+   ],
+   "baslik": "Konuk oyuncuların algı değiştiricileri (meşale, eğilme, mağara, su altı, saldırı) ev sahibi AI'sına ulaşmıyor",
+   "dosya": "js/net/net.js",
+   "denetim": [
+    "H-13"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-102": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [],
+   "fazMetni": "Faz 2",
+   "oncelik": "orta",
+   "alan": [
+    "H"
+   ],
+   "baslik": "F-04: konuk vuruşlarında blok, kaçınma ve dokunulmazlık kararı asimetrik",
+   "dosya": "js/game/enemies.js",
+   "denetim": [
+    "H-14"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-103": {
+   "durum": "acik",
+   "faz": 5,
+   "fazEk": [],
+   "fazMetni": "Faz 5",
+   "oncelik": "orta",
+   "alan": [
+    "H"
+   ],
+   "baslik": "Konukta saldırı uyarıları ve boss ipuçları yok: halkalar, iniş işaretleri, Volkanik Dev'in ateş halkası, lav havuzları, duman, evre ve zayıf nokta bildirimleri",
+   "dosya": "js/game/bosses.js",
+   "denetim": [
+    "H-15"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-104": {
+   "durum": "acik",
+   "faz": 5,
+   "fazEk": [],
+   "fazMetni": "Faz 5",
+   "oncelik": "orta",
+   "alan": [
+    "H"
+   ],
+   "baslik": "Taş Muhafız'ın rün sütunları konukta oluşmuyor; konuk görünmez bir %80 hasar direnciyle savaşıyor",
+   "dosya": "js/game/bosses.js",
+   "denetim": [
+    "H-16"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-105": {
+   "durum": "acik",
+   "faz": 6,
+   "fazEk": [],
+   "fazMetni": "Faz 6",
+   "oncelik": "orta",
+   "alan": [
+    "H"
+   ],
+   "baslik": "Hikâye bossları (Morvan, Kızıl Hançer) her istemcide yerel konuma göre tetikleniyor; kayıttan sonra doğuş bayrağı takılı kalıyor",
+   "dosya": "js/game/quests.js",
+   "denetim": [
+    "H-18"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-106": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "orta",
+   "alan": [
+    "H"
+   ],
+   "baslik": "Gece dalgaları her gece yeniden doğuyor; gündüz kaybolmayan türler (iskelet, Lanetli Muhafız, Hayalet Kaptan) birikiyor",
+   "dosya": "js/game/enemies.js",
+   "denetim": [
+    "H-19"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-107": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "orta",
+   "alan": [
+    "H"
+   ],
+   "baslik": "Hafif vuruş zinciri poise'sız düşmanları sürekli kesiyor (sersemletme kilidi)",
+   "dosya": "js/game/enemies.js",
+   "denetim": [
+    "H-20"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-108": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "orta",
+   "alan": [
+    "H"
+   ],
+   "baslik": "Boss isabet hacimleri ve çarpışmaları görselle uyumsuz: dev bosslar çarpışmasız, hayalet gemi hedefi merkezde ve 6 m yukarıda, Yılan'ın gövdesi vurulamıyor",
+   "dosya": "js/game/bosses.js",
+   "denetim": [
+    "H-22"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-109": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "orta",
+   "alan": [
+    "H"
+   ],
+   "baslik": "Yol bulma yok: büyük ve iç bükey engellerde takılma, yükseltideki oyuncuya ulaşamama, yamaçta dikey ışınlanma, güverte engellerinden geçme",
+   "dosya": "js/game/enemies.js",
+   "denetim": [
+    "H-23"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-110": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "orta",
+   "alan": [
+    "H"
+   ],
+   "baslik": "Boss savaşları ve 13 düşman türü için doğrulayıcı otomatik test yok",
+   "dosya": "tests/scenarios/05_dusman_ai.js",
+   "denetim": [
+    "H-24"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-111": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "orta",
+   "alan": [
+    "H"
+   ],
+   "baslik": "05_dusman_ai 'Saldırı telgrafı' testi vuruş anını ölçmüyor: 'vuruş hazırlıktan önce işlenmez' koşulu her zaman geçiyor",
+   "dosya": "tests/scenarios/05_dusman_ai.js",
+   "denetim": [
+    "H-M02"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-112": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "orta",
+   "alan": [
+    "H"
+   ],
+   "baslik": "Dev bossların animasyon hızı ve yeniden başlatması konuğa iletilmiyor: konukta Jump/Punch/Weapon 1,0 hızla oynuyor, görünen hamle ile hasar arası ~0,5–1,0 sn",
+   "dosya": "js/game/bosses.js",
+   "denetim": [
+    "H-M03"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-113": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "orta",
+   "alan": [
+    "H"
+   ],
+   "baslik": "Derinlik Yılanı'nın zehir topu doğrudan hasar vermiyor: SeaSerpent'te _hitPlayer yok, 12 hasar kimseye uygulanmıyor, konuk hiç etkilenmiyor",
+   "dosya": "js/game/enemies.js",
+   "denetim": [
+    "H-M04"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-114": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "orta",
+   "alan": [
+    "I"
+   ],
+   "baslik": "Yürüme/koşma/sprint klip hızları kliplerin doğal adım hızıyla eşleşmiyor: sürekli ayak kayması",
+   "dosya": "js/player/player.js",
+   "denetim": [
+    "I-01"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-115": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "orta",
+   "alan": [
+    "I"
+   ],
+   "baslik": "Dümen ve top IK hedefleri kol boyunun dışında: eller çarka 0,39–0,53 m, kundağa 0,34–0,37 m kala havada",
+   "dosya": "js/player/player.js",
+   "denetim": [
+    "I-03"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-116": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "orta",
+   "alan": [
+    "I"
+   ],
+   "baslik": "Sandık taşırken eller sandığın içine gömülü; büyük sandık baş üstüne çıkıyor; kaldırma/bırakma animasyonu yok",
+   "dosya": "js/player/character.js",
+   "denetim": [
+    "I-04"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-117": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "orta",
+   "alan": [
+    "I"
+   ],
+   "baslik": "Zıplama klibi fiziksel kalkıştan ~0,19 sn geç: gövde ~1 m havadayken hazırlık çömelmesi oynuyor",
+   "dosya": "js/player/player.js",
+   "denetim": [
+    "I-05"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-118": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "orta",
+   "alan": [
+    "I"
+   ],
+   "baslik": "Kaçınma (ve bazı eylem) kliplerindeki kök hareketi fiziksel yer değiştirmeye ekleniyor; kaçınma sonunda gövde 0,3–0,7 m geri sıçrıyor",
+   "dosya": "js/core/kk.js",
+   "denetim": [
+    "I-06"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-119": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "orta",
+   "alan": [
+    "I"
+   ],
+   "baslik": "Limanda doğuşta kip geçişi tamamlanmıyor: silah/meşale görünmez, dümende ölünce kollar eski çark noktasına kilitli",
+   "dosya": "js/main.js",
+   "denetim": [
+    "I-07"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-120": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "orta",
+   "alan": [
+    "I"
+   ],
+   "baslik": "Yüzme/dalış IK pozu gövde eğimini hesaba katmıyor: kollar omzun gerisinde, bacaklar aşağı sarkık",
+   "dosya": "js/player/character.js",
+   "denetim": [
+    "I-08"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-121": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "orta",
+   "alan": [
+    "I"
+   ],
+   "baslik": "Duran oyuncu saldırı/isabet/fırlatma sırasında hareket girişi verince tam gövde klibi oynarken 2,2 m/sn kayıyor",
+   "dosya": "js/player/player.js",
+   "denetim": [
+    "I-09"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-122": {
+   "durum": "acik",
+   "faz": 8,
+   "fazEk": [],
+   "fazMetni": "Faz 8",
+   "oncelik": "orta",
+   "alan": [
+    "J"
+   ],
+   "baslik": "Karakter örgülerinde görüş konisi ayıklaması kapalı: her NPC/düşman/uzak oyuncu/balıkçı her karede ana ve gölge geçişinde çiziliyor",
+   "dosya": "js/player/character.js",
+   "denetim": [
+    "J-01"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-123": {
+   "durum": "acik",
+   "faz": 8,
+   "fazEk": [],
+   "fazMetni": "Faz 8",
+   "oncelik": "orta",
+   "alan": [
+    "J"
+   ],
+   "baslik": "Çekirdek adaların bitki örtüsü tür başına tek dev InstancedMesh: ayıklama yok, tüm örnekler her karede ana ve gölge geçişinde",
+   "dosya": "js/world/props.js",
+   "denetim": [
+    "J-02"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-124": {
+   "durum": "acik",
+   "faz": 8,
+   "fazEk": [],
+   "fazMetni": "Faz 8",
+   "oncelik": "orta",
+   "alan": [
+    "J"
+   ],
+   "baslik": "Yükleme ekranındaki gölgelendirici ön derlemesi son işleme açıkken yanlış program varyantını derliyor",
+   "dosya": "js/main.js",
+   "denetim": [
+    "J-03"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-125": {
+   "durum": "acik",
+   "faz": 8,
+   "fazEk": [],
+   "fazMetni": "Faz 8",
+   "oncelik": "orta",
+   "alan": [
+    "J"
+   ],
+   "baslik": "Gemi modeli 80 (sloop) / 118 (brigantin) ayrı örgüden oluşuyor ve hepsi gölge atıyor",
+   "dosya": "js/ship/shipModel.js",
+   "denetim": [
+    "J-04"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-126": {
+   "durum": "acik",
+   "faz": 8,
+   "fazEk": [],
+   "fazMetni": "Faz 8",
+   "oncelik": "orta",
+   "alan": [
+    "J"
+   ],
+   "baslik": "Prosedürel hayvanlar parça başına ayrı örgü, geometri ve malzeme kullanıyor; bireyler arası paylaşım yok",
+   "dosya": "js/wildlife/animals.js",
+   "denetim": [
+    "J-05"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-127": {
+   "durum": "acik",
+   "faz": 8,
+   "fazEk": [],
+   "fazMetni": "Faz 8",
+   "oncelik": "orta",
+   "alan": [
+    "J"
+   ],
+   "baslik": "Başlangıç limanında bina/aksesuar başına benzersiz doku ve malzeme: birleştirme 84 örgüde kalıyor",
+   "dosya": "js/world/port.js",
+   "denetim": [
+    "J-06"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-128": {
+   "durum": "acik",
+   "faz": 8,
+   "fazEk": [],
+   "fazMetni": "Faz 8",
+   "oncelik": "orta",
+   "alan": [
+    "J"
+   ],
+   "baslik": "Sahnede sürekli 7 nokta ışığı var; her aydınlatılmış pikselde hepsi hesaplanıyor",
+   "dosya": "js/world/islands.js",
+   "denetim": [
+    "J-07"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-129": {
+   "durum": "acik",
+   "faz": 8,
+   "fazEk": [],
+   "fazMetni": "Faz 8",
+   "oncelik": "orta",
+   "alan": [
+    "J"
+   ],
+   "baslik": "Meşale yakılıp söndürülünce ışık sayısı değişiyor; tüm aydınlatılmış malzemeler yeniden derleniyor",
+   "dosya": "js/player/player.js",
+   "denetim": [
+    "J-08"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-130": {
+   "durum": "acik",
+   "faz": 1,
+   "fazEk": [],
+   "fazMetni": "Faz 1",
+   "oncelik": "orta",
+   "alan": [
+    "J"
+   ],
+   "baslik": "'Gölge kalitesi' seçimi yeniden açılışta uygulanmıyor; harita boyutu grafik kalitesinden geliyor",
+   "dosya": "js/core/settings.js",
+   "denetim": [
+    "J-09"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-131": {
+   "durum": "acik",
+   "faz": 8,
+   "fazEk": [],
+   "fazMetni": "Faz 8",
+   "oncelik": "orta",
+   "alan": [
+    "J"
+   ],
+   "baslik": "Oyun içinde 'Gölge: Kapalı' seçilince malzeme programları yenilenmiyor (gölgeler donuyor, piksel maliyeti sürüyor)",
+   "dosya": "js/core/settings.js",
+   "denetim": [
+    "J-11"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-132": {
+   "durum": "acik",
+   "faz": 8,
+   "fazEk": [],
+   "fazMetni": "Faz 8",
+   "oncelik": "orta",
+   "alan": [
+    "J"
+   ],
+   "baslik": "FPS sınırı yüksek tazeleme hızlı ekranlarda hedefin çok altında kalıyor",
+   "dosya": "js/core/engine.js",
+   "denetim": [
+    "J-12"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-133": {
+   "durum": "acik",
+   "faz": 8,
+   "fazEk": [],
+   "fazMetni": "Faz 8",
+   "oncelik": "orta",
+   "alan": [
+    "J"
+   ],
+   "baslik": "Sis ve hava koşullarından bağımsız çizim mesafesi: tamamen sis rengindeki uzak içerik çiziliyor",
+   "dosya": "js/core/settings.js",
+   "denetim": [
+    "J-13"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-134": {
+   "durum": "acik",
+   "faz": 8,
+   "fazEk": [],
+   "fazMetni": "Faz 8",
+   "oncelik": "orta",
+   "alan": [
+    "J"
+   ],
+   "baslik": "Son işleme açıkken tuval yine 4× MSAA ile oluşturuluyor; varsayılan piksel oranı 2'ye kadar",
+   "dosya": "js/core/engine.js",
+   "denetim": [
+    "J-14"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-135": {
+   "durum": "acik",
+   "faz": 8,
+   "fazEk": [],
+   "fazMetni": "Faz 8",
+   "oncelik": "orta",
+   "alan": [
+    "J"
+   ],
+   "baslik": "Performans ölçüm altyapısı: tek kare, 5 sahne, yalnız SwiftShader, tek gevşek bütçe",
+   "dosya": "tests/scenarios/09_performans.js",
+   "denetim": [
+    "J-15"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-136": {
+   "durum": "acik",
+   "faz": 8,
+   "fazEk": [],
+   "fazMetni": "Faz 8",
+   "oncelik": "orta",
+   "alan": [
+    "J"
+   ],
+   "baslik": "09_performans'ta Volkanik Dev oluştur/kaldır döngüsü geometri +5 ile kalıyor: sızıntı değil ölçüm kusuru (Faz 8 doğrulaması)",
+   "dosya": "tests/scenarios/09_performans.js",
+   "denetim": [
+    "J-16"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-137": {
+   "durum": "acik",
+   "faz": 8,
+   "fazEk": [],
+   "fazMetni": "Faz 8",
+   "oncelik": "orta",
+   "alan": [
+    "J"
+   ],
+   "baslik": "Sonradan görünen içerik (ada, düşman, boss, hayvan, efekt) ilk görüldüğünde gölgelendirici derlemesi",
+   "dosya": "js/world/islands.js",
+   "denetim": [
+    "J-17"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-138": {
+   "durum": "acik",
+   "faz": 8,
+   "fazEk": [],
+   "fazMetni": "Faz 8",
+   "oncelik": "orta",
+   "alan": [
+    "J"
+   ],
+   "baslik": "Harita ayrıntı karosu boyanırken tuvalden geri okuma (getImageData) ana iş parçacığını kilitliyor",
+   "dosya": "js/ui/mapArt.js",
+   "denetim": [
+    "J-18"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-139": {
+   "durum": "acik",
+   "faz": 8,
+   "fazEk": [],
+   "fazMetni": "Faz 8",
+   "oncelik": "orta",
+   "alan": [
+    "J"
+   ],
+   "baslik": "Elde tutulan prosedürel eşyalar (kılıç, tabanca, kürek, olta, zıpkın, ağ, meşale) her hold() çağrısında yeniden kuruluyor; eskisi ve ölen düşmanın silahı GPU'dan hiç bırakılmıyor",
+   "dosya": "js/player/character.js",
+   "denetim": [
+    "J-M01"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-140": {
+   "durum": "acik",
+   "faz": 8,
+   "fazEk": [],
+   "fazMetni": "Faz 8",
+   "oncelik": "orta",
+   "alan": [
+    "J"
+   ],
+   "baslik": "Gemi yeniden kurulumu (rebuild) eski gemi modelini ve delik görsellerini bırakmıyor: her limanda tamirde, görünüm değişikliğinde ve acil direkte tüm model sızıyor",
+   "dosya": "js/ship/ship.js",
+   "denetim": [
+    "J-M02"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-141": {
+   "durum": "acik",
+   "faz": 9,
+   "fazEk": [],
+   "fazMetni": "Faz 9",
+   "oncelik": "orta",
+   "alan": [
+    "K",
+    "A"
+   ],
+   "baslik": "Depodaki kök tek HTML hâlâ v0.3 derlemesi; güncel derleme yalnız git dışındaki dist/'te",
+   "dosya": "DenizKorsanlari-SonHazine.html (kök); DenizKorsanlari-SonHazine.html (depo kökü)",
+   "denetim": [
+    "K-01",
+    "A-01"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-142": {
+   "durum": "acik",
+   "faz": 1,
+   "fazEk": [
+    9
+   ],
+   "fazMetni": "Faz 1 (+Faz 9)",
+   "oncelik": "orta",
+   "alan": [
+    "K"
+   ],
+   "baslik": "workflow_dispatch dal kısıtı olmadan çalışıyor ve deploy işinde ref koruması yok: herhangi bir daldan elle üretime yayın yapılabiliyor",
+   "dosya": ".github/workflows/pages.yml:9, 16-18, 33-52 (v0.3 ve v0.4)",
+   "denetim": [
+    "K-03"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-143": {
+   "durum": "acik",
+   "faz": 1,
+   "fazEk": [
+    9
+   ],
+   "fazMetni": "Faz 1 (+Faz 9)",
+   "oncelik": "orta",
+   "alan": [
+    "K"
+   ],
+   "baslik": "window.DK ve test yardımcıları (DK.sim/tap/press/snap/snapFrom, G.godMode erişimi) üretimde koşulsuz açık",
+   "dosya": "js/main.js:134-153 (v0.3: 133-152)",
+   "denetim": [
+    "K-07"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-144": {
+   "durum": "acik",
+   "faz": 1,
+   "fazEk": [],
+   "fazMetni": "Faz 1",
+   "oncelik": "orta",
+   "alan": [
+    "K"
+   ],
+   "baslik": "Üretimde URL test parametreleri açık: ?peerhost ile sinyal sunucusu yönlendirilebiliyor, ?terrain ile oyun bozuk kipte açılabiliyor",
+   "dosya": "js/net/net.js:49-55 (peerOpts)",
+   "denetim": [
+    "K-08"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-145": {
+   "durum": "acik",
+   "faz": 9,
+   "fazEk": [],
+   "fazMetni": "Faz 9",
+   "oncelik": "orta",
+   "alan": [
+    "K"
+   ],
+   "baslik": "Tek HTML, adı 'assets' ile biten bir klasörde açılırsa hiç açılmıyor (fetch anahtarı URL'deki ilk 'assets/' geçişini alıyor)",
+   "dosya": "tools/build-single-html.mjs:79-85 (prelude key())",
+   "denetim": [
+    "K-09"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-146": {
+   "durum": "kismi",
+   "faz": 1,
+   "fazEk": [
+    9
+   ],
+   "fazMetni": "Faz 1 (+Faz 9)",
+   "oncelik": "orta",
+   "alan": [
+    "K"
+   ],
+   "baslik": "Test koşucusu konsol hatalarını, 404'leri ve başarısız istekleri başarısızlık saymıyor; tek dosya testinde varlık ve ses denetimi yok",
+   "dosya": "tests/harness/run.cjs:40, 44, 96",
+   "denetim": [
+    "K-11"
+   ],
+   "ilgili": [],
+   "commit": "b2748cc",
+   "testler": [
+    "tests/node/kosucu_negatif.mjs:a",
+    "tests/node/kosucu_negatif.mjs:b",
+    "tests/node/kosucu_negatif.mjs:e",
+    "tests/node/kosucu_negatif.mjs:e2"
+   ],
+   "kanit": "docs/v05/kosular/faz1/a1_duzeltme/son/kosucu_negatif.log",
+   "not": "Düzeltilen kısım: koşucu konsol hatalarını, ≥ 400 yanıtları ve başarısız istekleri sayıyor (Faz 1 A1, b2748cc; FIX_REPORT §Faz 1 / KI-146). Kalan: tek dosya testinde gömülü varlık ve ses denetimi — Faz 9 (tasarım §4.6, 55_tek_varlik)."
+  },
+  "KI-147": {
+   "durum": "kismi",
+   "faz": 1,
+   "fazEk": [
+    2,
+    9
+   ],
+   "fazMetni": "Faz 1 (+Faz 2, Faz 9)",
+   "oncelik": "orta",
+   "alan": [
+    "K"
+   ],
+   "baslik": "Onaysız ölçüm betikleri ve açığı kabul eden kontroller belgelerde 'GEÇTİ' olarak görünüyor",
+   "dosya": "tests/scenarios/03_fizik_dt.js (expect yok)",
+   "denetim": [
+    "K-13"
+   ],
+   "ilgili": [],
+   "commit": "b2748cc",
+   "testler": [
+    "tests/node/kosucu_negatif.mjs:c",
+    "tests/node/kosucu_negatif.mjs:d"
+   ],
+   "kanit": "docs/v05/kosular/faz1/a1_duzeltme/son/kosucu_negatif.log",
+   "not": "Düzeltilen kısım: onaysız senaryo KALDI, meta.olcum OLCUM (Faz 1 A1, b2748cc; FIX_REPORT §Faz 1 / KI-147; 03_fizik_dt metasız KALDI: docs/v05/kosular/faz1/once_v04_yeni_kosucu/03_fizik_dt_metasiz_KALDI.log). Kalan: açığı kabul eden kontroller (06a H07) — Faz 2; belgelerdeki eski GEÇTİ kayıtları — Faz 9 (test kataloğu)."
+  },
+  "KI-148": {
+   "durum": "acik",
+   "faz": 5,
+   "fazEk": [],
+   "fazMetni": "Faz 5",
+   "oncelik": "orta",
+   "alan": [
+    "K"
+   ],
+   "baslik": "06c D4-07 kopma kontrolünde önkoşul yok: kapatılan konuk odada olmasa da geçiyor (tabanda boşuna geçti)",
+   "dosya": "tests/scenarios/coop/06c_dort_oyuncu.cjs:53-59",
+   "denetim": [
+    "K-M01"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-149": {
+   "durum": "acik",
+   "faz": 1,
+   "fazEk": [],
+   "fazMetni": "Faz 1",
+   "oncelik": "orta",
+   "alan": [
+    "K"
+   ],
+   "baslik": "02_arazi_yedek etkin arazi kipini doğrulamıyor; Faz 0 tabanı işçisiz kipleri hiç koşmadığı hâlde 'İşçisiz kipler 12/12' kaydediyor",
+   "dosya": "tests/scenarios/02_arazi_yedek.js:1-21",
+   "denetim": [
+    "K-M02"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": "KNOWN_ISSUES.md durum notu: (başlangıç kaydı 8d8fb8a'da düzeltildi ve işçisiz kipler f80f205'te tabana eklendi; senaryonun etkin kipi doğrulamaması açık)"
+  },
+  "KI-150": {
+   "durum": "acik",
+   "faz": 9,
+   "fazEk": [],
+   "fazMetni": "Faz 9",
+   "oncelik": "orta",
+   "alan": [
+    "K"
+   ],
+   "baslik": "Belgeler v0.3 tek dosyasının file:// davranışında çelişiyor: 03:21 ve 04 §4.2c 'yükleme ekranında takılma' diyor, 01:43 ise açıldığını kaydediyor",
+   "dosya": "docs/denetim/03_DEGISIKLIK_LISTESI.md:21",
+   "denetim": [
+    "K-M03"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-151": {
+   "durum": "acik",
+   "faz": 4,
+   "fazEk": [],
+   "fazMetni": "Faz 4",
+   "oncelik": "orta",
+   "alan": [
+    "K"
+   ],
+   "baslik": "Yayından önce v0.3 kayıtlarının v0.4'te yüklenmesini sınayan otomatik test ya da fikstür yok",
+   "dosya": "tests/fixtures/ (yalnız archipelago_v03.json)",
+   "denetim": [
+    "K-M04"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-152": {
+   "durum": "acik",
+   "faz": 1,
+   "fazEk": [],
+   "fazMetni": "Faz 1",
+   "oncelik": "orta",
+   "alan": [
+    "K"
+   ],
+   "baslik": "Oyun döngüsündeki istisnalar console.error'a çevriliyor; koşucular bunu saymadığı için 'sayfa hatası 0' ölçütü döngü hatalarını göremiyor",
+   "dosya": "js/core/engine.js:65-67",
+   "denetim": [
+    "K-M05"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-153": {
+   "durum": "acik",
+   "faz": 1,
+   "fazEk": [],
+   "fazMetni": "Faz 1",
+   "oncelik": "düşük",
+   "alan": [
+    "A"
+   ],
+   "baslik": "Tekrarlanan işçi hatasında iş yerel yedeğe devredilmiyor; kalıcı hatada geri çekilme yok",
+   "dosya": "js/world/terrain.js:95-100, 108, 333, 404",
+   "denetim": [
+    "A-05"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-154": {
+   "durum": "acik",
+   "faz": 1,
+   "fazEk": [],
+   "fazMetni": "Faz 1",
+   "oncelik": "düşük",
+   "alan": [
+    "A"
+   ],
+   "baslik": "Yedek kipte dilim süresini bütçe değil üreteç parça boyutu belirliyor",
+   "dosya": "js/world/terrainGen.js:25, 47, 93, 108",
+   "denetim": [
+    "A-06"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-155": {
+   "durum": "acik",
+   "faz": 1,
+   "fazEk": [],
+   "fazMetni": "Faz 1",
+   "oncelik": "düşük",
+   "alan": [
+    "A"
+   ],
+   "baslik": "Derin deniz karoları 300 m dışında ~3,2 km'ye kadar sahnede kalıyor; LOD eşiklerinde histerezis yok",
+   "dosya": "js/world/terrain.js:19-25, 258-265, 285, 315-319",
+   "denetim": [
+    "A-07"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-156": {
+   "durum": "acik",
+   "faz": 1,
+   "fazEk": [],
+   "fazMetni": "Faz 1",
+   "oncelik": "düşük",
+   "alan": [
+    "A"
+   ],
+   "baslik": "İptal yalnız kuyruktaki karo işlerinde çalışıyor; işçideki, şeritteki ve eski derinlik işleri boşa hesaplanıyor",
+   "dosya": "js/world/terrain.js:95-98, 129-132, 176, 398-404",
+   "denetim": [
+    "A-08"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-157": {
+   "durum": "acik",
+   "faz": 1,
+   "fazEk": [],
+   "fazMetni": "Faz 1",
+   "oncelik": "düşük",
+   "alan": [
+    "A"
+   ],
+   "baslik": "Sonlandırılmış işçinin geç iletisi yeni işçide hayalet iş yuvası bırakabilir",
+   "dosya": "js/world/terrain.js:103-116",
+   "denetim": [
+    "A-09"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-158": {
+   "durum": "acik",
+   "faz": 1,
+   "fazEk": [],
+   "fazMetni": "Faz 1",
+   "oncelik": "düşük",
+   "alan": [
+    "A"
+   ],
+   "baslik": "Oyun başlatma ve kayıt yüklemede prepare beklemesi sırasında G.state 'playing' ama oyuncu yok; geri bildirim yok",
+   "dosya": "js/game/game.js:101-125",
+   "denetim": [
+    "A-10"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-159": {
+   "durum": "acik",
+   "faz": 1,
+   "fazEk": [],
+   "fazMetni": "Faz 1",
+   "oncelik": "düşük",
+   "alan": [
+    "A"
+   ],
+   "baslik": "Sessiz ya da askıda işçi açılışı 8–20 sn geciktiriyor; prepare zaman aşımını bildirmiyor",
+   "dosya": "js/world/terrain.js:27-28, 75, 144, 379-382",
+   "denetim": [
+    "A-11"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-160": {
+   "durum": "acik",
+   "faz": 1,
+   "fazEk": [],
+   "fazMetni": "Faz 1",
+   "oncelik": "düşük",
+   "alan": [
+    "A"
+   ],
+   "baslik": "Örtüşen iki prepare çağrısında, biten eski çağrı yeni odağın süresini 12 sn'ye kısaltıyor",
+   "dosya": "js/world/terrain.js:366-385, 393-395",
+   "denetim": [
+    "A-12"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-161": {
+   "durum": "acik",
+   "faz": 1,
+   "fazEk": [],
+   "fazMetni": "Faz 1",
+   "oncelik": "düşük",
+   "alan": [
+    "A"
+   ],
+   "baslik": "requestGrid önbelleği çözülmüş ham ızgaraları gereksiz yere tutuyor (~35 MB'a kadar)",
+   "dosya": "js/world/terrain.js:410-419",
+   "denetim": [
+    "A-13"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-162": {
+   "durum": "acik",
+   "faz": 1,
+   "fazEk": [],
+   "fazMetni": "Faz 1",
+   "oncelik": "düşük",
+   "alan": [
+    "A"
+   ],
+   "baslik": "Yeniden doğmada uzak limana ya da gemiye arazi hazırlığı yapılmıyor",
+   "dosya": "js/main.js:226-241",
+   "denetim": [
+    "A-14"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-163": {
+   "durum": "acik",
+   "faz": 1,
+   "fazEk": [],
+   "fazMetni": "Faz 1",
+   "oncelik": "düşük",
+   "alan": [
+    "A"
+   ],
+   "baslik": "Kısmi işçi kurulum hatasında yanlış yedek işareti; ölen işçiler hiç yeniden başlatılmıyor",
+   "dosya": "js/world/terrain.js:64-83, 85-101",
+   "denetim": [
+    "A-15"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-164": {
+   "durum": "acik",
+   "faz": 1,
+   "fazEk": [],
+   "fazMetni": "Faz 1",
+   "oncelik": "düşük",
+   "alan": [
+    "A"
+   ],
+   "baslik": "Tek dosyada işçi adresi seçimi yalnız file: protokolüne bakıyor; diğer 'null' kökenli bağlamlar ve Chromium dışı tarayıcılar sınanmadı",
+   "dosya": "tools/build-single-html.mjs:100-103",
+   "denetim": [
+    "A-16"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-165": {
+   "durum": "acik",
+   "faz": 1,
+   "fazEk": [],
+   "fazMetni": "Faz 1",
+   "oncelik": "düşük",
+   "alan": [
+    "A"
+   ],
+   "baslik": "Faz 1 zorunlu testlerinin bir kısmı depoda yok; badurl kipi file:// altında etkisiz; tests/out raporları eski",
+   "dosya": "tests/scenarios/02_arazi_yedek.js, 02_arazi_kurtarma.js, 02_tek_dosya.js",
+   "denetim": [
+    "A-17"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-166": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [],
+   "fazMetni": "Faz 2",
+   "oncelik": "düşük",
+   "alan": [
+    "B"
+   ],
+   "baslik": "'act' iletisinde 'from' alanını konuk belirliyor (broadcast'ın üçüncü argümanı yok sayılıyor) ve alanlar doğrulanmıyor",
+   "dosya": "js/net/net.js",
+   "denetim": [
+    "B-20"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-167": {
+   "durum": "acik",
+   "faz": 2,
+   "fazEk": [],
+   "fazMetni": "Faz 2",
+   "oncelik": "düşük",
+   "alan": [
+    "B"
+   ],
+   "baslik": "KNOWN listesinde işleyicisi olmayan türler ('inter', 'prog') var; 'noise', 'downed', 'marker' ve 'chat' için tür başına oran sınırı yok",
+   "dosya": "js/net/net.js",
+   "denetim": [
+    "B-21"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-168": {
+   "durum": "acik",
+   "faz": 3,
+   "fazEk": [],
+   "fazMetni": "Faz 3",
+   "oncelik": "düşük",
+   "alan": [
+    "C"
+   ],
+   "baslik": "Görüş hattı ve zıpkın süpürmesi oransal uç paylarıyla yapılıyor: ince engeller ve hedefin dibindeki engel yok sayılıyor",
+   "dosya": "js/wildlife/seagear.js; js/game/enemies.js:555",
+   "denetim": [
+    "C-07",
+    "C-M05"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-169": {
+   "durum": "acik",
+   "faz": 3,
+   "fazEk": [],
+   "fazMetni": "Faz 3",
+   "oncelik": "düşük",
+   "alan": [
+    "C"
+   ],
+   "baslik": "Güvertede karakter itişmesi yok: bordalayan düşmanlar oyuncunun içinden geçiyor",
+   "dosya": "js/game/crowd.js",
+   "denetim": [
+    "C-11"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-170": {
+   "durum": "acik",
+   "faz": 3,
+   "fazEk": [],
+   "fazMetni": "Faz 3",
+   "oncelik": "düşük",
+   "alan": [
+    "C"
+   ],
+   "baslik": "Güvertede yalnız direkler engel: toplar, dümen ve ambar kapağı gibi güverte nesnelerinin içinden yürünüyor",
+   "dosya": "js/ship/ship.js",
+   "denetim": [
+    "C-12"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-171": {
+   "durum": "acik",
+   "faz": 3,
+   "fazEk": [],
+   "fazMetni": "Faz 3",
+   "oncelik": "düşük",
+   "alan": [
+    "C"
+   ],
+   "baslik": "Hayvanlar 1,6 m'lik basamakla platformlara ışınlanıyor; yerçekimleri yok",
+   "dosya": "js/wildlife/animals.js",
+   "denetim": [
+    "C-15"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-172": {
+   "durum": "acik",
+   "faz": 3,
+   "fazEk": [],
+   "fazMetni": "Faz 3",
+   "oncelik": "düşük",
+   "alan": [
+    "C"
+   ],
+   "baslik": "Hedefsiz uzak düşmanlar 0,066 ya da 0,25 sn'lik tek adımla güncelleniyor; alt adım korumasını boşa çıkarıp ince engelden geçebiliyor",
+   "dosya": "js/game/enemies.js",
+   "denetim": [
+    "C-16"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-173": {
+   "durum": "acik",
+   "faz": 3,
+   "fazEk": [],
+   "fazMetni": "Faz 3",
+   "oncelik": "düşük",
+   "alan": [
+    "C"
+   ],
+   "baslik": "Oyuncu düşüşünde son hız sınırı ve platform süpürmesi yok: 36 m/s'yi aşan düşüş platformu kaçırıyor",
+   "dosya": "js/player/player.js",
+   "denetim": [
+    "C-17"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-174": {
+   "durum": "acik",
+   "faz": 4,
+   "fazEk": [],
+   "fazMetni": "Faz 4",
+   "oncelik": "düşük",
+   "alan": [
+    "D"
+   ],
+   "baslik": "Kaya tuzağı durumu kaydedilmiyor: ada yeniden kurulunca ve yüklemede tepede, takozuyla yeniden doğuyor",
+   "dosya": "js/world/hazards.js",
+   "denetim": [
+    "D-13"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-175": {
+   "durum": "acik",
+   "faz": 4,
+   "fazEk": [],
+   "fazMetni": "Faz 4",
+   "oncelik": "düşük",
+   "alan": [
+    "D",
+    "B"
+   ],
+   "baslik": "Ganimet keseleri kaydedilmiyor: çanta dolu diye yere bırakılan eşyalar kayıt/yüklemede kayboluyor",
+   "dosya": "js/treasure/treasure.js",
+   "denetim": [
+    "D-14"
+   ],
+   "ilgili": [
+    "B-05"
+   ],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-176": {
+   "durum": "acik",
+   "faz": 4,
+   "fazEk": [],
+   "fazMetni": "Faz 4",
+   "oncelik": "düşük",
+   "alan": [
+    "D"
+   ],
+   "baslik": "Kozmetik kilidi profile anında yazılıyor, altın düşüşü ise ancak sonraki kayıtta kalıcı; kilitler yuvalardan bağımsız",
+   "dosya": "js/economy/shop.js",
+   "denetim": [
+    "D-15"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-177": {
+   "durum": "acik",
+   "faz": 4,
+   "fazEk": [],
+   "fazMetni": "Faz 4",
+   "oncelik": "düşük",
+   "alan": [
+    "D"
+   ],
+   "baslik": "Kayıtta hareket bağlamı kayboluyor: kayıktaki oyuncu suda, kayık gemide başlıyor; seyirdeki gemi dümensiz yol alıyor",
+   "dosya": "js/game/game.js",
+   "denetim": [
+    "D-16"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-178": {
+   "durum": "acik",
+   "faz": 4,
+   "fazEk": [],
+   "fazMetni": "Faz 4",
+   "oncelik": "düşük",
+   "alan": [
+    "D"
+   ],
+   "baslik": "Ana menüdeki 'DEVAM ET' online kayıt yuvasını taşımıyor",
+   "dosya": "js/main.js",
+   "denetim": [
+    "D-18"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-179": {
+   "durum": "acik",
+   "faz": 4,
+   "fazEk": [],
+   "fazMetni": "Faz 4",
+   "oncelik": "düşük",
+   "alan": [
+    "D"
+   ],
+   "baslik": "Açılmış ada sandıkları ve sunak görsel olarak kapalı kalıyor; 'Sandığı aç' istemi sürüyor",
+   "dosya": "js/world/islands.js",
+   "denetim": [
+    "D-19"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-180": {
+   "durum": "acik",
+   "faz": 4,
+   "fazEk": [],
+   "fazMetni": "Faz 4",
+   "oncelik": "düşük",
+   "alan": [
+    "D"
+   ],
+   "baslik": "'Demir Bilek' becerisi olan oyuncunun canı her yüklemede şişiyor (50 → 73 → 106 → 145)",
+   "dosya": "js/game/game.js:130",
+   "denetim": [
+    "D-M03"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-181": {
+   "durum": "acik",
+   "faz": 5,
+   "fazEk": [],
+   "fazMetni": "Faz 5",
+   "oncelik": "düşük",
+   "alan": [
+    "E"
+   ],
+   "baslik": "Kilit isteği reddedilince konuğa bildirilmiyor; reddedilen istek diğer konuklara yine de 'on' olarak yayılıyor",
+   "dosya": "js/net/net.js",
+   "denetim": [
+    "E-11"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-182": {
+   "durum": "acik",
+   "faz": 5,
+   "fazEk": [],
+   "fazMetni": "Faz 5",
+   "oncelik": "düşük",
+   "alan": [
+    "E"
+   ],
+   "baslik": "Uzak oyuncunun görünüm değişikliği, meşalesi ve yaralı düşme bildirimi eşitlenmiyor",
+   "dosya": "js/net/net.js",
+   "denetim": [
+    "E-20"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-183": {
+   "durum": "acik",
+   "faz": 5,
+   "fazEk": [],
+   "fazMetni": "Faz 5",
+   "oncelik": "düşük",
+   "alan": [
+    "E"
+   ],
+   "baslik": "Ev sahibinden uzaktaki konukta buzdağı örgüleri saniyede ~7 kez kurulup siliniyor",
+   "dosya": "js/game/worldEvents.js",
+   "denetim": [
+    "E-21"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-184": {
+   "durum": "acik",
+   "faz": 6,
+   "fazEk": [],
+   "fazMetni": "Faz 6",
+   "oncelik": "düşük",
+   "alan": [
+    "F"
+   ],
+   "baslik": "Hikâye metni ile oyun durumu uyumsuz: Kızıl Hançer yenildikten sonra da düşman gemisi 'Kızıl Hançer'in korsanları'; mektup 'alındı' deniyor ama yerdeki kesede; 4. aşama bildirimi Tuzla'ya yönlendirirken HUD kampı gösteriyor",
+   "dosya": "js/game/events.js",
+   "denetim": [
+    "F-09"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-185": {
+   "durum": "acik",
+   "faz": 6,
+   "fazEk": [],
+   "fazMetni": "Faz 6",
+   "oncelik": "düşük",
+   "alan": [
+    "F"
+   ],
+   "baslik": "Görev panosu sınırlı ve gevşek: 8 sabit şablon tükenince pano kalıcı olarak boşalıyor; konum koşulları sayılmıyor; post görevi postu tüketmiyor; keşif/toplama görevleri kabul anında tamamlanıyor",
+   "dosya": "js/game/quests.js",
+   "denetim": [
+    "F-10"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-186": {
+   "durum": "acik",
+   "faz": 6,
+   "fazEk": [],
+   "fazMetni": "Faz 6",
+   "oncelik": "düşük",
+   "alan": [
+    "F"
+   ],
+   "baslik": "Co-op: hikâye ödül eşyaları (harita parçaları) yalnız ev sahibinin çantasına gidiyor; konuk günlüğü alınca ev sahibinin masasında kitap görünür kalıyor",
+   "dosya": "js/game/quests.js",
+   "denetim": [
+    "F-11"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-187": {
+   "durum": "acik",
+   "faz": 6,
+   "fazEk": [],
+   "fazMetni": "Faz 6",
+   "oncelik": "düşük",
+   "alan": [
+    "G"
+   ],
+   "baslik": "Kızıl Kaya (ada_col_2) otomatik harabesi ve kazı noktası mesa terasında kalıyor: yürüyerek ulaşılamıyor",
+   "dosya": "js/world/archipelago.js",
+   "denetim": [
+    "G-09"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-188": {
+   "durum": "acik",
+   "faz": 6,
+   "fazEk": [],
+   "fazMetni": "Faz 6",
+   "oncelik": "düşük",
+   "alan": [
+    "G"
+   ],
+   "baslik": "Zümrüt Takımadaları bölgesine özgü atmosfer yok (RW.tropik hesaplanıyor ama kullanılmıyor)",
+   "dosya": "js/world/sky.js",
+   "denetim": [
+    "G-10"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-189": {
+   "durum": "acik",
+   "faz": 6,
+   "fazEk": [],
+   "fazMetni": "Faz 6",
+   "oncelik": "düşük",
+   "alan": [
+    "G"
+   ],
+   "baslik": "Mercan resifi, yosun, kabuk/istiridye ve kumsal ayrıntıları yalnız 6 çekirdek adada var",
+   "dosya": "js/world/details.js",
+   "denetim": [
+    "G-11"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-190": {
+   "durum": "acik",
+   "faz": 6,
+   "fazEk": [],
+   "fazMetni": "Faz 6",
+   "oncelik": "düşük",
+   "alan": [
+    "G"
+   ],
+   "baslik": "Serbest bırakılan tutsağın 0,35 m'lik çarpıştırıcısı ada boşaltılana kadar hücrede kalıyor",
+   "dosya": "js/game/npcs.js",
+   "denetim": [
+    "G-12"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-191": {
+   "durum": "acik",
+   "faz": 8,
+   "fazEk": [],
+   "fazMetni": "Faz 8",
+   "oncelik": "düşük",
+   "alan": [
+    "G"
+   ],
+   "baslik": "Büyük adalarda bitki örtüsü 7 000 örnek sınırı nedeniyle seyreliyor (Kadim Tapınak'ta istenen yoğunluğun %26'sı)",
+   "dosya": "js/world/islands.js",
+   "denetim": [
+    "G-14"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-192": {
+   "durum": "acik",
+   "faz": 6,
+   "fazEk": [],
+   "fazMetni": "Faz 6",
+   "oncelik": "düşük",
+   "alan": [
+    "G"
+   ],
+   "baslik": "Ada açıklamaları ve özellik bayrakları oyunda karşılıksız (Mercan Halkası 'batık sandıklarla dolu', Gizli Pazar 'yalnızca geceleri kurulan', Gümüş Madeni 'ocakların derinliği', mini/undead bayrakları)",
+   "dosya": "js/world/archipelago.js",
+   "denetim": [
+    "G-15"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-193": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "düşük",
+   "alan": [
+    "H"
+   ],
+   "baslik": "Derinlik Yılanı dalış sonunda ~21 m ışınlanıyor ve gövde izi kopuyor; Kraken'de arazi kontrolü yok",
+   "dosya": "js/game/bosses.js",
+   "denetim": [
+    "H-25"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-194": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "düşük",
+   "alan": [
+    "H"
+   ],
+   "baslik": "Lanetli Amiral geri çekilince güvertedeki Amiral ve hayalet tayfa kalıyor; boss yeniden bordalayabiliyor",
+   "dosya": "js/game/bosses.js",
+   "denetim": [
+    "H-26"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-195": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "düşük",
+   "alan": [
+    "H"
+   ],
+   "baslik": "Hayalet düşmanlar birbirinden ayrışmıyor; oyuncu ve NPC'lerle de itişmiyor",
+   "dosya": "js/game/enemies.js",
+   "denetim": [
+    "H-27"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-196": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "düşük",
+   "alan": [
+    "H"
+   ],
+   "baslik": "Dokunulmaz düşmana (hayalet fazı, iskelet kalkışı) vuruşta sahte isabet geri bildirimi; konukta boss vuruşu her zaman 'hit' dönüyor",
+   "dosya": "js/game/combat.js",
+   "denetim": [
+    "H-28"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-197": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "düşük",
+   "alan": [
+    "H"
+   ],
+   "baslik": "Volkanik Dev'in ganimeti lav gölüne düşebilir",
+   "dosya": "js/game/bosses.js",
+   "denetim": [
+    "H-29"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-198": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "düşük",
+   "alan": [
+    "H"
+   ],
+   "baslik": "Kuşatma ve yana kayma sırasında ileri yürüme/koşu animasyonu oynuyor (ayak kayması)",
+   "dosya": "js/game/enemies.js",
+   "denetim": [
+    "H-30"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-199": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "düşük",
+   "alan": [
+    "I"
+   ],
+   "baslik": "Bazı tam gövde eylemleri klip bitmeden Idle'a kesiliyor; iki saldırıda vuruş anı salınımla örtüşmüyor",
+   "dosya": "js/game/combat.js",
+   "denetim": [
+    "I-10"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-200": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "düşük",
+   "alan": [
+    "I"
+   ],
+   "baslik": "Kip geçişinde üst katman durduruluyor ama eylem sürüyor: kalan süre boyunca taban klibi donuyor",
+   "dosya": "js/player/player.js",
+   "denetim": [
+    "I-11"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-201": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "düşük",
+   "alan": [
+    "I"
+   ],
+   "baslik": "Eğimli zemin ayak IK'sı hiç etkin değil (ik.ground atanmıyor)",
+   "dosya": "js/player/character.js",
+   "denetim": [
+    "I-12"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-202": {
+   "durum": "acik",
+   "faz": 3,
+   "fazEk": [],
+   "fazMetni": "Faz 3",
+   "oncelik": "düşük",
+   "alan": [
+    "I"
+   ],
+   "baslik": "Güverte topları, ambar kapağı, çapa ve fener ne kamera çarpışmasında ne de yakın-kamera silinmesinde",
+   "dosya": "js/ship/shipModel.js",
+   "denetim": [
+    "I-14"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-203": {
+   "durum": "acik",
+   "faz": 5,
+   "fazEk": [],
+   "fazMetni": "Faz 5",
+   "oncelik": "düşük",
+   "alan": [
+    "I"
+   ],
+   "baslik": "Uzak oyuncu animasyonu eksik eşitleniyor: oynatma hızı, çömelme/su içinde durma/tırmanma/olta pozları ve dümen IK'sı gönderilmiyor",
+   "dosya": "js/net/net.js",
+   "denetim": [
+    "I-15"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-204": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "düşük",
+   "alan": [
+    "I"
+   ],
+   "baslik": "Ragdoll'dan kalkışta ilk karelerde karakter ayakta görünüp yere yatıyor (poz ve konum sıçraması)",
+   "dosya": "js/player/character.js",
+   "denetim": [
+    "I-16"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-205": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "düşük",
+   "alan": [
+    "I"
+   ],
+   "baslik": "Kazı animasyonu yere değmiyor ve toprak efekti klibe bağlı değil; sol el kürekte değil",
+   "dosya": "js/treasure/treasure.js",
+   "denetim": [
+    "I-17"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-206": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "düşük",
+   "alan": [
+    "I"
+   ],
+   "baslik": "Sandık açma, onarım, yangın söndürme, su boşaltma ve ganimet toplamada karakter animasyonu yok",
+   "dosya": "js/game/interact.js",
+   "denetim": [
+    "I-18"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-207": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "düşük",
+   "alan": [
+    "I"
+   ],
+   "baslik": "Güvertede ölen oyuncunun ragdoll'u dünya uzayında: gemi ilerlerken ceset güverteden kayıp denize düşüyor",
+   "dosya": "js/player/player.js",
+   "denetim": [
+    "I-19"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-208": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "düşük",
+   "alan": [
+    "I"
+   ],
+   "baslik": "Tabanca namlu alevi elden bağımsız sabit bir noktadan çıkıyor",
+   "dosya": "js/game/combat.js",
+   "denetim": [
+    "I-20"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-209": {
+   "durum": "acik",
+   "faz": 7,
+   "fazEk": [],
+   "fazMetni": "Faz 7",
+   "oncelik": "düşük",
+   "alan": [
+    "I"
+   ],
+   "baslik": "Güvertede animasyon hızı gerçek yer değiştirmeden değil girişten alınıyor: küpeşteye/direğe doğru yerinde koşma",
+   "dosya": "js/player/player.js",
+   "denetim": [
+    "I-21"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-210": {
+   "durum": "acik",
+   "faz": 8,
+   "fazEk": [],
+   "fazMetni": "Faz 8",
+   "oncelik": "düşük",
+   "alan": [
+    "J"
+   ],
+   "baslik": "Duraklatma menüsü, ana menü ve tam ekran paneller açıkken tam sahne çizimi sürüyor",
+   "dosya": "js/core/engine.js",
+   "denetim": [
+    "J-19"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-211": {
+   "durum": "acik",
+   "faz": 8,
+   "fazEk": [],
+   "fazMetni": "Faz 8",
+   "oncelik": "düşük",
+   "alan": [
+    "J"
+   ],
+   "baslik": "Parçacık sistemi: parçacık başına nesne ayırma, O(n) kaydırma/silme, her güncellemede 900'lük tamponun tamamı yükleniyor ve çiziliyor",
+   "dosya": "js/game/effects.js",
+   "denetim": [
+    "J-20"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-212": {
+   "durum": "acik",
+   "faz": 8,
+   "fazEk": [],
+   "fazMetni": "Faz 8",
+   "oncelik": "düşük",
+   "alan": [
+    "J"
+   ],
+   "baslik": "Deniz olayı yüzen nesneleri (şişe, gök taşı, kazazede salı) kaldırılınca geometri/malzeme bırakılmıyor",
+   "dosya": "js/game/events.js",
+   "denetim": [
+    "J-21"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-213": {
+   "durum": "acik",
+   "faz": 8,
+   "fazEk": [],
+   "fazMetni": "Faz 8",
+   "oncelik": "düşük",
+   "alan": [
+    "J"
+   ],
+   "baslik": "Karakter renk atlası önbelleği (FIFO 96) kullanılan dokuyu da bırakabiliyor",
+   "dosya": "js/core/kk.js",
+   "denetim": [
+    "J-22"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-214": {
+   "durum": "acik",
+   "faz": 8,
+   "fazEk": [],
+   "fazMetni": "Faz 8",
+   "oncelik": "düşük",
+   "alan": [
+    "J"
+   ],
+   "baslik": "Kalıcı sahnede birleştirilmemiş/örneklenmemiş küçük nesneler (toplanabilir kabuklar, mezarlar, harabeler, sarkıtlar, deniz kayalıkları)",
+   "dosya": "js/world/details.js",
+   "denetim": [
+    "J-23"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-215": {
+   "durum": "acik",
+   "faz": 8,
+   "fazEk": [],
+   "fazMetni": "Faz 8",
+   "oncelik": "düşük",
+   "alan": [
+    "J"
+   ],
+   "baslik": "Bulut katmanı ayıklamasız ve yüksek ayrıntılı (tam kapalı gökte ~151 K üçgen); sis sprite'ları ayrı malzemeli",
+   "dosya": "js/world/weatherfx.js",
+   "denetim": [
+    "J-24"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-216": {
+   "durum": "acik",
+   "faz": 8,
+   "fazEk": [],
+   "fazMetni": "Faz 8",
+   "oncelik": "düşük",
+   "alan": [
+    "J"
+   ],
+   "baslik": "Gölge haritası mağarada, su altında ve derin gecede de her kare çiziliyor; texel hizalama ve kaskad yok",
+   "dosya": "js/world/sky.js",
+   "denetim": [
+    "J-25"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-217": {
+   "durum": "acik",
+   "faz": 8,
+   "fazEk": [],
+   "fazMetni": "Faz 8",
+   "oncelik": "düşük",
+   "alan": [
+    "J"
+   ],
+   "baslik": "Kare başına çöp üreten ayırmalar (gökyüzü, hava efektleri, dümen suyu, yelken normalleri, odak listeleri)",
+   "dosya": "js/world/sky.js",
+   "denetim": [
+    "J-27"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-218": {
+   "durum": "acik",
+   "faz": 8,
+   "fazEk": [],
+   "fazMetni": "Faz 8",
+   "oncelik": "düşük",
+   "alan": [
+    "J"
+   ],
+   "baslik": "Yakın-kamera silinmesi tüm bitki/karakter/aksesuar malzemelerine discard ekliyor; erken derinlik testi kapanıyor",
+   "dosya": "js/core/nearfade.js",
+   "denetim": [
+    "J-28"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-219": {
+   "durum": "acik",
+   "faz": 8,
+   "fazEk": [],
+   "fazMetni": "Faz 8",
+   "oncelik": "düşük",
+   "alan": [
+    "J"
+   ],
+   "baslik": "Ada kurulumunda bölünemeyen tek adım 10–12 ms sürüyor (3 ms bütçenin 3–4 katı)",
+   "dosya": "js/world/islands.js",
+   "denetim": [
+    "J-29"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-220": {
+   "durum": "acik",
+   "faz": 8,
+   "fazEk": [],
+   "fazMetni": "Faz 8",
+   "oncelik": "düşük",
+   "alan": [
+    "J"
+   ],
+   "baslik": "NPC, balıkçı ve yakın hayvanlarda mesafeye bağlı animasyon/güncelleme seyreltmesi yok",
+   "dosya": "js/game/npcs.js",
+   "denetim": [
+    "J-30"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-221": {
+   "durum": "acik",
+   "faz": 8,
+   "fazEk": [],
+   "fazMetni": "Faz 8",
+   "oncelik": "düşük",
+   "alan": [
+    "J"
+   ],
+   "baslik": "Efekt kalitesi her değiştiğinde UnrealBloomPass'in 11 HalfFloat hedefi bırakılmıyor (1080p'de ~15 MB, 2880×1800'de ~38 MB)",
+   "dosya": "js/core/post.js:60-76 (setQuality",
+   "denetim": [
+    "J-M03"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-222": {
+   "durum": "acik",
+   "faz": 8,
+   "fazEk": [],
+   "fazMetni": "Faz 8",
+   "oncelik": "düşük",
+   "alan": [
+    "J"
+   ],
+   "baslik": "Uzak oyuncunun ad etiketi sprite'ı ve CanvasTexture'ı bırakılmıyor",
+   "dosya": "js/net/net.js:75-85, 125 (RemotePlayer._label / dispose)",
+   "denetim": [
+    "J-M04"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-223": {
+   "durum": "acik",
+   "faz": 9,
+   "fazEk": [],
+   "fazMetni": "Faz 9",
+   "oncelik": "düşük",
+   "alan": [
+    "K"
+   ],
+   "baslik": "Pages artifact'i tüm depoyu yüklüyor (path: .)",
+   "dosya": ".github/workflows/pages.yml:48-50",
+   "denetim": [
+    "K-06"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-224": {
+   "durum": "acik",
+   "faz": 9,
+   "fazEk": [],
+   "fazMetni": "Faz 9",
+   "oncelik": "düşük",
+   "alan": [
+    "K"
+   ],
+   "baslik": "Tek HTML'de (file://) davet bağlantısı yerel dosya yolunu paylaşıyor",
+   "dosya": "js/ui/menu.js:266, 353",
+   "denetim": [
+    "K-10"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-225": {
+   "durum": "duzeltildi",
+   "faz": 1,
+   "fazEk": [],
+   "fazMetni": "Faz 1",
+   "oncelik": "düşük",
+   "alan": [
+    "K"
+   ],
+   "baslik": "coop.cjs adım istisnalarını yutuyor; konsol uyarıları kaydedilmiyor",
+   "dosya": "tests/harness/coop.cjs:34, 53, 61",
+   "denetim": [
+    "K-12"
+   ],
+   "ilgili": [],
+   "commit": "b2748cc",
+   "testler": [
+    "tests/node/kosucu_negatif.mjs:f",
+    "tests/node/kosucu_negatif.mjs:g",
+    "tests/node/kosucu_negatif.mjs:r",
+    "tests/node/kosucu_negatif.mjs:aa",
+    "tests/node/kosucu_negatif.mjs:ac",
+    "tests/node/kosucu_negatif.mjs:ai"
+   ],
+   "kanit": "docs/v05/kosular/faz1/a1_duzeltme/son/kosucu_negatif.log",
+   "not": "FIX_REPORT.md §Faz 1 / KI-225; KNOWN_ISSUES.md 'Kapanan maddeler' (Faz 1 Adım A1 (Y1), b2748cc). Alanlar 5479e3b sürümünden (madde ana tablodan çıkarıldı)."
+  },
+  "KI-226": {
+   "durum": "acik",
+   "faz": 9,
+   "fazEk": [],
+   "fazMetni": "Faz 9",
+   "oncelik": "düşük",
+   "alan": [
+    "K"
+   ],
+   "baslik": "tests/README'deki tek dosya komutu kökteki bayat (v0.3) dosyayı sınatıyor",
+   "dosya": "tests/README.md:33-36",
+   "denetim": [
+    "K-14"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-227": {
+   "durum": "acik",
+   "faz": 9,
+   "fazEk": [],
+   "fazMetni": "Faz 9",
+   "oncelik": "düşük",
+   "alan": [
+    "K"
+   ],
+   "baslik": "Derleme ve test bağımlılıklarının sürümleri sabitlenmemiş (package.json ve kilit dosyası yok)",
+   "dosya": "README.md:18",
+   "denetim": [
+    "K-15"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-228": {
+   "durum": "acik",
+   "faz": 9,
+   "fazEk": [],
+   "fazMetni": "Faz 9",
+   "oncelik": "düşük",
+   "alan": [
+    "K"
+   ],
+   "baslik": "esbuild uyarıları derlemeyi durdurmuyor: IIFE çıktısında import.meta sessizce boşaltılıyor",
+   "dosya": "tools/build-single-html.mjs:32-38",
+   "denetim": [
+    "K-16"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-229": {
+   "durum": "acik",
+   "faz": 9,
+   "fazEk": [],
+   "fazMetni": "Faz 9",
+   "oncelik": "düşük",
+   "alan": [
+    "K"
+   ],
+   "baslik": "README ve eski belgeler v0.4 dalında bayat ve kodla çelişiyor",
+   "dosya": "README.md:8, 101-102, 126, 153",
+   "denetim": [
+    "K-17"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-230": {
+   "durum": "acik",
+   "faz": 9,
+   "fazEk": [],
+   "fazMetni": "Faz 9",
+   "oncelik": "düşük",
+   "alan": [
+    "K"
+   ],
+   "baslik": "Pages 'check' işi 200 dışındaki her yanıtta yayını sessizce atlıyor ve koşu yeşil kalıyor",
+   "dosya": ".github/workflows/pages.yml:21-35",
+   "denetim": [
+    "K-18"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-231": {
+   "durum": "acik",
+   "faz": 9,
+   "fazEk": [],
+   "fazMetni": "Faz 9",
+   "oncelik": "düşük",
+   "alan": [
+    "K"
+   ],
+   "baslik": "Tek HTML derlemesi üçüncü taraf lisans notlarını siliyor",
+   "dosya": "tools/build-single-html.mjs:35 (legalComments: 'none'), 63 (.txt dosyaları dışlanıyor)",
+   "denetim": [
+    "K-19"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-232": {
+   "durum": "acik",
+   "faz": 9,
+   "fazEk": [],
+   "fazMetni": "Faz 9",
+   "oncelik": "düşük",
+   "alan": [
+    "K"
+   ],
+   "baslik": "Tek HTML katı kipi (strict mode) düşürüyor; dil anlamı modüler sürümden farklı",
+   "dosya": "tools/build-single-html.mjs:32-38, 118-123",
+   "denetim": [
+    "K-20"
+   ],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": null
+  },
+  "KI-233": {
+   "durum": "acik",
+   "faz": 5,
+   "fazEk": [],
+   "fazMetni": "Faz 5",
+   "oncelik": "orta",
+   "alan": [
+    "E"
+   ],
+   "baslik": "4 oyunculu co-op'ta bir konuk oyun başlarken menüye düşüyor (kararsız): 06c D4-02 tabanda ['playing','menu','playing','playing'], diğer oyuncular yalnız 2 uzak oyuncu görüyor; katılma isteği yeniden denenmiyor, kök neden kanıtlanmadı (şüpheli yol: hostLeft)",
+   "dosya": "js/net/net.js (join, hostLeft); tests/scenarios/coop/06c_dort_oyuncu.cjs",
+   "denetim": [],
+   "ilgili": [
+    "K-M01"
+   ],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": "Denetim kimliği yok; kaynak: Taban koşusu (docs/v05/taban_kosusu_44d548c/coop_06c.json, 2/7)"
+  },
+  "KI-234": {
+   "durum": "acik",
+   "faz": 1,
+   "fazEk": [],
+   "fazMetni": "Faz 1",
+   "oncelik": "orta",
+   "alan": [
+    "A"
+   ],
+   "baslik": "İşçiler çalışma sırasında çökerse uzak bölge hazırlığı 28,8 sn sürüyor (normal kipte 0,6 sn, işçisiz kipte 1,6 sn); hızlı yolculuk ve uzak ada yüklemesi 45 sn sınırına yaklaşıyor",
+   "dosya": "js/world/terrain.js (prepare, _workerFailed, kuyruk)",
+   "denetim": [],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": "Denetim kimliği yok; kaynak: Ana oturum ölçümü, 14 Kasım 2026: 02_arazi_yedek `?terrain=crash` (docs/v05/taban_kosusu_44d548c/02_arazi_yedek_crash.json, prepMs 28 771); kök neden henüz bili"
+  }
+ }
+}

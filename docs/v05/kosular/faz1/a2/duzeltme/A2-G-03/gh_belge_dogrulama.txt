@@ -1,0 +1,8 @@
+# GitHub Actions belgesi (github/docs main, raw.githubusercontent.com) 2026-11-14T14:07:59Z — A2 düzeltici bağımsız doğrulama
+67-  > [!NOTE]
+68:  > * {% data variables.product.company_short %} ignores case when comparing strings.
+69-  > * `steps.<step_id>.outputs.<output_name>` evaluates as a string. {% data reusables.actions.expressions-syntax-evaluation %} For more information, see [AUTOTITLE](/actions/reference/workflows-and-actions/contexts#steps-context).
+--
+83-* When `NaN` is one of the operands of any relational comparison (`>`, `<`, `>=`, `<=`), the result is always `false`. For more information, see the [NaN Mozilla docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN).
+84:* {% data variables.product.prodname_dotcom %} ignores case when comparing strings.
+85-* Objects and arrays are only considered equal when they are the same instance.

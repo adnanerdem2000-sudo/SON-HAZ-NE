@@ -1,0 +1,57 @@
+ready in 5.2 s
+R: {"adres":"http://localhost:8080/index.html?test=1","dk":"object","durum":"yok","isaret":null}
+FAIL TK01 Test kipinde DK var: 49 alan + 5 yardımcı + mod/audio/__sayac (fazlası yok); __dkDurum().test === true → {"dk":"object","alan":49,"eksik":[],"yardimci":5,"ek":{"audio":"undefined","mod":"undefined","__sayac":"object"},"fazla":[],"test":"__dkDurum yok","isaret":null}
+FAIL TK01b __dkDurum() salt-okur tanı: 13 alan, yalnız ilkel değerler, dondurulmuş yeni nesne; sürüm 0.5.0, katı kip → {"hata":"__dkDurum yok"}
+FAIL TK01c Test kipinde kancalar modülü (js/test/kancalar.js) yüklendi → 0
+FAIL TK06 DK.mod aynı modül örneğini verir: economy/shop MERCHANTS === import() ile gelen; 14 kayıtlı adın hepsi aynı ad alanı nesnesi → {"hata":"DK.mod yok","dk":"object"}
+FAIL TK06b DK.mod bilinmeyen adda açık hata atar (ad iletide) → {"hata":"DK.mod yok"}
+FAIL TK01d DK.__sayac sim/press/tap çağrılarını sayar (press içindeki iki sim dahil); dönüş değerleri tabanla aynı → {"simDonus":3,"simFark":1,"adimFark":3,"pressDonus":"undefined","pressSonrasiSim":3,"pressSonrasiAdim":7,"press":1,"tapDonus":"undefined","tap":1,"anahtarlar":["adim","frames","press","sim","simSteps","tap"]}
+GOTO http://localhost:8080/index.html
+R: {"adres":"http://localhost:8080/index.html","dk":"object","durum":"yok","kip":""}
+FAIL TK02 Test parametresiz açılış: DK yok, __ready, __dkDurum().test === false, menü görünür → {"dk":"object","hazir":true,"test":"__dkDurum yok","menu":true,"isaret":"undefined"}
+PASS TK02b Test kipsiz açılışta js/test/ altından hiçbir dosya istenmedi → 0
+ROTA https://0.peerjs.com → /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a2fix/agaclar/v04/.yok-53-sahte-sinyal
+ROTA https://kotu.ornek → /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a2fix/agaclar/v04/.yok-53-sahte-sinyal
+ROTA http://10.9.9.9:9000 → /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a2fix/agaclar/v04/.yok-53-sahte-sinyal
+GOTO http://localhost:8080/index.html?join=ABCDEF&terrain=crash&peerhost=10.9.9.9&peerport=9000
+HTTP 404 http://10.9.9.9:9000/peerjs/id?ts=17946689009680.7831350676183804&version=1.5.5
+ERR: Failed to load resource: the server responded with a status of 404 (Not Found)
+R: {"adres":"http://localhost:8080/index.html?join=ABCDEF&terrain=crash&peerhost=10.9.9.9&peerport=9000","dk":"object","durum":"yok","kip":"crash","isci":0,"yedek":true}
+FAIL TK03 Test kipi yok: ?terrain=crash ve ?peerhost=10.9.9.9 yok sayılır (araziKip boş, işçi ≥ 1, sinyal varsayılan) → {"hata":"__dkDurum yok","dk":"object","kip":"crash"}
+PASS TK03a Davet bağlantısı (?join) katılma ekranını açtı; oda taraması kendiliğinden sinyal sunucusuna bağlanmayı deneyip bitti → {"katilmaEkrani":true,"taramaBitti":true}
+FAIL TK03b Test kipi yokken ?peerhost=10.9.9.9 adresine hiçbir istek gitmedi (K-08 uçtan uca) → 1
+FAIL TK03c Oda taramasının sinyal isteği varsayılan PeerJS sunucusuna gitti → 0
+GOTO http://localhost:8080/index.html?test=1&terrain=noworker&peerhost=127.0.0.1&peerport=9000
+R: {"adres":"http://localhost:8080/index.html?test=1&terrain=noworker&peerhost=127.0.0.1&peerport=9000","dk":"object","durum":"yok","kip":"noworker","yedek":true}
+FAIL TK04 Test kipinde ?terrain=noworker ve ?peerhost=127.0.0.1 uygulanır (yedek açık, sinyal 127.0.0.1:9000) → {"hata":"__dkDurum yok","dk":"object","kip":"noworker"}
+GOTO http://localhost:8080/index.html?test=1&join=ABCDEF&peerhost=10.9.9.9&peerport=9000
+HTTP 404 http://10.9.9.9:9000/peerjs/id?ts=17946689194160.29177390834748784&version=1.5.5
+ERR: Failed to load resource: the server responded with a status of 404 (Not Found)
+DEGISKEN tk08ilk = {"sinyal":"__dkDurum yok","test":null}
+PASS TK08a Test kipinde davet bağlantısı katılma ekranını açtı; oda taraması kendiliğinden sinyal sunucusuna bağlanmayı deneyip bitti → {"katilmaEkrani":true,"taramaBitti":true}
+FAIL TK08b Test kipinde de geri döngü dışı peerhost (10.9.9.9) hiç istek almadı (K9-20 uçtan uca) → 1
+FAIL TK08c Oda taramasının sinyal isteği varsayılan PeerJS sunucusuna gitti → 0
+GOTO http://localhost:8080/index.html?test=1&peerhost=127.0.0.1&peerport=9000
+FAIL TK08 Test kipinde peerhost=10.9.9.9 yok sayılır (varsayılan), peerhost=127.0.0.1 kabul edilir (127.0.0.1:9000) → {"ilk":"__dkDurum yok","ilkTest":null,"ikinci":"__dkDurum yok","ikinciTest":null}
+DEGISKEN agacOzeti = {"css/style.css":"b2d9b02df43c2f784f17468b","index.html":"6516e5a34068bdf0224cc7d9","js/core/assets.js":"c2d7246d967fc2c800c10cf6","js/core/audio.js":"65b8b9274f670f07d8e33d62","js/core/batch.js":"264
+ROTA https://oyun.ornek → /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a2fix/agaclar/v04
+GOTO https://oyun.ornek/index.html?join=ABCDEF&test=1&peerhost=kotu.ornek&peerport=443&peersecure=1&terrain=crash
+HTTP 404 https://kotu.ornek/peerjs/id?ts=17946689395370.890038912822903&version=1.5.5
+ERR: Failed to load resource: the server responded with a status of 404 (Not Found)
+R: {"adres":"https://oyun.ornek/index.html?join=ABCDEF&test=1&peerhost=kotu.ornek&peerport=443&peersecure=1&terrain=crash","guvenli":true,"dk":"object","durum":"yok","kip":"crash","isci":0,"yedek":true}
+FAIL TK05 Yerel olmayan https kökeninde ?test=1&peerhost=kotu.ornek&terrain=crash: DK yok, test kipi kapalı, araziKip boş, sinyal varsayılan → {"hata":"__dkDurum yok","koken":"https://oyun.ornek","dk":"object","kip":"crash"}
+PASS TK05a Davet bağlantısı (?join) katılma ekranını açtı; oda taraması kendiliğinden sinyal sunucusuna bağlanmayı deneyip bitti → {"katilmaEkrani":true,"taramaBitti":true}
+PASS TK05b Yerel olmayan kökende js/test/ altından hiçbir dosya istenmedi → 0
+FAIL TK05c Saldırganın sinyal sunucusuna (kotu.ornek) hiçbir istek gitmedi (K-08 bağlantı saldırısı uçtan uca) → 1
+FAIL TK05d Oda taramasının sinyal isteği varsayılan PeerJS sunucusuna gitti → 0
+PASS TK05e Ön koşul: sahte kökenler (rotaKok dizini = çalışma dizini) --url ile aynı ağacı sunuyor: sayfanın yüklediği en az 20 .js/.html/.css dosyasının SHA-256 özeti eşit (eşit değilse TK05 ve TK09 başka bir ağacı sınamış olur) → {"yeterli":true,"farkli":[]}
+ROTA http://localhost:47913 → /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a2fix/agaclar/v04
+ROTA http://localhost:47913/js/test → /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a2fix/agaclar/v04/.yok-53-sahte-sinyal
+GOTO http://localhost:47913/index.html?test=1
+FAIL TK09 Test kipinde kancalar.js yüklenemezse (404) açılış hatası görünür yükleme ekranında kalır: menü açılmaz, __ready yazılmaz, DK yok → {"yukleme":false,"hataGorunur":false,"kancaAdi":false,"menu":true,"hazir":true,"dk":"object","test":"__dkDurum yok"}
+FAIL TK09b Test kipindeki sahte yerel kökende kancalar.js gerçekten istendi (ve 404 aldı) → 0
+errors: 3 pageErrors: 0 fails: 19 (77.0 s)
+IZINSIZ AG ×1: 404 http://10.9.9.9:9000/peerjs/id?ts=17946689009680.7831350676183804&version=1.5.5
+IZINSIZ AG ×1: 404 http://10.9.9.9:9000/peerjs/id?ts=17946689194160.29177390834748784&version=1.5.5
+IZINSIZ AG ×1: 404 https://kotu.ornek/peerjs/id?ts=17946689395370.890038912822903&version=1.5.5
+SONUC: KALDI (çıkış 1) kontrol 6/25, onay 25 | izinsiz konsol 0, ağ 3 | izinli konsol 0, ağ 0 | uyarı 7 farklı/281 | neden: başarısız kontrol ya da adım: 19; izinsiz ağ hatası (≥ 400 yanıt ya da başarısız istek): 3

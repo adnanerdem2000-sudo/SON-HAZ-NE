@@ -1,0 +1,343 @@
+{
+ "scenario": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a2_guvenlik/k08_uctan_uca.js",
+ "url": "http://localhost:8095/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "rotaKok": {
+    "kok": "https://0.peerjs.com",
+    "dizin": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a2_guvenlik/bos"
+   },
+   "ms": 14
+  },
+  {
+   "n": 2,
+   "label": null,
+   "rotaKok": {
+    "kok": "https://kotu.ornek",
+    "dizin": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a2_guvenlik/bos"
+   },
+   "ms": 0
+  },
+  {
+   "n": 3,
+   "label": null,
+   "rotaKok": {
+    "kok": "https://oyun.ornek",
+    "dizin": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a2_guvenlik/mutant_k08"
+   },
+   "ms": 1
+  },
+  {
+   "n": 4,
+   "label": null,
+   "goto": {
+    "url": "https://oyun.ornek/index.html?join=ABCDEF&test=1&peerhost=kotu.ornek&peerport=443&peersecure=1&terrain=crash"
+   },
+   "ms": 9587
+  },
+  {
+   "n": 5,
+   "label": null,
+   "expect": {
+    "label": "GD01a (TK05 ile aynı tanı onayı) DK yok, test kipi kapalı, araziKip boş, __dkDurum().sinyal varsayılan",
+    "ok": true,
+    "value": {
+     "koken": "https://oyun.ornek",
+     "guvenli": true,
+     "dk": "undefined",
+     "test": false,
+     "araziKip": "",
+     "sinyal": "varsayilan"
+    }
+   },
+   "ms": 29
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "GD01b Davet bağlantısı katılma ekranını açtı ve oda taraması (sinyal sunucusuna bağlantı) kendiliğinden çalışıp bitti",
+    "ok": true,
+    "value": {
+     "katilmaEkrani": true,
+     "taramaBitti": true
+    }
+   },
+   "ms": 5
+  },
+  {
+   "n": 7,
+   "label": null,
+   "agSay": {
+    "label": "GD02 Saldırganın sinyal sunucusuna (kotu.ornek) hiçbir istek gitmedi (K-08 uçtan uca)",
+    "ok": false,
+    "value": 1
+   },
+   "ms": 3747
+  },
+  {
+   "n": 8,
+   "label": null,
+   "agSay": {
+    "label": "GD03 Tarama isteği varsayılan PeerJS sunucusuna gitti",
+    "ok": false,
+    "value": 0
+   },
+   "ms": 2
+  }
+ ],
+ "errors": [
+  "Failed to load resource: the server responded with a status of 404 (Not Found)"
+ ],
+ "pageErrors": [],
+ "fails": 2,
+ "evalErrors": 0,
+ "readyMs": 5981,
+ "ms": 24030,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "../k08_uctan_uca.js",
+ "meta": {
+  "testler": [],
+  "dosyalar": [
+   "js/core/testmode.js",
+   "js/net/net.js",
+   "js/main.js",
+   "js/world/terrain.js"
+  ],
+  "aciklama": "Faz 1 A2 güvenlik incelemesi: test kipi atlatma denemeleri ve K-08/K9-20 uçtan uca",
+  "izinliHatalar": [
+   {
+    "desen": "0\\.peerjs\\.com/peerjs/",
+    "tur": "hepsi",
+    "gerekce": "Varsayılan PeerJS bulut sunucusu bu koşuda rotaKok ile boş bir yerel dizine bağlandı: /peerjs/id 404 döner ve CORS başlığı olmadığı için tarayıcı konsola CORS/yükleme hatası yazar. Bu istek, davet bağlantısının tarama isteğinin saldırgana değil varsayılan sunucuya gittiğinin kanıtıdır (GD03, GE03)."
+   }
+  ]
+ },
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8095/index.html?test=1",
+  "verilenUrl": "http://localhost:8095/index.html",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "29315b5c24bfc89ae51a6a156de961b98b08fb15",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T13:37:08.761Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a2_guvenlik/k08_uctan_uca.js --url http://localhost:8095/index.html --size 640x360 --timeout 520 --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a2/inceleme/guvenlik/R4_k08_uctan_uca_mutant_k08.json",
+  "cwd": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a2_guvenlik/mutant_k08",
+  "sunucular": [
+   "statik sunucu http://localhost:8095 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8095"
+  ],
+  "commit": "29315b5c24bfc89ae51a6a156de961b98b08fb15-kirli",
+  "senaryoSha256": "382891c883904e6bf37700d06066b06833900a86f09939054098fd35d67af91d",
+  "adim": {
+   "n": 7,
+   "js": "agSay ^[a-z]+://kotu\\.ornek[:/]"
+  },
+  "url": "http://localhost:8095/index.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 5,
+   "id": "GD01a",
+   "etiket": "GD01a (TK05 ile aynı tanı onayı) DK yok, test kipi kapalı, araziKip boş, __dkDurum().sinyal varsayılan",
+   "ok": true,
+   "deger": {
+    "koken": "https://oyun.ornek",
+    "guvenli": true,
+    "dk": "undefined",
+    "test": false,
+    "araziKip": "",
+    "sinyal": "varsayilan"
+   },
+   "beklenen": {
+    "eq": {
+     "koken": "https://oyun.ornek",
+     "guvenli": true,
+     "dk": "undefined",
+     "test": false,
+     "araziKip": "",
+     "sinyal": "varsayilan"
+    }
+   },
+   "sure_ms": 15,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 6,
+   "id": "GD01b",
+   "etiket": "GD01b Davet bağlantısı katılma ekranını açtı ve oda taraması (sinyal sunucusuna bağlantı) kendiliğinden çalışıp bitti",
+   "ok": true,
+   "deger": {
+    "katilmaEkrani": true,
+    "taramaBitti": true
+   },
+   "beklenen": {
+    "eq": {
+     "katilmaEkrani": true,
+     "taramaBitti": true
+    }
+   },
+   "sure_ms": 4,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 7,
+   "id": "GD02",
+   "etiket": "GD02 Saldırganın sinyal sunucusuna (kotu.ornek) hiçbir istek gitmedi (K-08 uçtan uca)",
+   "ok": false,
+   "deger": 1,
+   "beklenen": {
+    "enCok": 0
+   },
+   "sure_ms": 0,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": "istek sayısı 1, sınır {\"enCok\":0}",
+   "goruntu": {
+    "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/k08_uctan_uca_2026-11-14T13-37-08-605Z_17199/ilk_kalan.png",
+    "tuval": null
+   }
+  },
+  {
+   "n": 8,
+   "id": "GD03",
+   "etiket": "GD03 Tarama isteği varsayılan PeerJS sunucusuna gitti",
+   "ok": false,
+   "deger": 0,
+   "beklenen": {
+    "enAz": 1
+   },
+   "sure_ms": 0,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": "istek sayısı 0, sınır {\"enAz\":1}",
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 1,
+  "sayfa": [],
+  "ag": [
+   {
+    "oyuncu": null,
+    "tur": "yanit",
+    "url": "https://kotu.ornek/peerjs/id?ts=17946634462380.08337717810508005&version=1.5.5",
+    "durum": 404,
+    "metin": "Not Found",
+    "kaynakTuru": "fetch",
+    "sayi": 1
+   }
+  ],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8095/vendor/three/three.core.js",
+   "sayi": 66
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8095/vendor/three/three.core.js",
+   "sayi": 2
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 2,
+  "toplam": 68,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  },
+  {
+   "desen": "0\\.peerjs\\.com/peerjs/",
+   "gerekce": "Varsayılan PeerJS bulut sunucusu bu koşuda rotaKok ile boş bir yerel dizine bağlandı: /peerjs/id 404 döner ve CORS başlığı olmadığı için tarayıcı konsola CORS/yükleme hatası yazar. Bu istek, davet bağlantısının tarama isteğinin saldırgana değil varsayılan sunucuya gittiğinin kanıtıdır (GD03, GE03).",
+   "tur": "hepsi",
+   "kaynak": "meta",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [
+  {
+   "ad": "ilk_kalan",
+   "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/k08_uctan_uca_2026-11-14T13-37-08-605Z_17199/ilk_kalan.png",
+   "tuval": null
+  }
+ ],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 410,
+ "sonuc": {
+  "durum": "KALDI",
+  "cikisKodu": 1,
+  "neden": [
+   "başarısız kontrol ya da adım: 2",
+   "izinsiz ağ hatası (≥ 400 yanıt ya da başarısız istek): 1"
+  ],
+  "onaySayisi": 4,
+  "kontrolSayisi": 4,
+  "gecen": 2,
+  "kalan": 2,
+  "izinsizKonsol": 0,
+  "izinsizAg": 1,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": "tarayici",
+  "turSayim": {
+   "tarayici": 4
+  }
+ },
+ "sure": {
+  "hazirMs": 5981,
+  "toplamMs": 24030,
+  "yerlesmeMs": 1000
+ }
+}

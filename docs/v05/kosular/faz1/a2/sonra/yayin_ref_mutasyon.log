@@ -1,0 +1,35 @@
+# yayin_ref.mjs mutasyon sınaması (2026-11-14T10:01:24+00:00): her satırda Y9a sonrası pages.yml'nin bir kopyası tek bir yerde bozulur.
+# betik:
+#   #!/bin/bash
+#   # yayin_ref.mjs mutasyon sınaması: pages.yml'nin bir kopyası bozulur, araç --dosya ile o kopyaya karşı koşar.
+#   W=/home/user/SON-HAZ-NE-w2; S=$(dirname "$0")
+#   kos() { local ad=$1 bek=$2; shift 2
+#     cp $W/.github/workflows/pages.yml $S/p.yml; ( cd $S && eval "$@" )
+#     local c; c=$(node $W/tests/node/yayin_ref.mjs --dosya $S/p.yml 2>&1); local rc=$?
+#     local k; k=$(echo "$c" | grep '^SONUC' | sed 's/.*kalan: //'); local k2=",${k// /},"
+#     if [[ $bek == "-" ]]; then echo "$ad | çıkış $rc | $(echo "$c" | grep '^SONUC') | beklenen GECTI: $([[ $rc -eq 0 ]] && echo EVET || echo HAYIR)"; return; fi
+#     echo "$ad | çıkış $rc | kalan: $k | beklenen $bek kaldı: $([[ $rc -eq 1 && "$k2" == *",$bek,"* ]] && echo EVET || echo HAYIR)"; }
+#   kos Y0_degisiklik_yok - "true"
+#   kos Y1_ref_yazim_hatasi YR3 "sed -i \"s#github.ref == 'refs/heads/#github.ref == 'refs/head/#\" p.yml"
+#   kos Y2_veya_kosulu YR3 "sed -i \"s#== 'true' && github.ref#== 'true' || github.ref#\" p.yml"
+#   kos Y3_kabuk_adimi_yok YR4 "sed -i '/# Ref denetimi/,/exit 1; }/d' p.yml"
+#   kos Y4_kabuk_hep_gecer YR4 "sed -i 's/exit 1; }/exit 0; }/' p.yml"
+#   kos Y5_kabuk_adimi_atlanabilir YR4 "sed -i 's/      - name: Ref denetimi (yalnız yayın dalı yayınlanır)/      - name: Ref denetimi (yalnız yayın dalı yayınlanır)\n        if: false/' p.yml"
+#   kos Y6_iptal_true YR5 "sed -i 's/cancel-in-progress: false/cancel-in-progress: true/' p.yml"
+#   kos Y7_tetikleyici_eklendi YR1 "sed -i \"s/  workflow_dispatch:/  workflow_dispatch:\n  pull_request:/\" p.yml"
+#   kos Y8_dal_eklendi YR1 "sed -i \"s/branches: \[main, master, 'claude\/hopeful-cray-o1jw6w'\]/branches: [main, master, 'claude\/hopeful-cray-o1jw6w', 'claude\/**']/\" p.yml"
+#   kos Y9_is_eklendi YR2 "printf '\n  ek:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo x\n' >> p.yml"
+#   kos Y10_baska_satir YR7 "sed -i 's/      - uses: actions\/configure-pages@v5/      - uses: actions\/configure-pages@v4/' p.yml"
+#   kos Y11_betikte_ifade YR4 "sed -i 's/refs\/heads\/\$YAYIN_DALI\"/refs\/heads\/\${{ github.event.inputs.dal }}\"/' p.yml"
+Y0_degisiklik_yok | çıkış 0 | SONUC: GECTI (8/8 denetim) | beklenen GECTI: EVET
+Y1_ref_yazim_hatasi | çıkış 1 | kalan: YR3, YR7 | beklenen YR3 kaldı: EVET
+Y2_veya_kosulu | çıkış 1 | kalan: YR3, YR7 | beklenen YR3 kaldı: EVET
+Y3_kabuk_adimi_yok | çıkış 1 | kalan: YR4 | beklenen YR4 kaldı: EVET
+Y4_kabuk_hep_gecer | çıkış 1 | kalan: YR4 | beklenen YR4 kaldı: EVET
+Y5_kabuk_adimi_atlanabilir | çıkış 1 | kalan: YR4 | beklenen YR4 kaldı: EVET
+Y6_iptal_true | çıkış 1 | kalan: YR5 | beklenen YR5 kaldı: EVET
+Y7_tetikleyici_eklendi | çıkış 1 | kalan: YR1, YR7 | beklenen YR1 kaldı: EVET
+Y8_dal_eklendi | çıkış 1 | kalan: YR1, YR7 | beklenen YR1 kaldı: EVET
+Y9_is_eklendi | çıkış 1 | kalan: YR2, YR7 | beklenen YR2 kaldı: EVET
+Y10_baska_satir | çıkış 1 | kalan: YR6, YR7 | beklenen YR7 kaldı: EVET
+Y11_betikte_ifade | çıkış 1 | kalan: YR4 | beklenen YR4 kaldı: EVET

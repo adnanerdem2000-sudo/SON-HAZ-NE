@@ -1,0 +1,103 @@
+{
+ "adres": "http://127.0.0.1:8096/index.html",
+ "basla": "2026-11-14T14:28:13.475Z",
+ "durumlar": {
+  "F1_kancalar_404": {
+   "konsolHata": [
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "TypeError: Failed to fetch dynamically imported module: http://127.0.0.1:8096/js/test/kancalar.js"
+   ],
+   "sayfaHata": [],
+   "istek4xx": [
+    "404 http://127.0.0.1:8096/js/test/kancalar.js"
+   ],
+   "sonuclanmaMs": 5953,
+   "ic": {
+    "hazir": "undefined",
+    "dk": "undefined",
+    "menu": true,
+    "yukleme": false,
+    "yukText": "Oyun başlatılamadı: Failed to fetch dynamically imported module: http://127.0.0.1:8096/js/test/kancalar.jsWebGL destekli güncel bir tarayıcı (Chrome, Edge, Firefox) gerekiyor.",
+    "yukGorunur": false,
+    "durum": {
+     "surum": "0.5.0",
+     "derleme": "gelistirme",
+     "hazir": false,
+     "test": true,
+     "kati": true,
+     "tekDosya": false,
+     "isci": 3,
+     "yedek": false,
+     "isciHata": 0,
+     "araziKip": "",
+     "eksikVarlik": 0,
+     "kk": true,
+     "sinyal": "varsayilan"
+    }
+   }
+  },
+  "F2_kancalar_sozdizimi": {
+   "konsolHata": [
+    "SyntaxError: Unexpected token ';'"
+   ],
+   "sayfaHata": [],
+   "istek4xx": [],
+   "sonuclanmaMs": 5242,
+   "ic": {
+    "hazir": "undefined",
+    "dk": "undefined",
+    "menu": true,
+    "yukleme": false,
+    "yukText": "Oyun başlatılamadı: Unexpected token ';'WebGL destekli güncel bir tarayıcı (Chrome, Edge, Firefox) gerekiyor.",
+    "yukGorunur": false,
+    "durum": {
+     "surum": "0.5.0",
+     "derleme": "gelistirme",
+     "hazir": false,
+     "test": true,
+     "kati": true,
+     "tekDosya": false,
+     "isci": 3,
+     "yedek": false,
+     "isciHata": 0,
+     "araziKip": "",
+     "eksikVarlik": 0,
+     "kk": true,
+     "sinyal": "varsayilan"
+    }
+   }
+  },
+  "F3_kancalar_install_istisna": {
+   "konsolHata": [
+    "Error: sonda: install istisnasi\n    at install (http://127.0.0.1:8096/js/test/kancalar.js:2:35)\n    at boot (http://127.0.0.1:8096/js/main.js:148:5)"
+   ],
+   "sayfaHata": [],
+   "istek4xx": [],
+   "sonuclanmaMs": 4922,
+   "ic": {
+    "hazir": "undefined",
+    "dk": "undefined",
+    "menu": true,
+    "yukleme": false,
+    "yukText": "Oyun başlatılamadı: sonda: install istisnasiWebGL destekli güncel bir tarayıcı (Chrome, Edge, Firefox) gerekiyor.",
+    "yukGorunur": false,
+    "durum": {
+     "surum": "0.5.0",
+     "derleme": "gelistirme",
+     "hazir": false,
+     "test": true,
+     "kati": true,
+     "tekDosya": false,
+     "isci": 3,
+     "yedek": false,
+     "isciHata": 0,
+     "araziKip": "",
+     "eksikVarlik": 0,
+     "kk": true,
+     "sinyal": "varsayilan"
+    }
+   }
+  }
+ },
+ "bitis": "2026-11-14T14:28:44.316Z"
+}

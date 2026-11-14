@@ -1,0 +1,47 @@
+#!/bin/bash
+# A2 düzeltici: test_kipi.mjs karşıt mutasyon sınaması (iki inceleyicinin mutasyonları aynen; G = güvenlik, M = uyumluluk,
+# K08 = güvenlik incelemesinin K-08 mutantı). Her mutasyon js/'nin ayrı bir kopyasında yapılır.
+#   tk_mutasyon.sh <test_kipi.mjs yolu> <taban js dizini> <çıktı günlüğü>
+# Her satır: mutasyon | aracın çıkışı | SONUC satırı | (varsa) KALDI kimlikleri | fark (mutasyonun uygulandığının kanıtı)
+ARAC=$1; JS=$2; OUT=$3
+S=$(dirname "$(readlink -f "$0")")
+TABAN_MAIN=$S/taban_main.js
+W=/home/user/SON-HAZ-NE-w2
+: > "$OUT"
+echo "# test_kipi mutasyon sınaması $(date -u +%FT%TZ) | araç: $ARAC (sha256 $(sha256sum "$ARAC" | cut -c1-12)) | taban js: $JS" >> "$OUT"
+kos() { # ad, komut (kopyanın kökünde koşar)
+  local ad=$1; shift
+  local K=$S/mut/$ad
+  rm -rf "$K" && mkdir -p "$K" && cp -r "$JS" "$K/js" && ln -s "$(dirname "$JS")/vendor" "$K/vendor"   # SN denetimi gerçek PeerJS dosyasını okur
+  ( cd "$K" && eval "$@" ) || { echo "$ad | MUTASYON UYGULANAMADI" >> "$OUT"; return; }
+  local fark; fark=$(diff -r "$JS" "$K/js" | grep '^>' | head -2 | cut -c1-160 | tr '\n' ' ')
+  if [ "$ad" != "G0_M0_degisiklik_yok" ] && [ -z "$fark" ]; then echo "$ad | MUTASYON UYGULANMADI (fark yok)" >> "$OUT"; return; fi
+  local cikti; cikti=$(node "$ARAC" --agac "$K" --taban-main "$TABAN_MAIN" 2>&1); local rc=$?
+  local kalan; kalan=$(echo "$cikti" | grep '^KALDI' | cut -d' ' -f2 | tr '\n' ',' | sed 's/,$//')
+  echo "$ad | çıkış $rc | $(echo "$cikti" | grep '^SONUC') | KALDI: ${kalan:-yok} | fark: $fark" >> "$OUT"
+}
+kos G0_M0_degisiklik_yok "true"
+# ---- güvenlik incelemesi (tk_mutasyon.sh.txt) aynen
+kos G1_terrain_href "sed -i \"s#this.mode = TEST ? (window.__DK_TERRAIN_MODE || testParam('terrain') || '') : '';#this.mode = new URL(location.href).searchParams.get('terrain') || '';#\" js/world/terrain.js"
+kos G2_peerhost_documentURL "sed -i \"s#  const s = testSinyali();#  const u = new URL(document.URL).searchParams; const s = u.get('peerhost') ? { host: u.get('peerhost'), port: +(u.get('peerport') || 443), path: '/', secure: true } : testSinyali();#\" js/net/net.js"
+kos G3_location_koseli "sed -i \"s#  const s = testSinyali();#  const q = new URLSearchParams(location['search']); const s = q.get('peerhost') ? { host: q.get('peerhost'), port: 443, path: '/', secure: true } : testSinyali();#\" js/net/net.js"
+kos G4_DK_TERRAIN_MODE_kosulsuz "sed -i \"s#this.mode = TEST ? (window.__DK_TERRAIN_MODE || testParam('terrain') || '') : '';#this.mode = window.__DK_TERRAIN_MODE || testParam('terrain') || '';#\" js/world/terrain.js"
+kos G5_TEST_anlamsiz_kosul "sed -i 's/if (TEST) {/if (TEST !== undefined) {/g' js/main.js"
+kos G6_geri_dongu_yok "sed -i \"s#  if (!h || !GERI_DONGU.has(h)) return null;#  if (!h) return null;#\" js/net/net.js"
+kos G7_object_assign_DK "sed -i \"1a Object.assign(window, { DK: { G: 1 } });\" js/game/game.js"
+kos K08_mutant_documentURL "node $S/mutant_uygula.mjs js/net/net.js >/dev/null"
+# ---- uyumluluk incelemesi (mutasyon.sh) aynen: dosya sonuna tek satır (BAS: ile başa)
+ekle() { # dosya, satır
+  if [[ "$2" == BAS:* ]]; then printf '%s\n' "${2#BAS:}" | cat - "js/$1" > tmp_m && mv tmp_m "js/$1"; else printf '\n%s\n' "$2" >> "js/$1"; fi
+}
+kos M1_opsiyonel_zincir "ekle ui/hud.js 'export function _m1() { return window?.DK?.G; }'"
+kos M2_yikici_atama "ekle ui/hud.js 'export function _m2() { const { DK } = window; return DK && DK.G; }'"
+kos M3_top_DK "ekle ui/hud.js 'export function _m3() { return top.DK.G; }'"
+kos M4_mutlak_dinamik_import "ekle ui/hud.js \"export function _m4() { return import('/js/test/kancalar.js'); }\""
+kos M5_mutlak_statik_import "ekle ui/hud.js \"BAS:import { install as _kur } from '/js/test/kancalar.js';\""
+kos M6_location_href "ekle net/net.js \"export function _m6() { return new URL(location.href).searchParams.get('peerhost'); }\""
+kos M7_goreli_dinamik_import_kontrol "ekle ui/hud.js \"export function _m7() { return import('../test/kancalar.js'); }\""
+kos M8_window_DK_okuma_kontrol "ekle ui/hud.js 'export function _m8() { return window.DK && window.DK.G; }'"
+kos M9_document_URL "ekle net/net.js \"export function _m9() { return new URLSearchParams(document.URL.split('?')[1]).get('peerhost'); }\""
+echo "# bitti $(date -u +%FT%TZ)" >> "$OUT"
+cat "$OUT"

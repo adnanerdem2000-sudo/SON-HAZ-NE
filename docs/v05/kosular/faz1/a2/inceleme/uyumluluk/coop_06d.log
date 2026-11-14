@@ -1,0 +1,35 @@
+# 2026-11-14T13:34:12+00:00 bağımsız inceleme (uyumluluk); w2 HEAD 29315b5 + çalışma ağacı; sinyal 127.0.0.1:9000
+Kaptan/host {"code":"A5QDR6"}
+Tayfa/join {"room":"Ganimet Odası"}
+PASS Konuk odaya bağlandı → {"room":"Ganimet Odası"}
+Kaptan/hs "host-started"
+Tayfa/gs "guest-started"
+FAIL 2 oyuncu oyunda ve bağlı
+[test] 1 yere bırak @ 37.0s
+Tayfa/g-drop {"btn":true,"n":4,"left":0}
+Kaptan/h-drop null
+FAIL C01 Konuğun "Yere bırak"ı ev sahibinde kese olarak doğar (fizikli, uzun ömürlü) ve konukta aynı kimlikle görünür → {"drop":{"btn":true,"n":4,"left":0},"hostPk":null,"guestSees":false}
+[test] 2 sandık @ 38.0s
+Kaptan/h-chest {"id":"chu31b85y","coins":108}
+Tayfa/g-open "yok"
+FAIL C03 Konuğun açtığı sandığın altını doğrudan konuğun çantasına gider; ev sahibinde kese doğmaz; sandık iki tarafta da kalkar → {"g0":"yok","gGot":0,"coins":108,"hSacks":0,"chestGone":true}
+[test] 3 kısmi @ 39.3s
+Kaptan/h-part "pk1yteus2"
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/inceleme_uyumluluk/06d/ilk_kalan_Kaptan.png
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/inceleme_uyumluluk/06d/ilk_kalan_Tayfa.png
+Kaptan/h-part2 {"alive":true,"items":[["hayvan_postu",2]]}
+Tayfa/g-part null
+FAIL C04 Ev sahibinde kısmen sığan kese yerinde kalır (1 post alındı, 2 kaldı); konuktaki kopya da 2 post gösterir → {"hp":{"alive":true,"items":[["hayvan_postu",2]]},"gp":null}
+[test] 4 güverte @ 53.0s
+Kaptan/h-deck {"id":"pk8aj3eqm","ship":"ship_main","att":true,"pos":[10.44,1.22,285.17]}
+Tayfa/g-deck null
+FAIL C05 Güverteye düşen kese konukta da gemiye bağlıdır (suya düşmez, ev sahibiyle aynı yerde) → {"deck":{"id":"pk8aj3eqm","ship":"ship_main","att":true,"pos":[10.44,1.22,285.17]},"gDeck":null}
+[test] 5 av @ 53.7s
+Kaptan/h-animal {"id":"an1","x":-57.24494588761071,"z":94.88111593905495}
+Tayfa/g-move "ok"
+Tayfa/g-hit "yok"
+FAIL C06 Konuğun öldürdüğü hayvan ev sahibinde öldüren olarak konuğu taşır (XP konuğa) → {"by":"-","gid":"local"}
+FAIL Senaryo sonunda iki taraf da oyunda → ["playing","menu"]
+[test] 06d tamam @ 55.3s
+checks: 8 fails: 7 pageErrors: 0 (134.9 s)
+SONUC: KALDI (çıkış 1) kontrol 1/8 | ev() istisnası 0, kapalı sayfa atlama 0, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 4 farklı/68 | neden: başarısız kontrol ya da ev() istisnası: 7

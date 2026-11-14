@@ -1,0 +1,54 @@
+// A2 düzeltici (A2-UY-02) sondası: test kipinde js/test/kancalar.js yüklenemez ya da kurulamazsa açılış ne olur?
+//   /home/user/devtools/tk node sonda_kanca_hatasi.cjs <adres (…/index.html)> <çıktı.json>
+// F1 404, F2 sözdizimi hatalı gövde, F3 install() istisna atan gövde (inceleyicinin sonda_b F1–F3'üyle aynı yönlendirmeler).
+// Her durumda: menü açılana ya da yükleme yazısında 'başlatılamadı' görünene dek (en çok 90 sn) beklenir, sonra 3 sn daha;
+// sayfa durumu okunur. Beklenen (düzeltilmiş kod): yükleme ekranı görünür kalır, hata iletisi görünür, menü açılmaz, DK yok.
+const { chromium } = require('playwright');
+const fs = require('fs');
+const [, , ADRES, OUT] = process.argv;
+if (!ADRES || !OUT) { console.error('kullanım: node sonda_kanca_hatasi.cjs <adres> <çıktı.json>'); process.exit(2); }
+const ARGS = ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--disable-gpu-watchdog', '--autoplay-policy=no-user-gesture-required'];
+const HATALAR = [
+  ['F1_kancalar_404', (r) => r.fulfill({ status: 404, contentType: 'text/plain', body: 'yok' })],
+  ['F2_kancalar_sozdizimi', (r) => r.fulfill({ status: 200, contentType: 'text/javascript', body: 'export const MARK = ;\nexport function install() {}\n' })],
+  ['F3_kancalar_install_istisna', (r) => r.fulfill({ status: 200, contentType: 'text/javascript', body: "export const MARK = 'x';\nexport function install() { throw new Error('sonda: install istisnasi'); }\n" })],
+];
+const DURUM = () => {
+  const lt = document.getElementById('load-text');
+  return { hazir: window.__ready === undefined ? 'undefined' : window.__ready, dk: typeof window.DK, menu: document.getElementById('menu').classList.contains('active'),
+    yukleme: document.getElementById('loading').classList.contains('active'), yukText: (lt?.innerText || '').slice(0, 220),
+    yukGorunur: !!(lt && lt.offsetParent), durum: window.__dkDurum ? window.__dkDurum() : 'yok' };
+};
+(async () => {
+  const sonuc = { adres: ADRES, basla: new Date().toISOString(), durumlar: {} };
+  const b = await chromium.launch({ args: ARGS });
+  try {
+    for (const [ad, yolla] of HATALAR) {
+      const ctx = await b.newContext({ viewport: { width: 640, height: 360 } });
+      await ctx.route('**/js/test/kancalar.js', yolla);
+      const p = await ctx.newPage();
+      const k = { konsolHata: [], sayfaHata: [], istek4xx: [] };
+      p.on('console', (m) => { if (m.type() === 'error') k.konsolHata.push(m.text().slice(0, 300)); });
+      p.on('pageerror', (e) => k.sayfaHata.push(String(e.message).slice(0, 300)));
+      p.on('response', (r) => { if (r.status() >= 400) k.istek4xx.push(r.status() + ' ' + r.url().slice(0, 150)); });
+      const t0 = Date.now();
+      await p.goto(ADRES + (ADRES.includes('?') ? '&' : '?') + 'test=1');
+      try {
+        await p.waitForFunction(() => document.getElementById('menu').classList.contains('active') || /başlatılamadı/.test(document.getElementById('load-text')?.innerText || ''), null, { timeout: 90000 });
+        k.sonuclanmaMs = Date.now() - t0;
+      } catch (e) { k.beklemeHata = e.message.slice(0, 160); }
+      await p.waitForTimeout(3000);
+      k.ic = await p.evaluate(DURUM).catch((e) => ({ hata: e.message.slice(0, 300) }));
+      sonuc.durumlar[ad] = k;
+      console.log(ad, JSON.stringify({ sonuclanmaMs: k.sonuclanmaMs, ...k.ic, durum: undefined, hazirTani: k.ic && k.ic.durum && k.ic.durum.hazir, konsol: k.konsolHata.length, sayfaHata: k.sayfaHata.length }));
+      await ctx.close();
+    }
+  } catch (e) { sonuc.hata = e.message.slice(0, 500); console.log('HATA', sonuc.hata); }
+  sonuc.bitis = new Date().toISOString();
+  fs.writeFileSync(OUT, JSON.stringify(sonuc, null, 1));
+  await b.close();
+  // Özet: üç durumda da hata görünür yükleme ekranında mı, menü kapalı mı?
+  const ok = Object.values(sonuc.durumlar).length === 3 && Object.values(sonuc.durumlar).every((k) => k.ic && k.ic.yukleme === true && k.ic.yukGorunur === true && /başlatılamadı/.test(k.ic.yukText) && k.ic.menu === false && k.ic.dk === 'undefined');
+  console.log(`SONDA SONUC: ${ok ? 'HATA GORUNUR (beklenen)' : 'HATA GORUNMUYOR ya da durum eksik'}`);
+  process.exit(0);
+})();

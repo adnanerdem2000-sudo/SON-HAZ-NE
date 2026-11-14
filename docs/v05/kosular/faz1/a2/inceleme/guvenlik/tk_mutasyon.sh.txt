@@ -1,0 +1,28 @@
+#!/bin/bash
+# test_kipi.mjs karşıt mutasyon sınaması (güvenlik incelemesi): her mutasyon js/'nin ayrı bir kopyasında yapılır.
+# Her satır: mutasyon | aracın çıkışı | SONUC satırı | mutasyonun üretim etkisi (elle yazılmış açıklama)
+W=/home/user/SON-HAZ-NE-w2; S=$(dirname "$(readlink -f "$0")")
+kos() { # ad, etki, komut
+  local ad=$1 etki=$2; shift 2
+  rm -rf "$S/agac" && mkdir -p "$S/agac" && cp -r "$W/js" "$S/agac/js"
+  ( cd "$S/agac" && eval "$@" ) || { echo "$ad | MUTASYON UYGULANAMADI"; return; }
+  # mutasyonun gerçekten uygulandığının kanıtı: kopya ile özgün arasındaki fark satırı
+  local fark; fark=$(diff -r "$W/js" "$S/agac/js" | grep '^>' | head -2 | cut -c1-200 | tr '\n' ' ')
+  local cikti; cikti=$(node "$W/tests/node/test_kipi.mjs" --agac "$S/agac" --taban-main "$S/taban_main.js" 2>&1); local rc=$?
+  echo "$ad | çıkış $rc | $(echo "$cikti" | grep '^SONUC') | etki: $etki | fark: $fark"
+}
+kos G0_degisiklik_yok "yok" "true"
+# G1: ?terrain test kipi dışında, location.search yerine location.href üzerinden okunur (üretimde K-08 geri gelir)
+kos G1_terrain_href "üretimde ?terrain=crash uygulanır" "sed -i \"s#this.mode = TEST ? (window.__DK_TERRAIN_MODE || testParam('terrain') || '') : '';#this.mode = new URL(location.href).searchParams.get('terrain') || '';#\" js/world/terrain.js"
+# G2: peerOpts ?peerhost'u test kipi ve geri döngü denetimi olmadan document.URL'den okur (K-08'in asıl saldırısı)
+kos G2_peerhost_documentURL "üretimde ?peerhost=kotu.ornek sinyal sunucusu olur" "sed -i \"s#  const s = testSinyali();#  const u = new URL(document.URL).searchParams; const s = u.get('peerhost') ? { host: u.get('peerhost'), port: +(u.get('peerport') || 443), path: '/', secure: true } : testSinyali();#\" js/net/net.js"
+# G3: köşeli parantezle location['search']
+kos G3_location_koseli "üretimde ?peerhost okunur" "sed -i \"s#  const s = testSinyali();#  const q = new URLSearchParams(location['search']); const s = q.get('peerhost') ? { host: q.get('peerhost'), port: 443, path: '/', secure: true } : testSinyali();#\" js/net/net.js"
+# G4: window.__DK_TERRAIN_MODE test kipi dışında da okunur
+kos G4_DK_TERRAIN_MODE_kosulsuz "üretimde window.__DK_TERRAIN_MODE uygulanır" "sed -i \"s#this.mode = TEST ? (window.__DK_TERRAIN_MODE || testParam('terrain') || '') : '';#this.mode = window.__DK_TERRAIN_MODE || testParam('terrain') || '';#\" js/world/terrain.js"
+# G5: if (TEST) yerine her zaman doğru olan koşul (TEST false da olsa kancalar kurulur)
+kos G5_TEST_anlamsiz_kosul "üretimde window.DK kurulur" "sed -i 's/if (TEST) {/if (TEST !== undefined) {/g' js/main.js"
+# G6: K9-20 geri döngü denetimi kaldırılır (test kipinde peerhost her değer)
+kos G6_geri_dongu_yok "localhost'ta ?test=1&peerhost=kotu.ornek sinyal sunucusu olur (K9-20)" "sed -i \"s#  if (!h || !GERI_DONGU.has(h)) return null;#  if (!h) return null;#\" js/net/net.js"
+# G7: oyun kodu window.DK'yi Object.assign ile kurar (window.DK = … yazımı yok)
+kos G7_object_assign_DK "üretimde window.DK (G nesnesi) var" "sed -i \"1a Object.assign(window, { DK: { G: 1 } });\" js/game/game.js"

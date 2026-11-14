@@ -1,0 +1,75 @@
+# Hazır olma ölçümü (playwright, SwiftShader, 640x360; kilitle). hazirMs: goto → window.__ready; kancalar: js/test/kancalar.js kaynak zamanlaması
+## 1) ilk Y3 sürümü (import boot sonunda):
+{"tur":1,"adres":"http://localhost:8081/index.html?test=1","hazirMs":10255,"hazirPerf":10266,"kaynak":191,"jsSayi":97,"sonJsBitis":6236,"kancalar":{"bas":6229,"sure":7},"dk":"object"}
+{"tur":1,"adres":"http://localhost:8081/index.html","hazirMs":4792,"hazirPerf":7628,"kaynak":190,"jsSayi":96,"sonJsBitis":1303,"kancalar":null,"dk":"undefined"}
+{"tur":1,"adres":"http://localhost:8080/index.html?test=1","hazirMs":4181,"hazirPerf":6817,"kaynak":188,"jsSayi":94,"sonJsBitis":991,"kancalar":null,"dk":"object"}
+{"tur":1,"adres":"http://localhost:8080/index.html","hazirMs":5941,"hazirPerf":8770,"kaynak":188,"jsSayi":94,"sonJsBitis":1511,"kancalar":null,"dk":"object"}
+{"tur":2,"adres":"http://localhost:8081/index.html?test=1","hazirMs":7296,"hazirPerf":7316,"kaynak":191,"jsSayi":97,"sonJsBitis":5072,"kancalar":{"bas":5069,"sure":2},"dk":"object"}
+{"tur":2,"adres":"http://localhost:8081/index.html","hazirMs":5324,"hazirPerf":7421,"kaynak":190,"jsSayi":96,"sonJsBitis":1360,"kancalar":null,"dk":"undefined"}
+{"tur":2,"adres":"http://localhost:8080/index.html?test=1","hazirMs":4805,"hazirPerf":7566,"kaynak":188,"jsSayi":94,"sonJsBitis":1304,"kancalar":null,"dk":"object"}
+{"tur":2,"adres":"http://localhost:8080/index.html","hazirMs":4576,"hazirPerf":7107,"kaynak":188,"jsSayi":94,"sonJsBitis":1009,"kancalar":null,"dk":"object"}
+## 2) uzun görevler, ilk sürüm (__ready öncesi tek uzun görev kancalar isteğiyle başlıyor):
+{"adres":"http://localhost:8081/index.html?test=1","kancalarBas":6625,"kancalarBitis":6631,"ilkKare":785,"hazir":11280,"hazirdaKareSayisi":75,"aradakiUzunGorev":[[6626,4635]],"aradakiUzunGorevToplamMs":4635}
+{"adres":"http://localhost:8080/index.html?test=1","kancalarBas":null,"kancalarBitis":null,"ilkKare":780,"hazir":5434,"hazirdaKareSayisi":69,"aradakiUzunGorev":[],"aradakiUzunGorevToplamMs":0}
+{"adres":"http://localhost:8081/index.html?test=1","kancalarBas":4765,"kancalarBitis":4768,"ilkKare":755,"hazir":7234,"hazirdaKareSayisi":73,"aradakiUzunGorev":[[4765,2429]],"aradakiUzunGorevToplamMs":2429}
+## 3) uzun görevler, ilk sürüm + v0.4 (v0.4'te aynı ağır görev __ready'den SONRA başlıyor):
+{"adres":"http://localhost:8080/index.html?test=1","kancalarBas":null,"kancalarBitis":null,"ilkKare":977,"hazir":7147,"hazirdaKareSayisi":64,"aradakiUzunGorev":[[7147,4776]],"aradakiUzunGorevToplamMs":4776,"hazirSonrasi6snUzunGorev":[],"hazirOncesiSon3sn":[[3595,3519],[7147,4776]]}
+{"adres":"http://localhost:8081/index.html?test=1","kancalarBas":5564,"kancalarBitis":5567,"ilkKare":917,"hazir":8098,"hazirdaKareSayisi":82,"aradakiUzunGorev":[[5564,2500]],"aradakiUzunGorevToplamMs":2500,"hazirSonrasi6snUzunGorev":[],"hazirOncesiSon3sn":[[2982,2551],[5564,2500]]}
+{"adres":"http://localhost:8081/index.html","kancalarBas":null,"kancalarBitis":null,"ilkKare":792,"hazir":4869,"hazirdaKareSayisi":75,"aradakiUzunGorev":[[4869,1715]],"aradakiUzunGorevToplamMs":1715,"hazirSonrasi6snUzunGorev":[],"hazirOncesiSon3sn":[[1805,142],[1957,115],[2090,295],[2832,2002],[4869,1715]]}
+## 4) düzeltilmiş sürüm (söz boot başında): ağır görev __ready anında/sonrasında başlıyor (v0.4 ile aynı yerleşim):
+{"adres":"http://localhost:8081/index.html?test=1","kancalarBas":297,"kancalarBitis":300,"ilkKare":852,"hazir":6811,"hazirdaKareSayisi":67,"aradakiUzunGorev":[[916,79],[1883,135],[2026,136],[2182,299],[3017,3749],[6811,4433]],"aradakiUzunGorevToplamMs":8831,"hazirSonrasi6snUzunGorev":[],"hazirOncesiSon3sn":[[3017,3749],[6811,4433]]}
+{"adres":"http://localhost:8080/index.html?test=1","kancalarBas":null,"kancalarBitis":null,"ilkKare":676,"hazir":4550,"hazirdaKareSayisi":63,"aradakiUzunGorev":[],"aradakiUzunGorevToplamMs":0,"hazirSonrasi6snUzunGorev":[[4551,2608]],"hazirOncesiSon3sn":[[1480,110],[1596,120],[1724,295],[2432,2084]]}
+{"adres":"http://localhost:8081/index.html?test=1","kancalarBas":272,"kancalarBitis":273,"ilkKare":695,"hazir":4368,"hazirdaKareSayisi":64,"aradakiUzunGorev":[[840,63],[1564,143],[1714,136],[1861,267],[2529,1795],[4368,2136]],"aradakiUzunGorevToplamMs":4540,"hazirSonrasi6snUzunGorev":[],"hazirOncesiSon3sn":[[1564,143],[1714,136],[1861,267],[2529,1795],[4368,2136]]}
+## ölçüm betikleri:
+#   // Açılış süresi ölçümü: her adres için yeni sayfa, goto → window.__ready; kaynak zamanlamaları (kancalar.js) ve son kaynak bitişi.
+#   const { chromium } = require('playwright');
+#   (async () => {
+#     const b = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--disable-gpu-watchdog', '--autoplay-policy=no-user-gesture-required'] });
+#     const adresler = process.argv.slice(2);
+#     for (let tur = 1; tur <= 2; tur++) for (const u of adresler) {
+#       const p = await b.newPage({ viewport: { width: 640, height: 360 } });
+#       const t0 = Date.now();
+#       await p.goto(u);
+#       await p.waitForFunction('window.__ready', null, { timeout: 240000 });
+#       const ms = Date.now() - t0;
+#       const r = await p.evaluate(() => {
+#         const res = performance.getEntriesByType('resource');
+#         const k = res.find((e) => /\/js\/test\/kancalar\.js/.test(e.name));
+#         const js = res.filter((e) => /\/js\//.test(e.name));
+#         return { hazirPerf: Math.round(performance.now()), kaynak: res.length, jsSayi: js.length, sonJsBitis: Math.round(Math.max(...js.map((e) => e.responseEnd))),
+#           kancalar: k ? { bas: Math.round(k.startTime), sure: Math.round(k.duration) } : null, dk: typeof window.DK };
+#       });
+#       console.log(JSON.stringify({ tur, adres: u, hazirMs: ms, ...r }));
+#       await p.close();
+#     }
+#     await b.close();
+#   })().catch((e) => { console.error(e); process.exit(1); });
+#   // __ready öncesindeki uzun görevler: test kipinde kancalar.js beklenirken ilk kareler çiziliyor mu?
+#   const { chromium } = require('playwright');
+#   (async () => {
+#     const b = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--disable-gpu-watchdog', '--autoplay-policy=no-user-gesture-required'] });
+#     for (const u of process.argv.slice(2)) {
+#       const p = await b.newPage({ viewport: { width: 640, height: 360 } });
+#       await p.addInitScript(() => {
+#         window.__uz = { gorev: [], kare: 0, ilkKare: null, hazir: null };
+#         try { new PerformanceObserver((l) => { for (const e of l.getEntries()) window.__uz.gorev.push([Math.round(e.startTime), Math.round(e.duration)]); }).observe({ type: 'longtask', buffered: true }); } catch (e) { /* yok */ }
+#         const ham = window.requestAnimationFrame;
+#         window.requestAnimationFrame = function (cb) { return ham.call(window, function (t) { window.__uz.kare++; if (window.__uz.ilkKare === null) window.__uz.ilkKare = Math.round(performance.now()); return cb(t); }); };
+#         let h; Object.defineProperty(window, '__ready', { configurable: true, get() { return h; }, set(v) { h = v; if (v && window.__uz.hazir === null) { window.__uz.hazir = Math.round(performance.now()); window.__uz.hazirdaKare = window.__uz.kare; } } });
+#       });
+#       await p.goto(u);
+#       await p.waitForFunction('window.__ready', null, { timeout: 240000 });
+#       await p.waitForTimeout(6000);
+#       const r = await p.evaluate(() => {
+#         const k = performance.getEntriesByType('resource').find((e) => /\/js\/test\/kancalar\.js/.test(e.name));
+#         const U = window.__uz;
+#         const bas = k ? k.startTime : U.hazir;
+#         return { adres: location.href, kancalarBas: k ? Math.round(k.startTime) : null, kancalarBitis: k ? Math.round(k.responseEnd) : null, ilkKare: U.ilkKare, hazir: U.hazir, hazirdaKareSayisi: U.hazirdaKare,
+#           aradakiUzunGorev: U.gorev.filter(([s]) => s >= bas - 1 && s <= U.hazir), aradakiUzunGorevToplamMs: U.gorev.filter(([s]) => s >= bas - 1 && s <= U.hazir).reduce((a, [, d]) => a + d, 0),
+#           hazirSonrasi6snUzunGorev: U.gorev.filter(([s]) => s > U.hazir && s <= U.hazir + 6000), hazirOncesiSon3sn: U.gorev.filter(([s, d]) => s + d >= U.hazir - 3000 && s <= U.hazir) };
+#       });
+#       console.log(JSON.stringify(r));
+#       await p.close();
+#     }
+#     await b.close();
+#   })().catch((e) => { console.error(e); process.exit(1); });

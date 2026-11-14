@@ -1,0 +1,465 @@
+{
+ "scenario": "tests/scenarios/coop/06d_ganimet_canta.cjs",
+ "players": 2,
+ "checks": [
+  {
+   "label": "Konuk odaya bağlandı",
+   "ok": true,
+   "detail": {
+    "room": "Ganimet Odası"
+   }
+  },
+  {
+   "label": "2 oyuncu oyunda ve bağlı",
+   "ok": true
+  },
+  {
+   "label": "C01 Konuğun \"Yere bırak\"ı ev sahibinde kese olarak doğar (fizikli, uzun ömürlü) ve konukta aynı kimlikle görünür",
+   "ok": true,
+   "detail": {
+    "drop": {
+     "btn": true,
+     "n": 4,
+     "left": 0
+    },
+    "hostPk": {
+     "id": "pkm9159d1",
+     "keep": true,
+     "body": true,
+     "n": 4
+    },
+    "guestSees": true
+   }
+  },
+  {
+   "label": "C02 Konuk bıraktığı keseyi geri alır: eşya konuğun çantasına döner, kese ev sahibinde kalkar",
+   "ok": true,
+   "detail": {
+    "back": 4,
+    "goneH": true
+   }
+  },
+  {
+   "label": "C03 Konuğun açtığı sandığın altını doğrudan konuğun çantasına gider; ev sahibinde kese doğmaz; sandık iki tarafta da kalkar",
+   "ok": true,
+   "detail": {
+    "g0": "req",
+    "gGot": 127,
+    "coins": 127,
+    "hSacks": 0,
+    "chestGone": true
+   }
+  },
+  {
+   "label": "C04 Ev sahibinde kısmen sığan kese yerinde kalır (1 post alındı, 2 kaldı); konuktaki kopya da 2 post gösterir",
+   "ok": true,
+   "detail": {
+    "hp": {
+     "alive": true,
+     "items": [
+      [
+       "hayvan_postu",
+       2
+      ]
+     ]
+    },
+    "gp": {
+     "alive": true,
+     "items": [
+      [
+       "hayvan_postu",
+       2
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "label": "C05 Güverteye düşen kese konukta da gemiye bağlıdır (suya düşmez, ev sahibiyle aynı yerde)",
+   "ok": true,
+   "detail": {
+    "deck": {
+     "id": "pke30rcnp",
+     "ship": "ship_main",
+     "att": true,
+     "pos": [
+      10.4,
+      1.21,
+      285.19
+     ]
+    },
+    "gDeck": {
+     "ship": "ship_main",
+     "parent": true,
+     "dy": 1.5,
+     "d": 0.01
+    }
+   }
+  },
+  {
+   "label": "C06 Konuğun öldürdüğü hayvan ev sahibinde öldüren olarak konuğu taşır (XP konuğa)",
+   "ok": true,
+   "detail": {
+    "by": "34f88175-6d40-4a3f-82f1-e7d431126a0f",
+    "gid": "34f88175-6d40-4a3f-82f1-e7d431126a0f"
+   }
+  },
+  {
+   "label": "Senaryo sonunda iki taraf da oyunda",
+   "ok": true,
+   "detail": [
+    "playing",
+    "playing"
+   ]
+  }
+ ],
+ "errors": {
+  "Kaptan": [],
+  "Tayfa": []
+ },
+ "pageErrors": {
+  "Kaptan": [],
+  "Tayfa": []
+ },
+ "fails": 0,
+ "evalErrors": [],
+ "kapaliAtlama": 0,
+ "kapaliIstisna": 0,
+ "kapananlar": [],
+ "ms": 133279,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/scenarios/coop/06d_ganimet_canta.cjs",
+ "meta": {},
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8081/index.html?peerhost=127.0.0.1&peerport=9000&test=1",
+  "verilenUrl": "http://localhost:8081/index.html?peerhost=127.0.0.1&peerport=9000",
+  "gorunum": [
+   640,
+   360
+  ],
+  "oyuncu": 2
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "29315b5c24bfc89ae51a6a156de961b98b08fb15",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T13:38:54.286Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/coop.cjs /home/user/SON-HAZ-NE-w2/tests/scenarios/coop/06d_ganimet_canta.cjs --url 'http://localhost:8081/index.html?peerhost=127.0.0.1&peerport=9000' --baslatma /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a2_uyumluluk/baslatma_konuk_izi.js --report docs/v05/kosular/faz1/a2/inceleme/uyumluluk/coop_06d_kosu2.json --goruntu-dizin tests/out/inceleme_uyumluluk/06d_kosu2",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://localhost:8081 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8081",
+   "PeerJS sinyal sunucusu 127.0.0.1:9000 — node tests/peer-server.cjs (peer modülü NODE_PATH'te)"
+  ],
+  "commit": "29315b5c24bfc89ae51a6a156de961b98b08fb15-kirli",
+  "senaryoSha256": "95f0af57126edcad108212a871af90b69e4823a6625a6a6ad624807cd61e8d29",
+  "adim": null,
+  "url": "http://localhost:8081/index.html?peerhost=127.0.0.1&peerport=9000&test=1"
+ },
+ "kontroller": [
+  {
+   "n": 1,
+   "id": "Konuk odaya bağlandı",
+   "etiket": "Konuk odaya bağlandı",
+   "ok": true,
+   "deger": {
+    "room": "Ganimet Odası"
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 82,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 2,
+   "id": "2 oyuncu oyunda ve bağlı",
+   "etiket": "2 oyuncu oyunda ve bağlı",
+   "ok": true,
+   "deger": null,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 32053,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 3,
+   "id": "C01",
+   "etiket": "C01 Konuğun \"Yere bırak\"ı ev sahibinde kese olarak doğar (fizikli, uzun ömürlü) ve konukta aynı kimlikle görünür",
+   "ok": true,
+   "deger": {
+    "drop": {
+     "btn": true,
+     "n": 4,
+     "left": 0
+    },
+    "hostPk": {
+     "id": "pkm9159d1",
+     "keep": true,
+     "body": true,
+     "n": 4
+    },
+    "guestSees": true
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2355,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 4,
+   "id": "C02",
+   "etiket": "C02 Konuk bıraktığı keseyi geri alır: eşya konuğun çantasına döner, kese ev sahibinde kalkar",
+   "ok": true,
+   "deger": {
+    "back": 4,
+    "goneH": true
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1153,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 5,
+   "id": "C03",
+   "etiket": "C03 Konuğun açtığı sandığın altını doğrudan konuğun çantasına gider; ev sahibinde kese doğmaz; sandık iki tarafta da kalkar",
+   "ok": true,
+   "deger": {
+    "g0": "req",
+    "gGot": 127,
+    "coins": 127,
+    "hSacks": 0,
+    "chestGone": true
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1915,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 6,
+   "id": "C04",
+   "etiket": "C04 Ev sahibinde kısmen sığan kese yerinde kalır (1 post alındı, 2 kaldı); konuktaki kopya da 2 post gösterir",
+   "ok": true,
+   "deger": {
+    "hp": {
+     "alive": true,
+     "items": [
+      [
+       "hayvan_postu",
+       2
+      ]
+     ]
+    },
+    "gp": {
+     "alive": true,
+     "items": [
+      [
+       "hayvan_postu",
+       2
+      ]
+     ]
+    }
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1908,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 7,
+   "id": "C05",
+   "etiket": "C05 Güverteye düşen kese konukta da gemiye bağlıdır (suya düşmez, ev sahibiyle aynı yerde)",
+   "ok": true,
+   "deger": {
+    "deck": {
+     "id": "pke30rcnp",
+     "ship": "ship_main",
+     "att": true,
+     "pos": [
+      10.4,
+      1.21,
+      285.19
+     ]
+    },
+    "gDeck": {
+     "ship": "ship_main",
+     "parent": true,
+     "dy": 1.5,
+     "d": 0.01
+    }
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1111,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 8,
+   "id": "C06",
+   "etiket": "C06 Konuğun öldürdüğü hayvan ev sahibinde öldüren olarak konuğu taşır (XP konuğa)",
+   "ok": true,
+   "deger": {
+    "by": "34f88175-6d40-4a3f-82f1-e7d431126a0f",
+    "gid": "34f88175-6d40-4a3f-82f1-e7d431126a0f"
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2980,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 9,
+   "id": "Senaryo sonunda iki taraf da oyunda",
+   "etiket": "Senaryo sonunda iki taraf da oyunda",
+   "ok": true,
+   "deger": [
+    "playing",
+    "playing"
+   ],
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 14,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": "Kaptan",
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8081/vendor/three/three.core.js",
+   "sayi": 33
+  },
+  {
+   "oyuncu": "Kaptan",
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8081/vendor/three/three.core.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": "Kaptan",
+   "ileti": "[inceleme] 5918ms yukleme kapandi",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": "Tayfa",
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8081/vendor/three/three.core.js",
+   "sayi": 33
+  },
+  {
+   "oyuncu": "Tayfa",
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8081/vendor/three/three.core.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": "Tayfa",
+   "ileti": "[inceleme] 21707ms yukleme kapandi",
+   "url": null,
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 6,
+  "toplam": 70,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "goruntuler": [],
+ "sonuc": {
+  "durum": "GECTI",
+  "cikisKodu": 0,
+  "neden": [],
+  "onaySayisi": 9,
+  "kontrolSayisi": 9,
+  "gecen": 9,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "evalErrors": 0,
+  "kapaliAtlama": 0,
+  "kapaliIstisna": 0,
+  "tur": "tarayici+webrtc"
+ },
+ "sure": {
+  "hazirMs": 88705,
+  "toplamMs": 133279,
+  "yerlesmeMs": 1000
+ }
+}

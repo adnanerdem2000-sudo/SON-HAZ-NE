@@ -1,0 +1,14 @@
+ready in 6.3 s
+ROTA https://0.peerjs.com → /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a2fix/bos
+ROTA https://kotu.ornek → /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a2fix/bos
+ROTA https://oyun.ornek → /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a2fix/agaclar/k08_once
+GOTO https://oyun.ornek/index.html?join=ABCDEF&test=1&peerhost=kotu.ornek&peerport=443&peersecure=1&terrain=crash
+HTTP 404 https://kotu.ornek/peerjs/id?ts=17946659367230.8207321917410095&version=1.5.5
+ERR: Failed to load resource: the server responded with a status of 404 (Not Found)
+PASS GD01a (TK05 ile aynı tanı onayı) DK yok, test kipi kapalı, araziKip boş, __dkDurum().sinyal varsayılan → {"koken":"https://oyun.ornek","guvenli":true,"dk":"undefined","test":false,"araziKip":"","sinyal":"varsayilan"}
+PASS GD01b Davet bağlantısı katılma ekranını açtı ve oda taraması (sinyal sunucusuna bağlantı) kendiliğinden çalışıp bitti → {"katilmaEkrani":true,"taramaBitti":true}
+FAIL GD02 Saldırganın sinyal sunucusuna (kotu.ornek) hiçbir istek gitmedi (K-08 uçtan uca) → 1
+FAIL GD03 Tarama isteği varsayılan PeerJS sunucusuna gitti → 0
+errors: 1 pageErrors: 0 fails: 2 (22.6 s)
+IZINSIZ AG ×1: 404 https://kotu.ornek/peerjs/id?ts=17946659367230.8207321917410095&version=1.5.5
+SONUC: KALDI (çıkış 1) kontrol 2/4, onay 4 | izinsiz konsol 0, ağ 1 | izinli konsol 0, ağ 0 | uyarı 2 farklı/68 | neden: başarısız kontrol ya da adım: 2; izinsiz ağ hatası (≥ 400 yanıt ya da başarısız istek): 1

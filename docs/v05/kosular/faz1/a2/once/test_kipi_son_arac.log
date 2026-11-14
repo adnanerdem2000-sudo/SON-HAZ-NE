@@ -1,0 +1,15 @@
+# komut: node tests/node/test_kipi.mjs --agac <HEAD 29315b5 js/ kopyası> --taban-main <44d548c js/main.js>  (aracın SON sürümü; oyun kodu Y3 öncesi)
+# zaman: 2026-11-14T13:02:39+00:00
+GECTI C0 Çözümleyici js/** dosyalarının hepsini dengeli çözdü — 77 dosya
+KALDI K1 Teste özgü kod (window.DK kurulumu, __sayac, işaret) yalnız js/test/ ya da saplanan netTest/netShape dosyalarında — ["js/main.js:134 window.DK kurulumu/ataması","js/main.js:136 window.DK kurulumu/ataması","js/main.js:138 window.DK kurulumu/ataması","js/main.js:145 window.DK kurulumu/ataması","js/main.js:150 window.DK kurulumu/ataması","js/main.js:152 window.DK kurulumu/ataması"]
+KALDI K2 Test modülleri yalnız if (TEST …) arkasındaki dinamik import() ile yükleniyor; yalnız install (kancalar.js: + MARK) dışa aktarıyor; statik içe aktarma yok — ["js/test/kancalar.js yok (test kancaları modülü kurulmamış)","js/main.js js/test/kancalar.js'ı if (TEST …) arkasında dinamik import() ile yüklemiyor"]
+KALDI K3 Oyun kodu window.DK'yi hiçbir yerde okumuyor (js/test/ dışı) — ["js/main.js:134 window.DK = { G, assets,","js/main.js:136 window.DK.snap = (q = 0.","js/main.js:138 window.DK.snapFrom = (fr","js/main.js:145 window.DK.sim = (seconds","js/main.js:150 window.DK.tap = (code) =","js/main.js:152 window.DK.press = (code,","js/main.js:152 window.DK.sim(dur); inpu","js/main.js:152 window.DK.sim(1 / 30); }"]
+KALDI K4 location.search yalnız js/core/testmode.js'te ve js/main.js'te (?join) okunuyor — ["js/core/testmode.js yok","js/net/net.js:50 location.search","js/world/terrain.js:249 location.search"]
+KALDI DT Doğruluk tablosu (gerçek testmode.js, node:vm) — js/core/testmode.js yok: tablo koşulamadı
+GECTI AP1 Taban (44d548c) main.js window.DK nesnesi: 49 anahtar — {"kaynak":"/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/once_agac/taban_main.js","sayi":49,"satir":134}
+GECTI AP1b Taban main.js'te 5 yardımcı (snap, snapFrom, sim, tap, press) birer kez atanıyor (satır 136-152) — {"snap":[136],"snapFrom":[138],"sim":[145],"tap":[150],"press":[152]}
+KALDI AP2 API eşliği: taban 49 alan + 5 yardımcı eksiksiz; fazla tam olarak audio, mod, __sayac — ["js/test/kancalar.js yok"]
+KALDI AP3 snap/snapFrom/sim/tap/press gövdeleri taban main.js:136-152 ile aynı — js/test/kancalar.js yok ya da çözümlenemedi
+KALDI ZM Zamanlama: kancalar modülünün sözü bekleniyor (await), install ondan sonra, window.__ready install'dan sonra yazılıyor — {"kancaImport":"yok","bekleme":"yok","installSatir":"yok","readySatirlari":[153]}
+SONUC: KALDI (3/11 denetim) | kalan: K1, K2, K3, K4, DT, AP2, AP3, ZM
+# cikis=1

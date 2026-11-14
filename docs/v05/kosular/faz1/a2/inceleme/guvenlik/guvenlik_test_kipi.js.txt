@@ -1,0 +1,104 @@
+// inceleme_a2 (güvenlik merceği) — test kipinin karşıt sınaması. KOŞU GİRDİSİDİR, ağaçta durmaz.
+// Koşu (çalışma dizini w2 kökü: oyun.ornek sahte kökeni oradan sunulur):
+//   cd /home/user/SON-HAZ-NE-w2 && node tests/harness/run.cjs <bu dosya> --url http://localhost:8081/index.html --size 640x360
+// GA: __dkDurum salt-okur/ilkel/yan etkisiz. GB: ?peerhost geri döngü denetimini atlatma denemeleri (gerçek modül, tek açılışta,
+// history.replaceState ile; testParam canlı location.search'ü okur). GE: README'deki yerel sunucu senaryosu (K9-20) uçtan uca:
+// localhost'ta ?join&test=1&peerhost=10.9.9.9 bağlantısı katılma ekranını açar ve oda taraması sinyal sunucusuna bağlanır; istek
+// 10.9.9.9'a değil varsayılan sunucuya gitmeli. GC: yerel önekli yabancı kökenler. GD: K-08 bağlantı saldırısı uçtan uca (https,
+// yerel olmayan köken): ?join=…&test=1&peerhost=kotu.ornek; tarama isteği kotu.ornek'e GİTMEMELİ, varsayılan sunucuya gitmeli.
+// 0.peerjs.com ve kotu.ornek ağ dışına çıkılmadan rotaKok ile boş bir dizine bağlanır (404).
+[
+ {meta: {testler: [], dosyalar: ['js/core/testmode.js', 'js/net/net.js', 'js/main.js', 'js/world/terrain.js'],
+   aciklama: 'Faz 1 A2 güvenlik incelemesi: test kipi atlatma denemeleri ve K-08/K9-20 uçtan uca',
+   izinliHatalar: [
+     {desen: '0\\.peerjs\\.com/peerjs/', tur: 'hepsi', gerekce: 'Varsayılan PeerJS bulut sunucusu bu koşuda rotaKok ile boş bir yerel dizine bağlandı: /peerjs/id 404 döner ve CORS başlığı olmadığı için tarayıcı konsola CORS/yükleme hatası yazar. Bu istek, davet bağlantısının tarama isteğinin saldırgana değil varsayılan sunucuya gittiğinin kanıtıdır (GD03, GE03).'},
+   ]}},
+
+ // ---- GA: __dkDurum (test kipinde, yerel)
+ {expect: {js: `(()=>{
+   'use strict';
+   const d = window.__dkDurum();
+   const t = Object.getOwnPropertyDescriptors(d);
+   const erisimci = Object.entries(t).filter(([, x]) => 'get' in x || 'set' in x).map(([k]) => k);
+   const degistirilebilir = Object.entries(t).filter(([, x]) => x.writable || x.configurable).map(([k]) => k);
+   const ilkelOlmayan = Object.entries(d).filter(([, v]) => !(v === null || ['string', 'number', 'boolean'].includes(typeof v))).map(([k]) => k);
+   let atama = 'hata yok'; try { d.test = !d.test; } catch (e) { atama = e.constructor.name; }
+   let ek = 'hata yok'; try { d.yeni = 1; } catch (e) { ek = e.constructor.name; }
+   let tanim = 'hata yok'; try { Object.defineProperty(d, 'test', { get() { return 1; } }); } catch (e) { tanim = e.constructor.name; }
+   return { erisimci, degistirilebilir, ilkelOlmayan, donuk: Object.isFrozen(d), atama, ek, tanim, proto: Object.getPrototypeOf(d) === Object.prototype, sembol: Object.getOwnPropertySymbols(d).length, sonrakiTest: window.__dkDurum().test };
+ })()`, eq: {erisimci: [], degistirilebilir: [], ilkelOlmayan: [], donuk: true, atama: 'TypeError', ek: 'TypeError', tanim: 'TypeError', proto: true, sembol: 0, sonrakiTest: true},
+   label: 'GA01 __dkDurum(): erişimci yok, değiştirilemez, yalnız ilkel, dondurulmuş; değiştirme denemesi TypeError ve sonraki anlık görüntüyü etkilemez'}},
+ {expect: {js: `(()=>{
+   const ozet = () => JSON.stringify({ f: DK.terrain.failures.length, w: DK.terrain.workers.length, fb: DK.terrain.fallback, m: DK.terrain.mode, mis: DK.assets.missing.length, st: DK.G.state, kk: DK.kk.ready, s: location.search, r: window.__ready });
+   const once = ozet();
+   const ilk = JSON.stringify(window.__dkDurum());
+   let kararli = true;
+   for (let i = 0; i < 200; i++) if (JSON.stringify(window.__dkDurum()) !== ilk) kararli = false;
+   return { durumAyni: ozet() === once, ciktiKararli: kararli };
+ })()`, eq: {durumAyni: true, ciktiKararli: true}, label: 'GA02 __dkDurum() 200 kez çağrıldı: oyun durumu değişmedi, çıktı kararlı (yan etkisiz)'}},
+ {expect: {js: `(()=>{ const eski = DK.terrain.mode; DK.terrain.mode = { toString() { return 'nesne'; } }; let d; try { d = window.__dkDurum(); } finally { DK.terrain.mode = eski; } return { tur: typeof d.araziKip, deger: d.araziKip, geriAlindi: DK.terrain.mode === eski }; })()`,
+   eq: {tur: 'string', deger: 'nesne', geriAlindi: true}, label: 'GA03 terrain.mode nesne olsa da araziKip dizgeye çevrilir (nesne başvurusu dönmez)'}},
+
+ // ---- GB: ?peerhost geri döngü denetimini atlatma denemeleri (gerçek net.js, test kipinde)
+ {expect: {js: `(()=>{
+   const asil = location.search;
+   const dene = (q) => { history.replaceState(null, '', location.pathname + '?' + q); try { return window.__dkDurum().sinyal; } finally { history.replaceState(null, '', location.pathname + asil); } };
+   const Q = ['test=1&peerhost=127.0.0.1.kotu.ornek&peerport=9000', 'test=1&peerhost=localhost.kotu.ornek', 'test=1&peerhost=LOCALHOST', 'test=1&peerhost=localhost.',
+     'test=1&peerhost=0x7f000001', 'test=1&peerhost=2130706433', 'test=1&peerhost=127.1', 'test=1&peerhost=%5B%3A%3Affff%3A127.0.0.1%5D', 'test=1&peerhost=%5B0%3A0%3A0%3A0%3A0%3A0%3A0%3A1%5D',
+     'test=1&peerhost=localhost%3A80%40kotu.ornek', 'test=1&peerhost=%20127.0.0.1', 'test=1&peerhost=kotu.ornek&peerhost=127.0.0.1', 'test=1&peerhost=10.9.9.9',
+     'test=1&peerhost=127.0.0.1&peerport=9000', 'test=1&peerhost=%5B%3A%3A1%5D&peerport=9000', 'test=1&peerhost=localhost&peerport=9000'];
+   const R = {};
+   for (const q of Q) R[q] = dene(q);
+   R.geriAlindi = location.search === asil;
+   return R;
+ })()`, eq: {'test=1&peerhost=127.0.0.1.kotu.ornek&peerport=9000': 'varsayilan', 'test=1&peerhost=localhost.kotu.ornek': 'varsayilan', 'test=1&peerhost=LOCALHOST': 'varsayilan', 'test=1&peerhost=localhost.': 'varsayilan',
+   'test=1&peerhost=0x7f000001': 'varsayilan', 'test=1&peerhost=2130706433': 'varsayilan', 'test=1&peerhost=127.1': 'varsayilan', 'test=1&peerhost=%5B%3A%3Affff%3A127.0.0.1%5D': 'varsayilan', 'test=1&peerhost=%5B0%3A0%3A0%3A0%3A0%3A0%3A0%3A1%5D': 'varsayilan',
+   'test=1&peerhost=localhost%3A80%40kotu.ornek': 'varsayilan', 'test=1&peerhost=%20127.0.0.1': 'varsayilan', 'test=1&peerhost=kotu.ornek&peerhost=127.0.0.1': 'varsayilan', 'test=1&peerhost=10.9.9.9': 'varsayilan',
+   'test=1&peerhost=127.0.0.1&peerport=9000': '127.0.0.1:9000', 'test=1&peerhost=%5B%3A%3A1%5D&peerport=9000': '[::1]:9000', 'test=1&peerhost=localhost&peerport=9000': 'localhost:9000', geriAlindi: true},
+   label: 'GB01 Test kipinde peerhost yalnız tam geri döngü dizgesiyle kabul edilir: önek/sonek, büyük harf, sonda nokta, onaltılık/ondalık/kısa IPv4, IPv4 eşlemeli IPv6, kullanıcı bilgisi, boşluk ve çift parametre yok sayılır'}},
+
+ // ---- sahte sunucular (ağ dışına çıkılmaz)
+ {rotaKok: {kok: 'https://0.peerjs.com', dizin: '/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a2_guvenlik/bos'}},
+ {rotaKok: {kok: 'https://kotu.ornek', dizin: '/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a2_guvenlik/bos'}},
+
+ // ---- GE: K9-20 uçtan uca — README'deki yerel sunucuyu çalıştıran oyuncuya gönderilen bağlantı
+ {goto: {url: 'index.html?join=ABCDEF&test=1&peerhost=10.9.9.9&peerport=1', testParam: false}},
+ {expect: {js: `(async()=>{
+   const t0 = performance.now();
+   const liste = () => [...document.querySelectorAll('.panel .col .muted, .col .muted')].map((e) => e.textContent).join(' | ');
+   while (performance.now() - t0 < 25000 && !/Sinyal sunucusuna bağlanılamadı|açık oda yok/.test(liste())) await new Promise((r) => setTimeout(r, 250));
+   const d = window.__dkDurum();
+   return { koken: location.origin, test: d.test, dk: typeof window.DK, sinyal: d.sinyal, katilmaEkrani: !!document.querySelector('input[placeholder^="Oda kodu"]'), taramaBitti: /Sinyal sunucusuna bağlanılamadı|açık oda yok/.test(liste()) };
+ })()`, eq: {koken: 'http://localhost:8081', test: true, dk: 'object', sinyal: 'varsayilan', katilmaEkrani: true, taramaBitti: true},
+   label: 'GE01 localhost + ?join&test=1&peerhost=10.9.9.9: test kipi açık, katılma ekranı açıldı, oda taraması bitti, sinyal varsayılan'}},
+ {agSay: {desen: '^[a-z]+://10\\.9\\.9\\.9[:/]', enCok: 0, sonGezinmeden: true, label: 'GE02 Geri döngü dışı peerhost (10.9.9.9) test kipinde de hiç istek almadı (K9-20)'}},
+ {agSay: {desen: '^https://0\\.peerjs\\.com/peerjs/id', enAz: 1, sonGezinmeden: true, label: 'GE03 Oda taramasının sinyal isteği varsayılan PeerJS sunucusuna gitti (tarama gerçekten çalıştı)'}},
+
+ // ---- GC: yerel önekli yabancı kökenler (localhost.evil, 127.0.0.1.nip.io benzeri)
+ {rotaKok: {kok: 'https://localhost.oyun.ornek', dizin: '.'}},
+ {goto: {url: 'https://localhost.oyun.ornek/index.html?test=1&terrain=crash&peerhost=127.0.0.1&peerport=9000', testParam: false}},
+ {expect: {js: `(()=>{ const d = window.__dkDurum(); return { koken: location.origin, dk: typeof window.DK, test: d.test, araziKip: d.araziKip, isciVar: d.isci >= 1, sinyal: d.sinyal, isaret: typeof window.__DK_TEST_KIPI }; })()`,
+   eq: {koken: 'https://localhost.oyun.ornek', dk: 'undefined', test: false, araziKip: '', isciVar: true, sinyal: 'varsayilan', isaret: 'undefined'},
+   label: 'GC01 https://localhost.oyun.ornek (localhost önekli yabancı alan): test kipi kapalı, DK yok, ?terrain ve ?peerhost yok sayılır'}},
+ {agSay: {desen: '/js/test/', enCok: 0, sonGezinmeden: true, label: 'GC01b localhost önekli kökende js/test/ istenmedi'}},
+ {rotaKok: {kok: 'https://127.0.0.1.oyun.ornek', dizin: '.'}},
+ {goto: {url: 'https://127.0.0.1.oyun.ornek/index.html?test=1&terrain=crash&peerhost=127.0.0.1&peerport=9000', testParam: false}},
+ {expect: {js: `(()=>{ const d = window.__dkDurum(); return { koken: location.origin, dk: typeof window.DK, test: d.test, araziKip: d.araziKip, isciVar: d.isci >= 1, sinyal: d.sinyal, isaret: typeof window.__DK_TEST_KIPI }; })()`,
+   eq: {koken: 'https://127.0.0.1.oyun.ornek', dk: 'undefined', test: false, araziKip: '', isciVar: true, sinyal: 'varsayilan', isaret: 'undefined'},
+   label: 'GC02 https://127.0.0.1.oyun.ornek (127.0.0.1 önekli yabancı alan): test kipi kapalı, DK yok, ?terrain ve ?peerhost yok sayılır'}},
+
+ // ---- GD: K-08 bağlantı saldırısı uçtan uca (github.io benzeri güvenli, yerel olmayan köken)
+ {rotaKok: {kok: 'https://oyun.ornek', dizin: '.'}},
+ {goto: {url: 'https://oyun.ornek/index.html?join=ABCDEF&test=1&peerhost=kotu.ornek&peerport=443&peersecure=1&terrain=crash', testParam: false}},
+ {expect: {js: `(()=>{ const d = window.__dkDurum(); return { koken: location.origin, guvenli: window.isSecureContext, dk: typeof window.DK, test: d.test, araziKip: d.araziKip, sinyal: d.sinyal }; })()`,
+   eq: {koken: 'https://oyun.ornek', guvenli: true, dk: 'undefined', test: false, araziKip: '', sinyal: 'varsayilan'},
+   label: 'GD01a (TK05 ile aynı tanı onayı) DK yok, test kipi kapalı, araziKip boş, __dkDurum().sinyal varsayılan'}},
+ {expect: {js: `(async()=>{
+   const t0 = performance.now();
+   const liste = () => [...document.querySelectorAll('.panel .col .muted, .col .muted')].map((e) => e.textContent).join(' | ');
+   while (performance.now() - t0 < 25000 && !/Sinyal sunucusuna bağlanılamadı|açık oda yok/.test(liste())) await new Promise((r) => setTimeout(r, 250));
+   return { katilmaEkrani: !!document.querySelector('input[placeholder^="Oda kodu"]'), taramaBitti: /Sinyal sunucusuna bağlanılamadı|açık oda yok/.test(liste()) };
+ })()`, eq: {katilmaEkrani: true, taramaBitti: true}, label: 'GD01b Davet bağlantısı katılma ekranını açtı ve oda taraması (sinyal sunucusuna bağlantı) kendiliğinden çalışıp bitti'}},
+ {agSay: {desen: '^[a-z]+://kotu\\.ornek[:/]', enCok: 0, sonGezinmeden: true, label: 'GD02 Saldırganın sinyal sunucusuna (kotu.ornek) hiçbir istek gitmedi (K-08 uçtan uca)'}},
+ {agSay: {desen: '^https://0\\.peerjs\\.com/peerjs/id', enAz: 1, sonGezinmeden: true, label: 'GD03 Tarama isteği varsayılan PeerJS sunucusuna gitti'}},
+]

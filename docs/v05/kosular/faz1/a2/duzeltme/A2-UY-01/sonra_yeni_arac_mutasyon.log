@@ -1,0 +1,20 @@
+# test_kipi mutasyon sınaması 2026-11-14T14:41:23Z | araç: /home/user/SON-HAZ-NE-w2/tests/node/test_kipi.mjs (sha256 c5c2bf38f871) | taban js: /home/user/SON-HAZ-NE-w2/js
+G0_M0_degisiklik_yok | çıkış 0 | SONUC: GECTI (100/100 denetim) | KALDI: yok | fark: 
+G1_terrain_href | çıkış 1 | SONUC: KALDI (97/100 denetim) | kalan: K4, NS02, NS05 | KALDI: K4,NS02,NS05 | fark: >     this.mode = new URL(location.href).searchParams.get('terrain') || ''; 
+G2_peerhost_documentURL | çıkış 1 | SONUC: KALDI (97/100 denetim) | kalan: K4, NS03, NS04 | KALDI: K4,NS03,NS04 | fark: >   const u = new URL(document.URL).searchParams; const s = u.get('peerhost') ? { host: u.get('peerhost'), port: +(u.get('peerport') || 443), path: '/', secure: 
+G3_location_koseli | çıkış 1 | SONUC: KALDI (97/100 denetim) | kalan: K4, NS03, NS04 | KALDI: K4,NS03,NS04 | fark: >   const q = new URLSearchParams(location['search']); const s = q.get('peerhost') ? { host: q.get('peerhost'), port: 443, path: '/', secure: true } : testSinya 
+G4_DK_TERRAIN_MODE_kosulsuz | çıkış 1 | SONUC: KALDI (97/100 denetim) | kalan: K5, NS02, NS05 | KALDI: K5,NS02,NS05 | fark: >     this.mode = window.__DK_TERRAIN_MODE || testParam('terrain') || ''; 
+G5_TEST_anlamsiz_kosul | çıkış 1 | SONUC: KALDI (97/100 denetim) | kalan: K2, NS06, NS22 | KALDI: K2,NS06,NS22 | fark: >   if (TEST !== undefined) { kancaSozu = import('./test/kancalar.js'); kancaSozu.catch(() => {}); } >   if (TEST !== undefined) { 
+G6_geri_dongu_yok | çıkış 1 | SONUC: KALDI (80/100 denetim) | kalan: SN06, SN07, SN08, SN09, SN10, SN11, SN12, SN13, SN14, SN15, SN16, SN17, SN18, SN19, SN20, SN21, SN22, SN23, SN24, NS07 | KALDI: SN06,SN07,SN08,SN09,SN10,SN11,SN12,SN13,SN14,SN15,SN16,SN17,SN18,SN19,SN20,SN21,SN22,SN23,SN24,NS07 | fark: >   if (!h) return null; 
+G7_object_assign_DK | çıkış 1 | SONUC: KALDI (98/100 denetim) | kalan: K1, K3 | KALDI: K1,K3 | fark: > Object.assign(window, { DK: { G: 1 } }); 
+K08_mutant_documentURL | çıkış 1 | SONUC: KALDI (98/100 denetim) | kalan: K4, NS01 | KALDI: K4,NS01 | fark: >   // MUTANT (inceleme): v0.4 net.js:52 aynen, yalnız location.search yerine document.URL >   const q = new URL(document.URL).searchParams; 
+M1_opsiyonel_zincir | çıkış 1 | SONUC: KALDI (99/100 denetim) | kalan: K3 | KALDI: K3 | fark: >  > export function _m1() { return window?.DK?.G; } 
+M2_yikici_atama | çıkış 1 | SONUC: KALDI (98/100 denetim) | kalan: K1, K3 | KALDI: K1,K3 | fark: >  > export function _m2() { const { DK } = window; return DK && DK.G; } 
+M3_top_DK | çıkış 1 | SONUC: KALDI (99/100 denetim) | kalan: K3 | KALDI: K3 | fark: >  > export function _m3() { return top.DK.G; } 
+M4_mutlak_dinamik_import | çıkış 1 | SONUC: KALDI (99/100 denetim) | kalan: K2 | KALDI: K2 | fark: >  > export function _m4() { return import('/js/test/kancalar.js'); } 
+M5_mutlak_statik_import | çıkış 1 | SONUC: KALDI (99/100 denetim) | kalan: K2 | KALDI: K2 | fark: > import { install as _kur } from '/js/test/kancalar.js'; 
+M6_location_href | çıkış 1 | SONUC: KALDI (99/100 denetim) | kalan: K4 | KALDI: K4 | fark: >  > export function _m6() { return new URL(location.href).searchParams.get('peerhost'); } 
+M7_goreli_dinamik_import_kontrol | çıkış 1 | SONUC: KALDI (99/100 denetim) | kalan: K2 | KALDI: K2 | fark: >  > export function _m7() { return import('../test/kancalar.js'); } 
+M8_window_DK_okuma_kontrol | çıkış 1 | SONUC: KALDI (99/100 denetim) | kalan: K3 | KALDI: K3 | fark: >  > export function _m8() { return window.DK && window.DK.G; } 
+M9_document_URL | çıkış 1 | SONUC: KALDI (99/100 denetim) | kalan: K4 | KALDI: K4 | fark: >  > export function _m9() { return new URLSearchParams(document.URL.split('?')[1]).get('peerhost'); } 
+# bitti 2026-11-14T14:41:48Z

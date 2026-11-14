@@ -1,0 +1,134 @@
+# docs/v05/raporlar/durum.json iskeletini KNOWN_ISSUES.md'den üretir (Faz 1 A2, A5; tasarım §7.3, K9-14). Tek seferlik; durum.json
+# bundan sonra ELLE güncellenir (Faz 1–8), Y7'de tools/faz-kapisi.mjs ve rapor-uret.mjs okur.
+#   cd /home/user/SON-HAZ-NE-w2 && python3 -I docs/v05/kosular/faz1/a2/durum_json_uret.py.txt
+# Kural (görev tanımı): A2'nin kendi değişikliklerinin kapattığı maddeler commit'ten önce DEĞİŞTİRİLMEZ (ana oturum commit sonrası günceller).
+# A2 inceleme düzeltmesi (A2-UY-04): HEAD'deki KNOWN_ISSUES.md ve FIX_REPORT.md'de ZATEN kapanmış ya da kısmen düzeltilmiş görünen
+# maddeler (Faz 1 A1, b2748cc) 'acik' bırakılınca dosya iki raporla çelişiyor ve Y7 araçlarına yanlış durum veriyordu. Durum artık
+# KNOWN_ISSUES.md'den alınır: 'Kapanan maddeler' → duzeltildi, Durum sütunu 'Kısmen düzeltildi…' → kismi, diğerleri acik. Bu maddelerin
+# commit, testler, kanıt ve kalan iş notu FIX_REPORT.md'deki girdilerinden aşağıdaki KAPANIS tablosuna elle yazıldı; tabloda olmayan
+# kapanmış/kısmi madde görülürse betik durur (sessizce 'acik' yazmaz).
+import json, re, subprocess, collections, datetime
+AGAC = '/home/user/SON-HAZ-NE-w2'
+YOL = 'docs/v05/raporlar/KNOWN_ISSUES.md'
+git = lambda *a: subprocess.run(['git', '-C', AGAC, *a], capture_output=True, text=True, check=True).stdout
+simdi = open(f'{AGAC}/{YOL}', encoding='utf8').read()
+eski = git('show', f'5479e3b:{YOL}')          # 234 satırlık ilk sürüm (KI-225 henüz ana tabloda)
+kaynak_commit = git('log', '-1', '--format=%h', '--', YOL).strip()
+
+def satirlar(metin):
+    out = {}
+    for l in metin.splitlines():
+        if not l.startswith('| KI-'): continue
+        h = [x.strip() for x in l.strip().strip('|').split('|')]
+        if len(h) != 8: continue                     # 'Kapanan maddeler' tablosu farklı sütunlu
+        out[h[0]] = dict(zip(['kimlik', 'baslik', 'oncelik', 'alan', 'dosya', 'faz', 'durum', 'kaynak'], h))
+    return out
+ana, ilk = satirlar(simdi), satirlar(eski)
+kapanan = {}
+blok = simdi.split('## Kapanan maddeler', 1)
+if len(blok) == 2:
+    for l in blok[1].splitlines():
+        if l.startswith('| KI-'):
+            h = [x.strip() for x in l.strip().strip('|').split('|')]
+            kapanan[h[0]] = h
+DENETIM = re.compile(r'\b([A-K]-M?\d{2})\b')
+def denetim_ayir(kaynak):
+    birincil = kaynak.split(' / eski:', 1)[0]
+    ana_k, ilgili = [], []
+    for parca in birincil.split(';'):
+        p = parca.strip()
+        hedef = ilgili if p.startswith('ilgili:') else ana_k
+        for m in DENETIM.findall(p):
+            if m not in hedef: hedef.append(m)
+    # 'İlgili: K-M01' biçimi 'eski:' kısmında da geçebilir (KI-233)
+    for m in re.findall(r'[İi]lgili:\s*([A-K]-M?\d{2})', kaynak):
+        if m not in ilgili: ilgili.append(m)
+    return ana_k, [x for x in ilgili if x not in ana_k]
+# FIX_REPORT.md (HEAD 29315b5) §Faz 1 / Adım A1 girdileri. Kanıt: kosucu_negatif son koşusu (45/45; a, b, c, d, e, e2, f, g, r, aa, ac, ai PASS).
+KAPANIS = {
+    'KI-225': {'durum': 'duzeltildi', 'commit': 'b2748cc',
+               'testler': [f'tests/node/kosucu_negatif.mjs:{x}' for x in ('f', 'g', 'r', 'aa', 'ac', 'ai')],
+               'kanit': 'docs/v05/kosular/faz1/a1_duzeltme/son/kosucu_negatif.log',
+               'not': "FIX_REPORT.md §Faz 1 / KI-225; KNOWN_ISSUES.md 'Kapanan maddeler' (Faz 1 Adım A1 (Y1), b2748cc). Alanlar 5479e3b sürümünden (madde ana tablodan çıkarıldı)."},
+    'KI-146': {'durum': 'kismi', 'commit': 'b2748cc',
+               'testler': [f'tests/node/kosucu_negatif.mjs:{x}' for x in ('a', 'b', 'e', 'e2')],
+               'kanit': 'docs/v05/kosular/faz1/a1_duzeltme/son/kosucu_negatif.log',
+               'not': 'Düzeltilen kısım: koşucu konsol hatalarını, ≥ 400 yanıtları ve başarısız istekleri sayıyor (Faz 1 A1, b2748cc; FIX_REPORT §Faz 1 / KI-146). Kalan: tek dosya testinde gömülü varlık ve ses denetimi — Faz 9 (tasarım §4.6, 55_tek_varlik).'},
+    'KI-147': {'durum': 'kismi', 'commit': 'b2748cc',
+               'testler': [f'tests/node/kosucu_negatif.mjs:{x}' for x in ('c', 'd')],
+               'kanit': 'docs/v05/kosular/faz1/a1_duzeltme/son/kosucu_negatif.log',
+               'not': 'Düzeltilen kısım: onaysız senaryo KALDI, meta.olcum OLCUM (Faz 1 A1, b2748cc; FIX_REPORT §Faz 1 / KI-147; 03_fizik_dt metasız KALDI: docs/v05/kosular/faz1/once_v04_yeni_kosucu/03_fizik_dt_metasiz_KALDI.log). Kalan: açığı kabul eden kontroller (06a H07) — Faz 2; belgelerdeki eski GEÇTİ kayıtları — Faz 9 (test kataloğu).'},
+}
+def ki_durumu(k, r):
+    if k not in ana: return 'duzeltildi' if k in kapanan else None
+    if r['durum'].startswith('Kısmen düzeltildi'): return 'kismi'
+    if r['durum'].startswith('Açık'): return 'acik'
+    return None
+def faz_ayir(f):
+    n = [int(x) for x in re.findall(r'Faz (\d)', f)]
+    return (n[0] if n else None), n[1:]
+sorunlar = {}
+for i in range(1, 235):
+    k = f'KI-{i:03d}'
+    r = ana.get(k) or ilk.get(k)
+    if r is None: raise SystemExit(f'{k} bulunamadı')
+    faz, ek = faz_ayir(r['faz'])
+    den, ilg = denetim_ayir(r['kaynak'])
+    notlar = []
+    durum = ki_durumu(k, r)
+    if durum is None: raise SystemExit(f"{k}: KNOWN_ISSUES durumu tanınmadı ({r['durum'][:60]})")
+    kap = KAPANIS.get(k)
+    if durum != 'acik' and (not kap or kap['durum'] != durum): raise SystemExit(f'{k}: KNOWN_ISSUES durumu {durum}, KAPANIS tablosunda karşılığı yok ya da farklı')
+    if kap and kap['durum'] != durum: raise SystemExit(f"{k}: KAPANIS {kap['durum']} ↔ KNOWN_ISSUES {durum}")
+    if kap:
+        notlar.append(kap['not'])
+    elif r['durum'] != 'Açık':
+        notlar.append(f"KNOWN_ISSUES.md durum notu: {r['durum'][len('Açık'):].strip()}")
+    if not den:
+        notlar.append('Denetim kimliği yok; kaynak: ' + r['kaynak'].split(' / eski:', 1)[0].strip()[:160])
+    sorunlar[k] = {
+        'durum': durum, 'faz': faz, 'fazEk': ek, 'fazMetni': r['faz'], 'oncelik': r['oncelik'],
+        'alan': [a.strip() for a in r['alan'].split(',') if a.strip()], 'baslik': r['baslik'], 'dosya': r['dosya'],
+        'denetim': den, 'ilgili': ilg, 'commit': kap['commit'] if kap else None, 'testler': list(kap['testler']) if kap else [],
+        'kanit': kap['kanit'] if kap else None, 'not': ' '.join(notlar) or None,
+    }
+say = lambda alan: dict(sorted(collections.Counter(v[alan] for v in sorunlar.values()).items(), key=lambda x: str(x[0])))
+belge = {
+    'sema': 'dk-durum/1',
+    'aciklama': ('v0.5 sorun durumu kaydı (Faz 9 tasarımı §7.3, K9-14, K9-16). Anahtar: KNOWN_ISSUES.md kimliği (KI-xxx). '
+                 'Faz 1–8 kapanışlarında ELLE güncellenir: bir sorun düzeltildiğinde durum, commit, testler (senaryo:kontrol ya da '
+                 'tests/node aracı:denetim) ve kanıt (docs/v05/kosular/faz<N>/ altındaki ham rapor yolu) yazılır ve FIX_REPORT.md girdisiyle '
+                 'eşleşir. Y7 (Faz 9) tools/faz-kapisi.mjs ve rapor-uret.mjs bu dosyayı okur. Sorunun ayrıntısı (kök neden, tekrar üretme, '
+                 'kabul) AUDIT_CURRENT.md §5 ve docs/v05/denetim_bulgulari.json içinde denetim kimliğiyle durur.'),
+    'kaynak': {'bilinenSorunlar': f'{YOL} ({kaynak_commit}); KI-225 alanları 5479e3b sürümünden',
+               'denetim': 'docs/v05/raporlar/AUDIT_CURRENT.md, docs/v05/denetim_bulgulari.json (Faz 0, taban 44d548c)'},
+    'olusturma': {'tarih': datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat(), 'adim': 'Faz 1 A2 (A5)',
+                  'not': ("İskelet: 234 sorun yüklendi. Durumlar KNOWN_ISSUES.md'den: HEAD'de kapanmış ya da kısmen düzeltilmiş görünen Faz 1 A1 maddeleri "
+                          "(KI-225 duzeltildi; KI-146, KI-147 kismi; b2748cc) FIX_REPORT.md girdileriyle işlendi (A2-UY-04). A2'nin kendi kapattığı maddeler "
+                          "commit'e dek 'acik' kalır (ana oturum commit sonrası günceller).")},
+    'durumlar': {
+        'acik': 'Düzeltilmedi.',
+        'duzeltildi': 'Kabul testleri GEÇTİ; commit, testler ve kanıt dolu; KNOWN_ISSUES.md "Kapanan maddeler" ve FIX_REPORT.md\'de kayıtlı.',
+        'kismi': 'Bir kısmı düzeltildi; "not" alanı kalanı ve sahibi olan fazı yazar.',
+        'ertelendi': 'Bilinçli olarak sonraki bir faza bırakıldı; "faz" yeni sahip fazdır, "not" gerekçeyi yazar.',
+        'muaf': 'Düzeltilmeyecek (kapsam dışı, kabul edilen kalıntı); gerekçe "not" alanında, gerekiyorsa tests/kabul/bilinen_sorunlar.json\'da.',
+    },
+    'alanlar': {
+        'durum': 'acik | duzeltildi | kismi | ertelendi | muaf',
+        'faz': 'Birincil sahip faz (1–9); KNOWN_ISSUES.md "Hedef faz" sütununun ilk fazı',
+        'fazEk': 'İkincil fazlar ("(+Faz n)")', 'fazMetni': 'KNOWN_ISSUES.md "Hedef faz" sütunu aynen',
+        'oncelik': 'kritik | yüksek | orta | düşük', 'alan': 'Denetim alanları (A–K)', 'baslik': 'Kısa tanım',
+        'dosya': 'KNOWN_ISSUES.md "Dosya" sütunu', 'denetim': 'Birincil denetim kimlikleri (AUDIT_CURRENT.md §5, ör. K-11, A-02, B-M01)',
+        'ilgili': 'Kısmen örtüşen (ilgili:) denetim kimlikleri', 'commit': 'Düzelten commit (kısa sha) ya da null',
+        'testler': 'Kanıt testleri: "senaryo:kontrol" (ör. "53_test_kipi:TK05") ya da "tests/node/<araç>:<denetim>"',
+        'kanit': 'Ham rapor yolu (docs/v05/kosular/faz<N>/…) ya da null', 'not': 'Serbest not (kalan kısım, gerekçe, kaynak çelişkisi)',
+    },
+    'ozet': {'toplam': len(sorunlar), 'durum': say('durum'), 'oncelik': say('oncelik'), 'birincilFaz': {f'Faz {k}': v for k, v in say('faz').items()},
+             'not': ("oncelik ve birincilFaz sayımları kapanan maddeler dahil 234 kaydın hepsini sayar; KNOWN_ISSUES.md'nin özeti yalnız ana tablodaki "
+                     "(açık + kısmen düzeltilmiş) maddeleri sayar (233; düşük 79, Faz 1 27). Fark KI-225'tir (düşük, Faz 1, duzeltildi).")},
+    'sorunlar': sorunlar,
+}
+open(f'{AGAC}/docs/v05/raporlar/durum.json', 'w', encoding='utf8').write(json.dumps(belge, ensure_ascii=False, indent=1) + '\n')
+print(json.dumps(belge['ozet'], ensure_ascii=False))
+print('not alanı dolu:', {k: v['not'][:90] for k, v in sorunlar.items() if v['not']})
+print('denetim kimliği olmayan:', [k for k, v in sorunlar.items() if not v['denetim']])

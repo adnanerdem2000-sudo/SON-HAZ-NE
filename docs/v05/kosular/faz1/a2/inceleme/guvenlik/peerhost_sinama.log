@@ -1,0 +1,40 @@
+net.js: const GERI_DONGU = new Set(['127.0.0.1', 'localhost', '[::1]', '::1']);
+net.js testSinyali: function testSinyali() { const h = testParam('peerhost'); if (!h || !GERI_DONGU.has(h)) return null; return { host: h, port: +(testParam('peerport') || 9000), path: testParam('peerpath') || '/', secure: testParam('peersecure') === '1' }; }
+peerjs normalleştirme: this._options.path&&("/"!==this._options.path[0]&&(this._options.path="/"+this._options.path),"/"!==this._options.path[this._options.path.length-1]&&(this._options.path+="/"))
+peerjs http: new URL(`${t}://${n}:${r}${i}${s}/${e}`)
+peerjs ws: (e?"wss://":"ws://")+t+":"+n+r+"peerjs?key="+i
+?peerhost=127.0.0.1&peerport=9000                         → kabul {host:"127.0.0.1", port:9000, path:"/" → "/", secure:false} | http: http://127.0.0.1:9000/peerjs/id (konak 127.0.0.1) | ws: ws://127.0.0.1:9000/peerjs?key=peerjs (konak 127.0.0.1)
+?peerhost=localhost                                       → kabul {host:"localhost", port:9000, path:"/" → "/", secure:false} | http: http://localhost:9000/peerjs/id (konak localhost) | ws: ws://localhost:9000/peerjs?key=peerjs (konak localhost)
+?peerhost=%5B%3A%3A1%5D                                   → kabul {host:"[::1]", port:9000, path:"/" → "/", secure:false} | http: http://[::1]:9000/peerjs/id (konak [::1]) | ws: ws://[::1]:9000/peerjs?key=peerjs (konak [::1])
+?peerhost=::1                                             → kabul {host:"::1", port:9000, path:"/" → "/", secure:false} | http: URL kurulamadı: Invalid URL (bağlantı yok) | ws: WS adresi geçersiz: Invalid URL
+?peerhost=127.0.0.1.kotu.ornek                            → yok sayıldı → varsayılan PeerJS sunucusu
+?peerhost=localhost.kotu.ornek                            → yok sayıldı → varsayılan PeerJS sunucusu
+?peerhost=LOCALHOST                                       → yok sayıldı → varsayılan PeerJS sunucusu
+?peerhost=Localhost                                       → yok sayıldı → varsayılan PeerJS sunucusu
+?peerhost=localhost.                                      → yok sayıldı → varsayılan PeerJS sunucusu
+?peerhost=0x7f000001                                      → yok sayıldı → varsayılan PeerJS sunucusu
+?peerhost=2130706433                                      → yok sayıldı → varsayılan PeerJS sunucusu
+?peerhost=127.1                                           → yok sayıldı → varsayılan PeerJS sunucusu
+?peerhost=0177.0.0.1                                      → yok sayıldı → varsayılan PeerJS sunucusu
+?peerhost=%5B%3A%3Affff%3A127.0.0.1%5D                    → yok sayıldı → varsayılan PeerJS sunucusu
+?peerhost=%5B0%3A0%3A0%3A0%3A0%3A0%3A0%3A1%5D             → yok sayıldı → varsayılan PeerJS sunucusu
+?peerhost=localhost%3A80%40kotu.ornek                     → yok sayıldı → varsayılan PeerJS sunucusu
+?peerhost=kotu.ornek%23127.0.0.1                          → yok sayıldı → varsayılan PeerJS sunucusu
+?peerhost=127.0.0.1%2Fkotu.ornek                          → yok sayıldı → varsayılan PeerJS sunucusu
+?peerhost=%20127.0.0.1                                    → yok sayıldı → varsayılan PeerJS sunucusu
+?peerhost=127.0.0.1%00                                    → yok sayıldı → varsayılan PeerJS sunucusu
+?peerhost=10.9.9.9                                        → yok sayıldı → varsayılan PeerJS sunucusu
+?peerhost=kotu.ornek&peerhost=127.0.0.1                   → yok sayıldı → varsayılan PeerJS sunucusu
+?peerhost=127.0.0.1&peerhost=kotu.ornek                   → kabul {host:"127.0.0.1", port:9000, path:"/" → "/", secure:false} | http: http://127.0.0.1:9000/peerjs/id (konak 127.0.0.1) | ws: ws://127.0.0.1:9000/peerjs?key=peerjs (konak 127.0.0.1)
+?peerhost=127.0.0.1&peerport=9000&peerpath=%40kotu.ornek%2F → kabul {host:"127.0.0.1", port:9000, path:"@kotu.ornek/" → "/@kotu.ornek/", secure:false} | http: http://127.0.0.1:9000/@kotu.ornek/peerjs/id (konak 127.0.0.1) | ws: ws://127.0.0.1:9000/@kotu.ornek/peerjs?key=peerjs (konak 127.0.0.1)
+?peerhost=127.0.0.1&peerpath=%2F%2Fkotu.ornek%2F          → kabul {host:"127.0.0.1", port:9000, path:"//kotu.ornek/" → "//kotu.ornek/", secure:false} | http: http://127.0.0.1:9000//kotu.ornek/peerjs/id (konak 127.0.0.1) | ws: ws://127.0.0.1:9000//kotu.ornek/peerjs?key=peerjs (konak 127.0.0.1)
+?peerhost=127.0.0.1&peerpath=%5C%5Ckotu.ornek%2F          → kabul {host:"127.0.0.1", port:9000, path:"\\\\kotu.ornek/" → "/\\\\kotu.ornek/", secure:false} | http: http://127.0.0.1:9000///kotu.ornek/peerjs/id (konak 127.0.0.1) | ws: ws://127.0.0.1:9000/\\kotu.ornek/peerjs?key=peerjs (konak 127.0.0.1)
+?peerhost=127.0.0.1&peerpath=..%2F..%2F%40kotu.ornek      → kabul {host:"127.0.0.1", port:9000, path:"../../@kotu.ornek" → "/../../@kotu.ornek/", secure:false} | http: http://127.0.0.1:9000/@kotu.ornek/peerjs/id (konak 127.0.0.1) | ws: ws://127.0.0.1:9000/../../@kotu.ornek/peerjs?key=peerjs (konak 127.0.0.1)
+?peerhost=127.0.0.1&peerpath=%3F%40kotu.ornek             → kabul {host:"127.0.0.1", port:9000, path:"?@kotu.ornek" → "/?@kotu.ornek/", secure:false} | http: http://127.0.0.1:9000/?@kotu.ornek/peerjs/id (konak 127.0.0.1) | ws: ws://127.0.0.1:9000/?@kotu.ornek/peerjs?key=peerjs (konak 127.0.0.1)
+?peerhost=localhost&peerport=80%40kotu.ornek              → kabul {host:"localhost", port:NaN, path:"/" → "/", secure:false} | http: URL kurulamadı: Invalid URL (bağlantı yok) | ws: WS adresi geçersiz: Invalid URL
+?peerhost=localhost&peerport=443%2Fkotu.ornek             → kabul {host:"localhost", port:NaN, path:"/" → "/", secure:false} | http: URL kurulamadı: Invalid URL (bağlantı yok) | ws: WS adresi geçersiz: Invalid URL
+?peerhost=localhost&peerport=0x1BB                        → kabul {host:"localhost", port:443, path:"/" → "/", secure:false} | http: http://localhost:443/peerjs/id (konak localhost) | ws: ws://localhost:443/peerjs?key=peerjs (konak localhost)
+?peerhost=localhost&peerport=1e3                          → kabul {host:"localhost", port:1000, path:"/" → "/", secure:false} | http: http://localhost:1000/peerjs/id (konak localhost) | ws: ws://localhost:1000/peerjs?key=peerjs (konak localhost)
+?peerhost=localhost&peerport=-1                           → kabul {host:"localhost", port:-1, path:"/" → "/", secure:false} | http: URL kurulamadı: Invalid URL (bağlantı yok) | ws: WS adresi geçersiz: Invalid URL
+?peerhost=127.0.0.1&peersecure=1&peerpath=%40kotu.ornek   → kabul {host:"127.0.0.1", port:9000, path:"@kotu.ornek" → "/@kotu.ornek/", secure:true} | http: https://127.0.0.1:9000/@kotu.ornek/peerjs/id (konak 127.0.0.1) | ws: wss://127.0.0.1:9000/@kotu.ornek/peerjs?key=peerjs (konak 127.0.0.1)
+SONUC: GECTI (34 durum; geri döngü dışına giden adres: 0)

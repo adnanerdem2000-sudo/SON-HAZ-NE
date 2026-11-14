@@ -1,0 +1,187 @@
+// Sonda A (bağımsız inceleme, Faz 1 A2 — uyumluluk): w2 (8081) ile v0.4 (8080) karşılaştırması.
+//  P1 w2 ?test=1: __ready anında DK var mı; 50 alanın kimliği (import() ile gelen dışa aktarımla ===); DK.mod kimliği ve hataları;
+//     sim/press/tap/snap/snapFrom davranışı (dönüş, this, geç bağlama, uzunluk); __sayac; __dkDurum; sonra kayıt üretimi.
+//  P2 v0.4 ?test=1: aynı davranış ölçümleri (taban).
+//  P3/P4 w2 ve v0.4 test parametresiz, boş depolama: DK, menü, açılışta yazılan localStorage.
+//  P5/P6 w2 ve v0.4 test parametresiz, P1'in kaydıyla: menü kartı, DÜNYALAR listesi, DEVAM ET ile yükleme (HUD altını).
+// Çıktı: argv[2] (JSON, her sayfadan sonra yazılır). Tarayıcı kilitle koşulur (tk).
+const { chromium } = require('playwright');
+const fs = require('fs');
+const OUT = process.argv[2];
+const ESLEM = JSON.parse(fs.readFileSync(__dirname + '/alan_eslem.txt', 'utf8').split('\n')[0]);
+const sonuc = { basla: new Date().toISOString(), sayfalar: {} };
+const yaz = () => fs.writeFileSync(OUT, JSON.stringify(sonuc, null, 1));
+const ARGS = ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--disable-gpu-watchdog', '--autoplay-policy=no-user-gesture-required'];
+
+const HAZIR_KANCASI = () => {
+  let h;
+  window.__incHazir = null;
+  Object.defineProperty(window, '__ready', { configurable: true, enumerable: true, get() { return h; },
+    set(v) { h = v; if (v && !window.__incHazir) window.__incHazir = { dkTipi: typeof window.DK, anahtarSayisi: window.DK ? Object.keys(window.DK).length : null, isaret: window.__DK_TEST_KIPI || null, t: Math.round(performance.now()) }; } });
+};
+
+async function sayfaAc(b, ad, url, { baslatma = [], depolama = null } = {}) {
+  const ctx = await b.newContext({ viewport: { width: 640, height: 360 } });
+  const p = await ctx.newPage();
+  const kayit = { url, konsolHata: [], sayfaHata: [], istek404: [], testIstek: [], ws: [] };
+  p.on('console', (m) => { if (m.type() === 'error') kayit.konsolHata.push(m.text().slice(0, 300)); });
+  p.on('pageerror', (e) => kayit.sayfaHata.push(String(e.message).slice(0, 300)));
+  p.on('response', (r) => { if (r.status() >= 400) kayit.istek404.push(r.status() + ' ' + r.url()); });
+  p.on('request', (r) => { if (/\/js\/test\//.test(r.url())) kayit.testIstek.push(r.url()); });
+  p.on('websocket', (w) => kayit.ws.push(w.url()));
+  if (depolama) await p.addInitScript((d) => { if (!sessionStorage.getItem('__tohum')) { for (const [k, v] of Object.entries(d)) localStorage.setItem(k, v); sessionStorage.setItem('__tohum', '1'); } }, depolama);
+  for (const f of baslatma) await p.addInitScript(f);
+  const t0 = Date.now();
+  await p.goto(url);
+  try { await p.waitForFunction('window.__ready === true', null, { timeout: 90000 }); kayit.hazirMs = Date.now() - t0; } catch (e) { kayit.hazirHata = e.message.slice(0, 200); }
+  sonuc.sayfalar[ad] = kayit;
+  return { ctx, p, kayit };
+}
+
+const DAVRANIS = async (ESLEM) => {
+  const o = {};
+  const D = window.DK;
+  o.hazirAnindaki = window.__incHazir;
+  o.dkTipi = typeof D;
+  if (!D) return o;
+  o.anahtarlar = Object.keys(D);
+  // alan kimliği
+  const kimlik = {};
+  for (const [k, e] of Object.entries(ESLEM)) {
+    if (!e) { kimlik[k] = typeof D[k]; continue; }
+    const yol = e.spec === 'three' ? 'three' : './js/' + e.spec.replace(/^\.\//, '');
+    try { const m = await import(yol); kimlik[k] = (e.ad === '*' ? m : m[e.ad]) === D[k]; } catch (err) { kimlik[k] = 'import hatası: ' + err.message.slice(0, 80); }
+  }
+  o.kimlikYanlis = Object.entries(kimlik).filter(([, v]) => v !== true && v !== 'object').map(([k, v]) => [k, v]);
+  o.kimlikSayisi = Object.values(kimlik).filter((v) => v === true).length;
+  // DK.mod
+  if (typeof D.mod === 'function') {
+    const ADLAR = ['economy/shop', 'economy/items', 'treasure/treasure', 'world/props', 'world/ports', 'ui/menu', 'ui/panels', 'wildlife/seagear', 'ship/shipModel', 'core/nearfade', 'world/worldData', 'game/quests', 'core/assets', 'core/audio'];
+    const modFark = [];
+    for (const a of ADLAR) { try { if (D.mod(a) !== await import('./js/' + a + '.js')) modFark.push(a); } catch (err) { modFark.push(a + ':' + err.message.slice(0, 60)); } }
+    o.modFark = modFark;
+    o.modCapraz = { ports: D.mod('world/ports').ports === D.ports, treasure: D.mod('treasure/treasure').treasure === D.treasure, quests: D.mod('game/quests').quests === D.quests,
+      assets: D.mod('core/assets').assets === D.assets, audio: D.mod('core/audio').audio === D.audio, seagear: D.mod('wildlife/seagear').seagear === D.seagear };
+    o.modHata = {};
+    for (const a of ['yok/boyle', '__proto__', 'toString', 'constructor', undefined, 123, 'economy/shop.js', './economy/shop']) {
+      try { const r = D.mod(a); o.modHata[String(a)] = 'HATA ATMADI: ' + typeof r; } catch (err) { o.modHata[String(a)] = (err instanceof Error ? 'Error' : typeof err) + ' | ' + String(err.message).slice(0, 70); }
+    }
+    o.modDondurulmus = Object.isFrozen(D.mod('economy/shop'));
+  }
+  // yardımcılar
+  o.uzunluk = { sim: D.sim.length, press: D.press.length, tap: D.tap.length, snap: D.snap.length, snapFrom: D.snapFrom.length };
+  const say0 = D.__sayac ? { ...D.__sayac } : null;
+  o.sim01 = D.sim(0.1);
+  o.sim01_60 = D.sim(0.1, 1 / 60);
+  o.simBos = String(D.sim());
+  o.simCall = D.sim.call(null, 0.1);
+  o.simApplyObj = D.sim.apply({ x: 1 }, [0.2, 0.1]);
+  // press geç bağlama: window.DK.sim casusla değiştirilir
+  const asil = window.DK.sim; const cagri = [];
+  window.DK.sim = function (...a) { cagri.push({ a, basili: D.input.down.has('F24') }); return asil.apply(this, a); };
+  let pr; try { pr = D.press('F24', 0.1); } finally { window.DK.sim = asil; }
+  o.press = { donus: pr === undefined ? 'undefined' : pr, cagri, sonraBasili: D.input.down.has('F24') };
+  const td = D.tap('F24');
+  o.tap = { donus: td === undefined ? 'undefined' : td, hemenPressed: D.input.pressedSet.has('F24'), hemenDown: D.input.down.has('F24') };
+  await new Promise((r) => setTimeout(r, 300));
+  o.tap.sonraDown = D.input.down.has('F24');
+  D.input.endFrame();
+  const s = D.snap(); o.snap = typeof s === 'string' ? s.slice(0, 23) + '…(' + s.length + ')' : typeof s;
+  const sf = D.snapFrom([10, 60, 10], [0, 0, 0]); const cp = D.engine.camera.position;
+  o.snapFrom = { onek: typeof sf === 'string' ? sf.slice(0, 23) : typeof sf, kamera: [cp.x, cp.y, cp.z].map((v) => +v.toFixed(3)) };
+  o.sayac = say0 ? { once: say0, sonra: { ...D.__sayac } } : 'yok';
+  o.durum = typeof window.__dkDurum === 'function' ? window.__dkDurum() : 'yok';
+  return o;
+};
+
+(async () => {
+  const b = await chromium.launch({ args: ARGS });
+  try {
+    // P1 w2 test kipi
+    {
+      const { ctx, p, kayit } = await sayfaAc(b, 'P1_w2_test', 'http://localhost:8081/index.html?test=1', { baslatma: [HAZIR_KANCASI] });
+      kayit.davranis = await p.evaluate(DAVRANIS, ESLEM).catch((e) => ({ hata: e.message.slice(0, 300) }));
+      yaz();
+      // kayıt üret: yeni tek oyunculu dünya (yuva 0), altın 4321, kaydet
+      kayit.kayit = await p.evaluate(async () => {
+        DK.G.noAutoPause = true;
+        const s = DK.handlers.startGame({ kind: 'solo', slot: 0, data: null });
+        const t0 = performance.now();
+        while (DK.G.state !== 'playing' && performance.now() - t0 < 60000) await new Promise((r) => setTimeout(r, 250));
+        await s;
+        DK.G.player.inv.gold = 4321;
+        DK.handlers.saveNow(false);
+        const d = {};
+        for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); d[k] = localStorage.getItem(k); }
+        return { durum: DK.G.state, sureMs: Math.round(performance.now() - t0), depolama: d };
+      }).catch((e) => ({ hata: e.message.slice(0, 300) }));
+      yaz();
+      await ctx.close();
+    }
+    // P2 v0.4 test kipi
+    {
+      const { ctx, p, kayit } = await sayfaAc(b, 'P2_v04_test', 'http://localhost:8080/index.html?test=1', { baslatma: [HAZIR_KANCASI] });
+      kayit.davranis = await p.evaluate(DAVRANIS, ESLEM).catch((e) => ({ hata: e.message.slice(0, 300) }));
+      yaz();
+      await ctx.close();
+    }
+    const MENU = () => {
+      const t = (s) => (document.querySelector(s)?.innerText || '').replace(/\s+/g, ' ').trim();
+      const d = {};
+      for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); d[k] = localStorage.getItem(k).length; }
+      return { dk: typeof window.DK, isaret: typeof window.__DK_TEST_KIPI, durum: typeof window.__dkDurum === 'function' ? window.__dkDurum() : 'yok',
+        menu: document.getElementById('menu').classList.contains('active'), yukleme: document.getElementById('loading').classList.contains('active'),
+        kart: t('#menu-card'), dugmeler: [...document.querySelectorAll('#menu-buttons .mbtn')].map((x) => x.innerText.replace(/\s+/g, ' ').trim() + (x.disabled ? ' [kapalı]' : '')),
+        depolamaAnahtar: d };
+    };
+    // P3/P4 test parametresiz, boş depolama
+    for (const [ad, url] of [['P3_w2_testsiz', 'http://localhost:8081/index.html'], ['P4_v04_testsiz', 'http://localhost:8080/index.html']]) {
+      const { ctx, p, kayit } = await sayfaAc(b, ad, url);
+      await p.waitForTimeout(1500);
+      kayit.menu = await p.evaluate(MENU).catch((e) => ({ hata: e.message.slice(0, 300) }));
+      yaz();
+      await ctx.close();
+    }
+    // P5/P6 test parametresiz, P1'in kaydıyla
+    const tohum = sonuc.sayfalar.P1_w2_test.kayit && sonuc.sayfalar.P1_w2_test.kayit.depolama;
+    if (tohum) {
+      for (const [ad, url] of [['P5_w2_testsiz_kayitli', 'http://localhost:8081/index.html'], ['P6_v04_testsiz_kayitli', 'http://localhost:8080/index.html']]) {
+        const { ctx, p, kayit } = await sayfaAc(b, ad, url, { depolama: tohum });
+        await p.waitForTimeout(1000);
+        kayit.menu = await p.evaluate(MENU).catch((e) => ({ hata: e.message.slice(0, 300) }));
+        // DÜNYALAR listesi
+        kayit.dunyalar = await p.evaluate(async () => {
+          const d = [...document.querySelectorAll('#menu-buttons .mbtn')].find((x) => /DÜNYALAR/.test(x.innerText));
+          if (!d) return 'DÜNYALAR yok';
+          d.click(); await new Promise((r) => setTimeout(r, 800));
+          const panel = [...document.querySelectorAll('#modal .panel')].filter((x) => x.offsetParent !== null).map((x) => x.innerText.replace(/\s+/g, ' ').trim()).filter(Boolean);
+          return panel.slice(0, 3).map((s) => s.slice(0, 400));
+        }).catch((e) => 'hata: ' + e.message.slice(0, 200));
+        await p.keyboard.press('Escape'); await p.waitForTimeout(500);
+        // DEVAM ET
+        kayit.devam = await p.evaluate(async () => {
+          const btn = document.querySelector('#menu-card .mbtn.primary');
+          if (!btn) return { hata: 'DEVAM ET yok', menu: document.getElementById('menu').classList.contains('active') };
+          btn.click();
+          const t0 = performance.now();
+          while (performance.now() - t0 < 60000) {
+            const hud = document.getElementById('hud');
+            if (hud && !hud.classList.contains('hidden') && !document.getElementById('menu').classList.contains('active')) break;
+            await new Promise((r) => setTimeout(r, 250));
+          }
+          await new Promise((r) => setTimeout(r, 1500));
+          return { sureMs: Math.round(performance.now() - t0), hudGorunur: !document.getElementById('hud').classList.contains('hidden'), menu: document.getElementById('menu').classList.contains('active'),
+            altin: document.getElementById('hud-gold')?.innerText, kart: (document.querySelector('#menu-card')?.innerText || '').slice(0, 60) };
+        }).catch((e) => ({ hata: e.message.slice(0, 300) }));
+        yaz();
+        await ctx.close();
+      }
+    }
+  } catch (e) {
+    sonuc.hata = e.message.slice(0, 500);
+  }
+  sonuc.bitis = new Date().toISOString();
+  yaz();
+  await b.close();
+  console.log('SONDA_A_BITTI ' + OUT);
+})();

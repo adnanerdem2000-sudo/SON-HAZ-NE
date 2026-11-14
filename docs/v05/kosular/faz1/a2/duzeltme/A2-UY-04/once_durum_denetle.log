@@ -1,0 +1,10 @@
+KNOWN_ISSUES: ana tablo 233 (açık 231, kısmi 2), kapanan 1; FIX_REPORT başlıkları {'KI-146': 'kismi', 'KI-225': 'duzeltildi', 'KI-147': 'kismi'}
+durum.json: 234 kayıt, ozet.durum {'acik': 234}, sayılan {'acik': 234}
+ÇELİŞKİ KI-146: durum.json 'acik' ↔ KNOWN_ISSUES 'kismi' (FIX_REPORT: kismi)
+ÇELİŞKİ KI-147: durum.json 'acik' ↔ KNOWN_ISSUES 'kismi' (FIX_REPORT: kismi)
+ÇELİŞKİ KI-225: durum.json 'acik' ↔ KNOWN_ISSUES 'duzeltildi' (FIX_REPORT: duzeltildi)
+ÇELİŞKİ KI-225: düzeltildi ama commit boş
+ÇELİŞKİ KI-225: düzeltildi ama kanit boş
+ÇELİŞKİ KI-225: düzeltildi ama testler boş
+ÇELİŞKİ KNOWN_ISSUES özeti 233 açık ↔ durum.json acik+kismi 234
+SONUC: KALDI (7 çelişki)

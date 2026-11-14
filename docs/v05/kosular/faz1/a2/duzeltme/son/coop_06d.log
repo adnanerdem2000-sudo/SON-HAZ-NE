@@ -1,0 +1,33 @@
+Kaptan/host {"code":"82HM22"}
+Tayfa/join {"room":"Ganimet Odası"}
+PASS Konuk odaya bağlandı → {"room":"Ganimet Odası"}
+Kaptan/hs "host-started"
+Tayfa/gs "guest-started"
+PASS 2 oyuncu oyunda ve bağlı
+[test] 1 yere bırak @ 60.8s
+Tayfa/g-drop {"btn":true,"n":4,"left":0}
+Kaptan/h-drop {"id":"pkhk2dzew","keep":true,"body":true,"n":4}
+PASS C01 Konuğun "Yere bırak"ı ev sahibinde kese olarak doğar (fizikli, uzun ömürlü) ve konukta aynı kimlikle görünür → {"drop":{"btn":true,"n":4,"left":0},"hostPk":{"id":"pkhk2dzew","keep":true,"body":true,"n":4},"guestSees":true}
+PASS C02 Konuk bıraktığı keseyi geri alır: eşya konuğun çantasına döner, kese ev sahibinde kalkar → {"back":4,"goneH":true}
+[test] 2 sandık @ 63.3s
+Kaptan/h-chest {"id":"ch2h9qp0w","coins":115}
+Tayfa/g-open "req"
+PASS C03 Konuğun açtığı sandığın altını doğrudan konuğun çantasına gider; ev sahibinde kese doğmaz; sandık iki tarafta da kalkar → {"g0":"req","gGot":115,"coins":115,"hSacks":0,"chestGone":true}
+[test] 3 kısmi @ 65.1s
+Kaptan/h-part "pkxt4wodg"
+Kaptan/h-part2 {"alive":true,"items":[["hayvan_postu",2]]}
+Tayfa/g-part {"alive":true,"items":[["hayvan_postu",2]]}
+PASS C04 Ev sahibinde kısmen sığan kese yerinde kalır (1 post alındı, 2 kaldı); konuktaki kopya da 2 post gösterir → {"hp":{"alive":true,"items":[["hayvan_postu",2]]},"gp":{"alive":true,"items":[["hayvan_postu",2]]}}
+[test] 4 güverte @ 67.2s
+Kaptan/h-deck {"id":"pkts7agaf","ship":"ship_main","att":true,"pos":[10.39,1.13,285.18]}
+Tayfa/g-deck {"ship":"ship_main","parent":true,"dy":1.52,"d":0.03}
+PASS C05 Güverteye düşen kese konukta da gemiye bağlıdır (suya düşmez, ev sahibiyle aynı yerde) → {"deck":{"id":"pkts7agaf","ship":"ship_main","att":true,"pos":[10.39,1.13,285.18]},"gDeck":{"ship":"ship_main","parent":true,"dy":1.52,"d":0.03}}
+[test] 5 av @ 68.4s
+Kaptan/h-animal {"id":"an0","x":-80.79332848293033,"z":95.09409778865077}
+Tayfa/g-move "ok"
+Tayfa/g-hit "hit"
+PASS C06 Konuğun öldürdüğü hayvan ev sahibinde öldüren olarak konuğu taşır (XP konuğa) → {"by":"e06161f4-28c8-47bd-a257-4819611dad2c","gid":"e06161f4-28c8-47bd-a257-4819611dad2c"}
+PASS Senaryo sonunda iki taraf da oyunda → ["playing","playing"]
+[test] 06d tamam @ 71.2s
+checks: 9 fails: 0 pageErrors: 0 (155.1 s)
+SONUC: GECTI (çıkış 0) kontrol 9/9 | ev() istisnası 0, kapalı sayfa atlama 0, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 4 farklı/68

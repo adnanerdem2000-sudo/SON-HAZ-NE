@@ -1,0 +1,11 @@
+# yayin_ref mutasyon sınaması 2026-11-14T14:43:17Z | araç: /home/user/SON-HAZ-NE-w2/tests/node/yayin_ref.mjs (sha256 1f313a31892d) | pages.yml: /home/user/SON-HAZ-NE-w2/.github/workflows/pages.yml (sha256 0edabd6453ad)
+R0_degisiklik_yok | çıkış 0 | SONUC: GECTI (9/9 denetim) | KALDI: yok | fark: 
+R1_kabuk_harf_duyarsiz | çıkış 1 | SONUC: KALDI (7/9 denetim) | kalan: YR4, YR4b | KALDI: YR4,YR4b | fark: >         run: test "${GITHUB_REF,,}" = "refs/heads/${YAYIN_DALI,,}" || { echo "::error::Yalnız $YAYIN_DALI yayınlanır ($GITHUB_REF)"; exit 1; } 
+R2_kabuk_nocasematch | çıkış 1 | SONUC: KALDI (7/9 denetim) | kalan: YR4, YR4b | KALDI: YR4,YR4b | fark: >         run: shopt -s nocasematch; [[ $GITHUB_REF == "refs/heads/$YAYIN_DALI" ]] || { echo "::error::Yalnız $YAYIN_DALI yayınlanır ($GITHUB_REF)"; exit 1; } 
+kabuk | ref=refs/heads/claude/hopeful-cray-o1jw6w | betik=GERCEK | çıkış 0
+kabuk | ref=refs/heads/claude/hopeful-cray-o1jw6w | betik=R1B | çıkış 0
+kabuk | ref=refs/heads/Claude/Hopeful-Cray-O1JW6W | betik=GERCEK | çıkış 1
+kabuk | ref=refs/heads/Claude/Hopeful-Cray-O1JW6W | betik=R1B | çıkış 0
+kabuk | ref=REFS/HEADS/CLAUDE/HOPEFUL-CRAY-O1JW6W | betik=GERCEK | çıkış 1
+kabuk | ref=REFS/HEADS/CLAUDE/HOPEFUL-CRAY-O1JW6W | betik=R1B | çıkış 0
+# bitti 2026-11-14T14:43:18Z

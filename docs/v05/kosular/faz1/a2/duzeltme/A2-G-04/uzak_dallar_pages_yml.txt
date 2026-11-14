@@ -1,0 +1,38 @@
+# A2-G-04 yeniden üretim (salt-okur; GitHub'a hiçbir şey gönderilmedi, iş akışı tetiklenmedi) 2026-11-14T14:08:08Z
+$ git ls-remote origin
+762f1c76674cad279931e28b5148a94933832b43	HEAD
+44d548cf0011c51158d6aaf3bcc79304c157f3ba	refs/heads/claude/denetim-v0.4
+762f1c76674cad279931e28b5148a94933832b43	refs/heads/claude/hopeful-cray-o1jw6w
+29315b5c24bfc89ae51a6a156de961b98b08fb15	refs/heads/claude/v0.5-saglamlastirma
+
+$ git ls-remote origin refs/heads/claude/denetim-v0.4  ↔  yerel izleme ref'i origin/claude/denetim-v0.4
+uzak: 44d548cf0011 | yerel: 44d548cf0011
+$ git show origin/claude/denetim-v0.4:.github/workflows/pages.yml | grep -n -E 'workflow_dispatch|cancel-in-progress|^    if:|github.ref|Ref denetimi'
+9:  workflow_dispatch:
+18:  cancel-in-progress: true
+35:    if: needs.check.outputs.enabled == 'true'
+
+$ git ls-remote origin refs/heads/claude/v0.5-saglamlastirma  ↔  yerel izleme ref'i origin/claude/v0.5-saglamlastirma
+uzak: 29315b5c24bf | yerel: 29315b5c24bf
+$ git show origin/claude/v0.5-saglamlastirma:.github/workflows/pages.yml | grep -n -E 'workflow_dispatch|cancel-in-progress|^    if:|github.ref|Ref denetimi'
+9:  workflow_dispatch:
+18:  cancel-in-progress: true
+35:    if: needs.check.outputs.enabled == 'true'
+
+$ git ls-remote origin refs/heads/claude/hopeful-cray-o1jw6w  ↔  yerel izleme ref'i origin/claude/hopeful-cray-o1jw6w
+uzak: 762f1c76674c | yerel: 762f1c76674c
+$ git show origin/claude/hopeful-cray-o1jw6w:.github/workflows/pages.yml | grep -n -E 'workflow_dispatch|cancel-in-progress|^    if:|github.ref|Ref denetimi'
+9:  workflow_dispatch:
+18:  cancel-in-progress: true
+35:    if: needs.check.outputs.enabled == 'true'
+
+$ git show HEAD:.github/workflows/pages.yml | grep -n -E ... (HEAD 29315b5 ile aynı mı?)
+29315b5
+origin/claude/v0.5-saglamlastirma pages.yml == HEAD pages.yml
+
+$ çalışma ağacı (Y9a, commit edilmedi)
+9:  workflow_dispatch:
+18:  cancel-in-progress: false
+35:    if: needs.check.outputs.enabled == 'true' && github.ref == 'refs/heads/claude/hopeful-cray-o1jw6w'
+41:      # Ref denetimi (K-03, Y9a): if ifadesindeki bir yazım hatası işi sessizce atlatırdı; bu adım başka ref'te kırmızı olur
+42:      - name: Ref denetimi (yalnız yayın dalı yayınlanır)

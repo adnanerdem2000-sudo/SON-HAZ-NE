@@ -1,0 +1,103 @@
+{
+ "adres": "http://localhost:8081/index.html",
+ "basla": "2026-11-14T14:52:07.234Z",
+ "durumlar": {
+  "F1_kancalar_404": {
+   "konsolHata": [
+    "Failed to load resource: the server responded with a status of 404 (Not Found)",
+    "TypeError: Failed to fetch dynamically imported module: http://localhost:8081/js/test/kancalar.js"
+   ],
+   "sayfaHata": [],
+   "istek4xx": [
+    "404 http://localhost:8081/js/test/kancalar.js"
+   ],
+   "sonuclanmaMs": 5617,
+   "ic": {
+    "hazir": "undefined",
+    "dk": "undefined",
+    "menu": false,
+    "yukleme": true,
+    "yukText": "Oyun başlatılamadı: Failed to fetch dynamically imported module: http://localhost:8081/js/test/kancalar.js\nWebGL destekli güncel bir tarayıcı (Chrome, Edge, Firefox) gerekiyor.",
+    "yukGorunur": true,
+    "durum": {
+     "surum": "0.5.0",
+     "derleme": "gelistirme",
+     "hazir": false,
+     "test": true,
+     "kati": true,
+     "tekDosya": false,
+     "isci": 3,
+     "yedek": false,
+     "isciHata": 0,
+     "araziKip": "",
+     "eksikVarlik": 0,
+     "kk": true,
+     "sinyal": "varsayilan"
+    }
+   }
+  },
+  "F2_kancalar_sozdizimi": {
+   "konsolHata": [
+    "SyntaxError: Unexpected token ';'"
+   ],
+   "sayfaHata": [],
+   "istek4xx": [],
+   "sonuclanmaMs": 4613,
+   "ic": {
+    "hazir": "undefined",
+    "dk": "undefined",
+    "menu": false,
+    "yukleme": true,
+    "yukText": "Oyun başlatılamadı: Unexpected token ';'\nWebGL destekli güncel bir tarayıcı (Chrome, Edge, Firefox) gerekiyor.",
+    "yukGorunur": true,
+    "durum": {
+     "surum": "0.5.0",
+     "derleme": "gelistirme",
+     "hazir": false,
+     "test": true,
+     "kati": true,
+     "tekDosya": false,
+     "isci": 3,
+     "yedek": false,
+     "isciHata": 0,
+     "araziKip": "",
+     "eksikVarlik": 0,
+     "kk": true,
+     "sinyal": "varsayilan"
+    }
+   }
+  },
+  "F3_kancalar_install_istisna": {
+   "konsolHata": [
+    "Error: sonda: install istisnasi\n    at install (http://localhost:8081/js/test/kancalar.js:2:35)\n    at boot (http://localhost:8081/js/main.js:144:5)"
+   ],
+   "sayfaHata": [],
+   "istek4xx": [],
+   "sonuclanmaMs": 4151,
+   "ic": {
+    "hazir": "undefined",
+    "dk": "undefined",
+    "menu": false,
+    "yukleme": true,
+    "yukText": "Oyun başlatılamadı: sonda: install istisnasi\nWebGL destekli güncel bir tarayıcı (Chrome, Edge, Firefox) gerekiyor.",
+    "yukGorunur": true,
+    "durum": {
+     "surum": "0.5.0",
+     "derleme": "gelistirme",
+     "hazir": false,
+     "test": true,
+     "kati": true,
+     "tekDosya": false,
+     "isci": 3,
+     "yedek": false,
+     "isciHata": 0,
+     "araziKip": "",
+     "eksikVarlik": 0,
+     "kk": true,
+     "sinyal": "varsayilan"
+    }
+   }
+  }
+ },
+ "bitis": "2026-11-14T14:52:36.287Z"
+}

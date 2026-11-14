@@ -1,0 +1,23 @@
+# Kapı çakışması kaydı (A2 düzeltici): 127.0.0.1:8097
+# A2 düzeltici 14:09'da K-08 mutantı (yeniden üretim, k08_once ağacı: /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a2fix/agaclar/k08_once) için 8097'de python http.server başlattı.
+# B0 iş akışının toplu_son5/6 betikleri tek_blob adımında 'curl 127.0.0.1:8097/' yanıt verirse kendi sunucusunu (fb0/v04_tek) BAŞLATMIYOR.
+# Sonuç: B0'ın 14:59:32'de başlayan 02_tek_dosya_blob koşusu bu sunucudan beslendi (DenizKorsanlari-SonHazine.html → w2 kökündeki yayımlanmış tek HTML'in yedek kopyası, sha256 f0ac8cb0…), v0.4 tek HTML'i değil.
+# Sunucu 15:02:56'da PID ile durduruldu; B0 ardından kendi 8097 sunucusunu başlattı (ps: 'cd $S/fb0/v04_tek && python3 -m http.server … 8097').
+# Etkilenen kayıt (yalnız okundu, değiştirilmedi): docs/v05/kosular/faz1/b/once_v04/son/02_tek_dosya_blob.{log,json} → SONUC: KOSUCU_HATASI (waitForFunction 240 sn). Geçersizdir; yeniden koşulmalıdır.
+
+## düzelticinin 8097 sunucu günlüğü (varlık istekleri hariç)
+Serving HTTP on 127.0.0.1 port 8097 (http://127.0.0.1:8097/) ...
+127.0.0.1 - - [14/Nov/2026 14:09:54] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [14/Nov/2026 14:11:39] "GET /index.html?test=1 HTTP/1.1" 200 -
+127.0.0.1 - - [14/Nov/2026 14:11:50] "GET /index.html HTTP/1.1" 200 -
+127.0.0.1 - - [14/Nov/2026 14:11:59] "GET /index.html?terrain=crash&peerhost=10.9.9.9&peerport=1 HTTP/1.1" 200 -
+127.0.0.1 - - [14/Nov/2026 14:12:08] "GET /index.html?test=1&terrain=noworker&peerhost=127.0.0.1&peerport=9000 HTTP/1.1" 200 -
+127.0.0.1 - - [14/Nov/2026 14:12:17] "GET /index.html?test=1&peerhost=10.9.9.9&peerport=1 HTTP/1.1" 200 -
+127.0.0.1 - - [14/Nov/2026 14:12:28] "GET /index.html?test=1&peerhost=127.0.0.1&peerport=9000 HTTP/1.1" 200 -
+127.0.0.1 - - [14/Nov/2026 14:18:38] "GET /index.html?test=1 HTTP/1.1" 200 -
+127.0.0.1 - - [14/Nov/2026 14:50:39] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [14/Nov/2026 14:59:32] "GET /DenizKorsanlari-SonHazine.html?test=1 HTTP/1.1" 200 -
+
+## B0 kaydının SONUC satırı
+SONUC: KALDI (çıkış 1) kontrol 3/4, onay 4 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 3 farklı/69 | neden: başarısız kontrol ya da adım: 1
+# Not (15:32:28): B0 aynı senaryoyu kendi 8097 sunucusuyla (fb0/v04_tek) yeniden koştu; dosya o koşuyla değişti (yukarıdaki SONUC satırı yeniden koşunundur, 15:30:37). 14:59:32 koşusunun KOSUCU_HATASI sonucu bu dosyada artık yok; ana oturum B0 raporunda o koşunun geçersiz olduğunu bilmeli.

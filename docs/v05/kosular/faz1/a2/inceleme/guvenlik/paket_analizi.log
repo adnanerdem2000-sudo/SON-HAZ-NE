@@ -1,0 +1,27 @@
+# Tek HTML paket çözümlemesi (güvenlik incelemesi, 2026-11-14T13:40:11Z)
+# dist/DenizKorsanlari-SonHazine.html sha256: cd76ab540a4743e7a2e4a639791b650b6350e6cf2d672c47ea3c1a2497fe3122 (w2'den, tools/build-single-html.mjs değişmedi, saplama yok)
+# Oyun paketi (dk-test-kancalari-v1 işaretini içeren <script>) ayıklandı; aşağıda testmode, kancalar ve kapıların küçültülmüş metni.
+== .has(location.hostname)
+  @930499: _=Ot(()=>{Zm();Iz={deniz:0,tropik:1,cangil:2,hayalet:3,buzul:4,volkan:5,col:6},Lz=4});function Bz(){try{return new URLSearchParams(location.search).get("test")!=="1"?!1:location.protocol==="file:"||Oz.has(location.hostname)}catch{return!1}}function cc(i){if(!lc)return null;try{return new URLSearchParams(location.search).get(i)}catch{return null}}var Oz,lc,Qm=Ot(()=>{Oz=new Set(["localhost","127.0.0.1","[::1]"]);lc=Bz()});function M_(i,t){return $m(i,t)}var
+  toplam: 1
+== Promise.resolve().then(()=>(fk(),pk))
+  @1705059: tart(i){f.crewHired=!!i?.misc?.crewHired,f.ownedShips=i?.misc?.ownedShips||["sloop"]},save(){return{crewHired:!!f.crewHired,ownedShips:f.ownedShips||["sloop"]}}};async function uP(){let i=null;lc&&(i=Promise.resolve().then(()=>(fk(),pk)),i.catch(()=>{})),mn.load();let t=ds.profile();f.profile=t||{appearance:pa("m"),unlocked:[],recentRooms:[]},f.profile.appearance={...pa(f.profile.appearance?.gender||"m"),...f.profile.appearance||{}},f.on("profileChanged",(
+  toplam: 1
+== fk=Ot(
+  @1619558: }' (kayıtlı: ${Object.keys(hv).join(", ")})`);return hv[l]},window.__DK_TEST_KIPI=uk}function dv(i,t){let e=window.DK[i];window.DK[i]=function(){let s=e.apply(this,arguments);return t(s),s}}var uk,hv,fk=Ot(()=>{Yp();kn();ar();fc();Jr();cv();nv();Ng();Qo();pn();bs();rr();$n();ki();uk="dk-test-kancalari-v1",hv=Object.freeze({"economy/shop":Ix,"economy/items":$1,"treasure/treasure":Hx,"world/props":X1,"world/ports":J1,"ui/menu":lv,"ui/panels":sv,"wildlife/sea
+  toplam: 1
+== this.mode=lc&&
+  @937983: austic; }`)},i},init(i,t="high"){this.scene=i,this.quality=t,this.group=new ot,this.group.name="terrain",i.add(this.group),this.material=this._material(),this.lodScale=t==="low"?.7:t==="medium"?.85:1,this.mode=lc&&(window.__DK_TERRAIN_MODE||cc("terrain"))||"",this._initWorkers(),this.ready=!0},build(){},buildMeshes(i,t){this.init(i,t)},_wantSeg(i,t,e,s){let n=-Ps+(i+.5)*zi,a=-Ps+(t+.5)*zi,o=Math.max(0,Math.hypot(n-e,a-s)-zi*.5);if(!this._land(i,t))return o
+  toplam: 1
+== function XE(){
+  @1523113: ;function W4(){let i="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",t="";for(let e=0;e<6;e++)t+=i[Math.floor(Math.random()*i.length)];return t}function j4(i){try{return JSON.stringify(i).length}catch{return 1/0}}function XE(){let i=cc("peerhost");return!i||!Y4.has(i)?null:{host:i,port:+(cc("peerport")||9e3),path:cc("peerpath")||"/",secure:cc("peersecure")==="1"}}function YE(){let i={debug:0},t=XE();return t&&(i.host=t.host,i.port=t.port,i.path=t.path,i.secure=t.secure
+  toplam: 1
+== window.__dkDurum=
+  @1707672: eagear:ld,shipControl:Ba,THREE:Ce,save:ds,port:Ti,combat:xe,effects:rt,events:Fn,worldEvents:zo,sky:Y,time:ee,bodies:us,weatherfx:hd,details:Qx,terrain:G,ocean:bt,crowd:tv,audio:X})}window.__ready=!0}window.__dkDurum=()=>Object.freeze({surum:hk,derleme:dk(),hazir:!!window.__ready,test:lc,kati:hP,tekDosya:!!window.__DK_SINGLE_FILE,isci:G.workers.length,yedek:!!G.fallback,isciHata:G.failures.length,araziKip:typeof G.mode=="string"?G.mode:String(G.mode??""),e
+  toplam: 1
+== window.DK=
+  @1618434: a uyan"));ut.open(ut.panel("Bayıldın!",e,{closable:!1}),{kind:"death",onEsc:()=>{}})}}});var pk={};Ns(pk,{MARK:()=>uk,install:()=>cP});function cP(i){let{post:t,engine:e,game:s,hud:n,net:a,input:o}=i;window.DK={...i},window.DK.snap=(l=.85)=>(t.render(),e.renderer.domElement.toDataURL("image/jpeg",l)),window.DK.snapFrom=(l,c,h=.85)=>{let u=e.camera;return u.position.set(...l),u.lookAt(...c),u.updateMatrixWorld(!0),t.render(),e.renderer.domElement.toDataURL(
+  toplam: 1
+== window.__DK_TEST_KIPI=
+  @1619418: .tap++}),window.DK.mod=l=>{if(typeof l!="string"||!Object.prototype.hasOwnProperty.call(hv,l))throw new Error(`DK.mod: bilinmeyen modül '${l}' (kayıtlı: ${Object.keys(hv).join(", ")})`);return hv[l]},window.__DK_TEST_KIPI=uk}function dv(i,t){let e=window.DK[i];window.DK[i]=function(){let s=e.apply(this,arguments);return t(s),s}}var uk,hv,fk=Ot(()=>{Yp();kn();ar();fc();Jr();cv();nv();Ng();Qo();pn();bs();rr();$n();ki();uk="dk-test-kancalari-v1",hv=Object.fre
+  toplam: 1

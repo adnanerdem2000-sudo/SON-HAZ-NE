@@ -1,0 +1,59 @@
+# esbuild paket yapısı: w2 ve 44d548c (git archive → scratchpad), write:false; 2026-11-14T13:48:58+00:00
+== w2
+dinamik importlar: [["js/main.js","js/test/kancalar.js"],["js/main.js","js/world/sky.js"]]
+kancalar.js statik bağımlılıkları: 14
+   js/economy/shop.js main grafında VAR
+   js/economy/items.js main grafında VAR
+   js/treasure/treasure.js main grafında VAR
+   js/world/props.js main grafında VAR
+   js/world/ports.js main grafında VAR
+   js/ui/menu.js main grafında VAR
+   js/ui/panels.js main grafında VAR
+   js/wildlife/seagear.js main grafında VAR
+   js/ship/shipModel.js main grafında VAR
+   js/core/nearfade.js main grafında VAR
+   js/world/worldData.js main grafında VAR
+   js/game/quests.js main grafında VAR
+   js/core/assets.js main grafında VAR
+   js/core/audio.js main grafında VAR
+paket boyu 3697923 __esm( sayısı 87 init_ çağrısı 666 'dk-test-kancalari-v1' var mı true
+{
+ "girdi": 97,
+ "sarili": 87,
+ "sarilmamis": [
+  "js/player/inventory.js",
+  "js/player/player.js",
+  "js/game/game.js",
+  "js/world/details.js",
+  "js/game/crowd.js",
+  "js/ui/hud.js",
+  "js/ui/skills.js",
+  "js/ui/dice.js",
+  "js/core/surum.js",
+  "js/main.js"
+ ],
+ "ustSira": [
+== 44d548c
+dinamik importlar: [["js/main.js","js/world/sky.js"]]
+kancalar.js statik bağımlılıkları: 0
+paket boyu 3572437 __esm( sayısı 12 init_ çağrısı 240 'dk-test-kancalari-v1' var mı false
+{
+ "girdi": 94,
+ "sarili": 12,
+ "sarilmamis": [
+  "js/game/ctx.js",
+  "js/core/shaderfix.js",
+  "vendor/three/addons/shaders/CopyShader.js",
+  "vendor/three/addons/postprocessing/Pass.js",
+  "vendor/three/addons/postprocessing/ShaderPass.js",
+  "vendor/three/addons/postprocessing/MaskPass.js",
+  "vendor/three/addons/postprocessing/EffectComposer.js",
+  "vendor/three/addons/postprocessing/RenderPass.js",
+  "vendor/three/addons/shaders/LuminosityHighPassShader.js",
+  "vendor/three/addons/postprocessing/UnrealBloomPass.js",
+  "vendor/three/addons/shaders/OutputShader.js",
+  "vendor/three/addons/postprocessing/OutputPass.js",
+== dist yeniden derleme
+cd76ab540a4743e7a2e4a639791b650b6350e6cf2d672c47ea3c1a2497fe3122  dist/DenizKorsanlari-SonHazine.html
+f0ac8cb02920b1a4b4b951134d31c4b361178c2cce6a8c25a71bb5853b089980  DenizKorsanlari-SonHazine.html
+(tools/ ve kök HTML: değişiklik yok)

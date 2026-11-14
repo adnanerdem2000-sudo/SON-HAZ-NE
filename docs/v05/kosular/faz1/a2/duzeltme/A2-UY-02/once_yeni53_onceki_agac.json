@@ -1,0 +1,1664 @@
+{
+ "scenario": "/home/user/SON-HAZ-NE-w2/tests/scenarios/53_test_kipi.js",
+ "url": "http://127.0.0.1:8096/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": {
+    "adres": "http://127.0.0.1:8096/index.html?test=1",
+    "dk": "object",
+    "durum": {
+     "surum": "0.5.0",
+     "derleme": "gelistirme",
+     "hazir": true,
+     "test": true,
+     "kati": true,
+     "tekDosya": false,
+     "isci": 3,
+     "yedek": false,
+     "isciHata": 0,
+     "araziKip": "",
+     "eksikVarlik": 0,
+     "kk": true,
+     "sinyal": "varsayilan"
+    },
+    "isaret": "dk-test-kancalari-v1"
+   },
+   "ms": 13
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "TK01 Test kipinde DK var: 49 alan + 5 yardımcı + mod/audio/__sayac (fazlası yok); __dkDurum().test === true",
+    "ok": true,
+    "value": {
+     "dk": "object",
+     "alan": 49,
+     "eksik": [],
+     "yardimci": 5,
+     "ek": {
+      "audio": "object",
+      "mod": "function",
+      "__sayac": "object"
+     },
+     "fazla": [],
+     "test": true,
+     "isaret": "dk-test-kancalari-v1"
+    }
+   },
+   "ms": 6
+  },
+  {
+   "n": 3,
+   "label": null,
+   "expect": {
+    "label": "TK01b __dkDurum() salt-okur tanı: 13 alan, yalnız ilkel değerler, dondurulmuş yeni nesne; sürüm 0.5.0, katı kip",
+    "ok": true,
+    "value": {
+     "alanlar": [
+      "araziKip",
+      "derleme",
+      "eksikVarlik",
+      "hazir",
+      "isci",
+      "isciHata",
+      "kati",
+      "kk",
+      "sinyal",
+      "surum",
+      "tekDosya",
+      "test",
+      "yedek"
+     ],
+     "ilkelOlmayan": [],
+     "donuk": true,
+     "yeniNesne": true,
+     "surum": "0.5.0",
+     "derleme": "string",
+     "hazir": true,
+     "kati": true
+    }
+   },
+   "ms": 4
+  },
+  {
+   "n": 4,
+   "label": null,
+   "agSay": {
+    "label": "TK01c Test kipinde kancalar modülü (js/test/kancalar.js) yüklendi",
+    "ok": true,
+    "value": 1
+   },
+   "ms": 3
+  },
+  {
+   "n": 5,
+   "label": null,
+   "expect": {
+    "label": "TK06 DK.mod aynı modül örneğini verir: economy/shop MERCHANTS === import() ile gelen; 14 kayıtlı adın hepsi aynı ad alanı nesnesi",
+    "ok": true,
+    "value": {
+     "ayniMerchants": true,
+     "kayitli": 14,
+     "farkli": []
+    }
+   },
+   "ms": 6
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "TK06b DK.mod bilinmeyen adda açık hata atar (ad iletide)",
+    "ok": true,
+    "value": {
+     "hataAtti": true,
+     "adGeciyor": true
+    }
+   },
+   "ms": 3
+  },
+  {
+   "n": 7,
+   "label": null,
+   "expect": {
+    "label": "TK01d DK.__sayac sim/press/tap çağrılarını sayar (press içindeki iki sim dahil); dönüş değerleri tabanla aynı",
+    "ok": true,
+    "value": {
+     "simDonus": 3,
+     "simFark": 1,
+     "adimFark": 3,
+     "pressDonus": "undefined",
+     "pressSonrasiSim": 3,
+     "pressSonrasiAdim": 7,
+     "press": 1,
+     "tapDonus": "undefined",
+     "tap": 1,
+     "anahtarlar": [
+      "adim",
+      "press",
+      "sim",
+      "tap"
+     ]
+    }
+   },
+   "ms": 8
+  },
+  {
+   "n": 8,
+   "label": null,
+   "goto": {
+    "url": "http://127.0.0.1:8096/index.html"
+   },
+   "ms": 9631
+  },
+  {
+   "n": 9,
+   "label": null,
+   "result": {
+    "adres": "http://127.0.0.1:8096/index.html",
+    "dk": "undefined",
+    "durum": {
+     "surum": "0.5.0",
+     "derleme": "gelistirme",
+     "hazir": true,
+     "test": false,
+     "kati": true,
+     "tekDosya": false,
+     "isci": 3,
+     "yedek": false,
+     "isciHata": 0,
+     "araziKip": "",
+     "eksikVarlik": 0,
+     "kk": true,
+     "sinyal": "varsayilan"
+    },
+    "kip": null
+   },
+   "ms": 21
+  },
+  {
+   "n": 10,
+   "label": null,
+   "expect": {
+    "label": "TK02 Test parametresiz açılış: DK yok, __ready, __dkDurum().test === false, menü görünür",
+    "ok": true,
+    "value": {
+     "dk": "undefined",
+     "hazir": true,
+     "test": false,
+     "menu": true,
+     "isaret": "undefined"
+    }
+   },
+   "ms": 13
+  },
+  {
+   "n": 11,
+   "label": null,
+   "agSay": {
+    "label": "TK02b Test kipsiz açılışta js/test/ altından hiçbir dosya istenmedi",
+    "ok": true,
+    "value": 0
+   },
+   "ms": 1
+  },
+  {
+   "n": 12,
+   "label": null,
+   "rotaKok": {
+    "kok": "https://0.peerjs.com",
+    "dizin": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a2fix_onceki/agac/.yok-53-sahte-sinyal"
+   },
+   "ms": 5
+  },
+  {
+   "n": 13,
+   "label": null,
+   "rotaKok": {
+    "kok": "https://kotu.ornek",
+    "dizin": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a2fix_onceki/agac/.yok-53-sahte-sinyal"
+   },
+   "ms": 5
+  },
+  {
+   "n": 14,
+   "label": null,
+   "rotaKok": {
+    "kok": "http://10.9.9.9:9000",
+    "dizin": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a2fix_onceki/agac/.yok-53-sahte-sinyal"
+   },
+   "ms": 1
+  },
+  {
+   "n": 15,
+   "label": null,
+   "goto": {
+    "url": "http://127.0.0.1:8096/index.html?join=ABCDEF&terrain=crash&peerhost=10.9.9.9&peerport=9000"
+   },
+   "ms": 8851
+  },
+  {
+   "n": 16,
+   "label": null,
+   "result": {
+    "adres": "http://127.0.0.1:8096/index.html?join=ABCDEF&terrain=crash&peerhost=10.9.9.9&peerport=9000",
+    "dk": "undefined",
+    "durum": {
+     "surum": "0.5.0",
+     "derleme": "gelistirme",
+     "hazir": true,
+     "test": false,
+     "kati": true,
+     "tekDosya": false,
+     "isci": 3,
+     "yedek": false,
+     "isciHata": 0,
+     "araziKip": "",
+     "eksikVarlik": 0,
+     "kk": true,
+     "sinyal": "varsayilan"
+    },
+    "kip": null,
+    "isci": null,
+    "yedek": null
+   },
+   "ms": 20
+  },
+  {
+   "n": 17,
+   "label": null,
+   "expect": {
+    "label": "TK03 Test kipi yok: ?terrain=crash ve ?peerhost=10.9.9.9 yok sayılır (araziKip boş, işçi ≥ 1, sinyal varsayılan)",
+    "ok": true,
+    "value": {
+     "test": false,
+     "araziKip": "",
+     "isciVar": true,
+     "sinyal": "varsayilan",
+     "dk": "undefined"
+    }
+   },
+   "ms": 7
+  },
+  {
+   "n": 18,
+   "label": null,
+   "expect": {
+    "label": "TK03a Davet bağlantısı (?join) katılma ekranını açtı; oda taraması kendiliğinden sinyal sunucusuna bağlanmayı deneyip bitti",
+    "ok": true,
+    "value": {
+     "katilmaEkrani": true,
+     "taramaBitti": true
+    }
+   },
+   "ms": 3
+  },
+  {
+   "n": 19,
+   "label": null,
+   "agSay": {
+    "label": "TK03b Test kipi yokken ?peerhost=10.9.9.9 adresine hiçbir istek gitmedi (K-08 uçtan uca)",
+    "ok": true,
+    "value": 0
+   },
+   "ms": 1
+  },
+  {
+   "n": 20,
+   "label": null,
+   "agSay": {
+    "label": "TK03c Oda taramasının sinyal isteği varsayılan PeerJS sunucusuna gitti",
+    "ok": true,
+    "value": 1
+   },
+   "ms": 1
+  },
+  {
+   "n": 21,
+   "label": null,
+   "goto": {
+    "url": "http://127.0.0.1:8096/index.html?test=1&terrain=noworker&peerhost=127.0.0.1&peerport=9000"
+   },
+   "ms": 7880
+  },
+  {
+   "n": 22,
+   "label": null,
+   "result": {
+    "adres": "http://127.0.0.1:8096/index.html?test=1&terrain=noworker&peerhost=127.0.0.1&peerport=9000",
+    "dk": "object",
+    "durum": {
+     "surum": "0.5.0",
+     "derleme": "gelistirme",
+     "hazir": true,
+     "test": true,
+     "kati": true,
+     "tekDosya": false,
+     "isci": 0,
+     "yedek": true,
+     "isciHata": 1,
+     "araziKip": "noworker",
+     "eksikVarlik": 0,
+     "kk": true,
+     "sinyal": "127.0.0.1:9000"
+    },
+    "kip": "noworker",
+    "yedek": true
+   },
+   "ms": 14
+  },
+  {
+   "n": 23,
+   "label": null,
+   "expect": {
+    "label": "TK04 Test kipinde ?terrain=noworker ve ?peerhost=127.0.0.1 uygulanır (yedek açık, sinyal 127.0.0.1:9000)",
+    "ok": true,
+    "value": {
+     "test": true,
+     "araziKip": "noworker",
+     "yedek": true,
+     "sinyal": "127.0.0.1:9000",
+     "dk": "object"
+    }
+   },
+   "ms": 19
+  },
+  {
+   "n": 24,
+   "label": null,
+   "goto": {
+    "url": "http://127.0.0.1:8096/index.html?test=1&join=ABCDEF&peerhost=10.9.9.9&peerport=9000"
+   },
+   "ms": 9504
+  },
+  {
+   "n": 25,
+   "label": null,
+   "degisken": {
+    "ad": "tk08ilk",
+    "deger": {
+     "sinyal": "varsayilan",
+     "test": true
+    }
+   },
+   "ms": 26
+  },
+  {
+   "n": 26,
+   "label": null,
+   "expect": {
+    "label": "TK08a Test kipinde davet bağlantısı katılma ekranını açtı; oda taraması kendiliğinden sinyal sunucusuna bağlanmayı deneyip bitti",
+    "ok": true,
+    "value": {
+     "katilmaEkrani": true,
+     "taramaBitti": true
+    }
+   },
+   "ms": 4
+  },
+  {
+   "n": 27,
+   "label": null,
+   "agSay": {
+    "label": "TK08b Test kipinde de geri döngü dışı peerhost (10.9.9.9) hiç istek almadı (K9-20 uçtan uca)",
+    "ok": true,
+    "value": 0
+   },
+   "ms": 3
+  },
+  {
+   "n": 28,
+   "label": null,
+   "agSay": {
+    "label": "TK08c Oda taramasının sinyal isteği varsayılan PeerJS sunucusuna gitti",
+    "ok": true,
+    "value": 1
+   },
+   "ms": 2
+  },
+  {
+   "n": 29,
+   "label": null,
+   "goto": {
+    "url": "http://127.0.0.1:8096/index.html?test=1&peerhost=127.0.0.1&peerport=9000"
+   },
+   "ms": 8582
+  },
+  {
+   "n": 30,
+   "label": null,
+   "expect": {
+    "label": "TK08 Test kipinde peerhost=10.9.9.9 yok sayılır (varsayılan), peerhost=127.0.0.1 kabul edilir (127.0.0.1:9000)",
+    "ok": true,
+    "value": {
+     "ilk": "varsayilan",
+     "ilkTest": true,
+     "ikinci": "127.0.0.1:9000",
+     "ikinciTest": true
+    }
+   },
+   "ms": 18
+  },
+  {
+   "n": 31,
+   "label": null,
+   "degisken": {
+    "ad": "agacOzeti",
+    "deger": {
+     "css/style.css": "b2d9b02df43c2f784f17468b",
+     "index.html": "6516e5a34068bdf0224cc7d9",
+     "js/core/assets.js": "c2d7246d967fc2c800c10cf6",
+     "js/core/audio.js": "65b8b9274f670f07d8e33d62",
+     "js/core/batch.js": "2645b8cc3e6bb171eee87f16",
+     "js/core/dispose.js": "3621dcba9d7672efa5b0650f",
+     "js/core/engine.js": "aa93bfd932aa0731c9b236ed",
+     "js/core/input.js": "280620a834eea05d790598c2",
+     "js/core/kk.js": "04345a479cf051081f204fdf",
+     "js/core/nearfade.js": "14ccc16f8b6cfb80cce63dce",
+     "js/core/post.js": "9f3b7d375d0e3c6491da2a4c",
+     "js/core/rim.js": "8d28cf7bd319f0729b58f084",
+     "js/core/save.js": "66a8746d437a95626c14aad9",
+     "js/core/settings.js": "0339aa783fd72ea3217851b7",
+     "js/core/shaderfix.js": "a3ae468af5190a545f229d82",
+     "js/core/surum.js": "c89b5b55be1ec02187ea2e34",
+     "js/core/testmode.js": "425d3b21d5cdef0c03392e0e",
+     "js/core/textures.js": "3fb3fa78130bc25f66678531",
+     "js/core/util.js": "a1e3de035f7020438c781bdb",
+     "js/economy/icons.js": "c2d80f928c8bfe2b178d655e",
+     "js/economy/items.js": "8223fbc4da886de0a2b13e1b",
+     "js/economy/shop.js": "c9556dc718cf90e6000fff01",
+     "js/game/bosses.js": "29147cce5bffbdee6a4097b1",
+     "js/game/combat.js": "198c0980348d8a5f68ef74ee",
+     "js/game/crowd.js": "5547ff7deeddad048e776f37",
+     "js/game/ctx.js": "99a9a4eb8ebd749a62ff442d",
+     "js/game/effects.js": "40e01e700296a6dcd06d8fc7",
+     "js/game/enemies.js": "e3f4fa985c758cd037450734",
+     "js/game/events.js": "1546b94be3393c25d9a52e32",
+     "js/game/game.js": "0125ade270ad0098a682883d",
+     "js/game/interact.js": "777987b9b343c4a737156750",
+     "js/game/npcs.js": "9d80fc928005f0bec8949454",
+     "js/game/progress.js": "a777f4a04895f036bcf26f3d",
+     "js/game/quests.js": "5552ef719897c53fe27f9833",
+     "js/game/shipControl.js": "a75a7797c14ef54397050b91",
+     "js/game/worldEvents.js": "29d9aee8b9eacf61adbf6ecb",
+     "js/main.js": "c4c9cdd6613740988c57cdaf",
+     "js/net/net.js": "8db642bee8485d24f0c98359",
+     "js/player/appearance.js": "c90a84c5bd87ca70cebfd2e9",
+     "js/player/camera.js": "caca92d40c448c8aa6322d25",
+     "js/player/character.js": "a7b0b644bfe66c3239ea49fc",
+     "js/player/inventory.js": "be71780d4636eaba66a4cd84",
+     "js/player/player.js": "b3e7a6e13cd6c8c680949009",
+     "js/player/ragdoll.js": "5d099834be31176d2c421db2",
+     "js/ship/ship.js": "8787e335d9b66fe9ae4073fc",
+     "js/ship/shipModel.js": "fc1317f87187b133a9aa9cc5",
+     "js/treasure/treasure.js": "e9befbf20019b3ccc9f7c67c",
+     "js/ui/creator.js": "9dfa8304422c3f4ac3cb9d4e",
+     "js/ui/dice.js": "22ffd985a5e7b8aaa4fb7e6a",
+     "js/ui/hud.js": "af6aae18a54553c8d20d9872",
+     "js/ui/journal.js": "a7535732fe70e88ba251fccb",
+     "js/ui/mapArt.js": "cde72bbaaf8cb976b65011b7",
+     "js/ui/menu.js": "ea143bcb995d449551094795",
+     "js/ui/panels.js": "32eb9f6cd73a3d864765832b",
+     "js/ui/settingsPanel.js": "e95a0559ad6dc93aa706fe29",
+     "js/ui/skills.js": "c288e37bf3be7e4139b2f4f5",
+     "js/ui/ui.js": "a86074be01f249c3791693b4",
+     "js/wildlife/animals.js": "22a8349650d6f3f777898e26",
+     "js/wildlife/fish.js": "14b7d142d82c3daab7adcd40",
+     "js/wildlife/fishing.js": "b21cc8c95955d909528273ae",
+     "js/wildlife/megafauna.js": "84bf7f3aeb7124cfbcc0ee21",
+     "js/wildlife/seagear.js": "241baaa7e408482abbee8603",
+     "js/world/archipelago.js": "0e9f6ed8d61871c463d8992b",
+     "js/world/bodies.js": "95639ccea87dc094f5c41ff8",
+     "js/world/cave.js": "060c90b1fd3e846b824dd647",
+     "js/world/details.js": "b53f78b1dc9de9d90b66a265",
+     "js/world/geo.js": "584c2b4fa0e92954067492e9",
+     "js/world/hazards.js": "57b12bc55d1e21718e0b242b",
+     "js/world/islands.js": "099152811d63853294b2da5d",
+     "js/world/ocean.js": "c29f37f86f2646390918d598",
+     "js/world/physics.js": "06d06a90621c4269ba748978",
+     "js/world/port.js": "4246a61cd270157ff719c640",
+     "js/world/ports.js": "0f0b0a0cd30cc1127fa69b50",
+     "js/world/props.js": "198c733781a19f2300fcb9b6",
+     "js/world/sky.js": "b6b9714d18c525bb2dbeb261",
+     "js/world/terrain.js": "249699d9478470c9a87d4ee6",
+     "js/world/terrainGen.js": "87c3c47c1584f997a250d8a9",
+     "js/world/terrainWorker.js": "5e3d33fa78f3c187f197ae4f",
+     "js/world/time.js": "b9aac94bf25cdd7999539267",
+     "js/world/weatherfx.js": "d34c114734b85d46c01ceaad",
+     "js/world/worldData.js": "e3d6eab9e7dca6a773814a2c",
+     "vendor/peerjs/peerjs.min.js": "7604d8c31bec4f134b0d15c2",
+     "vendor/three/addons/libs/meshopt_decoder.module.js": "d428e73a000057c6c94bfced",
+     "vendor/three/addons/loaders/GLTFLoader.js": "532ac726e120039acbcd6cf5",
+     "vendor/three/addons/postprocessing/EffectComposer.js": "4e079a5886152d7e529a59ae",
+     "vendor/three/addons/postprocessing/FXAAPass.js": "aa4e87a28f57e5508405730e",
+     "vendor/three/addons/postprocessing/MaskPass.js": "7cd08eee9d5d6f5578beaddb",
+     "vendor/three/addons/postprocessing/OutputPass.js": "02e4a261af34de71338185e9",
+     "vendor/three/addons/postprocessing/Pass.js": "444b409c235ead986893c472",
+     "vendor/three/addons/postprocessing/RenderPass.js": "817f6c3cdcd0fd41515d1123",
+     "vendor/three/addons/postprocessing/ShaderPass.js": "e2500a5913b26bbf5148ceaa",
+     "vendor/three/addons/postprocessing/UnrealBloomPass.js": "ba8f2fcadfa6588384c94734",
+     "vendor/three/addons/shaders/CopyShader.js": "a33057d5ac91c43304c186ac",
+     "vendor/three/addons/shaders/FXAAShader.js": "b8303d179f9d5d40a052483e",
+     "vendor/three/addons/shaders/LuminosityHighPassShader.js": "5044f780b6e6cf863947f64c",
+     "vendor/three/addons/shaders/OutputShader.js": "353479f77a8d7e2629d49cca",
+     "vendor/three/addons/utils/BufferGeometryUtils.js": "7bda2a8ba836b2bcf67cb938",
+     "vendor/three/addons/utils/SkeletonUtils.js": "b1632a703206c3d830de9fcb",
+     "vendor/three/three.core.js": "613e370f76638fdef8392664",
+     "vendor/three/three.module.js": "104f56145899722094556490"
+    }
+   },
+   "ms": 642
+  },
+  {
+   "n": 32,
+   "label": null,
+   "rotaKok": {
+    "kok": "https://oyun.ornek",
+    "dizin": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a2fix_onceki/agac"
+   },
+   "ms": 0
+  },
+  {
+   "n": 33,
+   "label": null,
+   "goto": {
+    "url": "https://oyun.ornek/index.html?join=ABCDEF&test=1&peerhost=kotu.ornek&peerport=443&peersecure=1&terrain=crash"
+   },
+   "ms": 11051
+  },
+  {
+   "n": 34,
+   "label": null,
+   "result": {
+    "adres": "https://oyun.ornek/index.html?join=ABCDEF&test=1&peerhost=kotu.ornek&peerport=443&peersecure=1&terrain=crash",
+    "guvenli": true,
+    "dk": "undefined",
+    "durum": {
+     "surum": "0.5.0",
+     "derleme": "gelistirme",
+     "hazir": true,
+     "test": false,
+     "kati": true,
+     "tekDosya": false,
+     "isci": 3,
+     "yedek": false,
+     "isciHata": 0,
+     "araziKip": "",
+     "eksikVarlik": 0,
+     "kk": true,
+     "sinyal": "varsayilan"
+    },
+    "kip": null,
+    "isci": null,
+    "yedek": null
+   },
+   "ms": 16
+  },
+  {
+   "n": 35,
+   "label": null,
+   "expect": {
+    "label": "TK05 Yerel olmayan https kökeninde ?test=1&peerhost=kotu.ornek&terrain=crash: DK yok, test kipi kapalı, araziKip boş, sinyal varsayılan",
+    "ok": true,
+    "value": {
+     "koken": "https://oyun.ornek",
+     "guvenli": true,
+     "dk": "undefined",
+     "test": false,
+     "araziKip": "",
+     "isciVar": true,
+     "sinyal": "varsayilan",
+     "isaret": "undefined"
+    }
+   },
+   "ms": 14
+  },
+  {
+   "n": 36,
+   "label": null,
+   "expect": {
+    "label": "TK05a Davet bağlantısı (?join) katılma ekranını açtı; oda taraması kendiliğinden sinyal sunucusuna bağlanmayı deneyip bitti",
+    "ok": true,
+    "value": {
+     "katilmaEkrani": true,
+     "taramaBitti": true
+    }
+   },
+   "ms": 2
+  },
+  {
+   "n": 37,
+   "label": null,
+   "agSay": {
+    "label": "TK05b Yerel olmayan kökende js/test/ altından hiçbir dosya istenmedi",
+    "ok": true,
+    "value": 0
+   },
+   "ms": 1
+  },
+  {
+   "n": 38,
+   "label": null,
+   "agSay": {
+    "label": "TK05c Saldırganın sinyal sunucusuna (kotu.ornek) hiçbir istek gitmedi (K-08 bağlantı saldırısı uçtan uca)",
+    "ok": true,
+    "value": 0
+   },
+   "ms": 2
+  },
+  {
+   "n": 39,
+   "label": null,
+   "agSay": {
+    "label": "TK05d Oda taramasının sinyal isteği varsayılan PeerJS sunucusuna gitti",
+    "ok": true,
+    "value": 1
+   },
+   "ms": 2
+  },
+  {
+   "n": 40,
+   "label": null,
+   "expect": {
+    "label": "TK05e Ön koşul: sahte kökenler (rotaKok dizini = çalışma dizini) --url ile aynı ağacı sunuyor: sayfanın yüklediği en az 20 .js/.html/.css dosyasının SHA-256 özeti eşit (eşit değilse TK05 ve TK09 başka bir ağacı sınamış olur)",
+    "ok": true,
+    "value": {
+     "yeterli": true,
+     "farkli": []
+    }
+   },
+   "ms": 434
+  },
+  {
+   "n": 41,
+   "label": null,
+   "rotaKok": {
+    "kok": "http://localhost:47913",
+    "dizin": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a2fix_onceki/agac"
+   },
+   "ms": 1
+  },
+  {
+   "n": 42,
+   "label": null,
+   "rotaKok": {
+    "kok": "http://localhost:47913/js/test",
+    "dizin": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a2fix_onceki/agac/.yok-53-sahte-sinyal"
+   },
+   "ms": 0
+  },
+  {
+   "n": 43,
+   "label": null,
+   "goto": {
+    "url": "http://localhost:47913/index.html?test=1"
+   },
+   "ms": 4234
+  },
+  {
+   "n": 44,
+   "label": null,
+   "expect": {
+    "label": "TK09 Test kipinde kancalar.js yüklenemezse (404) açılış hatası görünür yükleme ekranında kalır: menü açılmaz, __ready yazılmaz, DK yok",
+    "ok": false,
+    "value": {
+     "yukleme": false,
+     "hataGorunur": false,
+     "kancaAdi": true,
+     "menu": true,
+     "hazir": false,
+     "dk": "undefined",
+     "test": true
+    }
+   },
+   "ms": 12777
+  },
+  {
+   "n": 45,
+   "label": null,
+   "agSay": {
+    "label": "TK09b Test kipindeki sahte yerel kökende kancalar.js gerçekten istendi (ve 404 aldı)",
+    "ok": true,
+    "value": 1
+   },
+   "ms": 3
+  }
+ ],
+ "errors": [
+  "Failed to load resource: the server responded with a status of 404 (Not Found)",
+  "Failed to load resource: the server responded with a status of 404 (Not Found)",
+  "Failed to load resource: the server responded with a status of 404 (Not Found)",
+  "Failed to load resource: the server responded with a status of 404 (Not Found)",
+  "NET http://localhost:47913/js/test/kancalar.js net::ERR_ABORTED",
+  "TypeError: Failed to fetch dynamically imported module: http://localhost:47913/js/test/kancalar.js"
+ ],
+ "pageErrors": [],
+ "fails": 1,
+ "evalErrors": 0,
+ "readyMs": 5762,
+ "ms": 84257,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "../../../../../../../home/user/SON-HAZ-NE-w2/tests/scenarios/53_test_kipi.js",
+ "meta": {
+  "testler": [],
+  "sorunlar": [
+   "KI-143 (K-07)",
+   "KI-144 (K-08)"
+  ],
+  "kararlar": [
+   "K9-3",
+   "K9-4",
+   "K9-20"
+  ],
+  "dosyalar": [
+   "js/core/testmode.js",
+   "js/core/surum.js",
+   "js/test/kancalar.js",
+   "js/main.js",
+   "js/net/net.js",
+   "js/world/terrain.js",
+   "js/ui/menu.js"
+  ],
+  "aciklama": "62 kullanıcı testinden birine değil, Y3 kabulüne (test kipi, K-07/K-08) aittir; A2 inceleme düzeltmeleri: A2-G-01 (uçtan uca K-08/K9-20), A2-UY-02 (TK09), A2-UY-03 (TK05e)",
+  "izinliHatalar": [
+   {
+    "desen": "0\\.peerjs\\.com/peerjs/id",
+    "tur": "hepsi",
+    "gerekce": "TK03/TK08/TK05: varsayılan PeerJS sunucusu rotaKok ile var olmayan bir dizine bağlandı; davet bağlantısının oda taraması /peerjs/id isteğinde 404 alır (CORS başlığı da yoktur). Bu istek, sinyal isteğinin saldırgana değil varsayılan sunucuya gittiğinin kanıtıdır (TK03c, TK08c, TK05d)."
+   },
+   {
+    "desen": "^http://localhost:47913/js/test/kancalar\\.js$",
+    "tur": "ag",
+    "gerekce": "TK09: test kancaları modülü sahte yerel kökende kasıtlı olarak 404 döndürülür (yüklenemeyen kanca modülünün açılış hatası görünür mü?)."
+   },
+   {
+    "desen": "Failed to fetch dynamically imported module: http://localhost:47913/js/test/kancalar\\.js",
+    "tur": "konsol",
+    "gerekce": "TK09: boot() kancalar.js yüklenemeyince reddedilir ve main.js catch'i hatayı console.error ile yazar (beklenen açılış hatası)."
+   }
+  ]
+ },
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://127.0.0.1:8096/index.html?test=1",
+  "verilenUrl": "http://127.0.0.1:8096/index.html",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "29315b5c24bfc89ae51a6a156de961b98b08fb15",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T15:05:05.606Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs /home/user/SON-HAZ-NE-w2/tests/scenarios/53_test_kipi.js --url http://127.0.0.1:8096/index.html --size 640x360 --timeout 560 --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a2/duzeltme/A2-UY-02/once_yeni53_onceki_agac.json",
+  "cwd": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a2fix_onceki/agac",
+  "sunucular": [
+   "statik sunucu http://127.0.0.1:8096 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8096"
+  ],
+  "commit": "29315b5c24bfc89ae51a6a156de961b98b08fb15-kirli",
+  "senaryoSha256": "d82f37d4fb4e3b30c4a6ae37a27939cce5cda0303c86b68dd854d91f16210443",
+  "adim": {
+   "n": 44,
+   "js": "(async()=>{\n   const t0 = performance.now();\n   const menuAcik = () => !!document.getElementById('menu')?.classList.contains('active');\n   const hataYazili = () => /başlatılamadı/.test(document.getElementById('load-text')?.textContent || '');\n   while (performance.now() - t0 < 150000 && !menuAcik() && !hataYazili()) await new Promise((r) => setTimeout(r, 250));\n   await new Promise((r) => setTimeo"
+  },
+  "url": "http://127.0.0.1:8096/index.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 2,
+   "id": "TK01",
+   "etiket": "TK01 Test kipinde DK var: 49 alan + 5 yardımcı + mod/audio/__sayac (fazlası yok); __dkDurum().test === true",
+   "ok": true,
+   "deger": {
+    "dk": "object",
+    "alan": 49,
+    "eksik": [],
+    "yardimci": 5,
+    "ek": {
+     "audio": "object",
+     "mod": "function",
+     "__sayac": "object"
+    },
+    "fazla": [],
+    "test": true,
+    "isaret": "dk-test-kancalari-v1"
+   },
+   "beklenen": {
+    "eq": {
+     "dk": "object",
+     "alan": 49,
+     "eksik": [],
+     "yardimci": 5,
+     "ek": {
+      "audio": "object",
+      "mod": "function",
+      "__sayac": "object"
+     },
+     "fazla": [],
+     "test": true,
+     "isaret": "dk-test-kancalari-v1"
+    }
+   },
+   "sure_ms": 4,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 3,
+   "id": "TK01b",
+   "etiket": "TK01b __dkDurum() salt-okur tanı: 13 alan, yalnız ilkel değerler, dondurulmuş yeni nesne; sürüm 0.5.0, katı kip",
+   "ok": true,
+   "deger": {
+    "alanlar": [
+     "araziKip",
+     "derleme",
+     "eksikVarlik",
+     "hazir",
+     "isci",
+     "isciHata",
+     "kati",
+     "kk",
+     "sinyal",
+     "surum",
+     "tekDosya",
+     "test",
+     "yedek"
+    ],
+    "ilkelOlmayan": [],
+    "donuk": true,
+    "yeniNesne": true,
+    "surum": "0.5.0",
+    "derleme": "string",
+    "hazir": true,
+    "kati": true
+   },
+   "beklenen": {
+    "eq": {
+     "alanlar": [
+      "araziKip",
+      "derleme",
+      "eksikVarlik",
+      "hazir",
+      "isci",
+      "isciHata",
+      "kati",
+      "kk",
+      "sinyal",
+      "surum",
+      "tekDosya",
+      "test",
+      "yedek"
+     ],
+     "ilkelOlmayan": [],
+     "donuk": true,
+     "yeniNesne": true,
+     "surum": "0.5.0",
+     "derleme": "string",
+     "hazir": true,
+     "kati": true
+    }
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 4,
+   "id": "TK01c",
+   "etiket": "TK01c Test kipinde kancalar modülü (js/test/kancalar.js) yüklendi",
+   "ok": true,
+   "deger": 1,
+   "beklenen": {
+    "enAz": 1
+   },
+   "sure_ms": 0,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 5,
+   "id": "TK06",
+   "etiket": "TK06 DK.mod aynı modül örneğini verir: economy/shop MERCHANTS === import() ile gelen; 14 kayıtlı adın hepsi aynı ad alanı nesnesi",
+   "ok": true,
+   "deger": {
+    "ayniMerchants": true,
+    "kayitli": 14,
+    "farkli": []
+   },
+   "beklenen": {
+    "eq": {
+     "ayniMerchants": true,
+     "kayitli": 14,
+     "farkli": []
+    }
+   },
+   "sure_ms": 5,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 6,
+   "id": "TK06b",
+   "etiket": "TK06b DK.mod bilinmeyen adda açık hata atar (ad iletide)",
+   "ok": true,
+   "deger": {
+    "hataAtti": true,
+    "adGeciyor": true
+   },
+   "beklenen": {
+    "eq": {
+     "hataAtti": true,
+     "adGeciyor": true
+    }
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 7,
+   "id": "TK01d",
+   "etiket": "TK01d DK.__sayac sim/press/tap çağrılarını sayar (press içindeki iki sim dahil); dönüş değerleri tabanla aynı",
+   "ok": true,
+   "deger": {
+    "simDonus": 3,
+    "simFark": 1,
+    "adimFark": 3,
+    "pressDonus": "undefined",
+    "pressSonrasiSim": 3,
+    "pressSonrasiAdim": 7,
+    "press": 1,
+    "tapDonus": "undefined",
+    "tap": 1,
+    "anahtarlar": [
+     "adim",
+     "press",
+     "sim",
+     "tap"
+    ]
+   },
+   "beklenen": {
+    "eq": {
+     "simDonus": 3,
+     "simFark": 1,
+     "adimFark": 3,
+     "pressDonus": "undefined",
+     "pressSonrasiSim": 3,
+     "pressSonrasiAdim": 7,
+     "press": 1,
+     "tapDonus": "undefined",
+     "tap": 1,
+     "anahtarlar": [
+      "adim",
+      "press",
+      "sim",
+      "tap"
+     ]
+    }
+   },
+   "sure_ms": 7,
+   "benzetim": {
+    "sim": 3,
+    "adim": 7,
+    "press": 1,
+    "tap": 1,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 10,
+   "id": "TK02",
+   "etiket": "TK02 Test parametresiz açılış: DK yok, __ready, __dkDurum().test === false, menü görünür",
+   "ok": true,
+   "deger": {
+    "dk": "undefined",
+    "hazir": true,
+    "test": false,
+    "menu": true,
+    "isaret": "undefined"
+   },
+   "beklenen": {
+    "eq": {
+     "dk": "undefined",
+     "hazir": true,
+     "test": false,
+     "menu": true,
+     "isaret": "undefined"
+    }
+   },
+   "sure_ms": 10,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 11,
+   "id": "TK02b",
+   "etiket": "TK02b Test kipsiz açılışta js/test/ altından hiçbir dosya istenmedi",
+   "ok": true,
+   "deger": 0,
+   "beklenen": {
+    "enCok": 0
+   },
+   "sure_ms": 0,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 17,
+   "id": "TK03",
+   "etiket": "TK03 Test kipi yok: ?terrain=crash ve ?peerhost=10.9.9.9 yok sayılır (araziKip boş, işçi ≥ 1, sinyal varsayılan)",
+   "ok": true,
+   "deger": {
+    "test": false,
+    "araziKip": "",
+    "isciVar": true,
+    "sinyal": "varsayilan",
+    "dk": "undefined"
+   },
+   "beklenen": {
+    "eq": {
+     "test": false,
+     "araziKip": "",
+     "isciVar": true,
+     "sinyal": "varsayilan",
+     "dk": "undefined"
+    }
+   },
+   "sure_ms": 5,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 18,
+   "id": "TK03a",
+   "etiket": "TK03a Davet bağlantısı (?join) katılma ekranını açtı; oda taraması kendiliğinden sinyal sunucusuna bağlanmayı deneyip bitti",
+   "ok": true,
+   "deger": {
+    "katilmaEkrani": true,
+    "taramaBitti": true
+   },
+   "beklenen": {
+    "eq": {
+     "katilmaEkrani": true,
+     "taramaBitti": true
+    }
+   },
+   "sure_ms": 2,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 19,
+   "id": "TK03b",
+   "etiket": "TK03b Test kipi yokken ?peerhost=10.9.9.9 adresine hiçbir istek gitmedi (K-08 uçtan uca)",
+   "ok": true,
+   "deger": 0,
+   "beklenen": {
+    "enCok": 0
+   },
+   "sure_ms": 0,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 20,
+   "id": "TK03c",
+   "etiket": "TK03c Oda taramasının sinyal isteği varsayılan PeerJS sunucusuna gitti",
+   "ok": true,
+   "deger": 1,
+   "beklenen": {
+    "enAz": 1
+   },
+   "sure_ms": 0,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 23,
+   "id": "TK04",
+   "etiket": "TK04 Test kipinde ?terrain=noworker ve ?peerhost=127.0.0.1 uygulanır (yedek açık, sinyal 127.0.0.1:9000)",
+   "ok": true,
+   "deger": {
+    "test": true,
+    "araziKip": "noworker",
+    "yedek": true,
+    "sinyal": "127.0.0.1:9000",
+    "dk": "object"
+   },
+   "beklenen": {
+    "eq": {
+     "test": true,
+     "araziKip": "noworker",
+     "yedek": true,
+     "sinyal": "127.0.0.1:9000",
+     "dk": "object"
+    }
+   },
+   "sure_ms": 15,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 26,
+   "id": "TK08a",
+   "etiket": "TK08a Test kipinde davet bağlantısı katılma ekranını açtı; oda taraması kendiliğinden sinyal sunucusuna bağlanmayı deneyip bitti",
+   "ok": true,
+   "deger": {
+    "katilmaEkrani": true,
+    "taramaBitti": true
+   },
+   "beklenen": {
+    "eq": {
+     "katilmaEkrani": true,
+     "taramaBitti": true
+    }
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 27,
+   "id": "TK08b",
+   "etiket": "TK08b Test kipinde de geri döngü dışı peerhost (10.9.9.9) hiç istek almadı (K9-20 uçtan uca)",
+   "ok": true,
+   "deger": 0,
+   "beklenen": {
+    "enCok": 0
+   },
+   "sure_ms": 0,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 28,
+   "id": "TK08c",
+   "etiket": "TK08c Oda taramasının sinyal isteği varsayılan PeerJS sunucusuna gitti",
+   "ok": true,
+   "deger": 1,
+   "beklenen": {
+    "enAz": 1
+   },
+   "sure_ms": 0,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 30,
+   "id": "TK08",
+   "etiket": "TK08 Test kipinde peerhost=10.9.9.9 yok sayılır (varsayılan), peerhost=127.0.0.1 kabul edilir (127.0.0.1:9000)",
+   "ok": true,
+   "deger": {
+    "ilk": "varsayilan",
+    "ilkTest": true,
+    "ikinci": "127.0.0.1:9000",
+    "ikinciTest": true
+   },
+   "beklenen": {
+    "eq": {
+     "ilk": "varsayilan",
+     "ilkTest": true,
+     "ikinci": "127.0.0.1:9000",
+     "ikinciTest": true
+    }
+   },
+   "sure_ms": 14,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 35,
+   "id": "TK05",
+   "etiket": "TK05 Yerel olmayan https kökeninde ?test=1&peerhost=kotu.ornek&terrain=crash: DK yok, test kipi kapalı, araziKip boş, sinyal varsayılan",
+   "ok": true,
+   "deger": {
+    "koken": "https://oyun.ornek",
+    "guvenli": true,
+    "dk": "undefined",
+    "test": false,
+    "araziKip": "",
+    "isciVar": true,
+    "sinyal": "varsayilan",
+    "isaret": "undefined"
+   },
+   "beklenen": {
+    "eq": {
+     "koken": "https://oyun.ornek",
+     "guvenli": true,
+     "dk": "undefined",
+     "test": false,
+     "araziKip": "",
+     "isciVar": true,
+     "sinyal": "varsayilan",
+     "isaret": "undefined"
+    }
+   },
+   "sure_ms": 13,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 36,
+   "id": "TK05a",
+   "etiket": "TK05a Davet bağlantısı (?join) katılma ekranını açtı; oda taraması kendiliğinden sinyal sunucusuna bağlanmayı deneyip bitti",
+   "ok": true,
+   "deger": {
+    "katilmaEkrani": true,
+    "taramaBitti": true
+   },
+   "beklenen": {
+    "eq": {
+     "katilmaEkrani": true,
+     "taramaBitti": true
+    }
+   },
+   "sure_ms": 1,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 37,
+   "id": "TK05b",
+   "etiket": "TK05b Yerel olmayan kökende js/test/ altından hiçbir dosya istenmedi",
+   "ok": true,
+   "deger": 0,
+   "beklenen": {
+    "enCok": 0
+   },
+   "sure_ms": 0,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 38,
+   "id": "TK05c",
+   "etiket": "TK05c Saldırganın sinyal sunucusuna (kotu.ornek) hiçbir istek gitmedi (K-08 bağlantı saldırısı uçtan uca)",
+   "ok": true,
+   "deger": 0,
+   "beklenen": {
+    "enCok": 0
+   },
+   "sure_ms": 0,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 39,
+   "id": "TK05d",
+   "etiket": "TK05d Oda taramasının sinyal isteği varsayılan PeerJS sunucusuna gitti",
+   "ok": true,
+   "deger": 1,
+   "beklenen": {
+    "enAz": 1
+   },
+   "sure_ms": 0,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 40,
+   "id": "TK05e",
+   "etiket": "TK05e Ön koşul: sahte kökenler (rotaKok dizini = çalışma dizini) --url ile aynı ağacı sunuyor: sayfanın yüklediği en az 20 .js/.html/.css dosyasının SHA-256 özeti eşit (eşit değilse TK05 ve TK09 başka bir ağacı sınamış olur)",
+   "ok": true,
+   "deger": {
+    "yeterli": true,
+    "farkli": []
+   },
+   "beklenen": {
+    "eq": {
+     "yeterli": true,
+     "farkli": []
+    }
+   },
+   "sure_ms": 433,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 44,
+   "id": "TK09",
+   "etiket": "TK09 Test kipinde kancalar.js yüklenemezse (404) açılış hatası görünür yükleme ekranında kalır: menü açılmaz, __ready yazılmaz, DK yok",
+   "ok": false,
+   "deger": {
+    "yukleme": false,
+    "hataGorunur": false,
+    "kancaAdi": true,
+    "menu": true,
+    "hazir": false,
+    "dk": "undefined",
+    "test": true
+   },
+   "beklenen": {
+    "eq": {
+     "yukleme": true,
+     "hataGorunur": true,
+     "kancaAdi": true,
+     "menu": false,
+     "hazir": false,
+     "dk": "undefined",
+     "test": true
+    }
+   },
+   "sure_ms": 7147,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": "beklenen {\"eq\":{\"yukleme\":true,\"hataGorunur\":true,\"kancaAdi\":true,\"menu\":false,\"hazir\":false,\"dk\":\"undefined\",\"test\":true}}, gelen {\"yukleme\":false,\"hataGorunur\":false,\"kancaAdi\":true,\"menu\":true,\"hazir\":false,\"dk\":\"undefined\",\"test\":true} (sağlanmayan: eq {\"yukleme\":true,\"hataGorunur\":true,\"kancaAdi\":true,\"menu\":false,\"hazir\":false,\"dk\":\"undefined\",\"test\":true})",
+   "goruntu": {
+    "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/53_test_kipi_2026-11-14T15-05-05-439Z_9364/ilk_kalan.png",
+    "tuval": null
+   }
+  },
+  {
+   "n": 45,
+   "id": "TK09b",
+   "etiket": "TK09b Test kipindeki sahte yerel kökende kancalar.js gerçekten istendi (ve 404 aldı)",
+   "ok": true,
+   "deger": 1,
+   "beklenen": {
+    "enAz": 1
+   },
+   "sure_ms": 0,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [
+   {
+    "oyuncu": null,
+    "ileti": "TypeError: Failed to fetch dynamically imported module: http://localhost:47913/js/test/kancalar.js",
+    "url": "http://localhost:47913/js/main.js",
+    "satir": 395,
+    "isci": false,
+    "izin": "Failed to fetch dynamically imported module: http://localhost:47913/js/test/kancalar\\.js",
+    "sayi": 1
+   }
+  ],
+  "konsolAgEslesen": 4,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [
+   {
+    "oyuncu": null,
+    "tur": "yanit",
+    "url": "https://0.peerjs.com/peerjs/id?ts=17946687315580.2719710813315137&version=1.5.5",
+    "durum": 404,
+    "metin": "Not Found",
+    "kaynakTuru": "fetch",
+    "izin": "0\\.peerjs\\.com/peerjs/id",
+    "sayi": 1
+   },
+   {
+    "oyuncu": null,
+    "tur": "yanit",
+    "url": "https://0.peerjs.com/peerjs/id?ts=17946687486650.9190254210001089&version=1.5.5",
+    "durum": 404,
+    "metin": "Not Found",
+    "kaynakTuru": "fetch",
+    "izin": "0\\.peerjs\\.com/peerjs/id",
+    "sayi": 1
+   },
+   {
+    "oyuncu": null,
+    "tur": "yanit",
+    "url": "https://0.peerjs.com/peerjs/id?ts=17946687690030.4838303749609696&version=1.5.5",
+    "durum": 404,
+    "metin": "Not Found",
+    "kaynakTuru": "fetch",
+    "izin": "0\\.peerjs\\.com/peerjs/id",
+    "sayi": 1
+   },
+   {
+    "oyuncu": null,
+    "tur": "yanit",
+    "url": "http://localhost:47913/js/test/kancalar.js",
+    "durum": 404,
+    "metin": "Not Found",
+    "kaynakTuru": "script",
+    "izin": "^http://localhost:47913/js/test/kancalar\\.js$",
+    "sayi": 1
+   }
+  ],
+  "agIptal": [
+   {
+    "oyuncu": null,
+    "tur": "basarisiz",
+    "url": "http://localhost:47913/js/test/kancalar.js",
+    "hata": "net::ERR_ABORTED",
+    "kaynakTuru": "script",
+    "yontem": "GET",
+    "neden": "koşucu gezinmesi",
+    "sayi": 1
+   }
+  ],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://127.0.0.1:8096/vendor/three/three.core.js",
+   "sayi": 264
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://127.0.0.1:8096/vendor/three/three.core.js",
+   "sayi": 8
+  },
+  {
+   "oyuncu": null,
+   "ileti": "Arazi üretimi ana iş parçacığına alındı (test kipi: işçi yok)",
+   "url": "http://127.0.0.1:8096/js/world/terrain.js",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 3,
+  "toplam": 273,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  },
+  {
+   "desen": "0\\.peerjs\\.com/peerjs/id",
+   "gerekce": "TK03/TK08/TK05: varsayılan PeerJS sunucusu rotaKok ile var olmayan bir dizine bağlandı; davet bağlantısının oda taraması /peerjs/id isteğinde 404 alır (CORS başlığı da yoktur). Bu istek, sinyal isteğinin saldırgana değil varsayılan sunucuya gittiğinin kanıtıdır (TK03c, TK08c, TK05d).",
+   "tur": "hepsi",
+   "kaynak": "meta",
+   "eslesme": 3
+  },
+  {
+   "desen": "^http://localhost:47913/js/test/kancalar\\.js$",
+   "gerekce": "TK09: test kancaları modülü sahte yerel kökende kasıtlı olarak 404 döndürülür (yüklenemeyen kanca modülünün açılış hatası görünür mü?).",
+   "tur": "ag",
+   "kaynak": "meta",
+   "eslesme": 1
+  },
+  {
+   "desen": "Failed to fetch dynamically imported module: http://localhost:47913/js/test/kancalar\\.js",
+   "gerekce": "TK09: boot() kancalar.js yüklenemeyince reddedilir ve main.js catch'i hatayı console.error ile yazar (beklenen açılış hatası).",
+   "tur": "konsol",
+   "kaynak": "meta",
+   "eslesme": 1
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [
+  {
+   "ad": "ilk_kalan",
+   "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/53_test_kipi_2026-11-14T15-05-05-439Z_9364/ilk_kalan.png",
+   "tuval": null
+  }
+ ],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 1770,
+ "sonuc": {
+  "durum": "KALDI",
+  "cikisKodu": 1,
+  "neden": [
+   "başarısız kontrol ya da adım: 1"
+  ],
+  "onaySayisi": 25,
+  "kontrolSayisi": 25,
+  "gecen": 24,
+  "kalan": 1,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 1,
+  "izinliAg": 4,
+  "tur": "tarayici+benzetim",
+  "turSayim": {
+   "tarayici": 24,
+   "tarayici+benzetim": 1
+  }
+ },
+ "sure": {
+  "hazirMs": 5762,
+  "toplamMs": 84257,
+  "yerlesmeMs": 1002
+ }
+}

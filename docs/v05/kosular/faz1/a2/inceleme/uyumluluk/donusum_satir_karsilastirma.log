@@ -1,0 +1,127 @@
+# 2026-11-14T13:52:16+00:00 dönüştürülen altı senaryo: HEAD (29315b5) ↔ çalışma ağacı, satır ve onay sayıları + belirteç düzeyinde fark
+tests/scenarios/07_ekonomi.js                 satır 9→9 | expect 3→3 | check( 0→0 | label: 3→3 | eq:/truthy:/gte:/lte: 3→3 | import( 2→0 | DK.mod( 0→2
+tests/scenarios/14_deniz_ekipmani.js          satır 89→89 | expect 16→16 | check( 0→0 | label: 16→16 | eq:/truthy:/gte:/lte: 17→17 | import( 3→0 | DK.mod( 0→3
+tests/scenarios/15_iskele_kamera.js           satır 63→63 | expect 14→14 | check( 0→0 | label: 14→14 | eq:/truthy:/gte:/lte: 14→14 | import( 2→0 | DK.mod( 0→2
+tests/scenarios/16_kosu_poz_ganimet.js        satır 158→158 | expect 23→23 | check( 0→0 | label: 26→26 | eq:/truthy:/gte:/lte: 23→23 | import( 5→0 | DK.mod( 0→5
+tests/scenarios/17_kamera_kararma.js          satır 123→123 | expect 13→13 | check( 0→0 | label: 13→13 | eq:/truthy:/gte:/lte: 13→13 | import( 6→0 | DK.mod( 0→6
+tests/scenarios/coop/06d_ganimet_canta.cjs    satır 90→90 | expect 0→0 | check( 10→10 | label: 0→0 | eq:/truthy:/gte:/lte: 0→0 | import( 1→0 | DK.mod( 0→1
+
+===== tests/scenarios/07_ekonomi.js eski satır 9 yeni satır 9
+ op replace 4 5 4 5
+    replace " {expect: {js: `(async()=>{ const M=await import('/js" => " {expect: {js: `(async()=>{ const M=DK.mod('econo"
+    delete "pect: {js: `(async()=>{ const M=await import('/js/e" => " {expect: {js: `(async()=>{ const M=DK.mod('econom"
+    replace "ct: {js: `(async()=>{ const M=await import('/js/econ" => "{expect: {js: `(async()=>{ const M=DK.mod('economy/"
+    delete "{js: `(async()=>{ const M=await import('/js/economy/sh" => "pect: {js: `(async()=>{ const M=DK.mod('economy/sh"
+    delete "{ const M=await import('/js/economy/shop.js'); const " => "(async()=>{ const M=DK.mod('economy/shop'); const "
+ op replace 6 7 6 7
+    replace "before=inv.stacks.map(s=>s.id); const M=await import('/js" => "before=inv.stacks.map(s=>s.id); const M=DK.mod('econo"
+    delete "nv.stacks.map(s=>s.id); const M=await import('/js/e" => "re=inv.stacks.map(s=>s.id); const M=DK.mod('econom"
+    replace ".stacks.map(s=>s.id); const M=await import('/js/econ" => "e=inv.stacks.map(s=>s.id); const M=DK.mod('economy/"
+    delete "cks.map(s=>s.id); const M=await import('/js/economy/sh" => "nv.stacks.map(s=>s.id); const M=DK.mod('economy/sh"
+    delete "; const M=await import('/js/economy/shop.js'); const " => "p(s=>s.id); const M=DK.mod('economy/shop'); const "
+===== tests/scenarios/14_deniz_ekipmani.js eski satır 89 yeni satır 89
+ op replace 79 80 79 80
+    replace "ct: {js: `(async()=>{ const {MERCHANTS}=await import('./j" => "ct: {js: `(async()=>{ const {MERCHANTS}=DK.mod('econo"
+    delete " `(async()=>{ const {MERCHANTS}=await import('./js/" => "{js: `(async()=>{ const {MERCHANTS}=DK.mod('econom"
+    replace "(async()=>{ const {MERCHANTS}=await import('./js/eco" => "js: `(async()=>{ const {MERCHANTS}=DK.mod('economy/"
+    delete "nc()=>{ const {MERCHANTS}=await import('./js/economy/sh" => " `(async()=>{ const {MERCHANTS}=DK.mod('economy/sh"
+    delete "RCHANTS}=await import('./js/economy/shop.js'); const " => "{ const {MERCHANTS}=DK.mod('economy/shop'); const "
+    replace "/js/economy/shop.js'); const {rollLoot}=await import('./j" => "K.mod('economy/shop'); const {rollLoot}=DK.mod('treas"
+    delete "omy/shop.js'); const {rollLoot}=await import('./js/" => "d('economy/shop'); const {rollLoot}=DK.mod('treasu"
+    replace "y/shop.js'); const {rollLoot}=await import('./js/tre" => "('economy/shop'); const {rollLoot}=DK.mod('treasure"
+    delete "op.js'); const {rollLoot}=await import('./js/treasure/t" => "conomy/shop'); const {rollLoot}=DK.mod('treasure/t"
+    delete "ot}=await import('./js/treasure/treasure.js'); const " => "nst {rollLoot}=DK.mod('treasure/treasure'); const "
+ op replace 82 83 82 83
+    replace ")=>{ const p=DK.G.player; const {props}=await import('./j" => ")=>{ const p=DK.G.player; const {props}=DK.mod('world"
+    delete "st p=DK.G.player; const {props}=await import('./js/" => " const p=DK.G.player; const {props}=DK.mod('world/"
+    replace " p=DK.G.player; const {props}=await import('./js/wor" => "const p=DK.G.player; const {props}=DK.mod('world/pr"
+    delete "K.G.player; const {props}=await import('./js/world/prop" => "st p=DK.G.player; const {props}=DK.mod('world/prop"
+    delete "st {props}=await import('./js/world/props.js'); const" => "player; const {props}=DK.mod('world/props'); const"
+===== tests/scenarios/15_iskele_kamera.js eski satır 63 yeni satır 63
+ op replace 32 33 32 33
+    replace "expect: {js: `(async()=>{ const {ports}=await import('./j" => "expect: {js: `(async()=>{ const {ports}=DK.mod('world"
+    delete "{js: `(async()=>{ const {ports}=await import('./js/" => "ct: {js: `(async()=>{ const {ports}=DK.mod('world/"
+    replace "s: `(async()=>{ const {ports}=await import('./js/wor" => "t: {js: `(async()=>{ const {ports}=DK.mod('world/po"
+    delete "(async()=>{ const {ports}=await import('./js/world/port" => "{js: `(async()=>{ const {ports}=DK.mod('world/port"
+    delete "st {ports}=await import('./js/world/ports.js'); const" => "nc()=>{ const {ports}=DK.mod('world/ports'); const"
+ op replace 60 61 60 61
+    replace "{expect: {js: `(async()=>{ const {menu}=await import('./j" => "{expect: {js: `(async()=>{ const {menu}=DK.mod('ui/me"
+    delete " {js: `(async()=>{ const {menu}=await import('./js/" => "ect: {js: `(async()=>{ const {menu}=DK.mod('ui/men"
+    replace "js: `(async()=>{ const {menu}=await import('./js/ui/" => "ct: {js: `(async()=>{ const {menu}=DK.mod('ui/menu'"
+    delete "`(async()=>{ const {menu}=await import('./js/ui/menu.js" => " {js: `(async()=>{ const {menu}=DK.mod('ui/menu');"
+    delete " const {menu}=await import('./js/ui/menu.js'); menu.p" => "(async()=>{ const {menu}=DK.mod('ui/menu'); menu.p"
+===== tests/scenarios/16_kosu_poz_ganimet.js eski satır 158 yeni satır 158
+ op replace 61 62 61 62
+    replace ")=>{ const p=DK.G.player; const {ITEMS}=await import('./j" => ")=>{ const p=DK.G.player; const {ITEMS}=DK.mod('econo"
+    delete "st p=DK.G.player; const {ITEMS}=await import('./js/" => " const p=DK.G.player; const {ITEMS}=DK.mod('econom"
+    replace " p=DK.G.player; const {ITEMS}=await import('./js/eco" => "const p=DK.G.player; const {ITEMS}=DK.mod('economy/"
+    delete "K.G.player; const {ITEMS}=await import('./js/economy/it" => "st p=DK.G.player; const {ITEMS}=DK.mod('economy/it"
+    delete " {ITEMS}=await import('./js/economy/items.js'); const" => "ayer; const {ITEMS}=DK.mod('economy/items'); const"
+ op replace 70 71 70 71
+    replace ")=>{ const p=DK.G.player; const {ITEMS}=await import('./j" => ")=>{ const p=DK.G.player; const {ITEMS}=DK.mod('econo"
+    delete "st p=DK.G.player; const {ITEMS}=await import('./js/" => " const p=DK.G.player; const {ITEMS}=DK.mod('econom"
+    replace " p=DK.G.player; const {ITEMS}=await import('./js/eco" => "const p=DK.G.player; const {ITEMS}=DK.mod('economy/"
+    delete "K.G.player; const {ITEMS}=await import('./js/economy/it" => "st p=DK.G.player; const {ITEMS}=DK.mod('economy/it"
+    delete " {ITEMS}=await import('./js/economy/items.js'); const" => "ayer; const {ITEMS}=DK.mod('economy/items'); const"
+ op replace 88 89 88 89
+    replace "DK.G.player, TH=DK.THREE; const {ITEMS}=await import('./j" => "DK.G.player, TH=DK.THREE; const {ITEMS}=DK.mod('econo"
+    delete "yer, TH=DK.THREE; const {ITEMS}=await import('./js/" => ".player, TH=DK.THREE; const {ITEMS}=DK.mod('econom"
+    replace "r, TH=DK.THREE; const {ITEMS}=await import('./js/eco" => "player, TH=DK.THREE; const {ITEMS}=DK.mod('economy/"
+    delete "H=DK.THREE; const {ITEMS}=await import('./js/economy/it" => "yer, TH=DK.THREE; const {ITEMS}=DK.mod('economy/it"
+    delete " {ITEMS}=await import('./js/economy/items.js'); _g(-3" => "HREE; const {ITEMS}=DK.mod('economy/items'); _g(-3"
+ op replace 117 118 117 118
+    replace "(); const p=DK.G.player; const {panels}=await import('./j" => "(); const p=DK.G.player; const {panels}=DK.mod('ui/pa"
+    delete "t p=DK.G.player; const {panels}=await import('./js/" => "const p=DK.G.player; const {panels}=DK.mod('ui/pan"
+    replace "p=DK.G.player; const {panels}=await import('./js/ui/" => "onst p=DK.G.player; const {panels}=DK.mod('ui/panel"
+    delete ".G.player; const {panels}=await import('./js/ui/panels." => "t p=DK.G.player; const {panels}=DK.mod('ui/panels'"
+    delete "nst {panels}=await import('./js/ui/panels.js'); _g(-3" => ".player; const {panels}=DK.mod('ui/panels'); _g(-3"
+ op replace 133 134 133 134
+    replace "   const {seagear}=await import('./j" => "   const {seagear}=DK.mod('wildl"
+    delete "   const {seagear}=await import('./js/" => "   const {seagear}=DK.mod('wildli"
+    replace "   const {seagear}=await import('./js/wil" => "   const {seagear}=DK.mod('wildlife"
+    delete "   const {seagear}=await import('./js/wildlife/s" => "   const {seagear}=DK.mod('wildlife/s"
+    delete "ear}=await import('./js/wildlife/seagear.js'); seagea" => "const {seagear}=DK.mod('wildlife/seagear'); seagea"
+===== tests/scenarios/17_kamera_kararma.js eski satır 123 yeni satır 123
+ op replace 31 32 31 32
+    replace "   const SM=await import('./j" => "   const SM=DK.mod('ship/"
+    delete "   const SM=await import('./js/" => "   const SM=DK.mod('ship/s"
+    replace "   const SM=await import('./js/shi" => "   const SM=DK.mod('ship/shi"
+    delete "   const SM=await import('./js/ship/shipM" => "   const SM=DK.mod('ship/shipM"
+    delete "nst SM=await import('./js/ship/shipModel.js');" => "   const SM=DK.mod('ship/shipModel');"
+ op replace 47 48 47 48
+    replace " {expect: {js: `(async()=>{ const NF=await import('./j" => " {expect: {js: `(async()=>{ const NF=DK.mod('core/"
+    delete "ect: {js: `(async()=>{ const NF=await import('./js/" => "{expect: {js: `(async()=>{ const NF=DK.mod('core/n"
+    replace "t: {js: `(async()=>{ const NF=await import('./js/cor" => "expect: {js: `(async()=>{ const NF=DK.mod('core/nea"
+    delete "js: `(async()=>{ const NF=await import('./js/core/nearf" => "ect: {js: `(async()=>{ const NF=DK.mod('core/nearf"
+    delete "onst NF=await import('./js/core/nearfade.js'); const " => "sync()=>{ const NF=DK.mod('core/nearfade'); const "
+ op replace 56 57 56 57
+    replace " {expect: {js: `(async()=>{ const NF=await import('./j" => " {expect: {js: `(async()=>{ const NF=DK.mod('core/"
+    delete "ect: {js: `(async()=>{ const NF=await import('./js/" => "{expect: {js: `(async()=>{ const NF=DK.mod('core/n"
+    replace "t: {js: `(async()=>{ const NF=await import('./js/cor" => "expect: {js: `(async()=>{ const NF=DK.mod('core/nea"
+    delete "js: `(async()=>{ const NF=await import('./js/core/nearf" => "ect: {js: `(async()=>{ const NF=DK.mod('core/nearf"
+    delete "onst NF=await import('./js/core/nearfade.js'); const " => "sync()=>{ const NF=DK.mod('core/nearfade'); const "
+ op replace 81 82 81 82
+    replace " {expect: {js: `(async()=>{ const C=(await import('./j" => " {expect: {js: `(async()=>{ const C=(DK.mod('world"
+    delete "ect: {js: `(async()=>{ const C=(await import('./js/" => "{expect: {js: `(async()=>{ const C=(DK.mod('world/"
+    replace "t: {js: `(async()=>{ const C=(await import('./js/wor" => "expect: {js: `(async()=>{ const C=(DK.mod('world/wo"
+    delete "js: `(async()=>{ const C=(await import('./js/world/worl" => "ect: {js: `(async()=>{ const C=(DK.mod('world/worl"
+    delete "st C=(await import('./js/world/worldData.js')).CAVE; " => "nc()=>{ const C=(DK.mod('world/worldData')).CAVE; "
+ op replace 90 91 90 91
+    replace "expect: {js: `(async()=>{ const {props}=await import('./j" => "expect: {js: `(async()=>{ const {props}=DK.mod('world"
+    delete "{js: `(async()=>{ const {props}=await import('./js/" => "ct: {js: `(async()=>{ const {props}=DK.mod('world/"
+    replace "s: `(async()=>{ const {props}=await import('./js/wor" => "t: {js: `(async()=>{ const {props}=DK.mod('world/pr"
+    delete "(async()=>{ const {props}=await import('./js/world/prop" => "{js: `(async()=>{ const {props}=DK.mod('world/prop"
+    delete "st {props}=await import('./js/world/props.js'); const" => "nc()=>{ const {props}=DK.mod('world/props'); const"
+ op replace 115 116 115 116
+    replace " {expect: {js: `(async()=>{ const NF=await import('./j" => " {expect: {js: `(async()=>{ const NF=DK.mod('core/"
+    delete "ect: {js: `(async()=>{ const NF=await import('./js/" => "{expect: {js: `(async()=>{ const NF=DK.mod('core/n"
+    replace "t: {js: `(async()=>{ const NF=await import('./js/cor" => "expect: {js: `(async()=>{ const NF=DK.mod('core/nea"
+    delete "js: `(async()=>{ const NF=await import('./js/core/nearf" => "ect: {js: `(async()=>{ const NF=DK.mod('core/nearf"
+    delete "onst NF=await import('./js/core/nearfade.js'); const " => "sync()=>{ const NF=DK.mod('core/nearfade'); const "
+===== tests/scenarios/coop/06d_ganimet_canta.cjs eski satır 90 yeni satır 90
+ op replace 30 31 30 31
+    replace "=>{ const p=DK.G.player; const {panels}=await import('./j" => "=>{ const p=DK.G.player; const {panels}=DK.mod('ui/pa"
+    delete "t p=DK.G.player; const {panels}=await import('./js/" => "const p=DK.G.player; const {panels}=DK.mod('ui/pan"
+    replace "p=DK.G.player; const {panels}=await import('./js/ui/" => "onst p=DK.G.player; const {panels}=DK.mod('ui/panel"
+    delete ".G.player; const {panels}=await import('./js/ui/panels." => "t p=DK.G.player; const {panels}=DK.mod('ui/panels'"
+    delete "nst {panels}=await import('./js/ui/panels.js'); p.inv" => ".player; const {panels}=DK.mod('ui/panels'); p.inv"

@@ -1,0 +1,12 @@
+--- /home/user/SON-HAZ-NE-w2/js/net/net.js	2026-11-14 09:58:24.960641602 +0000
++++ /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a2_guvenlik/mutant_k08/js/net/net.js	2026-11-14 13:25:30.449085972 +0000
+@@ -59,6 +59,9 @@
+   const o = { debug: 0 };
+   const s = testSinyali();
+   if (s) { o.host = s.host; o.port = s.port; o.path = s.path; o.secure = s.secure; }
++  // MUTANT (inceleme): v0.4 net.js:52 aynen, yalnız location.search yerine document.URL
++  const q = new URL(document.URL).searchParams;
++  if (q.get('peerhost')) { o.host = q.get('peerhost'); o.port = +(q.get('peerport') || 9000); o.path = q.get('peerpath') || '/'; o.secure = q.get('peersecure') === '1'; }
+   return o;
+ }
+ // Tanı (window.__dkDurum): kullanılacak sinyal sunucusu ('<konak>:<kapı>' ya da 'varsayilan')

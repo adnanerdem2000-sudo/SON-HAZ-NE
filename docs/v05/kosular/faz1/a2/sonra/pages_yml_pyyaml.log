@@ -1,0 +1,9 @@
+# PyYAML 6.0.3 yaml.safe_load ile .github/workflows/pages.yml (Y9a sonrası)
+ayrıştırıldı: evet; üst anahtarlar: ['name', 'permissions', 'concurrency', 'jobs', 'on']
+on: {"push": {"branches": ["main", "master", "claude/hopeful-cray-o1jw6w"]}, "workflow_dispatch": null}
+jobs: ['check', 'deploy']
+concurrency: {"group": "pages", "cancel-in-progress": false}
+deploy.if: needs.check.outputs.enabled == 'true' && github.ref == 'refs/heads/claude/hopeful-cray-o1jw6w'
+deploy.steps[0]: {"name": "Ref denetimi (yalnız yayın dalı yayınlanır)", "env": {"YAYIN_DALI": "claude/hopeful-cray-o1jw6w"}, "run": "test \"$GITHUB_REF\" = \"refs/heads/$YAYIN_DALI\" || { echo \"::error::Yalnız $YAYIN_DALI yayınlanır ($GITHUB_REF)\"; exit 1; }"}
+deploy.steps[1:]: ['actions/checkout@v4', 'actions/configure-pages@v5', 'Tek dosya HTML sürümü', 'actions/upload-pages-artifact@v3', 'actions/deploy-pages@v4']
+yayin_ref.mjs ayrıştırıcısının ağacı PyYAML ile birebir aynı: True

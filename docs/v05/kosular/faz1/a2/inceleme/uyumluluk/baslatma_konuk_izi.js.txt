@@ -1,0 +1,22 @@
+// İnceleme (uyumluluk) — salt gözlem başlatma betiği: oyuna dokunmaz. "Oturum sona erdi" penceresinin metnini ve yükleme
+// ekranının açılıp kapanmasını zaman damgasıyla console.warn olarak yazar (koşucu uyarıları rapora işler, başarısızlık saymaz).
+(() => {
+  const t0 = performance.now();
+  const yaz = (s) => { try { console.warn('[inceleme] ' + Math.round(performance.now() - t0) + 'ms ' + s); } catch (e) { /* yoksay */ } };
+  const kur = () => {
+    const m = document.getElementById('modal');
+    const l = document.getElementById('loading');
+    if (m) {
+      let son = '';
+      new MutationObserver(() => {
+        const t = (m.innerText || '').replace(/\s+/g, ' ').trim();
+        if (t && t !== son && /Oturum|bağlantı|ayrıldı|veri gelmiyor|kopt/i.test(t)) { son = t; yaz('modal: ' + t.slice(0, 220)); }
+      }).observe(m, { childList: true, subtree: true, characterData: true });
+    }
+    if (l) {
+      let a = l.classList.contains('active');
+      new MutationObserver(() => { const b = l.classList.contains('active'); if (b !== a) { a = b; yaz('yukleme ' + (b ? 'acildi' : 'kapandi')); } }).observe(l, { attributes: true, attributeFilter: ['class'] });
+    }
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', kur); else kur();
+})();

@@ -1,0 +1,1305 @@
+{
+ "arac": "tests/node/test_kipi.mjs",
+ "tur": "node",
+ "agac": "/home/user/SON-HAZ-NE-w2",
+ "taban": "44d548c",
+ "commit": "29315b5c24bfc89ae51a6a156de961b98b08fb15",
+ "kirli": true,
+ "tarih": "2026-11-14T14:42:01.404Z",
+ "node": "v22.22.0",
+ "sonuc": {
+  "durum": "GECTI",
+  "gecen": 100,
+  "toplam": 100,
+  "kalan": []
+ },
+ "denetimler": [
+  {
+   "id": "C0",
+   "ad": "Çözümleyici js/** dosyalarının hepsini dengeli çözdü",
+   "ok": true,
+   "ayrinti": "80 dosya"
+  },
+  {
+   "id": "K1",
+   "ad": "Teste özgü kod (window.DK kurulumu — Object.assign/defineProperty/Reflect.set ve DK anahtarlı nesne dahil —, __sayac, işaret) yalnız js/test/ ya da saplanan netTest/netShape dosyalarında",
+   "ok": true,
+   "ayrinti": "79 oyun dosyası tarandı"
+  },
+  {
+   "id": "K2",
+   "ad": "Test modülleri yalnız geçerli if (TEST …) bloğundaki (koşul TEST ya da TEST && …) dinamik import() ile yükleniyor; yalnız install (kancalar.js: + MARK) dışa aktarıyor; statik içe aktarma yok (göreli, kökten ve tam adresli belirteçler)",
+   "ok": true,
+   "ayrinti": "test modülleri: js/test/kancalar.js"
+  },
+  {
+   "id": "K3",
+   "ad": "Oyun kodu window.DK'yi hiçbir yerde okumuyor (js/test/ dışı; ?.DK, top/parent/… .DK, çıplak DK ve 'DK' dizgesi dahil)",
+   "ok": true,
+   "ayrinti": "erişim yok"
+  },
+  {
+   "id": "K4",
+   "ad": "Sayfa adresinin sorgusu yalnız js/core/testmode.js'te ve js/main.js'te (?join) okunuyor (location.search/href/hash, location[…], document.URL/documentURI/baseURI, URLSearchParams, searchParams)",
+   "ok": true,
+   "ayrinti": "yalnız izinli yerler"
+  },
+  {
+   "id": "K5",
+   "ad": "Test kancası globalleri (window.__DK_*; üretim bayrağı __DK_SINGLE_FILE hariç) yalnız if (TEST …) bloğunda ya da TEST ? … : … doğru dalında okunuyor",
+   "ok": true,
+   "ayrinti": "korumasız okuma yok"
+  },
+  {
+   "id": "DT01",
+   "ad": "TEST: http://localhost:8080/?test=1",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://localhost:8080/?test=1",
+    "beklenenTEST": true,
+    "TEST": true
+   }
+  },
+  {
+   "id": "DT02",
+   "ad": "TEST: http://127.0.0.1:9/?test=1",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://127.0.0.1:9/?test=1",
+    "beklenenTEST": true,
+    "TEST": true
+   }
+  },
+  {
+   "id": "DT03",
+   "ad": "TEST: http://[::1]:8080/?test=1",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://[::1]:8080/?test=1",
+    "beklenenTEST": true,
+    "TEST": true
+   }
+  },
+  {
+   "id": "DT04",
+   "ad": "TEST: file:///x.html?test=1",
+   "ok": true,
+   "ayrinti": {
+    "url": "file:///x.html?test=1",
+    "beklenenTEST": true,
+    "TEST": true
+   }
+  },
+  {
+   "id": "DT05",
+   "ad": "TEST: https://adnanerdem2000-sudo.github.io/SON-HAZ-NE/?test=1",
+   "ok": true,
+   "ayrinti": {
+    "url": "https://adnanerdem2000-sudo.github.io/SON-HAZ-NE/?test=1",
+    "beklenenTEST": false,
+    "TEST": false
+   }
+  },
+  {
+   "id": "DT06",
+   "ad": "TEST: http://192.168.1.5:8080/?test=1",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://192.168.1.5:8080/?test=1",
+    "beklenenTEST": false,
+    "TEST": false
+   }
+  },
+  {
+   "id": "DT07",
+   "ad": "TEST: http://localhost:8080/?test=0",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://localhost:8080/?test=0",
+    "beklenenTEST": false,
+    "TEST": false
+   }
+  },
+  {
+   "id": "DT08",
+   "ad": "TEST: http://localhost:8080/?test=true",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://localhost:8080/?test=true",
+    "beklenenTEST": false,
+    "TEST": false,
+    "not": "?test=true"
+   }
+  },
+  {
+   "id": "DT09",
+   "ad": "TEST: http://localhost:8080/?test=1&test=0",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://localhost:8080/?test=1&test=0",
+    "beklenenTEST": true,
+    "TEST": true,
+    "not": "get ilk değeri alır"
+   }
+  },
+  {
+   "id": "DT10",
+   "ad": "TEST: http://localhost:8080/?join=X&test=1",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://localhost:8080/?join=X&test=1",
+    "beklenenTEST": true,
+    "TEST": true
+   }
+  },
+  {
+   "id": "DT11",
+   "ad": "TEST: http://localhost.evil.com/?test=1",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://localhost.evil.com/?test=1",
+    "beklenenTEST": false,
+    "TEST": false,
+    "not": "localhost önekli yabancı alan adı"
+   }
+  },
+  {
+   "id": "DT12",
+   "ad": "TEST: https://127.0.0.1.nip.io/?test=1",
+   "ok": true,
+   "ayrinti": {
+    "url": "https://127.0.0.1.nip.io/?test=1",
+    "beklenenTEST": false,
+    "TEST": false,
+    "not": "127.0.0.1 önekli yabancı alan adı"
+   }
+  },
+  {
+   "id": "DT13",
+   "ad": "TEST: http://localhost:8080/index.html",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://localhost:8080/index.html",
+    "beklenenTEST": false,
+    "TEST": false,
+    "not": "test parametresi yok"
+   }
+  },
+  {
+   "id": "DT14",
+   "ad": "TEST: https://oyun.ornek/index.html?test=1&peerhost=kotu.ornek&terrain=crash",
+   "ok": true,
+   "ayrinti": {
+    "url": "https://oyun.ornek/index.html?test=1&peerhost=kotu.ornek&terrain=crash",
+    "beklenenTEST": false,
+    "TEST": false,
+    "not": "TK05 sahte kökeni"
+   }
+  },
+  {
+   "id": "DT15",
+   "ad": "TEST: http://127.0.0.2:8080/?test=1",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://127.0.0.2:8080/?test=1",
+    "beklenenTEST": false,
+    "TEST": false,
+    "not": "yalnız 127.0.0.1 geri döngü sayılır"
+   }
+  },
+  {
+   "id": "DT16",
+   "ad": "TEST: http://0.0.0.0:8080/?test=1",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://0.0.0.0:8080/?test=1",
+    "beklenenTEST": false,
+    "TEST": false
+   }
+  },
+  {
+   "id": "DT17",
+   "ad": "TEST: http://localhost:8080/#?test=1",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://localhost:8080/#?test=1",
+    "beklenenTEST": false,
+    "TEST": false,
+    "not": "test yalnız parça (#) içinde"
+   }
+  },
+  {
+   "id": "DT18",
+   "ad": "TEST: http://[::ffff:127.0.0.1]:8080/?test=1",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://[::ffff:127.0.0.1]:8080/?test=1",
+    "beklenenTEST": false,
+    "TEST": false,
+    "not": "IPv4 eşlemeli IPv6"
+   }
+  },
+  {
+   "id": "DT19",
+   "ad": "TEST: http://LOCALHOST:8080/?test=1",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://LOCALHOST:8080/?test=1",
+    "beklenenTEST": true,
+    "TEST": true,
+    "not": "tarayıcı gibi URL konak adını küçültür"
+   }
+  },
+  {
+   "id": "DT20",
+   "ad": "TEST: firlatan",
+   "ok": true,
+   "ayrinti": {
+    "url": "(firlatan)",
+    "beklenenTEST": false,
+    "TEST": false,
+    "not": "location erişimi istisna atıyor"
+   }
+  },
+  {
+   "id": "DT21",
+   "ad": "TEST: tanimsiz",
+   "ok": true,
+   "ayrinti": {
+    "url": "(tanimsiz)",
+    "beklenenTEST": false,
+    "TEST": false,
+    "not": "location tanımsız"
+   }
+  },
+  {
+   "id": "TP01",
+   "ad": "testParam: https://oyun.ornek/index.html?test=1&peerhost=kotu.ornek&terrain=crash",
+   "ok": true,
+   "ayrinti": {
+    "url": "https://oyun.ornek/index.html?test=1&peerhost=kotu.ornek&terrain=crash",
+    "beklenenTEST": false,
+    "TEST": false,
+    "testParam": {
+     "peerhost": null,
+     "terrain": null,
+     "test": null
+    },
+    "not": "yerel olmayan köken: hepsi null"
+   }
+  },
+  {
+   "id": "TP02",
+   "ad": "testParam: http://localhost:8080/?peerhost=127.0.0.1&terrain=crash",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://localhost:8080/?peerhost=127.0.0.1&terrain=crash",
+    "beklenenTEST": false,
+    "TEST": false,
+    "testParam": {
+     "peerhost": null,
+     "terrain": null
+    },
+    "not": "test kipi kapalı (test=1 yok): null"
+   }
+  },
+  {
+   "id": "TP03",
+   "ad": "testParam: http://localhost:8080/?test=1&peerhost=127.0.0.1&peerport=9000&terrain=noworker",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://localhost:8080/?test=1&peerhost=127.0.0.1&peerport=9000&terrain=noworker",
+    "beklenenTEST": true,
+    "TEST": true,
+    "testParam": {
+     "peerhost": "127.0.0.1",
+     "peerport": "9000",
+     "terrain": "noworker",
+     "yok": null
+    }
+   }
+  },
+  {
+   "id": "TP04",
+   "ad": "testParam: file:///x.html?test=1&terrain=badurl",
+   "ok": true,
+   "ayrinti": {
+    "url": "file:///x.html?test=1&terrain=badurl",
+    "beklenenTEST": true,
+    "TEST": true,
+    "testParam": {
+     "terrain": "badurl"
+    }
+   }
+  },
+  {
+   "id": "TP05",
+   "ad": "testParam: http://192.168.1.5/?test=1&peerhost=127.0.0.1",
+   "ok": true,
+   "ayrinti": {
+    "url": "http://192.168.1.5/?test=1&peerhost=127.0.0.1",
+    "beklenenTEST": false,
+    "TEST": false,
+    "testParam": {
+     "peerhost": null
+    }
+   }
+  },
+  {
+   "id": "TP06",
+   "ad": "testParam: firlatan",
+   "ok": true,
+   "ayrinti": {
+    "url": "(firlatan)",
+    "beklenenTEST": false,
+    "TEST": false,
+    "testParam": {
+     "peerhost": null
+    },
+    "not": "location istisna atıyor"
+   }
+  },
+  {
+   "id": "AP1",
+   "ad": "Taban (44d548c) main.js window.DK nesnesi: 49 anahtar",
+   "ok": true,
+   "ayrinti": {
+    "kaynak": "git show 44d548c:js/main.js",
+    "sayi": 49,
+    "satir": 134
+   }
+  },
+  {
+   "id": "AP1b",
+   "ad": "Taban main.js'te 5 yardımcı (snap, snapFrom, sim, tap, press) birer kez atanıyor (satır 136-152)",
+   "ok": true,
+   "ayrinti": {
+    "snap": [
+     136
+    ],
+    "snapFrom": [
+     138
+    ],
+    "sim": [
+     145
+    ],
+    "tap": [
+     150
+    ],
+    "press": [
+     152
+    ]
+   }
+  },
+  {
+   "id": "AP2",
+   "ad": "API eşliği: taban 49 alan + 5 yardımcı eksiksiz; fazla tam olarak audio, mod, __sayac",
+   "ok": true,
+   "ayrinti": {
+    "eksik": [],
+    "fazla": [
+     "audio",
+     "__sayac",
+     "mod"
+    ],
+    "izinsizFazla": [],
+    "kurulmayanEk": [],
+    "kurulanSayi": 57,
+    "apiSirasiAyni": true
+   }
+  },
+  {
+   "id": "AP3",
+   "ad": "snap/snapFrom/sim/tap/press gövdeleri taban main.js:136-152 ile aynı (boşluk normalleştirilerek)",
+   "ok": true,
+   "ayrinti": {
+    "snap": "aynı (taban satır 136, kancalar satır 37)",
+    "snapFrom": "aynı (taban satır 138, kancalar satır 39)",
+    "sim": "aynı (taban satır 145, kancalar satır 46)",
+    "tap": "aynı (taban satır 150, kancalar satır 51)",
+    "press": "aynı (taban satır 152, kancalar satır 53)",
+    "serbestAdlar": "post, engine, game, hud, net, input install(api) parametresinden"
+   }
+  },
+  {
+   "id": "ZM",
+   "ad": "Zamanlama: kancalar modülünün sözü bekleniyor (await), install ondan sonra, window.__ready install'dan sonra yazılıyor",
+   "ok": true,
+   "ayrinti": {
+    "kancaImport": {
+     "satir": 92
+    },
+    "bekleme": {
+     "tur": "await kancaSozu (söz 92. satırda başlatıldı)",
+     "satir": 143
+    },
+    "installSatir": 144,
+    "readySatirlari": [
+     154
+    ]
+   }
+  },
+  {
+   "id": "ZM2",
+   "ad": "Kancalar boot() içinde yükleme ekranı kaldırılmadan ve menü açılmadan ÖNCE bekleniyor ve kuruluyor (yükleme/kurulum hatası görünür yükleme ekranında kalır; A2-UY-02)",
+   "ok": true,
+   "ayrinti": {
+    "boot": "bulundu",
+    "bekleme": 143,
+    "installSatir": 144,
+    "yuklemeKaldirSatir": 146,
+    "menuGosterSatir": 147
+   }
+  },
+  {
+   "id": "SN00",
+   "ad": "Sinyal kuralının yapısı: GERI_DONGU yalnız testSinyali()'nde, testParam('peer…') yalnız testSinyali()'nde, peerOpts/sinyalSunucusu testSinyali()'ni kullanıyor, her new Peer(…) seçeneği peerOpts()'tan; PeerJS URL ifadeleri bulundu",
+   "ok": true,
+   "ayrinti": "36 durum koşuldu"
+  },
+  {
+   "id": "SN01",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=127.0.0.1&peerport=9000 → kabul",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=127.0.0.1&peerport=9000",
+    "beklenen": "kabul",
+    "sonuc": {
+     "host": "127.0.0.1",
+     "port": 9000,
+     "path": "/",
+     "secure": false
+    },
+    "adresler": {
+     "http": "http://127.0.0.1:9000/peerjs/id (konak 127.0.0.1)",
+     "ws": "ws://127.0.0.1:9000/peerjs?key=peerjs (konak 127.0.0.1)"
+    }
+   }
+  },
+  {
+   "id": "SN02",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=localhost → kabul",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=localhost",
+    "beklenen": "kabul",
+    "sonuc": {
+     "host": "localhost",
+     "port": 9000,
+     "path": "/",
+     "secure": false
+    },
+    "adresler": {
+     "http": "http://localhost:9000/peerjs/id (konak localhost)",
+     "ws": "ws://localhost:9000/peerjs?key=peerjs (konak localhost)"
+    }
+   }
+  },
+  {
+   "id": "SN03",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=%5B%3A%3A1%5D → kabul",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=%5B%3A%3A1%5D",
+    "beklenen": "kabul",
+    "sonuc": {
+     "host": "[::1]",
+     "port": 9000,
+     "path": "/",
+     "secure": false
+    },
+    "adresler": {
+     "http": "http://[::1]:9000/peerjs/id (konak [::1])",
+     "ws": "ws://[::1]:9000/peerjs?key=peerjs (konak [::1])"
+    }
+   }
+  },
+  {
+   "id": "SN04",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=::1 → guvenli",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=::1",
+    "beklenen": "guvenli",
+    "sonuc": {
+     "host": "::1",
+     "port": 9000,
+     "path": "/",
+     "secure": false
+    },
+    "adresler": {
+     "http": "kurulamadı (Invalid URL): bağlantı yok",
+     "ws": "kurulamadı (Invalid URL): bağlantı yok"
+    }
+   }
+  },
+  {
+   "id": "SN05",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?(peerhost yok) → red",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "(peerhost yok)",
+    "beklenen": "red",
+    "sonuc": "yok sayıldı (varsayılan PeerJS sunucusu)"
+   }
+  },
+  {
+   "id": "SN06",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=127.0.0.1.kotu.ornek → red",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=127.0.0.1.kotu.ornek",
+    "beklenen": "red",
+    "sonuc": "yok sayıldı (varsayılan PeerJS sunucusu)"
+   }
+  },
+  {
+   "id": "SN07",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=localhost.kotu.ornek → red",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=localhost.kotu.ornek",
+    "beklenen": "red",
+    "sonuc": "yok sayıldı (varsayılan PeerJS sunucusu)"
+   }
+  },
+  {
+   "id": "SN08",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=LOCALHOST → red",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=LOCALHOST",
+    "beklenen": "red",
+    "sonuc": "yok sayıldı (varsayılan PeerJS sunucusu)"
+   }
+  },
+  {
+   "id": "SN09",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=Localhost → red",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=Localhost",
+    "beklenen": "red",
+    "sonuc": "yok sayıldı (varsayılan PeerJS sunucusu)"
+   }
+  },
+  {
+   "id": "SN10",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=localhost. → red",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=localhost.",
+    "beklenen": "red",
+    "sonuc": "yok sayıldı (varsayılan PeerJS sunucusu)"
+   }
+  },
+  {
+   "id": "SN11",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=0x7f000001 → red",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=0x7f000001",
+    "beklenen": "red",
+    "sonuc": "yok sayıldı (varsayılan PeerJS sunucusu)"
+   }
+  },
+  {
+   "id": "SN12",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=2130706433 → red",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=2130706433",
+    "beklenen": "red",
+    "sonuc": "yok sayıldı (varsayılan PeerJS sunucusu)"
+   }
+  },
+  {
+   "id": "SN13",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=127.1 → red",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=127.1",
+    "beklenen": "red",
+    "sonuc": "yok sayıldı (varsayılan PeerJS sunucusu)"
+   }
+  },
+  {
+   "id": "SN14",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=0177.0.0.1 → red",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=0177.0.0.1",
+    "beklenen": "red",
+    "sonuc": "yok sayıldı (varsayılan PeerJS sunucusu)"
+   }
+  },
+  {
+   "id": "SN15",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=%5B%3A%3Affff%3A127.0.0.1%5D → red",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=%5B%3A%3Affff%3A127.0.0.1%5D",
+    "beklenen": "red",
+    "sonuc": "yok sayıldı (varsayılan PeerJS sunucusu)"
+   }
+  },
+  {
+   "id": "SN16",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=%5B0%3A0%3A0%3A0%3A0%3A0%3A0%3A1%5D → red",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=%5B0%3A0%3A0%3A0%3A0%3A0%3A0%3A1%5D",
+    "beklenen": "red",
+    "sonuc": "yok sayıldı (varsayılan PeerJS sunucusu)"
+   }
+  },
+  {
+   "id": "SN17",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=localhost%3A80%40kotu.ornek → red",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=localhost%3A80%40kotu.ornek",
+    "beklenen": "red",
+    "sonuc": "yok sayıldı (varsayılan PeerJS sunucusu)"
+   }
+  },
+  {
+   "id": "SN18",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=kotu.ornek%23127.0.0.1 → red",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=kotu.ornek%23127.0.0.1",
+    "beklenen": "red",
+    "sonuc": "yok sayıldı (varsayılan PeerJS sunucusu)"
+   }
+  },
+  {
+   "id": "SN19",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=127.0.0.1%2Fkotu.ornek → red",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=127.0.0.1%2Fkotu.ornek",
+    "beklenen": "red",
+    "sonuc": "yok sayıldı (varsayılan PeerJS sunucusu)"
+   }
+  },
+  {
+   "id": "SN20",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=%20127.0.0.1 → red",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=%20127.0.0.1",
+    "beklenen": "red",
+    "sonuc": "yok sayıldı (varsayılan PeerJS sunucusu)"
+   }
+  },
+  {
+   "id": "SN21",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=127.0.0.1%00 → red",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=127.0.0.1%00",
+    "beklenen": "red",
+    "sonuc": "yok sayıldı (varsayılan PeerJS sunucusu)"
+   }
+  },
+  {
+   "id": "SN22",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=10.9.9.9 → red",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=10.9.9.9",
+    "beklenen": "red",
+    "sonuc": "yok sayıldı (varsayılan PeerJS sunucusu)"
+   }
+  },
+  {
+   "id": "SN23",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=kotu.ornek → red",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=kotu.ornek",
+    "beklenen": "red",
+    "sonuc": "yok sayıldı (varsayılan PeerJS sunucusu)"
+   }
+  },
+  {
+   "id": "SN24",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=kotu.ornek&peerhost=127.0.0.1 → red",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=kotu.ornek&peerhost=127.0.0.1",
+    "beklenen": "red",
+    "sonuc": "yok sayıldı (varsayılan PeerJS sunucusu)"
+   }
+  },
+  {
+   "id": "SN25",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=127.0.0.1&peerhost=kotu.ornek → guvenli",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=127.0.0.1&peerhost=kotu.ornek",
+    "beklenen": "guvenli",
+    "sonuc": {
+     "host": "127.0.0.1",
+     "port": 9000,
+     "path": "/",
+     "secure": false
+    },
+    "adresler": {
+     "http": "http://127.0.0.1:9000/peerjs/id (konak 127.0.0.1)",
+     "ws": "ws://127.0.0.1:9000/peerjs?key=peerjs (konak 127.0.0.1)"
+    }
+   }
+  },
+  {
+   "id": "SN26",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=127.0.0.1&peerport=9000&peerpath=%40kotu.ornek%2F → guvenli",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=127.0.0.1&peerport=9000&peerpath=%40kotu.ornek%2F",
+    "beklenen": "guvenli",
+    "sonuc": {
+     "host": "127.0.0.1",
+     "port": 9000,
+     "path": "@kotu.ornek/",
+     "secure": false
+    },
+    "adresler": {
+     "http": "http://127.0.0.1:9000/@kotu.ornek/peerjs/id (konak 127.0.0.1)",
+     "ws": "ws://127.0.0.1:9000/@kotu.ornek/peerjs?key=peerjs (konak 127.0.0.1)"
+    }
+   }
+  },
+  {
+   "id": "SN27",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=127.0.0.1&peerpath=%2F%2Fkotu.ornek%2F → guvenli",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=127.0.0.1&peerpath=%2F%2Fkotu.ornek%2F",
+    "beklenen": "guvenli",
+    "sonuc": {
+     "host": "127.0.0.1",
+     "port": 9000,
+     "path": "//kotu.ornek/",
+     "secure": false
+    },
+    "adresler": {
+     "http": "http://127.0.0.1:9000//kotu.ornek/peerjs/id (konak 127.0.0.1)",
+     "ws": "ws://127.0.0.1:9000//kotu.ornek/peerjs?key=peerjs (konak 127.0.0.1)"
+    }
+   }
+  },
+  {
+   "id": "SN28",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=127.0.0.1&peerpath=%5C%5Ckotu.ornek%2F → guvenli",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=127.0.0.1&peerpath=%5C%5Ckotu.ornek%2F",
+    "beklenen": "guvenli",
+    "sonuc": {
+     "host": "127.0.0.1",
+     "port": 9000,
+     "path": "\\\\kotu.ornek/",
+     "secure": false
+    },
+    "adresler": {
+     "http": "http://127.0.0.1:9000///kotu.ornek/peerjs/id (konak 127.0.0.1)",
+     "ws": "ws://127.0.0.1:9000///kotu.ornek/peerjs?key=peerjs (konak 127.0.0.1)"
+    }
+   }
+  },
+  {
+   "id": "SN29",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=127.0.0.1&peerpath=..%2F..%2F%40kotu.ornek → guvenli",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=127.0.0.1&peerpath=..%2F..%2F%40kotu.ornek",
+    "beklenen": "guvenli",
+    "sonuc": {
+     "host": "127.0.0.1",
+     "port": 9000,
+     "path": "../../@kotu.ornek",
+     "secure": false
+    },
+    "adresler": {
+     "http": "http://127.0.0.1:9000/@kotu.ornek/peerjs/id (konak 127.0.0.1)",
+     "ws": "ws://127.0.0.1:9000/@kotu.ornek/peerjs?key=peerjs (konak 127.0.0.1)"
+    }
+   }
+  },
+  {
+   "id": "SN30",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=127.0.0.1&peerpath=%3F%40kotu.ornek → guvenli",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=127.0.0.1&peerpath=%3F%40kotu.ornek",
+    "beklenen": "guvenli",
+    "sonuc": {
+     "host": "127.0.0.1",
+     "port": 9000,
+     "path": "?@kotu.ornek",
+     "secure": false
+    },
+    "adresler": {
+     "http": "http://127.0.0.1:9000/?@kotu.ornek/peerjs/id (konak 127.0.0.1)",
+     "ws": "ws://127.0.0.1:9000/?@kotu.ornek/peerjs?key=peerjs (konak 127.0.0.1)"
+    }
+   }
+  },
+  {
+   "id": "SN31",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=localhost&peerport=80%40kotu.ornek → guvenli",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=localhost&peerport=80%40kotu.ornek",
+    "beklenen": "guvenli",
+    "sonuc": {
+     "host": "localhost",
+     "port": null,
+     "path": "/",
+     "secure": false
+    },
+    "adresler": {
+     "http": "kurulamadı (Invalid URL): bağlantı yok",
+     "ws": "kurulamadı (Invalid URL): bağlantı yok"
+    }
+   }
+  },
+  {
+   "id": "SN32",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=localhost&peerport=443%2Fkotu.ornek → guvenli",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=localhost&peerport=443%2Fkotu.ornek",
+    "beklenen": "guvenli",
+    "sonuc": {
+     "host": "localhost",
+     "port": null,
+     "path": "/",
+     "secure": false
+    },
+    "adresler": {
+     "http": "kurulamadı (Invalid URL): bağlantı yok",
+     "ws": "kurulamadı (Invalid URL): bağlantı yok"
+    }
+   }
+  },
+  {
+   "id": "SN33",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=localhost&peerport=0x1BB → guvenli",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=localhost&peerport=0x1BB",
+    "beklenen": "guvenli",
+    "sonuc": {
+     "host": "localhost",
+     "port": 443,
+     "path": "/",
+     "secure": false
+    },
+    "adresler": {
+     "http": "http://localhost:443/peerjs/id (konak localhost)",
+     "ws": "ws://localhost:443/peerjs?key=peerjs (konak localhost)"
+    }
+   }
+  },
+  {
+   "id": "SN34",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=localhost&peerport=1e3 → guvenli",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=localhost&peerport=1e3",
+    "beklenen": "guvenli",
+    "sonuc": {
+     "host": "localhost",
+     "port": 1000,
+     "path": "/",
+     "secure": false
+    },
+    "adresler": {
+     "http": "http://localhost:1000/peerjs/id (konak localhost)",
+     "ws": "ws://localhost:1000/peerjs?key=peerjs (konak localhost)"
+    }
+   }
+  },
+  {
+   "id": "SN35",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=localhost&peerport=-1 → guvenli",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=localhost&peerport=-1",
+    "beklenen": "guvenli",
+    "sonuc": {
+     "host": "localhost",
+     "port": -1,
+     "path": "/",
+     "secure": false
+    },
+    "adresler": {
+     "http": "kurulamadı (Invalid URL): bağlantı yok",
+     "ws": "kurulamadı (Invalid URL): bağlantı yok"
+    }
+   }
+  },
+  {
+   "id": "SN36",
+   "ad": "testSinyali (gerçek net.js + gerçek PeerJS adres kurma): ?peerhost=127.0.0.1&peersecure=1&peerpath=%40kotu.ornek → guvenli",
+   "ok": true,
+   "ayrinti": {
+    "sorgu": "peerhost=127.0.0.1&peersecure=1&peerpath=%40kotu.ornek",
+    "beklenen": "guvenli",
+    "sonuc": {
+     "host": "127.0.0.1",
+     "port": 9000,
+     "path": "@kotu.ornek",
+     "secure": true
+    },
+    "adresler": {
+     "http": "https://127.0.0.1:9000/@kotu.ornek/peerjs/id (konak 127.0.0.1)",
+     "ws": "wss://127.0.0.1:9000/@kotu.ornek/peerjs?key=peerjs (konak 127.0.0.1)"
+    }
+   }
+  },
+  {
+   "id": "NS01",
+   "ad": "Öz-sınama: K-08 mutantı: peerOpts ?peerhost'u document.URL'den okur (v0.4 net.js:52; inceleme R3/R4) → K4 kırmızı",
+   "ok": true,
+   "ayrinti": {
+    "dosya": "js/net/net.js",
+    "beklenen": [
+     "K4"
+    ],
+    "yakalayan": [
+     "K4"
+    ]
+   }
+  },
+  {
+   "id": "NS02",
+   "ad": "Öz-sınama: G1 ?terrain test kipi dışında new URL(location.href).searchParams ile → K4 kırmızı",
+   "ok": true,
+   "ayrinti": {
+    "dosya": "js/world/terrain.js",
+    "beklenen": [
+     "K4"
+    ],
+    "yakalayan": [
+     "K4"
+    ]
+   }
+  },
+  {
+   "id": "NS03",
+   "ad": "Öz-sınama: G2 peerhost new URL(document.URL).searchParams ile → K4 kırmızı",
+   "ok": true,
+   "ayrinti": {
+    "dosya": "js/net/net.js",
+    "beklenen": [
+     "K4"
+    ],
+    "yakalayan": [
+     "K4"
+    ]
+   }
+  },
+  {
+   "id": "NS04",
+   "ad": "Öz-sınama: G3 peerhost new URLSearchParams(location['search']) ile → K4 kırmızı",
+   "ok": true,
+   "ayrinti": {
+    "dosya": "js/net/net.js",
+    "beklenen": [
+     "K4"
+    ],
+    "yakalayan": [
+     "K4"
+    ]
+   }
+  },
+  {
+   "id": "NS05",
+   "ad": "Öz-sınama: G4 window.__DK_TERRAIN_MODE test kipi koruması olmadan → K5 kırmızı",
+   "ok": true,
+   "ayrinti": {
+    "dosya": "js/world/terrain.js",
+    "beklenen": [
+     "K5"
+    ],
+    "yakalayan": [
+     "K5"
+    ]
+   }
+  },
+  {
+   "id": "NS06",
+   "ad": "Öz-sınama: G5 if (TEST !== undefined) (TEST false iken de doğru) → K2 kırmızı",
+   "ok": true,
+   "ayrinti": {
+    "dosya": "js/main.js",
+    "beklenen": [
+     "K2"
+    ],
+    "yakalayan": [
+     "K2"
+    ]
+   }
+  },
+  {
+   "id": "NS07",
+   "ad": "Öz-sınama: G6 testSinyali'nde geri döngü denetimi kaldırıldı (if (!h) return null) → SN kırmızı",
+   "ok": true,
+   "ayrinti": {
+    "dosya": "js/net/net.js",
+    "beklenen": [
+     "SN"
+    ],
+    "yakalayan": [
+     "SN"
+    ]
+   }
+  },
+  {
+   "id": "NS08",
+   "ad": "Öz-sınama: G7 Object.assign(window, { DK: … }) (oyun kodu) → K1 kırmızı",
+   "ok": true,
+   "ayrinti": {
+    "dosya": "js/game/game.js",
+    "beklenen": [
+     "K1"
+    ],
+    "yakalayan": [
+     "K1",
+     "K3"
+    ]
+   }
+  },
+  {
+   "id": "NS09",
+   "ad": "Öz-sınama: M1 window?.DK?.G → K3 kırmızı",
+   "ok": true,
+   "ayrinti": {
+    "dosya": "js/ui/hud.js",
+    "beklenen": [
+     "K3"
+    ],
+    "yakalayan": [
+     "K3"
+    ]
+   }
+  },
+  {
+   "id": "NS10",
+   "ad": "Öz-sınama: M2 const { DK } = window (yıkıcı atama) → K3 kırmızı",
+   "ok": true,
+   "ayrinti": {
+    "dosya": "js/ui/hud.js",
+    "beklenen": [
+     "K3"
+    ],
+    "yakalayan": [
+     "K1",
+     "K3"
+    ]
+   }
+  },
+  {
+   "id": "NS11",
+   "ad": "Öz-sınama: M3 top.DK.G → K3 kırmızı",
+   "ok": true,
+   "ayrinti": {
+    "dosya": "js/ui/hud.js",
+    "beklenen": [
+     "K3"
+    ],
+    "yakalayan": [
+     "K3"
+    ]
+   }
+  },
+  {
+   "id": "NS12",
+   "ad": "Öz-sınama: M4 import('/js/test/kancalar.js') if (TEST) dışında (kökten belirteç) → K2 kırmızı",
+   "ok": true,
+   "ayrinti": {
+    "dosya": "js/ui/hud.js",
+    "beklenen": [
+     "K2"
+    ],
+    "yakalayan": [
+     "K2"
+    ]
+   }
+  },
+  {
+   "id": "NS13",
+   "ad": "Öz-sınama: M5 import { install } from '/js/test/kancalar.js' (statik, kökten belirteç) → K2 kırmızı",
+   "ok": true,
+   "ayrinti": {
+    "dosya": "js/ui/hud.js",
+    "beklenen": [
+     "K2"
+    ],
+    "yakalayan": [
+     "K2"
+    ]
+   }
+  },
+  {
+   "id": "NS14",
+   "ad": "Öz-sınama: M6 new URL(location.href).searchParams.get('peerhost') → K4 kırmızı",
+   "ok": true,
+   "ayrinti": {
+    "dosya": "js/net/net.js",
+    "beklenen": [
+     "K4"
+    ],
+    "yakalayan": [
+     "K4"
+    ]
+   }
+  },
+  {
+   "id": "NS15",
+   "ad": "Öz-sınama: M7 import('../test/kancalar.js') if (TEST) dışında (denetim örneği) → K2 kırmızı",
+   "ok": true,
+   "ayrinti": {
+    "dosya": "js/ui/hud.js",
+    "beklenen": [
+     "K2"
+    ],
+    "yakalayan": [
+     "K2"
+    ]
+   }
+  },
+  {
+   "id": "NS16",
+   "ad": "Öz-sınama: M8 window.DK && window.DK.G (denetim örneği) → K3 kırmızı",
+   "ok": true,
+   "ayrinti": {
+    "dosya": "js/ui/hud.js",
+    "beklenen": [
+     "K3"
+    ],
+    "yakalayan": [
+     "K3"
+    ]
+   }
+  },
+  {
+   "id": "NS17",
+   "ad": "Öz-sınama: M9 new URLSearchParams(document.URL.split('?')[1]) → K4 kırmızı",
+   "ok": true,
+   "ayrinti": {
+    "dosya": "js/net/net.js",
+    "beklenen": [
+     "K4"
+    ],
+    "yakalayan": [
+     "K4"
+    ]
+   }
+  },
+  {
+   "id": "NS18",
+   "ad": "Öz-sınama: Reflect.set(window, 'DK', …) → K1 + K3 kırmızı",
+   "ok": true,
+   "ayrinti": {
+    "dosya": "js/game/game.js",
+    "beklenen": [
+     "K1",
+     "K3"
+    ],
+    "yakalayan": [
+     "K1",
+     "K3"
+    ]
+   }
+  },
+  {
+   "id": "NS19",
+   "ad": "Öz-sınama: import('http://localhost:8081/js/test/kancalar.js') (tam adres) → K2 kırmızı",
+   "ok": true,
+   "ayrinti": {
+    "dosya": "js/ui/hud.js",
+    "beklenen": [
+     "K2"
+    ],
+    "yakalayan": [
+     "K2"
+    ]
+   }
+  },
+  {
+   "id": "NS20",
+   "ad": "Öz-sınama: location.hash okuması → K4 kırmızı",
+   "ok": true,
+   "ayrinti": {
+    "dosya": "js/ui/menu.js",
+    "beklenen": [
+     "K4"
+    ],
+    "yakalayan": [
+     "K4"
+    ]
+   }
+  },
+  {
+   "id": "NS21",
+   "ad": "Öz-sınama: peerOpts'ta testParam('peerhost') (test kipinde geri döngü denetimini atlar, K9-20) → SN kırmızı",
+   "ok": true,
+   "ayrinti": {
+    "dosya": "js/net/net.js",
+    "beklenen": [
+     "SN"
+    ],
+    "yakalayan": [
+     "SN"
+    ]
+   }
+  },
+  {
+   "id": "NS22",
+   "ad": "Öz-sınama: if (TEST, 1) (virgül işleci: her zaman doğru) → K2 kırmızı",
+   "ok": true,
+   "ayrinti": {
+    "dosya": "js/main.js",
+    "beklenen": [
+     "K2"
+    ],
+    "yakalayan": [
+     "K2"
+    ]
+   }
+  },
+  {
+   "id": "NS23",
+   "ad": "Öz-sınama: yükleme ekranı kancalar kurulmadan kaldırılıyor (A2-UY-02 öncesi sıra) → ZM2 kırmızı",
+   "ok": true,
+   "ayrinti": {
+    "dosya": "js/main.js",
+    "beklenen": [
+     "ZM2"
+    ],
+    "yakalayan": [
+     "ZM2"
+    ]
+   }
+  },
+  {
+   "id": "NS24",
+   "ad": "Öz-sınama: TEST && window.__DK_YENI_KANCA (izin verilen iki biçimin dışında) → K5 kırmızı",
+   "ok": true,
+   "ayrinti": {
+    "dosya": "js/world/terrain.js",
+    "beklenen": [
+     "K5"
+    ],
+    "yakalayan": [
+     "K5"
+    ]
+   }
+  }
+ ]
+}

@@ -1,0 +1,273 @@
+{
+ "arac": "tests/node/yayin_ref.mjs",
+ "tur": "statik",
+ "dosya": ".github/workflows/pages.yml",
+ "taban": "44d548c",
+ "commit": "29315b5c24bfc89ae51a6a156de961b98b08fb15",
+ "tarih": "2026-11-14T15:11:06.882Z",
+ "node": "v22.22.0",
+ "sonuc": {
+  "durum": "GECTI",
+  "gecen": 9,
+  "toplam": 9,
+  "atlanan": 0,
+  "kalan": []
+ },
+ "denetimler": [
+  {
+   "id": "YR0",
+   "ad": "pages.yml ayrıştırıldı (küçük blok YAML ayrıştırıcısı)",
+   "ok": true,
+   "ayrinti": "üst anahtarlar: name, on, permissions, concurrency, jobs"
+  },
+  {
+   "id": "YR1",
+   "ad": "Tetikleyiciler değişmedi: push (main, master, yayın dalı) ve girdisiz workflow_dispatch",
+   "ok": true,
+   "ayrinti": {
+    "on": {
+     "push": {
+      "branches": [
+       "main",
+       "master",
+       "claude/hopeful-cray-o1jw6w"
+      ]
+     },
+     "workflow_dispatch": null
+    },
+    "beklenen": {
+     "push": {
+      "branches": [
+       "main",
+       "master",
+       "claude/hopeful-cray-o1jw6w"
+      ]
+     },
+     "workflow_dispatch": null
+    }
+   }
+  },
+  {
+   "id": "YR2",
+   "ad": "İş listesi değişmedi: check, deploy",
+   "ok": true,
+   "ayrinti": [
+    "check",
+    "deploy"
+   ]
+  },
+  {
+   "id": "YR3",
+   "ad": "deploy.if: mevcut koşul korunuyor ve && github.ref == 'refs/heads/claude/hopeful-cray-o1jw6w'",
+   "ok": true,
+   "ayrinti": {
+    "deployIf": "needs.check.outputs.enabled == 'true' && github.ref == 'refs/heads/claude/hopeful-cray-o1jw6w'",
+    "beklenen": "needs.check.outputs.enabled == 'true' && github.ref == 'refs/heads/claude/hopeful-cray-o1jw6w'",
+    "eskiKosulKorunuyor": true,
+    "refKosulu": true,
+    "veyaVar": false
+   }
+  },
+  {
+   "id": "YR4",
+   "ad": "deploy'un ilk adımı GITHUB_REF'i kabukta denetliyor (bash'te koşturuldu: yayın dalında 0; başka ref'lerde ve yayın dalının harf varyantlarında 1 + ::error::)",
+   "ok": true,
+   "ayrinti": {
+    "ilkAdim": "Ref denetimi (yalnız yayın dalı yayınlanır)",
+    "dogruRef": {
+     "ref": "refs/heads/claude/hopeful-cray-o1jw6w",
+     "cikis": 0,
+     "cikti": ""
+    },
+    "yanlisRef": [
+     {
+      "ref": "refs/heads/claude/v0.5-saglamlastirma",
+      "cikis": 1,
+      "cikti": "::error::Yalnız claude/hopeful-cray-o1jw6w yayınlanır (refs/heads/claude/v0.5-saglamlastirma)"
+     },
+     {
+      "ref": "refs/heads/main",
+      "cikis": 1,
+      "cikti": "::error::Yalnız claude/hopeful-cray-o1jw6w yayınlanır (refs/heads/main)"
+     },
+     {
+      "ref": "refs/heads/claude/hopeful-cray-o1jw6w-kopya",
+      "cikis": 1,
+      "cikti": "::error::Yalnız claude/hopeful-cray-o1jw6w yayınlanır (refs/heads/claude/hopeful-cray-o1jw6w-kopya)"
+     },
+     {
+      "ref": "refs/tags/claude/hopeful-cray-o1jw6w",
+      "cikis": 1,
+      "cikti": "::error::Yalnız claude/hopeful-cray-o1jw6w yayınlanır (refs/tags/claude/hopeful-cray-o1jw6w)"
+     },
+     {
+      "ref": "",
+      "cikis": 1,
+      "cikti": "::error::Yalnız claude/hopeful-cray-o1jw6w yayınlanır ()"
+     },
+     {
+      "ref": "refs/heads/Claude/Hopeful-Cray-O1JW6W",
+      "cikis": 1,
+      "cikti": "::error::Yalnız claude/hopeful-cray-o1jw6w yayınlanır (refs/heads/Claude/Hopeful-Cray-O1JW6W)"
+     },
+     {
+      "ref": "REFS/HEADS/CLAUDE/HOPEFUL-CRAY-O1JW6W",
+      "cikis": 1,
+      "cikti": "::error::Yalnız claude/hopeful-cray-o1jw6w yayınlanır (REFS/HEADS/CLAUDE/HOPEFUL-CRAY-O1JW6W)"
+     },
+     {
+      "ref": "refs/heads/CLAUDE/HOPEFUL-CRAY-O1JW6W",
+      "cikis": 1,
+      "cikti": "::error::Yalnız claude/hopeful-cray-o1jw6w yayınlanır (refs/heads/CLAUDE/HOPEFUL-CRAY-O1JW6W)"
+     }
+    ]
+   }
+  },
+  {
+   "id": "YR4b",
+   "ad": "Öz-sınama: harfe duyarsız yapılmış kabuk denetimi (inceleme mutantları R1, R2) YR4'ün ref listesiyle yakalanıyor (bozulmuş betik bir harf varyantı ref'te 0 veriyor)",
+   "ok": true,
+   "ayrinti": [
+    {
+     "ad": "R1 \"${GITHUB_REF,,}\" = \"refs/heads/${YAYIN_DALI,,}\" (küçük harfe çevirip karşılaştırma)",
+     "ok": true,
+     "dogruRefCikis": 0,
+     "yakalayanRefler": [
+      "refs/heads/Claude/Hopeful-Cray-O1JW6W",
+      "REFS/HEADS/CLAUDE/HOPEFUL-CRAY-O1JW6W",
+      "refs/heads/CLAUDE/HOPEFUL-CRAY-O1JW6W"
+     ]
+    },
+    {
+     "ad": "R2 shopt -s nocasematch; [[ $GITHUB_REF == \"refs/heads/$YAYIN_DALI\" ]]",
+     "ok": true,
+     "dogruRefCikis": 0,
+     "yakalayanRefler": [
+      "refs/heads/Claude/Hopeful-Cray-O1JW6W",
+      "REFS/HEADS/CLAUDE/HOPEFUL-CRAY-O1JW6W",
+      "refs/heads/CLAUDE/HOPEFUL-CRAY-O1JW6W"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "YR5",
+   "ad": "concurrency.cancel-in-progress: false (grup pages)",
+   "ok": true,
+   "ayrinti": {
+    "group": "pages",
+    "cancel-in-progress": false
+   }
+  },
+  {
+   "id": "YR6",
+   "ad": "deploy'un geri kalanı değişmedi (needs check, github-pages ortamı, 5 yayın adımı)",
+   "ok": true,
+   "ayrinti": {
+    "needs": "check",
+    "ortam": {
+     "name": "github-pages",
+     "url": "${{ steps.deployment.outputs.page_url }}"
+    },
+    "korumaAdimiDisarida": true,
+    "adimlar": [
+     "actions/checkout@v4",
+     "actions/configure-pages@v5",
+     "Tek dosya HTML sürümü",
+     "actions/upload-pages-artifact@v3",
+     "actions/deploy-pages@v4"
+    ]
+   }
+  },
+  {
+   "id": "YR7",
+   "ad": "Taban (44d548c) ile fark yalnız Y9a'nın üç değişikliği (eklenen ref adımı, deploy.if, cancel-in-progress)",
+   "ok": true,
+   "ayrinti": {
+    "eklenenSatir": 6,
+    "degisen": [
+     "cancel-in-progress",
+     "deploy.if"
+    ],
+    "ilkFark": null
+   }
+  }
+ ],
+ "ayristirilan": {
+  "name": "GitHub Pages",
+  "on": {
+   "push": {
+    "branches": [
+     "main",
+     "master",
+     "claude/hopeful-cray-o1jw6w"
+    ]
+   },
+   "workflow_dispatch": null
+  },
+  "permissions": {
+   "contents": "read",
+   "pages": "write",
+   "id-token": "write"
+  },
+  "concurrency": {
+   "group": "pages",
+   "cancel-in-progress": false
+  },
+  "jobs": {
+   "check": {
+    "runs-on": "ubuntu-latest",
+    "outputs": {
+     "enabled": "${{ steps.pages.outputs.enabled }}"
+    },
+    "steps": [
+     {
+      "id": "pages",
+      "env": {
+       "GH_TOKEN": "${{ github.token }}"
+      },
+      "run": "code=$(curl -s -o /dev/null -w '%{http_code}' -H \"Authorization: Bearer $GH_TOKEN\" -H \"Accept: application/vnd.github+json\" \"https://api.github.com/repos/${{ github.repository }}/pages\")\nif [ \"$code\" = \"200\" ]; then echo \"enabled=true\" >> \"$GITHUB_OUTPUT\"; else echo \"enabled=false\" >> \"$GITHUB_OUTPUT\"; echo \"::notice::GitHub Pages bu depoda henüz açık değil (Settings → Pages → Source: GitHub Actions). Yayın atlandı.\"; fi\n"
+     }
+    ]
+   },
+   "deploy": {
+    "needs": "check",
+    "if": "needs.check.outputs.enabled == 'true' && github.ref == 'refs/heads/claude/hopeful-cray-o1jw6w'",
+    "runs-on": "ubuntu-latest",
+    "environment": {
+     "name": "github-pages",
+     "url": "${{ steps.deployment.outputs.page_url }}"
+    },
+    "steps": [
+     {
+      "name": "Ref denetimi (yalnız yayın dalı yayınlanır)",
+      "env": {
+       "YAYIN_DALI": "claude/hopeful-cray-o1jw6w"
+      },
+      "run": "test \"$GITHUB_REF\" = \"refs/heads/$YAYIN_DALI\" || { echo \"::error::Yalnız $YAYIN_DALI yayınlanır ($GITHUB_REF)\"; exit 1; }"
+     },
+     {
+      "uses": "actions/checkout@v4"
+     },
+     {
+      "uses": "actions/configure-pages@v5"
+     },
+     {
+      "name": "Tek dosya HTML sürümü",
+      "run": "npm i --prefix \"$RUNNER_TEMP/esb\" --no-audit --no-fund esbuild@0.24.2\nNODE_PATH=\"$RUNNER_TEMP/esb/node_modules\" node tools/build-single-html.mjs DenizKorsanlari-SonHazine.html\n"
+     },
+     {
+      "uses": "actions/upload-pages-artifact@v3",
+      "with": {
+       "path": "."
+      }
+     },
+     {
+      "id": "deployment",
+      "uses": "actions/deploy-pages@v4"
+     }
+    ]
+   }
+  }
+ }
+}

@@ -1,0 +1,34 @@
+# 2026-11-14T13:38:53+00:00 bağımsız inceleme (uyumluluk) 2. örnek; salt gözlem başlatma betiğiyle (baslatma_konuk_izi.js.txt); w2 HEAD 29315b5 + çalışma ağacı; sinyal 127.0.0.1:9000
+Kaptan/host {"code":"8EVR2P"}
+Tayfa/join {"room":"Ganimet Odası"}
+PASS Konuk odaya bağlandı → {"room":"Ganimet Odası"}
+Kaptan/hs "host-started"
+Tayfa/gs "guest-started"
+PASS 2 oyuncu oyunda ve bağlı
+[test] 1 yere bırak @ 33.1s
+Tayfa/g-drop {"btn":true,"n":4,"left":0}
+Kaptan/h-drop {"id":"pkm9159d1","keep":true,"body":true,"n":4}
+PASS C01 Konuğun "Yere bırak"ı ev sahibinde kese olarak doğar (fizikli, uzun ömürlü) ve konukta aynı kimlikle görünür → {"drop":{"btn":true,"n":4,"left":0},"hostPk":{"id":"pkm9159d1","keep":true,"body":true,"n":4},"guestSees":true}
+PASS C02 Konuk bıraktığı keseyi geri alır: eşya konuğun çantasına döner, kese ev sahibinde kalkar → {"back":4,"goneH":true}
+[test] 2 sandık @ 35.6s
+Kaptan/h-chest {"id":"chxndtctt","coins":127}
+Tayfa/g-open "req"
+PASS C03 Konuğun açtığı sandığın altını doğrudan konuğun çantasına gider; ev sahibinde kese doğmaz; sandık iki tarafta da kalkar → {"g0":"req","gGot":127,"coins":127,"hSacks":0,"chestGone":true}
+[test] 3 kısmi @ 37.6s
+Kaptan/h-part "pkq7baixa"
+Kaptan/h-part2 {"alive":true,"items":[["hayvan_postu",2]]}
+Tayfa/g-part {"alive":true,"items":[["hayvan_postu",2]]}
+PASS C04 Ev sahibinde kısmen sığan kese yerinde kalır (1 post alındı, 2 kaldı); konuktaki kopya da 2 post gösterir → {"hp":{"alive":true,"items":[["hayvan_postu",2]]},"gp":{"alive":true,"items":[["hayvan_postu",2]]}}
+[test] 4 güverte @ 39.5s
+Kaptan/h-deck {"id":"pke30rcnp","ship":"ship_main","att":true,"pos":[10.4,1.21,285.19]}
+Tayfa/g-deck {"ship":"ship_main","parent":true,"dy":1.5,"d":0.01}
+PASS C05 Güverteye düşen kese konukta da gemiye bağlıdır (suya düşmez, ev sahibiyle aynı yerde) → {"deck":{"id":"pke30rcnp","ship":"ship_main","att":true,"pos":[10.4,1.21,285.19]},"gDeck":{"ship":"ship_main","parent":true,"dy":1.5,"d":0.01}}
+[test] 5 av @ 40.6s
+Kaptan/h-animal {"id":"an0","x":-7.45917492015422,"z":65.58904916647231}
+Tayfa/g-move "ok"
+Tayfa/g-hit "hit"
+PASS C06 Konuğun öldürdüğü hayvan ev sahibinde öldüren olarak konuğu taşır (XP konuğa) → {"by":"34f88175-6d40-4a3f-82f1-e7d431126a0f","gid":"34f88175-6d40-4a3f-82f1-e7d431126a0f"}
+PASS Senaryo sonunda iki taraf da oyunda → ["playing","playing"]
+[test] 06d tamam @ 43.6s
+checks: 9 fails: 0 pageErrors: 0 (133.3 s)
+SONUC: GECTI (çıkış 0) kontrol 9/9 | ev() istisnası 0, kapalı sayfa atlama 0, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 6 farklı/70

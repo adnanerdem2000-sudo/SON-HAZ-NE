@@ -1,0 +1,29 @@
+// __ready öncesindeki uzun görevler: test kipinde kancalar.js beklenirken ilk kareler çiziliyor mu?
+const { chromium } = require('playwright');
+(async () => {
+  const b = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--disable-gpu-watchdog', '--autoplay-policy=no-user-gesture-required'] });
+  for (const u of process.argv.slice(2)) {
+    const p = await b.newPage({ viewport: { width: 640, height: 360 } });
+    await p.addInitScript(() => {
+      window.__uz = { gorev: [], kare: 0, ilkKare: null, hazir: null };
+      try { new PerformanceObserver((l) => { for (const e of l.getEntries()) window.__uz.gorev.push([Math.round(e.startTime), Math.round(e.duration)]); }).observe({ type: 'longtask', buffered: true }); } catch (e) { /* yok */ }
+      const ham = window.requestAnimationFrame;
+      window.requestAnimationFrame = function (cb) { return ham.call(window, function (t) { window.__uz.kare++; if (window.__uz.ilkKare === null) window.__uz.ilkKare = Math.round(performance.now()); return cb(t); }); };
+      let h; Object.defineProperty(window, '__ready', { configurable: true, get() { return h; }, set(v) { h = v; if (v && window.__uz.hazir === null) { window.__uz.hazir = Math.round(performance.now()); window.__uz.hazirdaKare = window.__uz.kare; } } });
+    });
+    await p.goto(u);
+    await p.waitForFunction('window.__ready', null, { timeout: 240000 });
+    await p.waitForTimeout(6000);
+    const r = await p.evaluate(() => {
+      const k = performance.getEntriesByType('resource').find((e) => /\/js\/test\/kancalar\.js/.test(e.name));
+      const U = window.__uz;
+      const bas = k ? k.startTime : U.hazir;
+      return { adres: location.href, kancalarBas: k ? Math.round(k.startTime) : null, kancalarBitis: k ? Math.round(k.responseEnd) : null, ilkKare: U.ilkKare, hazir: U.hazir, hazirdaKareSayisi: U.hazirdaKare,
+        aradakiUzunGorev: U.gorev.filter(([s]) => s >= bas - 1 && s <= U.hazir), aradakiUzunGorevToplamMs: U.gorev.filter(([s]) => s >= bas - 1 && s <= U.hazir).reduce((a, [, d]) => a + d, 0),
+        hazirSonrasi6snUzunGorev: U.gorev.filter(([s]) => s > U.hazir && s <= U.hazir + 6000), hazirOncesiSon3sn: U.gorev.filter(([s, d]) => s + d >= U.hazir - 3000 && s <= U.hazir) };
+    });
+    console.log(JSON.stringify(r));
+    await p.close();
+  }
+  await b.close();
+})().catch((e) => { console.error(e); process.exit(1); });

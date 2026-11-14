@@ -1,0 +1,7 @@
+R0_degisiklik_yok | çıkış 0 | SONUC: GECTI (8/8 denetim) | etki: yok | fark: 
+R1_kabuk_harf_duyarsiz | çıkış 0 | SONUC: GECTI (8/8 denetim) | etki: if: ve kabuk ikisi de harf varyantı dalı kabul eder | fark: >         run: test "${GITHUB_REF,,}" = "refs/heads/${YAYIN_DALI,,}" || { echo "::error::Yalnız $YAYIN_DALI yayınlanır ($GITHUB_REF)"; exit 1; } 
+R2_kabuk_nocasematch | çıkış 0 | SONUC: GECTI (8/8 denetim) | etki: aynı (shopt nocasematch) | fark: >         run: shopt -s nocasematch; [[ $GITHUB_REF == "refs/heads/$YAYIN_DALI" ]] || { echo "::error::Yalnız $YAYIN_DALI yayınlanır ($GITHUB_REF)"; exit 1; } 
+ref=refs/heads/claude/hopeful-cray-o1jw6w | betik=test "$GITHUB_REF" = "refs/heads/$YAYIN_… | çıkış 0
+ref=refs/heads/claude/hopeful-cray-o1jw6w | betik=test "${GITHUB_REF,,}" = "refs/heads/${Y… | çıkış 0
+ref=refs/heads/Claude/Hopeful-Cray-O1JW6W | betik=test "$GITHUB_REF" = "refs/heads/$YAYIN_… | çıkış 1
+ref=refs/heads/Claude/Hopeful-Cray-O1JW6W | betik=test "${GITHUB_REF,,}" = "refs/heads/${Y… | çıkış 0
