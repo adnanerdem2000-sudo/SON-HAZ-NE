@@ -1,0 +1,457 @@
+{
+ "scenario": "/tmp/tasarim_y/faz7/olcum_ai.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   }
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "n": 4,
+   "label": null,
+   "result": {
+    "cell": [
+     168,
+     -56
+    ],
+    "colliders": 32,
+    "perEnemy": [
+     {
+      "over2s": 0,
+      "maxStuck": 0.27,
+      "detours": 1,
+      "wantFrac": 0.68
+     },
+     {
+      "over2s": 0,
+      "maxStuck": 0.27,
+      "detours": 19,
+      "wantFrac": 1
+     },
+     {
+      "over2s": 0,
+      "maxStuck": 0.27,
+      "detours": 21,
+      "wantFrac": 1
+     },
+     {
+      "over2s": 0,
+      "maxStuck": 0.53,
+      "detours": 11,
+      "wantFrac": 0.89
+     },
+     {
+      "over2s": 0,
+      "maxStuck": 0.27,
+      "detours": 20,
+      "wantFrac": 1
+     },
+     {
+      "over2s": 0,
+      "maxStuck": 0.27,
+      "detours": 15,
+      "wantFrac": 0.92
+     }
+    ],
+    "insideAtEnd": 0
+   }
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": {
+    "U": {
+     "reachS": null,
+     "minD": 6.72,
+     "endState": "patrol",
+     "trace": [
+      [
+       0,
+       "chase",
+       14
+      ],
+      [
+       5,
+       "investigate",
+       6.7
+      ],
+      [
+       10,
+       "investigate",
+       6.9
+      ],
+      [
+       15,
+       "patrol",
+       10.7
+      ],
+      [
+       20,
+       "patrol",
+       7.1
+      ],
+      [
+       25,
+       "patrol",
+       7
+      ]
+     ]
+    },
+    "duz": {
+     "reachS": null,
+     "minD": 6.81,
+     "endState": "patrol",
+     "trace": [
+      [
+       0,
+       "strafe",
+       14
+      ],
+      [
+       5,
+       "investigate",
+       6.8
+      ],
+      [
+       10,
+       "investigate",
+       6.8
+      ],
+      [
+       15,
+       "patrol",
+       12.3
+      ],
+      [
+       20,
+       "patrol",
+       19.8
+      ],
+      [
+       25,
+       "patrol",
+       25.1
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "n": 6,
+   "label": null,
+   "result": {
+    "approachNew": 4.95,
+    "approachOld": 3.19,
+    "state": "strafe",
+    "lostT": 0,
+    "lkStale": 0
+   }
+  },
+  {
+   "n": 7,
+   "label": null,
+   "result": {
+    "states": [
+     "chase",
+     "chase",
+     "cover",
+     "cover",
+     "cover",
+     "cover",
+     "investigate",
+     "investigate",
+     "attack",
+     "attack",
+     "chase",
+     "cover"
+    ],
+    "shots": 1,
+    "coverPt": true,
+    "endState": "cover"
+   }
+  },
+  {
+   "n": 8,
+   "label": null,
+   "result": {
+    "equipped": "sword",
+    "attacksStarted": 4,
+    "attacksResolved": 4,
+    "hitFrames": 0,
+    "enemyHpLost": 0,
+    "alive": true
+   }
+  },
+  {
+   "n": 9,
+   "label": null,
+   "result": {
+    "melees": 13,
+    "dash": 0,
+    "minStartDist": 2.39
+   }
+  },
+  {
+   "n": 10,
+   "label": null,
+   "result": {
+    "nightList": [
+     "iskelet",
+     "iskelet"
+    ],
+    "countsNightDay": [
+     2,
+     2,
+     4,
+     4,
+     6,
+     6
+    ],
+    "types": [
+     "iskelet",
+     "iskelet",
+     "iskelet",
+     "iskelet",
+     "iskelet",
+     "iskelet"
+    ]
+   }
+  },
+  {
+   "n": 11,
+   "label": null,
+   "result": {
+    "strikeFrameS": 0.433,
+    "damageS": 0,
+    "clipEndS": 0.017,
+    "lagS": -0.433
+   }
+  },
+  {
+   "n": 12,
+   "label": null,
+   "expect": {
+    "label": "Ölçüm özeti",
+    "ok": true,
+    "value": {
+     "m1": {
+      "cell": [
+       168,
+       -56
+      ],
+      "colliders": 32,
+      "perEnemy": [
+       {
+        "over2s": 0,
+        "maxStuck": 0.27,
+        "detours": 1,
+        "wantFrac": 0.68
+       },
+       {
+        "over2s": 0,
+        "maxStuck": 0.27,
+        "detours": 19,
+        "wantFrac": 1
+       },
+       {
+        "over2s": 0,
+        "maxStuck": 0.27,
+        "detours": 21,
+        "wantFrac": 1
+       },
+       {
+        "over2s": 0,
+        "maxStuck": 0.53,
+        "detours": 11,
+        "wantFrac": 0.89
+       },
+       {
+        "over2s": 0,
+        "maxStuck": 0.27,
+        "detours": 20,
+        "wantFrac": 1
+       },
+       {
+        "over2s": 0,
+        "maxStuck": 0.27,
+        "detours": 15,
+        "wantFrac": 0.92
+       }
+      ],
+      "insideAtEnd": 0
+     },
+     "m2": {
+      "U": {
+       "reachS": null,
+       "minD": 6.72,
+       "endState": "patrol",
+       "trace": [
+        [
+         0,
+         "chase",
+         14
+        ],
+        [
+         5,
+         "investigate",
+         6.7
+        ],
+        [
+         10,
+         "investigate",
+         6.9
+        ],
+        [
+         15,
+         "patrol",
+         10.7
+        ],
+        [
+         20,
+         "patrol",
+         7.1
+        ],
+        [
+         25,
+         "patrol",
+         7
+        ]
+       ]
+      },
+      "duz": {
+       "reachS": null,
+       "minD": 6.81,
+       "endState": "patrol",
+       "trace": [
+        [
+         0,
+         "strafe",
+         14
+        ],
+        [
+         5,
+         "investigate",
+         6.8
+        ],
+        [
+         10,
+         "investigate",
+         6.8
+        ],
+        [
+         15,
+         "patrol",
+         12.3
+        ],
+        [
+         20,
+         "patrol",
+         19.8
+        ],
+        [
+         25,
+         "patrol",
+         25.1
+        ]
+       ]
+      }
+     },
+     "m3": {
+      "approachNew": 4.95,
+      "approachOld": 3.19,
+      "state": "strafe",
+      "lostT": 0,
+      "lkStale": 0
+     },
+     "m4": {
+      "states": [
+       "chase",
+       "chase",
+       "cover",
+       "cover",
+       "cover",
+       "cover",
+       "investigate",
+       "investigate",
+       "attack",
+       "attack",
+       "chase",
+       "cover"
+      ],
+      "shots": 1,
+      "coverPt": true,
+      "endState": "cover"
+     },
+     "m5": {
+      "equipped": "sword",
+      "attacksStarted": 4,
+      "attacksResolved": 4,
+      "hitFrames": 0,
+      "enemyHpLost": 0,
+      "alive": true
+     },
+     "m6": {
+      "melees": 13,
+      "dash": 0,
+      "minStartDist": 2.39
+     },
+     "m7": {
+      "nightList": [
+       "iskelet",
+       "iskelet"
+      ],
+      "countsNightDay": [
+       2,
+       2,
+       4,
+       4,
+       6,
+       6
+      ],
+      "types": [
+       "iskelet",
+       "iskelet",
+       "iskelet",
+       "iskelet",
+       "iskelet",
+       "iskelet"
+      ]
+     },
+     "m8": {
+      "strikeFrameS": 0.433,
+      "damageS": 0,
+      "clipEndS": 0.017,
+      "lagS": -0.433
+     }
+    }
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 4908,
+ "ms": 52362
+}

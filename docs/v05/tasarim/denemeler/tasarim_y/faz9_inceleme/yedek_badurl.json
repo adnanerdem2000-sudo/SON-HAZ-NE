@@ -1,0 +1,405 @@
+{
+ "scenario": "/home/user/SON-HAZ-NE/tests/scenarios/02_arazi_yedek.js",
+ "url": "http://localhost:8080/index.html?terrain=badurl",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "Sayfa hazır (yükleme ekranı aşıldı)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 2,
+   "label": null,
+   "result": {
+    "mode": "badurl",
+    "workers": 0,
+    "fallback": true,
+    "failures": [
+     "işçi 0: hata: yükleme/çalışma hatası",
+     "işçi 1: hata: yükleme/çalışma hatası",
+     "işçi 2: hata: yükleme/çalışma hatası",
+     "hata: yükleme/çalışma hatası"
+    ],
+    "stats": {
+     "tiles": 125,
+     "meshes": 125,
+     "hires": 15,
+     "tris": 311168,
+     "queue": 0,
+     "jobs": 0,
+     "workers": 0,
+     "fallback": true,
+     "failures": 4,
+     "mode": "badurl"
+    }
+   }
+  },
+  {
+   "n": 3,
+   "label": null,
+   "expect": {
+    "label": "Menü sahnesinde karo ağları üretildi",
+    "ok": true,
+    "value": 125
+   }
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "Okyanus derinlik penceresi hazır",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   }
+  },
+  {
+   "n": 7,
+   "label": null,
+   "result": {
+    "startMs": 258,
+    "pendingJobs": 20,
+    "queue": 18
+   }
+  },
+  {
+   "n": 8,
+   "label": null,
+   "expect": {
+    "label": "Oyuncu zemine basıyor",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 9,
+   "label": null,
+   "expect": {
+    "label": "Yüksek çözünürlüklü karolar (yükseklik ızgarası + ağ)",
+    "ok": true,
+    "value": 22
+   }
+  },
+  {
+   "n": 10,
+   "label": null,
+   "expect": {
+    "label": "Uzak bölge prepare() sonuçlanıyor (askıda kalmıyor)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 11,
+   "label": null,
+   "expect": {
+    "label": "Derinlik penceresi yeni bölgeye taşındı",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 12,
+   "label": null,
+   "result": {
+    "prepMs": 1219,
+    "prepUnder45s": true,
+    "stats": {
+     "tiles": 129,
+     "meshes": 129,
+     "hires": 31,
+     "tris": 518400,
+     "queue": 0,
+     "jobs": 0,
+     "workers": 0,
+     "fallback": true,
+     "failures": 4,
+     "mode": "badurl"
+    }
+   }
+  },
+  {
+   "n": 13,
+   "label": null,
+   "expect": {
+    "label": "Tuz Pazarı çevresinde karo ağları var",
+    "ok": true,
+    "value": 21
+   }
+  },
+  {
+   "n": 14,
+   "label": null,
+   "expect": {
+    "label": "Harita ızgarası isteği sonuçlanıyor",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 15,
+   "label": null,
+   "expect": {
+    "label": "Uzak adada yürüme (zemin sorgusu tutarlı)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 16,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 17,
+   "label": null,
+   "expect": {
+    "label": "Kuyruk ilerliyor (askıda iş yok)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 18,
+   "label": null,
+   "result": {
+    "jobsBefore": 110,
+    "jobsAfter8s": 0,
+    "fallback": true
+   }
+  }
+ ],
+ "errors": [
+  "NET http://localhost:8080/js/world/terrainWorker.missing.js net::ERR_FAILED",
+  "NET http://localhost:8080/js/world/terrainWorker.missing.js net::ERR_FAILED",
+  "NET http://localhost:8080/js/world/terrainWorker.missing.js net::ERR_FAILED"
+ ],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 4856,
+ "tumKonsol": [
+  {
+   "tur": "warning",
+   "metin": "Arazi işçisi 0 devre dışı (hata: yükleme/çalışma hatası); 2 iş yeniden kuyruğa alınıyor",
+   "konum": "http://localhost:8080/js/world/terrain.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "Arazi işçisi 1 devre dışı (hata: yükleme/çalışma hatası); 2 iş yeniden kuyruğa alınıyor",
+   "konum": "http://localhost:8080/js/world/terrain.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "Arazi işçisi 2 devre dışı (hata: yükleme/çalışma hatası); 2 iş yeniden kuyruğa alınıyor",
+   "konum": "http://localhost:8080/js/world/terrain.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "Arazi üretimi ana iş parçacığına alındı (hata: yükleme/çalışma hatası)",
+   "konum": "http://localhost:8080/js/world/terrain.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  },
+  {
+   "tur": "warning",
+   "metin": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "konum": "http://localhost:8080/vendor/three/three.core.js"
+  }
+ ],
+ "agYanit": [
+  "404 http://localhost:8080/js/world/terrainWorker.missing.js",
+  "404 http://localhost:8080/js/world/terrainWorker.missing.js",
+  "404 http://localhost:8080/js/world/terrainWorker.missing.js"
+ ],
+ "agBasarisiz": [
+  "http://localhost:8080/js/world/terrainWorker.missing.js net::ERR_FAILED",
+  "http://localhost:8080/js/world/terrainWorker.missing.js net::ERR_FAILED",
+  "http://localhost:8080/js/world/terrainWorker.missing.js net::ERR_FAILED"
+ ],
+ "ms": 76947
+}

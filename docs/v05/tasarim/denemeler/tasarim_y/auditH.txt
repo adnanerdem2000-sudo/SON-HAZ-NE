@@ -1,0 +1,512 @@
+H — Düşman AI, boss ve savaş
+Kodda 17 düşman türü ve 5 efsanevi boss hem v0.3'te hem v0.4'te aynen var. 17 türün 12'si normal düşman, 1'i mini boss, 4'ü insan boss; hepsinin dünyada doğduğu bir yer var. Görüş konisi, görüş mesafesi, görüş hattı, ses, gece/sis, eğilme, grup alarmı, kuşatma jetonu, siper, geri çekilme ve kaybetme→araştırma→eve dönüş döngüsü kodda mevcut. Ancak otomatik testle sınanan yalnız haydut, ağır zırhlı ve iki insan bossun eşikleri (05_dusman_ai, 18/18). Kalan 13 tür ve 5 efsanevi boss için beklenti içeren test yok. Kod incelemesi ve Node ile yapılan salt-okur ölçümler önemli kusurlar ortaya çıkardı: Kraken dokunacının vuruş hedefi ucun 5–14 m gerisinde olduğu için kılıçla kesme çoğu durumda imkânsız. Dev bossların hasarı vuruş animasyonundan 0,4–0,7 sn, bıçaklama hamlelerininki ~0,3 sn sonra geliyor. Bazı uyarı halkaları gerçek hasar alanından küçük; kaçınılan ya da bloklanan saldırılar yine yavaşlatma ve geri itme uyguluyor; hayvan saldırıları uyarısız ve bloklanamıyor. Ayrıca siper davranışı kendi görüşünü kapatıp pasifleşiyor, Hayalet Kaptan'ın hamle saldırısı hiç tetiklenmiyor, insan bosslar XP vermiyor, gece dalgaları birikebiliyor. Co-op'ta konuk uyarı halkalarını ve ipuçlarını görmüyor, Taş Muhafız sütunları konukta oluşmuyor, konuğun algı değiştiricileri ve zehir/patlama etkileri eşitlenmiyor. Konuktan gelen boss hasarı menzil ve tür doğrulamasından geçmediği için bir boss saniyeler içinde öldürülebiliyor. v0.4, F-01/02/03/05/06(mermi)/07/08/10/11/12/13/15/16, ek-109/110 maddelerini ve D-19'un Yılan/hayalet gemi kısmını düzeltmiş; burada listelenen hataların neredeyse tamamı iki sürümde de var.
+=== SYSTEMS
+{"name": "Düşman türü: Haydut (haydut)", "status": "calisiyor_gelistirilmeli", "evidence": "enemies.js:81-86 (görüş 24 m, FOV 125°, işitme 1, moral 0,22, roller patrol/rest/sentry, sword1h); tests/scenarios/05_dusman_ai.js 'Algı: açık görüş hattında düşman 3 sn içinde oyuncuyu fark eder', 'Algı: 1 m kalın duvar arkasındaki oyuncu görülmez', 'Duyma: sırtı dönük düşman silah sesine tepki verir', 'Yığılma yok…', 'Saldırı telgrafı…', 'F-03…', 'F-16…', 'F-10…' (hepsi haydut ile); 12_TEST_PLANI_VE_SONUCLAR.md:45 ve :249 '05_dusman_ai 18/18'", "note": "Algıda olanlar: görüş açısı, mesafe, görüş hattı (lineBlocked), gece ×0,5 (meşale ×1,15), hava sisi/yağmuru, eğilme, yüzme/dalış, mağara, yükseklik, ses; grup alarmı, jeton/kuşatma, %30 canda geri çekilip bir kez iyileşme, moral kaçışı. Olmayanlar: bölgesel sis, konuk algı değiştiricileri (H-13); görüş kesilince canlı konumu izliyor (H-12). Takılma önlemi: ileri sonda + sapma + komşu ayrışması + physics.resolve; yol bulma yok (H-23). Sorunlar: AtkStab hasarı ~0,3 sn geç (H-09), duvar ardından vuruş (H-08), hafif vuruş kilidi (H-20)."}
+{"name": "Düşman türü: Nişancı (haydut_nisanci)", "status": "hatali_kararsiz", "evidence": "enemies.js:87-92 (tabanca, keep 9–17 m, cover: true); findCover 1388-1405; _act cover dalı 832-836; yalnız coop/06b 'F-06 Düşman mermileri konukta görsel olarak izlenir' (06b_esitlik_senkron.cjs:133-144, ev sahibinde haydut_nisanci) — 08/12. belgelerde 18/18; tek sayfalı test yok", "note": "Algı ortak (görüş 32 m, FOV 110°). Menzilli davranışta öngörülü nişan, mesafe/gece sapması, mesafe koruma ve yana kayma var. Siper kusurlu: siper noktası görüş hattını kendisi kapatıyor, siperden ateş etmiyor, 2,5 sn sonra araştırmaya düşüyor (H-11). findCover tüm physics.all dizisini 6 Hz tarıyor. Takılma önlemleri ortak."}
+{"name": "Düşman türü: Ağır Zırhlı (haydut_agir)", "status": "calisiyor_gelistirilmeli", "evidence": "enemies.js:93-98 (kalkan 0,85, arkadan ×1,6, poise); _canBlock 367-375; 05_dusman_ai.js 'Zayıf nokta: zırhlı düşman arkadan 1.6× hasar alır (önden 1×)'; 12. belge 18/18", "note": "Algı ortak (görüş 20 m, FOV 110°, işitme 0,8). Kalkan önden %85 blok yapıyor, yandan ve arkadan yapamıyor; ağır vuruş kalkanı kırıyor. Co-op'ta konuk vuruşunda blok kararı asimetrik (H-14). Kalkan setinin vuruş anı ±0,1 sn içinde."}
+{"name": "Düşman türü: Avcı (haydut_avci)", "status": "dogrulanmamis", "evidence": "enemies.js:99-104 (dual, flanker, dodge 0,3, throwKnife); kuşatma halkası 891, fırsat saldırısı 897; bıçak atışı 825-829 (kare başına %2 olasılık)", "note": "Algı ortak (görüş 30 m, FOV 140°, işitme 1,4). 3,2 m kuşatma halkası, arkadan fırsat saldırısı ve hafif vuruştan %30 kaçınma var. Çift bıçak saplaması ~0,28 sn geç, kesik 0,07–0,22 sn erken geliyor (H-09). Türe özgü test yok."}
+{"name": "Düşman türü: Haydut Kaptanı (haydut_kaptani, mini boss)", "status": "dogrulanmamis", "evidence": "enemies.js:105-110 (twoh, parry 0,25, callHelp, rally, miniboss); callHelp 766-776; rally 1369-1371; moraleShock 1372-1377; yerleşim archipelago.js:52, 143", "note": "Algı ortak (görüş 26 m, FOV 130°). 45 m yardım çağrısı ve +%20 hasar var; ölünce insan tayfa %55 olasılıkla kaçıyor. Ağır iki el vuruşu kırmızı halkayla işaretli, ama yalnız ev sahibinde. İlk temas bir vuruşsa yardım çağrısı tetiklenmiyor (ek-141). Jeton sınırına tabi değil. Test yok."}
+{"name": "Düşman türü: Kızıl Hançer (kizil_hancer, insan boss)", "status": "calisiyor_gelistirilmeli", "evidence": "enemies.js:111-116; _phaseCheck 427-444 (%55 çağırma, %30 duman); _smokeBomb 501-511; quests.js:182-190 ve 284-291 (hikâye aşaması 4); 05_dusman_ai.js 'Boss evreleri: can eşiklerinde çağırma ve öfke tetiklenir', 'F-05 Çağırma hazırlığı hafif vuruşla bozulmaz'", "note": "Uyarı olarak çağırma ve duman bildirimleri var, ama yalnız ev sahibinde. Duman sonrası geri çekilmede bir kez %30 iyileşiyor (retreat→heal, 795-803); bu belgede yok. Çağırma 2,2 sn sürerken Taunt klibi 1,03 sn olduğundan ~1,2 sn donuk poz var. Öldürünce XP vermiyor (H-08), hikâye +150 XP ve harita parçası veriyor. Konuk tetikleyemiyor ve kayıttan sonra bayrak takılıyor (H-18)."}
+{"name": "Düşman türü: İskelet (iskelet)", "status": "dogrulanmamis", "evidence": "enemies.js:118-122 (rise 0,3, WalkSk); die 466-480; _updateDead 1210-1222; gece listeleri enemies.js:182-186", "note": "Algı ortak (görüş 20 m, FOV 120°, işitme 1,2; moral yok, kaçmıyor). %30 olasılıkla yeniden kalkıyor, kalkarken dokunulmaz. Gece listelerinde doğanlar gündüz kaybolmuyor ve her gece birikiyor (H-19). Test yok."}
+{"name": "Düşman türü: İskelet Nişancı (iskelet_nisanci)", "status": "dogrulanmamis", "evidence": "enemies.js:123-127 (xbow2h, keep 10–18 m); RANGED.xbow2h 63; ok savuşturma _updateShots 1503-1505", "note": "Algı ortak (görüş 30 m, FOV 110°). Siper davranışı yok (cover yalnız haydut_nisanci'de). Oklar kılıçla savuşturulabiliyor, ama yalnız yerel oyuncu yapabiliyor. Test yok."}
+{"name": "Düşman türü: Ağır İskelet (iskelet_agir)", "status": "dogrulanmamis", "evidence": "enemies.js:128-132 (kalkan 0,8, arkadan ×1,5, poise, rise 0,15)", "note": "Algı ortak (görüş 18 m). Ağır Zırhlı ile aynı kod yolunu kullanıyor, ama zayıf nokta testi yalnız haydut_agir ile yapıldı. Test yok."}
+{"name": "Düşman türü: Altın İskelet (iskelet_altin)", "status": "dogrulanmamis", "evidence": "enemies.js:133-137 (kalkan 0,5 + parry 0,2, altın renk)", "note": "Algı ortak (görüş 22 m). Poise'u yok, ağır vuruşla sersemliyor. Test yok."}
+{"name": "Düşman türü: İskelet Kaptan Morvan (iskelet_kaptan, insan boss)", "status": "calisiyor_gelistirilmeli", "evidence": "enemies.js:138-143 (summonAt 0,66/0,33, enrage 0,33, spin); quests.js:175-181 ve 276-282 (aşama 3, rise ile doğar); 05_dusman_ai.js 'Boss evreleri…' (iki çağırma + öfke); 12. belge 18/18", "note": "360°, 3 vuruşlu, savuşturulamaz dönen saldırı kırmızı halkalı. Tek el kılıç ve kalkanla 2H_Melee_Attack_Spin klibi oynatılıyor, görsel uyumsuz. Öldürünce XP yok (H-08). Konuk tetikleme ve kayıt bayrağı sorunu var (H-18). Çağrılan iskeletler grupsuz, uzaklaşınca silinmiyor."}
+{"name": "Düşman türü: Hayalet Korsan (hayalet)", "status": "dogrulanmamis", "evidence": "enemies.js:145-149 (ghost, night, phase); faz ve gündüz kaybolma update 630-642", "note": "Gece cezası almıyor, suyun üstünde süzülüp yüzeni kovalayabiliyor. 1,6 sn'lik faz dokunulmazlığı sırasında oyuncunun vuruşu sahte isabet efekti veriyor (H-28). Birbirinden ayrışmıyor, oyuncuyla itişmiyor (H-27). Test yok."}
+{"name": "Düşman türü: Boğulmuş Denizci (hayalet_bogulmus)", "status": "hatali_kararsiz", "evidence": "enemies.js:150-154 (grab), _hitPlayer 1005; 05_dusman_ai.js 'ek-110 Boğulmuş denizci yakalaması oyuncuyu gerçekten yavaşlatır' (yalnız p.slowT'nin okunmasını sınıyor)", "note": "Yakalama yavaşlatması kaçınılmış, parry yapılmış ya da bloklanmış vuruşta da uygulanıyor (H-05); konuklara hiç uygulanmıyor (H-17). Algı ortak (görüş 16 m, işitme 1,6)."}
+{"name": "Düşman türü: Hayalet Nişancı (hayalet_nisanci)", "status": "hatali_kararsiz", "evidence": "enemies.js:155-159; RANGED.ghost 64 (homing 1,3); _updateShots 1483-1486, 1506", "note": "Güdümlü küre kaçınmadan sonra geri dönüp vurabiliyor (H-07). Faz dokunulmazlığı var. Test yok."}
+{"name": "Düşman türü: Lanetli Muhafız (hayalet_muhafiz)", "status": "dogrulanmamis", "evidence": "enemies.js:160-164 (kalkan 0,85, arkadan ×1,5, poise; 'night' bayrağı yok); gece listesi archipelago.js:160", "note": "Gece listesinde doğuyor ama gündüz kaybolmuyor; oyuncu bölgede kalırsa her gece birikiyor (H-19). Test yok."}
+{"name": "Düşman türü: Lanetli Amiral (lanetli_amiral, güverte boss formu)", "status": "dogrulanmamis", "evidence": "enemies.js:165-170 (twoh, spin, summon 0,6/0,3, enrage 0,3, FOV 360°); bosses.js:936-947 (noLoot ile güverteye çıkar), 971-972; tests/scenarios/v03/boss4.js (beklenti yok)", "note": "Efsanevi bossun bordalama evresindeki düşmanı; ödül efsanevi boss üzerinden bir kez veriliyor. Boss geri çekilirse güvertede sahipsiz kalıyor (H-26)."}
+{"name": "Düşman türü: Hayalet Kaptan (hayalet_kaptan, insan boss)", "status": "hatali_kararsiz", "evidence": "enemies.js:171-176 (dash: true); DASH koşulu 905; _startMelee çağrı yerleri 887, 897, 971; doğuş archipelago.js:161 (mezarlık gece listesi)", "note": "Belgelenen hamle (DASH) hiç tetiklenmiyor (H-10); öldürünce XP vermiyor (H-08); gece listesinde ve 'night' bayrağı olmadığı için birikiyor (H-19). Test yok."}
+{"name": "Efsanevi boss: Kraken", "status": "hatali_kararsiz", "evidence": "bosses.js:143-385 (uyarı halkası 318, dokunaç hedefi 199 ve 358, damageMul 210-216, evreler 233-237, kavrama 291-295, girdap 252-256); ödül 1066-1075; tests/scenarios/v03/boss1.js, boss2.js (beklenti yok), 09_performans.js (kur-sök sızıntısı), 10_uzun_oturum.js; 11_BILINEN_SORUNLAR #12", "note": "Uyarı: dokunaç inişinden önce büyüyen kırmızı halka var (yalnız ev sahibinde), ama halka 2,45–2,8 m, hasar alanı 3,4 m (H-04). Hitbox: dokunaç hedefi ucun 5–14 m gerisinde, kılıçla çoğu durumda vurulamıyor (H-01); baş r=6 m silindir, derindeyken bağışık. Hasar anı temas karesinde. Zayıf nokta: kesilen dokunaçtan sonra 6 sn ×2. Fazlar: %60'ta mürekkep ve kavrama, %30'da girdap. Hareket: gemi çevresinde yörünge, arazi kontrolü yok (H-25). Ödül: gemiye ganimet + herkese 600 XP. MP: konukta halka ve bildirim yok; boştaki dokunaçlar konukta vurulabiliyor, ev sahibinde vurulamıyor; dokunaç canı co-op'a göre ölçeklenmiyor. Hikâye bağı yok, yalnız ada açıklaması var."}
+{"name": "Efsanevi boss: Derinlik Yılanı", "status": "hatali_kararsiz", "evidence": "bosses.js:391-556 (lineup/charge 458-479, spit 481-494, dive 495-511, damageMul 428-431, onPhase 432-436, arazi kaçınma 520-527); tests/scenarios/v03/boss1.js, boss2.js (beklenti yok)", "note": "Uyarı: lineup'ta kükreme, dalışta yeşil halka ve kabarcık, tükürükte iniş işareti var. Dalışta halka 4,5 m, hasar ~6,2 m (H-04). Hitbox yalnız başta (r 2,4), gövde vurulamıyor (H-22). Zayıf nokta: sersemken veya tükürürken ×2. Fazlar %50 ve %20. Hareket: v0.4'te karaya oturma önlemi var; dalış sonunda ortalama ~21 m ışınlanıyor (H-25); toslamada oyuncuya isabet %60 rastgele. Ödül gemiye + 600 XP. MP: işaretler konukta yok, zehir konuğa geçmiyor (H-17). Hikâye: Kızıl Hançer'in mektubunda 'buzların altındaki kraliçe' olarak anılıyor, ama yenilmesi hikâyeyi ilerletmiyor (STORY yalnız 6 aşama, quests.js:24-31)."}
+{"name": "Efsanevi boss: Taş Muhafız", "status": "hatali_kararsiz", "evidence": "bosses.js:635-765 (tetik 1088, evreler 660-683, damageMul 654-659, saldırılar 712-745); tests/scenarios/v03/boss3.js, gdbg*.js (beklenti yok); 09_performans.js; 11_BILINEN_SORUNLAR #14", "note": "Uyarı: yumruk, süpürme ve tepinme halkaları ile kaya iniş işareti var (yalnız ev sahibinde). Hasar anı vuruş animasyonundan 0,4–0,7 sn sonra (H-02). Hitbox tek silindir (r 1,19, h 6,6); oyuncuyla ve duvarlarla çarpışmıyor (H-22). Zayıf nokta: arkadan ×2,2 (kristal), yumruk saplanınca ×1,5. Fazlar: %55'te rün sütunları (×0,2), %25'te öfke (×1,35 hız). Ödül yerde ganimet + 600 XP. MP: sütunlar konukta oluşmuyor (H-16). Hikâye: tetik tapınak bulmacasına bağlı, ana hikâyeyle bağı yok."}
+{"name": "Efsanevi boss: Volkanik Dev", "status": "hatali_kararsiz", "evidence": "bosses.js:768-902 (yükseliş 811, barrage 842-856, slam ateş halkası 857-875, sweep 876-881, damageMul 788-796, gökten ateş 815-822); tests/scenarios/v03/boss3.js, boss5.js (beklenti yok); TEST_RAPORU.md #15; 09_performans.js", "note": "Uyarı: halka, genişleyen ateş halkası (zıplayarak kaçılıyor) ve lav iniş işaretleri var, hepsi yalnız ev sahibinde (H-15). Hasar anı: süpürme ~0,45–0,55 sn geç, slam dalgası Jump klibi bittikten 0,4–0,5 sn sonra (H-02). Hitbox tek silindir (r 1,71), çarpışmasız. Zayıf nokta: yağmurdan sonra 3,2 sn önden ×2,2. Fazlar %60 ve %30 (gökten ateş). Ödül 12 m ötede, lav gölüne düşebilir (H-29), + 600 XP. Hikâye: mektupta 'ateşin bekçisi' olarak anılıyor, ama yenilmesi hikâyeyi ilerletmiyor."}
+{"name": "Efsanevi boss: Lanetli Amiral (hayalet gemi + bordalama)", "status": "calisiyor_gelistirilmeli", "evidence": "bosses.js:908-1027 (yaylım uyarısı 986, yaylım 992-1003, _board 936-947, damageMul 932, arazi kaçınma 980-983, die 1011-1016); tests/scenarios/v03/boss4.js (beklenti yok)", "note": "Uyarı: 'toplar parlıyor' bildirimi 1,6 sn önceden geliyor, gülle iniş halkaları var (yalnız ev sahibinde). Hitbox: gemi merkezinin 6 m üstünde 7,6 m'lik küre; pruva/kıç isabetleri sayılmıyor, gemi katı değil (H-22). Hasar: top/patlama ×1, diğerleri ×0,35; bordadayken boss dokunulmaz, Amiral'in canı boss canına yansıyor. Faz: tek geçiş (%50'de ya da 75 sn sonra). Ödül gemiye + 600 XP; tayfa temizliğinden ganimet çıkmıyor (F-10). MP: işaretler konukta yok; geri çekilince güverte düşmanları kalıyor (H-26). Hikâye bağı yok."}
+{"name": "Algı sistemi (görüş konisi, mesafe, görüş hattı, ses)", "status": "calisiyor_gelistirilmeli", "evidence": "enemies.js:532-594; physics.js:194-249 (lineBlocked, DDA); 05_dusman_ai.js 'Algı: açık görüş hattında…', 'Algı: 1 m kalın duvar…', 'Duyma: sırtı dönük…'; coop/06b 'F-13 Konuğun silah sesi ev sahibi düşmanını uyarır'; 12. belge :45, :249", "note": "Sınananlar: nöbetçi haydut, gündüz, sis 0. Sınanmayanlar: FOV dışı, gece/meşale/eğilme/sis değiştiricileri. Kusurlar: H-12, H-13; bölgesel sis (sky.js:282-284) algıya yansımıyor; ses engellenmiyor."}
+{"name": "Durum makinesi ve kaybetme/arama döngüsü", "status": "calisiyor_gelistirilmeli", "evidence": "enemies.js:658-861 (18 durum), investigate 760-764, return 765, tasma 688-690; 05 'F-03…', 'F-05…'", "note": "Kaybettikten sonra son bilinen noktaya gidip 9 sn bakınıyor, sonra eve dönüp canını yeniliyor; arama deseni yok. Kusurlar: H-11, H-12, H-20."}
+{"name": "Saldırı jetonu ve kuşatma", "status": "calisiyor_gelistirilmeli", "evidence": "enemies.js:607-612, 1339-1362 (jetonlar kolay 1 / normal 2 / zor 3, flankAngle), 884-898 (kuşatma halkası 4,3/3,2 m)", "note": "Test yok; 05 test 1'de yalnız kuşatma durumuna geçiş gözlendi. Bayat jeton: uzaklaşan sahip jetonu bırakmıyor (1343 yalnız ölü veya hedef değiştiren sahibi temizliyor). Yana kaymada strafe animasyonu yok (H-30)."}
+{"name": "Takım alarmı, yardım çağrısı, toparlanma ve moral şoku", "status": "dogrulanmamis", "evidence": "enemies.js:719-730 (30 m), 766-776 (45 m), 1369-1371, 1372-1377", "note": "Pusu ya da ilk vuruşta yardım çağrısı tetiklenmiyor (_aggro 419-424, ek-141). Test yok."}
+{"name": "Geri çekilme, iyileşme ve kaçış", "status": "dogrulanmamis", "evidence": "enemies.js:691-696, 704-716, 795-803", "note": "Yalnız insanlarda var: %30 canda, 18 m içinde müttefik varsa 12 m geri çekilip bir kez %30 iyileşme; moral eşiğinde kaçış. İnsan bosslar da duman sonrası iyileşiyor. Test yok."}
+{"name": "Siper (findCover)", "status": "hatali_kararsiz", "evidence": "enemies.js:1388-1405, 698-701, 832-836", "note": "H-11."}
+{"name": "Hareket, engelden kaçınma ve takılma tespiti", "status": "calisiyor_gelistirilmeli", "evidence": "enemies.js:1072-1146; F-09 yön koruma 1131-1136; 07_AI_BOSS_TESTLERI §7.2 'çalışma zamanı dolaşma testi yazılmadı'; 11 #11", "note": "H-23."}
+{"name": "Düşman-düşman ayrışması (insan/iskelet)", "status": "calisiyor_test_edilmis", "evidence": "enemies.js:1101-1106, 1364-1368; 05_dusman_ai.js 'Yığılma yok: aynı noktada doğan 4 düşman 2 sn içinde ayrılır (min mesafe > 0.6 m)'; 07 belgesi #4 (1,32 m); 12. belge 18/18", "note": "Hayaletler bu sistemin dışında (H-27)."}
+{"name": "Saldırı hazırlığı (telgraf süresi)", "status": "calisiyor_test_edilmis", "evidence": "enemies.js:24-57 (hitAt), 941-977; 05_dusman_ai.js 'Saldırı telgrafı: hazırlık ≥0.35 sn, vuruş hazırlıktan önce işlenmez'; 12. belge 18/18", "note": "Test yalnız ev sahibindeki hazırlık süresini ölçüyor. Kırmızı halka yalnız savuşturulamaz hamlelerde var ve konukta görünmüyor (H-15); animasyonla uyum H-09'da."}
+{"name": "Vuruş çözümü (mesafe/açı/alan; düşman→oyuncu)", "status": "hatali_kararsiz", "evidence": "enemies.js:979-1008; bosses.js:42-46, 606-619; enemies.js:1431-1455", "note": "H-08 (duvar arkası), H-05 (kaçınılan vuruşun yan etkileri), H-04 (halka ile hasar alanı uyuşmuyor)."}
+{"name": "Animasyon–hasar anı eşlemesi (düşman ve boss)", "status": "hatali_kararsiz", "evidence": "kk_anims.glb, orc_brute.glb, demon.glb klip süreleri ve açısal hız tepeleri (/tmp/denetim_alan/glb_peak.mjs, salt-okur); enemies.js:24-57; bosses.js:712-756, 857-894", "note": "H-02, H-09, H-10."}
+{"name": "Menzilli saldırılar ve mermiler", "status": "calisiyor_gelistirilmeli", "evidence": "enemies.js:1011-1069, 1408-1536 (kapsül isabeti, ok/bıçak savuşturma, görüş hattı süpürmesi PROJ_LOS); coop/06b 'F-06 Düşman mermileri konukta görsel olarak izlenir'", "note": "H-07 (güdümlü küre). Kılıçla savuşturma ve kaçınma dokunulmazlığı yalnız yerel oyuncuda var."}
+{"name": "Sersemliğin ve çağırma/yardım hazırlığının vuruşla bozulmaması (F-03/F-05)", "status": "calisiyor_test_edilmis", "evidence": "enemies.js:403-406; 05_dusman_ai.js 'F-03 Sersemlik hafif vuruşla iptal olmaz', 'F-05 Çağırma hazırlığı hafif vuruşla bozulmaz'; 12. belge 18/18", "note": "Çağırma dalgasının gerçekten doğduğu ayrıca sınanmadı."}
+{"name": "Kamp doğurma, yenilenme bekleme süresi ve kaydı (F-07)", "status": "calisiyor_test_edilmis", "evidence": "enemies.js:1539-1571, 1318-1319, 460; 05 'F-07 Kamp bekleme süresi kayıt/yükleme ile korunur', 'F-07 Tümü öldürülmüş kamp…'; 12_kayit_dongusu 4/4", "note": "Gece listeleri bekleme süresine uymuyor (H-19)."}
+{"name": "Gece dalgaları", "status": "hatali_kararsiz", "evidence": "enemies.js:1554-1558, 637-641", "note": "H-19."}
+{"name": "AI ayrıntı seviyesi (F-08)", "status": "calisiyor_test_edilmis", "evidence": "enemies.js:1597-1603; 05 'F-08 100 m uzaktaki düşman hedefi varsa her adım güncellenir (seyreltme yok)'", "note": "Uzak oyuncular da mesafeye dahil ediliyor."}
+{"name": "Güverte (bordalama) düşmanları ve batan gemi tayfası", "status": "calisiyor_gelistirilmeli", "evidence": "enemies.js:253-254, 1113-1119, 1168-1186; events.js:320-345; 05 'ek-109 Gemi batınca güvertedeki canlı tayfa boğulur…'; coop/06b 'F-02 Ev sahibinde uzak oyuncunun gemi referansı var…'", "note": "Güvertedeki oyuncu kalabalık ajanı değil (11 #5, D-20); güverte düşmanları direk ve ambar engellerini yok sayıyor (H-23)."}
+{"name": "Oyuncu savaşı (combat.js: kombo, ağır vuruş, karşı saldırı, tabanca)", "status": "calisiyor_gelistirilmeli", "evidence": "combat.js:18-29, 124-232, 235-298; 05 'F-16 Tabanca ışını duvar arkasındaki düşmana isabet etmez'; 04_karakter (06 belgesi: savunma histerezisi C03)", "note": "Yakın dövüşte görüş hattı yok (H-08); dokunulmaz hedefte sahte isabet efekti (H-28)."}
+{"name": "Oyuncunun savunması (blok/parry/kaçınma sonuçları)", "status": "hatali_kararsiz", "evidence": "player.js:142-203, 488-500", "note": "Parry hasarsız; blok %12 sızdırıyor (tasarım); kaçınmada 0,34 sn dokunulmazlık var. Kusurlar: H-05, H-06, H-07."}
+{"name": "Kalabalık itişmesi (crowd.js)", "status": "calisiyor_gelistirilmeli", "evidence": "crowd.js:11-45", "note": "Hayaletler, efsanevi bosslar ve güvertedeki oyuncu ajan değil; itişmeden sonra physics.resolve çağrılmıyor."}
+{"name": "Saldırgan hayvanlar (animals.js: kurt, ayı, yeti, timsah, dev yengeç, domuz, geyik, yılan)", "status": "hatali_kararsiz", "evidence": "animals.js:300-317, 499-546, 556-569", "note": "Algı yalnız mesafeye dayalı (görüş hattı, FOV ve ses yok); kurt sürüsü gece daha geniş yarıçapta saldırıyor. H-06. AI testi yok; yalnız 16_kosu_poz_ganimet 'A01' ganimeti sınıyor."}
+{"name": "Orka sürüsü (megafauna.js)", "status": "dogrulanmamis", "evidence": "megafauna.js:536-663 (5 sn çember uyarısı + bildirim, sırayla saldırı), 345-369", "note": "Uyarı var; hasar temas anında; yüzen oyuncu kılıç kullanamıyor (combat.js:99). Test yok."}
+{"name": "Köpekbalığı (fish.js)", "status": "dogrulanmamis", "evidence": "fish.js:495-562", "note": "Her istemcide yerel çalışıyor (11 #38); bu alanın asıl dosyaları dışında, yüzeysel bakıldı."}
+{"name": "Boss tetikleme, tek aktif boss ve geri çekilme", "status": "calisiyor_gelistirilmeli", "evidence": "bosses.js:1077-1115; islands.js:866", "note": "Herkes 650 m uzaklaşınca boss çekiliyor ve canı yenileniyor. H-26."}
+{"name": "Boss/düşman ödülü ve XP", "status": "calisiyor_gelistirilmeli", "evidence": "bosses.js:1066-1075; enemies.js:481-485; progress.js:75-77; 05 'F-10 noLoot düşmanı ganimet/XP vermez, normal düşman verir'", "note": "H-08, H-29."}
+{"name": "Co-op düşman/boss eşitlemesi", "status": "calisiyor_gelistirilmeli", "evidence": "enemies.js:1621-1660; bosses.js:1118-1123; net.js:738-741; coop/06b 'F-02…', 'F-12…', 'F-15…', 'F-13…', 'F-11…', 'F-06…' (12. belge 18/18)", "note": "Açık kalanlar: H-14, H-15, H-16, H-17."}
+{"name": "Ağ hasar doğrulaması (hurtEnemy/hurtBoss/stunEnemy)", "status": "hatali_kararsiz", "evidence": "net.js:42-45, 278-289; coop/06a 'H07 Uzaktan sahte hasar ev sahibinde işlenmez', 'H07 Yakından sahte 99999 hasar üst sınıra kırpılır'", "note": "hurtEnemy doğrulanıp test ediliyor; hurtBoss ve stunEnemy doğrulanmıyor (H-03)."}
+{"name": "Hikâye bossu tetikleme (Morvan, Kızıl Hançer)", "status": "hatali_kararsiz", "evidence": "quests.js:276-292, 76-79", "note": "H-18."}
+=== ISSUES
+id: H-01
+title: Kraken dokunacının vuruş hedefi ucun 5–14 m gerisinde: güverteye inen dokunaç kılıçla çoğu durumda kesilemiyor
+file: js/game/bosses.js
+func: Kraken._updateTentacles (bosses.js:296-364); dokunaç hedefi Kraken.constructor (199-200)
+rootCause: Hedef `if (k === TSEG - 6) ten.target.pos.copy(p).setY(p.y - 1)` (bosses.js:358) ile ikinci dereceden Bezier eğrisinin u=(k+1)/TSEG=13/18≈0,72 noktasına konuyor. Eğrinin tabanı Kraken merkezine 6 m uzakta ve Kraken gemiden 30–38 m uzakta duruyor (248-250). Bu yüzden hedef, ucun ~0,34×(taban–uç mesafesi) gerisinde, çoğunlukla küpeştenin dışında, suyun üstünde kalıyor. Yakın dövüş erimi 2,5 + 1,3 = 3,8 m (combat.js:198).
+impact: Oyunun kendi yönergesi ('Dokunacı kes…', bosses.js:207, 228, 333) çoğu durumda uygulanamıyor. Evre 1'de baş derindeyken bağışık olduğu için (212) ilerlemenin tek yolu dokunaç kesmek; savaş tabanca ve topa kalıyor, 9 sn'lik kavrama kılıçla kırılamıyor. Kod geometrisinin salt-okur Node kopyası (/tmp/denetim_alan/kraken_hitbox.cjs) sonuçları: sloop ve R=38 m'de 1296 durumun yalnız 100'ünde (%7,7) hedefe güverteden ulaşılıyor, hedef ortalama 8,3 m dışarıda; brigantine ve R=30 m'de oran %31.
+priority: yuksek
+fix: Vuruş hedefini uca taşıyın (k=TSEG-1 ya da ucun 1 m gerisi) veya eğrinin son üçte birine 2–3 kapsül hedef koyun. 'stuck' ve 'grab' durumlarında hedefi güverte noktasına (deckPt + 1 m) sabitleyin. Konuk için hedef konumunu netExtra ile gönderin.
+repro: v03/boss1.js kurulumunu kullanın (DK.G.godMode=true, oyuncu güvertede) ve b=DK.bosses.spawn('kraken') çalıştırın. DK.sim ile bir dokunacın state'i 'stuck' olana dek ilerletin. t.target.pos ile G.ship.localToWorld(t.local) arasındaki yatay mesafeyi ölçün; tipik değer 5–14 m. Oyuncuyu iniş noktasına koyup DK.combat._attack(p,'light') ve DK.sim(0.5) çalıştırın: t.hp 220'de kalır.
+acceptance: Boss senaryosunda 20 rastgele ezmenin hepsinde 'stuck' veya 'grab' dokunacın hedefi güverte noktasına ≤1,5 m uzakta olmalı. İniş noktasında yapılan hafif saldırı t.hp'yi düşürmeli. Konukta da aynı sonuç alınmalı.
+presentIn: v03_ve_v04
+confidence: yuksek
+
+id: H-02
+title: Taş Muhafız ve Volkanik Dev'in hasarı vuruş animasyonundan 0,4–0,7 sn sonra geliyor
+file: js/game/bosses.js
+func: StoneGuardian.update / _go (bosses.js:712-756); VolcanicGiant.update / _go (857-894)
+rootCause: Hasar sabit sürelerde uygulanıyor. Taş Muhafız: slam T=1,1/fast (Punch, hız 0,75), sweep 0,9/fast (Weapon, hız 0,8), stomp 1,4/fast (Jump, hız 0,4), kaya atışı 0,9/fast (Wave, hız 1,2). Volkanik Dev: sweep 1,0/fast (Weapon, hız 0,7), slam 1,2/fast (Jump, hız 0,45). orc_brute.glb ve demon.glb meshopt çözülerek ölçüldü (/tmp/denetim_alan/glb_peak.mjs): Punch ve Weapon'da kolun açısal hız tepesi klibin ~0,31. sn'sinde (klip 0,833 sn), Jump klibi toplam 0,333 sn, Wave'de kol tepesi 0,44 sn. Gerçek zamanda vuruş karesi ~0,39–0,45 sn'ye düşerken hasar 0,9–1,1 sn'de geliyor. Stomp ve slam hasarı Jump klibi bittikten 0,4–0,57 sn sonra geliyor; bu arada boss sıçrama pozunda donuk kalıyor.
+impact: Görünen yumruğa ya da süpürmeye göre kaçınan oyuncunun 0,34 sn'lik dokunulmazlığı (player.js:495) vuruş gelmeden bitiyor ve oyuncu hasar alıyor. Halka doğru zamanı gösterse de animasyonla çelişiyor. 'Animasyon ile gerçek hasar anı tutarlı olmalı' hedefi karşılanmıyor.
+priority: yuksek
+fix: Hasar zamanını klipteki vuruş karesine bağlayın (hitT = strikeClip/speed, değerler veri tablosunda), ya da klip hızını hasar zamanına göre ayarlayın. Stomp ve slam için Jump + Jump_Land dizisi kullanıp hasarı iniş anına koyun. Halka büyümesini aynı zamana eşitleyin.
+repro: b=DK.bosses.spawn('tas_muhafiz',{id:'tas_muhafiz',x:p.pos.x+6,z:p.pos.z}); b.atkT=99; b._go('slam'). Her karede b.st, b.anim.current.time ve p.hp kaydedin. p.hp b.st≈1,1'de düşüyor; Punch klibinin vuruş karesi (time≈0,31) ise b.st≈0,42'de geçiyor. Volkanik Dev için aynı adımları b._go('sweep') ile tekrarlayın.
+acceptance: Her dev boss saldırısında hasar karesi ile klip vuruş karesi arasındaki fark ≤0,1 sn olmalı; bu otomatik ölçümle doğrulanmalı. Slam ve stomp hasarı iniş klibinin temas karesine denk gelmeli.
+presentIn: v03_ve_v04
+confidence: yuksek
+
+id: H-03
+title: Konuktan gelen boss hasarı ve sersemletme ev sahibinde doğrulanmıyor: boss uzaktan, saniyeler içinde öldürülebiliyor
+file: js/net/net.js
+func: ev sahibi ileti işleyicisi case 'hurtBoss' ve 'stunEnemy' (net.js:288-289); bosses.init netHurtBossApply (bosses.js:1041-1046)
+rootCause: hurtBoss yalnız dmg değerini 220'ye kırpıyor (DMG_MAX, net.js:45). Menzil kontrolü yok; konuğun gönderdiği 'kind' ve 'pos' doğrudan damageMul'e giriyor. Sonuçları: 'tentacle' ile Kraken başı derindeyken bile ×1 (bosses.js:211); 'cannon' ile Amiral'e 0,35 yerine ×1 (932); sahte pos ile Taş Muhafız'a arkadan ×2,2, Volkanik Dev'e önden ×2,2. 'ten' dizini doğrulanmıyor; ev sahibinde vurulamayan boştaki dokunaçlar da kabul ediliyor (1044). stunEnemy yalnız 8 m mesafeye bakıyor, gerçekten parry yapılıp yapılmadığını denetlemiyor. Oran sınırı 120 ileti/sn (net.js:43).
+impact: Değiştirilmiş istemci kullanan bir konuk Kraken'i dünyanın herhangi bir yerinden ~1 sn'de öldürebilir (120×220 ≈ 26 400 hasar/sn). İnsan bossları sürekli sersemletebilir. Boss ödülü ve +600 XP herkese verilir. Ödül boss başına bir kez verildiği için kazanç sınırsız değil. 06a testi yalnız hurtEnemy'yi sınıyor.
+priority: yuksek
+fix: hurtBoss için şunları ekleyin: konuk ile boss (ya da dokunaç hedefi) arası mesafe, silah menzili artı gecikme payını aşmasın; 'kind' beyaz listede olsun (melee/bullet; cannon ve explosion yalnız ev sahibi simülasyonundan gelsin); 'pos' yerine ev sahibindeki RemotePlayer.pos kullanılsın; 'ten' tamsayı olsun ve durumu idle veya gone olmasın; konuk başına saniyelik hasar bütçesi konsun. stunEnemy yalnız düşman o anda konuğa saldırırken ve vuruş penceresinde kabul edilsin.
+repro: Co-op'u iki oyuncuyla açın (tests/harness/coop.cjs); ev sahibi Kraken'i doğursun. Konuk 1 km uzaktayken konsoldan döngüyle DK.net.toHost({t:'hurtBoss', id:'kraken', dmg:220, kind:'tentacle'}) göndersin. Ev sahibinde DK.bosses.active.hp 1–2 sn'de 0'a iner ve DK.bosses.defeated.kraken true olur. Sersemletme için konuk DK.net.toHost({t:'stunEnemy', id:<kizil_hancer id>, dur:3}) iletisini 0,5 sn'de bir göndersin: boss sürekli 'stunned' kalır.
+acceptance: coop/06a'ya eklenecek kontrollerin hepsi geçmeli: uzaktan gelen hurtBoss işlenmemeli; kind ve pos sahteciliği çarpanı değiştirmemeli; saniyedeki toplam hasar silah üst sınırını aşınca kırpılmalı; parry olmadan gelen stunEnemy yok sayılmalı.
+presentIn: v03_ve_v04
+confidence: yuksek
+knownAs: H07 (02_HATA_LISTESI; v0.4'te yalnız hurtEnemy kısmı kapatıldı)
+
+id: H-04
+title: Uyarı halkası gerçek hasar alanından küçük: Kraken ezmesi (halka 2,45–2,8 m, hasar 3,4 m), Derinlik Yılanı dalışı (halka 4,5 m, hasar ~6,2 m)
+file: js/game/bosses.js
+func: Kraken._updateTentacles (bosses.js:318, 328); SeaSerpent.update case 'dive' (499, 506); enemies._impact (enemies.js:1440)
+rootCause: İşaret ve hasar yarıçapları farklı sabitlerden geliyor. Kraken halkası 2,8×(0,5+0,5·min(1,st/2)); evre 3'te ezme st=1,5'te başladığı için 2,45 m. Halka ezme sırasında güncellenmediğinden gemi hareket ederse kayıyor. Hasar koşulu ise `p.pos.distanceTo(target) < 3.4`. Yılan'da halka ölçeği 4,5, hasar koşulu `distanceTo(tgt) < 6.5` (3B mesafe; güvertede ~6,2 m yatay). Yaylı atışlarda işaret aoe, hasar aoe+0,4; bu fark oyuncu yarıçapı kadar olduğu için kabul edilebilir.
+impact: Halkanın dışında duran oyuncu 22 hasar ve 6–7 birimlik geri itme alıyor. Oyuncu uyarıya uyduğu halde vuruluyor; 'kaçınılan saldırı sebepsiz hasar vermemeli' hedefi ihlal ediliyor.
+priority: orta
+fix: Her saldırı için tek bir yarıçap sabiti kullanın ve işaret ölçeğini hasar yarıçapına eşitleyin. Mesafeyi yatay (2B) hesaplayın. Ezme sırasında işareti güverte noktasıyla birlikte güncelleyin.
+repro: Kraken: dokunaç 'rise' durumundayken oyuncuyu güverte noktasından 3,1 m uzağa, halkanın dışına koyun; ezmede p.hp 22 düşer. Yılan: b.mode='dive' ve b.mt=0 yapın, oyuncuyu hedef noktadan 5,5 m uzağa (4,5 m'lik halkanın dışına) koyup DK.sim(2.3) çalıştırın; 22 hasar gelir.
+acceptance: Kraken ezme ve kavraması, Yılan dalışı ve tüm lob türleri için test: halka yarıçapının 0,2 m dışındaki oyuncu hasar almamalı, 0,3 m içindeki almalı.
+presentIn: v03_ve_v04
+confidence: yuksek
+
+id: H-05
+title: Kaçınılan ya da engellenen saldırının yan etkileri yine uygulanıyor (Boğulmuş Denizci yavaşlatması, düşman ve boss geri itmesi)
+file: js/game/enemies.js
+func: Enemy._hitPlayer (enemies.js:1000-1008); bosses.js hitPlayer (bosses.js:42-46); konuktaki 'hurt' işleyicisi (net.js:536-539)
+rootCause: Player.hurt (player.js:142-191) sonuç döndürmüyor; çağıranlar etkileri koşulsuz uyguluyor. Yakalamadaki `G.player.slowT = 2.2` (enemies.js:1005) kaçınma, parry ve blokta da çalışıyor. Düşman geri itmesi yalnız `!G.player.blocking` ile korunuyor; kaçınmada blocking=false olduğu için (player.js:496) oyuncu itiliyor (1007). Boss hitPlayer geri itmeyi her çağrıda yazıyor (bosses.js:45); bloklanan süpürmede blok yolunun azalttığı itmenin üstüne tam itme (9–11) yazılıyor. Konukta m.kb koşulsuz uygulanıyor (net.js:538).
+impact: Kusursuz kaçınma ya da parry sonrasında bile 'Boğulmuş denizci seni yakaladı — yavaşladın!' mesajı geliyor ve oyuncu 2,2 sn %45 yavaşlıyor. Kaçınılan boss saldırısı oyuncuyu 6–11 m/sn fırlatabiliyor (uçurum ya da lav kenarında tehlikeli). Bloklanan süpürmede tam geri itme uygulanıyor. Yavaşlatma kısmı yalnız v0.4'te görülüyor; v0.3'te slowT hiç okunmuyordu (ek-137).
+priority: orta
+fix: Player.hurt 'dodged', 'parried', 'blocked' ya da 'hit' döndürsün. slowT, knock ve poison yalnız 'hit' sonucunda uygulansın; blokta yalnız azaltılmış itme kalsın. Konuğa giden 'hurt' iletisine grab ve poison alanları eklensin; konuk bunları kendi sonucuna göre uygulasın.
+repro: e=DK.enemies.spawn('hayalet_bogulmus', p.pos.x+1.5, p.pos.z); e.awareness=1; e.target=e._targetInfo(p, DK.G.myId); e._setState('chase'). Durum 'attack' olunca vuruş anından hemen önce p.invuln=0.34 yapın: p.hp değişmez, ama p.slowT≈2.2 olur ve bildirim çıkar. Taş Muhafız slam'inde p.invuln>0 iken de p.hp aynı kalır, p.knock ise ≈8 olur.
+acceptance: invuln ya da parry durumunda hp, slowT ve knock değişmemeli. Blokta knock azaltılmış değerde kalmalı. Konukta da aynı davranış co-op testiyle doğrulanmalı.
+presentIn: v03_ve_v04
+confidence: yuksek
+
+id: H-06
+title: Saldırgan hayvanların ısırığı uyarısız ve bloklanamıyor; hasar animasyondan önce, görüş hattı ve yön kontrolü olmadan geliyor
+file: js/wildlife/animals.js
+func: Animal.update case 'attack' (animals.js:499-515); Animal._walk (556-569); Animal._pose ısırık klipleri (638, 645, 654, 698)
+rootCause: Hayvan menzile girip atkCd≤0 olduğu karede `G.player.hurt(dmg, this.pos, { cause, poison })` çağrılıyor; ısırık animasyonu da ancak o anda başlıyor (bite=0,35). 'melee' ve 'attacker' iletilmediği için player.hurt'ün blok/parry dalı (player.js:149) hiç çalışmıyor. Mesafe 3B ölçülüyor; yön ve görüş hattı kontrolü yok. Konuğa giden iletide zehir alanı yok (508). _walk'ta takılma ya da sapma mantığı yok.
+impact: Kurt, kutup ayısı, yeti, timsah, dev yengeç, domuz, geyik ve yılan saldırıları savunmayla azaltılamıyor. Hasar, görünen vuruştan ~0,2–0,3 sn önce geliyor (kurt Attack klibinde ön bacak tepesi 0,23 sn, yeti Punch'ta 0,31 sn). Çit ya da duvar ardından ısırık mümkün. Yılan konuğu zehirlemiyor.
+priority: orta
+fix: 0,3–0,5 sn hazırlık ekleyin: animasyon başlasın, hasar klibin vuruş karesinde gelsin. hurt çağrısına `{ melee: true, attacker: this }` geçirin ve parry'de hayvanı kısa süre sersemletin. physics.lineBlocked ile görüş hattı kontrolü yapın. netHurtPlayer'a poison ekleyin. Enemy._move'daki gibi takılma sapması ekleyin.
+repro: Kurt Adası'na ışınlanın ya da DK.animals.list'ten bir kurt seçin. Oyuncu kılıçla, yüzü kurda dönük şekilde savunma yapsın (sağ tık). Her ısırıkta p.hp 16 düşer ve düşüş, a.bite=0,35 olduğu kareyle aynı karede olur.
+acceptance: Isırık hasarı saldırı başlangıcından en az 0,3 sn sonra gelmeli. Önden blok hasarı %12'ye indirmeli, parry hasarsız olmalı. 1 m'lik duvarın ardından ısırık olmamalı. Yılan ısırığı konuğu da zehirlemeli.
+presentIn: v03_ve_v04
+confidence: yuksek
+
+id: H-07
+title: Hayalet Nişancı'nın güdümlü küresi kaçınmadan sonra geri dönüp vurabiliyor
+file: js/game/enemies.js
+func: enemies._updateShots (enemies.js:1483-1486, 1506)
+rootCause: Güdüm (`s.vel.lerp(want, dt·homingK)`) merminin 4 sn'lik ömrü boyunca, hedefi geçse bile sürüyor. Kaçınma dokunulmazlığında mermi yok edilmiyor, içinden geçiriliyor (`s.dead = false; continue`).
+impact: Kaçınma yalnız vuruşu erteliyor; kaçınılmış saldırıdan 30 hasar (gece ×1,18–1,35) gelebiliyor.
+priority: orta
+fix: Mermi hedefi geçince (dot(vel, hedef−konum) < 0) ya da kaçınma sırasında güdümü kapatın; dönüş hızını sınırlayın; ömrü 2 sn'ye indirin.
+repro: Gece (DK.sky.hour=23) hayalet_nisanci'yi 12 m'ye doğurup hedef verin. Küre 1 m'ye yaklaşınca p.invuln=0.34 yapın ve oyuncuyu 3 m yana taşıyın. DK.sim(2) çalıştırın: küre geri döner ve p.hp düşer.
+acceptance: Dokunulmazlık sırasında oyuncunun 1 m yakınından geçen küre sonradan hasar vermemeli.
+presentIn: v03_ve_v04
+confidence: yuksek
+knownAs: 02_HATA_LISTESI F_dusman önerisi: 'Hayalet mermisi (ghostbolt) kaçınmayı boşa çıkarıyor'
+
+id: H-08
+title: Yakın dövüş ve alan saldırıları duvarın ya da kayanın arkasına geçiyor (düşmandan oyuncuya ve oyuncudan düşmana)
+file: js/game/enemies.js
+func: Enemy._resolveMelee (enemies.js:979-998); GiantBase.aoe (bosses.js:606-619); enemies._impact (enemies.js:1431-1455); combat._meleeHit (combat.js:188-232)
+rootCause: Vuruş testleri yalnız mesafe, açı ve yükseklik farkına bakıyor; saldıran ile hedef arasında physics.lineBlocked çağrılmıyor. _reachable (863-869) duvarı dikkate almıyor; bu yüzden düşman ince bir duvara dayanıp erim içinde (range+0,6) saldırıya başlıyor.
+impact: 0,3–0,5 m'lik duvar, çit ya da kapının ardındaki oyuncu vurulabiliyor; oyuncu da duvarın ardındaki düşmanı vurabiliyor. Boss alan saldırıları tapınak duvarlarından geçiyor. 'Engeller' hedefine aykırı.
+priority: orta
+fix: hitOne, aoe, _impact ve _meleeHit içine göğüs yüksekliğinde `!physics.lineBlocked(..., { rScale: 1 })` koşulu ekleyin. Düşman tarafında saldırıyı başlatmadan önce aynı kontrolü yapın.
+repro: 05 senaryosundaki duvar kurulumunu 0,3 m kalınlıkla tekrarlayın: ph.addBox(p.pos.x, p.pos.z+1.0, 4, 0.15, 0, -50, 100, 'test:w'). Bir haydut'u duvarın öbür yanına (z+1.8) koyun; awareness=1, durum chase. DK.sim(3) çalıştırın: p.hp düşer.
+acceptance: Arada 0,3 m'lik duvar varken düşmanın yakın dövüşü, alan hasarı ve oyuncunun yakın dövüşü isabet etmemeli; duvar kaldırılınca etmeli.
+presentIn: v03_ve_v04
+confidence: yuksek
+
+id: H-09
+title: Düşman hamlelerinde hasar anı animasyonun vuruş karesiyle uyuşmuyor (bıçaklamalar ~0,3 sn geç, çift bıçak kesiği erken); sersemlik ve insan çağırmasında donuk poz
+file: js/game/enemies.js
+func: MOVES tablosu (enemies.js:24-55); Enemy._startMelee (901-925); stun (446-456); _act case 'summon' (777-789)
+rootCause: hitAt·speed değerleri klipteki vuruş karesine göre ayarlanmamış. kk_anims.glb'de vuran kolun açısal hız tepesiyle ölçüldü (/tmp/denetim_alan/glb_peak.mjs); değerler klip saniyesi olarak hasar ↔ vuruş karesi biçiminde: AtkStab 0,78 ↔ 0,38 (gerçek zamanda ~0,30 sn geç); Stab2H 0,74 ↔ 0,38 (~0,30 sn geç); DualStab 0,77 ↔ 0,38 (~0,28 sn geç); Atk2 0,51 ↔ 0,25 (~0,22 sn geç); Heavy2H 0,94 ↔ 0,78 (~0,2 sn geç); Punch2 0,65 ↔ 0,38–0,48 (~0,14–0,22 sn geç); DualSlice 0,50 ↔ 0,58–0,78 (0,07–0,22 sn erken). Atk1, Atk3 ve kalkan setleri ±0,1 sn içinde. Ayrıca sersemlik 1,0–1,7 sn sürerken Hit_B klibi 0,96 sn; insan çağırması 2,2 sn sürerken Taunt klibi 1,03 sn. Bu yüzden klip sonunda poz donuyor.
+impact: Görsel bıçaklamaya göre parry yapan oyuncu (pencere 0,24 sn) normal blok ya da hasar alıyor; kaçınma zamanlaması animasyonla çelişiyor. Donuk pozlar düşmanın takıldığı izlenimini veriyor.
+priority: orta
+fix: Her hamleye klipteki vuruş karesini (strikeClip) ekleyin ve hitAt = strikeClip/speed olarak hesaplayın. Sersemlik ve çağırma sürelerini klip uzunluğuna eşitleyin ya da bitince IdleCombat'a dönün.
+repro: Math.random'ı sabitleyerek bir haydut'a AtkStab (MOVES.sword1h[3]) hamlesini seçtirin. Her karede klip zamanını (e.char.current.time) ve hasar karesini kaydedin: hasar klibin ~0,78. sn'sinde geliyor, kol tepesi ise ~0,38. sn'de.
+acceptance: Tüm MOVES girdilerinde |hitAt·speed − strikeClip| ≤ 0,06 sn (klip zamanı) olmalı. Sersemlik ve çağırma sırasında 0,2 sn'den uzun donuk poz olmamalı.
+presentIn: v03_ve_v04
+confidence: orta
+knownAs: 02_HATA_LISTESI F_dusman önerisi: 'Bazı saldırı durumları klipten uzun sürüyor' (yalnız DASH/çağırma kısmı)
+
+id: H-10
+title: Hayalet Kaptan'ın hamle (DASH) saldırısı hiç tetiklenmiyor; verisi de animasyonla uyumsuz
+file: js/game/enemies.js
+func: Enemy._startMelee (enemies.js:901-925); çağrı yerleri _meleeOrStrafe (887, 897) ve _attackUpdate (971)
+rootCause: DASH koşulu `T.dash && d > 4 && d < 10` (905). Oysa _startMelee yalnız d ≤ range+0,3 (887), d < range+0,7 (897; yalnız kuşatmacılar) ya da d < range+0,5 (971) iken çağrılıyor; Hayalet Kaptan için bu en çok 3,0 m demek. Koşul hiçbir zaman doğru olmuyor. Ayrıca DASH verisi Atk3 klibini (1H_Melee_Attack_Chop, 1,067 sn) dur 1,4 ve hitAt 0,9 ile kullanıyor: klibin vuruş karesi ~0,55–0,62 sn, atılma 0,5–1,05 sn arasında yani vuruştan sonra, sonda da 0,33 sn donma var.
+impact: docs/05 §5.1'deki '9 m atılma, savuşturulamaz' kaptan hamlesi oyunda yok; boss beklenenden tekdüze. Koşul düzeltilirse animasyon, hasar ve hareket uyumsuzluğu ortaya çıkacak.
+priority: orta
+fix: Kovalama dalında 4<d<10 ve görüş hattı varken DASH'ı yaklaşmadan önce başlatın. Atılmayı hazırlık sırasında yapın; hasarı 2H hamle klibinin vuruş karesine bağlayın; dur = klip/hız yapın.
+repro: e=DK.enemies.spawn('hayalet_kaptan', p.pos.x+6, p.pos.z) ile 60 sn benzetim yapın; e._startMelee'yi sarmalayıp e.move===DASH sayacı tutun: sayaç 0 kalır. Statik olarak da üç çağrı yerinde d ≤ 3,0.
+acceptance: 5–9 m mesafede 60 sn'lik savaşta en az bir DASH görülmeli; hasar karesi klipteki vuruş karesiyle ±0,1 sn uyuşmalı.
+presentIn: v03_ve_v04
+confidence: kesin
+knownAs: 02_HATA_LISTESI F_dusman önerisi (DASH klip süresi); tetiklenmediği bu denetimde yeni tespit edildi
+
+id: H-11
+title: Nişancının siperi kendi görüş hattını kapatıyor: siperden ateş etmiyor, 2,5 sn sonra hedefi kaybedip araştırmaya çıkıyor
+file: js/game/enemies.js
+func: enemies.findCover (enemies.js:1388-1405); Enemy._act case 'cover' (817-837); Enemy._think kayıp mantığı (679-683)
+rootCause: Siper noktası çarpıştırıcının tam arkasında, hedefle aynı doğru üzerinde seçiliyor (1397). Bu yüzden _los (1011-1018) yanlış dönüyor ve menzilli atış koşulu (828) sağlanmıyor. _perceive de engellendiği için lostT birikiyor ve 2,5 sn sonra durum 'investigate'e geçiyor. Siperden 'göz atıp ateş etme' davranışı yok. Atıştan sonra %50 olasılıkla eski siper noktasına dönüyor (1049-1050).
+impact: haydut_nisanci siper bulduğunda pasifleşip dolaşıyor; 'siper' hedefi fiilen işlemiyor. findCover ayrıca tüm physics.all dizisini 6 Hz ile tarıyor (performans yükü).
+priority: orta
+fix: Siper noktasını çarpıştırıcının yanına (yanal r+0,6) koyup ayrı bir 'göz atma' noktası tanımlayın. cover durumunda saklan / çık-ateş et döngüsü kurun. Yakın zamanda görülmüş hedef için siperdeyken lostT saymayın. Aramayı physics.cells ile sınırlayın.
+repro: ph.addCircle(p.pos.x, p.pos.z+10, 1) ile bir engel koyun. Nişancıyı (p.pos.x, p.pos.z+12) noktasına yerleştirin; awareness=1, hedef oyuncu, durum chase. DK.sim(4) çalıştırın: durum 'cover' olur, DK.enemies.shots artmaz, ~2,5 sn sonra durum 'investigate'e döner.
+acceptance: Oyuncu açıkta durdukça siperdeki nişancı en geç reloadT·1,5 sn'de bir ateş etmeli ve 'investigate'e geçmemeli.
+presentIn: v03_ve_v04
+confidence: yuksek
+
+id: H-12
+title: Kovalayan düşman görüş kesildikten sonra 2,5–6 sn boyunca oyuncunun canlı konumunu izliyor
+file: js/game/enemies.js
+func: Enemy._meleeOrStrafe (enemies.js:884-895); _act menzilli dal (838-852); _think (679-683)
+rootCause: Kovalama ve kuşatma hedefi ile bakış yönü `tgt.pos` (oyuncunun canlı konum vektörü) üzerinden hesaplanıyor. Oyuncu görülmediğinde lastKnown'a geçilmiyor. Kayıp eşiği 2,5 sn, 6 m içinde 6 sn.
+impact: Köşe dönüp saklanan oyuncuyu düşman duvar arkasından kusursuz izliyor. 'Oyuncuyu kaybetme' gecikmeli ve düşman fiilen her şeyi biliyor; gizlilik oynanışı zayıflıyor.
+priority: orta
+fix: seen=null iken hedef noktası olarak lastKnown kullanın ve yüzü son görülen yöne çevirin. İsterseniz ≤0,5 sn'lik kısa bir hız tahmini ekleyin.
+repro: Bir haydut oyuncuyu kovalarken oyuncu bir kutunun ardına geçip 8 m yana gitsin. Her karede düşmanın hareket hedefini kaydedin: lostT 2,5'i geçene kadar düşman oyuncunun güncel konumuna yöneliyor.
+acceptance: Görüş kesildikten sonra düşman önce son görülen noktaya (≤1 m) gitmeli, aramaya ancak orada başlamalı; duvar arkasındaki yeni konuma doğrudan yönelmemeli.
+presentIn: v03_ve_v04
+confidence: yuksek
+
+id: H-13
+title: Konuk oyuncuların algı değiştiricileri (meşale, eğilme, mağara, su altı, saldırı) ev sahibi AI'sına ulaşmıyor
+file: js/net/net.js
+func: RemotePlayer.update (net.js:74-108); Player.netState (player.js:986-992); Enemy._perceive (enemies.js:532-574)
+rootCause: netState torch alanını gönderiyor ama RemotePlayer.update onu kopyalamıyor. crouch, inCave, underwater ve action hiç gönderilmiyor. _perceive ise bu alanları okuyor (543-560).
+impact: Konuk eğilerek gizlenemiyor, mağarada görünmez olmuyor; su altında görünürlüğü 0,15 yerine 0,6 sayılıyor. Gece meşalesi olsa bile ×0,5 cezası alıyor; saldırırken fark edilme ×2'si uygulanmıyor. Sonuçta ev sahibi ve konuk farklı bir AI ile karşılaşıyor.
+priority: orta
+fix: netState'e crouch, inCave, underwater ve aksiyon türünü ekleyin; RemotePlayer.update'te torch dahil hepsini kopyalayın. Testte konuk ile yerel oyuncunun farkındalık artış hızlarını karşılaştırın.
+repro: Co-op'ta konuk gece meşaleyle eğilerek bir nöbetçinin 10 m önüne gelsin. Ev sahibinde [...DK.G.remotes.values()][0].crouch ve .torch undefined çıkar; düşmanın farkındalığı ayaktaki oyuncudaki hızla artar.
+acceptance: Eğilen konukta farkındalık artış hızı, eğilen yerel oyuncudakinin ±%10 içinde olmalı.
+presentIn: v03_ve_v04
+confidence: kesin
+knownAs: 02_HATA_LISTESI F_dusman önerisi: 'Uzak oyuncuların algı değiştiricileri eşitlenmiyor'
+
+id: H-14
+title: F-04: konuk vuruşlarında blok, kaçınma ve dokunulmazlık kararı asimetrik
+file: js/game/enemies.js
+func: Enemy.hurt (enemies.js:340-365); Enemy.hear (577-594) ve 'noise' dinleyicisi (1302); net.js case 'hurtEnemy' (278-287)
+rootCause: Konukta hurt() önce _canBlock ve _dodge'u konuğun yerel durumuyla çalıştırıyor; bu durum anlık görüntüyle güncellenmiyor, yerel hear() ile değişiyor. Bloklanan vuruş ev sahibine hiç gönderilmiyor. Ev sahibi ise 'hurtEnemy'yi doğrudan applyDamage ile uyguluyor; böylece kalkış (rise) ve faz (phased) dokunulmazlığı, kalkan ve kaçınma atlanıyor.
+impact: Konuğun vuruşları rastgele kayboluyor ya da hayaletin faz dokunulmazlığını, iskeletin kalkışını ve kalkanları deliyor. Ev sahibi ile konuk farklı bir savaş yaşıyor.
+priority: orta
+fix: Konuktaki blok ve kaçınma kararını kaldırın (yalnız yerel efekt kalsın) ve her vuruşu gönderin. Ev sahibinde hurt() kullanıp sonucu ('blocked', 'dodged' ya da 'hit') konuğa geri bildirin. hear() yalnız ev sahibinde çalışsın.
+repro: 02_HATA_LISTESI F-04'teki adımlar: konuk sayfasında G.online=true, G.isHost=false; haydut_agir anlık görüntüsünü uygulayın, 'noise' yayınlayın, Math.random=()=>0 yapın. e.hurt(10,{kind:'melee',pos:p.pos,by:G.myId}) 'blocked' döner ve netHurtEnemy gönderilmez.
+acceptance: Co-op testinde konuğun 20 vuruşunda ev sahibindeki blok, kaçınma ve dokunulmazlık oranı yerel oyuncununkiyle aynı dağılımda olmalı. Fazdaki hayalete konuğun verdiği hasar 0 olmalı.
+presentIn: v03_ve_v04
+confidence: yuksek
+knownAs: F-04 (02_HATA_LISTESI; v0.4 değişiklik listesinde kapatılmadı)
+
+id: H-15
+title: Konukta saldırı uyarıları ve boss ipuçları yok: halkalar, iniş işaretleri, Volkanik Dev'in ateş halkası, lav havuzları, duman, evre ve zayıf nokta bildirimleri
+file: js/game/bosses.js
+func: GiantBase.clientUpdate (bosses.js:623-631); VolcanicGiant ateş halkası (861-872); Kraken.clientUpdate (371-384); SeaSerpent.clientUpdate (550-555); enemies.js _telegraph (928-939), lob (1416-1430), _updatePools (1456-1475), _smokeBomb (501-511), boss çubuğu (1617-1618)
+rootCause: Uyarı nesneleri ve G.notify çağrıları yalnız ev sahibinin simülasyon yollarında üretiliyor. netExtra yalnız konum, yön, animasyon ve durum taşıyor. Anlık görüntüde telgraf, iniş işareti, ateş halkası ve havuz bilgisi yok. İnsan boss çubuğu konuğun yerel e.state değerine bağlı ve bu değer anlık görüntüyle güncellenmiyor.
+impact: Konuk savuşturulamaz saldırıları ve lav topu inişlerini görmeden yiyor. Zıplayarak kaçması gereken ateş halkasını göremiyor, görünmeyen lav havuzunda yanıyor (0,5 sn'de 7 hasar). 'Çekirdek açıldı — önden vur' gibi ipuçlarını kaçırıyor.
+priority: orta
+fix: Ev sahibi aktif telgrafları ([x, z, r, ilerleme, renk]), lob işaretlerini, ateş halkası yarıçapını ve havuzları anlık görüntüye eklesin; boss bildirimlerini yayınlasın. Konuktaki clientUpdate bunları çizsin. İnsan boss çubuğu için durum bayrağı gönderilsin.
+repro: Co-op'u iki oyuncuyla açın. Ev sahibinde Volkanik Dev'i doğurup b._go('slam') çalıştırın. Konuk sekmesinde DK.bosses.active.wave.visible ve ringA.visible her an false kalıyor; konuk dalga anında hasar alıyor.
+acceptance: Her telgraf ve işaret konukta ev sahibine göre en çok 0,15 sn farkla görünmeli. Co-op testinde konuk ateş halkasını görüp zıplayarak kaçabilmeli.
+presentIn: v03_ve_v04
+confidence: kesin
+knownAs: 11_BILINEN_SORUNLAR #15 (F-06'nın ikinci yarısı; orada 'düşük' önemde); 02 F_dusman önerileri (konukta hasar sayıları, boss çubuğu)
+
+id: H-16
+title: Taş Muhafız'ın rün sütunları konukta oluşmuyor; konuk görünmez bir %80 hasar direnciyle savaşıyor
+file: js/game/bosses.js
+func: StoneGuardian.onPhase (bosses.js:660-683); GiantBase.netExtra (622)
+rootCause: Sütunlar yalnız ev sahibinde, applyDamage→onPhase içinde yaratılıyor. netExtra ve applyNetExtra sütun durumunu taşımıyor. damageMul'deki ×0,2 konuğun vuruşlarına da uygulanıyor.
+impact: Konuk sütunları göremiyor ve vuramıyor; neden hasar veremediğini anlamıyor.
+priority: orta
+fix: netExtra'ya sütun dizisi ([x, z, alive]) ekleyin. Konukta sütun nesnelerini ve hedeflerini oluşturun. Sütuna verilen hasar netHurtBoss ile, sütun indeksiyle birlikte ev sahibine gitsin.
+repro: Co-op'ta ev sahibinde b=DK.bosses.spawn('tas_muhafiz', ...) ve b.applyDamage(b.maxHp*0.5,{}) çalıştırın. Konukta DK.bosses.active.pillars.length 0 çıkar.
+acceptance: Konukta 3 sütun görünmeli ve vurulabilmeli; sütunlar kırılınca kalkan iki tarafta da kalkmalı.
+presentIn: v03_ve_v04
+confidence: kesin
+knownAs: 11_BILINEN_SORUNLAR #14 / ek-108 / F_dusman-ek-statik-135
+
+id: H-17
+title: Co-op'ta bazı savaş etkileri konuklara uygulanmıyor (tükürük zehri, yılan zehri, gülle/patlama hasarı, yakalama, düşman yakın dövüşünün geri itmesi)
+file: js/game/enemies.js
+func: enemies._impact (enemies.js:1443); Enemy._hitPlayer (1005-1007); combat.js 'explosion' dinleyicisi (combat.js:44-54); animals.js:508; net.js:150
+rootCause: Zehir ve yavaşlatma yalnız G.myId için uygulanıyor. netHurtPlayer iletisi poison ve slow alanlarını, düşman yakın dövüşünde de geri itmeyi taşımıyor. Patlama hasarı yalnız yerel oyuncuya uygulanıyor, G.remotes taranmıyor. Konukta gülleler yalnız görsel olduğu için patlama hiç üretilmiyor.
+impact: Konuk Derinlik Yılanı'nın zehrinden, yılan ısırığının zehrinden, düşman topçusunun karaya düşen gülle patlamalarından ve Boğulmuş Denizci'nin yakalamasından etkilenmiyor; ev sahibi etkileniyor. Zorluk iki oyuncu için eşit değil.
+priority: orta
+fix: netHurtPlayer'a poison, slow ve kb alanlarını ekleyin. explosion dinleyicisinde ev sahibi G.remotes için mesafe kontrolü yapıp netHurtPlayer yayınlasın.
+repro: Co-op'ta konuğu Yılan tükürüğünün iniş noktasına koyun: konukta p.poison 0 kalır. Ev sahibi ile konuğun yanına top güllesi düşürün (patlama yarıçapı 3,5 m): yalnız ev sahibi hasar alır.
+acceptance: Co-op testinde aynı saldırıda ev sahibi ve konuk aynı hasarı, zehri ve yavaşlatmayı almalı.
+presentIn: v03_ve_v04
+confidence: yuksek
+knownAs: F_dusman-ek-statik-138, F_dusman-ek-statik-139 (02_HATA_LISTESI, doğrulanmamış ek bulgular)
+
+id: H-18
+title: Hikâye bossları (Morvan, Kızıl Hançer) her istemcide yerel konuma göre tetikleniyor; kayıttan sonra doğuş bayrağı takılı kalıyor
+file: js/game/quests.js
+func: quests.update hikâye tetikleyicileri (quests.js:276-292); quests.start (76-79)
+rootCause: quests.update'te isHost kontrolü yok. Konuk mezara yaklaşınca enemies.spawnBoss yerelde çalışıyor ve bir sonraki anlık görüntü bu yerel kopyayı siliyor (enemies.js:1658); boss yalnız ev sahibi 45/50 m içindeyse var oluyor. morvanSpawn ve kizilSpawn bayrakları kayda yazılıp aynen geri yükleniyor. Otomatik kayıt 120 sn'de bir, savaş kontrolü olmadan alınıyor (game.js:218); dövüş sırasında alınan kayıt boss yokken yüklenince boss, oyuncu 200 m uzaklaşıp geri dönmedikçe yeniden doğmuyor.
+impact: Konuk 'Morvan uyandı' mesajıyla birlikte anında kaybolan bir iskelet görüyor. Tek oyunculu modda kayıt yükleyen oyuncu mezarda boss bulamıyor ve hikâyenin ilerlemediğini sanıyor.
+priority: orta
+fix: Hikâye bossu tetiklemesini ev sahibine taşıyın ve konukların konumunu da hesaba katın. *Spawn bayraklarını kaydetmeyin ya da yüklemede boss listede yoksa sıfırlayın.
+repro: Tek oyuncu: aşama 3'te mezara gidin (Morvan doğar), kaydedip kaydı yükleyin. DK.quests.flags.morvanSpawn true kalır, DK.enemies.list'te iskelet_kaptan yoktur ve mezar başında 30 sn beklense de doğmaz. Co-op: konuk mezara tek başına gider; konukta boss bir kare görünür, ev sahibinde hiç yoktur.
+acceptance: Yüklemeden sonra mezarın 45 m içine gelindiğinde boss doğmalı. Co-op'ta konuk tetiklediğinde boss ev sahibinde doğmalı ve iki tarafta da görünmeli.
+presentIn: v03_ve_v04
+confidence: yuksek
+
+id: H-19
+title: Gece dalgaları her gece yeniden doğuyor; gündüz kaybolmayan türler (iskelet, Lanetli Muhafız, Hayalet Kaptan) birikiyor
+file: js/game/enemies.js
+func: enemies._populate (enemies.js:1539-1571); Enemy.update gündüz kaybolma (637-641)
+rootCause: Gece listesi `near && night && !nightDone` olduğunda doğuyor; grubun bekleme süresine ve önceki gecenin yaşayan üyelerine bakılmıyor. nightDone gündüz sıfırlanıyor. Gündüz kaybolma yalnız T.night bayraklı türlerde (hayalet, hayalet_bogulmus, hayalet_nisanci) çalışıyor; gece listelerindeki iskelet (182-186), hayalet_muhafiz ve hayalet_kaptan (archipelago.js:160-161) bu bayrağı taşımıyor. Ayrıca spawned=false iken, yani bekleme süresinde doğan gece üyeleri oyuncu uzaklaşınca silinmiyor (1559).
+impact: Bir grubun 140–220 m çevresinde birkaç gece geçiren oyuncunun yanında her gece yeni iskeletler, Lanetli Muhafızlar ve Hayalet Kaptan bossları birikiyor. Örnek: Kırlangıç Limanı yakınındaki sahil_gece grubu (150, 160). Temizlenmiş kampa bekleme süresi dolmadan da gece dalgası geliyor.
+priority: orta
+fix: Gece üyelerini işaretleyip şafakta kaldırın (ya da gece türlerine night: true verin). Önceki gecenin üyeleri yaşıyorsa yeniden doğurmayın, bekleme süresine uyun ve gece üyelerini de uzaklık temizliğine dahil edin.
+repro: DK.sky.hour=21 yapıp oyuncuyu sahil_gece grubunun 100 m yakınına koyun ve DK.sim(5) çalıştırın. Sonra DK.sky.hour=12 ile DK.sim(60), ardından DK.sky.hour=21 ile DK.sim(5) çalıştırın. group==='sahil_gece' olan düşman sayısı 2'den 4'e çıkar.
+acceptance: Ardışık 3 gecede bir gruptaki canlı gece üyesi sayısı gece listesinin uzunluğunu aşmamalı; gündüz gece üyesi kalmamalı.
+presentIn: v03_ve_v04
+confidence: yuksek
+
+id: H-20
+title: Hafif vuruş zinciri poise'sız düşmanları sürekli kesiyor (sersemletme kilidi)
+file: js/game/enemies.js
+func: Enemy.applyDamage tepki dalı (enemies.js:400-414); combat.js SWORD_MOVES (combat.js:19-24)
+rootCause: Poise'sız ve boss olmayan düşman her hafif vuruşta 0,45 sn'lik 'hit' durumuna geçiyor ve hazırladığı saldırı iptal oluyor. Oyuncu zinciri 0,4 sn arayla vuruyor (hitAt 0,25); bitirici vuruş düşmanı 1 sn sersemletiyor. Bir zincir 1,64 sn'de ~23 dayanıklılık harcıyor (≈14/sn); yenilenme 18/sn (player.js:388), yani dayanıklılık bitmiyor.
+impact: Tek düşmana karşı savaş tek tuşa basmaya indirgenebiliyor; düşmanın saldırı fırsatı çok kısa pencerelerle sınırlı kalıyor.
+priority: orta
+fix: Düşmana ≈1–1,5 sn'lik vuruş tepkisi bekleme süresi ya da poise ölçeri ekleyin; ölçer dolmadan yalnız üst gövde tepkisi oynasın. Saldırı hazırlığının son %30'unda düşman kesilemez olsun.
+repro: Bir haydut ile 20 sn boyunca DK.combat._attack(p,'light') çağrısını 0,42 sn'de bir tekrarlayın; e.state ve p.hp kaydedin. Düşman çok az saldırısını tamamlıyor, p.hp neredeyse sabit kalıyor.
+acceptance: Sürekli hafif zincir altında poise'sız düşman 10 sn'de en az 2 saldırısını tamamlayabilmeli.
+presentIn: v03_ve_v04
+confidence: orta
+knownAs: 02_HATA_LISTESI F_dusman önerisi: 'Hafif vuruş kesme kilidi'
+
+id: H-21
+title: İnsan bosslar (boss bayraklı 4 tür) öldürülünce XP vermiyor; ENEMY_TYPES'taki xp değerleri kullanılmıyor
+file: js/game/progress.js
+func: progress.init 'enemyKilled' dinleyicisi (progress.js:75)
+rootCause: `if (T && !T.boss) share(...)` koşulu boss bayraklı türleri dışlıyor; 'bossDefeated' olayı ise yalnız efsanevi bosslardan geliyor (bosses.js:1073). Kural muhtemelen Lanetli Amiral'in güverte formunun çift ödül vermesini önlemek için konmuş; bu sorun noLoot ile zaten çözülmüş.
+impact: Hayalet Kaptan (xp 250) hiç XP vermiyor. Morvan (200) ve Kızıl Hançer (150) yalnız hikâyeden +150 XP veriyor. docs/04 kartlarındaki 'Deneyim … (oyuncuya ×2 XP)' bilgisi yanlış.
+priority: orta
+fix: noLoot olmayan boss bayraklı düşmanlara da T.xp·2 XP verin; co-op paylaşımını aynı share fonksiyonuyla yapın.
+repro: const x0=DK.progress.xp; const e=DK.enemies.spawn('hayalet_kaptan', p.pos.x+5, p.pos.z); e.applyDamage(99999,{pos:p.pos.clone()}). Sonuçta DK.progress.xp === x0. Aynı adımlar haydut ile yapılınca XP +20 artıyor.
+acceptance: Boss bayraklı her türün ölümü (noLoot hariç) xp·2 kazandırmalı; Lanetli Amiral'in güverte formu (noLoot) kazandırmamalı.
+presentIn: v03_ve_v04
+confidence: kesin
+
+id: H-22
+title: Boss isabet hacimleri ve çarpışmaları görselle uyumsuz: dev bosslar çarpışmasız, hayalet gemi hedefi merkezde ve 6 m yukarıda, Yılan'ın gövdesi vurulamıyor
+file: js/game/bosses.js
+func: GiantBase (bosses.js:561-632); StoneGuardian.update (693-702); VolcanicGiant.update (824-833); CursedAdmiral (925-928, 1008); combat.js projectileTest (55-70); crowd.js:21
+rootCause: bosses.js fizik modülünü hiç kullanmıyor: dev bosslar çarpıştırıcıların içinden geçiyor ve kalabalık itişmesine girmiyor (crowd yalnız enemies.list'i işliyor). Arena ya da krater sınırında konum değişmese de 'Walk' oynatılıyor. Hayalet gemi hedefi (gs.x, gs.y+3) noktasında, yarıçap 7, yükseklik 6; gülle testi merkezin 6 m üstündeki noktaya 7,6 m yarıçapla yapılıyor. Bu yüzden su hattının 1 m üstünde 20 m'lik gövdenin yalnız orta ±5 m'si (%50) isabet sayıyor. Gemi G.ships'e eklenmediği için katı değil. Yılan'da yalnız baş (r 2,4) hedef.
+impact: Oyuncu devin içinde durabiliyor; Taş Muhafız tapınağın sütunlarından ve duvarlarından geçiyor, arena sınırında yerinde yürüyor. Pruvaya ya da kıça isabet eden gülleler etkisiz kalıp gemiden geçiyor. Yılan'ın gövdesine atılan atışlar boşa gidiyor.
+priority: orta
+fix: Dev bosslara physics.resolve ve yüksek kütleli kalabalık ajanı ekleyin; sınırda Idle oynatın. Hayalet gemi için gövde boyunca üç hedef küre (pruva, orta, kıç) ya da kutu testi kullanın. Yılan'ın gövdesinde birkaç segmenti ek hedef yapıp hasarı başa aktarın.
+repro: Taş Muhafız'ı bir kolon çarpıştırıcısına doğru yürütün (oyuncuyu kolonun arkasına koyun): b.pos çarpıştırıcının içinden geçiyor. Oyuncuyu b.pos'a koyun: itilmiyor. Amiral'de bir gülleyi pruvadan 8 m ileriden, su hattının 1 m üstünden geçirin: b.hp değişmiyor.
+acceptance: Dev bosslar çarpıştırıcıya girmemeli ve oyuncuyu itmeli. Hayalet geminin görünen gövdesine çarpan her gülle hasar vermeli. Sınırda yürüme animasyonu oynamamalı.
+presentIn: v03_ve_v04
+confidence: yuksek
+
+id: H-23
+title: Yol bulma yok: büyük ve iç bükey engellerde takılma, yükseltideki oyuncuya ulaşamama, yamaçta dikey ışınlanma, güverte engellerinden geçme
+file: js/game/enemies.js
+func: Enemy._move (enemies.js:1072-1146); Enemy._reachable (863-869); Enemy._place (1193-1198); crowd.js:17
+rootCause: Hareket yalnız 1,3 m'lik ileri sonda ve 1,4 sn süren ±63° sapmadan oluşuyor (1087-1090, 1125-1139); A* ya da navmesh yok. Koddaki 'uçuruma girme' yorumuna rağmen yalnız su kontrol ediliyor (1091-1095). y değeri her karede arazi yüksekliğine anında oturtuluyor; eğim ya da düşüş sınırı yok. Hedef 2,4 m'den yüksekteyse 'ulaşılamaz' sayılıyor ve düşman aşağıda alay ediyor. Güverte düşmanları direk ve ambar engellerini yok sayıyor (yalnız clampDeck var); güvertedeki oyuncu kalabalık ajanı değil.
+impact: Uzun duvar, çit ve U biçimli engellerde düşmanlar takılabiliyor. Oyuncu 2,4 m'lik bir kayaya ya da kuleye çıkarak yakın dövüşçüleri etkisiz bırakabiliyor. Düşmanlar dik yamaçlara koşarak tırmanıyor ve yüksekten ışınlanır gibi iniyor. Bordalamada düşmanlar oyuncunun ve direklerin içinden geçiyor.
+priority: orta
+fix: Ada başına kaba bir ızgara üzerinde A* (çarpıştırıcı ve eğim maliyetli) kurun; takılınca yol isteği yapılsın. Eğim sınırı ve düşme ekleyin; yükseltilere çıkan merdiven ve rampa noktaları tanımlayın. Güverte engellerini (Ship.obstacles) yerel çözümlemeye ekleyin ve güvertedeki oyuncuyu ajan yapın.
+repro: ph.addBox ile 12 m uzunluğunda U biçimli bir duvar kurun; oyuncuyu U'nun arkasına, haydut'u önüne koyup 30 sn benzetim yapın: düşman ulaşamıyor, konumu çok az değişiyor. Oyuncuyu 3 m'lik bir kayanın üstüne koyun: yakın dövüşçüler 4 m'de bekliyor.
+acceptance: Çalışma zamanı dolaşma senaryosunda (F-09) düşman U biçimli ve 20 m'lik duvarın etrafından 20 sn içinde hedefe ulaşmalı. 60°'den dik yamaçta yürümemeli. Bordalama düşmanı direkten geçmemeli.
+presentIn: v03_ve_v04
+confidence: yuksek
+knownAs: 11_BILINEN_SORUNLAR #11 (F-09 çalışma zamanı testi yok), #5 (D-20 güverte itişmesi)
+
+id: H-24
+title: Boss savaşları ve 13 düşman türü için doğrulayıcı otomatik test yok
+file: tests/scenarios/05_dusman_ai.js
+func: 05_dusman_ai.js (18 beklenti); tests/scenarios/v03/boss1–5.js (beklenti yok)
+rootCause: 05 senaryosu yalnız haydut, haydut_agir, kizil_hancer ve iskelet_kaptan ile algı ve eşik birimlerini sınıyor. Efsanevi boss betikleri yalnız JSON çıktısı üretiyor, beklenti (expect) içermiyor ve hasarı doğrudan applyDamage ile veriyor.
+impact: H-01, H-02, H-04 ve H-10 gibi kusurlar regresyonlarda yakalanmadı; 'çalışıyor' iddiaları kanıtsız kalıyor.
+priority: orta
+fix: Her tür için kısa bir duman testi yazın (doğ, algıla, saldır, öl, ganimet bırak). Her boss için uçtan uca, beklentili bir senaryo yazın: uyarı ile hasar zamanı, halka = hasar yarıçapı, zayıf nokta çarpanı, evre, ödül ve konukta görünürlük.
+repro: grep -c expect tests/scenarios/v03/boss*.js komutu her dosya için 0 veriyor. 05'te kullanılan türler yalnız haydut, haydut_agir, kizil_hancer ve iskelet_kaptan.
+acceptance: 17 tür ve 5 boss için beklentili senaryolar regresyonda geçmeli ve 12. belgeye kaydedilmeli.
+presentIn: v03_ve_v04
+confidence: kesin
+knownAs: 11_BILINEN_SORUNLAR #12, #11
+
+id: H-25
+title: Derinlik Yılanı dalış sonunda ~21 m ışınlanıyor ve gövde izi kopuyor; Kraken'de arazi kontrolü yok
+file: js/game/bosses.js
+func: SeaSerpent.update case 'dive' (bosses.js:495-511); SeaSerpent._pose (533-548); Kraken.update (246-251)
+rootCause: Dalışın 2,2. sn'sinde `this.pos.copy(tgt).setY(-1)` çalışıyor; yılanın o anki konumuna bakılmıyor. Hareket kuralının Node kopyası (/tmp/denetim_alan/serpent_dive.cjs) ortalama 21 m, en çok 27 m sıçrama gösterdi. İz yalnız başın önüne eklendiği için gövde segmentleri eski, derin yolda kalıyor. Kraken'in yörüngesi gemi+R noktasına sönümleniyor ve arazi testi yapılmıyor; D-19 düzeltmesi yalnız Yılan'a ve hayalet gemiye uygulanmış.
+impact: Geminin yanında gövdesiz bir baş beliriyor ve sersemlik penceresi boyunca öyle kalıyor. Adaya yakın bir Kraken savaşında baş ve dokunaçlar kayaların içine girebiliyor.
+priority: dusuk
+fix: Dalışta yılan hedefe varmadan fırlamayı erteleyin ya da hızı mesafeye göre ayarlayın. Işınlanma gerekiyorsa izi yeniden örnekleyin. Kraken için yörünge noktasını su derinliğine göre seçin.
+repro: b=DK.bosses.spawn('derinlik_yilani'); b.mode='dive'; b.mt=0 ile dalış öncesi ve sonrası b.pos farkını ölçün (≥15 m çıkıyor). b.trail[2] ile b.pos arasındaki mesafe de büyük kalıyor.
+acceptance: Dalış sonunda başın sıçraması ≤3 m olmalı. Kraken'in baş merkezi her zaman terrain.heightAt < ocean.tide − 4 koşulunu sağlayan bir noktada olmalı.
+presentIn: v03_ve_v04
+confidence: orta
+knownAs: 11_BILINEN_SORUNLAR #6 / D-19 (Kraken kısmı açık; 11. belgede tümü hâlâ 'Açık' görünüyor)
+
+id: H-26
+title: Lanetli Amiral geri çekilince güvertedeki Amiral ve hayalet tayfa kalıyor; boss yeniden bordalayabiliyor
+file: js/game/bosses.js
+func: bosses._check geri çekilme (bosses.js:1094-1099); CursedAdmiral._board (936-947); CursedAdmiral.dispose (1017)
+rootCause: _clear yalnız CursedAdmiral'i ve hayalet gemiyi temizliyor; enemies.list'teki güverte Amirali (noLoot) ve hayalet tayfa silinmiyor. Boss 'defeated' sayılmadığı için yeniden doğup ikinci kez bordalayabiliyor.
+impact: Oyuncunun gemisinde ödülsüz, sahipsiz bir Lanetli Amiral kalıyor; nadir durumlarda iki Amiral oluşabiliyor.
+priority: dusuk
+fix: CursedAdmiral.dispose içinde this.admiral'ı ve bayrakla işaretlenmiş bordalama tayfasını kaldırın.
+repro: Amiral'i bordalatın (b.applyDamage(b.maxHp*0.55,{kind:'cannon'})), sonra oyuncuyu gemiden 700 m uzağa ışınlayıp DK.sim(1) çalıştırın. DK.bosses.active null olur, ama DK.enemies.list'te lanetli_amiral canlı kalır.
+acceptance: Boss geri çekilince güverte Amirali ve hayalet tayfa da kaldırılmalı.
+presentIn: v03_ve_v04
+confidence: orta
+
+id: H-27
+title: Hayalet düşmanlar birbirinden ayrışmıyor; oyuncu ve NPC'lerle de itişmiyor
+file: js/game/enemies.js
+func: enemies.near (enemies.js:1364-1368); crowd.update (crowd.js:21)
+rootCause: near() komşu listesinden tüm hayaletleri çıkarıyor; crowd da hayalet düşmanları ajan listesine almıyor.
+impact: Gece dalgalarında ve bordalamada hayaletler üst üste biniyor ve oyuncunun içinden geçiyor. 'Birbirlerine takılmamalı' hedefinin tersine iç içe geçmiş bir görüntü oluşuyor.
+priority: dusuk
+fix: Hayalet-hayalet çiftleri için daha küçük yarıçaplı bir ayrışma uygulayın (`!o.T.ghost || e.T.ghost`); isterseniz oyuncuyla hafif itişme ekleyin.
+repro: 05'teki yığılma testinin hayalet sürümünü çalıştırın: aynı noktada 3 hayalet doğurup DK.sim(2) yapın. En yakın çift arası 0,3 m'nin altında kalıyor.
+acceptance: Hayalet yığılma testinde 2 sn sonra en yakın çift arası 0,6 m'den büyük olmalı.
+presentIn: v03_ve_v04
+confidence: kesin
+knownAs: 02_HATA_LISTESI F_dusman önerisi: 'Hayaletler arasında ayrışma yok'
+
+id: H-28
+title: Dokunulmaz düşmana (hayalet fazı, iskelet kalkışı) vuruşta sahte isabet geri bildirimi; konukta boss vuruşu her zaman 'hit' dönüyor
+file: js/game/combat.js
+func: combat._meleeHit (combat.js:201-206); Enemy.hurt (enemies.js:341); BossBase.hurt (bosses.js:103)
+rootCause: Enemy.hurt, düşman faz, kalkış ya da ölü durumundayken null döndürüyor; _meleeHit null'u isabet sayıp kan kıvılcımı, vuruş sesi ve hitMarker üretiyor. Konukta BossBase.hurt, damageMul=0 olan durumlarda bile 'hit' döndürüyor.
+impact: Oyuncu hasar verdiğini sanıyor; faz, kalkış ve bağışıklık pencereleri anlaşılmıyor.
+priority: dusuk
+fix: hurt 'immune' döndürsün ve _meleeHit bunu ayrı bir efektle (gri kıvılcım) göstersin. Konukta boss için yerel bir damageMul tahmini kullanılsın.
+repro: Fazdaki bir hayalete (e.phased=true) hafif vuruş yapın: hitMarker olayı ve kan kıvılcımı oluşuyor, ama e.hp değişmiyor.
+acceptance: Dokunulmaz hedefte isabet efekti ve hitMarker olmamalı; onun yerine 'bağışık' efekti görünmeli.
+presentIn: v03_ve_v04
+confidence: kesin
+knownAs: F_dusman-ek-statik-140 (boss kısmı)
+
+id: H-29
+title: Volkanik Dev'in ganimeti lav gölüne düşebilir
+file: js/game/bosses.js
+func: VolcanicGiant.die (bosses.js:896-901); groundAt (787); islands._updateLava (islands.js:1112-1120)
+rootCause: Ganimet bossun 12 m doğusuna bırakılıyor. Krater yarıçapı lav gölünün yarıçapına eşit (I.r·0,13 ≈ 70 m); boss kraterin içinde ya da kenarında ölürse groundAt lav düzeyini döndürüyor. Lav 0,4 sn'de 14 hasar veriyor.
+impact: Ödülü almak için lava girmek gerekebilir.
+priority: dusuk
+fix: Ganimeti en yakın lav dışı noktaya ya da deniz bosslarındaki gibi oyuncunun yanına bırakın.
+repro: b=DK.bosses.spawn('volkanik_dev'); b.rise=1; b.pos.set(b.crater.x, b.lavaY, b.crater.z); b.applyDamage(1e6,{}). 'loot' olayının pos değeri kraterin içinde, merkeze 70 m'den yakın çıkıyor.
+acceptance: Ganimet her zaman lav yarıçapının dışında konumlanmalı.
+presentIn: v03_ve_v04
+confidence: orta
+
+id: H-30
+title: Kuşatma ve yana kayma sırasında ileri yürüme/koşu animasyonu oynuyor (ayak kayması)
+file: js/game/enemies.js
+func: Enemy._animate (enemies.js:1148-1160); kuşatma halkası _meleeOrStrafe (889-895); menzilli yana kayma (846-850)
+rootCause: Kuşatmada düşman yüzünü hedefe dönük tutuyor (face, 821), ama hareketi teğetsel. _animate yalnız hıza göre Walk, Run ya da WalkBack seçiyor. ANIM_MAP'teki StrafeL ve StrafeR klipleri (kk.js) oyuncu tarafından kullanılıyor (player.js:684), düşmanlarda hiç kullanılmıyor.
+impact: Kuşatan düşmanlar yana kayarken ileri yürüyor gibi görünüyor; 'animasyon ve fiziksel hareket tutarlı olmalı' hedefine aykırı.
+priority: dusuk
+fix: Oyuncudaki mantığı kullanın: hız vektörünün bakış yönüne göre açısına bakarak Walk, WalkBack, StrafeL ya da StrafeR seçin.
+repro: Bir düşmanı 'strafe' (kuşatma) durumuna sokun. Her karede yaw ile hız yönü arasındaki açıyı ve currentName'i kaydedin: açı ~90° iken Walk ya da Run oynuyor.
+acceptance: Bakış yönüne göre 45°'den büyük yanal harekette strafe klibi oynamalı.
+presentIn: v03_ve_v04
+confidence: kesin
+
+=== USERCLAIMS
+{"claim": "17 düşman türü ve beş boss var", "v03": "dogru", "v04": "dogru", "evidence": "v0.4'te enemies.js:79-177 ENEMY_TYPES 17 anahtar içeriyor: haydut, haydut_nisanci, haydut_agir, haydut_avci, haydut_kaptani (mini boss), kizil_hancer*, iskelet, iskelet_nisanci, iskelet_agir, iskelet_altin, iskelet_kaptan*, hayalet, hayalet_bogulmus, hayalet_nisanci, hayalet_muhafiz, lanetli_amiral*, hayalet_kaptan* (* = boss: true). v0.3'teki enemies.js:76-174 birebir aynı; iki dosya arasındaki diff tablo içinde fark göstermiyor. Efsanevi bosslar: v0.4'te bosses.js:24-30 BOSS_DEFS ve 1029 CLASSES, v0.3'te 22-28 ve 1007; isimler Kraken, Derinlik Yılanı, Taş Muhafız, Lanetli Amiral, Volkanik Dev. Node ile iki sürümde yapılan sayım 17 ve 5. Not: 17 türün 4'ü insan boss, 1'i mini boss. Lanetli Amiral hem bir düşman türü (güverte evresi) hem de efsanevi boss olarak iki listede geçiyor. 17 türün her birinin dünyada doğduğu bir yer var (archipelago.js özellik listeleri, enemies.js:182-186, quests.js:278/286, events.js:267). Sayım doğru, ama 13 tür ve 5 efsanevi boss için doğrulayıcı test yok (H-24)."}
+=== DOCCLAIMS
+{"doc": "docs/04_DUSMAN_KATALOGU.md §4.1 Algı", "claim": "Ses olayları: adım, silah 45 m, top 90 m, patlama 90 m", "verdict": "kismen", "evidence": "Patlama sesi 70 m (combat.js:46). Oyuncu tabancası 45 m (combat.js:253), düşman tabancası 40 m (enemies.js:1065). Top 90 m (combat.js:311). Adım sesi 1,2–11 m (combat.js:96), kılıç 9 m (combat.js:165)."}
+{"doc": "docs/04_DUSMAN_KATALOGU.md §4.1 Koordinasyon", "claim": "Saldırı jetonları: aynı anda en fazla 2 yakın saldırgan", "verdict": "kismen", "evidence": "Jeton sayısı kolayda 1, normalde 2, zorda 3 (enemies.js:1344). Boss ve mini boss jeton almadan saldırıyor (609). Uzaklaşan sahibin jetonu temizlenmiyor (1343)."}
+{"doc": "README.md:90 ve docs/04 §4.1", "claim": "17 durumlu davranış", "verdict": "kismen", "evidence": "Kodda 18 durum adı var: patrol, suspicious, investigate, chase, strafe, attack, cover, retreat, flee, heal, return, hit, stunned, dodge, summon, callHelp, rise, dead (enemies.js:658-861)."}
+{"doc": "docs/04_DUSMAN_KATALOGU.md §4.1 Hareket", "claim": "Çarpıştırıcılara karşı çözümleme yapılıyor (duvar içinden geçme yok), ışınlanma yok", "verdict": "kismen", "evidence": "Yürüme physics.resolve ile çözülüyor (enemies.js:1123) ve LOD muafiyeti (1601) ince duvardan geçişi önlüyor. Buna karşılık y her karede araziye anında oturuyor (1197), yakın dövüş duvarın arkasına geçiyor (979-998, H-08), Yılan dalışta ~21 m ışınlanıyor (bosses.js:503) ve dev bosslar çarpıştırıcılardan geçiyor (bosses.js fizik modülünü kullanmıyor)."}
+{"doc": "docs/04_DUSMAN_KATALOGU.md §4.2 boss kartları", "claim": "Kızıl Hançer / Morvan / Lanetli Amiral / Hayalet Kaptan: Deneyim 150/200/300/250 (oyuncuya ×2 XP)", "verdict": "yanlis", "evidence": "progress.js:75'teki `if (T && !T.boss)` koşulu boss bayraklı türlere XP vermiyor; bossDefeated olayı yalnız efsanevi bosslardan geliyor (bosses.js:1073). Morvan ve Kızıl Hançer yalnız hikâyeden +150 XP veriyor (quests.js:133, progress.js:81)."}
+{"doc": "docs/05_DUSMAN_DENGE_TABLOSU.md tablo ve §5.1", "claim": "Değerler doğrudan ENEMY_TYPES veri tablosundan alınmıştır", "verdict": "dogru", "evidence": "17 satır × 9 sütun Node ile karşılaştırıldı (/tmp/denetim_alan/doc05_check.mjs): 0 fark. §5.1'deki vuruş hazırlıkları MOVES (enemies.js:24-55) ile aynı."}
+{"doc": "docs/05_DUSMAN_DENGE_TABLOSU.md §5.1", "claim": "Kaptan özel: … hamle (9 m atılma, savuşturulamaz)", "verdict": "yanlis", "evidence": "DASH koşulu d>4 (enemies.js:905), ama _startMelee yalnız d≤range+0,5 iken çağrılıyor (887, 897, 971). Hamle hiç tetiklenmiyor (H-10)."}
+{"doc": "docs/05_DUSMAN_DENGE_TABLOSU.md §5.3", "claim": "Bosslarda can oyuncu başına +%50 artar; kamp düşmanları sayı olarak sabittir", "verdict": "kismen", "evidence": "Efsanevi bosslarda çarpan 1+0,5×konuk (bosses.js:86). İnsan bosslarda ve tüm normal düşmanlarda can da 1+0,35×konuk ile ölçekleniyor (enemies.js:222). Ölçek doğuş anında bir kez hesaplanıyor."}
+{"doc": "docs/06_BOSS_TASARIMI.md giriş", "claim": "Her boss evrelidir, saldırıları önceden işaretlenir, zayıf noktası vardır, oda sahibi tarafından yönetilir ve konuklara anlık görüntüyle aktarılır", "verdict": "kismen", "evidence": "Evreler, işaretler ve zayıf noktalar ev sahibinde var (onPhase, telegraph, damageMul). İşaretler, ateş halkası, sütunlar ve bildirimler konuğa aktarılmıyor (netExtra 366, 549, 622, 1018; 11 #14, #15). Lanetli Amiral'de tek evre geçişi (bordalama) var."}
+{"doc": "docs/06_BOSS_TASARIMI.md §6.1", "claim": "Dokunaç kırılabilir (kılıç/tabanca/top)", "verdict": "kismen", "evidence": "Tabanca ve topla vurulabiliyor. Kılıçla vurmak için gereken hedef ucun 5–14 m gerisinde (bosses.js:358); sloop'ta güverteden ulaşılabilen durumlar ~%8 (H-01)."}
+{"doc": "docs/06_BOSS_TASARIMI.md §6.6 ve TEST_RAPORU.md #15", "claim": "Beş bossun doğuşu, evre geçişleri ve yenilgi/ödül akışı başsız tarayıcıda doğrulandı", "verdict": "kismen", "evidence": "tests/scenarios/v03/boss1–5.js dosyaları beklenti içermiyor (grep expect = 0) ve hasarı doğrudan applyDamage ile veriyor. 11_BILINEN_SORUNLAR #12'de 'uçtan uca oynanmadı', 12. belgenin 10. satırında 'KISMİ' yazıyor."}
+{"doc": "docs/denetim/07_AI_BOSS_TESTLERI.md #5", "claim": "Saldırı telgrafı GEÇTİ (hazırlık 0,58 sn; vuruş hazırlıktan önce işlenmedi)", "verdict": "kismen", "evidence": "05 testi yalnız hitAt≥0,35 olduğunu ve hasarın hazırlıktan sonra geldiğini ölçüyor. Animasyonun vuruş karesiyle uyum ölçülmedi; AtkStab'da hasar ~0,3 sn geç geliyor (H-09). Kırmızı halka yalnız savuşturulamaz hamlelerde ve yalnız ev sahibinde görünüyor."}
+{"doc": "docs/denetim/07_AI_BOSS_TESTLERI.md #16", "claim": "Boss evreleri GEÇTİ: Kızıl Hançer %55'te çağırma; Morvan %66/%33'te iki çağırma ve %33'te öfke", "verdict": "dogru", "evidence": "05'teki 'Boss evreleri…' adımı summoned sayaçlarını ve enraged bayrağını doğruluyor (enemies.js:427-444). Çağrılan düşmanların gerçekten doğduğu ayrıca sınanmamış."}
+{"doc": "docs/denetim/07 başlık ve 16_SON_RAPOR.md:21", "claim": "05_dusman_ai.js 19 beklenti içeriyor", "verdict": "kismen", "evidence": "Senaryoda 18 expect ve 18 etiket var (grep); 12. belge de 18/18 olarak kaydediyor."}
+{"doc": "docs/denetim/11_BILINEN_SORUNLAR.md #6 ve 16_SON_RAPOR.md:64", "claim": "Deniz bossları arazi kontrolü yapmıyor (D-19) — Açık", "verdict": "kismen", "evidence": "v0.4'te Derinlik Yılanı (bosses.js:520-527) ve hayalet gemi (980-983) ileri nokta kontrolü yapıyor; 03 belgesi D-19'u düzeltildi olarak gösteriyor. Kraken'de kontrol yok (246-251). Belgeler birbiriyle çelişiyor."}
+{"doc": "docs/denetim/03_DEGISIKLIK_LISTESI.md:70", "claim": "Kraken dokunaç hedefleri konukta canlı (F-01 kapandı)", "verdict": "kismen", "evidence": "Konukta hedef.alive = netTip[3] (bosses.js:382), yani kopmamış her dokunaç canlı sayılıyor; bunlar arasında ev sahibinde vurulamayan (361) boştaki dokunaçlar da var. Ev sahibi 'ten' vuruşunu durum kontrolü yapmadan uyguluyor (1044); sonuç asimetrik."}
+{"doc": "docs/denetim/12_TEST_PLANI_VE_SONUCLAR.md #9", "claim": "Dövüş: kılıç, parry, tabanca, kaçınma — GEÇTİ", "verdict": "kismen", "evidence": "05 düşman saldırısına karşı parry ve kaçınmayı sınamıyor; 04_karakter savunma histerezisini ve kaçınma mesafesini ölçüyor. Kaçınma ve blok sonrasındaki yan etkiler (H-05) ile hayvan saldırılarının bloklanamaması (H-06) test kapsamı dışında."}
+{"doc": "README.md:90", "claim": "17 düşman türü, görüş/ses algısı, … saldırı jetonları, kuşatma, siper, geri çekilme, moral", "verdict": "kismen", "evidence": "Hepsi kodda var (enemies.js:532-730, 1339-1405). Ancak siper kusurlu (H-11), görüş kaybında düşman canlı konumu izliyor (H-12), kuşatma ve geri çekilme test edilmemiş."}
+{"doc": "docs/04_DUSMAN_KATALOGU.md §4.1 Güverte düşmanları", "claim": "Düşman gemisinin tayfası güvertede durur, kancayla bordalamada oyuncunun gemisine atlar", "verdict": "dogru", "evidence": "events.js:320-345'te kanca ve sırayla atlama (c.ship = me) var. 05'teki ek-109 testi batan gemi tayfasını sınıyor; atlama akışını sınayan test yok."}
+{"doc": "docs/06_BOSS_TASARIMI.md giriş", "claim": "Yenilince ödül ganimeti düşer, macera günlüğüne yazılır ve +600 XP verilir", "verdict": "dogru", "evidence": "Deniz bosslarında ganimet gemiye bırakılıyor ve günlüğe yazılıyor (bosses.js:1066-1075); kara bosslarında 758-763 ve 896-901. +600 XP konuklara da veriliyor (progress.js:77)."}
+=== REQUIREMENTS
+{"req": "17 düşman türü korunacak", "status": "karsilaniyor", "evidence": "enemies.js:79-177'de 17 anahtar var; Node sayımında v0.3 ve v0.4 aynı. Yerleşimler: archipelago.js:51-239, enemies.js:182-186, quests.js:278/286, events.js:267. 05_dusman_ai yalnız 4 türü sınıyor.", "plan": "Her tür için bir duman testi yazın (doğ, algıla, saldır, öl, ganimet bırak) ve tür sayısını testte doğrulayın."}
+{"req": "5 boss korunacak", "status": "karsilaniyor", "evidence": "bosses.js:24-30 (BOSS_DEFS) ve 1029 (CLASSES); boss alanları archipelago.js:322 ve islands.js:866; tetikleme bosses.js:1077-1100.", "plan": "Her boss için uçtan uca, beklentili bir senaryo ekleyin (H-24)."}
+{"req": "Düşmanlar: görüş açısı", "status": "karsilaniyor", "evidence": "enemies.js:551-554'te T.fov ile koni kontrolü yapılıyor; 3,2 m (eğilen oyuncuda 1,8 m) içi koni dışında da fark ediliyor. 05'teki 'Algı: açık görüş hattında…' testi yalnız olumlu durumu sınıyor.", "plan": "Koni dışındaki (arkadaki) 15 m mesafedeki oyuncunun 3 sn içinde fark edilmediğini sınayan olumsuz test ekleyin."}
+{"req": "Düşmanlar: görüş mesafesi", "status": "karsilaniyor", "evidence": "enemies.js:542-550'de T.vision gece, sis, eğilme, yüzme ve yükseklik çarpanlarıyla değişiyor. 05 testi 1, görüşün 0,7 katı mesafede yapılıyor.", "plan": "Görüş sınırının dışında (1,1 kat) olumsuz test ekleyin; konuk değiştiricilerini düzeltin (H-13)."}
+{"req": "Düşmanlar: ses algısı", "status": "karsilaniyor", "evidence": "hear (enemies.js:577-594), combat.noise (combat.js:80-84), adım sesi (92-98), konuk sesi netNoise ile gidiyor. Testler: 05 'Duyma: sırtı dönük…', 06b 'F-13…'.", "plan": "İsteğe bağlı olarak duvar sönümü ve yağmurun sesi maskelemesini ekleyin; işitme yarıçapı testi yazın."}
+{"req": "Düşmanlar: engeller", "status": "kismen", "evidence": "Görüş tarafı tamam: lineBlocked (enemies.js:555, 1015), 05 'Algı: 1 m kalın duvar…' testi ve mermi süpürmesi (1531). Vuruş çözümünde ise görüş hattı kontrolü yok (979-998, bosses.js:606-619, combat.js:188-232; H-08).", "plan": "Vuruş çözümüne lineBlocked ekleyin ve 0,3 m'lik duvar testi yazın."}
+{"req": "Düşmanlar: gece/gündüz", "status": "kismen", "evidence": "Gece görüşü ×0,5, meşale ×1,15; hayaletler bu çarpandan muaf (enemies.js:534, 544). Gündüz hayaletler kayboluyor (637-641), gece dalgaları var (1554-1558), hayaletler gece güçleniyor (738). Gece dalgaları birikiyor (H-19), konuğun meşalesi hesaba katılmıyor (H-13), dinlenme rolü gündüz de oturuyor (1577-1578). Test yok.", "plan": "Gece/gündüz algı testi ve gece dalgası birikim testi yazın; gece türlerini şafakta kaldırın."}
+{"req": "Düşmanlar: sis ve hava", "status": "kismen", "evidence": "Hava sisi ve yağmuru görüşü azaltıyor (enemies.js:535). Bölgesel sis (sky.js:282-284) algıya yansımıyor. Nişan sapması yalnız geceden etkileniyor (1062), işitme havadan hiç etkilenmiyor. Test yok; 05 testleri sisi 0'a sabitliyor.", "plan": "Bölgesel sisi algıya ekleyin; yağmurda işitme ve nişan sapmasını değiştirin; sis testi yazın."}
+{"req": "Düşmanlar: takım alarmı", "status": "kismen", "evidence": "_groupAlert 30 m (enemies.js:719-730), callHelp 45 m (766-776), rally (1369-1371). Pusu ya da ilk vuruşta yardım çağrısı tetiklenmiyor (_aggro 419-424, ek-141). Test yok.", "plan": "_aggro'da callHelp'i tetikleyin; alarm yayılım testi yazın (iki düşmandan biri görür, diğeri araştırmaya geçer)."}
+{"req": "Düşmanlar: siper", "status": "kismen", "evidence": "findCover (enemies.js:1388-1405) yalnız haydut_nisanci'de var. Düşman siperden ateş etmiyor ve hedefi kaybediyor (H-11).", "plan": "Yan siper noktası ve göz at-ateş et döngüsü ekleyin; diğer menzilli türlere de siper verin; siper testi yazın."}
+{"req": "Düşmanlar: kuşatma", "status": "kismen", "evidence": "requestToken (enemies.js:1339-1347), flankAngle (1349-1362), kuşatma halkası (891-895). Bayat jetonlar temizlenmiyor, yan adım animasyonu yok (H-30). Test yok.", "plan": "Jeton temizliğine mesafe ve durum koşulu ekleyin; strafe kliplerini kullanın; üç düşmanla açı dağılımı testi yazın."}
+{"req": "Düşmanlar: geri çekilme", "status": "kismen", "evidence": "Yalnız insanlarda: %30 canda, müttefik varsa 12 m geri çekilip bir kez %30 iyileşme (enemies.js:691-696, 795-803); moral kaçışı (695, 709-716); lider ölünce moral şoku (1372-1377). Kızıl Hançer duman sonrası iyileşiyor, ama bu belgede yok. Test yok.", "plan": "Geri çekilme ve kaçış testi yazın; boss iyileşmesini belgeleyin ya da kaldırın."}
+{"req": "Düşmanlar: oyuncuyu kaybetme", "status": "kismen", "evidence": "lostT eşiği 2,5/6 sn, ardından investigate→return (enemies.js:679-686) ve tasma (688-690) var. Ancak görüş kesildikten sonra düşman canlı konumu izliyor (H-12).", "plan": "Görüş kaybında lastKnown'a gidilmesini sağlayın; köşe dönme testi yazın."}
+{"req": "Düşmanlar: yeniden arama", "status": "kismen", "evidence": "investigate durumunda son bilinen noktaya yürüyüp 9 sn rastgele bakınıyor (enemies.js:760-764, 684); yeni bir ses aramayı yeniliyor (589-593). Arama deseni yok. Test yok.", "plan": "Çevrede 2–3 arama noktası dolaşma ekleyin; test yazın."}
+{"req": "Düşmanlar durumlarına uygun davranmalı (genel)", "status": "kismen", "evidence": "Durum makinesi enemies.js:658-861'de, 18 durumla. Testler: 05 F-03, F-05, F-08. Sorunlu davranışlar: H-11, H-12, H-19, H-20, H-30.", "plan": "Durum geçişleri için birim testleri yazıp sorunları düzeltin."}
+{"req": "Kayalara, ağaçlara ve duvarlara takılmamalı", "status": "kismen", "evidence": "İleri sonda (enemies.js:1087-1090), takılma sapması (1125-1139) ve physics.resolve (1123) var. Yol bulma yok; uçurumda dikey ışınlanma ve güverte engellerini yok sayma var (H-23). F-09 için çalışma zamanı testi yok (11 #11).", "plan": "Izgara A*, eğim sınırı ve çalışma zamanı dolaşma testi ekleyin."}
+{"req": "Birbirlerine takılmamalı", "status": "kismen", "evidence": "Komşu ayrışması (enemies.js:1101-1106) ve crowd.js var; 05'teki 'Yığılma yok…' testi haydut ile geçiyor. Hayaletler ayrışmıyor (H-27); güvertedeki oyuncu ajan değil (11 #5).", "plan": "Hayalet-hayalet ayrışması ekleyin, güvertedeki oyuncuyu ajan yapın, hayalet yığılma testi yazın."}
+{"req": "Bosslar: saldırı öncesi uyarılar", "status": "kismen", "evidence": "Uyarılar mevcut: Kraken halkası (bosses.js:318), Yılan dalış halkası (499), lob işaretleri (enemies.js:1420-1428), dev boss halkaları (bosses.js:597-604), Amiral uyarısı (986), insan boss telgrafı (enemies.js:928-939). Ancak halkalar hasar alanından küçük (H-04), konukta görünmüyor (H-15), dev bosslarda animasyon hasardan önce geliyor (H-02).", "plan": "Halka ile hasar yarıçapını eşitleyin, uyarıları ağ üzerinden aktarın, uyarı zamanlamasını test edin."}
+{"req": "Bosslar: hitbox'lar", "status": "kismen", "evidence": "Kraken'in dokunaç hedefi yanlış yerde (H-01). Dev bosslar çarpışmasız, hayalet geminin hedefi merkezde ve 6 m yukarıda, Yılan'ın gövdesi hedef değil (H-22).", "plan": "Hedef konumlarını düzeltin, çoklu kapsül hedef ve çarpışma ekleyin, isabet testleri yazın."}
+{"req": "Bosslar: hasar zamanlamaları", "status": "kismen", "evidence": "Kraken ve Yılan'da hasar temas anında geliyor. Taş Muhafız ve Volkanik Dev'de hasar animasyondan 0,4–0,7 sn sonra (H-02). Kraken ezmesi ve Yılan dalışında halka hasar alanından küçük (H-04).", "plan": "Hasarı klipteki vuruş karesine bağlayın ve ölçümlü test ekleyin."}
+{"req": "Bosslar: zayıf noktalar", "status": "kismen", "evidence": "Kraken 210-216, Yılan 428-431, Taş Muhafız 654-659, Volkanik Dev 788-796, Amiral 932; insan bosslarda yalnız yorgunken ×1,4 ve sersemken ×1,25 var (enemies.js:384-385). Zayıf noktalar ayrı isabet bölgesi değil, açıya ya da zamana bağlı çarpan; konuk sahte pos göndererek çarpanı alabiliyor (H-03). Test yalnız haydut_agir için yapılmış.", "plan": "Her boss için zayıf nokta çarpanı testi yazın ve konuk pos'unu ev sahibinde belirleyin."}
+{"req": "Bosslar: faz geçişleri", "status": "kismen", "evidence": "onPhase fonksiyonları var (bosses.js:233-237, 432-436, 660-683, 797-801, 933-935; enemies.js:427-444). İnsan bossların eşikleri test edilmiş (05 'Boss evreleri…'); efsanevi bossların evreleri yalnız beklentisiz v03 betiklerinde var. Konukta faz bildirimi (H-15) ve sütunlar (H-16) yok.", "plan": "Efsanevi boss evreleri için testler yazın; bildirimleri ve sütunları ağ üzerinden aktarın."}
+{"req": "Bosslar: hareketler", "status": "kismen", "evidence": "Yılan ve hayalet gemi araziden kaçınıyor (bosses.js:520-527, 980-983). Kraken'de arazi kontrolü yok, Yılan dalışta ışınlanıyor (H-25). Dev bosslar çarpışmasız ve sınırda yerinde yürüyor (H-22); Hayalet Kaptan'ın DASH hamlesi tetiklenmiyor (H-10).", "plan": "H-10, H-22 ve H-25'i düzeltin; hareket testleri yazın."}
+{"req": "Bosslar: ödüller", "status": "kismen", "evidence": "victory (bosses.js:1066-1075), die (758-763, 896-901) ve progress.js:77 (+600 XP) var; 05'teki 'F-10 noLoot…' testi geçiyor. İnsan bosslar XP vermiyor (H-21), Volkanik Dev'in ganimeti lava düşebiliyor (H-29). Efsanevi bossların hikâyeye bağı yok (quests.js:24-31).", "plan": "H-21 ve H-29'u düzeltin; Faz 6'da efsanevi bossları hikâye aşamalarına (harita parçası 3/4 ve 4/4) bağlayın."}
+{"req": "Bosslar: multiplayer davranışları", "status": "kismen", "evidence": "Ev sahibi otoritesi var (bosses.js:1102-1115, 135-136); 06b'deki F-11, F-12 ve F-15 testleri geçiyor. Açık kalanlar: H-03 (doğrulama), H-14, H-15, H-16, H-17, H-18; Kraken dokunaç canı co-op'a göre ölçeklenmiyor.", "plan": "H-03'ü ve H-14…H-18'i düzeltin; konuk görünürlüğü ve eşit etki testleri yazın."}
+{"req": "Engellenen saldırı sebepsiz hasar vermemeli", "status": "kismen", "evidence": "Parry hasarsız; blok tasarım gereği %12 sızdırıyor, dayanıklılık bitince %50 (player.js:149-172). Ancak hayvan saldırıları bloklanamıyor (H-06), bloklanan boss süpürmesi tam geri itme uyguluyor (H-05), konuk tarafında asimetri var (H-14).", "plan": "H-05, H-06 ve H-14'ü düzeltin; blok ve parry sonuç testleri yazın."}
+{"req": "Kaçınılan saldırı sebepsiz hasar vermemeli", "status": "kismen", "evidence": "Kaçınmada 0,34 sn dokunulmazlık var (player.js:495, 144-147). Ancak yakalama ve geri itme yine uygulanıyor (H-05), güdümlü küre geri dönüp vuruyor (H-07). Hasar animasyondan geç geldiği için görsele göre zamanlanan kaçınma pencereyi kaçırıyor (H-02, H-09); halka hasar alanından küçük (H-04).", "plan": "H-02, H-04, H-05, H-07 ve H-09'u düzeltin; kaçınma testleri yazın."}
+{"req": "Animasyon ile gerçek hasar anı tutarlı", "status": "kismen", "evidence": "Atk1, Atk3 ve kalkan setleri ±0,1 sn içinde. Bıçaklamalar ~0,3 sn geç, çift bıçak kesiği erken (H-09); dev bosslarda 0,4–0,7 sn geç (H-02); hayvanlarda hasar animasyondan önce (H-06). Ölçüm GLB klip verisinden yapıldı.", "plan": "Her saldırıya strikeClip verisi ekleyin ve otomatik zaman karşılaştırma testi yazın."}
+{"req": "Animasyon ile fiziksel hareket tutarlı", "status": "kismen", "evidence": "_animate hıza göre yürüme, koşma ve geri yürüme seçiyor (enemies.js:1148-1160). Kuşatmada ayak kayması (H-30), uçurumda dikey ışınlanma (H-23), Yılan ışınlanması (H-25), dev bossların sınırda yerinde yürümesi (H-22) ve DASH sonunda donma (H-10) var.", "plan": "Strafe kliplerini, eğim ve düşme davranışını, sınırda Idle oynatmayı ekleyin."}

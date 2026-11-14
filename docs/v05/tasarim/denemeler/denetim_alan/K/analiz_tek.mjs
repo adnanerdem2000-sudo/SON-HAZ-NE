@@ -1,0 +1,32 @@
+// Salt-okur: tek HTML içeriğini çözümler (gömülü dosyalar, kalan dış başvurular, test kancaları)
+import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { join, relative, sep } from 'node:path';
+const [file, root] = process.argv.slice(2);
+const html = readFileSync(file, 'utf8');
+const out = { file, bytes: Buffer.byteLength(html) };
+const m = html.match(/<script>window\.__DK_FILES=(\{[\s\S]*?\});<\/script>/);
+const files = m ? JSON.parse(m[1]) : {};
+out.embeddedCount = Object.keys(files).length;
+const walk = (d) => readdirSync(d).flatMap((n) => { const p = join(d, n); return statSync(p).isDirectory() ? walk(p) : [p]; });
+const all = walk(join(root, 'assets')).map((p) => relative(root, p).split(sep).join('/'));
+out.assetsOnDisk = all.length;
+out.notEmbedded = all.filter((r) => !(r in files));
+out.embeddedNotOnDisk = Object.keys(files).filter((k) => !all.includes(k));
+out.cssRelativeUrlsLeft = (html.match(/url\((['"]?)\.\.\/assets\//g) || []).length;
+out.importmapLeft = /<script type="importmap">/.test(html);
+out.moduleScriptLeft = /<script type="module"/.test(html);
+out.externalScriptSrc = [...html.matchAll(/<script[^>]*\ssrc="([^"]+)"/g)].map((x) => x[1]);
+out.externalLinkHref = [...html.matchAll(/<link[^>]*href="([^"]+)"/g)].map((x) => x[1].slice(0, 40));
+out.importMetaInBundle = (html.match(/import\.meta/g) || []).length;
+out.workerUrlExprLeft = html.includes("new URL('./terrainWorker.js'") || html.includes('new URL("./terrainWorker.js"');
+out.dkWorkerUrlRefs = (html.match(/__DK_WORKER_URL/g) || []).length;
+out.windowDK = (html.match(/window\.DK\s*=/g) || []).length;
+out.dkSim = /\.sim\s*=\s*\(/.test(html) || /DK\.sim=/.test(html);
+out.terrainModeParam = html.includes('__DK_TERRAIN_MODE');
+out.peerhostParam = html.includes('peerhost');
+out.singleFileFlag = html.includes('__DK_SINGLE_FILE');
+// kodda geçen assets/ yolları (şablon dizgeleri hariç sabit olanlar)
+const lits = [...new Set([...html.replace(/window\.__DK_FILES=\{[\s\S]*?\};/, '').matchAll(/assets\/[A-Za-z0-9_\-\/\.]+\.(glb|ogg|mp3|svg|png|jpg|json|woff2)/g)].map((x) => x[0]))];
+out.literalAssetRefs = lits.length;
+out.literalRefsMissing = lits.filter((l) => !(l in files));
+console.log(JSON.stringify(out, null, 1));

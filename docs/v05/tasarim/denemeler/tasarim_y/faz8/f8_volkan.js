@@ -1,0 +1,27 @@
+// Volkanik Dev dG=5 kararsızlığının deterministik yeniden üretimi ve önerilen test düzeltmesinin sınanması.
+// Hipotez: bosses._check() (0,5 sn'de bir; FP yüzünden 31 alt adımda bir) oyuncudan 650 m'den uzak boss'u ölçümden ÖNCE kaldırıyor;
+// demon.glb'nin 5 paylaşımlı geometrisi yalnız boss ölçüm karesine kadar yaşarsa GPU'ya yüklenir. Bu ilk yükleme ısınma
+// döngüsünden (k=0) sonraki bir döngüye düşerse dG=+5 çıkar (sızıntı değil).
+(() => { const TOOLS = fs.readFileSync('/tmp/tasarim_y/faz8/tools.js', 'utf8'); return [
+ {expect: {js: `!!window.DK && !!window.__ready`, truthy: true, label: 'Sayfa hazır'}},
+ {js: TOOLS},
+ {js: `DK.G.noAutoPause=true; DK.handlers.startGame({kind:'solo', slot:2, data:null}); 'ok'`},
+ {wait: 4000, expect: {js: `DK.G.state`, eq: 'playing', label: 'Oyun başladı'}},
+ {js: `(()=>{ DK.sim(2); DK.events.eventT=1e9; window._M=()=>{ DK.post.render(); return DK.engine.renderer.info.memory.geometries; };
+   // 09'daki döngünün aynısı; her döngüde spawn anında checkT elle ayarlanır, ölçüm karesinde boss'un hâlâ etkin olup olmadığı kaydedilir
+   window._dongu=(bid, checkTs, site)=>{ let s0=null, snap=null; const cyc=[]; for (let k=0;k<checkTs.length;k++){ const g0=window._geoSnap(); if (checkTs[k]!==null) DK.bosses.checkT=checkTs[k]; DK.bosses.spawn(bid, site||null); const ilk=DK.bosses.active; DK.sim(0.5); const etkin=!!DK.bosses.active && DK.bosses.active===ilk; const m=window._M(); DK.bosses._clear(); DK.sim(0.2); const g=window._M(); const d=window._geoDiff(g0); cyc.push({k, checkT:checkTs[k], olcumdeEtkin:etkin, gOlcum:m, g, yeni:d.map(x=>[x.type, x.v, x.sahnede?1:0, x.ilkCizim])}); if (k===0) { s0=g; snap=window._geoSnap(); } } const s1=window._M(); return { dG:s1-s0, fark:window._geoDiff(snap).map(x=>[x.type, x.v, x.ilkCizim]), cyc }; };
+   const p=DK.G.player; const site=DK.archipelago.BOSS_SITES.find(b=>b.id==='volkanik_dev'); return { oyuncu:[Math.round(p.pos.x), Math.round(p.pos.z)], bossYeri:[site.x, site.z, site.island], uzaklikM: Math.round(Math.hypot(site.x-p.pos.x, site.z-p.pos.z)), checkT: DK.bosses.checkT }; })()`},
+ // A) kontrol her döngüde ölçüm penceresinin içinde (checkT=0,2): boss ölçümden önce kaldırılır, demon hiç çizilmez → dG=0 (testin 'geçtiği' durum)
+ {js: `window._A = window._dongu('volkanik_dev', [0.2, 0.2, 0.2]); window._A`},
+ // B) ısınma döngüsünde kontrol pencere içinde, 2. döngüde pencere dışında (checkT=0,5 → 31 alt adım): demon ilk kez k=1'de çizilir → dG=+5 (taban koşusundaki FAIL)
+ {expect: {js: `(()=>{ window._B = window._dongu('volkanik_dev', [0.2, 0.5, 0.2]); return window._B.dG; })()`, eq: 5, label: 'B yeniden üretim: ilk demon yüklemesi ısınmadan sonra → dG=5 (sızıntı değil)'}},
+ {js: `window._B`},
+ // C) önerilen düzeltme: boss oyuncunun yanında doğurulur ve kontrol dondurulur (checkT büyük); ısınma döngüsü boss'u gerçekten çizer → dG=0 ve kimlik farkı boş
+ {expect: {js: `(()=>{ const p=DK.G.player; const site={ id:'volkanik_dev', x:p.pos.x+28, z:p.pos.z }; window._C = window._dongu('volkanik_dev', [1e9, 1e9, 1e9, 1e9], site); return window._C.dG===0 && window._C.fark.length===0 && window._C.cyc.every(c=>c.olcumdeEtkin); })()`, truthy: true, label: 'C düzeltilmiş döngü: boss her ölçümde etkin, dG=0, kalan kimlik yok'}},
+ {js: `window._C`},
+ // D) yakında gerçek savaş: yükseliş + lav yağmuru, uçuşta lav varken _clear; 3 sn sonra kalan geometri kimliği ve sahipsiz mermiler
+ {js: `(()=>{ const p=DK.G.player; DK.G.godMode=true; DK.bosses.checkT=1e9; const site={ id:'volkanik_dev', x:p.pos.x+30, z:p.pos.z }; const b=DK.bosses.spawn('volkanik_dev', site); DK.sim(4.5); b.hp=b.maxHp*0.25; b.phase=3; let k=0; while (k<900 && !DK.enemies.shots.some(s=>s.kind==='lava')) { DK.sim(1/30); k++; } DK.post.render(); const ucus=DK.enemies.shots.filter(s=>s.kind==='lava'); const g1=window._geoSnap(); const mem0=DK.engine.renderer.info.memory.geometries; DK.bosses._clear(); const sahipsiz=DK.enemies.shots.filter(s=>s.kind==='lava' && s.owner===b).length; DK.sim(3); DK.post.render(); const mem1=DK.engine.renderer.info.memory.geometries; const d=window._geoDiff(g1); let halka=0; DK.engine.scene.traverse(o=>{ if (o.geometry && o.geometry.type==='RingGeometry' && !o.parent?.isBone) halka++; }); return { adim:k, ucusLav:ucus.length, isaretli:ucus.filter(s=>s.marker).length, clearSonrasiSahipsizLav:sahipsiz, geoOnce:mem0, geo3snSonra:mem1, yeniKalan:d.map(x=>[x.type, x.v, x.sahnede?1:0, x.ilkCizim]), sahnedeHalka:halka, atesHavuzu:DK.enemies.firePools.length }; })()`},
+ // E) oturum yeniden başlarken uçuştaki yaylı atışın işaret halkası (enemies.start yalnız mermi örgüsünü kaldırıyor)
+ {js: `(()=>{ const p=DK.G.player; const T=DK.THREE; let halka0=0; DK.engine.scene.traverse(o=>{ if (o.geometry && o.geometry.type==='RingGeometry') halka0++; }); for (let i=0;i<3;i++) DK.enemies.lob({ kind:'lava', from:p.pos.clone().add(new T.Vector3(i*2,30,8)), to:p.pos.clone().add(new T.Vector3(i*2,0,8)), time:1.6, dmg:1, aoe:3 }); DK.post.render(); const g1=window._geoSnap(); DK.enemies.start(null); DK.post.render(); let halka1=0; const kalan=[]; DK.engine.scene.traverse(o=>{ if (o.geometry && o.geometry.type==='RingGeometry') { halka1++; kalan.push(o.parent===DK.engine.scene?'sahne':(o.parent?.type||'?')); } }); return { halkaOnce:halka0, halkaStartSonrasi:halka1, kalan, shots:DK.enemies.shots.length }; })()`},
+ {expect: {js: `DK.G.state==='playing'`, truthy: true, label: 'Oyun açık'}},
+]; })()

@@ -1,0 +1,119 @@
+{
+ "scenario": "/tmp/tasarim_y/faz8_inceleme/inc_olcum3.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "Sayfa hazır",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 2,
+   "label": null,
+   "result": {
+    "KHR_parallel_shader_compile": false,
+    "EXT_disjoint_timer_query_webgl2": true,
+    "maxSamples": 4,
+    "postKip": "medium",
+    "tuvalAA": true
+   }
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   }
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": [
+    {
+     "ad": "Yaşlı Kaptan Tuzla",
+     "parca": 6,
+     "kemik": 41,
+     "ayniKemik": true,
+     "ayniDoku": true,
+     "ayniBind": true,
+     "ayniOznitelik": true,
+     "oznitelik": "normal,position,skinIndex,skinWeight,uv",
+     "ucgen": [
+      594,
+      534,
+      1004,
+      1033,
+      418,
+      462
+     ]
+    },
+    {
+     "ad": "Haritacı Nevra",
+     "parca": 6,
+     "kemik": 41,
+     "ayniKemik": true,
+     "ayniDoku": true,
+     "ayniBind": true,
+     "ayniOznitelik": true,
+     "oznitelik": "normal,position,skinIndex,skinWeight,uv",
+     "ucgen": [
+      468,
+      468,
+      1230,
+      1027,
+      418,
+      418
+     ]
+    },
+    {
+     "ad": "Demirci Kara Ali",
+     "parca": 6,
+     "kemik": 41,
+     "ayniKemik": true,
+     "ayniDoku": true,
+     "ayniBind": true,
+     "ayniOznitelik": true,
+     "oznitelik": "normal,position,skinIndex,skinWeight,uv",
+     "ucgen": [
+      594,
+      534,
+      1004,
+      1033,
+      418,
+      462
+     ]
+    }
+   ]
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "Oyun açık",
+    "ok": true,
+    "value": true
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 5288,
+ "ms": 21512
+}

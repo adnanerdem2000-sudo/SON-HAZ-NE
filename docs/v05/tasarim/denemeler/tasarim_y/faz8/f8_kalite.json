@@ -1,0 +1,886 @@
+{
+ "scenario": "/tmp/tasarim_y/faz8/f8_kalite.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "Sayfa hazır",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 2,
+   "label": null,
+   "result": "yeniden-yukle:dusuk"
+  },
+  {
+   "n": 3,
+   "label": null
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "Yeniden yüklendi: dusuk",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": "araclar-hazir"
+  },
+  {
+   "n": 6,
+   "label": null,
+   "result": {
+    "ad": "dusuk",
+    "menuProgs": 44,
+    "progVaryant": {
+     "n": 44,
+     "cikisDogrusal": 0,
+     "cikisSRGB": 44,
+     "diger": 0,
+     "names": {
+      "": 39,
+      "woodBark": 1,
+      "leafsGreen": 1,
+      "colormap": 1,
+      "barbarian_texture": 2
+     }
+    },
+    "post": "off",
+    "lodScale": 0.7,
+    "baseLod": 1,
+    "shadowMap": 1024,
+    "sunCast": false,
+    "ayar": "low/off/low/low/0.3"
+   }
+  },
+  {
+   "n": 7,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 8,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı dusuk",
+    "ok": true,
+    "value": "playing"
+   }
+  },
+  {
+   "n": 9,
+   "label": null,
+   "result": {
+    "ad": "dusuk",
+    "calls": 741,
+    "tris": 564597,
+    "mainCalls": 741,
+    "shadowCalls": 0,
+    "postCalls": 0,
+    "geos": 635,
+    "texs": 184,
+    "progs": 43,
+    "simMs": 2.39,
+    "lodScale": 0.7,
+    "tiles": {
+     "tiles": 90,
+     "meshes": 90,
+     "hires": 19,
+     "tris": 319872,
+     "queue": 8,
+     "jobs": 14,
+     "workers": 3,
+     "fallback": false,
+     "failures": 0,
+     "mode": ""
+    },
+    "far": 2550,
+    "groups": [
+     [
+      "hayvan",
+      293,
+      32532,
+      0,
+      0
+     ],
+     [
+      "npc",
+      59,
+      37284,
+      0,
+      0
+     ],
+     [
+      "sahne:Group",
+      51,
+      2890,
+      0,
+      0
+     ],
+     [
+      "sahne:port-batched",
+      44,
+      5288,
+      0,
+      0
+     ],
+     [
+      "sahne:Group[rock_tallA]",
+      42,
+      1904,
+      0,
+      0
+     ],
+     [
+      "arazi",
+      38,
+      133888,
+      0,
+      0
+     ],
+     [
+      "sahne:Mesh",
+      30,
+      3257,
+      0,
+      0
+     ],
+     [
+      "cekirdek_bitki(I)",
+      26,
+      186044,
+      0,
+      0
+     ],
+     [
+      "sahne:Group[statue_columnDamag]",
+      20,
+      1080,
+      0,
+      0
+     ],
+     [
+      "sahne:Group[statue_column]",
+      18,
+      732,
+      0,
+      0
+     ],
+     [
+      "oyuncu",
+      16,
+      5845,
+      0,
+      0
+     ],
+     [
+      "detay:collectibles",
+      14,
+      812,
+      0,
+      0
+     ],
+     [
+      "balikci_karakter",
+      12,
+      8308,
+      0,
+      0
+     ],
+     [
+      "hazards",
+      11,
+      1153,
+      0,
+      0
+     ],
+     [
+      "sahne:Group[rock_largeA]",
+      10,
+      400,
+      0,
+      0
+     ],
+     [
+      "sahne:Group[barrel]",
+      10,
+      280,
+      0,
+      0
+     ],
+     [
+      "sahne:crate-medium",
+      10,
+      3140,
+      0,
+      0
+     ],
+     [
+      "fish",
+      9,
+      63886,
+      0,
+      0
+     ],
+     [
+      "sahne:Group[tent_detailedOpen]",
+      8,
+      928,
+      0,
+      0
+     ],
+     [
+      "sahne:Root_Scene",
+      5,
+      2950,
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  {
+   "n": 10,
+   "label": null,
+   "result": {
+    "ad": "dusuk",
+    "calls": 393,
+    "tris": 488768,
+    "shadowCalls": 0,
+    "scanMed": 486,
+    "scanMax": 912,
+    "trisMax": 641039,
+    "groups": [
+     [
+      "hayvan",
+      118,
+      31364,
+      0,
+      0
+     ],
+     [
+      "npc",
+      55,
+      37012,
+      0,
+      0
+     ],
+     [
+      "sahne:Group",
+      48,
+      2720,
+      0,
+      0
+     ],
+     [
+      "cekirdek_bitki(I)",
+      26,
+      186044,
+      0,
+      0
+     ],
+     [
+      "arazi",
+      23,
+      137088,
+      0,
+      0
+     ],
+     [
+      "sahne:Group[statue_columnDamag]",
+      20,
+      1080,
+      0,
+      0
+     ],
+     [
+      "sahne:Group[statue_column]",
+      18,
+      732,
+      0,
+      0
+     ],
+     [
+      "oyuncu",
+      16,
+      5845,
+      0,
+      0
+     ],
+     [
+      "balikci_karakter",
+      12,
+      8308,
+      0,
+      0
+     ],
+     [
+      "hazards",
+      11,
+      1153,
+      0,
+      0
+     ],
+     [
+      "sahne:Group[tent_detailedOpen]",
+      8,
+      928,
+      0,
+      0
+     ],
+     [
+      "detay:collectibles",
+      7,
+      448,
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  {
+   "n": 11,
+   "label": null,
+   "result": {
+    "ad": "dusuk",
+    "calls": 259,
+    "tris": 400345,
+    "shadowCalls": 0,
+    "scanMed": 201,
+    "scanMax": 285,
+    "trisMax": 403837,
+    "rows": [
+     [
+      0,
+      256,
+      400049,
+      0,
+      256
+     ],
+     [
+      1,
+      285,
+      399685,
+      0,
+      285
+     ],
+     [
+      2,
+      198,
+      214277,
+      0,
+      198
+     ],
+     [
+      3,
+      197,
+      214085,
+      0,
+      197
+     ],
+     [
+      4,
+      198,
+      234449,
+      0,
+      198
+     ],
+     [
+      5,
+      201,
+      235025,
+      0,
+      201
+     ],
+     [
+      6,
+      200,
+      214661,
+      0,
+      200
+     ],
+     [
+      7,
+      275,
+      403837,
+      0,
+      275
+     ]
+    ],
+    "maxGroups": [
+     [
+      "gemi_oyuncu",
+      81,
+      6264,
+      0,
+      0
+     ],
+     [
+      "npc",
+      55,
+      37012,
+      0,
+      0
+     ],
+     [
+      "sahne:Group",
+      46,
+      2624,
+      0,
+      0
+     ],
+     [
+      "arazi",
+      25,
+      4800,
+      0,
+      0
+     ],
+     [
+      "cekirdek_bitki(I)",
+      19,
+      179884,
+      0,
+      0
+     ],
+     [
+      "oyuncu",
+      16,
+      5845,
+      0,
+      0
+     ],
+     [
+      "balikci_karakter",
+      12,
+      8308,
+      0,
+      0
+     ],
+     [
+      "kayik",
+      8,
+      2340,
+      0,
+      0
+     ],
+     [
+      "fish",
+      6,
+      80620,
+      0,
+      0
+     ],
+     [
+      "sahne:Group[rock_tallA]",
+      6,
+      272,
+      0,
+      0
+     ],
+     [
+      "hava_efekt",
+      3,
+      15120,
+      0,
+      0
+     ],
+     [
+      "detay:collectibles",
+      3,
+      132,
+      0,
+      0
+     ],
+     [
+      "gok",
+      1,
+      2208,
+      0,
+      0
+     ],
+     [
+      "detay:gulls",
+      1,
+      3600,
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  {
+   "n": 12,
+   "label": null,
+   "result": "yeniden-yukle:orta"
+  },
+  {
+   "n": 13,
+   "label": null
+  },
+  {
+   "n": 14,
+   "label": null,
+   "expect": {
+    "label": "Yeniden yüklendi: orta",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 15,
+   "label": null,
+   "result": "araclar-hazir"
+  },
+  {
+   "n": 16,
+   "label": null,
+   "result": {
+    "ad": "orta",
+    "menuProgs": 86,
+    "progVaryant": {
+     "n": 86,
+     "cikisDogrusal": 43,
+     "cikisSRGB": 42,
+     "diger": 1,
+     "names": {
+      "": 73,
+      "woodBark": 1,
+      "leafsGreen": 1,
+      "colormap": 2,
+      "barbarian_texture": 3,
+      "dirt": 1,
+      "metalRed": 1,
+      "rogue_texture": 1,
+      "unspecified": 1,
+      "OutputShader": 1,
+      "FXAAShader": 1
+     }
+    },
+    "post": "medium",
+    "lodScale": 0.85,
+    "baseLod": 1,
+    "shadowMap": 1024,
+    "sunCast": true,
+    "ayar": "medium/medium/medium/medium/0.65"
+   }
+  },
+  {
+   "n": 17,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 18,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı orta",
+    "ok": true,
+    "value": "playing"
+   }
+  },
+  {
+   "n": 19,
+   "label": null,
+   "result": {
+    "ad": "orta",
+    "calls": 1021,
+    "tris": 1065012,
+    "mainCalls": 759,
+    "shadowCalls": 246,
+    "postCalls": 16,
+    "geos": 741,
+    "texs": 200,
+    "progs": 95,
+    "simMs": 1.77,
+    "lodScale": 0.85,
+    "tiles": {
+     "tiles": 113,
+     "meshes": 113,
+     "hires": 19,
+     "tris": 350912,
+     "queue": 0,
+     "jobs": 0,
+     "workers": 3,
+     "fallback": false,
+     "failures": 0,
+     "mode": ""
+    },
+    "far": 3775,
+    "groups": [
+     [
+      "hayvan",
+      313,
+      33376,
+      20,
+      18120
+     ],
+     [
+      "npc",
+      59,
+      37284,
+      100,
+      42766
+     ],
+     [
+      "sahne:port-batched",
+      44,
+      5288,
+      64,
+      11156
+     ],
+     [
+      "sahne:Group",
+      51,
+      2890,
+      4,
+      188
+     ],
+     [
+      "arazi",
+      39,
+      185792,
+      8,
+      107520
+     ],
+     [
+      "sahne:Group[rock_tallA]",
+      42,
+      1904,
+      0,
+      0
+     ],
+     [
+      "cekirdek_bitki(I)",
+      26,
+      250696,
+      10,
+      125610
+     ],
+     [
+      "oyuncu",
+      16,
+      5845,
+      14,
+      5709
+     ],
+     [
+      "sahne:Mesh",
+      30,
+      3257,
+      0,
+      0
+     ],
+     [
+      "balikci_karakter",
+      12,
+      8308,
+      12,
+      8308
+     ],
+     [
+      "sahne:Group[statue_columnDamag]",
+      20,
+      1080,
+      0,
+      0
+     ],
+     [
+      "sahne:Group[statue_column]",
+      18,
+      732,
+      0,
+      0
+     ],
+     [
+      "son_isleme",
+      16,
+      16,
+      0,
+      0
+     ],
+     [
+      "detay:collectibles",
+      14,
+      812,
+      0,
+      0
+     ],
+     [
+      "hazards",
+      11,
+      1153,
+      0,
+      0
+     ],
+     [
+      "sahne:Group[rock_largeA]",
+      10,
+      400,
+      0,
+      0
+     ],
+     [
+      "sahne:Group[barrel]",
+      10,
+      280,
+      0,
+      0
+     ],
+     [
+      "sahne:crate-medium",
+      10,
+      3140,
+      0,
+      0
+     ],
+     [
+      "kayik",
+      0,
+      0,
+      8,
+      2340
+     ],
+     [
+      "sahne:Group[tent_detailedOpen]",
+      8,
+      928,
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  {
+   "n": 20,
+   "label": null,
+   "result": {
+    "ad": "orta",
+    "calls": 573,
+    "tris": 908231,
+    "shadowCalls": 184,
+    "scanMed": 636,
+    "scanMax": 1103,
+    "trisMax": 1078346,
+    "groups": [
+     [
+      "hayvan",
+      92,
+      34672,
+      88,
+      34736
+     ],
+     [
+      "npc",
+      55,
+      37012,
+      55,
+      37012
+     ],
+     [
+      "sahne:Group",
+      48,
+      2720,
+      0,
+      0
+     ],
+     [
+      "cekirdek_bitki(I)",
+      26,
+      250696,
+      10,
+      125610
+     ],
+     [
+      "arazi",
+      29,
+      165504,
+      5,
+      67200
+     ],
+     [
+      "oyuncu",
+      16,
+      5845,
+      14,
+      5709
+     ],
+     [
+      "balikci_karakter",
+      12,
+      8308,
+      12,
+      8308
+     ],
+     [
+      "sahne:Group[statue_columnDamag]",
+      20,
+      1080,
+      0,
+      0
+     ],
+     [
+      "sahne:Group[statue_column]",
+      18,
+      732,
+      0,
+      0
+     ],
+     [
+      "son_isleme",
+      16,
+      16,
+      0,
+      0
+     ],
+     [
+      "hazards",
+      11,
+      1153,
+      0,
+      0
+     ],
+     [
+      "sahne:Group[tent_detailedOpen]",
+      8,
+      928,
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  {
+   "n": 21,
+   "label": null,
+   "error": "page.evaluate: Target crashed "
+  },
+  {
+   "n": 22,
+   "label": null,
+   "expect": {
+    "label": "Oyun açık",
+    "ok": false,
+    "error": "page.evaluate: Target crashed "
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 2,
+ "evalErrors": 1,
+ "readyMs": 5216,
+ "ms": 254377
+}

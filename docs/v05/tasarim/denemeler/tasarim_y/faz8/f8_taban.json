@@ -1,0 +1,3652 @@
+{
+ "scenario": "/tmp/tasarim_y/faz8/f8_taban.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "Sayfa hazır",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 2,
+   "label": null,
+   "result": "araclar-hazir"
+  },
+  {
+   "n": 3,
+   "label": null,
+   "error": "page.evaluate: TypeError: Cannot read properties of null (reading 'pos')\n    at window._ctx (eval at evaluate (:311:30), <anonymous>:133:63)\n    at eval (eval at evaluate (:311:30), <anonymous>:1:286)\n    at async <anonymous>:337:30"
+  },
+  {
+   "n": 4,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 5,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   }
+  },
+  {
+   "n": 6,
+   "label": null,
+   "result": {
+    "calls": 1026,
+    "tris": 1252930,
+    "mainCalls": 764,
+    "shadowCalls": 246,
+    "shadowTris": 368947,
+    "postCalls": 16,
+    "geos": 750,
+    "texs": 200,
+    "progs": 95,
+    "heapMB": 128.3,
+    "groups": [
+     [
+      "hayvan",
+      313,
+      33376,
+      20,
+      18120
+     ],
+     [
+      "sahne:Group",
+      158,
+      8282,
+      4,
+      188
+     ],
+     [
+      "npc",
+      59,
+      37284,
+      100,
+      42766
+     ],
+     [
+      "sahne:port-batched",
+      44,
+      5288,
+      64,
+      11156
+     ],
+     [
+      "arazi",
+      44,
+      219008,
+      8,
+      107520
+     ],
+     [
+      "sahne:Mesh(I)",
+      26,
+      303164,
+      10,
+      169894
+     ],
+     [
+      "oyuncu",
+      16,
+      5845,
+      14,
+      5709
+     ],
+     [
+      "sahne:Mesh",
+      30,
+      3257,
+      0,
+      0
+     ],
+     [
+      "balikci_karakter",
+      12,
+      8308,
+      12,
+      8308
+     ],
+     [
+      "detay:collectibles",
+      16,
+      844,
+      0,
+      0
+     ],
+     [
+      "son_isleme",
+      16,
+      16,
+      0,
+      0
+     ],
+     [
+      "hazards",
+      11,
+      1153,
+      0,
+      0
+     ],
+     [
+      "sahne:crate-medium",
+      10,
+      3140,
+      0,
+      0
+     ],
+     [
+      "fish",
+      10,
+      52172,
+      0,
+      0
+     ],
+     [
+      "kayik",
+      0,
+      0,
+      8,
+      2340
+     ],
+     [
+      "gemi_oyuncu",
+      0,
+      0,
+      6,
+      2946
+     ],
+     [
+      "sahne:Root_Scene",
+      5,
+      2950,
+      0,
+      0
+     ],
+     [
+      "hava_efekt",
+      3,
+      15120,
+      0,
+      0
+     ],
+     [
+      "gok",
+      1,
+      2208,
+      0,
+      0
+     ],
+     [
+      "quests",
+      1,
+      12,
+      0,
+      0
+     ],
+     [
+      "detay:gulls",
+      1,
+      3600,
+      0,
+      0
+     ],
+     [
+      "ocean",
+      1,
+      178802,
+      0,
+      0
+     ],
+     [
+      "detay:wakes",
+      1,
+      94,
+      0,
+      0
+     ],
+     [
+      "detay:fall",
+      1,
+      60,
+      0,
+      0
+     ],
+     [
+      "effects",
+      1,
+      0,
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  {
+   "n": 7,
+   "label": null,
+   "result": [
+    [
+     "A|sahne:Group",
+     158,
+     8282
+    ],
+    [
+     "A|hayvan:boar",
+     140,
+     5908
+    ],
+    [
+     "G|npc",
+     100,
+     42766
+    ],
+    [
+     "A|hayvan:parrot",
+     81,
+     3924
+    ],
+    [
+     "A|hayvan:monkey",
+     72,
+     5424
+    ],
+    [
+     "G|sahne:port-batched",
+     64,
+     11156
+    ],
+    [
+     "A|npc",
+     59,
+     37284
+    ],
+    [
+     "A|sahne:port-batched",
+     44,
+     5288
+    ],
+    [
+     "A|terrain.tiles",
+     44,
+     219008
+    ],
+    [
+     "A|sahne:Mesh",
+     30,
+     3257
+    ],
+    [
+     "A|sahne:Mesh(I)",
+     26,
+     303164
+    ],
+    [
+     "G|hayvan:crab",
+     20,
+     18120
+    ],
+    [
+     "A|hayvan:crab",
+     20,
+     18120
+    ],
+    [
+     "A|details.collectibles",
+     16,
+     844
+    ],
+    [
+     "A|oyuncu",
+     16,
+     5845
+    ],
+    [
+     "A|son_isleme",
+     16,
+     16
+    ],
+    [
+     "G|oyuncu",
+     14,
+     5709
+    ],
+    [
+     "G|balikci_karakter",
+     12,
+     8308
+    ],
+    [
+     "A|balikci_karakter",
+     12,
+     8308
+    ],
+    [
+     "A|hazards.sets",
+     11,
+     1153
+    ],
+    [
+     "G|sahne:Mesh(I)",
+     10,
+     169894
+    ],
+    [
+     "A|sahne:crate-medium",
+     10,
+     3140
+    ],
+    [
+     "A|fish.species",
+     10,
+     52172
+    ],
+    [
+     "G|terrain.tiles",
+     8,
+     107520
+    ],
+    [
+     "G|kayik",
+     8,
+     2340
+    ],
+    [
+     "G|gemi_oyuncu",
+     6,
+     2946
+    ],
+    [
+     "A|sahne:Root_Scene",
+     5,
+     2950
+    ],
+    [
+     "G|sahne:Group",
+     4,
+     188
+    ],
+    [
+     "A|weatherfx.cloudSets",
+     3,
+     15120
+    ],
+    [
+     "A|sky.dome",
+     1,
+     2208
+    ],
+    [
+     "A|quests.journalMesh",
+     1,
+     12
+    ],
+    [
+     "A|details.gulls",
+     1,
+     3600
+    ],
+    [
+     "A|ocean.mesh",
+     1,
+     178802
+    ],
+    [
+     "A|details.wakes",
+     1,
+     94
+    ],
+    [
+     "A|details.fall",
+     1,
+     60
+    ],
+    [
+     "A|effects.points",
+     1,
+     0
+    ]
+   ]
+  },
+  {
+   "n": 8,
+   "label": null,
+   "result": {
+    "s": {
+     "simMsPerFrame": 1.95,
+     "hudMsPerFrame": 0.04,
+     "per": {
+      "fish": 0.467,
+      "_camera": 0.233,
+      "animals": 0.213,
+      "npcs": 0.185,
+      "ships": 0.183,
+      "interact": 0.102,
+      "details": 0.097,
+      "megafauna": 0.093,
+      "player": 0.088,
+      "_env": 0.072,
+      "enemies": 0.07,
+      "effects": 0.033,
+      "time": 0.018,
+      "weatherfx": 0.017,
+      "crowd": 0.013,
+      "quests": 0.01,
+      "islands": 0.008,
+      "bodies": 0.005,
+      "shipControl": 0.003,
+      "hazards": 0.002,
+      "progress": 0.002,
+      "worldEvents": 0.002,
+      "combat": 0,
+      "bosses": 0,
+      "events": 0,
+      "treasure": 0,
+      "fishing": 0,
+      "seagear": 0
+     }
+    },
+    "progVaryant": {
+     "n": 95,
+     "cikisDogrusal": 52,
+     "cikisSRGB": 42,
+     "diger": 1,
+     "names": {
+      "": 80,
+      "woodBark": 1,
+      "leafsGreen": 1,
+      "colormap": 2,
+      "barbarian_texture": 3,
+      "dirt": 1,
+      "metalRed": 1,
+      "rogue_texture": 1,
+      "FXAAShader": 1,
+      "unspecified": 1,
+      "OutputShader": 1,
+      "texture": 1,
+      "Main": 1
+     }
+    },
+    "lights": {
+     "point": 7,
+     "pointGorunur": 7,
+     "spot": 0,
+     "dir": 1,
+     "hemi": 1
+    },
+    "noCull": {
+     "ocean": 1,
+     "gok": 1,
+     "effects": 1,
+     "fish": 32,
+     "npc": 55,
+     "hava_efekt": 3,
+     "detay:gulls": 1,
+     "balikci_karakter": 12,
+     "oyuncu": 6,
+     "hayvan": 20,
+     "detay:wakes": 1
+    },
+    "ctx": {
+     "x": 2,
+     "z": 212,
+     "mode": "ground",
+     "hour": 8.6,
+     "weather": "acik",
+     "islands": [],
+     "npcs": 10,
+     "animals": 27,
+     "enemies": 0,
+     "ships": 1,
+     "shots": 0,
+     "tiles": {
+      "tiles": 129,
+      "meshes": 129,
+      "hires": 22,
+      "tris": 399168,
+      "queue": 0,
+      "jobs": 0,
+      "workers": 3,
+      "fallback": false,
+      "failures": 0,
+      "mode": ""
+     },
+     "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+     "dpr": 1,
+     "size": [
+      640,
+      360
+     ],
+     "post": "medium",
+     "quality": "high",
+     "shadows": "high",
+     "effects": "high"
+    }
+   }
+  },
+  {
+   "n": 9,
+   "label": null,
+   "result": "sabit"
+  },
+  {
+   "n": 10,
+   "label": null,
+   "result": {
+    "calls": 1048,
+    "tris": 1227218,
+    "mainCalls": 764,
+    "shadowCalls": 268,
+    "postCalls": 16,
+    "progs": 95,
+    "simMsPerFrame": 1.62,
+    "hudMs": 0.12,
+    "per": {
+     "enemies": 0.345,
+     "npcs": 0.237,
+     "animals": 0.227,
+     "fish": 0.203,
+     "details": 0.127,
+     "player": 0.112,
+     "ships": 0.103,
+     "_env": 0.067,
+     "weatherfx": 0.06,
+     "megafauna": 0.027,
+     "_camera": 0.015,
+     "interact": 0.015,
+     "effects": 0.013,
+     "islands": 0.01,
+     "time": 0.008,
+     "crowd": 0.007,
+     "events": 0.005,
+     "combat": 0.003,
+     "bosses": 0.003,
+     "worldEvents": 0.003,
+     "treasure": 0.003,
+     "shipControl": 0.002,
+     "bodies": 0.002,
+     "fishing": 0.002,
+     "quests": 0.002,
+     "hazards": 0,
+     "seagear": 0,
+     "progress": 0
+    },
+    "scan": {
+     "med": 691,
+     "min": 606,
+     "max": 1048,
+     "trisMed": 1199979,
+     "trisMax": 1232764,
+     "rows": [
+      [
+       0,
+       1048,
+       1227218,
+       268,
+       764
+      ],
+      [
+       1,
+       931,
+       1199979,
+       268,
+       647
+      ],
+      [
+       2,
+       649,
+       1159970,
+       268,
+       365
+      ],
+      [
+       3,
+       650,
+       1192948,
+       268,
+       366
+      ],
+      [
+       4,
+       606,
+       1229474,
+       268,
+       322
+      ],
+      [
+       5,
+       691,
+       1232764,
+       268,
+       407
+      ],
+      [
+       6,
+       664,
+       1186894,
+       268,
+       380
+      ],
+      [
+       7,
+       839,
+       1181159,
+       268,
+       555
+      ]
+     ]
+    },
+    "noCull": {
+     "ocean": 1,
+     "gok": 1,
+     "effects": 1,
+     "fish": 32,
+     "npc": 55,
+     "hava_efekt": 3,
+     "detay:gulls": 1,
+     "balikci_karakter": 12,
+     "oyuncu": 6,
+     "hayvan": 20,
+     "detay:wakes": 1
+    },
+    "lights": {
+     "point": 7,
+     "pointGorunur": 7,
+     "spot": 0,
+     "dir": 1,
+     "hemi": 1
+    },
+    "groups": [
+     [
+      "hayvan",
+      313,
+      33376,
+      20,
+      18120
+     ],
+     [
+      "sahne:Group",
+      158,
+      8282,
+      4,
+      188
+     ],
+     [
+      "npc",
+      59,
+      37284,
+      100,
+      42766
+     ],
+     [
+      "sahne:port-batched",
+      44,
+      5288,
+      64,
+      11156
+     ],
+     [
+      "arazi",
+      44,
+      219008,
+      6,
+      80640
+     ],
+     [
+      "sahne:Mesh(I)",
+      26,
+      303164,
+      10,
+      169894
+     ],
+     [
+      "gemi_oyuncu",
+      0,
+      0,
+      30,
+      4114
+     ],
+     [
+      "oyuncu",
+      16,
+      5845,
+      14,
+      5709
+     ],
+     [
+      "sahne:Mesh",
+      30,
+      3257,
+      0,
+      0
+     ],
+     [
+      "balikci_karakter",
+      12,
+      8308,
+      12,
+      8308
+     ],
+     [
+      "detay:collectibles",
+      16,
+      844,
+      0,
+      0
+     ],
+     [
+      "son_isleme",
+      16,
+      16,
+      0,
+      0
+     ],
+     [
+      "hazards",
+      11,
+      1153,
+      0,
+      0
+     ],
+     [
+      "sahne:crate-medium",
+      10,
+      3140,
+      0,
+      0
+     ],
+     [
+      "fish",
+      10,
+      52172,
+      0,
+      0
+     ],
+     [
+      "kayik",
+      0,
+      0,
+      8,
+      2340
+     ],
+     [
+      "sahne:Root_Scene",
+      5,
+      2950,
+      0,
+      0
+     ],
+     [
+      "hava_efekt",
+      3,
+      15120,
+      0,
+      0
+     ],
+     [
+      "gok",
+      1,
+      2208,
+      0,
+      0
+     ],
+     [
+      "quests",
+      1,
+      12,
+      0,
+      0
+     ],
+     [
+      "detay:gulls",
+      1,
+      3600,
+      0,
+      0
+     ],
+     [
+      "ocean",
+      1,
+      178802,
+      0,
+      0
+     ],
+     [
+      "detay:wakes",
+      1,
+      94,
+      0,
+      0
+     ],
+     [
+      "detay:fall",
+      1,
+      60,
+      0,
+      0
+     ],
+     [
+      "effects",
+      1,
+      0,
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  {
+   "n": 11,
+   "label": null,
+   "result": [
+    {
+     "yaw": 0,
+     "calls": 606,
+     "karakter": [
+      [
+       "npc",
+       55,
+       37012,
+       100,
+       42766
+      ],
+      [
+       "oyuncu",
+       16,
+       5845,
+       14,
+       5709
+      ],
+      [
+       "balikci_karakter",
+       17,
+       8766,
+       12,
+       8308
+      ]
+     ]
+    },
+    {
+     "yaw": 1.57,
+     "calls": 664,
+     "karakter": [
+      [
+       "npc",
+       81,
+       40112,
+       100,
+       42766
+      ],
+      [
+       "oyuncu",
+       16,
+       5845,
+       14,
+       5709
+      ],
+      [
+       "balikci_karakter",
+       17,
+       8766,
+       12,
+       8308
+      ]
+     ]
+    },
+    {
+     "yaw": 3.14,
+     "calls": 1049,
+     "karakter": [
+      [
+       "npc",
+       59,
+       37284,
+       100,
+       42766
+      ],
+      [
+       "oyuncu",
+       16,
+       5845,
+       14,
+       5709
+      ],
+      [
+       "balikci_karakter",
+       12,
+       8308,
+       12,
+       8308
+      ]
+     ]
+    },
+    {
+     "yaw": -1.57,
+     "calls": 661,
+     "karakter": [
+      [
+       "npc",
+       95,
+       41792,
+       100,
+       42766
+      ],
+      [
+       "oyuncu",
+       16,
+       5845,
+       14,
+       5709
+      ],
+      [
+       "balikci_karakter",
+       12,
+       8308,
+       12,
+       8308
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "n": 12,
+   "label": null,
+   "result": {
+    "once": {
+     "calls": 661,
+     "tris": 1160588
+    },
+    "sonra": {
+     "calls": 733,
+     "tris": 1191654
+    },
+    "fark": {
+     "calls": 72,
+     "tris": 31066
+    },
+    "grup": {
+     "npc": [
+      95,
+      41792,
+      100,
+      42766
+     ],
+     "uzak_oyuncu": [
+      30,
+      13939,
+      42,
+      17127
+     ],
+     "gemi_oyuncu": [
+      0,
+      0,
+      30,
+      4114
+     ],
+     "oyuncu": [
+      16,
+      5845,
+      14,
+      5709
+     ]
+    },
+    "simMs": 1.85,
+    "hayvan": {
+     "tek": 0.112,
+     "coopHost": 0.097,
+     "aktifHayvan": 27
+    }
+   }
+  },
+  {
+   "n": 13,
+   "label": null,
+   "result": {
+    "geceCalls": 703,
+    "geceTris": 1162338,
+    "mesaleCalls": 706,
+    "progs": {
+     "once": 101,
+     "mesaleAcik": 126,
+     "kapali": 133,
+     "tekrarAcik": 134
+    },
+    "isik": {
+     "once": {
+      "point": 7,
+      "pointGorunur": 7,
+      "spot": 0,
+      "dir": 1,
+      "hemi": 1
+     },
+     "mesale": {
+      "point": 8,
+      "pointGorunur": 8,
+      "spot": 0,
+      "dir": 1,
+      "hemi": 1
+     }
+    }
+   }
+  },
+  {
+   "n": 14,
+   "label": null,
+   "result": {
+    "calls": 1130,
+    "tris": 1317284,
+    "mainCalls": 919,
+    "shadowCalls": 195,
+    "simMs": 1.26,
+    "per": {
+     "npcs": 0.387,
+     "fish": 0.232,
+     "ships": 0.173,
+     "details": 0.107,
+     "player": 0.078,
+     "_env": 0.072,
+     "enemies": 0.035,
+     "_camera": 0.027,
+     "megafauna": 0.025,
+     "interact": 0.025,
+     "animals": 0.025,
+     "time": 0.015,
+     "weatherfx": 0.01,
+     "islands": 0.01,
+     "combat": 0.008,
+     "quests": 0.008,
+     "events": 0.003,
+     "crowd": 0.003,
+     "worldEvents": 0.003,
+     "treasure": 0.002,
+     "bodies": 0.002,
+     "effects": 0.002,
+     "shipControl": 0,
+     "hazards": 0,
+     "bosses": 0,
+     "fishing": 0,
+     "seagear": 0,
+     "progress": 0
+    },
+    "scan": {
+     "med": 514,
+     "min": 389,
+     "max": 1130,
+     "trisMax": 1317624
+    },
+    "ada": {
+     "npc": 5,
+     "hucre": 174,
+     "ms": 34.59999999962747
+    },
+    "ctx": {
+     "x": 1762.3,
+     "z": 865.6,
+     "mode": "ground",
+     "hour": 11,
+     "weather": "acik",
+     "islands": [
+      "tuz_pazari"
+     ],
+     "npcs": 15,
+     "animals": 5,
+     "enemies": 0,
+     "ships": 1,
+     "shots": 0,
+     "tiles": {
+      "tiles": 148,
+      "meshes": 114,
+      "hires": 38,
+      "tris": 605504,
+      "queue": 78,
+      "jobs": 84,
+      "workers": 3,
+      "fallback": false,
+      "failures": 0,
+      "mode": ""
+     },
+     "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+     "dpr": 1,
+     "size": [
+      640,
+      360
+     ],
+     "post": "medium",
+     "quality": "high",
+     "shadows": "high",
+     "effects": "high"
+    },
+    "groups": [
+     [
+      "npc",
+      187,
+      69976,
+      120,
+      62500
+     ],
+     [
+      "sahne:Group",
+      222,
+      12618,
+      0,
+      0
+     ],
+     [
+      "arazi",
+      85,
+      415040,
+      6,
+      80640
+     ],
+     [
+      "sahne:port-batched",
+      85,
+      11498,
+      0,
+      0
+     ],
+     [
+      "gemi_oyuncu",
+      82,
+      6264,
+      0,
+      0
+     ],
+     [
+      "islands",
+      36,
+      36119,
+      41,
+      59855
+     ],
+     [
+      "detay:collectibles",
+      45,
+      1812,
+      0,
+      0
+     ],
+     [
+      "balikci_karakter",
+      22,
+      9224,
+      12,
+      8308
+     ],
+     [
+      "oyuncu",
+      16,
+      5845,
+      14,
+      5709
+     ],
+     [
+      "sahne:Mesh",
+      30,
+      3257,
+      0,
+      0
+     ],
+     [
+      "sahne:Mesh(I)",
+      26,
+      303164,
+      0,
+      0
+     ],
+     [
+      "balikci_teknesi",
+      20,
+      4724,
+      0,
+      0
+     ],
+     [
+      "fish",
+      16,
+      9940,
+      0,
+      0
+     ],
+     [
+      "son_isleme",
+      16,
+      16,
+      0,
+      0
+     ],
+     [
+      "hazards",
+      11,
+      1153,
+      0,
+      0
+     ],
+     [
+      "sahne:crate-medium",
+      10,
+      3140,
+      0,
+      0
+     ],
+     [
+      "kayik",
+      8,
+      2340,
+      0,
+      0
+     ],
+     [
+      "sahne:Root_Scene",
+      5,
+      2950,
+      0,
+      0
+     ],
+     [
+      "ada_icerigi",
+      2,
+      636,
+      2,
+      636
+     ],
+     [
+      "hava_efekt",
+      3,
+      15120,
+      0,
+      0
+     ],
+     [
+      "gok",
+      1,
+      2208,
+      0,
+      0
+     ],
+     [
+      "quests",
+      1,
+      12,
+      0,
+      0
+     ],
+     [
+      "detay:gulls",
+      1,
+      3600,
+      0,
+      0
+     ],
+     [
+      "port",
+      1,
+      24,
+      0,
+      0
+     ],
+     [
+      "ocean",
+      1,
+      178802,
+      0,
+      0
+     ]
+    ],
+    "noCull": {
+     "ocean": 1,
+     "gok": 1,
+     "effects": 1,
+     "fish": 32,
+     "npc": 85,
+     "hava_efekt": 3,
+     "detay:gulls": 1,
+     "balikci_karakter": 12,
+     "detay:wakes": 1
+    }
+   }
+  },
+  {
+   "n": 15,
+   "label": null,
+   "result": {
+    "calls": 449,
+    "tris": 736584,
+    "mainCalls": 322,
+    "shadowCalls": 111,
+    "shadowTris": 158035,
+    "simMs": 1.48,
+    "per": {
+     "npcs": 0.348,
+     "fish": 0.247,
+     "ships": 0.185,
+     "player": 0.16,
+     "details": 0.108,
+     "_env": 0.082,
+     "interact": 0.065,
+     "enemies": 0.058,
+     "quests": 0.048,
+     "animals": 0.037,
+     "_camera": 0.025,
+     "weatherfx": 0.022,
+     "islands": 0.013,
+     "worldEvents": 0.007,
+     "megafauna": 0.007,
+     "time": 0.007,
+     "seagear": 0.007,
+     "shipControl": 0.005,
+     "hazards": 0.005,
+     "bosses": 0.005,
+     "progress": 0.005,
+     "crowd": 0.003,
+     "events": 0.003,
+     "combat": 0.002,
+     "treasure": 0.002,
+     "fishing": 0.002,
+     "bodies": 0,
+     "effects": 0
+    },
+    "scan": {
+     "med": 384,
+     "min": 290,
+     "max": 498,
+     "trisMed": 597940,
+     "trisMax": 712938
+    },
+    "yog": {
+     "agac25m": 20,
+     "toplamBitki": 2569
+    },
+    "ctx": {
+     "x": 2030.2,
+     "z": 7283,
+     "mode": "ground",
+     "hour": 11,
+     "weather": "acik",
+     "islands": [
+      "kadim_tapinak"
+     ],
+     "npcs": 10,
+     "animals": 3,
+     "enemies": 0,
+     "ships": 1,
+     "shots": 0,
+     "tiles": {
+      "tiles": 136,
+      "meshes": 16,
+      "hires": 12,
+      "tris": 162048,
+      "queue": 116,
+      "jobs": 122,
+      "workers": 3,
+      "fallback": false,
+      "failures": 0,
+      "mode": ""
+     },
+     "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+     "dpr": 1,
+     "size": [
+      640,
+      360
+     ],
+     "post": "medium",
+     "quality": "high",
+     "shadows": "high",
+     "effects": "high"
+    },
+    "groups": [
+     [
+      "islands",
+      168,
+      183397,
+      25,
+      39806
+     ],
+     [
+      "npc",
+      55,
+      37012,
+      55,
+      37012
+     ],
+     [
+      "hazards",
+      45,
+      2490,
+      0,
+      0
+     ],
+     [
+      "oyuncu",
+      16,
+      5845,
+      14,
+      5709
+     ],
+     [
+      "balikci_karakter",
+      12,
+      8308,
+      12,
+      8308
+     ],
+     [
+      "son_isleme",
+      16,
+      16,
+      0,
+      0
+     ],
+     [
+      "arazi",
+      8,
+      107520,
+      5,
+      67200
+     ],
+     [
+      "fish",
+      9,
+      33688,
+      0,
+      0
+     ],
+     [
+      "hava_efekt",
+      3,
+      15120,
+      0,
+      0
+     ],
+     [
+      "gok",
+      1,
+      2208,
+      0,
+      0
+     ],
+     [
+      "detay:gulls",
+      1,
+      3600,
+      0,
+      0
+     ],
+     [
+      "ada_icerigi",
+      1,
+      449,
+      0,
+      0
+     ],
+     [
+      "ocean",
+      1,
+      178802,
+      0,
+      0
+     ],
+     [
+      "detay:wakes",
+      1,
+      94,
+      0,
+      0
+     ],
+     [
+      "effects",
+      1,
+      0,
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  {
+   "n": 16,
+   "label": null,
+   "result": {
+    "calls": 777,
+    "tris": 1078443,
+    "mainCalls": 561,
+    "shadowCalls": 200,
+    "shadowTris": 319971,
+    "simMs": 0.93,
+    "scan": {
+     "med": 777,
+     "min": 458,
+     "max": 1285,
+     "trisMed": 1068905,
+     "trisMax": 1106776
+    },
+    "agac20m": 12,
+    "cekirdekIM": [
+     [
+      297,
+      764,
+      1,
+      156
+     ],
+     [
+      297,
+      764,
+      1,
+      34
+     ],
+     [
+      264,
+      733,
+      1,
+      376
+     ],
+     [
+      241,
+      723,
+      0,
+      56
+     ],
+     [
+      425,
+      779,
+      0,
+      24
+     ],
+     [
+      157,
+      606,
+      1,
+      32
+     ],
+     [
+      97,
+      770,
+      1,
+      71
+     ],
+     [
+      97,
+      770,
+      1,
+      9
+     ],
+     [
+      6,
+      358,
+      1,
+      98
+     ],
+     [
+      6,
+      358,
+      1,
+      26
+     ],
+     [
+      6,
+      357,
+      1,
+      12
+     ],
+     [
+      28,
+      440,
+      0,
+      40
+     ],
+     [
+      28,
+      440,
+      0,
+      36
+     ],
+     [
+      25,
+      143,
+      1,
+      40
+     ],
+     [
+      25,
+      143,
+      1,
+      16
+     ],
+     [
+      24,
+      134,
+      0,
+      16
+     ],
+     [
+      24,
+      134,
+      0,
+      32
+     ],
+     [
+      41,
+      159,
+      1,
+      124
+     ],
+     [
+      84,
+      37,
+      1,
+      24
+     ],
+     [
+      0,
+      -1,
+      0,
+      288
+     ],
+     [
+      0,
+      -1,
+      0,
+      290
+     ],
+     [
+      0,
+      -1,
+      0,
+      288
+     ],
+     [
+      0,
+      -1,
+      0,
+      292
+     ],
+     [
+      0,
+      -1,
+      0,
+      290
+     ],
+     [
+      0,
+      -1,
+      0,
+      288
+     ],
+     [
+      0,
+      -1,
+      0,
+      318
+     ],
+     [
+      0,
+      -1,
+      0,
+      290
+     ],
+     [
+      0,
+      -1,
+      0,
+      290
+     ],
+     [
+      0,
+      -1,
+      0,
+      290
+     ],
+     [
+      0,
+      -1,
+      0,
+      290
+     ],
+     [
+      0,
+      -1,
+      0,
+      288
+     ],
+     [
+      0,
+      -1,
+      0,
+      290
+     ],
+     [
+      0,
+      -1,
+      0,
+      290
+     ],
+     [
+      0,
+      -1,
+      0,
+      290
+     ],
+     [
+      0,
+      -1,
+      0,
+      288
+     ],
+     [
+      0,
+      -1,
+      0,
+      290
+     ],
+     [
+      0,
+      -1,
+      0,
+      290
+     ],
+     [
+      0,
+      -1,
+      0,
+      290
+     ],
+     [
+      0,
+      -1,
+      0,
+      288
+     ],
+     [
+      0,
+      -1,
+      0,
+      320
+     ],
+     [
+      0,
+      -1,
+      0,
+      288
+     ],
+     [
+      0,
+      -1,
+      0,
+      288
+     ],
+     [
+      0,
+      -1,
+      0,
+      290
+     ],
+     [
+      0,
+      -1,
+      0,
+      320
+     ],
+     [
+      0,
+      -1,
+      0,
+      292
+     ],
+     [
+      0,
+      -1,
+      0,
+      292
+     ],
+     [
+      0,
+      -1,
+      0,
+      288
+     ],
+     [
+      0,
+      -1,
+      0,
+      290
+     ],
+     [
+      0,
+      -1,
+      0,
+      288
+     ],
+     [
+      0,
+      -1,
+      0,
+      288
+     ],
+     [
+      0,
+      -1,
+      0,
+      288
+     ],
+     [
+      3,
+      -1,
+      0,
+      1440
+     ],
+     [
+      3,
+      -1,
+      0,
+      1980
+     ],
+     [
+      3,
+      -1,
+      0,
+      1620
+     ],
+     [
+      124,
+      837,
+      0,
+      350
+     ],
+     [
+      83,
+      830,
+      0,
+      266
+     ],
+     [
+      51,
+      825,
+      0,
+      12
+     ],
+     [
+      624,
+      871,
+      0,
+      32
+     ],
+     [
+      131,
+      793,
+      0,
+      72
+     ],
+     [
+      64,
+      781,
+      0,
+      36
+     ],
+     [
+      25,
+      778,
+      1,
+      24
+     ],
+     [
+      36,
+      567,
+      0,
+      100
+     ]
+    ],
+    "ctx": {
+     "x": 26,
+     "z": -154.7,
+     "mode": "ground",
+     "hour": 11,
+     "weather": "acik",
+     "islands": [],
+     "npcs": 10,
+     "animals": 46,
+     "enemies": 5,
+     "ships": 1,
+     "shots": 0,
+     "tiles": {
+      "tiles": 119,
+      "meshes": 25,
+      "hires": 21,
+      "tris": 291456,
+      "queue": 88,
+      "jobs": 94,
+      "workers": 3,
+      "fallback": false,
+      "failures": 0,
+      "mode": ""
+     },
+     "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+     "dpr": 1,
+     "size": [
+      640,
+      360
+     ],
+     "post": "medium",
+     "quality": "high",
+     "shadows": "high",
+     "effects": "high"
+    },
+    "groups": [
+     [
+      "hayvan",
+      174,
+      15970,
+      70,
+      8674
+     ],
+     [
+      "sahne:Group",
+      143,
+      7960,
+      2,
+      38
+     ],
+     [
+      "npc",
+      55,
+      37012,
+      55,
+      37012
+     ],
+     [
+      "dusman",
+      77,
+      26060,
+      31,
+      21120
+     ],
+     [
+      "sahne:Mesh(I)",
+      26,
+      303164,
+      11,
+      171910
+     ],
+     [
+      "oyuncu",
+      16,
+      5845,
+      14,
+      5709
+     ],
+     [
+      "balikci_karakter",
+      12,
+      8308,
+      12,
+      8308
+     ],
+     [
+      "detay:collectibles",
+      19,
+      976,
+      0,
+      0
+     ],
+     [
+      "arazi",
+      12,
+      150144,
+      5,
+      67200
+     ],
+     [
+      "son_isleme",
+      16,
+      16,
+      0,
+      0
+     ],
+     [
+      "hazards",
+      11,
+      1153,
+      0,
+      0
+     ],
+     [
+      "sahne:crate-medium",
+      6,
+      1884,
+      0,
+      0
+     ],
+     [
+      "hava_efekt",
+      3,
+      15120,
+      0,
+      0
+     ],
+     [
+      "gok",
+      1,
+      2208,
+      0,
+      0
+     ],
+     [
+      "sahne:Mesh",
+      1,
+      96,
+      0,
+      0
+     ],
+     [
+      "detay:gulls",
+      1,
+      3600,
+      0,
+      0
+     ],
+     [
+      "ocean",
+      1,
+      178802,
+      0,
+      0
+     ],
+     [
+      "detay:fall",
+      1,
+      60,
+      0,
+      0
+     ],
+     [
+      "detay:wakes",
+      1,
+      94,
+      0,
+      0
+     ],
+     [
+      "effects",
+      1,
+      0,
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  {
+   "n": 17,
+   "label": null,
+   "result": {
+    "calls": 1246,
+    "tris": 1127959,
+    "mainCalls": 1055,
+    "shadowCalls": 175,
+    "shadowTris": 290244,
+    "simMs": 1.1,
+    "inCave": 1,
+    "scan": {
+     "med": 479,
+     "min": 394,
+     "max": 1112,
+     "trisMed": 1050376,
+     "trisMax": 1120038
+    },
+    "lights": {
+     "point": 8,
+     "pointGorunur": 7,
+     "spot": 0,
+     "dir": 1,
+     "hemi": 1
+    },
+    "ctx": {
+     "x": 164.2,
+     "z": -77.8,
+     "mode": "ground",
+     "hour": 11,
+     "weather": "acik",
+     "islands": [],
+     "npcs": 10,
+     "animals": 46,
+     "enemies": 0,
+     "ships": 1,
+     "shots": 0,
+     "tiles": {
+      "tiles": 119,
+      "meshes": 119,
+      "hires": 20,
+      "tris": 375296,
+      "queue": 2,
+      "jobs": 8,
+      "workers": 3,
+      "fallback": false,
+      "failures": 0,
+      "mode": ""
+     },
+     "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+     "dpr": 1,
+     "size": [
+      640,
+      360
+     ],
+     "post": "medium",
+     "quality": "high",
+     "shadows": "high",
+     "effects": "high"
+    },
+    "groups": [
+     [
+      "hayvan",
+      561,
+      37718,
+      56,
+      7998
+     ],
+     [
+      "sahne:Group",
+      152,
+      8246,
+      12,
+      508
+     ],
+     [
+      "npc",
+      96,
+      41804,
+      55,
+      37012
+     ],
+     [
+      "arazi",
+      61,
+      212800,
+      4,
+      53760
+     ],
+     [
+      "sahne:port-batched",
+      56,
+      10292,
+      0,
+      0
+     ],
+     [
+      "sahne:Mesh(I)",
+      26,
+      303164,
+      10,
+      169894
+     ],
+     [
+      "oyuncu",
+      16,
+      5845,
+      14,
+      5709
+     ],
+     [
+      "sahne:Mesh",
+      23,
+      3173,
+      3,
+      2849
+     ],
+     [
+      "balikci_karakter",
+      12,
+      8308,
+      12,
+      8308
+     ],
+     [
+      "detay:collectibles",
+      20,
+      992,
+      0,
+      0
+     ],
+     [
+      "son_isleme",
+      16,
+      16,
+      0,
+      0
+     ],
+     [
+      "sahne:crate-medium",
+      10,
+      3140,
+      4,
+      1256
+     ],
+     [
+      "hazards",
+      11,
+      1153,
+      0,
+      0
+     ],
+     [
+      "sahne:Root_Scene",
+      2,
+      1180,
+      5,
+      2950
+     ],
+     [
+      "hava_efekt",
+      3,
+      15120,
+      0,
+      0
+     ],
+     [
+      "gok",
+      1,
+      2208,
+      0,
+      0
+     ],
+     [
+      "detay:gulls",
+      1,
+      3600,
+      0,
+      0
+     ],
+     [
+      "ocean",
+      1,
+      178802,
+      0,
+      0
+     ],
+     [
+      "detay:fall",
+      1,
+      60,
+      0,
+      0
+     ],
+     [
+      "detay:wakes",
+      1,
+      94,
+      0,
+      0
+     ],
+     [
+      "effects",
+      1,
+      0,
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  {
+   "n": 18,
+   "label": null,
+   "result": {
+    "calls": 392,
+    "tris": 399570,
+    "mainCalls": 207,
+    "shadowCalls": 169,
+    "simMs": 1.14,
+    "per": {
+     "fish": 0.47,
+     "npcs": 0.147,
+     "ships": 0.105,
+     "player": 0.098,
+     "details": 0.07,
+     "_env": 0.065,
+     "interact": 0.05,
+     "_camera": 0.025,
+     "weatherfx": 0.02,
+     "enemies": 0.018,
+     "hazards": 0.01,
+     "bodies": 0.01,
+     "time": 0.007,
+     "megafauna": 0.005,
+     "crowd": 0.005,
+     "islands": 0.003,
+     "bosses": 0.002,
+     "quests": 0.002,
+     "worldEvents": 0.002,
+     "shipControl": 0.002,
+     "effects": 0.002,
+     "progress": 0.002,
+     "combat": 0,
+     "animals": 0,
+     "events": 0,
+     "treasure": 0,
+     "fishing": 0,
+     "seagear": 0
+    },
+    "scan": {
+     "med": 397,
+     "min": 387,
+     "max": 980,
+     "trisMed": 401426,
+     "trisMax": 902842,
+     "rows": [
+      [
+       0,
+       392,
+       399570,
+       169,
+       207
+      ],
+      [
+       1,
+       389,
+       398098,
+       169,
+       204
+      ],
+      [
+       2,
+       394,
+       399058,
+       169,
+       209
+      ],
+      [
+       3,
+       397,
+       401426,
+       169,
+       212
+      ],
+      [
+       4,
+       387,
+       399506,
+       169,
+       202
+      ],
+      [
+       5,
+       962,
+       897146,
+       169,
+       777
+      ],
+      [
+       6,
+       980,
+       902842,
+       169,
+       795
+      ],
+      [
+       7,
+       485,
+       707902,
+       169,
+       300
+      ]
+     ]
+    },
+    "konum": {
+     "x": -911,
+     "z": 3057,
+     "enYakinKaraM": 1596
+    },
+    "ctx": {
+     "x": -916.7,
+     "z": 3053.5,
+     "mode": "helm",
+     "hour": 11,
+     "weather": "acik",
+     "islands": [],
+     "npcs": 10,
+     "animals": 0,
+     "enemies": 0,
+     "ships": 1,
+     "shots": 0,
+     "tiles": {
+      "tiles": 121,
+      "meshes": 93,
+      "hires": 8,
+      "tris": 161344,
+      "queue": 25,
+      "jobs": 31,
+      "workers": 3,
+      "fallback": false,
+      "failures": 0,
+      "mode": ""
+     },
+     "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+     "dpr": 1,
+     "size": [
+      640,
+      360
+     ],
+     "post": "medium",
+     "quality": "high",
+     "shadows": "high",
+     "effects": "high"
+    },
+    "noCull": {
+     "ocean": 1,
+     "gok": 1,
+     "effects": 1,
+     "fish": 32,
+     "npc": 55,
+     "hava_efekt": 3,
+     "detay:gulls": 1,
+     "balikci_karakter": 12,
+     "oyuncu": 6,
+     "detay:wakes": 1
+    },
+    "groups": [
+     [
+      "gemi_oyuncu",
+      81,
+      6264,
+      80,
+      6264
+     ],
+     [
+      "npc",
+      55,
+      37012,
+      55,
+      37012
+     ],
+     [
+      "oyuncu",
+      16,
+      5845,
+      14,
+      5709
+     ],
+     [
+      "balikci_karakter",
+      12,
+      8308,
+      12,
+      8308
+     ],
+     [
+      "arazi",
+      21,
+      4928,
+      0,
+      0
+     ],
+     [
+      "kayik",
+      8,
+      2340,
+      8,
+      2340
+     ],
+     [
+      "son_isleme",
+      16,
+      16,
+      0,
+      0
+     ],
+     [
+      "fish",
+      6,
+      75400,
+      0,
+      0
+     ],
+     [
+      "hava_efekt",
+      3,
+      15120,
+      0,
+      0
+     ],
+     [
+      "gok",
+      1,
+      2208,
+      0,
+      0
+     ],
+     [
+      "detay:gulls",
+      1,
+      3600,
+      0,
+      0
+     ],
+     [
+      "ocean",
+      1,
+      178802,
+      0,
+      0
+     ],
+     [
+      "detay:wakes",
+      1,
+      94,
+      0,
+      0
+     ],
+     [
+      "effects",
+      1,
+      0,
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  {
+   "n": 19,
+   "label": null,
+   "result": {
+    "calls": 413,
+    "tris": 538140,
+    "mainCalls": 228,
+    "shadowCalls": 169,
+    "simMs": 2.22,
+    "per": {
+     "fish": 0.775,
+     "ships": 0.272,
+     "details": 0.248,
+     "npcs": 0.232,
+     "player": 0.22,
+     "weatherfx": 0.127,
+     "_env": 0.103,
+     "time": 0.052,
+     "interact": 0.038,
+     "_camera": 0.035,
+     "enemies": 0.028,
+     "megafauna": 0.015,
+     "effects": 0.013,
+     "combat": 0.007,
+     "hazards": 0.007,
+     "islands": 0.007,
+     "seagear": 0.005,
+     "bodies": 0.005,
+     "events": 0.003,
+     "crowd": 0.003,
+     "quests": 0.003,
+     "bosses": 0.002,
+     "treasure": 0.002,
+     "progress": 0.002,
+     "worldEvents": 0.002,
+     "shipControl": 0,
+     "animals": 0,
+     "fishing": 0
+    },
+    "scan": {
+     "med": 438,
+     "min": 404,
+     "max": 999,
+     "trisMed": 642530,
+     "trisMax": 1034502
+    },
+    "hortum": 1,
+    "parcacik": 69,
+    "ctx": {
+     "x": -915.1,
+     "z": 3053.9,
+     "mode": "helm",
+     "hour": 11,
+     "weather": "firtina",
+     "islands": [],
+     "npcs": 10,
+     "animals": 0,
+     "enemies": 0,
+     "ships": 1,
+     "shots": 0,
+     "tiles": {
+      "tiles": 121,
+      "meshes": 121,
+      "hires": 8,
+      "tris": 160384,
+      "queue": 0,
+      "jobs": 0,
+      "workers": 3,
+      "fallback": false,
+      "failures": 0,
+      "mode": ""
+     },
+     "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+     "dpr": 1,
+     "size": [
+      640,
+      360
+     ],
+     "post": "medium",
+     "quality": "high",
+     "shadows": "high",
+     "effects": "high"
+    },
+    "groups": [
+     [
+      "gemi_oyuncu",
+      81,
+      6264,
+      80,
+      6264
+     ],
+     [
+      "npc",
+      55,
+      37012,
+      55,
+      37012
+     ],
+     [
+      "oyuncu",
+      16,
+      5845,
+      14,
+      5709
+     ],
+     [
+      "arazi",
+      28,
+      6272,
+      0,
+      0
+     ],
+     [
+      "balikci_karakter",
+      12,
+      8308,
+      12,
+      8308
+     ],
+     [
+      "hava_efekt",
+      17,
+      152346,
+      0,
+      0
+     ],
+     [
+      "kayik",
+      8,
+      2340,
+      8,
+      2340
+     ],
+     [
+      "son_isleme",
+      16,
+      16,
+      0,
+      0
+     ],
+     [
+      "fish",
+      6,
+      75400,
+      0,
+      0
+     ],
+     [
+      "gok",
+      1,
+      2208,
+      0,
+      0
+     ],
+     [
+      "detay:gulls",
+      1,
+      3600,
+      0,
+      0
+     ],
+     [
+      "ocean",
+      1,
+      178802,
+      0,
+      0
+     ],
+     [
+      "detay:wakes",
+      1,
+      94,
+      0,
+      0
+     ],
+     [
+      "effects",
+      1,
+      0,
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  {
+   "n": 20,
+   "label": null,
+   "result": "acik"
+  },
+  {
+   "n": 21,
+   "label": null,
+   "result": {
+    "calls": 568,
+    "tris": 487482,
+    "mainCalls": 242,
+    "shadowCalls": 310,
+    "simMs": 1.8,
+    "per": {
+     "fish": 0.43,
+     "ships": 0.315,
+     "details": 0.215,
+     "effects": 0.168,
+     "_env": 0.137,
+     "enemies": 0.132,
+     "npcs": 0.127,
+     "player": 0.08,
+     "_camera": 0.077,
+     "megafauna": 0.033,
+     "weatherfx": 0.012,
+     "animals": 0.007,
+     "events": 0.007,
+     "interact": 0.007,
+     "seagear": 0.005,
+     "islands": 0.005,
+     "combat": 0.005,
+     "crowd": 0.003,
+     "bodies": 0.003,
+     "time": 0.003,
+     "shipControl": 0,
+     "hazards": 0,
+     "bosses": 0,
+     "treasure": 0,
+     "fishing": 0,
+     "quests": 0,
+     "progress": 0,
+     "worldEvents": 0
+    },
+    "scan": {
+     "med": 701,
+     "min": 562,
+     "max": 1279,
+     "trisMed": 556108,
+     "trisMax": 1037908
+    },
+    "dusman": 4,
+    "gemiOrgu": {
+     "dusman": [
+      80,
+      80
+     ],
+     "oyuncu": [
+      80,
+      80
+     ]
+    },
+    "mermi": 0,
+    "ctx": {
+     "x": -914.3,
+     "z": 3054.5,
+     "mode": "helm",
+     "hour": 11,
+     "weather": "acik",
+     "islands": [],
+     "npcs": 10,
+     "animals": 0,
+     "enemies": 4,
+     "ships": 2,
+     "shots": 0,
+     "tiles": {
+      "tiles": 122,
+      "meshes": 120,
+      "hires": 8,
+      "tris": 160192,
+      "queue": 0,
+      "jobs": 3,
+      "workers": 3,
+      "fallback": false,
+      "failures": 0,
+      "mode": ""
+     },
+     "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+     "dpr": 1,
+     "size": [
+      640,
+      360
+     ],
+     "post": "medium",
+     "quality": "high",
+     "shadows": "high",
+     "effects": "high"
+    },
+    "groups": [
+     [
+      "gemi_oyuncu",
+      81,
+      6264,
+      80,
+      6264
+     ],
+     [
+      "npc",
+      55,
+      37012,
+      55,
+      37012
+     ],
+     [
+      "dusman",
+      24,
+      16492,
+      59,
+      20766
+     ],
+     [
+      "gemi_diger",
+      0,
+      0,
+      80,
+      6264
+     ],
+     [
+      "oyuncu",
+      16,
+      5845,
+      14,
+      5709
+     ],
+     [
+      "arazi",
+      28,
+      6272,
+      0,
+      0
+     ],
+     [
+      "balikci_karakter",
+      12,
+      8308,
+      12,
+      8308
+     ],
+     [
+      "kayik",
+      8,
+      2340,
+      8,
+      2340
+     ],
+     [
+      "son_isleme",
+      16,
+      16,
+      0,
+      0
+     ],
+     [
+      "fish",
+      6,
+      75400,
+      0,
+      0
+     ],
+     [
+      "effects",
+      1,
+      0,
+      2,
+      160
+     ],
+     [
+      "hava_efekt",
+      3,
+      15120,
+      0,
+      0
+     ],
+     [
+      "megafauna",
+      3,
+      42792,
+      0,
+      0
+     ],
+     [
+      "detay:wakes",
+      2,
+      188,
+      0,
+      0
+     ],
+     [
+      "gok",
+      1,
+      2208,
+      0,
+      0
+     ],
+     [
+      "detay:gulls",
+      1,
+      3600,
+      0,
+      0
+     ],
+     [
+      "ocean",
+      1,
+      178802,
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  {
+   "n": 22,
+   "label": null,
+   "result": "temiz"
+  },
+  {
+   "n": 23,
+   "label": null,
+   "result": {
+    "calls": 437,
+    "tris": 476931,
+    "mainCalls": 244,
+    "shadowCalls": 177,
+    "simMs": 1.65,
+    "per": {
+     "fish": 0.647,
+     "npcs": 0.215,
+     "bosses": 0.162,
+     "ships": 0.135,
+     "details": 0.118,
+     "player": 0.102,
+     "_env": 0.072,
+     "time": 0.035,
+     "_camera": 0.025,
+     "weatherfx": 0.02,
+     "interact": 0.018,
+     "enemies": 0.018,
+     "effects": 0.012,
+     "islands": 0.01,
+     "events": 0.008,
+     "megafauna": 0.008,
+     "hazards": 0.005,
+     "bodies": 0.003,
+     "treasure": 0.003,
+     "progress": 0.003,
+     "worldEvents": 0.003,
+     "combat": 0.002,
+     "animals": 0.002,
+     "crowd": 0.002,
+     "seagear": 0.002,
+     "quests": 0.002,
+     "shipControl": 0,
+     "fishing": 0
+    },
+    "scan": {
+     "med": 438,
+     "min": 412,
+     "max": 949,
+     "trisMed": 584066,
+     "trisMax": 992468
+    },
+    "boss": {
+     "alive": true,
+     "hp": 3000
+    },
+    "ctx": {
+     "x": -4449.7,
+     "z": -5006.3,
+     "mode": "helm",
+     "hour": 11,
+     "weather": "acik",
+     "islands": [
+      "ada_hayalet_4",
+      "kara_girdap"
+     ],
+     "npcs": 10,
+     "animals": 0,
+     "enemies": 0,
+     "ships": 1,
+     "shots": 0,
+     "tiles": {
+      "tiles": 82,
+      "meshes": 47,
+      "hires": 10,
+      "tris": 152320,
+      "queue": 29,
+      "jobs": 35,
+      "workers": 3,
+      "fallback": false,
+      "failures": 0,
+      "mode": ""
+     },
+     "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+     "dpr": 1,
+     "size": [
+      640,
+      360
+     ],
+     "post": "medium",
+     "quality": "high",
+     "shadows": "high",
+     "effects": "high"
+    },
+    "groups": [
+     [
+      "gemi_oyuncu",
+      91,
+      6374,
+      80,
+      6264
+     ],
+     [
+      "npc",
+      55,
+      37012,
+      55,
+      37012
+     ],
+     [
+      "oyuncu",
+      16,
+      5845,
+      14,
+      5709
+     ],
+     [
+      "balikci_karakter",
+      12,
+      8308,
+      12,
+      8308
+     ],
+     [
+      "arazi",
+      20,
+      63168,
+      2,
+      26880
+     ],
+     [
+      "hava_efekt",
+      22,
+      15158,
+      0,
+      0
+     ],
+     [
+      "kayik",
+      8,
+      2340,
+      8,
+      2340
+     ],
+     [
+      "son_isleme",
+      16,
+      16,
+      0,
+      0
+     ],
+     [
+      "islands",
+      11,
+      9597,
+      0,
+      0
+     ],
+     [
+      "boss",
+      1,
+      3456,
+      6,
+      5160
+     ],
+     [
+      "fish",
+      3,
+      49280,
+      0,
+      0
+     ],
+     [
+      "gok",
+      1,
+      2208,
+      0,
+      0
+     ],
+     [
+      "detay:gulls",
+      1,
+      3600,
+      0,
+      0
+     ],
+     [
+      "ocean",
+      1,
+      178802,
+      0,
+      0
+     ],
+     [
+      "detay:wakes",
+      1,
+      94,
+      0,
+      0
+     ],
+     [
+      "effects",
+      1,
+      0,
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  {
+   "n": 24,
+   "label": null,
+   "result": "kraken-temiz"
+  },
+  {
+   "n": 25,
+   "label": null,
+   "result": {
+    "calls": 552,
+    "tris": 1041885,
+    "mainCalls": 411,
+    "shadowCalls": 125,
+    "simMs": 0.85,
+    "per": {
+     "_env": 0.257,
+     "ships": 0.138,
+     "npcs": 0.128,
+     "details": 0.077,
+     "enemies": 0.038,
+     "bosses": 0.037,
+     "player": 0.037,
+     "islands": 0.025,
+     "fish": 0.018,
+     "_camera": 0.017,
+     "time": 0.013,
+     "effects": 0.013,
+     "interact": 0.012,
+     "weatherfx": 0.01,
+     "crowd": 0.007,
+     "animals": 0.003,
+     "hazards": 0.003,
+     "seagear": 0.003,
+     "quests": 0.003,
+     "bodies": 0.002,
+     "combat": 0.002,
+     "shipControl": 0,
+     "megafauna": 0,
+     "events": 0,
+     "treasure": 0,
+     "fishing": 0,
+     "progress": 0,
+     "worldEvents": 0
+    },
+    "scan": {
+     "med": 514,
+     "min": 443,
+     "max": 604,
+     "trisMed": 956382,
+     "trisMax": 1297000
+    },
+    "boss": {
+     "alive": true,
+     "rise": 1,
+     "state": "barrage",
+     "phase": 1
+    },
+    "lavMermi": 3,
+    "ctx": {
+     "x": 7788.2,
+     "z": -900,
+     "mode": "ground",
+     "hour": 11,
+     "weather": "acik",
+     "islands": [
+      "ates_dagi"
+     ],
+     "npcs": 10,
+     "animals": 0,
+     "enemies": 0,
+     "ships": 1,
+     "shots": 3,
+     "tiles": {
+      "tiles": 144,
+      "meshes": 117,
+      "hires": 31,
+      "tris": 611008,
+      "queue": 25,
+      "jobs": 31,
+      "workers": 3,
+      "fallback": false,
+      "failures": 0,
+      "mode": ""
+     },
+     "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+     "dpr": 1,
+     "size": [
+      640,
+      360
+     ],
+     "post": "medium",
+     "quality": "high",
+     "shadows": "high",
+     "effects": "high"
+    },
+    "groups": [
+     [
+      "islands",
+      227,
+      305739,
+      34,
+      62728
+     ],
+     [
+      "npc",
+      55,
+      37012,
+      55,
+      37012
+     ],
+     [
+      "arazi",
+      48,
+      288768,
+      5,
+      67200
+     ],
+     [
+      "oyuncu",
+      16,
+      5845,
+      14,
+      5709
+     ],
+     [
+      "balikci_karakter",
+      12,
+      8308,
+      12,
+      8308
+     ],
+     [
+      "hava_efekt",
+      22,
+      15158,
+      0,
+      0
+     ],
+     [
+      "hazards",
+      18,
+      1698,
+      0,
+      0
+     ],
+     [
+      "son_isleme",
+      16,
+      16,
+      0,
+      0
+     ],
+     [
+      "boss",
+      6,
+      6928,
+      5,
+      6712
+     ],
+     [
+      "gok",
+      2,
+      2208,
+      0,
+      0
+     ],
+     [
+      "detay:gulls",
+      1,
+      3600,
+      0,
+      0
+     ],
+     [
+      "ada_icerigi",
+      1,
+      40,
+      0,
+      0
+     ],
+     [
+      "ocean",
+      1,
+      178802,
+      0,
+      0
+     ],
+     [
+      "detay:wakes",
+      1,
+      94,
+      0,
+      0
+     ],
+     [
+      "effects",
+      1,
+      0,
+      0,
+      0
+     ]
+    ]
+   }
+  },
+  {
+   "n": 26,
+   "label": null,
+   "result": {
+    "ucusLav": 3,
+    "isaretli": 3,
+    "geoTemizlemeOncesi": 879,
+    "temizlemeSonrasi": 878,
+    "ucSnSonra": 876,
+    "yeniKalan": [
+     {
+      "id": 6224,
+      "type": "SphereGeometry",
+      "name": "",
+      "v": 143,
+      "sahnede": true,
+      "ilkCizim": "A|sahne:Group ~ Mesh<Body"
+     }
+    ],
+    "kalanMermi": 0,
+    "havuz": 3
+   }
+  },
+  {
+   "n": 27,
+   "label": null,
+   "result": [
+    [
+     "sahne",
+     "cagri",
+     "ucgen",
+     "ana",
+     "golge",
+     "son_isleme",
+     "geo",
+     "doku",
+     "program",
+     "simMs",
+     "hudMs",
+     "yiginMB",
+     "renderMs",
+     "taramaMed",
+     "taramaMaks",
+     "ucgenMaks"
+    ],
+    [
+     "liman_09",
+     1026,
+     1252930,
+     764,
+     246,
+     16,
+     750,
+     200,
+     95,
+     1.95,
+     null,
+     128.3,
+     14.3,
+     null,
+     null,
+     null
+    ],
+    [
+     "liman",
+     1048,
+     1227218,
+     764,
+     268,
+     16,
+     769,
+     200,
+     95,
+     1.62,
+     0.12,
+     138.8,
+     8,
+     691,
+     1048,
+     1232764
+    ],
+    [
+     "kasaba",
+     1130,
+     1317284,
+     919,
+     195,
+     16,
+     742,
+     243,
+     138,
+     1.26,
+     0.05,
+     145.9,
+     13.3,
+     514,
+     1130,
+     1317624
+    ],
+    [
+     "orman_kadim",
+     449,
+     736584,
+     322,
+     111,
+     16,
+     644,
+     214,
+     136,
+     1.48,
+     0.08,
+     143.6,
+     5289,
+     384,
+     498,
+     712938
+    ],
+    [
+     "orman_kirlangic",
+     777,
+     1078443,
+     561,
+     200,
+     16,
+     857,
+     280,
+     137,
+     0.93,
+     0.07,
+     142.6,
+     19.4,
+     777,
+     1285,
+     1106776
+    ],
+    [
+     "magara",
+     1246,
+     1127959,
+     1055,
+     175,
+     16,
+     1354,
+     250,
+     137,
+     1.1,
+     0.07,
+     142.8,
+     28.3,
+     479,
+     1112,
+     1120038
+    ],
+    [
+     "acik_deniz",
+     392,
+     399570,
+     207,
+     169,
+     16,
+     724,
+     222,
+     136,
+     1.14,
+     0.06,
+     131.1,
+     13,
+     397,
+     980,
+     902842
+    ],
+    [
+     "firtina",
+     413,
+     538140,
+     228,
+     169,
+     16,
+     765,
+     223,
+     137,
+     2.22,
+     0.08,
+     133.7,
+     10.5,
+     438,
+     999,
+     1034502
+    ],
+    [
+     "deniz_savasi",
+     568,
+     487482,
+     242,
+     310,
+     16,
+     899,
+     251,
+     139,
+     1.8,
+     0.12,
+     130.3,
+     4.8,
+     701,
+     1279,
+     1037908
+    ],
+    [
+     "boss_kraken",
+     437,
+     476931,
+     244,
+     177,
+     16,
+     724,
+     231,
+     141,
+     1.65,
+     0.1,
+     153.5,
+     50.1,
+     438,
+     949,
+     992468
+    ],
+    [
+     "boss_volkan",
+     552,
+     1041885,
+     411,
+     125,
+     16,
+     780,
+     238,
+     144,
+     0.85,
+     0.05,
+     135.7,
+     5,
+     514,
+     604,
+     1297000
+    ]
+   ]
+  },
+  {
+   "n": 28,
+   "label": null,
+   "metrics": {
+    "label": "son",
+    "heapMB": 45.5,
+    "heapTotalMB": 54.5,
+    "backingMB": 92.3,
+    "embedderMB": 220.8,
+    "nodes": 1164,
+    "listeners": 58,
+    "docs": 1,
+    "frames": 1
+   }
+  },
+  {
+   "n": 29,
+   "label": null,
+   "expect": {
+    "label": "Oyun ölçümlerden sonra açık",
+    "ok": true,
+    "value": true
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 1,
+ "evalErrors": 1,
+ "readyMs": 12255,
+ "ms": 194495
+}

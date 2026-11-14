@@ -1,0 +1,329 @@
+{
+ "scenario": "/tmp/tasarim_y/faz7/inc_olcum.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   }
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "n": 4,
+   "label": null,
+   "result": {
+    "bugun": [
+     {
+      "swings": 18,
+      "starts": 11,
+      "resolved": 0,
+      "hitEnter": 6,
+      "stunEnter": 6,
+      "stamina": 99
+     },
+     {
+      "swings": 18,
+      "starts": 10,
+      "resolved": 0,
+      "hitEnter": 6,
+      "stunEnter": 6,
+      "stamina": 99
+     },
+     {
+      "swings": 18,
+      "starts": 11,
+      "resolved": 0,
+      "hitEnter": 6,
+      "stunEnter": 6,
+      "stamina": 99
+     }
+    ],
+    "k75": [
+     {
+      "swings": 18,
+      "starts": 10,
+      "resolved": 0,
+      "hitEnter": 6,
+      "stunEnter": 6,
+      "stamina": 99
+     },
+     {
+      "swings": 18,
+      "starts": 11,
+      "resolved": 0,
+      "hitEnter": 6,
+      "stunEnter": 6,
+      "stamina": 99
+     },
+     {
+      "swings": 18,
+      "starts": 11,
+      "resolved": 0,
+      "hitEnter": 6,
+      "stunEnter": 6,
+      "stamina": 99
+     }
+    ],
+    "k75_dr": [
+     {
+      "swings": 18,
+      "starts": 6,
+      "resolved": 2,
+      "hitEnter": 6,
+      "stunEnter": 3,
+      "stamina": 99
+     },
+     {
+      "swings": 18,
+      "starts": 6,
+      "resolved": 2,
+      "hitEnter": 6,
+      "stunEnter": 3,
+      "stamina": 99
+     },
+     {
+      "swings": 18,
+      "starts": 6,
+      "resolved": 2,
+      "hitEnter": 6,
+      "stunEnter": 3,
+      "stamina": 99
+     }
+    ]
+   }
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": {
+    "serpentHitPlayer": "undefined",
+    "hp0": 100,
+    "hpAtImpact": 100,
+    "hpAfter2s": 96.74,
+    "poison": 4.52,
+    "impactAt": 0.5
+   }
+  },
+  {
+   "n": 6,
+   "label": null,
+   "result": {
+    "gunduz_ayakta_0.5": {
+     "d": 12,
+     "night": false,
+     "t": 1.53,
+     "aw": 1.01
+    },
+    "gunduz_egilmis_0.5": {
+     "d": 12,
+     "night": false,
+     "t": 3.88,
+     "aw": 1.01
+    },
+    "gunduz_egilmis_0.6": {
+     "d": 14.4,
+     "night": false,
+     "t": null,
+     "aw": 0
+    },
+    "gece_mesalesiz_0.45": {
+     "d": 10.8,
+     "night": true,
+     "t": 4.73,
+     "aw": 1.01
+    },
+    "gece_mesaleli_1.1": {
+     "d": 26.4,
+     "night": true,
+     "t": 4.68,
+     "aw": 1.02
+    },
+    "gunduz_ayakta_0.7": {
+     "d": 16.8,
+     "night": false,
+     "t": 2.32,
+     "aw": 1.01
+    }
+   }
+  },
+  {
+   "n": 7,
+   "label": null,
+   "result": {
+    "Spin2H*": 0.583,
+    "AtkStab": 0.483,
+    "Atk1": 0.35,
+    "Atk3": 0.433,
+    "Atk2": 0.367
+   }
+  },
+  {
+   "n": 8,
+   "label": null,
+   "expect": {
+    "label": "İnceleme ölçüm özeti",
+    "ok": true,
+    "value": {
+     "ma": {
+      "bugun": [
+       {
+        "swings": 18,
+        "starts": 11,
+        "resolved": 0,
+        "hitEnter": 6,
+        "stunEnter": 6,
+        "stamina": 99
+       },
+       {
+        "swings": 18,
+        "starts": 10,
+        "resolved": 0,
+        "hitEnter": 6,
+        "stunEnter": 6,
+        "stamina": 99
+       },
+       {
+        "swings": 18,
+        "starts": 11,
+        "resolved": 0,
+        "hitEnter": 6,
+        "stunEnter": 6,
+        "stamina": 99
+       }
+      ],
+      "k75": [
+       {
+        "swings": 18,
+        "starts": 10,
+        "resolved": 0,
+        "hitEnter": 6,
+        "stunEnter": 6,
+        "stamina": 99
+       },
+       {
+        "swings": 18,
+        "starts": 11,
+        "resolved": 0,
+        "hitEnter": 6,
+        "stunEnter": 6,
+        "stamina": 99
+       },
+       {
+        "swings": 18,
+        "starts": 11,
+        "resolved": 0,
+        "hitEnter": 6,
+        "stunEnter": 6,
+        "stamina": 99
+       }
+      ],
+      "k75_dr": [
+       {
+        "swings": 18,
+        "starts": 6,
+        "resolved": 2,
+        "hitEnter": 6,
+        "stunEnter": 3,
+        "stamina": 99
+       },
+       {
+        "swings": 18,
+        "starts": 6,
+        "resolved": 2,
+        "hitEnter": 6,
+        "stunEnter": 3,
+        "stamina": 99
+       },
+       {
+        "swings": 18,
+        "starts": 6,
+        "resolved": 2,
+        "hitEnter": 6,
+        "stunEnter": 3,
+        "stamina": 99
+       }
+      ]
+     },
+     "mb": {
+      "serpentHitPlayer": "undefined",
+      "hp0": 100,
+      "hpAtImpact": 100,
+      "hpAfter2s": 96.74,
+      "poison": 4.52,
+      "impactAt": 0.5
+     },
+     "mc": {
+      "gunduz_ayakta_0.5": {
+       "d": 12,
+       "night": false,
+       "t": 1.53,
+       "aw": 1.01
+      },
+      "gunduz_egilmis_0.5": {
+       "d": 12,
+       "night": false,
+       "t": 3.88,
+       "aw": 1.01
+      },
+      "gunduz_egilmis_0.6": {
+       "d": 14.4,
+       "night": false,
+       "t": null,
+       "aw": 0
+      },
+      "gece_mesalesiz_0.45": {
+       "d": 10.8,
+       "night": true,
+       "t": 4.73,
+       "aw": 1.01
+      },
+      "gece_mesaleli_1.1": {
+       "d": 26.4,
+       "night": true,
+       "t": 4.68,
+       "aw": 1.02
+      },
+      "gunduz_ayakta_0.7": {
+       "d": 16.8,
+       "night": false,
+       "t": 2.32,
+       "aw": 1.01
+      }
+     },
+     "md": {
+      "Spin2H*": 0.583,
+      "AtkStab": 0.483,
+      "Atk1": 0.35,
+      "Atk3": 0.433,
+      "Atk2": 0.367
+     }
+    }
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 6093,
+ "ms": 36993
+}

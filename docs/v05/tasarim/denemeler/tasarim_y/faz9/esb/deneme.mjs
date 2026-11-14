@@ -1,0 +1,13 @@
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const esbuild = require('esbuild');
+const base = { bundle: true, format: 'iife', minify: true, target: 'es2022', write: false, legalComments: 'none', logLevel: 'silent', charset: 'utf8' };
+const stub = { name: 'stub', setup(b) { b.onLoad({ filter: /[\\/]core[\\/]testmode\.js$/ }, () => ({ contents: 'export const TEST = false;', loader: 'js' })); } };
+const run = async (name, opts) => { try { const r = await esbuild.build({ ...base, ...opts }); const t = r.outputFiles[0].text; return { name, ok: true, warnings: r.warnings.map(w => w.id || w.text), bytes: t.length, text: t }; } catch (e) { return { name, ok: false, err: e.message.split('\n').slice(0,2).join(' | ') }; } };
+const out = [];
+let r = await run('test-derleme (stub yok)', { entryPoints: ['src/main.js'] }); out.push({ ...r, hasHooks: r.text?.includes('dk-test-kancalari-v1') }); delete out.at(-1).text;
+r = await run('uretim-derleme (stub)', { entryPoints: ['src/main.js'], plugins: [stub] }); out.push({ ...r, hasHooks: r.text?.includes('dk-test-kancalari-v1'), sample: r.text?.slice(0, 200) }); delete out.at(-1).text;
+r = await run('import.meta varsayilan', { entryPoints: ['src/meta.js'], logLevel: 'silent' }); out.push({ ...r, sample: r.text?.slice(0,120) }); delete out.at(-1).text;
+r = await run('import.meta logOverride error', { entryPoints: ['src/meta.js'], logOverride: { 'empty-import-meta': 'error' } }); out.push(r); delete out.at(-1).text;
+r = await run('strict banner', { entryPoints: ['src/strict.js'], banner: { js: '"use strict";' } }); out.push({ ...r, sample: r.text?.slice(0,120) }); delete out.at(-1).text;
+console.log(JSON.stringify(out, null, 1));

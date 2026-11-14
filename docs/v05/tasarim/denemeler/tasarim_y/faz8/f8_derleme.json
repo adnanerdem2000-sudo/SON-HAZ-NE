@@ -1,0 +1,400 @@
+{
+ "scenario": "/tmp/tasarim_y/faz8/f8_derleme.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "Sayfa hazır",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 2,
+   "label": null,
+   "result": "araclar-hazir"
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": {
+    "menu": {
+     "n": 86,
+     "cikisDogrusal": 43,
+     "cikisSRGB": 42,
+     "diger": 1,
+     "names": {
+      "": 73,
+      "woodBark": 1,
+      "leafsGreen": 1,
+      "colormap": 2,
+      "barbarian_texture": 3,
+      "dirt": 1,
+      "metalRed": 1,
+      "rogue_texture": 1,
+      "unspecified": 1,
+      "OutputShader": 1,
+      "FXAAShader": 1
+     }
+    },
+    "post": "medium"
+   }
+  },
+  {
+   "n": 4,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   }
+  },
+  {
+   "n": 7,
+   "label": null,
+   "result": {
+    "liman": {
+     "yeniProgram": 0,
+     "ilkKareMs": 11,
+     "ikinciKareMs": 9,
+     "toplamProgram": 95
+    },
+    "limanVaryant": {
+     "n": 95,
+     "cikisDogrusal": 52,
+     "cikisSRGB": 42,
+     "diger": 1,
+     "names": {
+      "": 80,
+      "woodBark": 1,
+      "leafsGreen": 1,
+      "colormap": 2,
+      "barbarian_texture": 3,
+      "dirt": 1,
+      "metalRed": 1,
+      "rogue_texture": 1,
+      "FXAAShader": 1,
+      "unspecified": 1,
+      "OutputShader": 1,
+      "texture": 1,
+      "Main": 1
+     }
+    }
+   }
+  },
+  {
+   "n": 8,
+   "label": null,
+   "result": {
+    "kadim_tapinak": {
+     "yeniProgram": 4,
+     "ilkKareMs": 290,
+     "ikinciKareMs": 14,
+     "toplamProgram": 99
+    },
+    "tuz_pazari": {
+     "yeniProgram": 5,
+     "ilkKareMs": 236,
+     "ikinciKareMs": 21,
+     "toplamProgram": 103
+    },
+    "ates_dagi": {
+     "yeniProgram": 3,
+     "ilkKareMs": 111,
+     "ikinciKareMs": 10,
+     "toplamProgram": 106
+    },
+    "demirkapi": {
+     "yeniProgram": 1,
+     "ilkKareMs": 72,
+     "ikinciKareMs": 29,
+     "toplamProgram": 108
+    },
+    "kurt_adasi": {
+     "yeniProgram": -2,
+     "ilkKareMs": 22,
+     "ikinciKareMs": 14,
+     "toplamProgram": 107
+    }
+   }
+  },
+  {
+   "n": 9,
+   "label": null,
+   "result": {
+    "dusman_haydut": {
+     "yeniProgram": 0,
+     "ilkKareMs": 45,
+     "ikinciKareMs": 30,
+     "toplamProgram": 108
+    },
+    "dusman_iskelet": {
+     "yeniProgram": 1,
+     "ilkKareMs": 113,
+     "ikinciKareMs": 16,
+     "toplamProgram": 109
+    },
+    "boss_tas": {
+     "yeniProgram": 1,
+     "ilkKareMs": 64,
+     "ikinciKareMs": 17,
+     "toplamProgram": 110
+    },
+    "boss_volkan": {
+     "yeniProgram": 0,
+     "ilkKareMs": 21,
+     "ikinciKareMs": 37,
+     "toplamProgram": 109
+    },
+    "efekt_lav": {
+     "yeniProgram": 2,
+     "ilkKareMs": 43,
+     "ikinciKareMs": 8,
+     "toplamProgram": 111
+    },
+    "hayvan_timsah": {
+     "yeniProgram": 0,
+     "ilkKareMs": 10,
+     "ikinciKareMs": 9,
+     "toplamProgram": 111
+    }
+   }
+  },
+  {
+   "n": 10,
+   "label": null,
+   "result": {
+    "gece": {
+     "yeniProgram": 0,
+     "ilkKareMs": 18,
+     "ikinciKareMs": 13,
+     "toplamProgram": 112
+    },
+    "mesaleAc": {
+     "yeniProgram": 17,
+     "ilkKareMs": 9992,
+     "ikinciKareMs": 226,
+     "toplamProgram": 129
+    },
+    "mesaleKapat": {
+     "yeniProgram": 0,
+     "ilkKareMs": 12,
+     "ikinciKareMs": 8,
+     "toplamProgram": 136
+    },
+    "mesaleTekrar": {
+     "yeniProgram": 2,
+     "ilkKareMs": 173,
+     "ikinciKareMs": 13,
+     "toplamProgram": 138
+    },
+    "isik": {
+     "point": 8,
+     "pointGorunur": 7,
+     "spot": 0,
+     "dir": 1,
+     "hemi": 1
+    }
+   }
+  },
+  {
+   "n": 11,
+   "label": null,
+   "result": {
+    "efektDusuk": {
+     "yeniProgram": 7,
+     "ilkKareMs": 377,
+     "ikinciKareMs": 18,
+     "toplamProgram": 145
+    },
+    "efektOrta": {
+     "yeniProgram": 0,
+     "ilkKareMs": 14,
+     "ikinciKareMs": 6,
+     "toplamProgram": 145
+    }
+   }
+  },
+  {
+   "n": 12,
+   "label": null,
+   "result": {
+    "liman": {
+     "yeniProgram": 0,
+     "ilkKareMs": 11,
+     "ikinciKareMs": 9,
+     "toplamProgram": 95
+    },
+    "limanVaryant": {
+     "n": 95,
+     "cikisDogrusal": 52,
+     "cikisSRGB": 42,
+     "diger": 1,
+     "names": {
+      "": 80,
+      "woodBark": 1,
+      "leafsGreen": 1,
+      "colormap": 2,
+      "barbarian_texture": 3,
+      "dirt": 1,
+      "metalRed": 1,
+      "rogue_texture": 1,
+      "FXAAShader": 1,
+      "unspecified": 1,
+      "OutputShader": 1,
+      "texture": 1,
+      "Main": 1
+     }
+    },
+    "adalar": {
+     "kadim_tapinak": {
+      "yeniProgram": 4,
+      "ilkKareMs": 290,
+      "ikinciKareMs": 14,
+      "toplamProgram": 99
+     },
+     "tuz_pazari": {
+      "yeniProgram": 5,
+      "ilkKareMs": 236,
+      "ikinciKareMs": 21,
+      "toplamProgram": 103
+     },
+     "ates_dagi": {
+      "yeniProgram": 3,
+      "ilkKareMs": 111,
+      "ikinciKareMs": 10,
+      "toplamProgram": 106
+     },
+     "demirkapi": {
+      "yeniProgram": 1,
+      "ilkKareMs": 72,
+      "ikinciKareMs": 29,
+      "toplamProgram": 108
+     },
+     "kurt_adasi": {
+      "yeniProgram": -2,
+      "ilkKareMs": 22,
+      "ikinciKareMs": 14,
+      "toplamProgram": 107
+     }
+    },
+    "icerik": {
+     "dusman_haydut": {
+      "yeniProgram": 0,
+      "ilkKareMs": 45,
+      "ikinciKareMs": 30,
+      "toplamProgram": 108
+     },
+     "dusman_iskelet": {
+      "yeniProgram": 1,
+      "ilkKareMs": 113,
+      "ikinciKareMs": 16,
+      "toplamProgram": 109
+     },
+     "boss_tas": {
+      "yeniProgram": 1,
+      "ilkKareMs": 64,
+      "ikinciKareMs": 17,
+      "toplamProgram": 110
+     },
+     "boss_volkan": {
+      "yeniProgram": 0,
+      "ilkKareMs": 21,
+      "ikinciKareMs": 37,
+      "toplamProgram": 109
+     },
+     "efekt_lav": {
+      "yeniProgram": 2,
+      "ilkKareMs": 43,
+      "ikinciKareMs": 8,
+      "toplamProgram": 111
+     },
+     "hayvan_timsah": {
+      "yeniProgram": 0,
+      "ilkKareMs": 10,
+      "ikinciKareMs": 9,
+      "toplamProgram": 111
+     }
+    },
+    "mesale": {
+     "gece": {
+      "yeniProgram": 0,
+      "ilkKareMs": 18,
+      "ikinciKareMs": 13,
+      "toplamProgram": 112
+     },
+     "mesaleAc": {
+      "yeniProgram": 17,
+      "ilkKareMs": 9992,
+      "ikinciKareMs": 226,
+      "toplamProgram": 129
+     },
+     "mesaleKapat": {
+      "yeniProgram": 0,
+      "ilkKareMs": 12,
+      "ikinciKareMs": 8,
+      "toplamProgram": 136
+     },
+     "mesaleTekrar": {
+      "yeniProgram": 2,
+      "ilkKareMs": 173,
+      "ikinciKareMs": 13,
+      "toplamProgram": 138
+     },
+     "isik": {
+      "point": 8,
+      "pointGorunur": 7,
+      "spot": 0,
+      "dir": 1,
+      "hemi": 1
+     }
+    },
+    "efekt": {
+     "efektDusuk": {
+      "yeniProgram": 7,
+      "ilkKareMs": 377,
+      "ikinciKareMs": 18,
+      "toplamProgram": 145
+     },
+     "efektOrta": {
+      "yeniProgram": 0,
+      "ilkKareMs": 14,
+      "ikinciKareMs": 6,
+      "toplamProgram": 145
+     }
+    }
+   }
+  },
+  {
+   "n": 13,
+   "label": null,
+   "expect": {
+    "label": "Oyun açık",
+    "ok": true,
+    "value": true
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 5226,
+ "ms": 91991
+}

@@ -1,0 +1,360 @@
+{
+ "scenario": "/tmp/tasarim_y/faz8/f8_volkan.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "Sayfa hazır",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 2,
+   "label": null,
+   "result": "araclar-hazir"
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   }
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": {
+    "oyuncu": [
+     2,
+     212
+    ],
+    "bossYeri": [
+     7700,
+     -900,
+     "ates_dagi"
+    ],
+    "uzaklikM": 7778,
+    "checkT": 0.08333333333333343
+   }
+  },
+  {
+   "n": 6,
+   "label": null,
+   "result": {
+    "dG": 1,
+    "fark": [
+     [
+      "BoxGeometry",
+      24,
+      "G|sahne:ship-sloop ~ Mesh<ship-sloop"
+     ]
+    ],
+    "cyc": [
+     {
+      "k": 0,
+      "checkT": 0.2,
+      "olcumdeEtkin": false,
+      "gOlcum": 755,
+      "g": 755,
+      "yeni": [
+       [
+        "BufferGeometry",
+        1217,
+        1,
+        "A|sahne:terrain ~ Mesh<terrain"
+       ],
+       [
+        "BufferGeometry",
+        1217,
+        1,
+        "A|sahne:terrain ~ Mesh<terrain"
+       ],
+       [
+        "BufferGeometry",
+        113,
+        1,
+        "A|sahne:terrain ~ Mesh<terrain"
+       ],
+       [
+        "BufferGeometry",
+        113,
+        1,
+        "A|sahne:terrain ~ Mesh<terrain"
+       ],
+       [
+        "BufferGeometry",
+        113,
+        1,
+        "A|sahne:terrain ~ Mesh<terrain"
+       ],
+       [
+        "BufferGeometry",
+        113,
+        1,
+        "A|sahne:terrain ~ Mesh<terrain"
+       ]
+      ]
+     },
+     {
+      "k": 1,
+      "checkT": 0.2,
+      "olcumdeEtkin": false,
+      "gOlcum": 755,
+      "g": 755,
+      "yeni": []
+     },
+     {
+      "k": 2,
+      "checkT": 0.2,
+      "olcumdeEtkin": false,
+      "gOlcum": 756,
+      "g": 756,
+      "yeni": [
+       [
+        "BoxGeometry",
+        24,
+        1,
+        "G|sahne:ship-sloop ~ Mesh<ship-sloop"
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "n": 7,
+   "label": null,
+   "expect": {
+    "label": "B yeniden üretim: ilk demon yüklemesi ısınmadan sonra → dG=5 (sızıntı değil)",
+    "ok": true,
+    "value": 5
+   }
+  },
+  {
+   "n": 8,
+   "label": null,
+   "result": {
+    "dG": 5,
+    "fark": [
+     [
+      "BufferGeometry",
+      2500,
+      "G|sahne:Group[Root_Scene] ~ Demon_1<Demon"
+     ],
+     [
+      "BufferGeometry",
+      761,
+      "G|sahne:Group[Root_Scene] ~ Demon_2<Demon"
+     ],
+     [
+      "BufferGeometry",
+      472,
+      "G|sahne:Group[Root_Scene] ~ Demon_3<Demon"
+     ],
+     [
+      "BufferGeometry",
+      42,
+      "G|sahne:Group[Root_Scene] ~ Demon_4<Demon"
+     ],
+     [
+      "BufferGeometry",
+      392,
+      "G|sahne:Group[Root_Scene] ~ Trident<RootNode"
+     ]
+    ],
+    "cyc": [
+     {
+      "k": 0,
+      "checkT": 0.2,
+      "olcumdeEtkin": false,
+      "gOlcum": 755,
+      "g": 755,
+      "yeni": [
+       [
+        "BufferGeometry",
+        1217,
+        1,
+        "A|sahne:terrain ~ Mesh<terrain"
+       ],
+       [
+        "BufferGeometry",
+        1217,
+        1,
+        "A|sahne:terrain ~ Mesh<terrain"
+       ],
+       [
+        "BufferGeometry",
+        1217,
+        1,
+        "A|sahne:terrain ~ Mesh<terrain"
+       ]
+      ]
+     },
+     {
+      "k": 1,
+      "checkT": 0.5,
+      "olcumdeEtkin": true,
+      "gOlcum": 760,
+      "g": 760,
+      "yeni": [
+       [
+        "BufferGeometry",
+        2500,
+        0,
+        "G|sahne:Group[Root_Scene] ~ Demon_1<Demon"
+       ],
+       [
+        "BufferGeometry",
+        761,
+        0,
+        "G|sahne:Group[Root_Scene] ~ Demon_2<Demon"
+       ],
+       [
+        "BufferGeometry",
+        472,
+        0,
+        "G|sahne:Group[Root_Scene] ~ Demon_3<Demon"
+       ],
+       [
+        "BufferGeometry",
+        42,
+        0,
+        "G|sahne:Group[Root_Scene] ~ Demon_4<Demon"
+       ],
+       [
+        "BufferGeometry",
+        392,
+        0,
+        "G|sahne:Group[Root_Scene] ~ Trident<RootNode"
+       ]
+      ]
+     },
+     {
+      "k": 2,
+      "checkT": 0.2,
+      "olcumdeEtkin": false,
+      "gOlcum": 760,
+      "g": 760,
+      "yeni": []
+     }
+    ]
+   }
+  },
+  {
+   "n": 9,
+   "label": null,
+   "expect": {
+    "label": "C düzeltilmiş döngü: boss her ölçümde etkin, dG=0, kalan kimlik yok",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 10,
+   "label": null,
+   "result": {
+    "dG": 0,
+    "fark": [],
+    "cyc": [
+     {
+      "k": 0,
+      "checkT": 1000000000,
+      "olcumdeEtkin": true,
+      "gOlcum": 751,
+      "g": 751,
+      "yeni": []
+     },
+     {
+      "k": 1,
+      "checkT": 1000000000,
+      "olcumdeEtkin": true,
+      "gOlcum": 751,
+      "g": 751,
+      "yeni": []
+     },
+     {
+      "k": 2,
+      "checkT": 1000000000,
+      "olcumdeEtkin": true,
+      "gOlcum": 751,
+      "g": 751,
+      "yeni": []
+     },
+     {
+      "k": 3,
+      "checkT": 1000000000,
+      "olcumdeEtkin": true,
+      "gOlcum": 751,
+      "g": 751,
+      "yeni": []
+     }
+    ]
+   }
+  },
+  {
+   "n": 11,
+   "label": null,
+   "result": {
+    "adim": 46,
+    "ucusLav": 1,
+    "isaretli": 1,
+    "clearSonrasiSahipsizLav": 1,
+    "geoOnce": 753,
+    "geo3snSonra": 753,
+    "yeniKalan": [
+     [
+      "CylinderGeometry",
+      64,
+      1,
+      "G|sahne:ship-sloop ~ Mesh<ship-sloop"
+     ]
+    ],
+    "sahnedeHalka": 0,
+    "atesHavuzu": 1
+   }
+  },
+  {
+   "n": 12,
+   "label": null,
+   "result": {
+    "halkaOnce": 0,
+    "halkaStartSonrasi": 3,
+    "kalan": [
+     "sahne",
+     "sahne",
+     "sahne"
+    ],
+    "shots": 0
+   }
+  },
+  {
+   "n": 13,
+   "label": null,
+   "expect": {
+    "label": "Oyun açık",
+    "ok": true,
+    "value": true
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 5215,
+ "ms": 40266
+}

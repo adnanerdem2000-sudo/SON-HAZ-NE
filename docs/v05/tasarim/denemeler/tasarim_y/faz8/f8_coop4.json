@@ -1,0 +1,721 @@
+{
+ "scenario": "/tmp/tasarim_y/faz8/f8_coop4.cjs",
+ "players": 4,
+ "checks": [
+  {
+   "label": "C8-01 oyuncular oyunda (ölçüm koşulu)",
+   "ok": true,
+   "detail": {
+    "states": [
+     "playing",
+     "playing",
+     "playing",
+     "playing"
+    ],
+    "remotes": [
+     3,
+     3,
+     3,
+     3
+    ]
+   }
+  },
+  {
+   "label": "C8-02 ölçüm alındı",
+   "ok": true,
+   "detail": {
+    "meas": [
+     {
+      "rol": "host",
+      "calls": 1121,
+      "tris": 1260770,
+      "mainCalls": 789,
+      "shadowCalls": 316,
+      "progs": 96,
+      "simMs": 2.4,
+      "per": {
+       "fish": 0.988,
+       "animals": 0.4,
+       "ships": 0.233,
+       "npcs": 0.172,
+       "details": 0.13,
+       "player": 0.11,
+       "_env": 0.067,
+       "megafauna": 0.062,
+       "interact": 0.035,
+       "time": 0.035,
+       "_camera": 0.035,
+       "enemies": 0.028,
+       "crowd": 0.015,
+       "effects": 0.01,
+       "islands": 0.01,
+       "weatherfx": 0.007,
+       "combat": 0.005,
+       "events": 0.005,
+       "seagear": 0.005,
+       "quests": 0.003,
+       "shipControl": 0.003,
+       "hazards": 0.003,
+       "progress": 0.002,
+       "worldEvents": 0.002,
+       "bodies": 0,
+       "bosses": 0,
+       "treasure": 0,
+       "fishing": 0
+      },
+      "uzak": 3,
+      "hayvan": 27,
+      "dusman": 0,
+      "tx": {
+       "n": 228,
+       "b": 543279,
+       "byT": {
+        "snap": 543279
+       }
+      },
+      "groups": [
+       [
+        "hayvan",
+        313,
+        33376,
+        20,
+        18120
+       ],
+       [
+        "npc",
+        59,
+        37284,
+        100,
+        42766
+       ],
+       [
+        "sahne:port-batched",
+        43,
+        5264,
+        64,
+        11156
+       ],
+       [
+        "uzak_oyuncu",
+        25,
+        13709,
+        42,
+        17127
+       ],
+       [
+        "sahne:Group",
+        51,
+        2890,
+        4,
+        188
+       ],
+       [
+        "arazi",
+        47,
+        219584,
+        5,
+        67200
+       ],
+       [
+        "gemi_oyuncu",
+        0,
+        0,
+        37,
+        4344
+       ],
+       [
+        "cekirdek_bitki(I)",
+        26,
+        303164,
+        10,
+        169894
+       ],
+       [
+        "sahne:Group[rock_tallA]",
+        36,
+        1632,
+        0,
+        0
+       ],
+       [
+        "oyuncu",
+        16,
+        5845,
+        14,
+        5709
+       ],
+       [
+        "sahne:Mesh",
+        30,
+        3257,
+        0,
+        0
+       ],
+       [
+        "balikci_karakter",
+        12,
+        8308,
+        12,
+        8308
+       ],
+       [
+        "sahne:Group[statue_columnDamag]",
+        20,
+        1080,
+        0,
+        0
+       ],
+       [
+        "sahne:Group[statue_column]",
+        18,
+        732,
+        0,
+        0
+       ],
+       [
+        "detay:collectibles",
+        16,
+        844,
+        0,
+        0
+       ],
+       [
+        "son_isleme",
+        16,
+        16,
+        0,
+        0
+       ]
+      ],
+      "scan": {
+       "med": 767,
+       "max": 1121
+      },
+      "txKBps": 135
+     },
+     {
+      "rol": "konuk",
+      "calls": 1181,
+      "tris": 1257820,
+      "mainCalls": 824,
+      "shadowCalls": 341,
+      "progs": 96,
+      "simMs": 2.88,
+      "per": {
+       "fish": 1.078,
+       "animals": 0.485,
+       "weatherfx": 0.337,
+       "npcs": 0.237,
+       "details": 0.222,
+       "player": 0.097,
+       "_env": 0.078,
+       "interact": 0.043,
+       "crowd": 0.032,
+       "time": 0.03,
+       "megafauna": 0.023,
+       "_camera": 0.023,
+       "islands": 0.008,
+       "effects": 0.007,
+       "enemies": 0.005,
+       "hazards": 0.005,
+       "combat": 0.003,
+       "quests": 0.003,
+       "events": 0.003,
+       "bosses": 0.002,
+       "worldEvents": 0.002,
+       "treasure": 0.002,
+       "seagear": 0.002,
+       "shipControl": 0,
+       "bodies": 0,
+       "fishing": 0,
+       "progress": 0
+      },
+      "uzak": 3,
+      "hayvan": 27,
+      "dusman": 0,
+      "tx": {
+       "n": 76,
+       "b": 16188,
+       "byT": {
+        "st": 16188
+       }
+      },
+      "groups": [
+       [
+        "hayvan",
+        313,
+        33376,
+        20,
+        18120
+       ],
+       [
+        "npc",
+        66,
+        37934,
+        100,
+        42766
+       ],
+       [
+        "sahne:port-batched",
+        45,
+        5290,
+        64,
+        11156
+       ],
+       [
+        "uzak_oyuncu",
+        51,
+        17541,
+        42,
+        17127
+       ],
+       [
+        "gemi_oyuncu",
+        0,
+        0,
+        62,
+        5368
+       ],
+       [
+        "sahne:Group",
+        51,
+        2890,
+        4,
+        188
+       ],
+       [
+        "arazi",
+        46,
+        219392,
+        5,
+        67200
+       ],
+       [
+        "cekirdek_bitki(I)",
+        26,
+        303164,
+        10,
+        169894
+       ],
+       [
+        "sahne:Group[rock_tallA]",
+        36,
+        1632,
+        0,
+        0
+       ],
+       [
+        "oyuncu",
+        16,
+        5845,
+        14,
+        5709
+       ],
+       [
+        "sahne:Mesh",
+        30,
+        3257,
+        0,
+        0
+       ],
+       [
+        "balikci_karakter",
+        12,
+        8308,
+        12,
+        8308
+       ],
+       [
+        "sahne:Group[statue_columnDamag]",
+        20,
+        1080,
+        0,
+        0
+       ],
+       [
+        "sahne:Group[statue_column]",
+        18,
+        732,
+        0,
+        0
+       ],
+       [
+        "detay:collectibles",
+        16,
+        844,
+        0,
+        0
+       ],
+       [
+        "son_isleme",
+        16,
+        16,
+        0,
+        0
+       ]
+      ],
+      "scan": {
+       "med": 811,
+       "max": 1181
+      },
+      "txKBps": 4
+     },
+     {
+      "rol": "konuk",
+      "calls": 1188,
+      "tris": 1258838,
+      "mainCalls": 823,
+      "shadowCalls": 349,
+      "progs": 96,
+      "simMs": 3.27,
+      "per": {
+       "fish": 1.465,
+       "animals": 0.283,
+       "npcs": 0.262,
+       "_env": 0.2,
+       "details": 0.198,
+       "time": 0.112,
+       "player": 0.107,
+       "_camera": 0.045,
+       "progress": 0.037,
+       "interact": 0.037,
+       "weatherfx": 0.032,
+       "crowd": 0.027,
+       "megafauna": 0.02,
+       "quests": 0.013,
+       "effects": 0.012,
+       "treasure": 0.012,
+       "enemies": 0.01,
+       "shipControl": 0.007,
+       "seagear": 0.005,
+       "fishing": 0.003,
+       "islands": 0.003,
+       "combat": 0.002,
+       "worldEvents": 0.002,
+       "bodies": 0.002,
+       "events": 0.002,
+       "hazards": 0,
+       "bosses": 0
+      },
+      "uzak": 3,
+      "hayvan": 27,
+      "dusman": 0,
+      "tx": {
+       "n": 76,
+       "b": 16416,
+       "byT": {
+        "st": 16416
+       }
+      },
+      "groups": [
+       [
+        "hayvan",
+        313,
+        33376,
+        20,
+        18120
+       ],
+       [
+        "npc",
+        66,
+        37934,
+        100,
+        42766
+       ],
+       [
+        "sahne:port-batched",
+        47,
+        5316,
+        64,
+        11156
+       ],
+       [
+        "uzak_oyuncu",
+        51,
+        17541,
+        42,
+        17127
+       ],
+       [
+        "gemi_oyuncu",
+        0,
+        0,
+        70,
+        5680
+       ],
+       [
+        "sahne:Group",
+        51,
+        2890,
+        4,
+        188
+       ],
+       [
+        "arazi",
+        44,
+        219008,
+        5,
+        67200
+       ],
+       [
+        "cekirdek_bitki(I)",
+        26,
+        303164,
+        10,
+        169894
+       ],
+       [
+        "sahne:Group[rock_tallA]",
+        36,
+        1632,
+        0,
+        0
+       ],
+       [
+        "oyuncu",
+        16,
+        5845,
+        14,
+        5709
+       ],
+       [
+        "sahne:Mesh",
+        30,
+        3257,
+        0,
+        0
+       ],
+       [
+        "balikci_karakter",
+        12,
+        8308,
+        12,
+        8308
+       ],
+       [
+        "sahne:Group[statue_columnDamag]",
+        20,
+        1080,
+        0,
+        0
+       ],
+       [
+        "sahne:Group[statue_column]",
+        18,
+        732,
+        0,
+        0
+       ],
+       [
+        "detay:collectibles",
+        16,
+        844,
+        0,
+        0
+       ],
+       [
+        "son_isleme",
+        16,
+        16,
+        0,
+        0
+       ]
+      ],
+      "scan": {
+       "med": 804,
+       "max": 1187
+      },
+      "txKBps": 4.1
+     },
+     {
+      "rol": "konuk",
+      "calls": 1193,
+      "tris": 1249168,
+      "mainCalls": 826,
+      "shadowCalls": 351,
+      "progs": 96,
+      "simMs": 2.09,
+      "per": {
+       "fish": 0.623,
+       "npcs": 0.297,
+       "interact": 0.152,
+       "details": 0.145,
+       "animals": 0.132,
+       "_env": 0.098,
+       "_camera": 0.078,
+       "player": 0.065,
+       "megafauna": 0.032,
+       "weatherfx": 0.03,
+       "islands": 0.018,
+       "time": 0.013,
+       "crowd": 0.012,
+       "combat": 0.008,
+       "enemies": 0.007,
+       "effects": 0.007,
+       "seagear": 0.003,
+       "events": 0.003,
+       "quests": 0.003,
+       "shipControl": 0.003,
+       "treasure": 0.003,
+       "fishing": 0.003,
+       "hazards": 0.002,
+       "bodies": 0.002,
+       "bosses": 0.002,
+       "worldEvents": 0.002,
+       "progress": 0
+      },
+      "uzak": 3,
+      "hayvan": 27,
+      "dusman": 0,
+      "tx": {
+       "n": 76,
+       "b": 16416,
+       "byT": {
+        "st": 16416
+       }
+      },
+      "groups": [
+       [
+        "hayvan",
+        313,
+        33376,
+        20,
+        18120
+       ],
+       [
+        "npc",
+        66,
+        37934,
+        100,
+        42766
+       ],
+       [
+        "sahne:port-batched",
+        47,
+        5316,
+        64,
+        11156
+       ],
+       [
+        "uzak_oyuncu",
+        51,
+        17541,
+        42,
+        17127
+       ],
+       [
+        "gemi_oyuncu",
+        0,
+        0,
+        72,
+        5864
+       ],
+       [
+        "sahne:Group",
+        51,
+        2890,
+        4,
+        188
+       ],
+       [
+        "arazi",
+        44,
+        219008,
+        5,
+        67200
+       ],
+       [
+        "cekirdek_bitki(I)",
+        26,
+        303164,
+        10,
+        169894
+       ],
+       [
+        "sahne:Group[rock_tallA]",
+        36,
+        1632,
+        0,
+        0
+       ],
+       [
+        "oyuncu",
+        16,
+        5845,
+        14,
+        5709
+       ],
+       [
+        "sahne:Mesh",
+        30,
+        3257,
+        0,
+        0
+       ],
+       [
+        "balikci_karakter",
+        12,
+        8308,
+        12,
+        8308
+       ],
+       [
+        "sahne:Group[statue_columnDamag]",
+        20,
+        1080,
+        0,
+        0
+       ],
+       [
+        "sahne:Group[statue_column]",
+        18,
+        732,
+        0,
+        0
+       ],
+       [
+        "detay:collectibles",
+        17,
+        860,
+        0,
+        0
+       ],
+       [
+        "son_isleme",
+        16,
+        16,
+        0,
+        0
+       ]
+      ],
+      "scan": {
+       "med": 815,
+       "max": 1193
+      },
+      "txKBps": 4.1
+     }
+    ],
+    "au": {
+     "coop": 0.058,
+     "tek": 0.057,
+     "hayvan": 27
+    },
+    "sure": 3.931
+   }
+  }
+ ],
+ "errors": {
+  "Kaptan": [],
+  "Tayfa": [],
+  "Lostromo": [],
+  "Topçu": []
+ },
+ "pageErrors": {
+  "Kaptan": [],
+  "Tayfa": [],
+  "Lostromo": [],
+  "Topçu": []
+ },
+ "fails": 0,
+ "ms": 406248
+}

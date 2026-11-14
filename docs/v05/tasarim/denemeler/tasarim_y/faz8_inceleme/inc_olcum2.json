@@ -1,0 +1,442 @@
+{
+ "scenario": "/tmp/tasarim_y/faz8_inceleme/inc_olcum2.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "Sayfa hazır",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 2,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 3,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   }
+  },
+  {
+   "n": 4,
+   "label": null,
+   "result": {
+    "noktaIsik": 7,
+    "saat": 8.53833333333334
+   }
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": [
+    {
+     "ad": "Yaşlı Kaptan Tuzla",
+     "orgu": 29,
+     "gorunur": 22,
+     "iskeletli": 6,
+     "golgeAtan": 24,
+     "malzeme": 24,
+     "doku": 2,
+     "iskeletSayisi": 6,
+     "iskeletliAdlar": [
+      "Barbarian_ArmLeft",
+      "Barbarian_ArmRight",
+      "Barbarian_Body",
+      "Barbarian_Head",
+      "Barbarian_LegLeft",
+      "Barbarian_LegRight"
+     ]
+    },
+    {
+     "ad": "Haritacı Nevra",
+     "orgu": 15,
+     "gorunur": 9,
+     "iskeletli": 6,
+     "golgeAtan": 13,
+     "malzeme": 15,
+     "doku": 2,
+     "iskeletSayisi": 6,
+     "iskeletliAdlar": [
+      "Mage_ArmLeft",
+      "Mage_ArmRight",
+      "Mage_Body",
+      "Mage_Head",
+      "Mage_LegLeft",
+      "Mage_LegRight"
+     ]
+    },
+    {
+     "ad": "Demirci Kara Ali",
+     "orgu": 14,
+     "gorunur": 7,
+     "iskeletli": 6,
+     "golgeAtan": 14,
+     "malzeme": 14,
+     "doku": 2,
+     "iskeletSayisi": 6,
+     "iskeletliAdlar": [
+      "Barbarian_ArmLeft",
+      "Barbarian_ArmRight",
+      "Barbarian_Body",
+      "Barbarian_Head",
+      "Barbarian_LegLeft",
+      "Barbarian_LegRight"
+     ]
+    },
+    {
+     "ad": "Terzi Lale",
+     "orgu": 19,
+     "gorunur": 13,
+     "iskeletli": 6,
+     "golgeAtan": 16,
+     "malzeme": 16,
+     "doku": 2,
+     "iskeletSayisi": 6,
+     "iskeletliAdlar": [
+      "Rogue_ArmLeft",
+      "Rogue_ArmRight",
+      "Rogue_Body",
+      "Rogue_Head",
+      "Rogue_LegLeft",
+      "Rogue_LegRight"
+     ]
+    },
+    {
+     "ad": "Tüccar Rıza",
+     "orgu": 27,
+     "gorunur": 18,
+     "iskeletli": 6,
+     "golgeAtan": 23,
+     "malzeme": 23,
+     "doku": 2,
+     "iskeletSayisi": 6,
+     "iskeletliAdlar": [
+      "Knight_ArmLeft",
+      "Knight_ArmRight",
+      "Knight_Body",
+      "Knight_Head",
+      "Knight_LegLeft",
+      "Knight_LegRight"
+     ]
+    },
+    {
+     "ad": "Sedef Hanım",
+     "orgu": 28,
+     "gorunur": 23,
+     "iskeletli": 6,
+     "golgeAtan": 23,
+     "malzeme": 24,
+     "doku": 2,
+     "iskeletSayisi": 6,
+     "iskeletliAdlar": [
+      "Rogue_ArmLeft",
+      "Rogue_ArmRight",
+      "Rogue_Body",
+      "Rogue_Head",
+      "Rogue_LegLeft",
+      "Rogue_LegRight"
+     ]
+    },
+    {
+     "ad": "Balıkçı Yusuf",
+     "orgu": 18,
+     "gorunur": 11,
+     "iskeletli": 6,
+     "golgeAtan": 17,
+     "malzeme": 15,
+     "doku": 2,
+     "iskeletSayisi": 6,
+     "iskeletliAdlar": [
+      "Barbarian_ArmLeft",
+      "Barbarian_ArmRight",
+      "Barbarian_Body",
+      "Barbarian_Head",
+      "Barbarian_LegLeft",
+      "Barbarian_LegRight"
+     ]
+    },
+    {
+     "ad": "Usta Bora",
+     "orgu": 14,
+     "gorunur": 7,
+     "iskeletli": 6,
+     "golgeAtan": 14,
+     "malzeme": 14,
+     "doku": 2,
+     "iskeletSayisi": 6,
+     "iskeletliAdlar": [
+      "Barbarian_ArmLeft",
+      "Barbarian_ArmRight",
+      "Barbarian_Body",
+      "Barbarian_Head",
+      "Barbarian_LegLeft",
+      "Barbarian_LegRight"
+     ]
+    },
+    {
+     "ad": "Zarcı Kemal",
+     "orgu": 18,
+     "gorunur": 11,
+     "iskeletli": 6,
+     "golgeAtan": 17,
+     "malzeme": 15,
+     "doku": 2,
+     "iskeletSayisi": 6,
+     "iskeletliAdlar": [
+      "Barbarian_ArmLeft",
+      "Barbarian_ArmRight",
+      "Barbarian_Body",
+      "Barbarian_Head",
+      "Barbarian_LegLeft",
+      "Barbarian_LegRight"
+     ]
+    }
+   ]
+  },
+  {
+   "n": 6,
+   "label": null,
+   "result": {
+    "yengec": 5,
+    "kokBulunan": 5,
+    "uzaklikM": [
+     172,
+     158,
+     173,
+     131,
+     156
+    ],
+    "once": {
+     "calls": 1024,
+     "tris": 1261942,
+     "shadowCalls": 246,
+     "shadowTris": 368947
+    },
+    "sonra": {
+     "calls": 984,
+     "tris": 1225702,
+     "shadowCalls": 226,
+     "shadowTris": 350827
+    }
+   }
+  },
+  {
+   "n": 7,
+   "label": null,
+   "result": {
+    "d99": 282,
+    "paylar": [
+     {
+      "kamera": [
+       -850,
+       0
+      ],
+      "pay": 1.15,
+      "gizlenen": 122,
+      "fark": {
+       "ort": 0.009,
+       "p8": 36,
+       "p3": 315,
+       "enCok": 27
+      }
+     },
+     {
+      "kamera": [
+       -850,
+       0
+      ],
+      "pay": 1.5,
+      "gizlenen": 119,
+      "fark": {
+       "ort": 0.004,
+       "p8": 36,
+       "p3": 92,
+       "enCok": 27
+      }
+     },
+     {
+      "kamera": [
+       -850,
+       0
+      ],
+      "pay": 2,
+      "gizlenen": 110,
+      "fark": {
+       "ort": 0.004,
+       "p8": 27,
+       "p3": 61,
+       "enCok": 27
+      }
+     },
+     {
+      "kamera": [
+       -850,
+       0
+      ],
+      "pay": 3,
+      "gizlenen": 94,
+      "fark": {
+       "ort": 0,
+       "p8": 1,
+       "p3": 1,
+       "enCok": 27
+      }
+     },
+     {
+      "kamera": [
+       -700,
+       -300
+      ],
+      "pay": 1.15,
+      "gizlenen": 118,
+      "fark": {
+       "ort": 0.005,
+       "p8": 37,
+       "p3": 107,
+       "enCok": 25
+      }
+     },
+     {
+      "kamera": [
+       -700,
+       -300
+      ],
+      "pay": 1.5,
+      "gizlenen": 114,
+      "fark": {
+       "ort": 0.004,
+       "p8": 18,
+       "p3": 70,
+       "enCok": 19
+      }
+     },
+     {
+      "kamera": [
+       -700,
+       -300
+      ],
+      "pay": 2,
+      "gizlenen": 106,
+      "fark": {
+       "ort": 0.002,
+       "p8": 9,
+       "p3": 49,
+       "enCok": 19
+      }
+     },
+     {
+      "kamera": [
+       -700,
+       -300
+      ],
+      "pay": 3,
+      "gizlenen": 91,
+      "fark": {
+       "ort": 0,
+       "p8": 0,
+       "p3": 1,
+       "enCok": 4
+      }
+     }
+    ]
+   }
+  },
+  {
+   "n": 8,
+   "label": null,
+   "result": {
+    "npcSayisi": 9,
+    "kuruluAdalar": [],
+    "per": [
+     [
+      "npc:Yaşlı Kaptan Tuzla",
+      22,
+      6
+     ],
+     [
+      "npc:Haritacı Nevra",
+      9,
+      6
+     ],
+     [
+      "npc:Demirci Kara Ali",
+      7,
+      6
+     ],
+     [
+      "npc:Terzi Lale",
+      13,
+      6
+     ],
+     [
+      "npc:Tüccar Rıza",
+      18,
+      6
+     ],
+     [
+      "npc:Sedef Hanım",
+      23,
+      7
+     ],
+     [
+      "npc:Balıkçı Yusuf",
+      11,
+      6
+     ],
+     [
+      "npc:Usta Bora",
+      7,
+      6
+     ],
+     [
+      "npc:Zarcı Kemal",
+      11,
+      6
+     ],
+     [
+      "balikci0",
+      11,
+      6
+     ],
+     [
+      "balikci1",
+      11,
+      6
+     ],
+     [
+      "oyuncu",
+      16,
+      14
+     ]
+    ]
+   }
+  },
+  {
+   "n": 9,
+   "label": null,
+   "expect": {
+    "label": "Oyun açık",
+    "ok": true,
+    "value": true
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 4820,
+ "ms": 56449
+}

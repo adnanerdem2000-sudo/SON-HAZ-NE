@@ -1,0 +1,209 @@
+{
+ "scenario": "/tmp/tasarim_y/faz8_inceleme/inc_olcum.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "Sayfa hazır",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 2,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 3,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   }
+  },
+  {
+   "n": 4,
+   "label": null,
+   "result": {
+    "npc": 9,
+    "balikci": 2
+   }
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": {
+    "v09_once": {
+     "top": 1036,
+     "golge": 258,
+     "karakterAna": 87,
+     "karakterGolge": 126
+    },
+    "v09_sonra": {
+     "top": 969,
+     "golge": 246,
+     "karakterAna": 32,
+     "karakterGolge": 114
+    },
+    "yon": [
+     {
+      "yaw": 0,
+      "once": {
+       "top": 588,
+       "golge": 258,
+       "karakterAna": 88,
+       "karakterGolge": 126
+      },
+      "sonra": {
+       "top": 515,
+       "golge": 246,
+       "karakterAna": 27,
+       "karakterGolge": 114
+      }
+     },
+     {
+      "yaw": 1.57,
+      "once": {
+       "top": 667,
+       "golge": 258,
+       "karakterAna": 114,
+       "karakterGolge": 126
+      },
+      "sonra": {
+       "top": 624,
+       "golge": 246,
+       "karakterAna": 83,
+       "karakterGolge": 114
+      }
+     },
+     {
+      "yaw": 3.14,
+      "once": {
+       "top": 1042,
+       "golge": 258,
+       "karakterAna": 87,
+       "karakterGolge": 126
+      },
+      "sonra": {
+       "top": 975,
+       "golge": 246,
+       "karakterAna": 32,
+       "karakterGolge": 114
+      }
+     },
+     {
+      "yaw": -1.57,
+      "once": {
+       "top": 681,
+       "golge": 258,
+       "karakterAna": 123,
+       "karakterGolge": 126
+      },
+      "sonra": {
+       "top": 627,
+       "golge": 246,
+       "karakterAna": 81,
+       "karakterGolge": 114
+      }
+     }
+    ]
+   }
+  },
+  {
+   "n": 6,
+   "label": null,
+   "result": {
+    "hava": "firtina",
+    "yogunluk": 0.0076,
+    "d99": 282,
+    "gizlenenKaro": 122,
+    "gurultu": {
+     "ortMutlak": 0,
+     "pikselYuzde8": 0,
+     "pikselYuzde3": 0,
+     "enCok": 0
+    },
+    "fark": {
+     "ortMutlak": 0.009,
+     "pikselYuzde8": 0.015,
+     "pikselYuzde3": 0.137,
+     "enCok": 27
+    }
+   }
+  },
+  {
+   "n": 7,
+   "label": null,
+   "result": {
+    "hava": "acik",
+    "yogunluk": 0.0011,
+    "d99": 1951,
+    "gizlenenKaro": 74,
+    "fark": {
+     "ortMutlak": 0,
+     "pikselYuzde8": 0,
+     "pikselYuzde3": 0.003,
+     "enCok": 5
+    }
+   }
+  },
+  {
+   "n": 8,
+   "label": null,
+   "result": {
+    "limanaUzaklik": 2923,
+    "varsayilanKamera": {
+     "once": {
+      "top": 893,
+      "golge": 81,
+      "karakterAna": 159,
+      "karakterGolge": 81
+     },
+     "sonra": {
+      "top": 826,
+      "golge": 14,
+      "karakterAna": 159,
+      "karakterGolge": 14
+     }
+    },
+    "limanaBakan": {
+     "once": {
+      "top": 879,
+      "golge": 81,
+      "karakterAna": 149,
+      "karakterGolge": 81
+     },
+     "sonra": {
+      "top": 806,
+      "golge": 14,
+      "karakterAna": 143,
+      "karakterGolge": 14
+     }
+    }
+   }
+  },
+  {
+   "n": 9,
+   "label": null,
+   "expect": {
+    "label": "Oyun açık",
+    "ok": true,
+    "value": true
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 5065,
+ "ms": 93643
+}

@@ -1,0 +1,1287 @@
+{
+ "scenario": "/tmp/tasarim_y/faz8/f8_09tani.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "Sayfa hazır",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 2,
+   "label": null,
+   "result": "araclar-hazir"
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": {
+    "tag": "menu",
+    "calls": 422,
+    "tris": 853502,
+    "geos": 228,
+    "texs": 137,
+    "progs": 86,
+    "heapMB": 98,
+    "simMsPerFrame": 0.54
+   }
+  },
+  {
+   "n": 4,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 5,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   }
+  },
+  {
+   "n": 6,
+   "label": null,
+   "result": {
+    "tag": "liman",
+    "calls": 1023,
+    "tris": 1248688,
+    "geos": 753,
+    "texs": 200,
+    "progs": 95,
+    "heapMB": 118,
+    "simMsPerFrame": 1.5
+   }
+  },
+  {
+   "n": 7,
+   "label": null,
+   "expect": {
+    "label": "Orman adası (Kadim Tapınak) içeriği kuruldu",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 8,
+   "label": null,
+   "result": {
+    "tag": "orman_adasi",
+    "calls": 308,
+    "tris": 608940,
+    "geos": 400,
+    "texs": 180,
+    "progs": 95,
+    "heapMB": 144,
+    "simMsPerFrame": 1.75,
+    "built": true,
+    "prepMs": 573,
+    "buildLoopMs": 183
+   }
+  },
+  {
+   "n": 9,
+   "label": null,
+   "result": {
+    "tag": "firtina",
+    "calls": 320,
+    "tris": 692788,
+    "geos": 402,
+    "texs": 181,
+    "progs": 97,
+    "heapMB": 109,
+    "simMsPerFrame": 1.03
+   }
+  },
+  {
+   "n": 10,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 11,
+   "label": null,
+   "result": {
+    "tag": "boss_kraken",
+    "calls": 386,
+    "tris": 716852,
+    "geos": 481,
+    "texs": 181,
+    "progs": 98,
+    "heapMB": 110,
+    "simMsPerFrame": 0.94,
+    "bossAlive": true
+   }
+  },
+  {
+   "n": 12,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 13,
+   "label": null,
+   "result": {
+    "before": {
+     "g": 480,
+     "t": 181
+    },
+    "after": {
+     "g": 480,
+     "t": 181
+    },
+    "cycles": [
+     {
+      "built": 483,
+      "dropped": 483,
+      "tex": 181
+     },
+     {
+      "built": 483,
+      "dropped": 483,
+      "tex": 181
+     },
+     {
+      "built": 483,
+      "dropped": 483,
+      "tex": 181
+     }
+    ]
+   }
+  },
+  {
+   "n": 14,
+   "label": null,
+   "result": [
+    {
+     "kind": "boar",
+     "zone": "z0",
+     "zx": -60,
+     "zz": 40,
+     "dG": 0,
+     "dT": 0
+    },
+    {
+     "kind": "croc",
+     "zone": "z4",
+     "zx": -150,
+     "zz": 70,
+     "dG": 0,
+     "dT": 0
+    },
+    {
+     "kind": "snake",
+     "zone": "z8",
+     "zx": -80,
+     "zz": -40,
+     "dG": 0,
+     "dT": 0
+    },
+    {
+     "kind": "bat",
+     "zone": "bats",
+     "zx": 160,
+     "zz": -82,
+     "dG": 0,
+     "dT": 0
+    }
+   ]
+  },
+  {
+   "n": 15,
+   "label": null,
+   "result": {
+    "dG": 0,
+    "dT": 0
+   }
+  },
+  {
+   "n": 16,
+   "label": null,
+   "result": {
+    "t": 14.9,
+    "eventT": 91.7,
+    "floats": 0,
+    "enemyShip": false,
+    "animals": 0,
+    "aktifBolge": "",
+    "enemies": 0,
+    "shots": 0,
+    "mega": "",
+    "schools": 13,
+    "islands": "kadim_tapinak",
+    "job": null,
+    "tiles": 157,
+    "ships": 1,
+    "spouts": 0,
+    "camPos": [
+     2310,
+     7404
+    ],
+    "player": [
+     2310,
+     7400
+    ]
+   }
+  },
+  {
+   "n": 17,
+   "label": null,
+   "result": {
+    "loot": {
+     "dG": 0,
+     "dT": 0
+    },
+    "ship": {
+     "dG": 0,
+     "dT": 0
+    },
+    "kraken": {
+     "dG": 0,
+     "dT": 0
+    },
+    "tas": {
+     "dG": 0,
+     "dT": 0
+    },
+    "volkan": {
+     "dG": 0,
+     "dT": 0,
+     "fark": []
+    },
+    "volkanEk": {
+     "dG": 5,
+     "fark": [
+      [
+       "BufferGeometry",
+       2500,
+       0,
+       "G|sahne:Group[Root_Scene] ~ Demon_1<Demon"
+      ],
+      [
+       "BufferGeometry",
+       761,
+       0,
+       "G|sahne:Group[Root_Scene] ~ Demon_2<Demon"
+      ],
+      [
+       "BufferGeometry",
+       472,
+       0,
+       "G|sahne:Group[Root_Scene] ~ Demon_3<Demon"
+      ],
+      [
+       "BufferGeometry",
+       42,
+       0,
+       "G|sahne:Group[Root_Scene] ~ Demon_4<Demon"
+      ],
+      [
+       "BufferGeometry",
+       392,
+       0,
+       "G|sahne:Group[Root_Scene] ~ Trident<RootNode"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "n": 18,
+   "label": null,
+   "result": {
+    "dG": 0,
+    "dT": 0,
+    "farkKimlik": [],
+    "cyc": [
+     {
+      "k": 0,
+      "g": 510,
+      "t": 184,
+      "yeniKalan": 0,
+      "kimlik": [],
+      "shotsMid": 0,
+      "W": {
+       "t": 19.2,
+       "eventT": 87.4,
+       "floats": 0,
+       "enemyShip": false,
+       "animals": 0,
+       "aktifBolge": "",
+       "enemies": 0,
+       "shots": 0,
+       "mega": "",
+       "schools": 16,
+       "islands": "kadim_tapinak",
+       "job": null,
+       "tiles": 157,
+       "ships": 1,
+       "spouts": 0,
+       "camPos": [
+        2310,
+        7404
+       ],
+       "player": [
+        2310,
+        7400
+       ]
+      }
+     },
+     {
+      "k": 1,
+      "g": 510,
+      "t": 184,
+      "yeniKalan": 0,
+      "kimlik": [],
+      "shotsMid": 0,
+      "W": {
+       "t": 19.9,
+       "eventT": 86.7,
+       "floats": 0,
+       "enemyShip": false,
+       "animals": 0,
+       "aktifBolge": "",
+       "enemies": 0,
+       "shots": 0,
+       "mega": "",
+       "schools": 16,
+       "islands": "kadim_tapinak",
+       "job": null,
+       "tiles": 157,
+       "ships": 1,
+       "spouts": 0,
+       "camPos": [
+        2310,
+        7404
+       ],
+       "player": [
+        2310,
+        7400
+       ]
+      }
+     },
+     {
+      "k": 2,
+      "g": 510,
+      "t": 184,
+      "yeniKalan": 0,
+      "kimlik": [],
+      "shotsMid": 0,
+      "W": {
+       "t": 20.6,
+       "eventT": 86,
+       "floats": 0,
+       "enemyShip": false,
+       "animals": 0,
+       "aktifBolge": "",
+       "enemies": 0,
+       "shots": 0,
+       "mega": "",
+       "schools": 16,
+       "islands": "kadim_tapinak",
+       "job": null,
+       "tiles": 157,
+       "ships": 1,
+       "spouts": 0,
+       "camPos": [
+        2310,
+        7404
+       ],
+       "player": [
+        2310,
+        7400
+       ]
+      }
+     }
+    ]
+   }
+  },
+  {
+   "n": 19,
+   "label": null,
+   "result": {
+    "dG": 5,
+    "dT": 0,
+    "farkKimlik": [
+     [
+      "BufferGeometry",
+      2500,
+      0,
+      "G|sahne:Group[Root_Scene] ~ Demon_1<Demon"
+     ],
+     [
+      "BufferGeometry",
+      761,
+      0,
+      "G|sahne:Group[Root_Scene] ~ Demon_2<Demon"
+     ],
+     [
+      "BufferGeometry",
+      472,
+      0,
+      "G|sahne:Group[Root_Scene] ~ Demon_3<Demon"
+     ],
+     [
+      "BufferGeometry",
+      42,
+      0,
+      "G|sahne:Group[Root_Scene] ~ Demon_4<Demon"
+     ],
+     [
+      "BufferGeometry",
+      392,
+      0,
+      "G|sahne:Group[Root_Scene] ~ Trident<RootNode"
+     ]
+    ],
+    "cyc": [
+     {
+      "k": 0,
+      "g": 510,
+      "t": 184,
+      "yeniKalan": 0,
+      "kimlik": [],
+      "shotsMid": 0,
+      "W": {
+       "t": 21.3,
+       "eventT": 85.3,
+       "floats": 0,
+       "enemyShip": false,
+       "animals": 0,
+       "aktifBolge": "",
+       "enemies": 0,
+       "shots": 0,
+       "mega": "",
+       "schools": 16,
+       "islands": "kadim_tapinak",
+       "job": null,
+       "tiles": 157,
+       "ships": 1,
+       "spouts": 0,
+       "camPos": [
+        2310,
+        7404
+       ],
+       "player": [
+        2310,
+        7400
+       ]
+      }
+     },
+     {
+      "k": 1,
+      "g": 510,
+      "t": 184,
+      "yeniKalan": 0,
+      "kimlik": [],
+      "shotsMid": 0,
+      "W": {
+       "t": 22,
+       "eventT": 84.6,
+       "floats": 0,
+       "enemyShip": false,
+       "animals": 0,
+       "aktifBolge": "",
+       "enemies": 0,
+       "shots": 0,
+       "mega": "",
+       "schools": 16,
+       "islands": "kadim_tapinak",
+       "job": null,
+       "tiles": 157,
+       "ships": 1,
+       "spouts": 0,
+       "camPos": [
+        2310,
+        7404
+       ],
+       "player": [
+        2310,
+        7400
+       ]
+      }
+     },
+     {
+      "k": 2,
+      "g": 510,
+      "t": 184,
+      "yeniKalan": 0,
+      "kimlik": [],
+      "shotsMid": 0,
+      "W": {
+       "t": 22.7,
+       "eventT": 83.9,
+       "floats": 0,
+       "enemyShip": false,
+       "animals": 0,
+       "aktifBolge": "",
+       "enemies": 0,
+       "shots": 0,
+       "mega": "",
+       "schools": 16,
+       "islands": "kadim_tapinak",
+       "job": null,
+       "tiles": 157,
+       "ships": 1,
+       "spouts": 0,
+       "camPos": [
+        2310,
+        7404
+       ],
+       "player": [
+        2310,
+        7400
+       ]
+      }
+     },
+     {
+      "k": 3,
+      "g": 510,
+      "t": 184,
+      "yeniKalan": 0,
+      "kimlik": [],
+      "shotsMid": 0,
+      "W": {
+       "t": 23.4,
+       "eventT": 83.2,
+       "floats": 0,
+       "enemyShip": false,
+       "animals": 0,
+       "aktifBolge": "",
+       "enemies": 0,
+       "shots": 0,
+       "mega": "balina",
+       "schools": 16,
+       "islands": "kadim_tapinak",
+       "job": null,
+       "tiles": 157,
+       "ships": 1,
+       "spouts": 0,
+       "camPos": [
+        2310,
+        7404
+       ],
+       "player": [
+        2310,
+        7400
+       ]
+      }
+     },
+     {
+      "k": 4,
+      "g": 510,
+      "t": 184,
+      "yeniKalan": 0,
+      "kimlik": [],
+      "shotsMid": 0,
+      "W": {
+       "t": 24.1,
+       "eventT": 82.5,
+       "floats": 0,
+       "enemyShip": false,
+       "animals": 0,
+       "aktifBolge": "",
+       "enemies": 0,
+       "shots": 0,
+       "mega": "balina",
+       "schools": 16,
+       "islands": "kadim_tapinak",
+       "job": null,
+       "tiles": 157,
+       "ships": 1,
+       "spouts": 0,
+       "camPos": [
+        2310,
+        7404
+       ],
+       "player": [
+        2310,
+        7400
+       ]
+      }
+     },
+     {
+      "k": 5,
+      "g": 515,
+      "t": 184,
+      "yeniKalan": 5,
+      "kimlik": [
+       [
+        "BufferGeometry",
+        2500,
+        0,
+        "G|sahne:Group[Root_Scene] ~ Demon_1<Demon"
+       ],
+       [
+        "BufferGeometry",
+        761,
+        0,
+        "G|sahne:Group[Root_Scene] ~ Demon_2<Demon"
+       ],
+       [
+        "BufferGeometry",
+        472,
+        0,
+        "G|sahne:Group[Root_Scene] ~ Demon_3<Demon"
+       ],
+       [
+        "BufferGeometry",
+        42,
+        0,
+        "G|sahne:Group[Root_Scene] ~ Demon_4<Demon"
+       ],
+       [
+        "BufferGeometry",
+        392,
+        0,
+        "G|sahne:Group[Root_Scene] ~ Trident<RootNode"
+       ]
+      ],
+      "shotsMid": 0,
+      "W": {
+       "t": 24.8,
+       "eventT": 81.8,
+       "floats": 0,
+       "enemyShip": false,
+       "animals": 0,
+       "aktifBolge": "",
+       "enemies": 0,
+       "shots": 0,
+       "mega": "balina",
+       "schools": 16,
+       "islands": "kadim_tapinak",
+       "job": null,
+       "tiles": 157,
+       "ships": 1,
+       "spouts": 0,
+       "camPos": [
+        2310,
+        7404
+       ],
+       "player": [
+        2310,
+        7400
+       ]
+      }
+     }
+    ]
+   }
+  },
+  {
+   "n": 20,
+   "label": null,
+   "result": {
+    "kraken": {
+     "dG": 0,
+     "dT": 0,
+     "farkKimlik": [],
+     "cyc": [
+      {
+       "k": 0,
+       "g": 499,
+       "t": 184,
+       "yeniKalan": 0,
+       "kimlik": [],
+       "shotsMid": 0,
+       "W": {
+        "t": 15,
+        "eventT": 91.6,
+        "floats": 0,
+        "enemyShip": false,
+        "animals": 0,
+        "aktifBolge": "",
+        "enemies": 0,
+        "shots": 0,
+        "mega": "",
+        "schools": 13,
+        "islands": "kadim_tapinak",
+        "job": null,
+        "tiles": 157,
+        "ships": 1,
+        "spouts": 0,
+        "camPos": [
+         2310,
+         7404
+        ],
+        "player": [
+         2310,
+         7400
+        ]
+       }
+      },
+      {
+       "k": 1,
+       "g": 499,
+       "t": 184,
+       "yeniKalan": 0,
+       "kimlik": [],
+       "shotsMid": 0,
+       "W": {
+        "t": 15.7,
+        "eventT": 90.9,
+        "floats": 0,
+        "enemyShip": false,
+        "animals": 0,
+        "aktifBolge": "",
+        "enemies": 0,
+        "shots": 0,
+        "mega": "",
+        "schools": 13,
+        "islands": "kadim_tapinak",
+        "job": null,
+        "tiles": 157,
+        "ships": 1,
+        "spouts": 0,
+        "camPos": [
+         2310,
+         7404
+        ],
+        "player": [
+         2310,
+         7400
+        ]
+       }
+      },
+      {
+       "k": 2,
+       "g": 499,
+       "t": 184,
+       "yeniKalan": 0,
+       "kimlik": [],
+       "shotsMid": 0,
+       "W": {
+        "t": 16.4,
+        "eventT": 90.2,
+        "floats": 0,
+        "enemyShip": false,
+        "animals": 0,
+        "aktifBolge": "",
+        "enemies": 0,
+        "shots": 0,
+        "mega": "",
+        "schools": 15,
+        "islands": "kadim_tapinak",
+        "job": null,
+        "tiles": 157,
+        "ships": 1,
+        "spouts": 0,
+        "camPos": [
+         2310,
+         7404
+        ],
+        "player": [
+         2310,
+         7400
+        ]
+       }
+      }
+     ]
+    },
+    "tas": {
+     "dG": 0,
+     "dT": 0,
+     "farkKimlik": [],
+     "cyc": [
+      {
+       "k": 0,
+       "g": 510,
+       "t": 184,
+       "yeniKalan": 11,
+       "kimlik": [
+        [
+         "BufferGeometry",
+         2194,
+         0,
+         "G|sahne:Group[Root_Scene] ~ Orc_1<Orc"
+        ],
+        [
+         "BufferGeometry",
+         67,
+         0,
+         "G|sahne:Group[Root_Scene] ~ Orc_2<Orc"
+        ],
+        [
+         "BufferGeometry",
+         253,
+         0,
+         "G|sahne:Group[Root_Scene] ~ Orc_3<Orc"
+        ],
+        [
+         "BufferGeometry",
+         141,
+         0,
+         "G|sahne:Group[Root_Scene] ~ Orc_4<Orc"
+        ],
+        [
+         "BufferGeometry",
+         90,
+         0,
+         "G|sahne:Group[Root_Scene] ~ Orc_5<Orc"
+        ],
+        [
+         "BufferGeometry",
+         538,
+         0,
+         "G|sahne:Group[Root_Scene] ~ Orc_6<Orc"
+        ],
+        [
+         "BufferGeometry",
+         120,
+         0,
+         "G|sahne:Group[Root_Scene] ~ Orc_7<Orc"
+        ],
+        [
+         "BufferGeometry",
+         344,
+         0,
+         "G|sahne:Group[Root_Scene] ~ Orc_8<Orc"
+        ]
+       ],
+       "shotsMid": 0,
+       "W": {
+        "t": 17.1,
+        "eventT": 89.5,
+        "floats": 0,
+        "enemyShip": false,
+        "animals": 0,
+        "aktifBolge": "",
+        "enemies": 0,
+        "shots": 0,
+        "mega": "",
+        "schools": 15,
+        "islands": "kadim_tapinak",
+        "job": null,
+        "tiles": 157,
+        "ships": 1,
+        "spouts": 0,
+        "camPos": [
+         2310,
+         7404
+        ],
+        "player": [
+         2310,
+         7400
+        ]
+       }
+      },
+      {
+       "k": 1,
+       "g": 510,
+       "t": 184,
+       "yeniKalan": 0,
+       "kimlik": [],
+       "shotsMid": 0,
+       "W": {
+        "t": 17.8,
+        "eventT": 88.8,
+        "floats": 0,
+        "enemyShip": false,
+        "animals": 0,
+        "aktifBolge": "",
+        "enemies": 0,
+        "shots": 0,
+        "mega": "",
+        "schools": 15,
+        "islands": "kadim_tapinak",
+        "job": null,
+        "tiles": 157,
+        "ships": 1,
+        "spouts": 0,
+        "camPos": [
+         2310,
+         7404
+        ],
+        "player": [
+         2310,
+         7400
+        ]
+       }
+      },
+      {
+       "k": 2,
+       "g": 510,
+       "t": 184,
+       "yeniKalan": 0,
+       "kimlik": [],
+       "shotsMid": 0,
+       "W": {
+        "t": 18.5,
+        "eventT": 88.1,
+        "floats": 0,
+        "enemyShip": false,
+        "animals": 0,
+        "aktifBolge": "",
+        "enemies": 0,
+        "shots": 0,
+        "mega": "",
+        "schools": 16,
+        "islands": "kadim_tapinak",
+        "job": null,
+        "tiles": 157,
+        "ships": 1,
+        "spouts": 0,
+        "camPos": [
+         2310,
+         7404
+        ],
+        "player": [
+         2310,
+         7400
+        ]
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "n": 21,
+   "label": null,
+   "result": {
+    "once": 515,
+    "dongu": [
+     551,
+     553,
+     555
+    ],
+    "kalan": [
+     [
+      "BufferGeometry",
+      6881,
+      1,
+      "A|terrain.tiles ~ Mesh<terrain"
+     ],
+     [
+      "BufferGeometry",
+      6881,
+      1,
+      "A|terrain.tiles ~ Mesh<terrain"
+     ],
+     [
+      "BufferGeometry",
+      1217,
+      1,
+      "A|terrain.tiles ~ Mesh<terrain"
+     ],
+     [
+      "BufferGeometry",
+      6881,
+      1,
+      "A|terrain.tiles ~ Mesh<terrain"
+     ],
+     [
+      "BufferGeometry",
+      1217,
+      1,
+      "A|terrain.tiles ~ Mesh<terrain"
+     ],
+     [
+      "BufferGeometry",
+      1217,
+      1,
+      "A|terrain.tiles ~ Mesh<terrain"
+     ],
+     [
+      "BufferGeometry",
+      1217,
+      1,
+      "A|terrain.tiles ~ Mesh<terrain"
+     ],
+     [
+      "BufferGeometry",
+      1217,
+      1,
+      "A|terrain.tiles ~ Mesh<terrain"
+     ],
+     [
+      "BufferGeometry",
+      1217,
+      1,
+      "A|terrain.tiles ~ Mesh<terrain"
+     ],
+     [
+      "BufferGeometry",
+      1217,
+      1,
+      "A|terrain.tiles ~ Mesh<terrain"
+     ],
+     [
+      "BufferGeometry",
+      1217,
+      1,
+      "A|terrain.tiles ~ Mesh<terrain"
+     ],
+     [
+      "BufferGeometry",
+      1217,
+      1,
+      "A|terrain.tiles ~ Mesh<terrain"
+     ],
+     [
+      "BufferGeometry",
+      1217,
+      1,
+      "A|terrain.tiles ~ Mesh<terrain"
+     ],
+     [
+      "BufferGeometry",
+      1217,
+      1,
+      "A|terrain.tiles ~ Mesh<terrain"
+     ],
+     [
+      "BufferGeometry",
+      1217,
+      1,
+      "A|terrain.tiles ~ Mesh<terrain"
+     ],
+     [
+      "BufferGeometry",
+      353,
+      1,
+      "A|terrain.tiles ~ Mesh<terrain"
+     ],
+     [
+      "BufferGeometry",
+      353,
+      1,
+      "A|terrain.tiles ~ Mesh<terrain"
+     ],
+     [
+      "BufferGeometry",
+      353,
+      1,
+      "A|terrain.tiles ~ Mesh<terrain"
+     ],
+     [
+      "BufferGeometry",
+      353,
+      1,
+      "A|terrain.tiles ~ Mesh<terrain"
+     ],
+     [
+      "BufferGeometry",
+      353,
+      1,
+      "A|terrain.tiles ~ Mesh<terrain"
+     ],
+     [
+      "BufferGeometry",
+      353,
+      1,
+      "A|terrain.tiles ~ Mesh<terrain"
+     ],
+     [
+      "BufferGeometry",
+      353,
+      1,
+      "A|terrain.tiles ~ Mesh<terrain"
+     ],
+     [
+      "BufferGeometry",
+      353,
+      1,
+      "A|terrain.tiles ~ Mesh<terrain"
+     ],
+     [
+      "BufferGeometry",
+      353,
+      1,
+      "A|terrain.tiles ~ Mesh<terrain"
+     ],
+     [
+      "BufferGeometry",
+      113,
+      1,
+      "A|terrain.tiles ~ Mesh<terrain"
+     ],
+     [
+      "BufferGeometry",
+      113,
+      1,
+      "A|terrain.tiles ~ Mesh<terrain"
+     ],
+     [
+      "BufferGeometry",
+      113,
+      1,
+      "A|terrain.tiles ~ Mesh<terrain"
+     ],
+     [
+      "BufferGeometry",
+      113,
+      1,
+      "A|terrain.tiles ~ Mesh<terrain"
+     ],
+     [
+      "BufferGeometry",
+      113,
+      1,
+      "A|terrain.tiles ~ Mesh<terrain"
+     ],
+     [
+      "BufferGeometry",
+      113,
+      1,
+      "A|terrain.tiles ~ Mesh<terrain"
+     ],
+     [
+      "BufferGeometry",
+      1010,
+      1,
+      "A|islands.built ~ Mesh<island:kadim_tapinak"
+     ],
+     [
+      "BufferGeometry",
+      1055,
+      1,
+      "A|islands.built ~ Mesh<island:kadim_tapinak"
+     ],
+     [
+      "BufferGeometry",
+      1231,
+      1,
+      "A|islands.built ~ Mesh<island:kadim_tapinak"
+     ],
+     [
+      "BufferGeometry",
+      177,
+      1,
+      "A|islands.built ~ Mesh<island:kadim_tapinak"
+     ],
+     [
+      "CylinderGeometry",
+      52,
+      0,
+      "G|sahne:Group ~ Mesh<Group"
+     ],
+     [
+      "CylinderGeometry",
+      40,
+      0,
+      "G|sahne:Group ~ Mesh<Group"
+     ],
+     [
+      "CylinderGeometry",
+      52,
+      0,
+      "G|sahne:Group ~ Mesh<Group"
+     ],
+     [
+      "CylinderGeometry",
+      40,
+      0,
+      "G|sahne:Group ~ Mesh<Group"
+     ],
+     [
+      "CylinderGeometry",
+      52,
+      0,
+      "G|sahne:Group ~ Mesh<Group"
+     ],
+     [
+      "CylinderGeometry",
+      40,
+      0,
+      "G|sahne:Group ~ Mesh<Group"
+     ]
+    ]
+   }
+  },
+  {
+   "n": 22,
+   "label": null,
+   "result": {
+    "demon": {
+     "mesh": 5,
+     "geo": 5
+    },
+    "orc_brute": {
+     "mesh": 11,
+     "geo": 11
+    }
+   }
+  },
+  {
+   "n": 23,
+   "label": null,
+   "result": [
+    {
+     "tag": "menu",
+     "calls": 422,
+     "tris": 853502,
+     "geos": 228,
+     "texs": 137,
+     "progs": 86,
+     "heapMB": 98,
+     "simMsPerFrame": 0.54
+    },
+    {
+     "tag": "liman",
+     "calls": 1023,
+     "tris": 1248688,
+     "geos": 753,
+     "texs": 200,
+     "progs": 95,
+     "heapMB": 118,
+     "simMsPerFrame": 1.5
+    },
+    {
+     "tag": "orman_adasi",
+     "calls": 308,
+     "tris": 608940,
+     "geos": 400,
+     "texs": 180,
+     "progs": 95,
+     "heapMB": 144,
+     "simMsPerFrame": 1.75
+    },
+    {
+     "tag": "firtina",
+     "calls": 320,
+     "tris": 692788,
+     "geos": 402,
+     "texs": 181,
+     "progs": 97,
+     "heapMB": 109,
+     "simMsPerFrame": 1.03
+    },
+    {
+     "tag": "boss_kraken",
+     "calls": 386,
+     "tris": 716852,
+     "geos": 481,
+     "texs": 181,
+     "progs": 98,
+     "heapMB": 110,
+     "simMsPerFrame": 0.94,
+     "bossAlive": true
+    }
+   ]
+  },
+  {
+   "n": 24,
+   "label": null,
+   "expect": {
+    "label": "Oyun döngüsü ölçümlerden sonra hatasız",
+    "ok": true,
+    "value": true
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 5291,
+ "ms": 127541
+}

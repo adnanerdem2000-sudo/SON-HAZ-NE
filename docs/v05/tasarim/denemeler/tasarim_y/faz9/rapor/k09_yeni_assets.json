@@ -1,0 +1,96 @@
+{
+ "scenario": "/home/user/SON-HAZ-NE/tests/scenarios/02_tek_dosya.js",
+ "url": "file:///tmp/tasarim_y/faz9/k09/assets/yeni.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "Tek dosya: sayfa hazır",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 2,
+   "label": null,
+   "result": {
+    "proto": "file:",
+    "workers": 3,
+    "fallback": false,
+    "failures": [],
+    "url": "data:text/javascript;charset=utf-8,%22us",
+    "stats": {
+     "tiles": 125,
+     "meshes": 125,
+     "hires": 15,
+     "tris": 311168,
+     "queue": 0,
+     "jobs": 0,
+     "workers": 3,
+     "fallback": false,
+     "failures": 0,
+     "mode": ""
+    }
+   }
+  },
+  {
+   "n": 3,
+   "label": null,
+   "expect": {
+    "label": "Tek dosya (file://): arazi işçileri çalışıyor",
+    "ok": true,
+    "value": 3
+   }
+  },
+  {
+   "n": 4,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 5,
+   "label": null,
+   "expect": {
+    "label": "Tek dosya: oyun başladı",
+    "ok": true,
+    "value": "playing"
+   }
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "Tek dosya: oyuncu zemine basıyor",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 7,
+   "label": null,
+   "result": {
+    "tiles": 129,
+    "meshes": 129,
+    "hires": 25,
+    "tris": 426624,
+    "queue": 12,
+    "jobs": 18,
+    "workers": 3,
+    "fallback": false,
+    "failures": 0,
+    "mode": ""
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 5327,
+ "ms": 21101
+}

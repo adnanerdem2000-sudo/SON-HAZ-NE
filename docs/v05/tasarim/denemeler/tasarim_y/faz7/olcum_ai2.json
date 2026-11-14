@@ -1,0 +1,213 @@
+{
+ "scenario": "/tmp/tasarim_y/faz7/olcum_ai2.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   }
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": {
+    "ok": true
+   }
+  },
+  {
+   "n": 4,
+   "label": null,
+   "result": {
+    "perEnemy": [
+     {
+      "wps": 1,
+      "wpInside": 0,
+      "reached": 0,
+      "noProgress1_2s": 41
+     },
+     {
+      "wps": 1,
+      "wpInside": 0,
+      "reached": 0,
+      "noProgress1_2s": 36
+     },
+     {
+      "wps": 1,
+      "wpInside": 1,
+      "reached": 0,
+      "noProgress1_2s": 36
+     },
+     {
+      "wps": 1,
+      "wpInside": 0,
+      "reached": 0,
+      "noProgress1_2s": 40
+     },
+     {
+      "wps": 1,
+      "wpInside": 0,
+      "reached": 0,
+      "noProgress1_2s": 43
+     },
+     {
+      "wps": 1,
+      "wpInside": 0,
+      "reached": 0,
+      "noProgress1_2s": 43
+     }
+    ]
+   }
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": {
+    "blockedSteps": 120,
+    "towardNew": 120,
+    "towardOld": 0,
+    "state": "strafe",
+    "lostT": 1.92
+   }
+  },
+  {
+   "n": 6,
+   "label": null,
+   "result": {
+    "swings": 23,
+    "attacksStarted": 7,
+    "attacksResolved": 0,
+    "hitReactions": 1,
+    "enemyHpLost": 727,
+    "stamina": 89
+   }
+  },
+  {
+   "n": 7,
+   "label": null,
+   "result": {
+    "slam": {
+     "strikeS": 0.433,
+     "damageS": 1.1,
+     "lagS": 0.667,
+     "anim": "Punch"
+    },
+    "sweep": {
+     "strikeS": 0.4,
+     "damageS": null,
+     "lagS": null,
+     "anim": "Walk"
+    },
+    "stomp": {
+     "strikeS": 0.367,
+     "damageS": null,
+     "lagS": null,
+     "anim": "Walk"
+    }
+   }
+  },
+  {
+   "n": 8,
+   "label": null,
+   "expect": {
+    "label": "Ölçüm özeti 2",
+    "ok": true,
+    "value": {
+     "m1b": {
+      "perEnemy": [
+       {
+        "wps": 1,
+        "wpInside": 0,
+        "reached": 0,
+        "noProgress1_2s": 41
+       },
+       {
+        "wps": 1,
+        "wpInside": 0,
+        "reached": 0,
+        "noProgress1_2s": 36
+       },
+       {
+        "wps": 1,
+        "wpInside": 1,
+        "reached": 0,
+        "noProgress1_2s": 36
+       },
+       {
+        "wps": 1,
+        "wpInside": 0,
+        "reached": 0,
+        "noProgress1_2s": 40
+       },
+       {
+        "wps": 1,
+        "wpInside": 0,
+        "reached": 0,
+        "noProgress1_2s": 43
+       },
+       {
+        "wps": 1,
+        "wpInside": 0,
+        "reached": 0,
+        "noProgress1_2s": 43
+       }
+      ]
+     },
+     "m3b": {
+      "blockedSteps": 120,
+      "towardNew": 120,
+      "towardOld": 0,
+      "state": "strafe",
+      "lostT": 1.92
+     },
+     "m5b": {
+      "swings": 23,
+      "attacksStarted": 7,
+      "attacksResolved": 0,
+      "hitReactions": 1,
+      "enemyHpLost": 727,
+      "stamina": 89
+     },
+     "m8b": {
+      "slam": {
+       "strikeS": 0.433,
+       "damageS": 1.1,
+       "lagS": 0.667,
+       "anim": "Punch"
+      },
+      "sweep": {
+       "strikeS": 0.4,
+       "damageS": null,
+       "lagS": null,
+       "anim": "Walk"
+      },
+      "stomp": {
+       "strikeS": 0.367,
+       "damageS": null,
+       "lagS": null,
+       "anim": "Walk"
+      }
+     }
+    }
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 5543,
+ "ms": 36535
+}
