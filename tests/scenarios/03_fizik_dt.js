@@ -1,5 +1,7 @@
 // Kare hızı tutarlılığı: aynı girdiyi 15/30/60/120 FPS adımlarıyla simüle et, sonuçları karşılaştır
+// Onay (expect) içermeyen ölçüm betiğidir: koşucu onu GECTI değil OLCUM sayar (K-13, Faz 9 tasarımı §6.3-3). Eşikli onaylar Faz 3'te eklenir.
 [
+ {meta: {olcum: true, testler: ['T14'], dosyalar: ['js/game/game.js', 'js/main.js', 'js/ship/ship.js', 'js/player/player.js']}},
  {js: `DK.G.noAutoPause=true; DK.handlers.startGame({kind:'solo', slot:2, data:null}); 'ok'`},
  {wait: 5000, js: `(()=>{
    const out = {};

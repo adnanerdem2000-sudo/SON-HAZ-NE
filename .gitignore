@@ -5,3 +5,5 @@ dist/
 Thumbs.db
 dev/
 tests/out/
+# Faz 0-9 ham koşu günlükleri kanıttır (K9-16): docs/v05 altındaki .log dosyaları izlenir
+!docs/v05/**/*.log

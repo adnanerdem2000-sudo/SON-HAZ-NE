@@ -1,0 +1,15 @@
+<!doctype html>
+<meta charset="utf-8">
+<link rel="icon" href="data:,">
+<title>koşucu sabiti: adım türleri</title>
+<!-- Yeni adım türleri için: tikla (metin/seçici), bekleSecici (geç beliren öğe), goto + beforeunload onayı. -->
+<button id="dugme" onclick="window.__tiklandi = (window.__tiklandi || 0) + 1">Tıkla beni</button>
+<button id="gizli" style="display:none">Gizli düğme</button>
+<div id="gec" hidden>geç geldi</div>
+<script>
+  window.DK = { sim() { return 0; } };
+  setTimeout(() => { document.getElementById('gec').hidden = false; }, 300);
+  // Oyun gibi: kullanıcı etkileşiminden sonra sayfadan ayrılırken onay ister (main.js beforeunload)
+  window.addEventListener('beforeunload', (e) => { if (window.__tiklandi) { e.preventDefault(); e.returnValue = ''; } });
+  window.__ready = true;
+</script>

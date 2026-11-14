@@ -1,0 +1,10 @@
+<!doctype html>
+<meta charset="utf-8">
+<link rel="icon" href="data:,">
+<title>koşucu sabiti (a): içinde 404 geçen konsol hatası</title>
+<!-- (a) Eski koşucu '404' içeren konsol hatalarını tümüyle atıyordu (K-11). Beklenen: KALDI. -->
+<script>
+  window.DK = { sim() { return 0; } };
+  console.error('x 404 y');
+  window.__ready = true;
+</script>

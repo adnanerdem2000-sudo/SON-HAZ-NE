@@ -1,0 +1,13 @@
+<!doctype html>
+<meta charset="utf-8">
+<link rel="icon" href="data:,">
+<title>koşucu sabiti: kanıt adımları</title>
+<!-- (ka) DK.snap ve DK.snapFrom çizimde kırılır (istisna atar): kanıt adımlarının sayfa istisnası adım hatası sayılmalı (A1-06). -->
+<script>
+  window.DK = {
+    sim() { return 0; },
+    snap() { throw new Error('kosucu_negatif ka: snap çizimde kırıldı'); },
+    snapFrom() { throw new Error('kosucu_negatif ka: snapFrom çizimde kırıldı'); },
+  };
+  window.__ready = true;
+</script>

@@ -1,0 +1,12 @@
+<!doctype html>
+<meta charset="utf-8">
+<link rel="icon" href="data:,">
+<title>koşucu sabiti: depolama erişimi</title>
+<!-- Başlatma betiği denemesi: sayfa yüklenirken localStorage'a yazmayı dener ve sonucu window.__depolama'ya yazar.
+     Başlatma betiği localStorage'ı SecurityError atacak biçimde engellerse değer 'SecurityError' olur. -->
+<script>
+  try { window.localStorage.setItem('kosucu_negatif', '1'); window.__depolama = 'ok'; }
+  catch (e) { window.__depolama = e && e.name; }
+  window.DK = { sim() { return 0; } };
+  window.__ready = true;
+</script>

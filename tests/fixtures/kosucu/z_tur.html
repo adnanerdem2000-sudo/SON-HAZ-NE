@@ -1,0 +1,13 @@
+<!doctype html>
+<meta charset="utf-8">
+<link rel="icon" href="data:,">
+<title>koşucu sabiti (z): tür ölçümü</title>
+<!-- (z) Oyun gibi: kendi rAF döngüsü game.update çağırır (main.js engine.updaters); DK.sim game.update'i çizimsiz döngüyle çağırır
+     (main.js:145-148). Koşucu rAF ve DK.sim içinden gelenleri saymamalı, test kodunun doğrudan game.update çağrısını saymalı. -->
+<script>
+  window.__simSayisi = 0;
+  const game = { t: 0, n: 0, update(dt) { this.t += dt; this.n++; } };
+  window.DK = { game, sim(sn = 1, dt = 1 / 30) { window.__simSayisi++; const n = Math.round(sn / dt); for (let i = 0; i < n; i++) game.update(dt); return n; } };
+  requestAnimationFrame(function dongu() { game.update(1 / 60); requestAnimationFrame(dongu); });
+  window.__ready = true;
+</script>

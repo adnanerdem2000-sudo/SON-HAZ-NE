@@ -1,0 +1,10 @@
+<!doctype html>
+<meta charset="utf-8">
+<link rel="icon" href="data:,">
+<title>koşucu sabiti (u): yakalanmamış sayfa hatası</title>
+<!-- (u) Sayfa yüklenirken yakalanmamış bir istisna (pageerror). Kontrol geçer; koşu yine KALDI olmalı. -->
+<script>
+  window.DK = { sim() { return 0; } };
+  setTimeout(() => { throw new Error('kosucu_negatif u: yakalanmamış sayfa hatası'); }, 0);
+  window.__ready = true;
+</script>

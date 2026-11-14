@@ -1,4 +1,5 @@
 [
+{meta: {olcum: true, aciklama: 'Kamera parlaklık taraması (ölçüm betiği): asıl ölçüt analiz.cjs; tek onay (Oyun başladı) yalnız açılışı doğrular (Faz 9 tasarımı §1.8, K-13)'}},
 {js: `DK.G.noAutoPause=true; DK.handlers.startGame({kind:'solo', slot:2, data:null}); 'ok'`},
 {wait: 4000, expect: {js: `DK.G.state`, eq: 'playing', label: 'Oyun başladı'}},
 {js: `(()=>{ DK.engine.fpsLimit = 0.01; DK.sky.hour = 11; DK.sky.locked = true; try { DK.sky.setWeather('acik', true); } catch(e){} DK.events.eventT=1e9; DK.G.godMode = true; const ST=DK.fish.sharkTarget; ST.alive=false; ST.respawn=1e9; DK.ui.closeAll && DK.ui.closeAll();

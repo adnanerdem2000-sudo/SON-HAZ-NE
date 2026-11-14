@@ -1,0 +1,11 @@
+<!doctype html>
+<meta charset="utf-8">
+<link rel="icon" href="data:,">
+<title>koşucu sabiti: temiz</title>
+<!-- tests/node/kosucu_negatif.mjs: hatasız sabit sayfa. window.DK oyunun test kancasını taklit eder (sim sayılır). -->
+<script>
+  window.__simSayisi = 0;
+  window.DK = { sim(sn = 1, dt = 1 / 30) { window.__simSayisi++; return Math.round(sn / dt); } };
+  window.__ready = true;
+</script>
+<p>temiz</p>

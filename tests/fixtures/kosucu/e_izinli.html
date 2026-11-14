@@ -1,0 +1,11 @@
+<!doctype html>
+<meta charset="utf-8">
+<link rel="icon" href="data:,">
+<title>koşucu sabiti (e): izin listesindeki hatalar</title>
+<!-- (e) Bir konsol hatası (metinle eşlenir) ve bir 404 görsel (adresle eşlenir; konsol iletisinde adres yoktur, N9-11).
+     İkisi de izin listesindeyse beklenen: GECTI. -->
+<script>
+  window.DK = { sim() { return 0; } };
+  console.error('beklenen-hata: kosucu_negatif e');
+</script>
+<img src="izinli-eksik.png" alt="yok" onerror="window.__ready = true" onload="window.__ready = true">

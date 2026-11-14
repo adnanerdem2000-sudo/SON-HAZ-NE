@@ -1,0 +1,14 @@
+<!doctype html>
+<meta charset="utf-8">
+<link rel="icon" href="data:,">
+<title>koşucu sabiti: co-op</title>
+<!-- coop.cjs'in beklediği en küçük DK: mk() DK.G.noAutoPause ve DK.G.profile.appearance.name yazar, tick() DK.sim çağırır.
+     ?hata=1 ile bir konsol hatası üretir; DK.hataUret() yakalanmamış bir sayfa hatası planlar (ai). -->
+<script>
+  window.__simSayisi = 0;
+  window.DK = { G: { noAutoPause: false, profile: { appearance: { name: '' } } }, sim(sn = 1) { window.__simSayisi++; return Math.round(sn * 30); },
+    // (ai) bir sonraki görevde yakalanmamış oyun hatası (pageerror)
+    hataUret() { setTimeout(() => { throw new Error('kosucu_negatif ai: Tayfa sayfasında yakalanmamış oyun hatası'); }, 0); return 'planlandı'; } };
+  if (new URLSearchParams(location.search).get('hata') === '1') console.error('coop sabit sayfa hatası');
+  window.__ready = true;
+</script>

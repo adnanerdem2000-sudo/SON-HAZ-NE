@@ -1,0 +1,21 @@
+// (n) Yeni adım türlerinin olumlu denemesi: bekleSecici, tikla (metin ve seçici), degisken, metrics + metrikKarsilastir,
+// goto (beforeunload onayı ve test=1), agSay, rotaKok (https sahte köken, alt kaynak da rotadan).
+[
+ {bekleSecici: '#gec'},
+ {tikla: {metin: 'Tıkla beni'}},
+ {expect: {js: `window.__tiklandi`, eq: 1, label: 'N01 tikla (metinle)'}},
+ {tikla: '#dugme'},
+ {expect: {js: `window.__tiklandi`, eq: 2, label: 'N02 tikla (seçiciyle)'}},
+ {degisken: {ad: 'kirkiki', js: `6 * 7`}},
+ {expect: {js: `window.__KOSUCU && window.__KOSUCU.kirkiki`, eq: 42, label: 'N03 degisken sayfaya kondu'}},
+ {metrics: 'm1'},
+ {metrics: 'm2'},
+ {metrikKarsilastir: {once: 'm1', sonra: 'm2', alan: 'listeners', enCokFark: 5, label: 'N04 metrikKarsilastir (dinleyici farkı ≤ 5)'}},
+ {goto: 'adimlar2.html'},
+ {expect: {js: `location.pathname.endsWith('/adimlar2.html') && new URLSearchParams(location.search).get('test')`, eq: '1', label: 'N05 goto: yeni sayfa, test=1 eklendi'}},
+ {expect: {js: `window.__KOSUCU && window.__KOSUCU.kirkiki`, eq: 42, label: 'N06 degisken gezinmeden sonra da var'}},
+ {agSay: {desen: 'adimlar2\\.html', enAz: 1, enCok: 1, label: 'N07 agSay: ikinci sayfa bir kez istendi'}},
+ {rotaKok: {kok: 'https://oyun.ornek', dizin: 'tests/fixtures/kosucu'}},
+ {goto: {url: 'https://oyun.ornek/rota.html?test=1', testParam: false}},
+ {expect: {js: `location.origin + '|' + isSecureContext + '|' + window.__rotaJs`, eq: 'https://oyun.ornek|true|1', label: 'N08 rotaKok: sahte https köken, alt kaynak rotadan'}},
+]
