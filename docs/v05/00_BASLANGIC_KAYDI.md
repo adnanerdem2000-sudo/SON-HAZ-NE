@@ -44,7 +44,7 @@ Tarih: 13 Kasım 2026. Bu belge, v0.5 sağlamlaştırma çalışmasına başlama
 | Senaryo | Sonuç | Süre | Not |
 |---|---|---|---|
 | 00_acilis | 6/6 geçti | 32 sn | |
-| 02_arazi_yedek | 12/12 | 68 sn | İşçisiz kipler |
+| 02_arazi_yedek | 12/12 | 68 sn | **Yalnız normal (işçili) kipte koştu.** Senaryo işçisiz kipler için yazılmış, ama taban betiği `?terrain=` parametresi vermedi ve senaryo etkin kipi doğrulamıyor. İşçisiz kipler (`noworker`, `badurl`, `crash`) bu kayıtta **denenmedi**; Faz 1'in "önce" ölçümünde v0.4 üzerinde ayrıca koşulacak (düzeltme, 14 Kasım 2026; denetim K) |
 | 02_arazi_kurtarma | 7/7 | 52 sn | İşçi çökmesi |
 | 02_tek_dosya | 4/4 | 28 sn | `file://` tek HTML (dist, v0.4) |
 | 03_fizik_dt | ölçüm | 49 sn | Kontrolü yok. 15/30/60 FPS'te yürüme 12,596 m, 120 FPS'te 12,585 m. Zıplama tepesi 1,183 m, 120 FPS'te 1,214 m (%2,6). Gemi 12 sn'de 87,5–87,8 m, 120 FPS'te 82,64 m (**%5,7 eksik**). Dönüş 163–174°. Fizik kare hızından tam bağımsız değil (Faz 3). |
@@ -70,6 +70,10 @@ Tarih: 13 Kasım 2026. Bu belge, v0.5 sağlamlaştırma çalışmasına başlama
 | coop/06c_dort_oyuncu (4 oyuncu) | **2/7** | 581 sn | **Kalan:** 2. oyuncu ("Tayfa") odaya katılamadı ve menüde kaldı. Diğer 3 oyuncu yalnız 2 uzak oyuncu gördü. Bu test önceki kayıtlarda da kararsızdı (son kod 5/7 koşuda geçmişti). Katılma isteğinin yeniden denenmemesi Faz 5'te incelenecek. |
 | tests/node/archipelago_sabit.mjs | geçti | — | Dünya üretimi v0.3 sabitiyle aynı (67 ada) |
 
-Özet: 25 tarayıcı senaryosunun 23'ü tümüyle geçti. 09_performans'ta 1 sızıntı kontrolü ve 4 oyunculu co-op testinde katılma
+Özet: 25 tarayıcı senaryosunun 23'ü tümüyle geçti. (Düzeltme, 14 Kasım 2026: `02_arazi_yedek` yalnız işçili kipte koştu; işçisiz
+kipler bu taban koşusunda sınanmadı. Ayrıca oyun döngüsündeki istisnalar `console.error`'a yazılıyor (`engine.js:66`);
+`run.cjs` bunları rapordaki `errors` dizisine kaydediyor ama çıkış kodunda saymıyor. Bu taban koşusunun 25 raporunun hepsinde
+`errors` ve `pageErrors` 0, yani tabanda döngü hatası yok; ancak ileride çıkacak bir döngü hatası testi kendiliğinden kırmızıya
+çevirmez. İkisi de KNOWN_ISSUES.md'de; düzeltmeleri Faz 1'in test altyapısı adımında.) 09_performans'ta 1 sızıntı kontrolü ve 4 oyunculu co-op testinde katılma
 hatası kaldı; ikisi de **bilinen sorun** olarak KNOWN_ISSUES.md'ye girer. 10_uzun_oturum taban koşusuna alınmadı (uzun süreli
 bellek teşhisi; Faz 8'de koşulacak).

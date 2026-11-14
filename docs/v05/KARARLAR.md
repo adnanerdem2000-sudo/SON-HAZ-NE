@@ -8,13 +8,20 @@ Her karar sonradan değiştirilebilir. Değişiklik gerekirse ilgili fazın tasa
 ve etkisini gösterir.
 
 Belgeler: `docs/v05/tasarim/FAZ2_AG_GUVENLIGI_TASARIM.md` (§13.10), `FAZ3_SABIT_ADIM_FIZIK_TASARIM.md` (§0),
-`FAZ4_KAYIT_KALICILIK_TASARIM.md` (§0), `FAZ5_COOP_TAMAMLAMA_TASARIM.md` (§0.2), `FAZ6_HIKAYE_6_10_TASARIM.md` (§0.3).
+`FAZ4_KAYIT_KALICILIK_TASARIM.md` (§0), `FAZ5_COOP_TAMAMLAMA_TASARIM.md` (§0.2), `FAZ6_HIKAYE_6_10_TASARIM.md` (§0.3),
+`FAZ7_DUSMAN_AI_SAVAS_ANIMASYON_TASARIM.md` (§0.2).
 
 ## Çakışma çözümü
 
 - **Hikâye, gemi ele geçirme ve batırma XP'si:** Faz 2 K-4 "bugünkü gibi yalnız host'a" diyor, Faz 5 K5-2 "olayın 300 m
   yakınındaki herkese tam" diyor. Faz 2 davranışı değiştirmez. Faz 5 K5-2'yi uygular, Faz 6 K-12 de aynı kuralı kullanır.
   Sonuç: Faz 5'ten itibaren 300 m kuralı geçerlidir.
+- **Faz 7'nin ilk adımı öne alınır:** F7-0 kod değiştirmez; mevcut düşman, boss, savaş, animasyon ve kamera davranışını
+  37–44 numaralı senaryolarda "gözlem" kipinde kayda geçirir. Kullanıcının "yeni içerik eklemeden önce mevcut davranışları test
+  et" isteği yüzünden **Faz 6'nın yeni düşman türlerini ekleyen adımından (S6) önce** koşulur. Faz 2–5'ten sonra koştuğu için
+  tabanı v0.4 değil, o anki koddur (`tests/out/faz7_taban.json`). Faz 7'nin geri kalanı (F7-1…F7-19) Faz 6'dan sonra gelir.
+- **Bloklanan saldırının sızıntısı:** Faz 2 §5.10(b) gölge can kuralındaki ×0,12, Faz 7 K7-1 ile ×0 olur. İki faz da tek sabiti
+  (`BLOCK_LEAK`) okur.
 - **Test adları:** Faz 1 yeni tarayıcı senaryolarını `02_` arazi grubuna ekler (`02_hizli_yolculuk`, `02_arazi_yasam`,
   `02_ayar_lod`, `02_depolama_kapali`). Diğer fazların ayırdığı adlar:
 
@@ -110,3 +117,25 @@ Faz 3 kararları (K1–K9) teknik tasarım kararıdır, kullanıcı onayı gerek
 | K-12 | Aşama XP'si | Faz 5 K5-2 (300 m) |
 | K-13 | Kapsam | Önce çekirdek kapsam (§9.2). Çekirdekte her aşamanın yeni alanı, NPC'si, görev zinciri, bulmacası, düşman yeniliği, boss'u, kararı ve ödülü, ayrıca Yitik Ufuk, Ölü Sis, Gelgit'in Gölgesi ve Son Hazine bulunur. Tam kapsamın ek parçaları, çekirdek testleri geçtikten sonra yapılır |
 | K-14 | Halat ve asansör | Yok; merdiven platformu ve gayzer |
+
+## Faz 7 — Düşman AI, boss, savaş adaleti, animasyon ve kamera
+
+| No | Karar | Uygulanan |
+|---|---|---|
+| K7-1 | Başarılı blokta can kaybı | %0; bedel dayanıklılık. Dayanıklılık yetmezse savunma kırılır (×0,5 hasar, sendeleme). Blokta zehir ve yavaşlatma da 0 |
+| K7-2 | Telgraf alt sınırı | Normal 0,40 sn; engellenemez ve alan saldırısı 0,60 sn. Zorluk (`hitAt`) korunur, yalnız hazırlık evresi bükülür |
+| K7-3 | Yol bulma | Navmesh/A* yok: yönlendirme, duvar izleme, kademeli takılma kurtarma |
+| K7-4 | Hayaletlerin itişmesi | Yalnız hayalet–hayalet (0,6 m) |
+| K7-5 | Vuruş tepkisi kilidi | Poise ölçeri + hazırlığın son %30'unda zırh + bitirici sersemliğine 2,0 sn azalan getiri |
+| K7-6 | Yılan toslamasında güverte hasarı | Rastgelelik kalkar; çarpma noktasına 5 m'den yakın oyuncular hasar alır |
+| K7-7 | Dümen ve top erişimi | İstasyonlar nesneye yaklaştırılır; Faz 3 C-12 yarıçapları yeniden türetilir |
+| K7-8 | Kamera ve ağaç | Karma kural: r ≥ 0,45 gövdeler yeni `GOVDE` katmanında çarpışır (başa ≥ 1,2 m kalıyorsa); diğerleri soldurulur |
+| K7-9 | Yürüyüş hızları | Oyun hızları değişmez; klip hızı 1,5 cm eşikle ölçülen doğal hıza bağlanır, kadans sınırı var |
+| K7-9b | Nişan/savunmada geri yürüme | 2,0 → 1,5 m/sn |
+| K7-10 | Kök hareketi | Kaçınma ve ağır saldırıda yatay kalça hareketi yüklemede sıfırlanır |
+| K7-11 | Ağ alanları | Tek PROTO artırımı (Faz 6 değeri + 1) |
+| K7-12 | Konuğun algı bilgisi | `inCave`/`underwater` host'ta hesaplanır; `crouch` hız > 2,0 m/sn ise yok sayılır |
+| K7-13 | Büyük sandık taşıma pozu | Önde "kucaklama"; kamera +0,3 m |
+| K7-14 | Saldırı atılımı | Ayaklar yerdeyken tam gövde eyleminde 0 (oynanış değişikliği; Faz 2 06j yeniden koşulur) |
+| K7-15 | Konuğun kaçınma/blok zamanı | Faz 5 `act.vt` ile en çok 0,25 sn geri sarma |
+| K7-16 | Vuruş karesinin tanımı | Hamle sınıfına göre (uç hızı, en ileri erişim, en alçak temas); kontak sayfasıyla gözle onay |

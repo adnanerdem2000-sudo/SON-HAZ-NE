@@ -1,0 +1,102 @@
+{
+ "verdicts": [
+  {
+   "ref": "J-01",
+   "verdict": "kismen",
+   "evidence": "Kök neden doğrulandı. character.js:456-463'te build kit örgülerinin tümüne frustumCulled=false veriyor (:458). Aynısı :967'de Animated'da ve kk.js:93'te _prepChar'da var; v0.3'te character.js:403/851 ve kk.js:87 aynı. three.module.js:17750 (ana liste) ve :9373 (gölge, renderObject) ayıklamayı yalnız frustumCulled true iken yapıyor. WebGLObjects.update iskelet güncellemesini de her karede çalıştırıyor. Mesafeye bağlı gizleme yok: npcs.update (npcs.js:147-169) görünürlüğe hiç dokunmuyor. Balıkçılar details.js:346-352 ve :550'de. Ada NPC'leri DROP_D=1150 (islands.js:27, kıyıdan ölçülür) içinde kalıyor. Liman noktalarının 9'u modelli (port.js:322-333). Node sayımı (/tmp/denetim_alan/karsit_J/kkbody.mjs): insan gövdesi 6 iskeletli örgü, 3 921–4 263 üçgen. İskelet düşman 9 iskeletli örgü, 5 104–5 288 üçgen. Kit şapka 396–830, pelerin 78–84 üçgen. 12 karakter × (6+6) = 144 çağrı doğru.",
+   "correction": "Üçgen etkisi abartılmış. İnsan karakteri her geçişte ~6 K değil ~4 K üçgen harcıyor. Limandaki 12 karakterin koşulsuz yükü ≈144 çağrı, ama ≈100 K üçgen (144 K değil); bu değer 10. belge §10.5'te 10 karakter için ölçülen ≈95 K ile uyumlu. Kabul ölçütü de düzeltilmeli: ayıklama açılsa bile odak çevresindeki ±55 m gölge kutusunda kalan NPC'ler (sky.js:139-141, 339-340) gölge geçişinde haklı olarak çizilmeye devam eder. 'Gizleme farkı 0' ölçütü yalnız ana geçiş için, bir de liman 1 km uzaktayken geçerli. Bu yüzden limandaki kazanç 144 çağrıdan küçük kalır; asıl kazanç açık denizde ve diğer adalarda (~132 çağrı). 'Açık deniz 203 çağrısıyla tutarlı' ifadesi doğrulanamadı, çünkü §10.9.1'in ölçüm betiği depoda yok. Önerilen küre payının ragdoll sırasında yetmeyebileceği not edilmeli. Gerçek FPS ölçülmeden 'orta' öncelik daha savunulabilir: §10.9.2'ye göre çağrı başına ~10,7 µs, yani ~1,5 ms CPU, artı 12 iskelet güncellemesi."
+  },
+  {
+   "ref": "J-02",
+   "verdict": "kismen",
+   "evidence": "props.build (props.js:163-285) 6 çekirdek adanın (CORE_ISLANDS: kirlangic r=270, marti, kemik, papagan, ikiz1, ikiz2) tüm örneklerini tür ve parça başına tek bir InstancedMesh'e yazıyor. İlgili yerler: instanced :17-48 (castShadow :41), orman ağacı :254-266 (:265), _inst :307-319, kuru ağaç :390. islands.js:75-140 (VCELL=160 Batch) ve :404-415 (_cellLod) yalnız EXTRA_ISLANDS'a uygulanıyor. Sayımı yeniden yaptım (J_perf/props_count.mjs ve kendi üçgen hesabım): yüksek ayarda 1 598 örnek. GLB üçgenleri: palmiye 190, çalı 32, kaya 80, uzun kaya 136, çiçek 76, kütük 56, mantar 48. Prosedürel: orman ağacı 56+4×80=376, eğrelti 56, ot 24, kuru ağaç 124. Sonuç ana geçişte 201,6 K, gölgede 174,7 K üçgen; doğru. Orman ağacı indekssiz olduğu için üçgen başına 3 köşe gidiyor, yani köşe yükü daha da yüksek. Küre yarıçapları (/tmp/denetim_alan/karsit_J/props_sphere.mjs) 609–782 m; kamera ve 110 m gölge kutusu bu kürelerle her zaman kesişiyor. v0.3'te de aynı.",
+   "correction": "Kök neden ve üçgen sayıları doğru. Küre yarıçapı ~1 000 m değil ~610–780 m; bu sonucu değiştirmiyor. Çizim çağrısına etkisi küçük (~15 ana + ~10 gölge); yük köşe işlemede ve gölge haritasında. Gerçek GPU ölçümü yapılmadan ve kare bütçesinin aşıldığı gösterilmeden 'yüksek' değil 'orta' öncelik uygun."
+  },
+  {
+   "ref": "J-03",
+   "verdict": "kismen",
+   "evidence": "main.js:97'deki settings.apply() post.setQuality'yi (post.js:60-93) çağırıp composer'ı kuruyor. main.js:112'deki compileAsync(engine.scene, engine.camera) ise hiçbir çizim hedefi bağlı değilken çalışıyor: oyun kodunda setRenderTarget hiç yok, yalnız post.js:71 hedef oluşturuyor. three.module.js:7257-7263 ton eşlemeyi yalnız hedef null iken açıyor, :7295 outputColorSpace'i aynı koşula bağlıyor. İkisi de program önbellek anahtarında (:7532, :7580); bu yüzden RenderPass hedefine çizim ayrı bir program istiyor. compile() (:17223-17330) sahneyi traverse ediyor ama gölge derinlik ve son işleme malzemelerini derlemiyor. 10. belge §10.9.1 (yüksek/orta 89, düşük 40) ve taban koşusu (menü 86, liman 95 program) bu açıklamayla tutarlı. v0.3 main.js:111 ve aynı engine/post ayarları.",
+   "correction": "Kök neden doğru. Etki büyüklüğü ölçülmedi. İlk karede yalnız görünen içeriğin programları derleniyor; kalanlar ilk görüldüklerinde derleniyor (J-17 ile aynı mekanizma). Takılma oturum başına bir kez oluyor ve tarayıcının gölgelendirici disk önbelleği sonraki açılışları hafifletiyor. J-17 'orta' iken bunun 'yüksek' olması tutarsız; 'orta' öneriyorum. Tekrar üretme adımındaki 'ilk kare çizilmeden' koşulu güvenilir değil, çünkü window.DK motor başladıktan sonra tanımlanıyor. Bunun yerine efekt 'low' ve 'high' iken iki ayrı açılışta program sayıları karşılaştırılmalı."
+  },
+  {
+   "ref": "UC1",
+   "verdict": "kismen",
+   "evidence": "docs/12_PERFORMANS_RAPORU.md:10'da '1 045 | 1,25 M' yazıyor. Dosya v0.3 ve v0.4 ağaçlarında birebir aynı (762f1c7 ile diff boş). docs/01_PROJE_ANALIZ_RAPORU.md:79'da '380–1 045' var. Ölçüm tests/scenarios/v03/perf1.js:2'deki measure() ile yapılmış (autoReset=false + post.render). v0.4 değerleri: 10. belge §10.2'de 1 032→999, §10.5'te 1 036, §10.9.1'de 1 000, §10.9.2'de 1 022; 12. belge :109'daki perf1 A/B koşusunda 1 021/1 019. Taban 09_performans.json adım 5: 1 035 çağrı, 1 253 702 üçgen, 753 geometri, 200 doku, 95 program, 2,67 ms, 640×360; doğru.",
+   "correction": "v03 için 'dogru' hükmü yerinde. v04 de 'dogru' sayılmalı: iddia 'yaklaşık 1 045 raporlanmış' diyor, bu satır v0.4 deposunda aynen duruyor ve v0.4'ün kendi ölçümleri 999–1 036 arasında (son ölçüm 1 035, %1 fark). Tek ayrıntı, 1 045'in v0.3 koduyla ölçülmüş olması."
+  },
+  {
+   "ref": "SYS1",
+   "verdict": "kismen",
+   "evidence": "Bırakma kodu: character.js:492-500, animals.js:736-745, islands.js:427-436. Taban koşusunda adım 13/14/16 geçti; 12. belge :50, :254 ve :257'de 9/9. Ancak iki sorun var. (1) Character.hold (character.js:646-649) önceki prosedürel eşyayı dispose etmeden çıkarıyor. _disposeModel yalnız build() sırasında ownGeo/ownMat işaretlenen örgüleri bırakıyor. Bu yüzden kılıçlı (haydut, enemies.js:83) ve tabancalı (Nişancı, :89) düşmanlar her ölümde silahlarını sızdırıyor. Tohumları Node'da yeniden ürettim (/tmp/denetim_alan/karsit_J/enemy_weapon_seed.mjs): testteki 103 tohumlu haydut 'sword' alıyor. Ama 14. adım kamerayı Yankı Mağarası'nın yarasa bölgesine (animals.js:758) bırakıyor, düşmanlar ise ~7,6 km ötede Kadim Tapınak'ta (1900,7400) doğuyor. Ekran dışındaki kılıç hiç GPU'ya yüklenmediği için sayaç sızıntıyı göremiyor. (2) Ada döngüsünde dropG=0 (adım 20: öncesi=sonrası=418 geometri). Sayılan geometri ada kurulu olsa da olmasa da değişmiyor; malzeme ve örnek tamponları info.memory'de hiç sayılmıyor.",
+   "correction": "Durum 'calisiyor_gelistirilmeli' olmalı. Ada ve hayvan bırakma doğru çalışıyor; düşmanlarda elde tutulan prosedürel silah bırakılmıyor (missed: elde tutulan eşyalar). Testin düşman döngüsü kamerayı düşmanlara çevirmeli. Bu sistemin dışında kalan bırakılmayan yollar da var: Ship.rebuild ve _syncHoles (missed); post.setQuality'de UnrealBloomPass'in 11 HalfFloat hedefi bırakılmıyor (post.js:65; EffectComposer.dispose yalnız kendi hedeflerini bırakıyor, EffectComposer.js:354-361), bu da efekt ayarı her değiştiğinde 1080p'de ~15 MB, 2880×1800'de ~38 MB sızıntı demek (düşük öncelik); RemotePlayer'ın etiket sprite'ı ve CanvasTexture'ı da bırakılmıyor (net.js:75-85, 125; düşük)."
+  },
+  {
+   "ref": "SYS2",
+   "verdict": "kismen",
+   "evidence": "tests/scenarios/11_arayuz_sizinti.js üç şeyi ölçüyor: 3 açılışta window 'mouseup' dinleyici sayısı, oluşturucu kapanınca rAF döngüsünün durması, üstte panel varken ikinci haritanın açılmaması. Taban 6/6, 12. belge :51'de 6/6. WebGL tarafı ise testte hiç sınanmıyor: creator.js:26 her açılışta yeni bir WebGLRenderer kuruyor, :158'deki cleanup r.dispose() ve forceContextLoss çağırıyor, ama test bağlam sayısına ya da kayıp olayına bakmıyor.",
+   "correction": "Dinleyici ve rAF temizliği test edilmiş. 'WebGL temizliği' ise yalnız kodda var; bu kısım 'dogrulanmamis'. Teste webglcontextlost olayı ya da açık bağlam sayısı denetimi eklenmeli."
+  },
+  {
+   "ref": "SYS3",
+   "verdict": "dogrulandi",
+   "evidence": "islands.js:27-31'de BUILD_D 750, DROP_D 1150, STEP_MS 3, NEAR_D 250. update (:271-312) iş başına 3 ms bütçe kullanıyor, oyuncu yakındaysa bütçe sınırsız. _buildGen (:340-366) bitki örtüsünü 64 örnekte bir, her yapıyı, NPC'yi ve örnek grubunu ayrı adımda kuruyor; _runJob :368-394. Taban 13_donma.json'da 9 kontrolün 9'u geçti. P01: kareSayisi 16, enUzunAdaKaresiMs 10,5, isMs 70,3, p99 5,2. P02'de 5 adanın hepsinde 'ayni' true. 12. belge :254 ve :257'de 9/9. NEAR_D içinde eşzamanlı kurulum tasarım gereği; J-29 notu doğru."
+  },
+  {
+   "ref": "SYS4",
+   "verdict": "dogrulandi",
+   "evidence": "enemies.js:1594-1605: hedefsiz düşman >90 m'de 0,25 sn, >45 m'de 0,066 sn aralıkla güncelleniyor; hedefli düşman seyreltilmiyor. :1539-1569: gruplar <140 m'de doğuyor, >220 m'de kaldırılıyor. 05_dusman_ai.js:38'deki F-08, 100 m'deki hedefsiz düşmanın seyreltildiğini ve hedefli düşmanın her adımda güncellendiğini sınıyor. Taban adım 24 geçti; adım 25 {accNoTarget 0,217, accTarget 0}. 12. belge :45'te 18/18.",
+   "correction": "Hüküm değişmiyor. Not: 45–90 m bandı ve 140/220 m doğma/kaldırma sınırları ayrıca sınanmıyor; kazanç da ölçülmedi."
+  },
+  {
+   "ref": "SYS5",
+   "verdict": "kismen",
+   "evidence": "fish.js:346-385 _populate oyuncu çevresinde 260 m içinde 16 sürü tutuyor; :387'den sonrası update; :326-328 tür başına InstancedMesh, frustumCulled=false. 13_donma.js:56'daki P07 yalnız sürülerin hareket ettiğini, NaN olmadığını ve örnek sayısının sıfırdan büyük olduğunu denetliyor (taban: 16 sürü, 313 örnek, hareket 2,2, nan false). 'Ayırma azaltma' (çağrı başına 97,5→35,1 KB) ise 10. belge §10.8.4'te ve 16.8'de geçen tek seferlik bir örneklemeli profil ölçümü; tests/ altında ayırmayı ölçen tekrarlanabilir bir test yok.",
+   "correction": "Benzetimin geçerliliği test edilmiş; ayırma azaltması yalnız bir kez ölçülmüş, test edilmemiş ('dogrulanmamis'). Durum 'calisiyor_gelistirilmeli' olmalı ya da sistem adı yalnız 'balık sürüsü benzetimi' ile sınırlandırılmalı. Mesafeye bağlı benzetim seyreltmesinin olmadığı notu doğru."
+  },
+  {
+   "ref": "REQ1",
+   "verdict": "dogrulandi",
+   "evidence": "Kaynak docs/12_PERFORMANS_RAPORU.md:10 ve tests/scenarios/v03/perf1.js:2. docs/v05/taban_kosusu_44d548c/09_performans.json adım 5'teki değerler (size [640,360]) birebir tutuyor: 1 035 çağrı, 1 253 702 üçgen, 753 geometri, 200 doku, 95 program, 2,67 ms; 00_BASLANGIC_KAYDI.md:58 de aynı. Not: bu taban Faz 0'da 44d548c koduyla kaydedildi; v0.4 belgelerindeki son değer §10.9.2/16.8'deki 1 022 ve farklı bir yöntemle ölçülmüş."
+  },
+  {
+   "ref": "REQ2",
+   "verdict": "dogrulandi",
+   "evidence": "SYS4 ile aynı kanıtlar: enemies.js:1594-1605 ve :1539-1569; F-08 (05_dusman_ai.js:38) tabanda geçti (adım 24-25); 12. belge 18/18. Kazancın ölçülmediği ve animasyonun da aynı seyrek adımla güncellendiği notları doğru."
+  },
+  {
+   "ref": "REQ3",
+   "verdict": "dogrulandi",
+   "evidence": "09_performans.js:9 'liman' ölçümünü alıyor, :10 ≤1100 çağrı ve benzetim <40 ms koşulunu denetliyor. Taban adım 5-6 geçti (1 035 çağrı, 1 253 702 üçgen, 95 program). Not: 40 ms sınırı kare süresi değil benzetim maliyeti; 1 100'lük bütçe de ölçülen değerin yalnız %6 üstünde, yani gevşek bir tek kare ölçümü (J-15)."
+  },
+  {
+   "ref": "DOC1",
+   "verdict": "kismen",
+   "evidence": "§10.2'deki 'Sonra (Aşama 8 sonu, tek tarayıcı, aynı senaryo)' tablosu o anki kodun tarihsel ölçümü; son kodun 1 035 sonucu onu yanlışlamıyor. Aşama 8'in azaltma yöntemi son kodda hâlâ duruyor: character.js:478-480 ve animals.js:412'de yarıçapı <0,07 m olan parçalar gölge atmıyor. Aşama 9'dan sonraki donma turunda §10.9.1 limanda 1 000 ölçmüş; 12. belge :109'daki perf1 A/B'de 1 021/1 019. 2e2a1f6..44d548c arasında port.js (iskele uzatma, direkler), props.js (yeni sandık/kapak/bant örgüleri), seagear.js (+531 satır) ve cave.js değişmiş.",
+   "correction": "Belge ifadesi 'yanlış' değil 'eskimiş': 999 Aşama 8 sonundaki kod için geçerli, son kod için değil. §10.6'daki '1 036 → 999' özeti güncel durum gibi okunabiliyor. 'Azalma kaybolmuş' yorumu da desteklenmiyor: yöntem duruyor, artış büyük olasılıkla sonraki turlarda eklenen içerikten geliyor. Kesin kaynak için A/B koşusu gerekir."
+  }
+ ],
+ "missed": [
+  {
+   "title": "Elde tutulan prosedürel eşyalar (kılıç, tabanca, kürek, olta, zıpkın, ağ, meşale) her hold() çağrısında yeniden kuruluyor; eskisi ve ölen düşmanın silahı GPU'dan hiç bırakılmıyor",
+   "file": "js/player/character.js",
+   "func": "Character.hold (646-694), Character._disposeModel (492-500), std (12), makeSword (194), makePistol (230), makeTorch (328). Çağıranlar: player.js:97/111-112/305/729/816/968, shipControl.js:176/185/211/236/260, net.js:115, enemies.js:284/1029/1047",
+   "rootCause": "hold() önceki eşyayı yalnız parent.remove ile çıkarıyor, dispose etmiyor (character.js:648-649). make* fabrikaları her çağrıda yeni geometri, std() de her çağrıda yeni malzeme üretiyor; Node ile denedim, iki çağrı arasında hiç ortak geometri yok. _disposeModel yalnız build() sırasında ownGeo/ownMat işaretlenen örgüleri bırakıyor. hold() ile sonradan eklenen eşyalar işaretsiz kaldığı için Character.dispose (düşmanın ölmesi ya da kaldırılması, uzak oyuncunun ayrılması) onları da bırakmıyor. three.js r187'de bir kez çizilip dispose edilmemiş geometrinin tamponları WebGLBindingStates önbelleğinde kalıyor (three.module.js:1684 bindingStates[geometry.id], :1804-1846 saveCache). renderer.info.memory.geometries de yalnız dispose'ta azalıyor (:3863-3900). v0.3'te de aynı (character.js:566-569; v0.3'te dispose hiçbir şey bırakmıyordu). J listesinde ve 11/02 belgelerinde yok.",
+   "impact": "Node ölçümüne göre (/tmp/denetim_alan/karsit_J/held_leak.mjs) kılıç 12 geometri, 9 malzeme ve ~49 KB tampon; tabanca 10 geometri, 3 malzeme, ~58 KB; meşale 3 geometri, 3 malzeme ve bir PointLight. Oyuncu her dümen, top, kürek, tırmanma, yüzme ya da taşıma geçişinde ve her kuşanma tuşunda yeni bir eşya kuruyor. Bu yüzden uzun oturumda geometri sayacı ile GPU ve JS belleği adım adım büyüyor; saatte yüzlerce geçişte onlarca MB. Düşmanlarda haydutların ~%33'ü kılıç (enemies.js:83), Nişancıların hepsi tabanca (:89) taşıyor; her ölüm ya da kaldırma bir silah sızdırıyor. Kızıl Hançer (:112) her menzilli atış döngüsünde kılıçla tabanca arasında geçiş yapıyor (:1029/:1047) ve her seferinde yeni tabanca kuruyor. Co-op'ta uzak oyuncunun her ekipman değişikliği diğer istemcilerde sızıntı yaratıyor. Meşalenin yeniden kurulması ışık sayısını da değiştiriyor (J-08). 09_performans düşman döngüsü bunu yakalayamıyor: 103 tohumlu haydut kılıç alıyor ama kamera başka yere baktığı için kılıç GPU'ya hiç yüklenmiyor.",
+   "priority": "orta",
+   "fix": "Prosedürel eşyaların geometri ve malzemelerini modül düzeyinde tür başına bir kez üretip paylaştır (kit eşyalarındaki gibi; clone(true) yalnız Object3D'yi kopyalar). Bu olmazsa hold() içinde eski prosedürel eşyayı disposeTree ile bırak; kit klonlarını hariç tut, çünkü onlar şablonla paylaşımlı. _disposeModel'de held ve heldL'yi de bırak. Tercihen karakter başına tür önbelleği tutup yalnız görünürlüğü değiştir; böylece dümen ve yüzme geçişlerinde yeniden kurma olmaz. Meşale ışığını kalıcı bir ışığa bağla (J-08). 09_performans düşman döngüsü kamerayı doğan düşmanlara çevirmeli.",
+   "repro": "Limanda, kamera oyuncuya bakarken: r=DK.engine.renderer.info.memory; p=DK.G.player; DK.post.render(); g0=r.geometries; for(let i=0;i<20;i++){ p.char.hold('sword'); DK.post.render(); p.char.hold(null); DK.post.render(); } r.geometries-g0 → ≈ +240 (20×12). Düşman için: kamera oyuncuya bakarken e=DK.enemies.spawn('haydut', p.pos.x+3, p.pos.z+3, {seed:103}); DK.post.render(); e.dispose(); DK.post.render(); her döngüde geometri ≈ +12 artar.",
+   "acceptance": "Isınmadan sonra 20 hold/bırak döngüsünde geometri ve doku büyümesi 0. Kılıç ve tabanca taşıyan düşmanlar kameranın görüşündeyken 3×4 doğur/kaldır döngüsünde dG=dT=0. 09_performans düşman döngüsü kamerayı düşmanlara çevirir ve kılıçlı bir tohum içerir. Eşyalar görsel olarak değişmez."
+  },
+  {
+   "title": "Gemi yeniden kurulumu (rebuild) eski gemi modelini ve delik görsellerini bırakmıyor: her limanda tamirde, görünüm değişikliğinde ve acil direkte tüm model sızıyor",
+   "file": "js/ship/ship.js",
+   "func": "Ship._build (57-64), Ship.rebuild (66-73), Ship._syncHoles (235-251). Çağıranlar: shop.js:179-191 repairShip (:188), shop.js:234-242 setShipLook (:238), shipControl.js:120, net.js:617/631, ship.js:722, main.js:332",
+   "rootCause": "_build eski kökü yalnız scene.remove ile çıkarıyor (ship.js:58); disposeTree yalnız Ship.dispose'ta çağrılıyor (ship.js:739-744). Gemi modeli her gemi için kendi geometri ve malzemelerini üretiyor (shipModel.js; ship.js:736-738'deki yorum da bunu söylüyor). _syncHoles her çağrıda tüm delik gruplarını dispose etmeden atıp yeniden kuruyor; her delik 1 CircleGeometry+MeshBasicMaterial ve 4 BoxGeometry+MeshStandardMaterial içeriyor. Ağ tarafı biliniyor: B-02 (her mastFix iletisinde rebuild) ve docs/v05/tasarim/FAZ2_AG_GUVENLIGI_TASARIM.md:1247 (rebuild düzeltmesi planlı). Ama J listesinde ve 11. belgede yok. v0.3'te de aynı (ship.js:56-63, 234-237).",
+   "impact": "Node sayımına göre (/tmp/denetim_alan/karsit_J/ship_leak.mjs) her rebuild'de sloop için 82 geometri, 21 malzeme ve ~226 KB; brigantin için 120 geometri, 29 malzeme ve ~316 KB köşe ve indis tamponu GPU'da (bindingStates üzerinden JS yığınında da) kalıyor. Tek oyunculuda olay başına ~0,2–0,3 MB GPU artı benzer miktarda JS belleği gidiyor; bu her limanda tamirde ve her görünüm değişikliğinde tekrarlanıyor. Co-op'ta konuklar her görünüm, mastFix ve netShipFull iletisinde modeli yeniden kuruyor; B-02 açığıyla bu sınırsız tetiklenebilir. 09_performans'ın gemi döngüsü yalnız new Ship ve dispose'u sınadığı için bunu yakalamıyor.",
+   "priority": "orta",
+   "fix": "_build'de önce eski kökteki userData.loot çocuklarını ayır (Ship.dispose'ta olduğu gibi; treasure.js:546 keseyi yeni köke taşıyor), sonra eski köke disposeTree uygula. Gemiye bağlı düşman işaretçilerini (enemies.js:1427, ship.root.attach) yeni köke taşı. _syncHoles'ta eski grupların geometri ve malzemelerini bırak ya da delik geometrisi ve malzemesini modül düzeyinde paylaştır.",
+   "repro": "Limanda gemi görünürken: r=DK.engine.renderer.info.memory; DK.post.render(); g0=r.geometries; for(let i=0;i<5;i++){ DK.G.ship.rebuild({}); DK.post.render(); } r.geometries-g0 → ≈ +400 (5×~80). Delik için: 8 kez DK.G.ship.addHole(new DK.THREE.Vector3(1,0,i-3)) çağırıp her seferinde render et, sonra tüm delikleri repairHole ile onar → geometri sayacı başlangıç değerine dönmüyor.",
+   "acceptance": "Isınmadan sonra 5 rebuild ve 8 delik ekle/onar döngüsünün sonunda dG=dT=0. Rebuild'den sonra ganimet keseleri güvertede kalıyor. 09_performans'ın gemi döngüsüne rebuild ve delik adımları eklenmiş."
+  }
+ ]
+}

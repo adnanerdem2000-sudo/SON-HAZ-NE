@@ -1,0 +1,187 @@
+{
+ "verdicts": [
+  {
+   "ref": "G-01",
+   "verdict": "kismen",
+   "evidence": "Hatanın kendisi doğrulandı. islands.js:956-967 (_prison): hücre kaydında cond yok, eylemde freed.has denetimi yok; kayıt yalnız kurulumda atlanıyor (956). islands.js:1149-1157 _interactables freed kümesine bakmıyor. interact.js:61-65 hold dalında holdT eşiğe ulaşınca sıfırlanıyor ve best.action yeniden çağrılıyor; aday kimliği aynı kaldığı için süre korunuyor (44), input.isDown tüketilmiyor. Gardiyan sayısı 0 iken (959) her çağrı +120 altın (963) ve prisonerFreed üretiyor (965 → progress.js:84, +80 XP). 60/2,5 = 24 tetik/dk → dakikada 2 880 altın ve 1 920 XP (XP seviye tavanına kadar). v0.3'te islands.js:762-773 ve interact.js:61-65 birebir aynı. Kök neden, etki, öncelik (kritik: sınırsız kazanç), düzeltme ve kabul testi doğru. YANLIŞ olan knownAs: hata 02_HATA_LISTESI.md:1340-1342'de 'G_icerik-ek-statik-159 — Tutsak kurtarma etkileşimi serbest bırakmadan sonra kalıyor: E basılı tutulduğunda her 2.5 s +120 altın ve +80 XP yeniden veriliyor' başlığıyla kayıtlı. Önem: Yüksek; §2c 'Ek bulgular (tek mercek, doğrulanmadı)' altında. 03, 11 ve 16'da kapatma kaydı yok ve kod değişmemiş, yani madde açık.",
+   "correction": "knownAs şöyle olmalı: '02: G_icerik-ek-statik-159 (Yüksek, doğrulanmamış ek bulgu, v0.4'te açık); ilgili madde: 02 G_icerik-ek-statik-163 (tutsak altını shop.earn dışından veriliyor)'. Ek not: Tuşu bırakıp yeniden 2,5 sn basılı tutmak da ödülü yineliyor. Sömürü sürekli basılı tutmaya bağlı değil."
+  },
+  {
+   "ref": "G-02",
+   "verdict": "dogrulandi",
+   "evidence": "net.js:510-522: _sendWorld yalnız ship, chests, pickups, quests, time ve rowboat taşıyor. main.js:193: konuğun game.start verisi yalnız {player, progress, quests}. islands.start (253-267) ve hazards.start (76-84) boş kümelerle başlıyor. main.js:203: konuk kaydı opened, freed, temples, solved, looted ve gone kümelerini yazmıyor. main.js:320-336: applyWorld bu durumları uygulamıyor. Tapınak, tutsak ve sandık için ağ iletisi yok; yalnız netHazard canlı olayları var (net.js:148, 360, 566). Ödüller konukta yerel üretiliyor: lootToBag (treasure.js:95-100), tutsak altını (islands.js:963), XP (progress.js:84-86). enemies.js:1240-1242: net() grup kimliği taşımıyor. applySnapshot (1655) kopyayı {id} ile yaratıyor, bu yüzden islands.js:959'daki gardiyan sayımı konukta 0. Düşman AI'si yalnız ev sahibinde (1593, 1604). Konuk menüye dönünce toMenu→saveNow (main.js:216-219, 201-205) kazancı kaydediyor. v0.3'te de aynı eksik var (v0.3 net.js:386-397, main.js:191). v0.3'te ada sandığı ganimeti konukta toplanamayan yerel keseydi (v0.3 treasure.js:418-447, net.js:141 ve 250); tutsak altını ve XP ise kalıcıydı (v0.3 main.js:201, progress.js:92-103). knownAs doğru (02:1516-1518 G_icerik-ek-statik-164 'Düşük'; 02:1585 özet). Öncelik 'kritik' tanıma uyuyor (yeniden katılımla sınırsız kazanç).",
+   "correction": "Küçük düzeltmeler: (1) _chest ile kurulan sabit ada sandığı 57 adet: harabe 22, mezarlık 2, maden 2, yıkık kasaba 1, karaya oturmuş gemi 26, batık şehir 4. 58 sayısı sunak eklenince çıkıyor; metinde sunak ayrıca da sayıldığı için çift sayım var. (2) Sunak sandığı G-03 nedeniyle erişilemiyor, bu yüzden 'sunağı yeniden alma' pratikte yapılamaz. (3) Yeniden katılım gerekmeden de, aynı oturumda konuk ev sahibinin açtığı her sandığı bir kez daha açabiliyor (çift ganimet)."
+  },
+  {
+   "ref": "G-03",
+   "verdict": "dogrulandi",
+   "evidence": "islands.js:821: stairs_wide col'suz, yalnız görsel. islands.js:822: addPlatform(cx, cz−12, 6, 6, 0, y0+5,1·1,6·0,98 ≈ y0+8,0). physics.js:71-77: top>3 olduğu için yan kutu −50 ile top−0,6 arasında, yani katı blok. physics.js:87-96: groundAt platformu yalnız top ≤ ayak+0,6 iken sayıyor. player.js:17 GRAV −22 ve player.js:558 vel.y=7,4 → zıplama 1,24 m. Sütunlar kutu çarpıştırıcı, üstlerine çıkılamıyor. Tırmanma kipi yalnız gemi merdiveni için var (player.js:957-976). Sunak etkileşimi (857): y=y0+8,96, r=3, konum cz−14. _interactables (1155) |Δy|>3,5 iken istemi vermiyor. Yan kutu (cz−18…cz−6, cx±6) yatayda da sunak noktasına 3 m'den yaklaşmayı engelliyor. GLB ölçümü (kit_dungeon.glb, nicemlenmiş POSITION × düğüm ölçeği 3,5): stairs_wide 7×5,1×4 birim; ×1,6 ile 11,2×8,16×6,4 m. v0.3'te yan kutu yok (physics.js:69-75), ama aynı basamak kuralı ve |Δy| şartı (v0.3 islands.js:959 ve 671) olduğu için sunak yine erişilemez. templeLooted'ı dinleyen kod yok (grep); kayıp yalnız ödülün kendisi. Kayıtlar: 02:1328-1335 (B_dunya-ek-statik-34 ve çalıştır-37, Yüksek), 02:968 D-13, 14_YOL_HARITASI.md:19 (#9); 11'de yok. 12_TEST_PLANI satır 16: 'bulmaca akışı uçtan uca oynanmadı' (KISMİ)."
+  },
+  {
+   "ref": "UC1",
+   "verdict": "kismen",
+   "evidence": "Sekiz bölge iki sürümde aynı tanımla var: v0.3 ve v0.4 archipelago.js:38-165 karşılaştırması fark vermiyor; tests/node/archipelago_sabit.mjs bu doğrulamada da GEÇTİ. Oynanış değerlendirmeleri doğru (bkz. UC2–UC9). Ancak 'Hiçbirinin özel bölgeyi sınayan bir testi yok' cümlesi fazla genel ve UC5 ile UC9'la çelişiyor. Şu testler özel bölgelere dokunuyor: 13_donma P02 (pazar, tapınak, hapishane kurulum eşdeğerliği), P08 (tapınak bulmacası kalıcılığı: kapı, boss koşulu), 16_kosu_poz_ganimet T08 (Korsan Kasabası sandık eylemi), 09_performans (Kadim Tapınak kurulumu). Hepsi 12. belgede ve taban koşusunda GEÇTİ.",
+   "correction": "Doğru ifade: 'Özel bölgelerin oynanış amacını uçtan uca sınayan test yok; yalnız kurulum (P02, 09_performans), tapınak bulmacası kalıcılığı (P08) ve kasaba sandığı eylemi (T08) sınanıyor.' v03 ve v04 için 'kismen' hükümleri doğru."
+  },
+  {
+   "ref": "UC2",
+   "verdict": "dogrulandi",
+   "evidence": "archipelago.js:113-117 ve 319-320 (flatten r 90, h −11). islands.js:1025-1038; v0.3 _sunken ile fark yok. 26 kalıntı 6–76 m'de, 4 sandık 20–60 m'de, ilki zengin. Düşman grubu, bulmaca ve oda yok; dünya genelindeki tek köpekbalığı (fish.js:495-560) bölgeye özgü değil. EXTRA_WRECKS kaydı (archipelago.js:329) hiçbir modülde çizilmiyor, yalnız içe aktarılıyor. Sandık durumu v0.4'te islands.save (269) ile kaydediliyor; v0.3'te kaydedilmiyordu (B02). Dalış 14_deniz_ekipmani D01 ile sınanıyor ve dibe inilebiliyor (player.js:766-768), yani sandıklara ulaşılabilir. Batık şehri kuran ya da sınayan senaryo yok."
+  },
+  {
+   "ref": "UC3",
+   "verdict": "dogrulandi",
+   "evidence": "archipelago.js:129-133 (obsidyen), 145-149 (gumus_madeni, undead:true). islands.js:870-897. v0.3 islands.js:683-703'te kemer col:false ve siyah düzlemin çarpıştırıcısı yok; v0.4 883-889'da girişi addBox kapatıyor. Ocak içi ya da geçit yok. hazards.js:118-129: madende 3 fıçı, 2 kırılabilir sandık ve kaya tuzağı var. 'undead' ve 'mini' bayrakları hiçbir yerde okunmuyor; grep yalnız archipelago.js:52 ve 148'i buluyor."
+  },
+  {
+   "ref": "UC4",
+   "verdict": "dogrulandi",
+   "evidence": "archipelago.js:157-163. islands.js:755-785: mahzen col:true (girilemez), 2 zengin sandık. quests ve hikâye kodunda korsan_mezarligi başvurusu yok (grep). Küçük ayrıntı: enemies.js:1549-1555'e göre gündüz listesi (iskeletler) her saatte doğuyor; gece listesi (hayaletler, 2. mezarlıkta hayalet_kaptan) ona ek olarak geliyor.",
+   "correction": "'Gündüz iskeletler, gece hayaletler' yerine 'iskeletler her zaman, gece ek olarak hayaletler ve Hayalet Kaptan' daha doğru. Hüküm değişmiyor."
+  },
+  {
+   "ref": "UC5",
+   "verdict": "dogrulandi",
+   "evidence": "archipelago.js:100-107. islands.js:788-867: levyeler 840, yazıt 853, kapı 804-817, sunak 857-862. Boss tetikleyicisi bosses.js:1088. 02:1698 T05 ve 11 #34 kapalı; 13_donma P08 taban koşusunda 9/9 içinde geçiyor. Sunağın erişilemediği G-03'te doğrulandı. Tapınak tek katlı; iç oda ya da alt kat yok. Not: Levye sırası kurulum LOD'una göre değişebiliyor (11 #35, G-07), ama yazıt aynı kurulumdan okunduğu için tek oyunculu oyunda tutarlı."
+  },
+  {
+   "ref": "UC6",
+   "verdict": "dogrulandi",
+   "evidence": "archipelago.js:55-59: açıklama 'Yalnızca geceleri kurulan'. islands.js:900-911: 5 çadır, fener, kaçakçı ve 'Sorgusuz Alıcı' saat koşulu olmadan kuruluyor. quests.js:447-452: kaçakçı 05–20 arasında satışı reddediyor. shop.js:40-44: usta kılıç, tabanca ve zıpkın ile harita satıyor; buys.tas çarpanı 1,25. 13_donma P02 yalnız karelere bölünmüş kurulumla eşzamanlı kurulumun eşdeğerliğini sınıyor."
+  },
+  {
+   "ref": "UC7",
+   "verdict": "dogrulandi",
+   "evidence": "archipelago.js:140-144: 5 düşman. islands.js:932-970: 3 tutsak, +120 altın, prisonerFreed → progress.js:84 +80 XP. G-01 ve G-02 doğrulandı. v0.3'te islands için save yoktu (B02). Hapishane yalnız 13_donma P02'de kuruluyor; serbest bırakma akışını sınayan senaryo yok. Yani 'Test yok' ifadesi oynanış testi anlamında doğru."
+  },
+  {
+   "ref": "UC8",
+   "verdict": "dogrulandi",
+   "evidence": "archipelago.js:60-64. islands.js:973-998: dönen hüzme (gece ya da yağmurda görünür), lamba ve physics.addCircle var; B.inter, sandık, düşman ve hazards seti yok. POI simgesi 'peak' (archipelago.js:292). Tek getirisi tüm POI'lerde ortak olan keşif XP'si (quests.js:268-272 → progress.js:79, +25). f.r olmadığı için fener bitki dışlama listesine de girmiyor (islands.js:446). 'Var ama oynanış amacı yok' anlamında 'kismen' doğru."
+  },
+  {
+   "ref": "UC9",
+   "verdict": "dogrulandi",
+   "evidence": "archipelago.js:46-54. islands.js:914-929 (sandık 928). _camp (676-694) ve _fort (697-714) sandık içermiyor. hazards.js:118-129: kampta 2 fıçı, 2 sandık ve kaya tuzağı; kalede 4 fıçı ve 3 sandık, kaya tuzağı yok. 'mini' bayrağı okunmuyor. T08 (16_kosu_poz_ganimet.js:133), 'fort' içeren ilk ada olan korsan_kasabasi'nin 'chest:' kaydını doğrudan it.action(p) ile açıyor (yıkık kasaba sandığı). Sonuç 12. belgede ve taban koşusunda 23/23."
+  },
+  {
+   "ref": "SYS1",
+   "verdict": "dogrulandi",
+   "evidence": "Node testi yeniden koşuldu: GEÇTİ {islands:67, autoFeatures:22, added:{wrecks:14, pois:22, mods:8}}. worldData ve archipelago içe aktarılarak yapılan bağımsız Node sayımı: 73 = 6 + 23 + 44. Bölge: merkez 19, buzul 12, tropik 13, volkan 10, çöl 11, hayalet 8. Biyom: tropik 18, cangıl 13, buzul 12, volkan 10, çöl 11, hayalet 9. r 38–540 (yeni adalarda medyan 95), h 6–165. POIS 84, DIG_SITES 123, WRECKS 28, FISH_ZONES 81, BOSS_SITES 4. Kit parça adları GLB düğüm adlarıyla eşleşiyor; şablonlu adlar açılınca eksik yok. 07_dunya_kesif D01/D04 ve Node sonucu 12. belgede (satır 47 ve 54) ve taban koşusunda kayıtlı (summary.txt: 07_dunya_kesif PASS=10, node_archipelago rc=0). Not: D01 yalnız WORLD_HALF sabitini sınıyor. Dünya kenarı davranışı (ship.js:373-379, player.js:761) testsiz ama kod doğru."
+  },
+  {
+   "ref": "SYS2",
+   "verdict": "kismen",
+   "evidence": "Adı geçen testler çekirdek adaların yalnız bir bölümünü sınıyor: 15 I01–I06 ve 07 D03/D07/D08 (Kırlangıç iskelesi ve limanı), 17 K07 (Yankı Mağarası kamerası), 16 T01 (kabuk), 14 L02 ve 16 T08 (Martı Batığı sandığı). 05 'F-07' (05_dusman_ai.js:26-27) yalnız 'kamp' grubunun bekleme süresinin kayıt turunu sınıyor, ada içeriğini değil. v0.4'te şunları sınayan senaryo yok: Kemik Adası (harabe halkası, mezarlık, 3 düşman grubu), Martı Adacığı'nın ilk hazinesi ve kazı akışı, Papağan, İkiz Resifi, 12 çekirdek kazı noktası ve ipucu, Morvan ile Kızıl Hançer tetikleyicileri (quests.js:276-292). Kazı yalnız eski tests/scenarios/v03/* içinde geçiyor ve 12. belgede ayrı kaydı yok.",
+   "correction": "Sistemin tamamı için 'calisiyor_test_edilmis' doğru değil. Kırlangıç limanı ve iskelesi, mağara kamerası ve Martı Batığı sandığı: 'calisiyor_test_edilmis'. Çekirdek adaların geri kalan içeriği: 'dogrulanmamis'."
+  },
+  {
+   "ref": "SYS3",
+   "verdict": "dogrulandi",
+   "evidence": "geo.js:92-95 normal profil. Node sayımı: özel ve çekirdek adalarda normal 17, yordamsal adalarda 19. D02 (07_dunya_kesif.js:10) ve D02b (14) 12. belgede ve taban koşusunda GEÇTİ. Not: D02 ve D02b yalnız EXTRA_ISLANDS (67) üzerinde koşuyor; 6 çekirdek ada testte yok (denetçinin ek computeHeight ölçümü onları kapsıyor)."
+  },
+  {
+   "ref": "SYS4",
+   "verdict": "dogrulandi",
+   "evidence": "geo.js:77-78. Node sayımı: 5 özel ada (gizli_pazar, fener_kayasi, derin_yarik, batik_sehir, kara_girdap) ve 7 yordamsal ada. archipelago.js:255'teki otomatik kural sivri adada beach_wreck seçiyor. r ≤ 85 olan sivri adacıkların (ada_buzul_5/6, ada_col_1, ada_hayalet_2/3) tek içeriği batık; büyük olanlarda kamp var (ada_col_0, ada_col_5). Kendi Node arazi erişim taramam (0,75 m ızgara, player.js:569-584 kuralı) sivri adalardaki pazar ve fener noktalarını kıyıdan erişilebilir buldu."
+  },
+  {
+   "ref": "SYS5",
+   "verdict": "dogrulandi",
+   "evidence": "geo.js:81-91: kıyı tabanı d→1'de sıfıra iniyor, havuz geçişi sürekli. 11 #21 kapalı; iç kıyının dikliği tasarım kararı. D02b GEÇTİ (15. belge satır 18: 433 → 0). Adalar: Timsah Bataklığı ve ada_tropik_0/2/3/5. Node ile ada_tropik_5_kazi_0'ın −1,40 m'de olduğu doğrulandı. G-04 için not: computeHeight ile 123 noktanın 9'u 0,2 m'nin altında. 3,7 m içinde kuru zemini olmayan 6 nokta var; denetçinin sayısı doğru. Benim 0,75 m ızgaralı taramam ada_merkez_6_kazi_0'ı da (−0,47 m; en yüksek komşu zemin 0,25 m, 3,69 m uzakta) sınırda erişilemez buldu."
+  },
+  {
+   "ref": "SYS6",
+   "verdict": "dogrulandi",
+   "evidence": "geo.js:79-80. sky.js:356 (buzul sisi) ve 380 (uSnow). islands.js:445: Buzdişi için alan/34 = 17 085, ×0,55 = 9 397; 7 000 sınırına takılınca istenen yoğunluğun %74,5'i kalıyor (doğrulandı). Adalar: Buzdişi ve ada_buzul_4. D02 ve D02b GEÇTİ."
+  },
+  {
+   "ref": "SYS7",
+   "verdict": "dogrulandi",
+   "evidence": "geo.js:44-51, 71-76 ve 81-91. 07_dunya_kesif D02 ve D02b. 15_DUNYA_KESIF_TESTLERI.md:18: 'KALDI: 433 … GEÇTİ: 0'. 12. belge satır 47: 10/10. Taban koşusu PASS=10."
+  },
+  {
+   "ref": "SYS8",
+   "verdict": "kismen",
+   "evidence": "islands.js:27-31 (BUILD_D 750, DROP_D 1150, STEP_MS 3), 271-301 (update), 315-432 (iş ve üreteç). 13_donma P01–P04 ve P06 ile 09_performans 'Ada içeriği 3 kur/sök döngüsünde…' kontrolü 12. belgede ve taban koşusunda geçti; taban koşusunda 09'da düşen tek kontrol kese/gemi/boss döngüsü. Tek oyunculu akış doğru. Ancak akış yalnız yerel oyuncunun konumuna bakıyor (islands.js:273). Co-op'ta ev sahibi uzaktaki konuğun adasını kurmuyor. Oysa o adanın düşmanları konuğun yakınında ev sahibinde doğuyor ve yapay zekâları ev sahibinde çalışıyor (enemies.js:1543-1548, 1604). Sonuçta o adanın duvar, bina ve tehlike çarpıştırıcıları ev sahibinde yok. Bu madde missed listesine eklendi.",
+   "correction": "Tek oyunculu akış: calisiyor_test_edilmis. Co-op'ta ev sahibi tarafı eksik olduğu için genel durum 'calisiyor_gelistirilmeli' olmalı."
+  },
+  {
+   "ref": "SYS9",
+   "verdict": "dogrulandi",
+   "evidence": "islands.js:544-599: 10 binalık halka, değirmen, kule, kuyu ve 5 NPC; limanlar arasında yalnız renk ve ölçek değişiyor. islands.js:601-673 _pier: sığ kesim yan kutusu 652-653, kök basamakları 655-671; sudan çıkış merdiveni yok. Testler: 15 I07 (15_iskele_kamera.js:33-42, iskeleli ilk 4 liman) ve 13 P06. 12. belge satır 251: 14/14; taban koşusu 14/14. Not: I07 beşinci limanı kapsamıyor."
+  },
+  {
+   "ref": "SYS10",
+   "verdict": "dogrulandi",
+   "evidence": "port.js:151-334 (dekor fener 299-300, _lighthouse 411). 07 D03/D07/D08 ve 15 I01–I06, 12. belgede ve taban koşusunda GEÇTİ."
+  },
+  {
+   "ref": "SYS11",
+   "verdict": "kismen",
+   "evidence": "islands.js:1001-1022. Node sayımı: 26 batık (14 otomatik, 12 v0.3'ten), hepsi ≥ −0,14 m. D05 (07_dunya_kesif.js:35) yalnız otomatik özellikli ilk 6 adayı kuruyor; D06 (32) yalnız otomatik batıkların arazi yüksekliğine bakıyor. 12 v0.3 batığı ve sandık erişilebilirliği hiç sınanmıyor. Sandık dünya ekseninde sabit (x+4, z+2) ofsetle konuyor (1021). Gövde ise rastgele yaw ile (1009) 8,5×3,2 m yarı boyutlu kutu çarpıştırıcısı alıyor (1018). Node hesabına göre batıkların %16,3'ünde sandık kutunun içinde, en yakın erişilebilir noktadan 2,4 m'den uzakta kalıyor ve açılamıyor. Bu madde missed listesine eklendi.",
+   "correction": "Durum 'calisiyor_gelistirilmeli' olmalı: kurulum ve yerleşim test edilmiş, ancak sandık erişimi olasılıksal olarak bozuk."
+  },
+  {
+   "ref": "SYS12",
+   "verdict": "kismen",
+   "evidence": "islands.js:742-752 (sandık), save 269, start 253-267. T08 (16_kosu_poz_ganimet.js:133) kimliği opened kümesinden silip it.action(p)'yi doğrudan çağırıyor; mesafe, yükseklik ve erişim denetimi atlanıyor. 08_kalicilik.js:32 yalnız enjekte edilen kimliklerin (test_chest_1, altartest, tapinak_x_1, tap_1) kayıt/yükleme turunu sınıyor. Tek oyunculu kalıcılık doğru ve test edilmiş. Ancak co-op'ta durum paylaşılmıyor ve kaydedilmiyor (G-02, kritik); sunak erişilemiyor (G-03); karaya oturmuş gemi sandıklarının yaklaşık %16'sı gövde çarpıştırıcısının içinde kalıyor (missed). Sayım: _chest ile 57 sabit sandık, sunakla 58. '17/67 adada sabit sandık yok' doğru.",
+   "correction": "Tek oyunculu yol: 'calisiyor_test_edilmis'. Co-op: 'hatali_kararsiz'. Sistem geneli için 'calisiyor_gelistirilmeli' daha doğru."
+  },
+  {
+   "ref": "SYS13",
+   "verdict": "kismen",
+   "evidence": "hazards.js:162-294. 08_kalicilik.js:12-14 breakCrate ve _explode'u doğrudan çağırıp yalnız 'gone' kalıcılığını sınıyor (33). coop/06b_esitlik_senkron.cjs:30-42 konuğun kırdığı sandığın kesesini sınıyor (12. belge 18/18, taban koşusu 18/18). Fıçı patlamasının oyuncuya, düşmana ve gemiye verdiği hasar, zincirleme patlama ve geri itme v0.4 senaryolarında sınanmıyor; grep tests/scenarios altında yalnız 08_kalicilik ile eski coop/v03 referansını buluyor. Kaya tuzağı, basınç plakası bulmacası ve gayzer hiç sınanmıyor. Ek olarak: ev sahibi adayı kurmamışsa konuğun 'ignite', 'break' ve 'roll' iletileri yok sayılıyor (hazards.js:672-674); düşmana hasar yalnız ev sahibinde uygulanıyor (229, 399).",
+   "correction": "Kırılabilir sandık ve kalıcılık: 'calisiyor_test_edilmis'. Barut fıçısının patlama mekaniği: 'dogrulanmamis'."
+  },
+  {
+   "ref": "REQ1",
+   "verdict": "dogrulandi",
+   "evidence": "worldData.js:5 WORLD_SIZE 20000; archipelago.js:7 WORLD_HALF 10000. Kenar sınırı (WORLD_HALF−250): ship.js:373-379 ve 811, player.js:761. Yordamsal adalar ±9 300 içinde kalıyor (archipelago.js:208). Bölge ve çekirdek ada tanımları v0.3 ile birebir. D01, 12. belgede ve taban koşusunda GEÇTİ."
+  },
+  {
+   "ref": "REQ2",
+   "verdict": "dogrulandi",
+   "evidence": "archipelago.js:9-16: altı bölge ve biyom; v0.3 ile fark yok. Node sayımı: tropik 18, cangıl 13, buzul 12, volkan 10, çöl 11, hayalet 9 ada. geo.js PAL ve islands.js VEG biyom tabloları mevcut."
+  },
+  {
+   "ref": "REQ3",
+   "verdict": "dogrulandi",
+   "evidence": "Node archipelago_sabit GEÇTİ: 67 adanın konumu, şekli, tohumu ve v0.3 özellikleri birebir; kazı, balık ve boss dizileri birebir. 6 çekirdek ada worldData.js:9-40'ta tanımlı ve v0.3 ile aynı. Not: Ada İÇERİĞİNİN yerleşimi (bitki, yapı yönü, NPC adı, levye sırası) kurulum LOD'una bağlı (11 #35, G-07). Bu gereksinimin kapsamı dışında, ama 'ada yapısı' içeriği de kapsayacak biçimde yorumlanırsa gereksinim yalnız kısmen karşılanır."
+  },
+  {
+   "ref": "REQ4",
+   "verdict": "dogrulandi",
+   "evidence": "geo.js:58-95 her şekil için bir yükseklik profili tanımlıyor. Node: h 6 m (atoller) ile 165 m (Ateş Dağı) arasında; 73 adanın hepsinde pozitif yükseklik var. Plandaki erişilebilirlik testi notu yerinde: mesa ve volkan yamaçlarında erişim sorunları var (G-09)."
+  },
+  {
+   "ref": "DOC1",
+   "verdict": "dogrulandi",
+   "evidence": "docs/03_ADA_VE_BIYOM_TASARIMI.md:60-77 tablosunda harabe 14, karaya oturmuş gemi 12, kamp 11 yazıyor. Node v0.4 sayımı: ruin 22, beach_wreck 26, camp 11. Fark otomatik özelliklerden geliyor: 14 batık ve 8 harabe (archipelago.js:243-262). Dosyanın son değişikliği v0.3 commit'i 47976be. v0.3 değerleri (22−8=14, 26−14=12) tabloyla birebir tutuyor. Ek küçük yanlışlık: §3.7 kırılabilir sandıkları yalnız kamp ve kaleye yazıyor, oysa madenler de alıyor (hazards.js:118-125)."
+  }
+ ],
+ "missed": [
+  {
+   "title": "Karaya oturmuş gemi sandığı gövde çarpıştırıcısının içinde kalabiliyor: batıkların yaklaşık %16'sında 'Sandığı aç' istemi hiç çıkmıyor",
+   "file": "js/world/islands.js",
+   "func": "islands._wreck (satır 1001-1022) + islands._interactables (1149-1157) + physics._resolveOnce (js/world/physics.js:142-185)",
+   "rootCause": "Gövde rastgele bir yönle döndürülüyor (1009: g.rotation.y = R()*6.28) ve aynı yönle 17×6,4 m'lik bir kutu çarpıştırıcısı alıyor (1018: physics.addBox(x, z, 8.5, 3.2, g.rotation.y, y-2, y+4)). Sandık ise gövdeye göre değil, dünya eksenine göre sabit (x+4, z+2) ofsetle konuyor (1021). Kutunun yerel koordinatında sandık lz = 4·sin(yaw)+2·cos(yaw) noktasında duruyor. |lz| < 1,13 m olduğunda oyuncu (yarıçap 0,33; _resolveOnce onu kutunun dışına itiyor) sandık noktasına etkileşim yarıçapı olan 2,4 m'den (1155) yaklaşamıyor. Kutunun üstü de yürünebilir değil, çünkü groundAt yalnız platformlara bakıyor. Yaw düzgün dağıldığı için olasılık %16,3; v0.3'teki 3×8 m kutuyla (v0.3 islands.js:823) %13,3. Yaw ada RNG akışından geliyor ve bitki örtüsü döngüsü arazi LOD'una göre farklı sayıda sayı tüketiyor (11 #35, G-07). Bu yüzden aynı batık bir kurulumda erişilebilir, başka bir kurulumda erişilemez olabilir. Ayrıca beach_wreck'in f.r'si olmadığından bitki dışlama listesine girmiyor (446); palmiye ve kaya çarpıştırıcıları da gövdenin ve sandığın çevresine düşebiliyor.",
+   "impact": "En yaygın ada özelliği olan 26 karaya oturmuş geminin beklenen yaklaşık 4'ünde sandık gövdenin içinde ya da altında görünüyor ama açılamıyor. Kaybedilen içerik: 40–110 altın, %60 gümüş külçe, inci ve mücevher, %15 zıpkın, %15 maske, %30 hava kesesi. 26 batıktan en az birinin etkilenme olasılığı yaklaşık %99. Oyuncu ödülü kaybediyor ve 'bozuk sandık' izlenimi ediniyor. Yeniden kurulumda bazen düzelip bazen bozulması hatayı kararsız gösteriyor. Sürüm: v0.3 ve v0.4. 02 ve 11'de kayıt yok. Güven: yüksek. Hesap analitik; hangi batığın etkilendiği kuruluma bağlı.",
+   "priority": "orta",
+   "fix": "Sandığı gövdenin yerel ekseninde ve çarpıştırıcının dışında konumla. Örneğin yerel (0, ±(3.2+1.0)) ya da (±(8.5+1.2), 0) noktasını g.rotation.y ile döndürüp dünya koordinatına çevir. Alternatif olarak sandık noktasının 2,0 m içinde çarpıştırıcısız, yürünebilir bir nokta olduğunu physics.resolve ile doğrula ve gerekirse sandığı kaydır. beach_wreck için bir bitki dışlama yarıçapı tanımla (f.r ≈ 12). Kayıtlar bozulmasın diye sandık kimliği (f.id) değişmesin.",
+   "repro": "Tarayıcı konsolunda her beach_wreck için şunu çalıştır: `await DK.terrain.prepare(f.x,f.z,{radius:300}); DK.islands._build(I); const b=DK.physics.all.find(c=>c.tag==='isl:'+I.id && c.t==='b' && c.hw===8.5 && Math.abs(c.x-f.x)<0.01 && Math.abs(c.z-f.z)<0.01); const [lx,lz]=DK.physics._local(b,f.x+4,f.z+2);`. |lz| < 1,13 çıkan batıkta oyuncuyu sandığa doğru her yönden yürüt: DK.interact.current hiçbir zaman 'Sandığı aç' olmuyor. Olasılık hesabı için Node betiği: /tmp/denetim_alan/batik_sandik.mjs (v0.4 %16,3; v0.3 %13,3).",
+   "acceptance": "Yeni senaryo: 26 batığın tümü, iki farklı arazi kalitesi ve LOD ile kurulduğunda, sandık noktasının 2,4 m içinde ve tüm çarpıştırıcıların dışında yürünebilir bir nokta bulunur. Oyuncu o noktaya yürüyünce 'Sandığı aç' istemi görünür, ganimet bir kez verilir, ikinci denemede 'Sandık boş.' çıkar."
+  },
+  {
+   "title": "Co-op: ada içeriği yalnız yerel oyuncunun çevresinde kuruluyor; ev sahibinden uzaktaki konuğun adasında ev sahibi otoriteli düşmanlar duvar ve bina çarpıştırıcısı olmadan çalışıyor, konuğun fıçısı ve kaya tuzağı düşmana işlemiyor",
+   "file": "js/world/islands.js",
+   "func": "islands.update (satır 271-301; odak satırı 273) + enemies._populate/update (js/game/enemies.js:1539-1570, 1593, 1604) + hazards.netApply (js/world/hazards.js:672-679)",
+   "rootCause": "islands.update kurulacak ve boşaltılacak adayı yalnız G.player konumuna göre seçiyor (273); G.remotes dikkate alınmıyor. Oysa ev sahibinde düşman grupları herhangi bir oyuncunun 140 m yakınında doğuyor (enemies.js:1543-1548; focusPts konukları da içeriyor) ve yapay zekâ yalnız ev sahibinde çalışıyor (1593, 1604); konuk yalnız ara değerleme yapıyor. Ev sahibi o adanın kıyısından BUILD_D (750 m) uzaktaysa, adanın duvar, bina, kale ve hapishane çarpıştırıcıları ile tehlike seti (hazards 'islandBuilt' olayıyla kurulur, 66-71) ev sahibinde hiç yok. Bu durumda düşman hareketi physics.resolve (1090, 1123, 1191), görüş testi lineBlocked (555, 1015) ve mermiler (1531) yalnız araziye çarpıyor. Konuğun 'ignite', 'break' ve 'roll' iletileri ev sahibinde byId'de bulunamadığı için yok sayılıyor (hazards.js:673-674). Düşmana hasar yalnız ev sahibinde uygulandığından (229, 399) bu etkiler hiç işlenmiyor. Tapınağın Taş Muhafız tetikleyicisi de ev sahibindeki islands.temples'a bakıyor (bosses.js:1088). v0.3'te de aynı durum var (v0.3 islands.js:232, enemies.js:1514).",
+   "impact": "Konuk tek başına bir yere gittiğinde (kayıkla, yüzerek ya da ev sahibi gemiyle uzaklaşınca) hapishane, kale, mezarlık ve harabe gibi yerlerde gardiyanlar ve haydutlar duvarların ve binaların içinden geçiyor. Duvar arkasındaki konuğu görüp ok ve kurşunla vuruyorlar; isabet ev sahibinde hesaplanıp konuğa 'hurt' olarak gidiyor. Konuğun ateşlediği barut fıçısı ve saldığı kaya düşmana hasar vermiyor. Taş Muhafız konuk için doğmuyor. Oyuncular ayrıldığında co-op savaşı ve keşfi tutarsızlaşıyor. Sürüm: v0.3 ve v0.4. 11 #36 yalnız ters yönü anıyor (konukta henüz kurulmamış ada); 02'de kayıt yok. Güven: kod yolu açısından yüksek. Öncelik, oyuncuların ne sıklıkla ayrıldığına göre orta ile yüksek arasında.",
+   "priority": "orta",
+   "fix": "Ev sahibinde islands.update aday mesafesini yerel oyuncu ile G.remotes konumlarının en küçüğüne göre hesaplasın. Yalnız uzak bir oyuncunun yakınındaki adalar için en azından çarpıştırıcılar, tehlike seti ve tapınak/hapishane çalışma zamanı durumu kurulsun; bitki ve örnekli görseller atlanabilir. _drop yalnız tüm oyuncular DROP_D dışındayken yapılsın. Bu kurulum zaman dilimli iş kuyruğuna bağlansın (aynı anda en çok bir uzak ada) ve 13_donma ile 09_performans eşikleri korunsun.",
+   "repro": "tests/harness/coop.cjs ile iki sekme aç; ev sahibi Kırlangıç'ta kalsın. Konukta şunu çalıştır: `await DK.terrain.prepare(-6653,2548,{radius:400}); DK.G.player.pos.set(-6620, DK.terrain.heightAt(-6620,2548)+0.5, 2548)` (Demirkapı avlusu). Birkaç saniye sonra ev sahibinde: `DK.islands.built.has('demirkapi')` → false; `DK.enemies.list.filter(e=>e.group==='demirkapi_prison_0').length` → 5; `DK.physics.all.filter(c=>c.tag==='isl:demirkapi').length` → 0. Konukta bir gardiyanın duvar kutusunun içinden geçtiği ve duvar arkasındaki konuğu hedef aldığı görülüyor. Konuk yakındaki bir kampın fıçısını ateşleyince ev sahibinde `DK.hazards.byId.has(id)` false dönüyor ve 7 m içindeki düşmanın canı değişmiyor.",
+   "acceptance": "Co-op testi: ev sahibi en az 2 km uzaktayken konuk Demirkapı'ya gittiğinde ev sahibinde 'isl:demirkapi' çarpıştırıcıları ve hazards.sets.has('demirkapi') bulunur. 30 sn boyunca hiçbir gardiyanın konumu duvar kutularının içine girmez. Duvar arkasındaki konuk için ev sahibindeki lineBlocked engelli döner. Konuğun ateşlediği fıçı 7 m içindeki düşmanın canını düşürür. 13_donma ve 09_performans eşikleri korunur."
+  }
+ ]
+}

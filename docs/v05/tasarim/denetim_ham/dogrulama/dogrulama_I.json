@@ -1,0 +1,136 @@
+{
+ "verdicts": [
+  {
+   "ref": "I-01",
+   "verdict": "kismen",
+   "evidence": "Kök neden doğrulandı. player.js:685 ve 697–699: Walk/WalkBack hs/1,9 (kıskaç 0,5–1,9), Run hs/5,2, Sprint hs/6,6. v0.3 player.js:570–575'te referanslar aynı (Walk eşiği 2,6, Run alt kıskacı 0,7). Gerçek js/core/kk.js hattıyla 5 gövde tipinde bağımsız Node ölçümü yaptım (/tmp/denetim_alan/karsit_karakter/fk_kayma.mjs, fk_bagimsiz.mjs, fk_iz.mjs, fk_yan.mjs). Sonuçlar: Walking_A temas hızı bilekte 0,63–0,72, parmakta 0,70–0,75 m/sn; Walking_Backwards 0,67–0,76 m/sn. Running_A ve Running_C bilekte 3,6–3,9 m/sn, ama koşuda temas ayak ucunda: temas anında bilek yerden ≈0,13 m, parmak ≈0,02 m yüksekte ve parmak hızı 4,4–4,6 m/sn. Yan adım bilekte 3,2–3,4, parmakta 3,9–4,0 m/sn. Oyunun eşlemesiyle temas noktasındaki kaymanın medyanı: 1,7 / 2,0 / 2,64 / 3,0 m/sn'de Walk ile %61–62 (1,0–1,9 m/sn); 4,4 m/sn'de Run ×0,85 ile 0,55–0,71 m/sn (%12–16); 7 m/sn'de Sprint ×1,06 ile 2,1–2,3 m/sn (%30–33). 3,0 m/sn'de kayma v0.3'te (Run ×0,7) %4–9, v0.4'te %61. C13'ün kaymayı büyüttüğü doğru. 02_HATA_LISTESI.md:787–789'da C13 'Düşük' derecelenmiş. Hata v0.3'te de var, v0.4'te de.",
+   "correction": "1) Koşu ve sprint etkisi abartılmış. Denetçi bilek kemiğini ölçmüş, oysa koşu kliplerinde temas ayak ucunda. 4,4 m/sn koşuda kayma ~1,2 değil, ≈0,55–0,7 m/sn (%12–16). 7 m/sn sprintte ~3 değil, ≈2,1–2,3 m/sn (%30–33). Ağır kayma yürüme bandında: çömelme 1,7, nişan/savunma 2,0, sandık 2,6–2,7 ve 2,6–3,7 m/sn arası; burada kayma %61. 2) Önerilen Run≈3,7 ve Sprint≈3,8 referansları yanlış. Uygulanırsa 4,4 m/sn'de ayak ters yönde ≈1 m/sn kayar. Temas noktası ölçümüne göre değerler şöyle olmalı: Walk≈0,75, WalkBack≈0,72, Run≈Sprint≈4,5 m/sn; yan adımdaki 3,6 makul. 3) Tekrar üretme adımı yazıldığı gibi çalışmaz: koşuda footl/footr hiçbir karede yere 2 cm yaklaşmaz. toesl/toesr ya da kemiğin kendi döngü minimumu kullanılmalı; W ile beklenen değer ≈0,6 m/sn. 4) Öncelik 'orta' olmalı: sorun yalnız görsel, işlev kaybı yok ve en sık durum olan koşuda kayma %12–16. 5) 'Sprint koşudan zor ayırt ediliyor' ifadesi abartılı: Running_C'nin dikey sıçraması ve adım genliği daha büyük (0,71 / 0,63 m), 7 m/sn'deki kadans 4,4 m/sn koşudakinden %25 yüksek. 6) Kabul testinde 04 C13'ün (3 m/sn'de Walk) güncellenmesi gerektiği de belirtilmeli."
+  },
+  {
+   "ref": "I-02",
+   "verdict": "dogrulandi",
+   "evidence": "camera.js:64 ve 68: aday noktaya her d için +right·0,65 ekleniyor. camera.js:114–120'deki ikili arama yalnız d'yi [0,4, dist] aralığında değiştiriyor; her d engelliyse hit=max(0,4, lo−0,1)=0,4, ardından 127. satırda at(_col,p). physics.js:231–243: kutu dilim testinde t0 0'dan başlıyor; doğru kutunun içinden başlıyorsa t=0 < tMin=0,05 çıkıyor ve o kutu engel sayılmıyor. combat.js:244 ışını kamera konumundan başlatıyor; combat.js:295 lineBlocked'ı {tMin:0.05} ile çağırıyor. game.js:343'te nişan ayarı {dist 2.3, shoulder 0.65}. Denetçinin Node denemesini yeniden koştum (kopyalar orijinalle birebir aynı, diff boş): duvar 0,4 m sağdayken kamera [0,25; 1,59; 0,4] noktasında, kutunun içinde. İçeriden çıkan ışında lineBlocked=false, dışarıdan çıkanda true. Ek bulgu: aynı kök neden gemi gövdesinde de geçerli (hullBlocked). Gövde 0,45 m sağdayken zıpkın nişanında kamera [0,8; 0,4; −0,4] noktasında ve hullSolid=true (/tmp/denetim_alan/karsit_karakter/sim/govde_nisan.mjs). Liman binası kutuları görselden 0,2 m büyük (port.js:342), kale duvarı 1,7 m kalın (islands.js:888). Bu yüzden kamera çoğunlukla kutunun içinde kalıyor; 'duvar arkası' bina içinden, arka yüzler çizilmediği için görünüyor. Hata v0.3'te de var (orada kamera çarpışması da, tabanca engel denetimi de yoktu).",
+   "correction": "Hüküm değişmiyor; iki ek yapılmalı: (a) Etki duvarla sınırlı değil, gemi gövdesi ve kıçtaki kayık için de geçerli. (b) Mermi kısmı audit C'deki C-06 ile ('omuz kamerasıyla namlunun görmediği köşe arkası') örtüşüyor, knownAs olarak C-06 eklenmeli. 'Yüksek' öncelik savunulabilir, 'orta' da kabul edilebilirdi."
+  },
+  {
+   "ref": "UC1",
+   "verdict": "dogrulandi",
+   "evidence": "v0.3'te camera.js:37–44 yalnız arazi ve su kıskacı uyguluyor, nesne testi yok. v0.4'te camera.js:66–129 lineBlocked, slabBlocked, gövde ve mağara testiyle ikili arama yapıyor; taban koşusunda 04 C07 {d0 5,07; dWall 2,77; dAfter 5,07}. I-02'nin Node denemesi nişan sırasında kamerayı duvar kutusunun içinde buldu. Aynı denemede sırtı duvara 0,35 m olan oyuncuda, 0,4 m alt sınır yüzünden kamera duvarın 0,05 m içine giriyor (I-13 / C-13). v03 için 'yanlış', v04 için 'kısmen' hükmü doğru."
+  },
+  {
+   "ref": "UC2",
+   "verdict": "dogrulandi",
+   "evidence": "v0.3'te slab, zemin ve güverte sınırı yok (camera.js:37–44). v0.4'te camera.js:132–145, physics.js:102–117 slabBlocked ve game.js:357–359 (floorMax, deckShip). Taban koşusunda 15 C01 {n 96, under 0, minL 116}, 17 K04 4×48 ihlal 0, K06 48 ihlal 0. 12. belgede C01 'KALDI → GEÇTİ' olarak kayıtlı, yani test ayırt edici."
+  },
+  {
+   "ref": "UC3",
+   "verdict": "kismen",
+   "evidence": "v0.4'te physics.js:220 kamera için noCam engelleri ve r<0,2 m çemberleri atlıyor. noCam olanlar: NPC (npcs.js:82–83), ağaçlar (props.js:238–239 ve 249, islands.js:478), iskele babaları ve direkler (port.js:236, 243, 373). Fener çarpıştırıcısı r=0,15 (port.js:407). Taban koşusunda 15 C02 camHead 4,6. v04 için 'doğru' hükmü doğru.",
+   "correction": "v03 hükmü 'doğru' olmalı. İddia yalnız 'kamerayı başa çekmez' diyor; v0.3'te nesne çarpışması hiç olmadığından (camera.js:37–44) bu engeller kamerayı zaten çekmiyordu. Kameranın içlerinden geçip ekranı kaplaması ayrı bir iddia (UC8) ve orada v03 zaten 'yanlış'. Başa çekme sorunu, v0.4 geliştirilirken kamera çarpışması eklenince ortaya çıkmış ve yine v0.4'te giderilmiş."
+  },
+  {
+   "ref": "UC4",
+   "verdict": "dogrulandi",
+   "evidence": "v0.3'te setCamHidden yok (grep boş). v0.4'te character.js:416–427 yalnız örgüleri (isMesh) gizliyor, ışık sönmüyor. game.js:371–375 0,8/1,0 m histerezis uyguluyor; dümen ve top kiplerinde near=false. Taban koşusunda 15 C03 {camHead 0,4, hidden true, torchLit true, helmVisible true, stale 0}; 12. belgede eski kodda KALDI olarak kayıtlı. Önemsiz bir not: kamera yakınken (gizliyken) hold(), kın görünürlüğünü doğrudan değiştiriyor (character.js:651), geri yüklemede kın yanlış görünebilir; düşük öncelikli, görsel."
+  },
+  {
+   "ref": "UC5",
+   "verdict": "kismen",
+   "evidence": "v0.4'te camera.js:15–31 ve 69–99, game.js:349–352. 17 K04, K05 ve K06 taban koşusunda ihlal ve karanlık kare 0. Ancak bu testlerin hiçbiri nişan alırken çalışmıyor. I-02'deki omuz kaydırması kök nedeni hullBlocked'da da geçerli. Gerçek camera.js ile Node denemesinde gövde sağda 0,45 m iken zıpkın nişanında (omuz 0,65) kamera [0,8; 0,4; −0,4] noktasında ve hullSolid=true; nişansızken ve gövdeye 0,8 m uzaklıkta false.",
+   "correction": "v04 hükmü 'kısmen' olmalı. Gövde ve kayık kamera için katı sayılıyor, ama nişanda gövde 0,65 m içinde sağdaysa kamera gövdenin içine yerleşiyor (I-02 ile aynı kök neden). v03 için 'yanlış' hükmü doğru."
+  },
+  {
+   "ref": "UC6",
+   "verdict": "dogrulandi",
+   "evidence": "v0.3'te game.js mağarada yalnız dist≤3,2 uyguluyor, ceiling vermiyor; camera.js:45'teki ceiling kolu hiç kullanılmıyor. v0.4'te camera.js:100–110, camClamp (128) ve game.js:345–347. Taban koşusunda 17 K07: 4 konumda kesit dışı 0, camMed 2,45 / 2,51 / 0,97 / 2,77. 12. belgede eski kodda 35–56/72 kesit dışıydı, yani test ayırt edici. camClamp son konumu kesite çektiği için I-02 mağarada etkisiz."
+  },
+  {
+   "ref": "UC7",
+   "verdict": "dogrulandi",
+   "evidence": "v0.3'te camera.js:40–44'teki kıskaç yalnız odak su üstündeyken (f.y > wh) çalışıyor, dalışta alt sınır yok; game.js:310 histerezissiz (cam.y < wh−0,05). v0.4'te camera.js:146–152, game.js:330–341 ve 385. Taban koşusunda 15 C04 {n 144, bad 0}, C05 {n 96, bad 0}, 17 K09 [F,F,T,T,F]. Not: 12. belgeye göre C04 ve C05 düzeltme öncesi kodda da geçiyordu, ayırt edici değiller; histerezisi K09 ayırt ediyor."
+  },
+  {
+   "ref": "UC8",
+   "verdict": "dogrulandi",
+   "evidence": "v0.3'te js/core/nearfade.js yok. v0.4'te nearfade.js:16–23 kategorileri var (veg, prop, char, self, sail, rail). Taban koşusunda K02 {vegMeshes 11, ship [rail, sail], self, npc/animal char}, K03 ve K12 geçti. 'Kısmen' hükmü doğru: ada yapıları silinmiyor (C-13 / I-13), güverte topu, ambar, çapa ve fener de silinmiyor (I-14). 12. belgedeki taramaya göre Zümrüt Koy'da kamera büyük bir ağaç tacının içinden geçerken ekranı yine yapraklar sarıyor, çünkü silinme 0,55–1,7 m ile sınırlı."
+  },
+  {
+   "ref": "SYS1",
+   "verdict": "dogrulandi",
+   "evidence": "player.js:608 koşulu: düşüş >1,8 m, eylem ve taşıma yok, hs<3,2. player.js:271 Jump_Land ×1,4. 16_kosu_poz_ganimet.js:32–37'deki K03, p.action.type==='land'i üç durumda doğruluyor. Taban koşusu {zipla:false, d12:false, d25:true}; 12. belgede K03 'KALDI → GEÇTİ', yani ayırt edici. Nottaki hesap doğru: Jump_Land 0,667 sn / 1,4 = 0,476 sn, eylem 0,3 sn sürdüğü için klibin %63'ü oynuyor. Test klibin çizildiğini değil eylemi doğruluyor; klip ANIM_MAP'te ve GLB'de var."
+  },
+  {
+   "ref": "SYS2",
+   "verdict": "kismen",
+   "evidence": "ANIM_MAP'i bağımsız olarak ayrıştırdım (/tmp/denetim_alan/karsit_karakter/animmap_karsit.cjs). Sonuç: 89 giriş, 77 tekil klip, hepsi 81 klipli kk_anims.glb'de; koddaki play/playUpper/_wantAnim çağrılarında çözülemeyen KayKit adı yok. Ancak bu denetim tests/ altında değil. 04 C19 (04_karakter.js:47) yalnız eylem türünü ('getup') doğruluyor; LieUp yalnız window._rev'e yazılıyor. C25 (04_karakter.js:55) yalnız netState.loop===1'i doğruluyor. Klip adını doğrulayan tek kontrol C09 (04_karakter.js:35, 'JumpStart'); C13 ('Walk') ve 16 K06 (Run/Walk) de adı dolaylı doğruluyor. Oran düzeltmeyi (kk.js:270–358 reproportion) ve klip yarılarını (kk.js:151–162, character.js:731–778) doğrulayan etiketli bir test yok. 12. belgedeki çömelme baş yüksekliği satırı da kontrol etiketi olan bir test değil.",
+   "correction": "ANIM_MAP ad çözümü 'calisiyor_test_edilmis' sayılabilir (C09, C13, K06 currentName'i doğruluyor). Oran düzeltme ve üst/alt katman bölme ise 'dogrulanmamis'. Kanıtta gösterilen C19 ve C25 klip oynatımını sınamıyor."
+  },
+  {
+   "ref": "SYS3",
+   "verdict": "kismen",
+   "evidence": "player.js:691–696'da histerezis var: Yürü→Koş 3,7, Koş→Yürü 3,1, Sprint 5,9/5,0 ve 0,3 sn içinde A→B→A bastırma. Ancak 16 K06 (16_kosu_poz_ganimet.js:151–154) eski kodda da geçiyor (12. belge: 'bu senaryoda titreme üretilemedi'; 16 §16.10: 'K02 ve K06 eski kodda da geçiyor'). Dönüşlerde hız eski sabit eşik 3,4'ün altına hiç inmiyor, yani 3,1–3,7 bandı ve 0,3 sn bastırma hiç çalıştırılmıyor. K05 (146–149) yalnız sprint bayrağı geçişini (edges≤3) ve hız düşüşünü doğruluyor; klip değişim sayısı (6) yalnız kayda yazılıyor. 04 C10 (04_karakter.js:17) sprint bayrağını doğruluyor.",
+   "correction": "Sprint bayrağı histerezisi ve tükenme kilidi test edilmiş (C10, K05). Walk↔Run klip histerezisi ve A→B→A bastırma ise 'dogrulanmamis': hızı 3,1–3,7 bandında salındıran, ayırt edici bir test yok."
+  },
+  {
+   "ref": "SYS4",
+   "verdict": "kismen",
+   "evidence": "Testler ve kayıt doğru: 17 K04 4×48 ihlal 0, K05 karanlık kare 0, K06 48 ihlal 0 (taban koşusu ve 12. belge). Ancak testlerin hiçbiri nişanlı değil ve I-02'nin kök nedeni gövdede de geçerli. Gerçek camera.js ile gövde sağda 0,45 m iken zıpkın nişanında kamera hullSolid içinde kalıyor (/tmp/denetim_alan/karsit_karakter/sim/govde_nisan.mjs).",
+   "correction": "Durum 'calisiyor_gelistirilmeli' olmalı; bu, duvar çarpışması sisteminin derecesiyle de tutarlı. Nişanda omuz kaydırması küçültülmediği için kamera gövdeye ve kayığa girebiliyor. K04–K06'ya nişanlı bir varyant eklenmeli."
+  },
+  {
+   "ref": "SYS5",
+   "verdict": "dogrulandi",
+   "evidence": "physics.js:220; props.js:238–239 ve 249; islands.js:478; nearfade.js:16–23. Taban koşusunda 15 C02 camHead 4,6; 17 K02 {vegMeshes 11 …}; K03 {near=base 0,027, mid 0,533, far 1}; K08 karanlık kare 0; K12 {on 0,125, off 1}. Hepsi 12. belgede kayıtlı. Ayrı bir yan etki var (missed bölümünde): noCam gövdeler kamera ile oyuncu arasına girince kameradan çıkan tabanca ışınını durduruyor."
+  },
+  {
+   "ref": "SYS6",
+   "verdict": "dogrulandi",
+   "evidence": "camera.js:100–110 ve 128; game.js:345–347. 17 K07: 4 konum × 72 açıda kesit dışı 0, camMed ≥0,97. 12. belgede eski kodda 35–56/72 kesit dışıydı, sonra 0; test ayırt edici."
+  },
+  {
+   "ref": "SYS7",
+   "verdict": "dogrulandi",
+   "evidence": "camera.js:146–152; game.js:330–341 (_camDive) ve 385 (sky.underwater histerezisi). Taban koşusunda 15 C04 {n 144, bad 0}, C05 {n 96, bad 0}, 17 K09 [F,F,T,T,F]. Not: 12. belgeye göre C04 ve C05 düzeltme öncesi kodda da geçiyordu, ayırt edici değiller; davranışı yine sınıyorlar. Histerezisi K09 ayırt ediyor (eski kodda kalıyordu)."
+  },
+  {
+   "ref": "SYS8",
+   "verdict": "dogrulandi",
+   "evidence": "character.js:416–427; game.js:371–375. Taban koşusunda 15 C03 {camHead 0,4, hidden true, torchLit true, helmVisible true, stale 0}. 12. belgede eski kodda KALDI olarak kayıtlı, yani test ayırt edici."
+  },
+  {
+   "ref": "REQ1",
+   "verdict": "kismen",
+   "evidence": "Gövde katılığı kodda var (camera.js:15–31 ve 69–99) ve 17 K04–K06 ile doğrulanmış. opts.hulls=G.ships (game.js:349) tüm gemileri kapsıyor. Dümende kendi gövde atlanıyor, ama güverte kıskacı kamerayı güverte üstüne kaldırıyor: camera.js:138–145, insideDeck(−0,4) gövde genişliği +0,4 m'yi kapsıyor (ship.js:178–182). Buna karşılık nişanda omuz kaydırması gövde testinde de küçültülmüyor; Node denemesinde kamera gövde katısının içinde kaldı.",
+   "correction": "Gereksinim 'kısmen' karşılanıyor. Nişanlı durumda (tabanca ya da zıpkın) gövde 0,65 m içinde sağdaysa kamera gövdenin içine yerleşiyor; örneğin suda gemi yanında zıpkınla nişan alırken. Plana nişanlı K04/K06 varyantı ve gövde yanında zıpkın nişanı eklenmeli. Düşman ve tüccar gemisi önerisi de geçerli."
+  },
+  {
+   "ref": "DOC1",
+   "verdict": "dogrulandi",
+   "evidence": "player.js:918–921'de hedefler çark yerelinde (±0,5; 0; −0,06). Çark, istasyondan 0,9 m ileride ve 1,2 m yukarıda (shipModel.js:427–440 ve 529). Idle pozunda 5 gövde tipiyle bağımsız Node ölçümü yaptım (/tmp/denetim_alan/karsit_karakter/ik_erisim.mjs). Omuz–hedef uzaklığı 0,90–0,94 m, kol boyu (omuz-dirsek-bilek) 0,45–0,47 m. Bilek hedefe 0,43–0,49 m, el yuvası 0,30–0,37 m uzak kalıyor. twoBoneIK uzaklığı l1+l2'ye kıstırdığı için (character.js:389) kol tam gergin halde hedefe doğru uzanıyor. 04 C08 (04_karakter.js:25) yalnız hedef vektörünün çark merkezine uzaklığını ölçüyor (taban koşusu dl=dr=0,5). Belge iddiası yanlış."
+  },
+  {
+   "ref": "DOC2",
+   "verdict": "dogrulandi",
+   "evidence": "player.js:936–939'da hedefler top yerelinde (±0,28; 0,62; −0,5); oyuncu topun 1,2 m arkasında duruyor (931–934). Hedefler omuzdan 0,79–0,84 m uzakta. Aynı Node ölçümünde bilek hedefe 0,34–0,37 m, el yuvası 0,21–0,24 m uzak kalıyor. 04 C08b (04_karakter.js:30) yalnız hedef–top uzaklığının <1,2 ve eller arasının >0,4 olduğunu ölçüyor (taban 0,85 / 0,56); bilek konumu ölçülmüyor."
+  },
+  {
+   "ref": "DOC3",
+   "verdict": "dogrulandi",
+   "evidence": "04_karakter.js:20'deki C13, p._locomotion(3.0) çağrısından sonra yalnız currentName==='Walk' olduğunu doğruluyor. Temas noktasıyla ölçüldüğünde 3,0 m/sn'de v0.4'te Walk ×1,58 ile kayma 1,83 m/sn (%61); v0.3'te Run ×0,7 ile 0,12–0,26 m/sn (%4–9). Kayma bandı kapanmamış, aksine kayma büyümüş.",
+   "correction": "Hüküm değişmiyor; yalnız sayılar düzeltilmeli. v0.4'te kayma %61 (denetçi ~%55 demiş), v0.3'te %4–9 (denetçi bilekten ölçüp ~%14 bulmuş)."
+  }
+ ],
+ "missed": [
+  {
+   "title": "Kamera ile oyuncu arasındaki noCam engeller (ağaç gövdesi, palmiye, NPC, iskele babası) tabanca atışını sessizce boşa çıkarıyor",
+   "file": "js/game/combat.js",
+   "func": "combat.shoot (235–268, ışın başlangıcı 244) / combat.raycast (271–298, engel denetimi 295); physics.lineBlocked (js/world/physics.js:194–252, kamera istisnası 220)",
+   "rootCause": "v0.4'te ağaç ve palmiye (props.js:238–239, 249; islands.js:478), NPC (npcs.js:82–83) ve iskele babası/direk (port.js:236, 243, 373) çarpıştırıcıları noCam işaretli. Kamera görüş testi (camera.js:8 CAM_LOS camera:true, physics.js:220) bunları atlıyor. Bu yüzden kamera bu gövdelerin arkasına geçiyor; gövdeyi de yakın-kamera silinmesi ve görüş çizgisi silindiri ekrandan siliyor. Tabanca ışını ise kamera konumundan çıkıyor (combat.js:244) ve raycast'teki engel denetimi lineBlocked'ı camera seçeneği olmadan çağırıyor (combat.js:295, {tMin:0.05, tMax:0.98, rScale:1}). Bu çağrıda noCam gövdeler engel sayılıyor. Sonuçta kamera ile oyuncu arasında kalan bir gövde, oyuncunun önündeki hedefe yapılan atışı durduruyor. Hata yalnız v0.4'te var: v0.3'te raycast yalnız araziye bakıyordu (v0.3 combat.js:263–286). Bilinen bir kimliği yok. audit C'deki C-06 ışının kameradan çıktığını genel olarak yazıyor, ama bu yanlış-negatif durumu anlatmıyor. C-06'nın önerdiği 'hedef noktasını kameradan bul' düzeltmesi, kamera–oyuncu arası dışlanmazsa arkadaki ağacı nişan noktası yapar.",
+   "impact": "Ormanda, palmiyeler arasında ya da kasabada arkasında NPC varken nişangâh düşmanın üstünde olsa bile atış isabet etmiyor. Oyuncuya geri bildirim de verilmiyor: iz efekti hedefin gerisinde, arazide çıkıyor. Tek mermili tabanca yine de yeniden doldurmaya giriyor ve atış sesi düşmanları uyarıyor. Nişansız atışta kamera 4,6 m geride olduğu için oyuncunun bu mesafe içindeki herhangi bir gövde yetiyor; nişanlı atışta 2,3 m geri-sağdaki bir gövde yetiyor. Gerçek camera.js ve physics.js ile Node denemesinin sonuçları: palmiye (r 0,32) oyuncunun 1,5 m arkasındayken kameradan çıkan ışın engelli (true), namludan aynı hedefe çıkan ışın engelsiz (false). Ağaç (r 0,8) 2,5 m arkada iken de true. Nişanlı atışta palmiye 1,0 m arka-sağda iken true.",
+   "priority": "orta",
+   "fix": "Atışı iki aşamaya böl. (1) Nişan noktasını kameradan bul, ama hem engel hem hedef aramasını oyuncunun kamera doğrultusundaki izdüşümünden sonra başlat (proj > kamera–baş uzaklığı). (2) İsabeti namludan ya da gözden bu noktaya lineBlocked ile doğrula. Kısa vadeli seçenek: kameradan yapılan lineBlocked çağrısında tMin'i kamera–baş uzaklığına göre ayarla (tMin = |kamera−baş| / |kamera−hedef|). Bu düzeltme I-02 ve C-06 düzeltmeleriyle birlikte tasarlanmalı, yoksa biri ötekini bozar.",
+   "repro": "Node: /tmp/denetim_alan/karsit_karakter/sim/agac_atis.mjs (gerçek camera.js ve physics.js kopyalarıyla). Tarayıcıda: oyuncuyu kumsalda bir palmiyenin 1–1,5 m önüne, sırtı palmiyeye dönük yerleştir. 10 m önüne bir düşman koy ya da DK.combat.targets'a sabit bir hedef ekle. Kamerayı oyuncunun arkasına çevir (tpCamera.yaw = oyuncunun yönü), nişansız DK.combat.shoot(p) çağır: hedefin canı değişmiyor. Palmiyenin çarpıştırıcısını physics'ten kaldırınca aynı atış isabet ediyor.",
+   "acceptance": "05_dusman_ai'ye ya da 18 numaralı yeni senaryoya eklenecek test: oyuncunun 1,0 / 1,5 / 2,5 m arkasında noCam bir ağaç ya da NPC varken nişanlı ve nişansız atış öndeki hedefe isabet etmeli. Oyuncu ile hedef arasında kaya ya da duvar varken isabet etmemeli. Kamera ile oyuncu arasındaki düşman vurulmamalı (C-06). I-02'nin duvar senaryosu da geçmeye devam etmeli."
+  }
+ ]
+}

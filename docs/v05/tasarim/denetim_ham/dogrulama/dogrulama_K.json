@@ -1,0 +1,254 @@
+{
+ "verdicts": [
+  {
+   "ref": "K-01",
+   "verdict": "kismen",
+   "evidence": "Olgular bağımsız olarak yeniden üretildi. git rev-parse HEAD, 44d548c ve 762f1c7 üzerinde DenizKorsanlari-SonHazine.html için üçü de 3a912c30 veriyor; kök dosyanın sha256'sı f0ac8cb0… (21 981 073 bayt). esbuild 0.24.2 (/tmp/buildtools) ile v0.3 kaynağından derleme (/tmp/denetim_alan/karsit_K/v03.html) f0ac8cb0… çıktı, kökle aynı. v0.4 kaynağından derleme (/tmp/denetim_alan/karsit_K/w2.html) 75587dd9… çıktı (22 071 696 bayt); bu hem SON-HAZ-NE-w2/dist hem SON-HAZ-NE/dist ile aynı. 44d548c..HEAD arasında yalnız docs/ değişiyor. build-single-html.mjs:15 varsayılan çıktıyı dist/'e yazıyor, .gitignore:2 dist/'i dışlıyor, README.md:15-18 kök dosyayı gösteriyor. Derleme (satır 107-126) içine commit ya da sürüm yazmıyor. 16_SON_RAPOR.md:98-100 (§16.7) bu adımı kullanıcı onayı bekleyen yayın adımı olarak kaydediyor; madde bilinen ve açık. Faz 0 A-01 aynı maddeye 'orta' vermiş.",
+   "correction": "Öncelik 'orta' olmalı. Bugün oyuncuya etkisi yok: canlı dal da kök dosya da v0.3 ve ikisi tutarlı. Risk yalnız v0.4 birleştirilirken kök dosya yeniden üretilmezse doğuyor ve bu adım §16.7'de yazılı. Etkideki 'file:// data: işçisi' eksikliği işlevsel bir açık sayılmamalı. v0.3 tek dosyası işçiyi klasik işçi olarak kuruyor (762f1c7:tools/build-single-html.mjs:16,27 → 'new Worker(window.__DK_WORKER_URL)'; derlenmiş dosyada da aynı). Blob reddi 903abe2'de tek dosyada modül işçisine geçilince görüldü (v0.4 terrain.js:69, {type:'module'}). 01_ILK_DENETIM_RAPORU.md:43 v0.3 dist'inin file:// altında 3 işçiyle açıldığını kaydediyor; A-01 de aynı sonuca varıyor. Bu doğrulamada tarayıcı koşulmadı."
+  },
+  {
+   "ref": "K-02",
+   "verdict": "dogrulandi",
+   "evidence": "762f1c7:.github/workflows/pages.yml:8 'branches: [main, master, 'claude/**']'. Satır 33-35'te deploy işi yalnız needs.check.outputs.enabled koşuluna bakıyor; ref denetimi yok. Depo API'sinde default_branch claude/hopeful-cray-o1jw6w (762f1c7); d6e716f yalnız claude/denetim-v0.4 soyunda. 16 koşunun hepsi canlı dalda. deployments API'sinde 7461542552 (762f1c7, performed_via github-actions) 16:55:24'te success; yani deploy-pages dal tabanlı yayın açıkken de canlıya yazabiliyor. Ek gözlem: github-pages ortamı ilk kez run 41155258637'nin (cc7e165, 01:25:11) deploy işiyle oluşmuş görünüyor (deployment 7452376874, failure). İş akışı başvurusuyla kendiliğinden oluşan ortamlarda dal kuralı olmaz; bu, push'un engellenmeden yayına gitme olasılığını artırıyor. /environments vekil sunucuda 403 verdiği için ortam kuralı doğrulanamadı. Öncelik ve 'yuksek' güven yerinde."
+  },
+  {
+   "ref": "K-04",
+   "verdict": "dogrulandi",
+   "evidence": ".github/workflows altında v0.3'te de v0.4'te de yalnız pages.yml var. Actions iş akışı listesinde yalnız 'GitHub Pages' ve dinamik 'pages-build-deployment' görünüyor. pages.yml:6-9 yalnız push ve workflow_dispatch tetikleyicisi içeriyor; pull_request yok. Deploy işi (41-52) checkout → configure-pages → tek HTML derlemesi → upload → deploy sırasıyla çalışıyor; test adımı yok. API: list_branches üç dalın da protected:false olduğunu gösteriyor. GET /branches/claude%2Fhopeful-cray-o1jw6w/protection → 404 'Branch not protected'; /rulesets ve /rules/branches/… → []. Ek etki: 00_BASLANGIC_KAYDI.md:24-26 v0.3 ve v0.4'ün tek kalıcı yedeği olarak bu korumasız dalları sayıyor. Etiketler 403 ile gönderilemedi, paket ise oturum klasöründe. Zorla gönderme ya da dal silme canlıyı ve yedeği birlikte yok eder."
+  },
+  {
+   "ref": "K-05",
+   "verdict": "kismen",
+   "evidence": "Çekirdek iddia deployments API'siyle doğrulandı. ba85510 için 7461472615 (github-actions, success 16:49:25) ve 7461476840 (github-pages, success 16:49:33) var. 762f1c7 için 7461542552 (github-actions, 16:55:24) ve 7461546853 (github-pages, 16:55:36) var. İş adımları: iş akışındaki deploy-pages 16:55:14-21, dinamik 'Deploy to GitHub Pages' 16:55:27-34. Dinamik iş akışı (id 402892582) 16:48:47Z'de oluşmuş. 16:25'teki workflow_dispatch yayınında (run 41219635984, deployment 7461213685) dinamik koşu yok; kaynak büyük olasılıkla 16:26-16:48 arasında dal tabanlıya çevrildi. 762f1c7'nin commit mesajında 'hangi kaynaktan (dal ya da iş akışı)' ifadesi var. /pages API'si ve github.io vekil sunucuda engelli olduğu için kaynak ayarı doğrudan okunamadı; 'yuksek' güven uygun.",
+   "correction": "Etkideki 'docs/ ve tests/ dahil' tespiti dal yayınına özgü değil. upload-pages-artifact@v3 'path: .' ile yalnız .git ve .github'ı dışarıda bırakıyor; denetçinin kendi K-06'sı da bunu söylüyor. Üstelik canlı commit 762f1c7'de tests/ klasörü yok. 762f1c7 için iki yayının oyun içeriği aynı: iş akışının yeniden ürettiği tek HTML commit'li dosyayla bayt bayt aynı (f0ac8cb0…). Yani bugün oyuncuya yansıyan bir fark yok. Etki ileriye dönük: v0.4 birleştirilince bayat kök dosya sunulabilir ve eklenecek CI kapıları dal yayınıyla atlanır. 'Ham' ifadesi de tam doğru değil. Pages'in Jekyll'i Markdown'u HTML'e çeviriyor, ön bilgisi (front matter) olmayan oyun dosyalarını olduğu gibi kopyalıyor. Depoda '_' ile başlayan dosya ve .md'lerde Liquid etiketi yok, derleme güvenli. Öncelik yayın güvenliği açısından 'yuksek' savunulabilir."
+  },
+  {
+   "ref": "UC1",
+   "verdict": "dogrulandi",
+   "evidence": "v0.3 pages.yml:8 ve 33-35 okundu. API'de varsayılan dal claude/hopeful-cray-o1jw6w. Run 41221950903 ve deployment 7461542552, deploy-pages'in dal yayını açıkken başarılı olduğunu gösteriyor; 16 koşunun hepsi canlı dalda. v0.4 pages.yml:8 push'u yalnız main/master/claude/hopeful-cray-o1jw6w ile sınırlıyor. Satır 9'daki workflow_dispatch dal kısıtı taşımıyor ve deploy (33-35) ref denetlemiyor. Actions'ta claude/denetim-v0.4 ve claude/v0.5-saglamlastirma için koşu yok. v0.3 'dogru', v0.4 'kismen' hükümleri yerinde: v0.4'te push yolu kapalı, ama elle tetikleme ve canlı daldan açılan yeni dallar hâlâ yayın tetikleyebilir."
+  },
+  {
+   "ref": "UC2",
+   "verdict": "dogrulandi",
+   "evidence": "v0.3 js/main.js:133-152 ve v0.4 js/main.js:134-153 boot() sonunda window.DK, snap, snapFrom, sim, tap, press ve __ready'yi koşulsuz atıyor. js/ altında window.DK'yi main.js dışında kullanan kod yok. Kendi derlemelerimde (karsit_K/v03.html ve w2.html) 'window.DK={', 'window.DK.sim=', 'window.DK.press=', 'window.__ready=!0' ve 'peerhost' bulunuyor; '__DK_TERRAIN_MODE' yalnız v0.4'te. ?peerhost v0.3'te net.js:39-40'ta, v0.4'te net.js:53'te (peerOpts) okunuyor; ?terrain v0.4 terrain.js:249'da. Canlı deployment 7461546853, 762f1c7'den yayınlanmış."
+  },
+  {
+   "ref": "UC3",
+   "verdict": "dogrulandi",
+   "evidence": "Bağımsız derleme sonuçları: v0.3 kaynağı f0ac8cb0… veriyor (kökle bayt bayt aynı, 21 981 073 bayt). v0.4 kaynağı 75587dd9… veriyor (22 071 696 bayt) ve bu yalnız dist/ ile aynı. Git blob 3a912c30, 762f1c7, 44d548c ve HEAD'de aynı. v0.3 için 'yanlis', v0.4 için 'dogru' hükmü doğru. Küçük ek: v0.3 tek dosyasında işçi klasik işçi ('new Worker(window.__DK_WORKER_URL)'), modüler sürümde ise modül işçisi; bu da derleme dönüşümünden gelen bir fark."
+  },
+  {
+   "ref": "SYS1",
+   "verdict": "dogrulandi",
+   "evidence": "02_tek_dosya.js:4-9'da dört expect etiketi var. Taban raporu 02_tek_dosya.json'da url file:///home/user/SON-HAZ-NE/dist/DenizKorsanlari-SonHazine.html, fails 0, errors [], pageErrors [] ve adım 2'de workers 3. O dist dosyasının (44d548c çalışma ağacı) sha256'sı 75587dd9…, yani v0.4 kaynağının derlemesi. Kayıtlar: 12_TEST_PLANI_VE_SONUCLAR.md:59, 85, 163, 210 ve 16_SON_RAPOR.md:194, 235. Denetçinin sınır notu doğru: yalnız Chromium/SwiftShader, yalnız file:// ve 4 kontrol; sınanan dosya git'te değil ve yayınlanan dosya da değil."
+  },
+  {
+   "ref": "SYS2",
+   "verdict": "dogrulandi",
+   "evidence": "build-single-html.mjs:100-103, file: protokolünde data:text/javascript URL'si, diğer durumlarda blob kullanıyor. Taban raporu adım 2: proto 'file:', workers 3, fallback false, failures [], url 'data:text/javascript;charset=utf-8,(()%3…'. v0.4 terrain.js:69-93'te hata veren ya da 8 sn içinde hazır sinyali göndermeyen işçi _workerFailed ile listeden çıkarılıyor; bu yüzden 'workers.length ≥ 1' gerçekten çalışan işçiyi gösteriyor. Kayıt: 12. belge satır 59. Not: fallback===false yalnız günlükte görünüyor, expect ile ayrıca denetlenmiyor."
+  },
+  {
+   "ref": "SYS3",
+   "verdict": "dogrulandi",
+   "evidence": "main.js:134-153. Senaryolar DK.handlers, DK.sim ve DK.press'e dayanıyor (ör. 00_acilis.js:5-7, 02_tek_dosya.js:7-9, coop.cjs:38, 54). Taban summary.txt'ye göre 25 tarayıcı koşusundan 23'ü rc=0 verdi; 09_performans ve coop_06c rc=1. Not: rc=0 olan 23 koşudan biri (03_fizik_dt) hiç kontrol içermiyor (PASS=0 FAIL=0). Kancaları doğrudan sınayan ayrı bir test yok; kanıt dolaylı ama yeterli."
+  },
+  {
+   "ref": "SYS4",
+   "verdict": "dogrulandi",
+   "evidence": "Bu doğrulamada da koşuldu: node tests/node/archipelago_sabit.mjs → 'GEÇTİ {islands:67, autoFeatures:22, added:{wrecks:14,pois:22,mods:8}, fails:[]}', rc=0. Kayıt: 12. belge satır 54, 90, 162. Kapsam notu: test, archipelago.js'in statik çıktısını v0.3 sabitiyle (tests/fixtures/archipelago_v03.json, e1b16f3) karşılaştırıyor. Çalışma anındaki ada yerleşimini kapsamıyor; 11. belge #35'e göre yerleşim LOD'a göre değişebiliyor. 'Determinizm testi' adı bu yüzden geniş kalıyor; 'v0.3 anlık görüntü testi' daha doğru olur."
+  },
+  {
+   "ref": "REQ1",
+   "verdict": "dogrulandi",
+   "evidence": "00_acilis.js:8 (meshes ≥ 10) ve :9 'Arazi işçileri çalışıyor' (gte 1). 02_arazi_yedek taban raporu normal kipte mode '', workers 3, fallback false ile 12/12. Kayıtlar: 12. belge satır 39, 41, 249; summary.txt'de 00_acilis PASS=6."
+  },
+  {
+   "ref": "REQ2",
+   "verdict": "dogrulandi",
+   "evidence": "02_arazi_yedek.js'in ?terrain=badurl ve noworker kipleri 12_TEST_PLANI_VE_SONUCLAR.md:41'de '12/12 × 4' olarak kayıtlı. Kip mantığı terrain.js:58-62'de (_workerUrl, badurl) ve :65'te (noworker → _setFallback). Çekince: senaryo etkin kipi expect ile doğrulamıyor, yalnız satır 5'te yazdırıyor. Faz 0 tabanı yalnız normal kipte koştu (run_baseline.sh:5,15; rapor mode '', fallback false), oysa 00_BASLANGIC_KAYDI.md:47 'İşçisiz kipler' yazıyor. Güncel bir işçisiz taban kanıtı yok (missed'e eklendi); karar 12. belge kaydına dayanıyor."
+  },
+  {
+   "ref": "REQ3",
+   "verdict": "dogrulandi",
+   "evidence": "terrainWorker.js:7-8'de 'test-crash' adlı işçi başlarken çöküyor; terrain.js:69 crash kipinde işçiye bu adı veriyor. 12. belge satır 41'de crash kipi 12/12. 02_arazi_kurtarma.js'in etiketleri ('Tüm işçiler düşünce yedek kipi açıldı', 'Öksüz iş yok…', 'Kuyruk ana iş parçacığında ilerliyor (12 sn)') tabanda 7/7 geçti. Not: açılıştaki çökme (crash kipi) Faz 0 tabanında koşmadı; kanıt 12. belge kaydı."
+  },
+  {
+   "ref": "REQ4",
+   "verdict": "dogrulandi",
+   "evidence": "00_acilis.js:8; 02_arazi_yedek.js:6 (en az 20 ağ), :12 (en az 4 yüksek çözünürlüklü karo), :16 (Tuz Pazarı çevresinde en az 6 karo). Taban sonuçları 6/6 ve 12/12."
+  },
+  {
+   "ref": "REQ5",
+   "verdict": "dogrulandi",
+   "evidence": "02_arazi_yedek.js:7 'Okyanus derinlik penceresi hazır', :14 'Derinlik penceresi yeni bölgeye taşındı', :17 'Harita ızgarası isteği sonuçlanıyor' (65 536 hücre). Taban 12/12 (normal kip); işçisiz kipler yalnız 12. belge satır 41'de kayıtlı."
+  },
+  {
+   "ref": "REQ6",
+   "verdict": "kismen",
+   "evidence": "00_acilis.js:5 oyunu DK.handlers.startGame({kind:'solo', slot:2, data:null}) ile doğrudan başlatıyor; :3-4 yalnız menünün görünürlüğüne ve düğme sayısına bakıyor. tests/ altında 'Yeni Macera'ya, karakter oluşturucuya ya da yuva seçimine tıklayan bir adım yok. Testlerdeki tek arayüz tıklaması 06_arayuz_960.js:4-5'te, ONLINE ve Oda Kur düğmelerine.",
+   "correction": "Oyun başlatma mantığı karşılanıyor; oyuncunun izlediği arayüz akışı (Yeni Macera → oluşturucu → yuva → başlat) sınanmıyor."
+  },
+  {
+   "ref": "REQ7",
+   "verdict": "kismen",
+   "evidence": "08_kalicilik.js:30'da kayıt aynı oturumda üretiliyor ve DK.handlers.startGame({data: DK.save.read('solo',2)}) ile yükleniyor; 12_kayit_dongusu da aynı yolu kullanıyor. Taban 12/12 ve 4/4. Menüdeki Devam Et/Yükle arayüzü sınanmıyor (D-18 açık). v0.3'ün ürettiği bir kayıtla yükleme testi yok; tests/fixtures'ta yalnız archipelago_v03.json var. 16_SON_RAPOR.md:98-100 bunu yayın öncesi el ile yapılacak adım olarak bırakıyor. D-05'e göre sürüm damgası işlevsiz ve migrasyon yok.",
+   "correction": "Aynı sürümde programatik yükleme karşılanıyor; arayüz yolu ve v0.3→v0.4 kayıt yüklemesi sınanmıyor."
+  },
+  {
+   "ref": "REQ8",
+   "verdict": "kismen",
+   "evidence": "Etiketler mevcut ve tabanda geçti: 03_fizik_duzeltmeler 'Yüksek platforma yandan girilmez (yan yüz çarpıştırıcı)', 15_iskele_kamera I02 ve I05, 05_dusman_ai 'Yığılma yok…'. Ancak 11_BILINEN_SORUNLAR.md'de açık maddeler var. #43: ada yapılarında çarpıştırıcı kutuları görselden küçük, oyuncu duvarlara 0,1–1 m gömülebiliyor. #5 (D-20): güvertedeki oyuncu kalabalık itişmesinde ajan sayılmıyor, bordalama düşmanları oyuncunun içinden geçebiliyor.",
+   "correction": "Sınanan durumlar geçiyor; ama bilinen açık maddeler (#43, #5) yüzünden karakter çarpışmaları tam karşılanmıyor."
+  },
+  {
+   "ref": "REQ9",
+   "verdict": "dogrulandi",
+   "evidence": "04_karakter 'C07 Kamera duvarın içinden bakmaz…', 15_iskele_kamera C01–C05 ve 17_kamera_kararma K04–K08 etiketleri mevcut. Taban sonuçları 21/21, 14/14, 13/13; 12. belgede önce/sonra tabloları var. Sınır: yalnız SwiftShader; 11 #48'deki kamera engel beklemesi gerçek donanımda doğrulanmadı."
+  },
+  {
+   "ref": "REQ10",
+   "verdict": "kismen",
+   "evidence": "Co-op senaryoları odayı DK.net.host({...}) ile programatik olarak kuruyor (ör. 06a_ag_guvenligi.cjs:13, 06c_dort_oyuncu.cjs:9). Arayüz tarafında yalnız 06_arayuz_960'taki 'H05 … Odayı oluştur düğmesi görünür alanda' kontrolü var; düğmeye basılıp oda kurulmuyor.",
+   "correction": "Ağ katmanında oda kurma karşılanıyor; Oda Kur panelinden kurulum sınanmıyor."
+  },
+  {
+   "ref": "REQ11",
+   "verdict": "kismen",
+   "evidence": "Katılım DK.net.join(kod,'') ile programatik yapılıyor (06a:14, 06c:10); 06d 'Konuk odaya bağlandı' ve 06b tabanda geçti. Ancak aynı taban koşusundaki coop_06c.json'da D4-01 (lobide 4 kayıt) geçti, D4-02 ise ['playing','menu','playing','playing'] ile kaldı: 'Tayfa' oyun başlarken menüye düştü; D4-03 [2,0,2,2]. 11 #37 bu kararsızlığı açık madde olarak tutuyor. Arayüzdeki Katıl ve davet bağlantısı yolu (menu.joinScreen, main.js:132-133) sınanmıyor.",
+   "correction": "2 oyunculu katılım karşılanıyor; 4 oyunculu katılım tabanda kaldı ve arayüz yolu sınanmıyor."
+  },
+  {
+   "ref": "REQ12",
+   "verdict": "dogrulandi",
+   "evidence": "coop_06b.json 18/18 ve coop_06d.json 9/9 (fails 0, pageErrors 0); kayıt 12. belge satır 21 ve 163. Sınır: testler yerel PeerJS sunucusuyla (127.0.0.1:9000) koşuyor; gerçek ağ ve TURN yok (16. belge §16.6)."
+  },
+  {
+   "ref": "REQ13",
+   "verdict": "dogrulandi",
+   "evidence": "06b 'H01 Konuk keseyi alır…', 06d C01–C04 ve 16_kosu_poz_ganimet T01–T10 etiketleri mevcut ve tabanda geçti (18/18, 9/9, 23/23). Açık kalan düşük öncelikli madde: 11 #49 (co-op'ta kısmen sığan kese)."
+  },
+  {
+   "ref": "REQ14",
+   "verdict": "dogrulandi",
+   "evidence": "05_dusman_ai 18/18 geçti ('Zayıf nokta: zırhlı düşman arkadan 1.6× hasar alır', 'F-16 Tabanca ışını duvar arkasındaki düşmana isabet etmez', 'Saldırı telgrafı…'). 06a'daki 'H07 Uzaktan sahte hasar…' ve 'H07 Yakından sahte 99999 hasar üst sınıra…' kontrolleri 10/10; yakın hasar kontrolü iletinin ulaştığını da gösteriyor. 06b'de F-11 ve F-15 geçti. Not: boss savaşları uçtan uca oynanmadı (11 #12)."
+  },
+  {
+   "ref": "REQ15",
+   "verdict": "dogrulandi",
+   "evidence": "06b 'B08/H08 Yüzen şişe konukta görünür (ağ kopyası)' ve 'H08 Konuk şişeyi alır…' tabanda geçti; 16 T05 ve T10 da geçti. Kod: events.js:193 netFloatSpawn, :79 netFloatGone; net.js:158-159 ve 324 floatReq. Varil, şişe, sandık, kazazede ve gök taşı (worldEvents.js:223) aynı events.spawnFloating yolundan geçiyor."
+  },
+  {
+   "ref": "REQ16",
+   "verdict": "kismen",
+   "evidence": "06a2 'H13 Kopan konuğun dümen kilidi…' tabanda 3/3 geçti ve kopmadan önceki kilidi de doğruluyor (06a2_mesaj_kopma.cjs:43, lockBefore). İkinci kanıt olan 06c D4-07 ise tabanda boşuna geçti: kapatılan g1 ('Tayfa') o anda menüdeydi ve sonuç {rem:[2,2,2], waitedMs:0} (coop_06c.json; 06c_dort_oyuncu.cjs:54-59 önkoşul denetlemiyor). Ev sahibinin ayrılması (konuktaki hostLeft yolu) hiçbir testte sınanmıyor; tests/ altında hostLeft ya da ev sahibi sekmesini kapatma yok.",
+   "correction": "Yalnız konuk kopması karşılanıyor. Ev sahibi kopması ve yeniden bağlanma sınanmıyor; D4-07 de tabanda geçerli bir kanıt değil."
+  },
+  {
+   "ref": "REQ17",
+   "verdict": "kismen",
+   "evidence": "08_kalicilik.js:43 'Bozuk ana kayıt varken .bak yedeği okunur' yalnız sözdizimsel bozulmayı ('garbage') sınıyor. save.js:33-37'deki valid() yalnız player.inv'in varlığına ve version'ın türüne bakıyor; read() (38-44) ancak valid() başarısız olursa yedeğe düşüyor. Anlamca bozuk ama valid()'i geçen bir kayıt yedeğe düşmeden yükleniyor. D-06 (start() istisnası oturumu yarım bırakıyor ve otomatik kayıt yuvayı eziyor) ve D-12 (tek kuşak, doğrulamasız yedek, sessiz kurtarma) açık.",
+   "correction": "Yedekten okuma yalnız JSON düzeyindeki bozulmada karşılanıyor."
+  },
+  {
+   "ref": "REQ18",
+   "verdict": "kismen",
+   "evidence": "08_kalicilik.js:42 yalnız yarım JSON ile read()===null olduğunu ve list()'in çökmediğini sınıyor. Alan düzeyindeki bozulma valid()'i geçiyor (save.js:33-37) ve game.start sırasında istisnaya yol açabiliyor (D-06). Bozuk kayıt kullanıcıya bildirilmiyor (D-12).",
+   "correction": "Sözdizimsel bozulma karşılanıyor; anlamsal bozulma karşılanmıyor."
+  },
+  {
+   "ref": "REQ19",
+   "verdict": "kismen",
+   "evidence": "08 'B02/B-08 Ada ödülleri, tutsaklar ve tapınak mekanizması yüklemede geri geliyor' ve 12_kayit_dongusu K01 tabanda geçti. Açık maddeler: D-08 / 11 #41 (Martı Batığı sandığı kayda yazılmıyor, yeniden açılabiliyor), D-13 / 11 #19 (kaya tuzağı kaydedilmiyor), D-19 (açılmış ada sandıkları ve sunak görsel olarak kapalı kalıyor), 11 #35 (ada yerleşimi kurulum anındaki LOD'a göre farklı olabiliyor).",
+   "correction": "Sınanan alanlar korunuyor; ada durumunun tamamı korunmuyor."
+  },
+  {
+   "ref": "REQ20",
+   "verdict": "dogrulandi",
+   "evidence": "08 'E-13/A1 Batık gemi batık yüklenir, parça/direk/top hasarı korunur…', 14_deniz_ekipmani 'L03 Kayıt/yüklemede zıpkın, ağ, maske, palet ve hava keseleri korunur' ve 12 K01 tabanda geçti. Düşük öncelikli açıklar: D-16 (hareket bağlamı) ve D-14 (yerdeki keseler)."
+  },
+  {
+   "ref": "REQ21",
+   "verdict": "dogrulandi",
+   "evidence": "00_acilis http://localhost:8080/index.html üzerinde 6/6 geçti (summary.txt). Tüm taban koşuları modüler sürümle yapıldı (run_baseline.sh:5)."
+  },
+  {
+   "ref": "REQ22",
+   "verdict": "kismen",
+   "evidence": "02_tek_dosya'nın 4/4 sonucu yalnız git dışındaki dist/ v0.4 derlemesine ait (run_baseline.sh:20). README'nin gösterdiği ve depoda duran kök dosya (v0.3) sınanmıyor. http(s) altındaki blob: modül işçisi yolu (build-single-html.mjs:103, yani Pages'teki tek HTML) da sınanmıyor (A-16). Test yalnız Chromium'da koşuyor ve 4 kontrol içeriyor; varlık, ses ve yazı tipi denetimi yok (K-11). Ayrıca yalnız yolunda 'assets' geçmeyen tek bir klasörde denendi (K-09).",
+   "correction": "v0.4 tek HTML'inin Chromium'da file:// açılışı karşılanıyor; dağıtılan dosya ve http yolu için kanıt yok."
+  },
+  {
+   "ref": "DOC1",
+   "verdict": "kismen",
+   "evidence": "README.md:8 '0.3' diyor; ama v0.4 dalındaki oyunun kendisi de 'Sürüm 0.3' gösteriyor (js/ui/menu.js:109 'Sürüm 0.3 — Genişleyen Denizler', :112 menü altbilgisi). README v0.4'te kısmen güncellenmiş: 0a2d8cc ve 78c9103 dalış tuşunu C'ye, slotları 1–7'ye, pusulayı N'ye çevirmiş ve 54-79. satırlara dalış, balıkçılık ve avcılık bölümlerini eklemiş.",
+   "correction": "'README güncellenmemiş' tespiti yanlış; yalnız sürüm satırı ve bazı bölümler bayat. Sürüm satırı kodun kendi etiketiyle tutarlı. Asıl sorun, v0.4'ü ayırt eden hiçbir sürüm ya da derleme damgasının olmaması; menu.js:109,112 ve README birlikte güncellenmeli."
+  },
+  {
+   "ref": "DOC2",
+   "verdict": "dogrulandi",
+   "evidence": "docs/11_ONLINE_TEST_RAPORU.md:30 ve docs/13_BILINEN_HATALAR.md:9 ifadeyi taşıyor. v0.4'te events.js:79, 193 (netFloatGone/netFloatSpawn) ve net.js:158-159, 324 (floatReq) var; v0.3'ün events.js ve net.js dosyalarında bu iletiler yok. 06b B08/H08 tabanda geçti. Tüm yüzen nesne türleri events.spawnFloating'den geçtiği için düzeltme hepsini kapsıyor."
+  },
+  {
+   "ref": "DOC3",
+   "verdict": "dogrulandi",
+   "evidence": "tests/README.md:33-35 '--url file://$PWD/DenizKorsanlari-SonHazine.html' diyor; bu kökteki v0.3 derlemesi (blob 3a912c30). tests/scenarios/02_tek_dosya.js:1-2 ve run_baseline.sh:20 ise dist/ dosyasını kullanıyor."
+  }
+ ],
+ "missed": [
+  {
+   "title": "06c D4-07 kopma kontrolünde önkoşul yok: kapatılan konuk odada olmasa da geçiyor (tabanda boşuna geçti)",
+   "file": "tests/scenarios/coop/06c_dort_oyuncu.cjs:53-59; docs/v05/taban_kosusu_44d548c/coop_06c.json",
+   "func": "06c senaryosu, D4-07 'Sekmesi kapanan konuk herkeste kalkar (≤ 25 sn)'",
+   "rootCause": "Kontrol yalnız kapanıştan sonra herkesin 2 uzak oyuncu görüp görmediğine bakıyor (satır 58-59). Kapatılan g1'in önceden odada olduğunu ve sayının 3'ten 2'ye düştüğünü doğrulamıyor. Bekleme döngüsü (satır 56) sayı zaten 2 ise hiç beklemiyor.",
+   "impact": "Faz 0 tabanında g1 ('Tayfa') oyun başlarken menüye düşmüştü: D4-02 ['playing','menu','playing','playing'], D4-03 [2,0,2,2]. D4-07 yine de {rem:[2,2,2], waitedMs:0} ile geçti. Kopma temizliğini hiç sınamadan geçebilen bu kontrol T34 'Bağlantı kopması' için kanıt gösteriliyor. Kalp atışı ya da temizlik yolundaki bir gerileme bu yüzden gizli kalır.",
+   "priority": "orta",
+   "fix": "Kapatmadan önce bir önkoşul kontrolü ekleyin: ev sahibinde DK.G.remotes.size === 3 olmalı ve g1, DK.net.roster içinde bulunmalı. Önkoşul sağlanmıyorsa D4-07'yi FAIL sayın. Rapor ayrıntısına 'before' sayısını ve 3→2 geçişinin zamanını yazın. Aynı önkoşul kalıbını diğer kopma kontrollerinde de denetleyin; 06a2 H13 bunu lockBefore ile doğru yapıyor.",
+   "repro": "docs/v05/taban_kosusu_44d548c/coop_06c.json: D4-02 FAIL (Tayfa 'menu'), D4-07 PASS {rem:[2,2,2], waitedMs:0}. Kod: 06c_dort_oyuncu.cjs:4 (g1 = guests[0] = Tayfa) ve 54-59.",
+   "acceptance": "g1 odaya katılmadan kapatıldığında D4-07 kalıyor. g1 oyundayken kapatıldığında kontrol yalnız 3→2 geçişi gözlenince geçiyor ve rapor 'before: 3' gösteriyor."
+  },
+  {
+   "title": "02_arazi_yedek etkin arazi kipini doğrulamıyor; Faz 0 tabanı işçisiz kipleri hiç koşmadığı hâlde 'İşçisiz kipler 12/12' kaydediyor",
+   "file": "tests/scenarios/02_arazi_yedek.js:1-21; docs/v05/taban_kosusu_44d548c/run_baseline.sh:5, 14-15; docs/v05/00_BASLANGIC_KAYDI.md:47",
+   "func": "02_arazi_yedek senaryosu; taban koşu betiğindeki one()",
+   "rootCause": "Senaryo kipi (DK.terrain.mode ve fallback) yalnız js adımında yazdırıyor (satır 5), expect ile denetlemiyor; kip tümüyle URL parametresine bağlı. Taban betiği senaryoyu parametresiz U=http://localhost:8080/index.html ile koştu. Rapordaki adım 2: mode '', workers 3, fallback false.",
+   "impact": "Taban kaydı T2/T3 (işçi yok, işçi bulunamadı, işçi çöktü) için güncel bir kanıt varmış gibi gösteriyor, oysa yalnız normal kip koştu. Parametre unutulursa ya da kip adı değişirse test normal kipte sessizce geçer. Böylece yedek yoldaki bir gerileme (v0.3'teki %53'te asılı kalma türünden) CI'da da yakalanmaz.",
+   "priority": "orta",
+   "fix": "Senaryoya beklenen kipi URL'den okuyup doğrulayan bir expect ekleyin: const m=new URLSearchParams(location.search).get('terrain')||''; DK.terrain.mode===m && (m ? DK.terrain.fallback===true : DK.terrain.fallback===false && DK.terrain.workers.length>=1). Taban betiğinde dört kipi ayrı adlarla koşun ve 00_BASLANGIC_KAYDI.md:47'yi düzeltin.",
+   "repro": "docs/v05/taban_kosusu_44d548c/02_arazi_yedek.json: url 'http://localhost:8080/index.html', adım 2 {mode:'', workers:3, fallback:false}. 00_BASLANGIC_KAYDI.md:47: '02_arazi_yedek 12/12 … İşçisiz kipler'.",
+   "acceptance": "?terrain=noworker, badurl ve crash koşuları kip ve yedek kontrolünü geçiyor. Parametresiz bir koşu işçisiz kip olarak etiketlenemiyor. Taban kaydında dört kip ayrı satırlarda yer alıyor ve her raporda doğru mode yazıyor."
+  },
+  {
+   "title": "Belgeler v0.3 tek dosyasının file:// davranışında çelişiyor: 03:21 ve 04 §4.2c 'yükleme ekranında takılma' diyor, 01:43 ise açıldığını kaydediyor",
+   "file": "docs/denetim/03_DEGISIKLIK_LISTESI.md:21; docs/denetim/04_KOK_NEDENLER.md:21-25; docs/denetim/01_ILK_DENETIM_RAPORU.md:43; 762f1c7:tools/build-single-html.mjs:16,27; commit 903abe2 ve 463d01f; js/world/terrain.js:69 (v0.4)",
+   "func": "Tek dosyada işçi kurulumu (v0.3'te klasik blob işçisi, v0.4'te modül işçisi) ve ilgili belge kayıtları",
+   "rootCause": "v0.3 derlemesi işçi çağrısını tümüyle 'new Worker(window.__DK_WORKER_URL)' ile, yani klasik işçiyle değiştiriyor. 01:43'teki koşu v0.3 dist'ini file:// altında '3 işçi … oyun başladı, 129 arazi karosu' olarak kaydediyor. Blob reddi 903abe2'de görüldü: orada yalnız URL ifadesi değiştirildi ve '{ type: 'module' }' bırakıldı, yani işçi modül işçisine döndü. Sorun 463d01f'te data: URL ile giderildi. 03:21 ve 04 §4.2c ise bunu v0.3'e de genelleyip 'v0.3'te bu yükleme ekranında takılma demekti' diyor.",
+   "impact": "Belgeler canlıdaki çevrimdışı dosyanın (v0.3) çift tıklamayla açılmadığını ima ediyor. Bu yanlışsa yayın önceliği ve kullanıcıya verilecek bilgi yanlış temele oturur; K-01'deki 'file:// data: işçisi eksik' etkisi de abartılmış olur. Doğruysa canlıdaki tek dosya hiç açılmıyor demektir (kritik) ve bu hiçbir yerde açık madde olarak izlenmiyor. Her iki durumda da konu tarayıcıda doğrulanmadan bırakılmış. Güven orta: bu doğrulamada tarayıcı koşulmadı; A-01 de 01:43'e dayanarak dosyanın 'normalde açılır' olduğunu söylüyor.",
+   "priority": "orta",
+   "fix": "Kökteki dosyaya (v0.3, sha256 f0ac8cb0…) karşı 02_tek_dosya'yı file:// altında Chromium'da ve Firefox'ta koşun, raporu belgelere ekleyin. 03:21 ve 04 §4.2c'yi sonuca göre düzeltin ve reddin yalnız modül işçisinde görüldüğünü belirtin. Sonucu 11. belgeye yazın.",
+   "repro": "git show 762f1c7:tools/build-single-html.mjs | sed -n 16,27p çıktısında 'new Worker(window.__DK_WORKER_URL)' görünüyor; derlenmiş /tmp/denetim_alan/karsit_K/v03.html içinde de aynı çağrı var. git show 903abe2 -- tools/build-single-html.mjs yalnız URL ifadesinin değiştiğini gösteriyor. 01_ILK_DENETIM_RAPORU.md:43: '(dist, file://) … 3 işçi … oyun başladı'.",
+   "acceptance": "Belgeler v0.3 tek dosyasının file:// davranışını ölçülmüş tek bir ifadeyle ve ekli koşu raporuyla veriyor; 01, 03 ve 04 arasında çelişki kalmıyor."
+  },
+  {
+   "title": "Yayından önce v0.3 kayıtlarının v0.4'te yüklenmesini sınayan otomatik test ya da fikstür yok",
+   "file": "tests/fixtures/ (yalnız archipelago_v03.json); tests/scenarios/08_kalicilik.js:30; tests/scenarios/12_kayit_dongusu.js; docs/denetim/16_SON_RAPOR.md:98-100; js/game/game.js:161-177; js/core/save.js:33-44",
+   "func": "Kayıt/yükleme regresyon testleri; yayın kontrol listesi (§16.7)",
+   "rootCause": "08 ve 12 kaydı aynı oturumda game.serialize() ile üretip hemen yüklüyor; v0.3 kodunun ürettiği gerçek bir kayıt hiçbir testte yüklenmiyor. §16.7 'kayıtlı v0.3 oyunlarıyla yükleme denemesi'ni yayın öncesinde el ile yapılacak bir adım olarak bırakıyor. İki sürüm de aynı 'version: 1' damgasını yazıyor (D-05). Yükleme sırasında bir start() istisnası oturumu yarım bırakabiliyor ve otomatik kayıt yuvanın üstüne yazabiliyor (D-06).",
+   "impact": "v0.4 canlıya alındığında her oyuncunun localStorage'daki v0.3 kaydı ilk kez v0.4 koduyla yüklenecek ve bunu sınayan bir yayın kapısı yok. Uyumsuz bir alan istisna atarsa karışık durum yuvanın üstüne yazılabilir, yani ilerleme kaybı riski var. Kırılma kanıtlanmadı (kayıt düzeni büyük ölçüde aynı); eksik olan doğrulamanın kendisi.",
+   "priority": "orta",
+   "fix": "762f1c7 ile gerçek oturumlardan kayıt fikstürleri üretip tests/fixtures/ altına koyun; hikâye ilerlemesi, gemi hasarı, ada ve tapınak durumu, online ve konuk yuvası kapsansın. v0.4'te bu fikstürleri DK.save.write ve DK.handlers.startGame ile yükleyen bir senaryo yazın. Senaryo alanların korunduğunu ve 60 sn boyunca döngünün hatasız sürdüğünü (konsol hatası 0) doğrulasın. Senaryoyu CI duman setine ve yayın kontrol listesine ekleyin.",
+   "repro": "ls tests/fixtures yalnız archipelago_v03.json'u gösteriyor. grep -n -e save.read -e startGame tests/scenarios/08_kalicilik.js kaydın aynı oturumda üretildiğini gösteriyor. 16_SON_RAPOR.md:98-100 adımı el ile yapılacak olarak listeliyor.",
+   "acceptance": "v0.3 fikstürleriyle yükleme senaryosu v0.4'te geçiyor: istisna ve konsol hatası 0, alanlar korunuyor, yuva bozulmuyor. Senaryo yayın iş akışında zorunlu adım."
+  },
+  {
+   "title": "Oyun döngüsündeki istisnalar console.error'a çevriliyor; koşucular bunu saymadığı için 'sayfa hatası 0' ölçütü döngü hatalarını göremiyor",
+   "file": "js/core/engine.js:65-67; js/main.js:117-122; tests/harness/run.cjs:40, 43, 96; tests/harness/coop.cjs:34-35, 61; docs/denetim/12_TEST_PLANI_VE_SONUCLAR.md:61, 92",
+   "func": "engine.start() kare döngüsü; koşucuların çıkış kodu",
+   "rootCause": "engine.start() her güncelleyiciyi (main.js:117-122'deki game.update, hud.update, net.update) try/catch ile sarıyor ve hatayı console.error'a yazıyor. Bu yüzden gerçek zamanlı döngüde atılan bir istisna hiçbir zaman 'pageerror' olmuyor. Koşucular yalnız pageerror'ları ve expect başarısızlıklarını sayıyor; console.error yalnız rapora yazılıyor. K-11 konsol hatalarının sayılmadığını söylüyor, ama motorun istisnaları bu yola çevirdiğini, dolayısıyla pageerror ölçütünün döngü için hiç tetiklenemeyeceğini belirtmiyor.",
+   "impact": "12. belgedeki 'Sayfa hatası (pageerror) tüm koşularda 0' ifadesi döngünün hatasız olduğunu kanıtlamıyor. Her karede istisna atan bir HUD ya da ağ güncellemesi testleri geçirir ve yalnız rapor JSON'undaki errors dizisinde görünür. Tabanda errors=0 olduğu için şu an gizli bir hata yok; risk gelecekteki gerilemeler ve kurulacak CI kapısı için.",
+   "priority": "orta",
+   "fix": "Koşucular report.errors'u başarısızlık saysın; en azından motor kaynaklı ve TypeError ya da ReferenceError içeren hatalar. Alternatif olarak motor döngüsü hataları window.__loopErrors sayacına da yazsın ve her senaryonun sonunda __loopErrors === 0 beklensin. Aynı kuralı coop.cjs'e de uygulayın. 12. belgedeki ölçütü 'sayfa hatası + döngü hatası + konsol hatası 0' olarak güncelleyin.",
+   "repro": "Kod okuması: engine.js:66 'try { u(dt); } catch (e) { console.error(e); }'; run.cjs:96 'finish(report.fails || report.pageErrors.length ? 1 : 0)'. Elle deneme: oyun açıkken konsolda DK.engine.updaters.add(()=>{ throw new Error('x') }) çalıştırılınca her karede console.error düşer, senaryo yine rc=0 verir. Bu doğrulamada tarayıcı koşulmadı.",
+   "acceptance": "Gerçek zamanlı döngüde tek bir istisna senaryoyu başarısız yapıyor; CI raporu döngü hatası sayısını gösteriyor."
+  }
+ ]
+}

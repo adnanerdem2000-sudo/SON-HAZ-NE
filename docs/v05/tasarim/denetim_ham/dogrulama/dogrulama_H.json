@@ -1,0 +1,136 @@
+{
+ "verdicts": [
+  {
+   "ref": "H-01",
+   "verdict": "dogrulandi",
+   "evidence": "v0.4 bosses.js:358 `if (k === TSEG - 6) ten.target.pos.copy(p).setY(p.y - 1)` satırı hedefi ikinci dereceden Bezier eğrisinin u=13/18 noktasına koyuyor. Taban, Kraken merkezinden 6 m uzakta (301); kontrol noktası tabandan uca doğru %35'te ve 4 m yukarıda (345); Kraken gemiden R=38 m'de, evre 3'te R=30 m'de duruyor (248-250). Hedefin yatay konumu taban + 0,662×(uç−taban); yani hedef ucun 0,338×(taban–uç) gerisinde. Yakın dövüş erimi combat.js:198 `d > D.range + t.radius`: hafif saldırıda 2,5+1,3, ağır saldırıda 2,9+1,3; ağır saldırının alan etkisi (209-218) en çok ~4,6 m'ye ulaşıyor. Oyuncu güvertede ship.js:184-188 clampDeck ile (0,38 m pay) gövde çizgisinin içinde kalıyor. Güvertede atılım yok (player.js:522-524 yalnız karada çalışıyor); yüzerken ya da kayıktayken yakın dövüş yapılamıyor (combat.js:99). Bağımsız Node kopyası /tmp/denetim_alan/karsit_dusman/kraken_reach.cjs gerçek hullHalfWidth eğrisini, 36×12 yörünge ve taban açısını ve 25 iniş noktasını kullandı. Hafif/ağır saldırıyla hedefe erişim oranları: sloop R=38 %4,6/%7,7; brigantine R=38 %14,1/%17,9; sloop R=30 %16,1/%22,9; brigantine R=30 %27,3/%35,4. Dikey fark (hedef ~1,8 m, güverte 1,45 m) sorun değil; sorun yataydaki uzaklık. v0.3'te kod birebir aynı (bosses.js:351). Bu davranışı sınayan test yok: tests/scenarios/v03/boss1.js menzil denetimini atlayıp t.target.hurt(60,{}) çağırıyor. Tabanca (combat.js:254-256, 80 m'lik ışın) ve top (projectileTest 55-69, big:true hedef) dokunacı kesebiliyor; bu yüzden savaş kazanılabilir, ancak oyunun 'kılıçla kes' yönergesi (207, 228, 333) çoğu durumda uygulanamıyor.",
+   "correction": "Sayısal düzeltme: R=38'de uç ile hedef arasındaki yatay mesafe 8,8–16,9 m (medyan 13 m), R=30'da 6,1–14,2 m. Başlıktaki '5–14 m' yalnız evre 3'e uyuyor; denetçinin betiği uca olan mesafeyi değil, güverte kenarına olan mesafeyi ölçüyor. Kök neden, etki ve 'yuksek' öncelik doğru."
+  },
+  {
+   "ref": "H-02",
+   "verdict": "kismen",
+   "evidence": "Süreler kodla birebir örtüşüyor. Taş Muhafız: slam T=1,1/fast (bosses.js:714-716), Punch hızı 0,75 (751); süpürme 0,9/fast (721-723), Weapon 0,8 (752); stomp 1,4/fast (728-730), Jump 0,4 (753); kaya atışı 0,9/fast (736), Wave 1,2 (754). Volkanik Dev: slam 1,2/fast (858-861), Jump 0,45 (890); süpürme 1,0/fast (877-879), Weapon 0,7 (891). orc_brute.glb ve demon.glb'yi meshopt ile bağımsız çözdüm (/tmp/denetim_alan/karsit_dusman/anim_peak.mjs, anim_curve.mjs). Sonuçlar: Punch 0,833 sn, UpperArm.R açısal hız tepesi 0,313 sn (kol en açık hâline 0,21–0,42 sn arasında ulaşıyor, 0,83 sn'de dinlenme pozunda); Weapon'da UpperArm.L tepesi 0,313 sn; Jump toplam 0,333 sn; Wave'de UpperArm.L tepesi 0,438 sn. Gerçek zamanlı gecikme, evre 1: slam 0,68 sn, Taş Muhafız süpürmesi 0,51, Volkanik Dev süpürmesi 0,55, stomp klip bitiminden 0,57, Volkanik Dev slam 0,46 sn (artı halkanın yayılma süresi). Evre 3 ve 2'de 0,37–0,51 sn. Kaçınma dokunulmazlığı 0,34 sn (player.js:495). v0.3'te kod aynı.",
+   "correction": "Kök neden ve ölçümler doğru, ancak öncelik 'orta' olmalı. Telgraf halkası (bosses.js:597-604) tam hasar anında (T) doluyor; yani oyuncunun doğru bir zamanlama ipucu var ve savaşlar oynanabilir durumda. Aynı sınıftaki H-09'u (normal düşmanlar) denetçi de 'orta' saymış. Not: konukta sorun daha büyük, çünkü GiantBase.clientUpdate (623-631) klipleri 1,0 hızla oynatıyor ve konukta halka hiç çizilmiyor (kaçırılanlar listesinde ayrı madde)."
+  },
+  {
+   "ref": "H-03",
+   "verdict": "dogrulandi",
+   "evidence": "v0.4 net.js:288 `case 'hurtBoss': G.emit('netHurtBossApply', { ...m, dmg: num(m.dmg, 0, DMG_MAX.hurtBoss), by: pid })` satırı konuğun konumunu, menzili, kind ve pos alanlarını denetlemiyor. bosses.js:1041-1046 m.kind ile m.pos'u doğrudan damageMul'e veriyor; m.ten için yalnız dizinin varlığına bakıyor. Bu yüzden 'idle' durumundaki boştaki dokunaç da kabul ediliyor (_hurtTentacle 217-218 yalnız 'gone' durumunu reddediyor). Sahte alanların etkisi: Kraken 211 'tentacle' → ×1; Amiral 932 'cannon' → ×1; Taş Muhafız 654-659 behindMul(info.pos) → ×2,2; Volkanik Dev 788-796 çekirdek açıkken önden ×2,2. net.js:289 stunEnemy yalnız 3B'de 8 m mesafeye bakıyor ve süreyi 0,2–3 sn'ye kırpıyor; enemies.js:448'de boss süresi ×0,6 = 1,8 sn, ileti 0,5 sn'de bir yinelenince boss sürekli sersem kalıyor. net.js:43 oran sınırı 120 ileti/sn, net.js:45 DMG_MAX 220. Tek konuklu oyunda Kraken'in canı 4500; 'tentacle' ile 21 ileti, yani ~0,2 sn yetiyor. Ödül bosses.js:1066-1075'te bir kez veriliyor; progress.js:77 herkese +600 XP veriyor. coop/06a_ag_guvenligi.cjs:47-58 yalnız hurtEnemy iletisini sınıyor. v0.3'te net.js:238 `G.emit('netHurtBossApply', m)` hiç kırpma yapmıyor (tek ileti bossu öldürmeye yetiyor); 239'daki stunEnemy'de mesafe denetimi ve süre sınırı yok. Yani açık v0.3'te daha ağır.",
+   "correction": "Küçük düzeltmeler: (1) Volkanik Dev'deki ×2,2 yalnız çekirdek açıkken geçerli (exposed>0, yaylımdan sonraki 3,2 sn). (2) Lanetli Amiral hurtBoss ile en çok %50'ye indirilebilir: bordalamadan sonra damageMul=0 (932) ve kalan can Amiral düşmanı üzerinden, hurtEnemy ile gidiyor ('bullet' türüyle 80 m'ye kadar). (3) knownAs alanı: v0.4 hurtBoss için 0–220 kırpmayı ve genel oran sınırını eklemiş (03_DEGISIKLIK_LISTESI.md:62); eksik olan mesafe, tür ve konum doğrulaması. (4) 8 m'lik sersemletme denetimi, doğrulanmayan 'st' konum iletisiyle atlatılabiliyor (güvenlik alanında B-04). Aynı açık güvenlik alanında B-07 olarak 'kritik' verilmiş; görev tanımına göre kazanç boss başına bir kez olduğu için 'yuksek' doğru."
+  },
+  {
+   "ref": "UC1",
+   "verdict": "dogrulandi",
+   "evidence": "Node/awk sayımı: ENEMY_TYPES v0.3'te enemies.js:76-174, v0.4'te 79-177 aralığında 17 anahtar içeriyor; iki tablonun diff çıktısı boş. boss:true bayraklı 4 tür var (v0.4 satırları: kizil_hancer 112, iskelet_kaptan 139, lanetli_amiral 166, hayalet_kaptan 172) ve 1 mini boss var (haydut_kaptani 106). BOSS_DEFS v0.3'te 22-28, v0.4'te 24-30 aralığında ve birebir aynı; CLASSES 1007/1029'da 5 sınıf içeriyor. Doğuş yerleri: archipelago.js:52 ve 143 (haydut_kaptani), 160-161 (hayalet_muhafiz ve hayalet_kaptan gece listeleri), bunlar islands.js:247 addGroup ile gruba dönüşüyor; ayrıca enemies.js:182-186, quests.js:278 (Morvan), quests.js:286 (Kızıl Hançer) ve bosses.js:943 (Amiral düşmanı). Hüküm: v03 doğru, v04 doğru. Otomatik testle sınanan tür yalnız 4: 05_dusman_ai.js'te haydut, haydut_agir (44. satır), kizil_hancer ve iskelet_kaptan (47. satır)."
+  },
+  {
+   "ref": "SYS1",
+   "verdict": "dogrulandi",
+   "evidence": "enemies.js:1101-1106 komşudan ayrışmayı uyguluyor (1,4 m yarıçap, k=(1,4−d)·2,2); 1364-1368'deki near() hayaletleri dışlıyor. Ayrıca crowd.js:21 hayalet olmayan düşmanları birbirinden itiyor. Test 05_dusman_ai.js:17 (aynı noktada doğan 4 haydut, 2 sn, en küçük mesafe >0,6 m) bu davranışı gerçekten ölçüyor. Taban koşusu docs/v05/taban_kosusu_44d548c/05_dusman_ai.json'da minD 1,81; 07_AI_BOSS_TESTLERI.md:13'te 1,32 m; 12_TEST_PLANI_VE_SONUCLAR.md:45 ve 249'da '18/18'. İskelet aynı kod yolundan geçiyor (yalnız T.ghost dışlanıyor), ama testte yalnız haydut kullanılıyor."
+  },
+  {
+   "ref": "SYS2",
+   "verdict": "curutuldu",
+   "evidence": "Test (05_dusman_ai.js:20) vuruş karesini e.hitDone ile yakalamaya çalışıyor. hitDone ise yalnız menzilli saldırı dalında true yapılıyor (enemies.js:1038-1039). Yakın dövüşte _startMelee onu 915. satırda false yapıyor ve bir daha true olmuyor; bu yüzden window._hitFrame tanımsız kalıyor ve `r.hitFrame===null || …` koşulu kendiliğinden geçiyor. Taban koşusu çıktısı (docs/v05/taban_kosusu_44d548c/05_dusman_ai.json): {started:0, hitAt:0.44, hitFrame:null, hp:74.2}. Oyuncu iki vuruş almış ama vuruşların zamanı ölçülmemiş; test yalnız tablo değerini (atkHit[0]≥0,35) doğruluyor. Kodun kendisi de kusurlu: zincir dalı (enemies.js:970-971) durum zaten 'attack' iken _startMelee'yi çağırıyor. _setState (600-604) aynı duruma geçişte stateT'yi sıfırlamıyor. Önceki saldırının stateT değeri (≥atkDur) kaldığı için yeni hamlenin ilk vuruşu 1–3 kare sonra işleniyor. Node kopyası /tmp/denetim_alan/karsit_dusman/chain_windup.cjs ile ölçülen hazırlık süreleri: Avcı DualStab 0,017 sn, Morvan/Amiral SPIN 0,017 sn, Amiral/Hayalet Kaptan Heavy2H (savuşturulamaz) 0,05 sn. Zincir olasılığı %45 (970) ve Avcı ile dört insan bossta geçerli. Test zincir yapmayan haydutu kullandığı için bunu göremiyor. v0.3'te de aynı (enemies.js:589-593, 959-960).",
+   "correction": "Durum 'hatali_kararsiz' olmalı. Zincir saldırılarda telgraf süresi fiilen yok. Tekil saldırılarda kod tutarlı, ama test vuruş anını ölçmüyor (kaçırılanlar listesinde iki ayrı madde)."
+  },
+  {
+   "ref": "SYS3",
+   "verdict": "dogrulandi",
+   "evidence": "enemies.js:401-406: karşı saldırı ve ağır vuruş dışındaki vuruşlar 'stunned', 'summon' ve 'callHelp' durumlarında yalnız üst gövde tepkisi oynatıyor, durumu bozmuyor. Testler bu dalı doğrudan sınıyor: 05_dusman_ai.js:23 (stun 2,0 → applyDamage(5) → state 'stunned' kalıyor, stunT>1,5) ve :24 (summon → applyDamage(5) → 'summon' kalıyor). Taban koşusunda PASS, 12. belgede 18/18. 'callHelp' ayrıca sınanmadı ama aynı koşuldan geçiyor. Çağırma dalgasının gerçekten doğması (778-785) test edilmiyor; denetçinin notu doğru."
+  },
+  {
+   "ref": "SYS4",
+   "verdict": "kismen",
+   "evidence": "Bekleme süresi ve kaydı gerçekten sınanıyor: 05_dusman_ai.js:26-27 (save/start ve 'hepsi öldü' → tam süre), 12_kayit_dongusu.js:7 (K01; serialize → save.write → read → startGame döngüsü 3 kez ardışık, campOk), 08_kalicilik.js:39 (A5/F-07); 12. belgede satır 52 ve 250. Ancak oyuncu yaklaşınca kampın doğması (enemies.js:1549-1553) hiçbir testte doğrulanmıyor. Gece listesi (1554-1558) de bekleme süresine bakmadan her gece doğuyor; bunu denetçi kendisi H-19 olarak yazmış.",
+   "correction": "Durum 'calisiyor_gelistirilmeli' olmalı. Bekleme süresi ve kayıt kısmı test edilmiş; doğurma ve gece dalgası kısmı test edilmemiş ve gece dalgası bekleme kuralını çiğniyor."
+  },
+  {
+   "ref": "SYS5",
+   "verdict": "dogrulandi",
+   "evidence": "enemies.js:1597-1603: hedefi olan canlı düşmanda step=0, yani seyreltme yok; 1598 uzak oyuncuları da mesafe hesabına katıyor. Test 05_dusman_ai.js:38 aynı düşmanı 100 m'de önce hedefsiz (_lodAcc 0,2 → 0,217 birikiyor), sonra hedefli (_lodAcc 0'a iniyor) çalıştırıyor; seyreltme muafiyetini gerçekten ölçüyor. Taban koşusunda PASS, 12. belgede 18/18. Uzak oyuncu mesafesi (1598) test edilmiyor, çünkü test tek oyunculu."
+  },
+  {
+   "ref": "REQ1",
+   "verdict": "dogrulandi",
+   "evidence": "17 tür v0.3'te (enemies.js:76-174) ve v0.4'te (79-177) birebir korunuyor; tablo diff çıktısı boş ve her türün doğuş yeri var (UC1 kanıtı). Gereksinim türlerin korunması olduğu için karşılanıyor. Testle sınanan tür yalnız 4; denetçinin planı (her tür için duman testi) yerinde."
+  },
+  {
+   "ref": "REQ2",
+   "verdict": "dogrulandi",
+   "evidence": "bosses.js:24-30 BOSS_DEFS'te 5 boss, 1029'da CLASSES var. Alanlar: archipelago.js:92 (Yılan), 127 (Volkanik Dev), 169 (Amiral), 175 (Kraken) ve 321-322'deki BOSS_SITES. Taş Muhafız'ın alanı tapınak kurulunca islands.js:866'da ekleniyor. Tetikleme bosses.js:1077-1093'te. v0.3'te aynı (bosses.js:22-28, 1007). Uçtan uca test yok (11_BILINEN_SORUNLAR.md #12 'Açık (test)'), ama gereksinim bossların korunması olduğu için karşılanıyor."
+  },
+  {
+   "ref": "REQ3",
+   "verdict": "dogrulandi",
+   "evidence": "enemies.js:551-554: ang = |wrapAngle(hedef açısı − yaw)|·2·180/π, inFov = ang < T.fov || near (3,2 m; eğilen oyuncuda 1,8 m). Yani T.fov tam koni açısı. Node kopyası /tmp/denetim_alan/karsit_dusman/fov_check.cjs (haydut, 125°): 60° yandaki oyuncuyu görüyor; 65° yandaki ve 15 m arkadaki oyuncuyu görmüyor; 3 m arkadaki oyuncuyu yakınlık kuralıyla görüyor. Gemideki düşmanlarda da yaw dünya açısı (enemies.js:1182-1184). Not: yalnız olumlu durum test ediliyor (05:8); konukta eğilme bilgisi olmadığı için yakınlık yarıçapı konuk için hep 3,2 m (küçük bir sapma)."
+  },
+  {
+   "ref": "REQ4",
+   "verdict": "kismen",
+   "evidence": "Ev sahibinin kendi oyuncusu için 542-550 doğru çalışıyor. Konuklar için değiştiriciler çalışmıyor: _perceive pl.torch, pl.inCave, pl.crouch, pl.underwater ve pl.action alanlarını okuyor (543-560), ama RemotePlayer (net.js:57-124) bu alanları taşımıyor. Player.netState (player.js:986-992) meşale bilgisini gönderiyor, ancak RemotePlayer.update bunu kopyalamıyor; eğilme bilgisi hiç gönderilmiyor. Sonuçlar: eğilen konuk tam mesafeden görülüyor; su altındaki konuk 0,15 yerine 0,6 çarpanıyla görülüyor; mağaradaki konuğa 0,45 indirimi uygulanmıyor; gece meşaleli konuk 1,15 yerine 0,5 çarpanıyla görülüyor; saldıran konuk ×2 hızla fark edilmiyor. Test 05:8 yalnız 0,7×görüş mesafesindeki olumlu durumu ölçüyor.",
+   "correction": "Kısmen karşılanıyor: tek oyunculuda doğru, co-op'ta konuk için görüş mesafesi değiştiricileri uygulanmıyor (H-13). Görüş sınırının dışı için olumsuz test yok."
+  },
+  {
+   "ref": "REQ5",
+   "verdict": "dogrulandi",
+   "evidence": "hear() enemies.js:577-594'te; combat.noise combat.js:80-84'te (konukta netNoise iletisi gönderiliyor); adım sesi 92-98'de; ev sahibi 'noise' iletisini net.js:325'te combat.noise(r.pos, …) ile işliyor. Testler: 05_dusman_ai.js:14 (taban koşusunda patrol → strafe, awareness 1,2) ve coop/06b_esitlik_senkron.cjs:117-124 (F-13). 12. belgede 05 için 18/18, 06b için 18/18. Duvar sönümü yok; bu bir tasarım tercihi."
+  },
+  {
+   "ref": "DOC1",
+   "verdict": "dogrulandi",
+   "evidence": "progress.js:75 `if (T && !T.boss)` koşulu yüzünden boss bayraklı 4 tür öldürülünce XP vermiyor. bossDefeated olayı yalnız bosses.js:1073'ten, yani efsanevi bosslardan geliyor (+600, progress.js:77). Morvan ve Kızıl Hançer yalnız hikâye ilerlerse +150 XP veriyor (quests.js:175-189 → advance → 133 storyAdvanced → progress.js:81). Hayalet Kaptan hiç XP vermiyor. Amiral düşmanı noLoot ile doğuyor (bosses.js:943), bu yüzden enemyKilled olayı da yayılmıyor (enemies.js:482-485). Belgedeki kartlar: docs/04_DUSMAN_KATALOGU.md:53, 83, 113, 119. Tek tesadüf: efsanevi Lanetli Amiral'in bossDefeated ödülü (600), belgedeki 300×2 değerine eşit. v0.3'te progress.js:71 aynı."
+  },
+  {
+   "ref": "DOC2",
+   "verdict": "dogrulandi",
+   "evidence": "DASH (enemies.js:57) yalnız `T.dash && d > 4 && d < 10` koşulunda seçiliyor (905). _startMelee'nin çağrı yerleri: 887 (d ≤ reach = range+0,3 = 2,8 m), 897 (yalnız flanker türler; Hayalet Kaptan flanker değil), 971 (zincir, d < range+0,5 = 3,0 m). Bu yüzden koşul hiçbir zaman sağlanmıyor. v0.3'te aynı (876, 886, 960). Belgedeki iddia docs/05_DUSMAN_DENGE_TABLOSU.md:34'te. Denetçinin '≤range+0,5' ifadesi flanker yolu için aslında range+0,7, ama Hayalet Kaptan için sonuç değişmiyor."
+  }
+ ],
+ "missed": [
+  {
+   "title": "Art arda (zincir) saldırıda stateT sıfırlanmıyor: Avcı ve dört insan bossun ikinci hamlesi hazırlıksız (0,02–0,05 sn) vuruyor",
+   "file": "js/game/enemies.js",
+   "func": "Enemy._attackUpdate zincir dalı (enemies.js:966-972); Enemy._startMelee (901-925, 917); Enemy._setState (600-604)",
+   "rootCause": "Zincir dalı, durum zaten 'attack' iken _startMelee'yi çağırıyor. _startMelee durumu _setState('attack') ile kuruyor; _setState aynı duruma geçişte erken dönüyor ve stateT'yi sıfırlamıyor. Bu yüzden önceki saldırının stateT değeri (≥ atkDur, 0,9–2,0 sn) yeni hamleye taşınıyor. Bir sonraki karede `t >= atkHit[0]` hemen doğru oluyor ve vuruş işleniyor; çoğu zaman `t >= atkDur` de doğru olduğu için hamle de hemen bitiyor. Savuşturulamaz hamlede _telegraph halkası (952-959) neredeyse tam boyutta açılıp 1–3 kare sonra kapanıyor. Animasyon baştan başladığı için görünen savuruş hasardan sonra geliyor. Hata v0.3'te de var (enemies.js:589-593, 959-960); 02/11 belgelerinde ve denetçinin listesinde yok.",
+   "impact": "Zincir olasılığı %45 (970). Oyuncu menzildeyken çift bıçaklı Avcı ile Kızıl Hançer, Morvan, Lanetli Amiral ve Hayalet Kaptan'ın saldırılarının yaklaşık yarısı, hazırlıksız ikinci bir vuruşla devam ediyor. Node kopyası /tmp/denetim_alan/karsit_dusman/chain_windup.cjs ile ölçülen hazırlık süreleri: Avcı DualStab 0,017 sn, Morvan/Amiral SPIN'in ilk vuruşu 0,017 sn, Amiral/Hayalet Kaptan Heavy2H 0,05 sn. Heavy2H savuşturulamaz ve 1,8× hasar veriyor (Hayalet Kaptan'da 72). Parry (0,24 sn) ve kaçınma zamanlanamıyor; savuşturulamaz zincir hamle pratikte kaçınılmaz. Bu durum ≥0,35 sn telgraf hedefini ve 'sebepsiz hasar olmamalı' kuralını çiğniyor. Mevcut test (05:20) zincir yapmayan haydutu kullandığı için bunu yakalamıyor.",
+   "priority": "yuksek",
+   "fix": "_startMelee içinde durumu zorla yeniden başlatın: `this.state = 'attack'; this.stateT = 0;` (ya da _setState'e bir force parametresi ekleyin). teleT ve halkayı yeni hamle için sıfırlayın. Zincirden önce 0,15–0,25 sn'lik bir toparlanma aralığı ekleyin. Aynı yeniden giriş sorununu 'hit' ve 'stunned' durumları için de gözden geçirin.",
+   "repro": "Tek oyunculu oyunda: `const p=DK.G.player; p.hp=100; p.invuln=0; const e=DK.enemies.spawn('haydut_avci', p.pos.x+1.6, p.pos.z, {}); e.pos.set(p.pos.x+1.6, DK.terrain.heightAt(p.pos.x+1.6,p.pos.z), p.pos.z); e.yaw=Math.atan2(p.pos.x-e.pos.x, p.pos.z-e.pos.z); e.awareness=1; const tg=e._nearestPlayer(); e.target=tg; e._setState('attack'); e.stateT=1.0; e._startMelee(tg, 1.6);` Bu çağrıdan sonra e.stateT hâlâ 1.0'dır. Tek bir `DK.game.update(1/60); DK.input.endFrame();` adımından sonra e.hitIdx===1 olur ve p.hp düşer (hazırlık 1 kare). Aynı adımları 'hayalet_kaptan' ile e.move Heavy2H olana dek yineleyin: savuşturulamaz vuruş da 1–3 karede gelir.",
+   "acceptance": "Zincirde ikinci hamlenin başlangıcıyla ilk vuruşu arasındaki süre, hamlenin hitAt değerinden (öfkede /1,2; en az 0,35 sn) en çok 1 kare kısa olmalı. Savuşturulamaz zincir hamlede kırmızı halka bu süre boyunca görünmeli. 05_dusman_ai'ye, Math.random sabitlenerek Avcı ve dört insan boss için 20'şer zincir ölçen bir test eklenmeli ve tüm örnekler geçmeli."
+  },
+  {
+   "title": "05_dusman_ai 'Saldırı telgrafı' testi vuruş anını ölçmüyor: 'vuruş hazırlıktan önce işlenmez' koşulu her zaman geçiyor",
+   "file": "tests/scenarios/05_dusman_ai.js",
+   "func": "'Saldırı telgrafı: hazırlık ≥0.35 sn, vuruş hazırlıktan önce işlenmez' adımı (05_dusman_ai.js:20); dayandığı alan Enemy.hitDone (enemies.js:915, 1021, 1038-1039)",
+   "rootCause": "Test vuruş karesini `e.hitDone` ile yakalıyor. hitDone yalnız menzilli saldırıda (_rangedUpdate, enemies.js:1038-1039) true yapılıyor. Yakın dövüşte _startMelee onu false yapıyor (915) ve bir daha değiştirmiyor; vuruşlar hitIdx ile izleniyor (961-964). Bu yüzden window._hitFrame tanımsız kalıyor ve `r.hitFrame===null || …` kendiliğinden doğru dönüyor. Test yalnız tablo verisini (atkHit[0] ≥ 0,35) ve saldırının başladığını doğruluyor. Üstelik zincir yapmayan haydut kullanılıyor.",
+   "impact": "Taban koşusu çıktısı (docs/v05/taban_kosusu_44d548c/05_dusman_ai.json): {started:0, hitAt:0.44, hitFrame:null, hp:74.2}. Oyuncu iki vuruş almış ama vuruşların zamanı ölçülmemiş. 12. belgedeki '18/18' kaydı telgraf süresinin doğrulandığı izlenimini veriyor ve SYS2 bu yüzden 'calisiyor_test_edilmis' sayılıyor. Zincir saldırı hatası gibi hazırlık süresini sıfırlayan gerilemeler bu testten geçiyor.",
+   "priority": "orta",
+   "fix": "Vuruş anını hitIdx değişimiyle ya da p.hp'nin düştüğü kareyle ölçün; hitFrame null kalırsa testi başarısız sayın. Zincir için Math.random sabitlenmiş ayrı bir adım ekleyin (çift bıçaklı tür ve boss için). Savuşturulamaz hamlede halkanın görünür kaldığı süreyi de ölçün.",
+   "repro": "Senaryoyu çalıştırın ya da taban koşusunun JSON çıktısına bakın: 13. adımda `window._tel.hitFrame === null` iken `hp < 100`. `grep -n hitDone js/game/enemies.js` komutu, true atamasının yalnız 1039. satırda (menzilli dal) yapıldığını gösterir.",
+   "acceptance": "Test, zinciri zorlayan adımda mevcut kodla başarısız olmalı ve zincir düzeltmesinden sonra geçmeli. hitFrame her koşuda sayı olmalı ve ≥ (hitAt − 1 kare) olmalı."
+  },
+  {
+   "title": "Dev bossların animasyon hızı ve yeniden başlatması konuğa iletilmiyor: konukta Jump/Punch/Weapon 1,0 hızla oynuyor, görünen hamle ile hasar arası ~0,5–1,0 sn",
+   "file": "js/game/bosses.js",
+   "func": "GiantBase.netExtra (bosses.js:622) ve GiantBase.clientUpdate (623-631); ev sahibi hızları StoneGuardian._go (751-755), VolcanicGiant._go (890-893), yaylım 852",
+   "rootCause": "netExtra yalnız klip adını (an) ve durumu gönderiyor. clientUpdate klibi hız vermeden ve restart olmadan oynatıyor (`anim.play(s.an, 0.15, {once})`), bu yüzden Animated.play timeScale=1 kullanıyor (character.js:1004). Ev sahibi ise Jump'ı 0,4/0,45, Punch'ı 0,75, Weapon'ı 0,7/0,8, Walk'ı 0,6–0,7 hızla oynatıyor. Yaylımda Punch her atışta restart:true ve 1,4 hızla yeniden başlıyor; konukta klip adı değişmediği için yeniden başlamıyor. Kod v0.3'te de aynı (bosses.js:606, 613). H-02 yalnız ev sahibini, H-15 halka ve bildirimleri ele alıyor; klip hızı hiçbir maddede yok.",
+   "impact": "Konukta stomp için Jump 0,33 sn'de bitiyor (ev sahibinde 0,83 sn). Hasar ise ev sahibinin zamanlamasıyla 1,4 sn'de geliyor; konuk hasarı klip bitiminden ~1,0 sn sonra alıyor. Slam'de fark ~0,7 sn, süpürmede 0,5–0,6 sn (ev sahibinde 0,46–0,68 sn). Konukta halka da yok (H-15), bu yüzden konuğun kaçınma ya da zıplama zamanlaması için güvenilir bir ipucu kalmıyor. Volkanik Dev yaylımındaki 3–5 atış konukta tek yumrukla gösteriliyor; yürüyüşte ayak kayıyor.",
+   "priority": "orta",
+   "fix": "netExtra'ya klip hızını (sp) ve bir oynatma sıra numarasını (seq) ekleyin; konukta `play(s.an, 0.15, { once, restart: s.seq !== last, speed: s.sp })` çağırın. Daha iyisi, durumda geçen süreyi (st) gönderip konuktaki klip zamanını buna hizalayın. H-02 düzeltmesinde tanımlanacak vuruş karesi verisini iki tarafta da kullanın.",
+   "repro": "İki oyunculu co-op açın (tests/harness/coop.cjs). Ev sahibinde, konuğun 6 m yanında `b=DK.bosses.spawn('tas_muhafiz', {id:'tas_muhafiz', x:gx+6, z:gz}); b.atkT=99; b._go('stomp')` çalıştırın. Ev sahibinde b.anim.current.timeScale 0,4, konukta DK.bosses.active.anim.current.timeScale 1 çıkar. Konukta Jump'ın bitiş zamanını ve p.hp'nin düştüğü zamanı kaydedin: fark ~1,0 sn olur.",
+   "acceptance": "Konuktaki klip timeScale değeri ev sahibininkine eşit olmalı. H-02 düzeltmesinden sonra konukta klip vuruş karesi ile hasar arasındaki fark ≤ 0,15 sn artı ağ gecikmesi olmalı. Yaylımdaki her atış konukta ayrı bir yumruk olarak oynamalı."
+  },
+  {
+   "title": "Derinlik Yılanı'nın zehir topu doğrudan hasar vermiyor: SeaSerpent'te _hitPlayer yok, 12 hasar kimseye uygulanmıyor, konuk hiç etkilenmiyor",
+   "file": "js/game/enemies.js",
+   "func": "enemies._impact (enemies.js:1431-1455, 1442-1443); SeaSerpent.update 'spit' dalı (bosses.js:481-494, lob 489); SeaSerpent sınıfı (bosses.js:391-556)",
+   "rootCause": "_impact alan hasarını yalnız `s.owner?._hitPlayer` varsa uyguluyor (1442). Taş Muhafız (bosses.js:757), Volkanik Dev (895) ve Lanetli Amiral (1010) bu yöntemi tanımlıyor; SeaSerpent tanımlamıyor ve BossBase'de de yok. Bu yüzden lob'a verilen dmg:12 hiç uygulanmıyor. Kalan tek etkiler yerel oyuncuya 6 sn zehir (1443) ve gemiye 3 hasar. Kod v0.3'te de aynı (bosses.js:480, enemies.js:1420-1421). 02_HATA_LISTESI'ndeki F_dusman-ek-statik-139 maddesi 'konukta yalnız 12 hasar verir' diyor; bu yanlış, çünkü konuğa da hasar gitmiyor.",
+   "impact": "Tek oyunculuda tükürük saldırısı (3–5 top) tasarlanan 36–60 doğrudan hasar yerine yalnız ~13 can götürüyor (6 sn zehir × 2,2/sn; zehir üst üste binmiyor). Co-op'ta konuk tükürükten hiç etkilenmiyor. Boss tasarlanandan belirgin biçimde kolay ve zorluk iki oyuncu için eşit değil.",
+   "priority": "orta",
+   "fix": "SeaSerpent'e `_hitPlayer(id, pl, dmg, mv) { hitPlayer({ id, ref: pl, pos: pl.pos }, dmg, this.pos, 'Derinlik Yılanı zehri', { kb: mv?.kb || 3 }); }` yöntemini ekleyin. Zehri hitPlayer ve netHurtPlayer iletisine bir poison alanı olarak taşıyın (player.hurt'ün opts.poison desteği zaten var, player.js:176). Alternatif olarak, sahibinde yöntem yoksa _impact genel hitPlayer'a düşsün.",
+   "repro": "`DK.G.godMode=false; const p=DK.G.player; p.hp=100; p.poison=0; const b=DK.bosses.spawn('derinlik_yilani'); DK.enemies.lob({kind:'venom', from:p.pos.clone().add(new DK.THREE.Vector3(0,6,0)), to:p.pos.clone(), time:0.5, dmg:12, shipDmg:3, aoe:2.4, owner:b}); DK.sim(0.6)` çalıştırın. İsabet anında p.hp düşmez, yalnız p.poison=6 olur; ayrıca `typeof b._hitPlayer === 'undefined'`. Co-op'ta aynı isabette konuğun p.hp ve p.poison değerleri değişmez.",
+   "acceptance": "Zehir topu ev sahibine ve konuğa isabet edince 12 hasar (zorluk çarpanıyla) ve 6 sn zehir uygulanmalı. Kaçınma dokunulmazlığı iki tarafta da korunmalı. Boss senaryosunda bunu ölçen bir kontrol bulunmalı."
+  }
+ ]
+}
