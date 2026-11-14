@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { WORLD_SIZE, SEA_FLOOR } from './worldData.js';
 import { computeHeight, islandAt as geoIslandAt, biomeAt as geoBiomeAt, rectMayHaveLand, colorSRGB, distToCavePath as geoCave } from './geo.js';
 import { generate } from './terrainGen.js';
+import { TEST, testParam } from '../core/testmode.js';
 
 // Bölgesel (akışlı) arazi: dünya 160 m'lik karolara bölünür; kameraya uzaklığa göre ayrıntı düzeyi (LOD)
 // seçilir ve karo geometrileri arka planda Web Worker'larda üretilir. Yakın karoların 2 m çözünürlüklü
@@ -245,8 +246,8 @@ if (tDepth > 0.05 && uCaustic > 0.01) {
     scene.add(this.group);
     this.material = this._material();
     this.lodScale = quality === 'low' ? 0.7 : quality === 'medium' ? 0.85 : 1;
-    // test kipleri: ?terrain=noworker|crash|badurl ya da window.__DK_TERRAIN_MODE
-    try { this.mode = (typeof window !== 'undefined' && (window.__DK_TERRAIN_MODE || new URLSearchParams(location.search).get('terrain'))) || ''; } catch (e) { this.mode = ''; }
+    // arazi test kipleri (?terrain=noworker|crash|badurl ya da window.__DK_TERRAIN_MODE) yalnız test kipinde (K9-3; K-08)
+    this.mode = TEST ? (window.__DK_TERRAIN_MODE || testParam('terrain') || '') : '';
     this._initWorkers();
     this.ready = true;
   },

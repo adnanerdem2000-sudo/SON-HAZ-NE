@@ -22,6 +22,7 @@ import { weatherfx } from '../world/weatherfx.js';
 import { events } from '../game/events.js';
 import { audio } from '../core/audio.js';
 import { damp, dampAngle, clamp } from '../core/util.js';
+import { testParam } from '../core/testmode.js';
 
 // Online co-op: WebRTC (PeerJS) üzerinden eşler arası bağlantı. Oda sahibi (host) dünyanın otoritesidir.
 const VER = 'dksh-v1';
@@ -46,13 +47,22 @@ const DMG_MAX = { hurtEnemy: 160, hurtBoss: 220, hurtAnimal: 160, hurtMarine: 16
 const KNOWN = new Set(['hello', 'ping', 'ready', 'app', 'chat', 'st', 'act', 'hurtEnemy', 'hurtBoss', 'stunEnemy', 'hurtAnimal', 'hurtMarine', 'dig', 'chestReq', 'pickupReq', 'chestState', 'chestGone', 'hold', 'shipFull', 'marker', 'hazard', 'shipCmd', 'helm', 'fire', 'boat', 'boatSt', 'lock', 'gold', 'maps', 'downed', 'revive', 'floatReq', 'inter', 'prog', 'lootReq', 'holdTake', 'noise', 'story']);
 function approxBytes(m) { try { return JSON.stringify(m).length; } catch (e) { return Infinity; } }
 
+// Yerel test için özel sinyal sunucusu: ?test=1&peerhost=127.0.0.1&peerport=9000. Yalnız test kipinde okunur (testParam; K-08)
+// ve test kipinde bile yalnız geri döngü adresi kabul edilir (K9-20): başka değer yok sayılır, varsayılan PeerJS sunucusu kullanılır.
+const GERI_DONGU = new Set(['127.0.0.1', 'localhost', '[::1]', '::1']);
+function testSinyali() {
+  const h = testParam('peerhost');
+  if (!h || !GERI_DONGU.has(h)) return null;
+  return { host: h, port: +(testParam('peerport') || 9000), path: testParam('peerpath') || '/', secure: testParam('peersecure') === '1' };
+}
 function peerOpts() {
-  const q = new URLSearchParams(location.search);
   const o = { debug: 0 };
-  // Yerel test için özel sinyal sunucusu: ?peerhost=localhost&peerport=9000
-  if (q.get('peerhost')) { o.host = q.get('peerhost'); o.port = +(q.get('peerport') || 9000); o.path = q.get('peerpath') || '/'; o.secure = q.get('peersecure') === '1'; }
+  const s = testSinyali();
+  if (s) { o.host = s.host; o.port = s.port; o.path = s.path; o.secure = s.secure; }
   return o;
 }
+// Tanı (window.__dkDurum): kullanılacak sinyal sunucusu ('<konak>:<kapı>' ya da 'varsayilan')
+export function sinyalSunucusu() { const s = testSinyali(); return s ? `${s.host}:${s.port}` : 'varsayilan'; }
 
 class RemotePlayer {
   constructor(scene, info) {

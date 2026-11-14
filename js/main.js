@@ -27,7 +27,7 @@ import { fish } from './wildlife/fish.js';
 import { fishing } from './wildlife/fishing.js';
 import { seagear } from './wildlife/seagear.js';
 import { treasure } from './treasure/treasure.js';
-import { net } from './net/net.js';
+import { net, sinyalSunucusu } from './net/net.js';
 import { Ship } from './ship/ship.js';
 import { port } from './world/port.js';
 import { sky } from './world/sky.js';
@@ -55,6 +55,11 @@ import { tpCamera } from './player/camera.js';
 import { interact } from './game/interact.js';
 import { initMapBase } from './ui/mapArt.js';
 import { el } from './core/util.js';
+import { TEST } from './core/testmode.js';
+import { SURUM, derleme } from './core/surum.js';
+
+// K-20 yoklaması: katı kipte (ES modülü) çıplak çağrıda this tanımsızdır; tek HTML IIFE paketi "use strict"siz ise false olur
+const KATI = (function () { return this === undefined; })();
 
 const TIPS = [
   'İpucu: Hazine haritalarındaki ipuçlarını adanın gerçek görünümüyle karşılaştır — heykelin baktığı yön, palmiyelerin dizilişi…',
@@ -79,6 +84,12 @@ const misc = {
 };
 
 async function boot() {
+  // Test kancaları modülü (yalnız test kipi) en başta istenir, boot sonunda beklenir: söz o zamana çoktan çözülmüş olur ve
+  // await bir görev sınırı yaratmaz. Sonda başlatılan import(), menü açıldıktan sonraki ağır ilk görevi (SwiftShader'da 1,7–4,8 sn)
+  // __ready'den ÖNCEYE alıyordu; v0.4'te bu görev __ready'den SONRA çalışır (Faz 1 A2 ölçümü). İstisna, yükleme ekranı
+  // kaldırılmadan önceki await'te yükselir (aşağıda; A2-UY-02).
+  let kancaSozu = null;
+  if (TEST) { kancaSozu = import('./test/kancalar.js'); kancaSozu.catch(() => {}); }
   settings.load();
   const prof = save.profile();
   G.profile = prof || { appearance: defaultAppearance('m'), unlocked: [], recentRooms: [] };
@@ -123,6 +134,15 @@ async function boot() {
   });
   engine.start();
   setLoad(1, 'Hazır!');
+  // Test kancaları (window.DK, DK.sim/tap/press/snap/snapFrom, DK.mod, DK.__sayac) YALNIZ test kipinde: ?test=1 VE yerel köken
+  // (K9-3; K-07). Kurulum beklenir; window.__ready ondan SONRA yazılır (koşucular __ready'yi bekler, §5.7-2).
+  // Bekleme ve kurulum yükleme ekranı kaldırılıp menü açılmadan ÖNCE yapılır (A2-UY-02): modül yüklenemez ya da install istisna
+  // atarsa boot() burada reddedilir; catch'in "Oyun başlatılamadı" iletisi görünür yükleme ekranında kalır ve menü açılmaz.
+  // Söz bu noktada çoktan çözülmüştür; await yalnız bir mikro görevdir, buradan __ready'ye dek araya bir görev girmez.
+  if (TEST) {
+    const { install } = await kancaSozu;
+    install({ G, assets, archipelago, physics, islands, bosses, ports, game, input, engine, post, settings, tpCamera, interact, npcs, Ship, kk, Character, handlers, net, ui, creator, hud, quests, treasure, enemies, animals, megafauna, hazards, progress, fish, fishing, seagear, shipControl, THREE, save, port, combat, effects, events, worldEvents, sky, time, bodies, weatherfx, details, terrain, ocean, crowd, audio });
+  }
   document.getElementById('loading').classList.remove('active');
   menu.show(true);
   const unlockAudio = async () => { await audio.init(); audio.resume(); audio.setMusic('menu'); window.removeEventListener('pointerdown', unlockAudio); window.removeEventListener('keydown', unlockAudio); };
@@ -131,27 +151,18 @@ async function boot() {
   // davet bağlantısı
   const join = new URLSearchParams(location.search).get('join');
   if (join) menu.joinScreen(join);
-  window.DK = { G, assets, archipelago, physics, islands, bosses, ports, game, input, engine, post, settings, tpCamera, interact, npcs, Ship, kk, Character, handlers, net, ui, creator, hud, quests, treasure, enemies, animals, megafauna, hazards, progress, fish, fishing, seagear, shipControl, THREE, save, port, combat, effects, events, worldEvents, sky, time, bodies, weatherfx, details, terrain, ocean, crowd };
-  // Test: yalnız 3B tuvali yakala (HUD hariç) — yazılımsal GPU'da sayfa ekran görüntüsünden daha kararlı
-  window.DK.snap = (q = 0.85) => { post.render(); return engine.renderer.domElement.toDataURL('image/jpeg', q); };
-  // belirli bir bakış açısından yakala (test): from/to = [x,y,z]
-  window.DK.snapFrom = (from, to, q = 0.85) => {
-    const cam = engine.camera;
-    cam.position.set(...from); cam.lookAt(...to); cam.updateMatrixWorld(true);
-    post.render();
-    return engine.renderer.domElement.toDataURL('image/jpeg', q);
-  };
-  // Test/hata ayıklama yardımcıları: oyunu render etmeden ileri sar
-  window.DK.sim = (seconds, dt = 1 / 30) => {
-    const n = Math.round(seconds / dt);
-    for (let i = 0; i < n; i++) { game.update(dt); hud.update(dt); net.update(dt); input.endFrame(); }
-    return n;
-  };
-  window.DK.tap = (code) => { input.pressedSet.add(code); input.down.add(code); setTimeout(() => input.down.delete(code), 150); };
-  // eşzamanlı tuş basışı (test): basılı tut, simüle et, bırak
-  window.DK.press = (code, dur = 0.1) => { input.pressedSet.add(code); input.down.add(code); window.DK.sim(dur); input.down.delete(code); window.DK.sim(1 / 30); };
   window.__ready = true;
 }
+
+// Salt-okur tanı (K9-4; üretimde de var): yayın sonrası duman testi ve hata bildirimi için. Her çağrıda yalnız ilkel değerlerden
+// oluşan, dondurulmuş yeni bir anlık görüntü döner; hiçbir oyun nesnesine başvuru vermez. Açılış yarıda kalsa da (boot hatası)
+// okunabilsin diye boot()'tan önce kurulur.
+window.__dkDurum = () => Object.freeze({
+  surum: SURUM, derleme: derleme(), hazir: !!window.__ready, test: TEST, kati: KATI,
+  tekDosya: !!window.__DK_SINGLE_FILE, isci: terrain.workers.length, yedek: !!terrain.fallback,
+  isciHata: terrain.failures.length, araziKip: typeof terrain.mode === 'string' ? terrain.mode : String(terrain.mode ?? ''),
+  eksikVarlik: assets.missing.length, kk: !!kk.ready, sinyal: sinyalSunucusu(),
+});
 
 const handlers = {
   async startGame({ kind = 'solo', slot = 0, data = null, appearance = null }) {

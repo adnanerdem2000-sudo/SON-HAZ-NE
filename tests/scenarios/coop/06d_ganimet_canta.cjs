@@ -28,7 +28,7 @@ module.exports = async ({ pages, host, guests, ev: ev0, tick: tick0, check, log 
 
   // 1) konuk envanterden "Yere bırak" (gerçek panel düğmesi) → ev sahibinde kese → konuk geri alır
   log('1 yere bırak @ ' + stamp());
-  const drop = await ev(g, `(async()=>{ const p=DK.G.player; const {panels}=await import('./js/ui/panels.js'); p.inv.add('ekmek', 2); const st=p.inv.stacks.find(s=>s.id==='ekmek'); window.__nE=p.inv.count('ekmek'); panels._itemMenu(st, null); const btn=[...document.querySelectorAll('button')].find(b=>b.textContent==='Yere bırak'); if (btn) btn.click(); DK.ui.closeAll && DK.ui.closeAll(); return {btn:!!btn, n:window.__nE, left:p.inv.count('ekmek')}; })()`, 'g-drop');
+  const drop = await ev(g, `(async()=>{ const p=DK.G.player; const {panels}=DK.mod('ui/panels'); p.inv.add('ekmek', 2); const st=p.inv.stacks.find(s=>s.id==='ekmek'); window.__nE=p.inv.count('ekmek'); panels._itemMenu(st, null); const btn=[...document.querySelectorAll('button')].find(b=>b.textContent==='Yere bırak'); if (btn) btn.click(); DK.ui.closeAll && DK.ui.closeAll(); return {btn:!!btn, n:window.__nE, left:p.inv.count('ekmek')}; })()`, 'g-drop');
   await tick(2.5);
   const hostPk = await ev(host, `(()=>{ const pk=DK.treasure.pickups.find(q=>!q.remove && q.from==='Bırakılan' && q.items.some(i=>i[0]==='ekmek')); return pk ? {id:pk.id, keep:!!pk.keep, body:!!pk.body, n:pk.items.find(i=>i[0]==='ekmek')[1]} : null; })()`, 'h-drop');
   const guestSees = hostPk ? await ev(g, `DK.treasure.pickups.some(q=>q.id==='${hostPk.id}' && !q.remove)`) : false;

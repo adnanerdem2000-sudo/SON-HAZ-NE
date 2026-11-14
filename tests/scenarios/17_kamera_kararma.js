@@ -29,7 +29,7 @@
    window._lumPost=()=>{ DK.post.render(); const W=gl.drawingBufferWidth, H=gl.drawingBufferHeight; if (!buf || buf.length!==W*H*4) buf=new Uint8Array(W*H*4); gl.readPixels(0,0,W,H,gl.RGBA,gl.UNSIGNED_BYTE,buf); let s=0, n=0; for (let y=0;y<H;y+=2) for (let x=0;x<W;x+=2){ const i=(y*W+x)*4; s+=0.2126*buf[i]+0.7152*buf[i+1]+0.0722*buf[i+2]; n++; } return +(s/n).toFixed(1); };
    // ekranın ortasındaki karenin siyah piksel oranı (K03)
    window._black=(fr=1/3)=>{ DK.post.render(); const W=gl.drawingBufferWidth, H=gl.drawingBufferHeight, w=Math.floor(W*fr), h=Math.floor(H*fr); const b=new Uint8Array(w*h*4); gl.readPixels(Math.floor((W-w)/2),Math.floor((H-h)/2),w,h,gl.RGBA,gl.UNSIGNED_BYTE,b); let k=0; for (let i=0;i<b.length;i+=4) if (b[i]+b[i+1]+b[i+2] < 24) k++; return +(k/(w*h)).toFixed(3); };
-   const SM=await import('./js/ship/shipModel.js');
+   const SM=DK.mod('ship/shipModel');
    // gövde katısı — testin kendi tanımı (oyun kodundan bağımsız): gövde dış hattının içi, küpeşte üstüne (güverte + 0,75 m) kadar;
    // güverte üstünde küpeşte iç yüzünün (yarı genişlik − 0,12 m) içi açık alan
    window._hull=(T,x,y,z)=>{ const L=T.L, t=(z+L/2)/L; if (t<=0||t>=1) return false; const hw=SM.hullHalfWidth(T,z); if (hw<0.05) return false; const dy=SM.deckHeight(T,z), top=dy+0.75; if (y>top) return false; const keel=T.keel*(0.35+0.65*Math.sin(Math.PI*Math.min(1,t*1.1+0.05))); if (y<keel) return false; const c=Math.min(1,Math.max(0,(1-(y-keel)/(top-keel))/0.98)); const w=hw*Math.pow(Math.sqrt(1-c*c),0.55); const ax=Math.abs(x); if (ax>w) return false; return y<=dy || ax>hw-0.12; };
@@ -45,7 +45,7 @@
  {expect: {js: `(()=>{ const names=['tree_palm','tree_oak','tree_fat','tree_pine','bush','bush_large','rock_large','rock_tall','rock_small','stump','log','column','obelisk','tent','fence','cactus','campfire','crystal_rock']; const bad=[]; for (const n of names) DK.assets.models[n]?.scene.traverse(o=>{ if (o.isMesh) for (const m of [].concat(o.material)) if (m.metalness > 0.1) bad.push(n+':'+m.name+'='+m.metalness); }); window._K01={n:names.length, bad}; return bad.length===0; })()`, truthy: true, label: 'K01 Kenney ağaç/çalı/kaya/yapı modellerinde tam metal malzeme yok (18 model; önce hepsi metalness 1)'}},
  {js: `window._K01`},
  // K02 kancalar
- {expect: {js: `(async()=>{ const NF=await import('./js/core/nearfade.js'); const cat=(root)=>{ const s=new Set(); root.traverse(o=>{ if (o.isMesh) for (const m of [].concat(o.material)) { const c=NF.nearFadeCategory(m); if (c) s.add(c); } }); return [...s]; };
+ {expect: {js: `(async()=>{ const NF=DK.mod('core/nearfade'); const cat=(root)=>{ const s=new Set(); root.traverse(o=>{ if (o.isMesh) for (const m of [].concat(o.material)) { const c=NF.nearFadeCategory(m); if (c) s.add(c); } }); return [...s]; };
    const veg=new Set(); let vegN=0; DK.engine.scene.traverse(o=>{ if (o.isInstancedMesh) { const c=NF.nearFadeCategory(o.material); if (c==='veg') { vegN++; veg.add(o.material.uuid); } } });
    const ship=cat(DK.G.ship.root), self=cat(DK.G.player.char.root);
    const npc=(DK.npcs.list||[]).find(n=>n.anim?.root || n.char?.root); const npcCat=npc ? cat((npc.anim||npc.char).root) : [];
@@ -54,7 +54,7 @@
    return vegN>=4 && ship.includes('sail') && ship.includes('rail') && self.includes('self') && (!npc || npcCat.includes('char')) && (!an || anCat.includes('char')); })()`, truthy: true, label: 'K02 Yakın-kamera silinmesi: bitki örtüsü (≥ 4 örnekli çizim), yelken+küpeşte/direk, oyuncu (self), NPC ve hayvan (char)'}},
  {js: `window._K02`},
  // K03 gölgelendirici: düzlem kameranın önünde 0,3 / 1,1 / 4 m
- {expect: {js: `(async()=>{ const NF=await import('./js/core/nearfade.js'); const THREE=DK.THREE; const cam=DK.engine.camera; const p=DK.G.player;
+ {expect: {js: `(async()=>{ const NF=DK.mod('core/nearfade'); const THREE=DK.THREE; const cam=DK.engine.camera; const p=DK.G.player;
    _g(window._spawn[0], window._spawn[1]); DK.sim(0.3,1/30); const T=DK.tpCamera; T.pitch=0.1; DK.sim(0.3,1/30);
    // son işleme (FXAA) tek tük titreşim piksellerini komşularıyla karıştırır: ölçüm doğrudan çizimle. Görüş çizgisi silindiri
    // (K12) bu ölçümde kapalı: yalnız yakın-kamera aralığı sınanır
@@ -79,7 +79,7 @@
  {expect: {js: `(()=>{ const s=DK.G.ship; const P=DK.port; const bp=P.boardingPoint; _g(bp.x, bp.z, P.pierTop); DK.sim(0.3,1/30); const v=_turn([0.25,-0.25], 24, ()=>_hullViol(s)); window._K06={n:v.length, viol:v.reduce((a,b)=>a+b,0)}; return window._K06.viol===0; })()`, truthy: true, label: 'K06 İskelede gemi yanında 2 eğim × 24 açıda kamera gövdeye girmez, gövde görüşü kesmez'}},
  {js: `window._K06`},
  // K07 mağara
- {expect: {js: `(async()=>{ const C=(await import('./js/world/worldData.js')).CAVE; const THREE=DK.THREE; await DK.terrain.prepare(190, -45, {radius: 120});
+ {expect: {js: `(async()=>{ const C=(DK.mod('world/worldData')).CAVE; const THREE=DK.THREE; await DK.terrain.prepare(190, -45, {radius: 120});
    const curve=new THREE.CatmullRomCurve3(C.path.map(([x,z])=>new THREE.Vector3(x,C.floor,z))); const S=[]; for (let i=0;i<=200;i++){ const t=i/200, q=curve.getPointAt(t), m=Math.max(0,1-t*6); S.push({x:q.x, z:q.z, w:C.width*(1+m*0.5), h:C.height*(1+m*0.35)}); }
    // kesit testi (testin kendi tanımı): tünel yarım elipsi, gürültü payı 0,3 m; oda kubbesi; ağzın önü serbest
    const inside=(x,y,z)=>{ const ch=C.chamber, R=(ch.r+1)*0.88-0.1; const dc=Math.hypot(x-ch.x,z-ch.z); if (dc<R) { const a=dc/R, b=(y-(C.floor-0.4))/((ch.r+1)*0.62*0.88-0.1); if (a*a+b*b<=1) return true; } let best=1e9, bi=0, bu=0; for (let i=0;i<S.length-1;i++){ const A=S[i], B=S[i+1], ex=B.x-A.x, ez=B.z-A.z, L2=ex*ex+ez*ez; const u=Math.max(0,Math.min(1,((x-A.x)*ex+(z-A.z)*ez)/L2)); const d2=(A.x+ex*u-x)**2+(A.z+ez*u-z)**2; if (d2<best){best=d2; bi=i; bu=u;} } if (bi===0 && bu===0) return true; const A=S[bi], B=S[bi+1]; const w=A.w+(B.w-A.w)*bu-0.3, h=A.h+(B.h-A.h)*bu-0.3; const yy=y-(C.floor-0.4); if (yy<=0) return true; return (Math.sqrt(best)/w)**2+(yy/h)**2<=1; };
@@ -88,7 +88,7 @@
    window._K07=out; return out.every(o=>o.out===0 && o.camMed >= 0.9); })()`, truthy: true, label: 'K07 Mağara tünelinde (2 nokta + duvar dibi) ve odasında 3 eğim × 24 açıda kamera tünel kesitinin dışına çıkmaz, başa yapışmaz (medyan ≥ 0,9 m; duvara doğru açılarda duvar çarpıştırıcısı kamerayı zaten yaklaştırır)'}},
  {js: `window._K07`},
  // K08 orman ve palmiye parlaklığı
- {expect: {js: `(async()=>{ const {props}=await import('./js/world/props.js'); const best=(arr, r, filt)=>{ let b=null, bn=-1; const pts=arr.filter(filt||(()=>true)); for (const a of pts.slice(0,600)) { let n=0; for (const q of arr) if (Math.hypot(q.x-a.x,q.z-a.z)<r) n++; if (n>bn) { bn=n; b=a; } } return b; };
+ {expect: {js: `(async()=>{ const {props}=DK.mod('world/props'); const best=(arr, r, filt)=>{ let b=null, bn=-1; const pts=arr.filter(filt||(()=>true)); for (const a of pts.slice(0,600)) { let n=0; for (const q of arr) if (Math.hypot(q.x-a.x,q.z-a.z)<r) n++; if (n>bn) { bn=n; b=a; } } return b; };
    const out=[]; const tr=best(props.trees||[], 8), pa=best(props.palms||[], 10, (q)=>q.y<3);
    for (const [name, q, dx, dz, n] of [['orman', tr, 1.2, 1.2, 32], ['palmiyeler', pa, 1.5, 0, 16]]) { if (!q) continue; await DK.terrain.prepare(q.x, q.z, {radius: 80}); _g(q.x+dx, q.z+dz); DK.sim(0.3,1/30); const ls=await _turnA([0.25,-0.25], n, ()=>_lum()); out.push({name, ..._dark(ls)}); }
    window._K08=out; return out.length===2 && out.every(o=>o.nDark===0); })()`, truthy: true, label: 'K08 Ormanda (2 eğim × 32 açı) ve palmiyelerin arasında (2 × 16) karanlık kare yok'}},
@@ -113,7 +113,7 @@
    window._K11=out; return out.smooth===0 && out.flat===0; })()`, truthy: true, label: 'K11 Sıfır normalli yüzey (yumuşak ve düz gölgeli) yarım kayan noktalı hedefte NaN/Inf piksel üretmez'}},
  {js: `window._K11`},
  // K12 görüş çizgisi silindiri: kameradan 2,6 m uzakta (yakın-kamera aralığının ötesinde) çizgiyi kesen siyah bitki düzlemi seyrelir
- {expect: {js: `(async()=>{ const NF=await import('./js/core/nearfade.js'); const THREE=DK.THREE, cam=DK.engine.camera; _g(window._spawn[0], window._spawn[1]); const T=DK.tpCamera; T.targetDist=4.6; T.pitch=0.15; DK.sim(0.6,1/30);
+ {expect: {js: `(async()=>{ const NF=DK.mod('core/nearfade'); const THREE=DK.THREE, cam=DK.engine.camera; _g(window._spawn[0], window._spawn[1]); const T=DK.tpCamera; T.targetDist=4.6; T.pitch=0.15; DK.sim(0.6,1/30);
    // ölçüm ekranın ortadaki 1/8'i (2,6 m'de ±0,23 m: silindirin tümden silinen iç kısmı) ve 1/3'ü (dış halka kısmen seyrelir)
    const pe=DK.post.enabled; DK.post.enabled=false; const base=_black(1/8); const m=new THREE.Mesh(new THREE.PlaneGeometry(40,40), NF.nearFade(new THREE.MeshBasicMaterial({color:0x000000, side:THREE.DoubleSide}), 'veg')); DK.engine.scene.add(m);
    const f=new THREE.Vector3(); cam.getWorldDirection(f); m.position.copy(cam.position).addScaledVector(f,2.6); m.quaternion.copy(cam.quaternion); m.updateMatrixWorld(true);

@@ -30,7 +30,7 @@
  {expect: {js: `(()=>{ const c=DK.physics.all.find(c=>c.tag==='cargo'); const h=DK.terrain.heightAt(-4, DK.port.shoreZ-1.6); window._I06={y0:+c.y0.toFixed(2), y1:+c.y1.toFixed(2), sand:+h.toFixed(2)}; return c.y1 < 3.0 && c.y0 < h; })()`, truthy: true, label: 'I06 İskele yanındaki yük yığını kumun üstünde (çarpıştırıcı üstü < 3,0 m; önce 3,6 m)'}},
  {js: `window._I06`},
  // I07 ada limanlarının iskeleleri: karadan zıplamadan çıkılır, sığ kesimin altına yandan girilmez (B-07)
- {expect: {js: `(async()=>{ const {ports}=await import('./js/world/ports.js'); const list=ports.list.filter(p=>p.pierStart && p.pierEnd).slice(0,4); const out=[];
+ {expect: {js: `(async()=>{ const {ports}=DK.mod('world/ports'); const list=ports.list.filter(p=>p.pierStart && p.pierEnd).slice(0,4); const out=[];
    for (const P of list) { const I=DK.archipelago.EXTRA_ISLANDS.find(i=>i.id===P.island); if (!I) continue; await DK.terrain.prepare(P.pierStart.x, P.pierStart.z, {radius: 260}); if (!DK.islands.built.has(I.id)) DK.islands._build(I);
      const L=Math.hypot(P.pierEnd.x-P.pierStart.x, P.pierEnd.z-P.pierStart.z), ux=(P.pierEnd.x-P.pierStart.x)/L, uz=(P.pierEnd.z-P.pierStart.z)/L, yaw=Math.atan2(ux,uz);
      const plat=DK.physics.platList.filter(p=>p.tag==='isl:'+I.id && Math.abs(p.top-2.9)<0.01).sort((a,b)=>Math.hypot(a.x-P.pierEnd.x,a.z-P.pierEnd.z)-Math.hypot(b.x-P.pierEnd.x,b.z-P.pierEnd.z))[0];
@@ -58,6 +58,6 @@
  {expect: {js: `(()=>{ const p=DK.G.player; const s=window._swimSpot; _g(s.x, s.z, -1.4); DK.sim(0.3,1/30); if (p.mode!=='swim') p.enterWater(); DK.input.down.add('KeyC'); DK.sim(2.5,1/30); DK.input.down.delete('KeyC'); const T=DK.tpCamera; let bad=0, n=0; for (const pitch of [-0.4, 0, 0.3, 0.7]) for (let k=0;k<24;k++){ T.pitch=pitch; T.yaw=k*Math.PI/12; DK.input.down.add('KeyC'); DK.sim(0.1,1/30); DK.input.down.delete('KeyC'); n++; if (!p.underwater) continue; if (!DK.sky.underwater) bad++; } window._C05={n, bad, depth:+p.depth.toFixed(2), under:p.underwater}; return p.underwater && bad===0; })()`, truthy: true, label: 'C05 Dalışta 96 kamera açısında kamera su altında kalır (yüzeyi kesip yarı karanlık görüntü yok)'}},
  {js: `window._C05`},
  // M01 duraklatma menüsü: tek oyunculuda "null" yazısı yok
- {expect: {js: `(async()=>{ const {menu}=await import('./js/ui/menu.js'); menu.pause(DK.handlers); const t=document.body.innerText; const ok=t.includes('Duraklatıldı') && !/\\bnull\\b/.test(t); DK.ui.closeAll ? DK.ui.closeAll() : DK.ui.close(); window._M01={ok, hasNull:/\\bnull\\b/.test(t)}; return ok; })()`, truthy: true, label: 'M01 Duraklatma menüsünde "null" yazısı yok (tek oyunculu)'}},
+ {expect: {js: `(async()=>{ const {menu}=DK.mod('ui/menu'); menu.pause(DK.handlers); const t=document.body.innerText; const ok=t.includes('Duraklatıldı') && !/\\bnull\\b/.test(t); DK.ui.closeAll ? DK.ui.closeAll() : DK.ui.close(); window._M01={ok, hasNull:/\\bnull\\b/.test(t)}; return ok; })()`, truthy: true, label: 'M01 Duraklatma menüsünde "null" yazısı yok (tek oyunculu)'}},
  {js: `window._M01`},
 ]
