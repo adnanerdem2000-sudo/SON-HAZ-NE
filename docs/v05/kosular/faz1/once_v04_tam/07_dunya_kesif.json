@@ -1,0 +1,750 @@
+{
+ "scenario": "tests/scenarios/07_dunya_kesif.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": "ok",
+   "ms": 19
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   },
+   "ms": 16844
+  },
+  {
+   "n": 3,
+   "label": null,
+   "expect": {
+    "label": "D01 Dünya yarı boyutu 10 km (20×20 km korunur)",
+    "ok": true,
+    "value": 10000
+   },
+   "ms": 26
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "D02 Dik olmayan şekillerde su çizgisi sıçraması ≤ 0,40 m (kıyı dikişi yok)",
+    "ok": true,
+    "value": 0.251
+   },
+   "ms": 474
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": {
+    "seam": {
+     "worst": 0.251,
+     "at": [
+      "kara_girdap",
+      "spire",
+      6,
+      35
+     ],
+     "n": 65016,
+     "big": 0,
+     "islands": 54
+    },
+    "steep": {
+     "worst": 1.403,
+     "at": [
+      "timsah_batakligi",
+      "swamp",
+      6,
+      230
+     ],
+     "n": 12091,
+     "big": 30,
+     "islands": 13
+    },
+    "ms": 336
+   },
+   "ms": 12
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "D02b 1 mm inceltmede süreksizlik (tüm 67 ada, tüm şekiller) = 0",
+    "ok": true,
+    "value": 0
+   },
+   "ms": 1137
+  },
+  {
+   "n": 7,
+   "label": null,
+   "result": {
+    "total": 0,
+    "byShape": {},
+    "ex": []
+   },
+   "ms": 181
+  },
+  {
+   "n": 8,
+   "label": null,
+   "expect": {
+    "label": "D03 Yüzen oyuncu 3 gelgit × çukur/tepe + sağanak çukurunda basamaklardan T başlığına çıkar (≤ 2 kip değişimi)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 6435
+  },
+  {
+   "n": 9,
+   "label": null,
+   "result": {
+    "tz": 273.5,
+    "top": 2.25,
+    "runs": [
+     {
+      "tide": -0.55,
+      "scale": 1,
+      "ph": "trough",
+      "amp": 0.11,
+      "minWh": -0.58,
+      "t": 3.5,
+      "x": 17.61,
+      "y": 2.25,
+      "mode": "ground",
+      "switches": 1,
+      "ok": true
+     },
+     {
+      "tide": -0.55,
+      "scale": 1,
+      "ph": "crest",
+      "amp": 0.11,
+      "minWh": -0.59,
+      "t": 3.5,
+      "x": 17.61,
+      "y": 2.25,
+      "mode": "ground",
+      "switches": 1,
+      "ok": true
+     },
+     {
+      "tide": 0,
+      "scale": 1,
+      "ph": "trough",
+      "amp": 0.11,
+      "minWh": -0.05,
+      "t": 3.75,
+      "x": 16.86,
+      "y": 2.25,
+      "mode": "ground",
+      "switches": 1,
+      "ok": true
+     },
+     {
+      "tide": 0,
+      "scale": 1,
+      "ph": "crest",
+      "amp": 0.12,
+      "minWh": -0.04,
+      "t": 3.75,
+      "x": 17.18,
+      "y": 2.25,
+      "mode": "ground",
+      "switches": 1,
+      "ok": true
+     },
+     {
+      "tide": 0.55,
+      "scale": 1,
+      "ph": "trough",
+      "amp": 0.12,
+      "minWh": 0.5,
+      "t": 3.75,
+      "x": 17.53,
+      "y": 2.25,
+      "mode": "ground",
+      "switches": 1,
+      "ok": true
+     },
+     {
+      "tide": 0.55,
+      "scale": 1,
+      "ph": "crest",
+      "amp": 0.12,
+      "minWh": 0.51,
+      "t": 4,
+      "x": 16.77,
+      "y": 2.25,
+      "mode": "ground",
+      "switches": 1,
+      "ok": true
+     },
+     {
+      "tide": -0.55,
+      "scale": 1.5,
+      "ph": "trough",
+      "amp": 0.17,
+      "minWh": -0.6,
+      "t": 3.75,
+      "x": 17.18,
+      "y": 2.25,
+      "mode": "ground",
+      "switches": 1,
+      "ok": true
+     }
+    ]
+   },
+   "ms": 14
+  },
+  {
+   "n": 10,
+   "label": null,
+   "expect": {
+    "label": "D08 −1,5 m basamağında 60 sn bekleyen oyuncu en çok 1 kip değişimi yapar (sağanak dalgası, barınakta)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 6638
+  },
+  {
+   "n": 11,
+   "label": null,
+   "result": {
+    "switches": 0,
+    "modes": {
+     "ground": 240
+    },
+    "x": 24.6,
+    "y": -1.2
+   },
+   "ms": 2
+  },
+  {
+   "n": 12,
+   "label": null,
+   "expect": {
+    "label": "D07 Liman barınağı: merdivende dalga genliği açık denizin ≤ %35'i ve ≤ 0,35 m",
+    "ok": true,
+    "value": true
+   },
+   "ms": 5
+  },
+  {
+   "n": 13,
+   "label": null,
+   "result": {
+    "near": 0.087,
+    "far": 0.539,
+    "far2": 0.13,
+    "ratio": 0.16
+   },
+   "ms": 1
+  },
+  {
+   "n": 14,
+   "label": null,
+   "expect": {
+    "label": "D04 Her yordamsal adacıkta en az bir geçerli belirleyici özellik",
+    "ok": true,
+    "value": true
+   },
+   "ms": 3
+  },
+  {
+   "n": 15,
+   "label": null,
+   "result": {
+    "total": 67,
+    "featureless": 0,
+    "featurelessIds": [],
+    "bad": [],
+    "poolAdded": 22,
+    "typesByRegion": {
+     "merkez": [
+      "beach_wreck",
+      "camp",
+      "fort",
+      "lighthouse",
+      "market",
+      "port",
+      "ruin",
+      "ruined_town"
+     ],
+     "buzul": [
+      "beach_wreck",
+      "boss_sea",
+      "camp",
+      "port",
+      "ruin"
+     ],
+     "tropik": [
+      "beach_wreck",
+      "camp",
+      "port",
+      "ruin",
+      "sunken_city",
+      "temple"
+     ],
+     "volkan": [
+      "beach_wreck",
+      "boss_land",
+      "camp",
+      "mine",
+      "port",
+      "ruin"
+     ],
+     "col": [
+      "beach_wreck",
+      "camp",
+      "mine",
+      "port",
+      "prison",
+      "ruin"
+     ],
+     "hayalet": [
+      "beach_wreck",
+      "boss_sea",
+      "camp",
+      "graveyard",
+      "ruin"
+     ]
+    }
+   },
+   "ms": 1
+  },
+  {
+   "n": 16,
+   "label": null,
+   "expect": {
+    "label": "D06 Otomatik özellikler araziye uygun (yapı çevresi ≥ 1 m, batık ≥ −0,6 m)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 7
+  },
+  {
+   "n": 17,
+   "label": null,
+   "result": {
+    "n": 22,
+    "bad": []
+   },
+   "ms": 2
+  },
+  {
+   "n": 18,
+   "label": null,
+   "expect": {
+    "label": "D05 Havuz özellikli adacıklar hatasız kurulur ve sökülür",
+    "ok": true,
+    "value": true
+   },
+   "ms": 62
+  },
+  {
+   "n": 19,
+   "label": null,
+   "result": {
+    "out": [
+     [
+      "ada_merkez_0",
+      "beach_wreck",
+      true,
+      16
+     ],
+     [
+      "ada_merkez_2",
+      "beach_wreck",
+      true,
+      4
+     ],
+     [
+      "ada_merkez_7",
+      "beach_wreck",
+      true,
+      9
+     ],
+     [
+      "ada_buzul_0",
+      "ruin",
+      true,
+      9
+     ],
+     [
+      "ada_buzul_3",
+      "beach_wreck",
+      true,
+      3
+     ],
+     [
+      "ada_buzul_4",
+      "ruin",
+      true,
+      7
+     ]
+    ],
+    "errs": []
+   },
+   "ms": 2
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 6695,
+ "ms": 43113,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/scenarios/07_dunya_kesif.js",
+ "meta": {},
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8080/index.html?test=1",
+  "verilenUrl": "http://localhost:8080/index.html",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "5479e3b76bb33a517efa9ec60c418105a98bcec6",
+  "dal": "HEAD",
+  "kirli": false,
+  "tarih": "2026-11-14T09:38:35.907Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-kosu/tests/harness/run.cjs /home/user/SON-HAZ-NE-kosu/tests/scenarios/07_dunya_kesif.js --url http://localhost:8080/index.html --size 640x360 --timeout 1800 --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/once_v04_tam/07_dunya_kesif.json",
+  "cwd": "/home/user/SON-HAZ-NE-kosu",
+  "sunucular": [
+   "statik sunucu http://localhost:8080 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8080"
+  ],
+  "commit": "5479e3b76bb33a517efa9ec60c418105a98bcec6",
+  "senaryoSha256": "24b600e9c6d2d4761dff5b731b284c78d9e377fc1cfdd7515cd77d0cf552522f",
+  "adim": null,
+  "url": "http://localhost:8080/index.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 2,
+   "id": "Oyun başladı",
+   "etiket": "Oyun başladı",
+   "ok": true,
+   "deger": "playing",
+   "beklenen": {
+    "eq": "playing"
+   },
+   "sure_ms": 11852,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 3,
+   "id": "D01",
+   "etiket": "D01 Dünya yarı boyutu 10 km (20×20 km korunur)",
+   "ok": true,
+   "deger": 10000,
+   "beklenen": {
+    "eq": 10000
+   },
+   "sure_ms": 22,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 4,
+   "id": "D02",
+   "etiket": "D02 Dik olmayan şekillerde su çizgisi sıçraması ≤ 0,40 m (kıyı dikişi yok)",
+   "ok": true,
+   "deger": 0.251,
+   "beklenen": {
+    "lte": 0.4
+   },
+   "sure_ms": 339,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 6,
+   "id": "D02b",
+   "etiket": "D02b 1 mm inceltmede süreksizlik (tüm 67 ada, tüm şekiller) = 0",
+   "ok": true,
+   "deger": 0,
+   "beklenen": {
+    "eq": 0
+   },
+   "sure_ms": 606,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 8,
+   "id": "D03",
+   "etiket": "D03 Yüzen oyuncu 3 gelgit × çukur/tepe + sağanak çukurunda basamaklardan T başlığına çıkar (≤ 2 kip değişimi)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 3115,
+   "benzetim": {
+    "sim": 132,
+    "adim": 1980,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 10,
+   "id": "D08",
+   "etiket": "D08 −1,5 m basamağında 60 sn bekleyen oyuncu en çok 1 kip değişimi yapar (sağanak dalgası, barınakta)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 3506,
+   "benzetim": {
+    "sim": 373,
+    "adim": 5640,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 12,
+   "id": "D07",
+   "etiket": "D07 Liman barınağı: merdivende dalga genliği açık denizin ≤ %35'i ve ≤ 0,35 m",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 373,
+    "adim": 5640,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 14,
+   "id": "D04",
+   "etiket": "D04 Her yordamsal adacıkta en az bir geçerli belirleyici özellik",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1,
+   "benzetim": {
+    "sim": 373,
+    "adim": 5640,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 16,
+   "id": "D06",
+   "etiket": "D06 Otomatik özellikler araziye uygun (yapı çevresi ≥ 1 m, batık ≥ −0,6 m)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 3,
+   "benzetim": {
+    "sim": 373,
+    "adim": 5640,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 18,
+   "id": "D05",
+   "etiket": "D05 Havuz özellikli adacıklar hatasız kurulur ve sökülür",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 59,
+   "benzetim": {
+    "sim": 373,
+    "adim": 5640,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 33
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 2,
+  "toplam": 34,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 216,
+ "sonuc": {
+  "durum": "GECTI",
+  "cikisKodu": 0,
+  "neden": [],
+  "onaySayisi": 10,
+  "kontrolSayisi": 10,
+  "gecen": 10,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": "tarayici+benzetim",
+  "turSayim": {
+   "tarayici": 4,
+   "tarayici+benzetim": 6
+  }
+ },
+ "sure": {
+  "hazirMs": 6695,
+  "toplamMs": 43113,
+  "yerlesmeMs": 1001
+ }
+}

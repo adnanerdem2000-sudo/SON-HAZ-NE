@@ -1,0 +1,30 @@
+# koşucu: 5479e3b run.cjs 591dff27 coop.cjs a6e0e14c ortak.cjs df191a99; hedef v0.4 44d548c
+09:32:21 00_acilis rc=0 PASS=6 FAIL=0 sure=36s | SONUC: GECTI (çıkış 0) kontrol 6/6, onay 6 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34
+09:33:38 02_arazi_yedek rc=0 PASS=12 FAIL=0 sure=77s | SONUC: GECTI (çıkış 0) kontrol 12/12, onay 12 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34
+09:34:38 02_arazi_kurtarma rc=0 PASS=7 FAIL=0 sure=60s | SONUC: GECTI (çıkış 0) kontrol 7/7, onay 7 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 6 farklı/38
+09:35:23 03_fizik_dt rc=0 PASS=0 FAIL=0 sure=45s | SONUC: OLCUM (çıkış 0) kontrol 0/0, onay 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34
+09:37:00 03_fizik_duzeltmeler rc=0 PASS=14 FAIL=0 sure=97s | SONUC: GECTI (çıkış 0) kontrol 14/14, onay 14 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34
+09:37:49 04_karakter rc=0 PASS=21 FAIL=0 sure=49s | SONUC: GECTI (çıkış 0) kontrol 21/21, onay 21 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34
+09:38:35 05_dusman_ai rc=0 PASS=18 FAIL=0 sure=46s | SONUC: GECTI (çıkış 0) kontrol 18/18, onay 18 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34
+09:39:27 07_dunya_kesif rc=0 PASS=10 FAIL=0 sure=52s | SONUC: GECTI (çıkış 0) kontrol 10/10, onay 10 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34
+09:40:01 07_ekonomi rc=0 PASS=3 FAIL=0 sure=34s | SONUC: GECTI (çıkış 0) kontrol 3/3, onay 3 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34
+09:40:43 08_kalicilik rc=0 PASS=12 FAIL=0 sure=42s | SONUC: GECTI (çıkış 0) kontrol 12/12, onay 12 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34
+09:41:27 11_arayuz_sizinti rc=0 PASS=6 FAIL=0 sure=44s | SONUC: GECTI (çıkış 0) kontrol 6/6, onay 6 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34
+09:42:03 12_kayit_dongusu rc=0 PASS=4 FAIL=0 sure=36s | SONUC: GECTI (çıkış 0) kontrol 4/4, onay 4 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34
+09:42:46 13_donma rc=0 PASS=9 FAIL=0 sure=43s | SONUC: GECTI (çıkış 0) kontrol 9/9, onay 9 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34
+09:43:32 14_deniz_ekipmani rc=1 PASS=14 FAIL=2 sure=46s | SONUC: KALDI (çıkış 1) kontrol 14/16, onay 16 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34 | neden: başarısız kontrol ya da adım: 2
+09:44:35 15_iskele_kamera rc=0 PASS=14 FAIL=0 sure=63s | SONUC: GECTI (çıkış 0) kontrol 14/14, onay 14 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34
+09:47:03 16_kosu_poz_ganimet rc=0 PASS=23 FAIL=0 sure=148s | SONUC: GECTI (çıkış 0) kontrol 23/23, onay 23 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34
+09:50:12 17_kamera_kararma rc=1 PASS=5 FAIL=8 sure=189s | SONUC: KALDI (çıkış 1) kontrol 5/13, onay 13 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34 | neden: başarısız kontrol ya da adım: 16; sayfa hatası (pageerror): 1; a
+09:51:53 09_performans rc=0 PASS=9 FAIL=0 sure=101s | SONUC: GECTI (çıkış 0) kontrol 9/9, onay 9 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34
+09:53:07 06_arayuz_960 rc=0 PASS=4 FAIL=0 sure=74s | SONUC: GECTI (çıkış 0) kontrol 4/4, onay 4 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34
+09:53:46 02_tek_dosya rc=0 PASS=4 FAIL=0 sure=39s | SONUC: GECTI (çıkış 0) kontrol 4/4, onay 4 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34
+09:55:18 02_arazi_yedek_noworker rc=0 PASS=12 FAIL=0 sure=92s | SONUC: GECTI (çıkış 0) kontrol 12/12, onay 12 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 3 farklı/35
+09:58:34 02_arazi_yedek_crash rc=0 PASS=12 FAIL=0 sure=196s | SONUC: GECTI (çıkış 0) kontrol 12/12, onay 12 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 6 farklı/38
+10:00:21 02_arazi_yedek_badurl rc=0 PASS=12 FAIL=0 sure=107s | SONUC: GECTI (çıkış 0) kontrol 12/12, onay 12 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 6 | uyarı 6 farklı/38
+10:03:07 coop_06b rc=0 PASS=18 FAIL=0 sure=166s | SONUC: GECTI (çıkış 0) kontrol 18/18 | ev() istisnası 0, kapalı sayfa atlama 0, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 4 farklı/68
+10:06:23 coop_06d rc=0 PASS=9 FAIL=0 sure=196s | SONUC: GECTI (çıkış 0) kontrol 9/9 | ev() istisnası 0, kapalı sayfa atlama 0, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 4 farklı/68
+10:11:38 coop_06a rc=0 PASS=10 FAIL=0 sure=315s | SONUC: GECTI (çıkış 0) kontrol 10/10 | ev() istisnası 0, kapalı sayfa atlama 19, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 8 farklı/104
+10:20:39 coop_06a2 rc=1 PASS=0 FAIL=3 sure=541s | SONUC: KALDI (çıkış 1) kontrol 0/3 | ev() istisnası 0, kapalı sayfa atlama 5, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 6 farklı/102 | neden: başarısı
+10:30:08 coop_06c rc=0 PASS=7 FAIL=0 sure=569s | SONUC: GECTI (çıkış 0) kontrol 7/7 | ev() istisnası 0, kapalı sayfa atlama 18, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 9 farklı/137
+BITTI

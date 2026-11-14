@@ -1,0 +1,770 @@
+{
+ "scenario": "tests/scenarios/17_kamera_kararma.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": "ok",
+   "ms": 27
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   },
+   "ms": 18931
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": "ok",
+   "ms": 113
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "K01 Kenney ağaç/çalı/kaya/yapı modellerinde tam metal malzeme yok (18 model; önce hepsi metalness 1)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 20
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": {
+    "n": 18,
+    "bad": []
+   },
+   "ms": 16
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "K02 Yakın-kamera silinmesi: bitki örtüsü (≥ 4 örnekli çizim), yelken+küpeşte/direk, oyuncu (self), NPC ve hayvan (char)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 24
+  },
+  {
+   "n": 7,
+   "label": null,
+   "result": {
+    "vegMeshes": 11,
+    "ship": [
+     "rail",
+     "sail"
+    ],
+    "self": [
+     "self"
+    ],
+    "npc": [
+     "char"
+    ],
+    "animal": [
+     "char"
+    ]
+   },
+   "ms": 5
+  },
+  {
+   "n": 8,
+   "label": null,
+   "expect": {
+    "label": "K03 Silinme gölgelendiricisi: 0,3 m uzaktaki siyah düzlem çizilmez (görüntü düzlemsizle aynı), 4 m uzaktaki çizilir (> %97 siyah), 1,1 m uzaktaki kısmen",
+    "ok": true,
+    "value": true
+   },
+   "ms": 25159
+  },
+  {
+   "n": 9,
+   "label": null,
+   "result": {
+    "base": 0.027,
+    "near": 0.027,
+    "mid": 0.533,
+    "far": 1
+   },
+   "ms": 2
+  },
+  {
+   "n": 10,
+   "label": null,
+   "expect": {
+    "label": "K04 Güvertede 4 noktada 2 eğim × 24 açıda baş→kamera doğrusu gemi gövdesini kesmez, kamera gövdeye girmez",
+    "ok": true,
+    "value": true
+   },
+   "ms": 1284
+  },
+  {
+   "n": 11,
+   "label": null,
+   "result": [
+    {
+     "name": "ambar",
+     "n": 48,
+     "viol": 0
+    },
+    {
+     "name": "baş",
+     "n": 48,
+     "viol": 0
+    },
+    {
+     "name": "kıç direk",
+     "n": 48,
+     "viol": 0
+    },
+    {
+     "name": "yelken açık",
+     "n": 48,
+     "viol": 0
+    }
+   ],
+   "ms": 2
+  },
+  {
+   "n": 12,
+   "label": null,
+   "expect": {
+    "label": "K05 Güvertede alttan bakışta (−0,25) 3 noktada 16 açıda karanlık kare yok (önce kıç direkte en düşük 17, medyan 98)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 45468
+  },
+  {
+   "n": 13,
+   "label": null,
+   "result": [
+    {
+     "name": "ambar",
+     "median": 99.2,
+     "min": 80.1,
+     "nDark": 0
+    },
+    {
+     "name": "kıç direk",
+     "median": 98.2,
+     "min": 84.2,
+     "nDark": 0
+    },
+    {
+     "name": "baş",
+     "median": 105.9,
+     "min": 84.6,
+     "nDark": 0
+    }
+   ],
+   "ms": 3
+  },
+  {
+   "n": 14,
+   "label": null,
+   "expect": {
+    "label": "K06 İskelede gemi yanında 2 eğim × 24 açıda kamera gövdeye girmez, gövde görüşü kesmez",
+    "ok": true,
+    "value": true
+   },
+   "ms": 376
+  },
+  {
+   "n": 15,
+   "label": null,
+   "result": {
+    "n": 48,
+    "viol": 0
+   },
+   "ms": 15
+  },
+  {
+   "n": 16,
+   "label": null,
+   "expect": {
+    "label": "K07 Mağara tünelinde (2 nokta + duvar dibi) ve odasında 3 eğim × 24 açıda kamera tünel kesitinin dışına çıkmaz, başa yapışmaz (medyan ≥ 0,9 m; duvara doğru açılarda duvar çarpıştırıcısı kamerayı zaten yaklaştırır)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 1914
+  },
+  {
+   "n": 17,
+   "label": null,
+   "result": [
+    {
+     "name": "tünel",
+     "inCave": 1,
+     "n": 72,
+     "out": 0,
+     "camMed": 2.45
+    },
+    {
+     "name": "tünel 2",
+     "inCave": 1,
+     "n": 72,
+     "out": 0,
+     "camMed": 2.51
+    },
+    {
+     "name": "duvar dibi (2,5 m yanda)",
+     "inCave": 1,
+     "n": 72,
+     "out": 0,
+     "camMed": 0.97
+    },
+    {
+     "name": "oda",
+     "inCave": 1,
+     "n": 72,
+     "out": 0,
+     "camMed": 2.77
+    }
+   ],
+   "ms": 7
+  },
+  {
+   "n": 18,
+   "label": null,
+   "expect": {
+    "label": "K08 Ormanda (2 eğim × 32 açı) ve palmiyelerin arasında (2 × 16) karanlık kare yok",
+    "ok": true,
+    "value": true
+   },
+   "ms": 86397
+  },
+  {
+   "n": 19,
+   "label": null,
+   "result": [
+    {
+     "name": "orman",
+     "median": 70.8,
+     "min": 56.8,
+     "nDark": 0
+    },
+    {
+     "name": "palmiyeler",
+     "median": 103.9,
+     "min": 85.2,
+     "nDark": 0
+    }
+   ],
+   "ms": 3
+  },
+  {
+   "n": 20,
+   "label": null,
+   "expect": {
+    "label": "K09 Su altı geçişi histerezisli (−6 cm: açılmaz, −20 cm: açılır, −2 cm: kapanmaz, +5 cm: kapanır)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 57
+  },
+  {
+   "n": 21,
+   "label": null,
+   "result": [
+    false,
+    false,
+    true,
+    true,
+    false
+   ],
+   "ms": 1
+  },
+  {
+   "n": 22,
+   "label": null,
+   "expect": {
+    "label": "K10 Tek bir NaN/Inf yazan yüzey parlamayla tüm ekrana yayılıp kareyi karartmaz (parlaklık temel değerin ≥ %80'i)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 4235
+  },
+  {
+   "n": 23,
+   "label": null,
+   "result": {
+    "base": 131,
+    "post": true,
+    "nan": 131,
+    "inf": 131
+   },
+   "ms": 3
+  },
+  {
+   "n": 24,
+   "label": null,
+   "expect": {
+    "label": "K11 Sıfır normalli yüzey (yumuşak ve düz gölgeli) yarım kayan noktalı hedefte NaN/Inf piksel üretmez",
+    "ok": true,
+    "value": true
+   },
+   "ms": 1447
+  },
+  {
+   "n": 25,
+   "label": null,
+   "result": {
+    "smooth": 0,
+    "flat": 0
+   },
+   "ms": 4
+  },
+  {
+   "n": 26,
+   "label": null,
+   "expect": {
+    "label": "K12 Kamerayla oyuncu arasındaki bitki örtüsü görüş çizgisi çevresinde seyrelir (2,6 m uzaktaki siyah düzlem: ekran ortası silindir açıkken görünür, kapalıyken > %97 siyah)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 12097
+  },
+  {
+   "n": 27,
+   "label": null,
+   "result": {
+    "base": 0.126,
+    "on": 0.126,
+    "on3": 0.466,
+    "off": 1,
+    "w": 0.95
+   },
+   "ms": 5
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 8581,
+ "ms": 212455,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/scenarios/17_kamera_kararma.js",
+ "meta": {},
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8080/index.html?test=1",
+  "verilenUrl": "http://localhost:8080/index.html",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "5479e3b76bb33a517efa9ec60c418105a98bcec6",
+  "dal": "HEAD",
+  "kirli": false,
+  "tarih": "2026-11-14T10:58:04.484Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-kosu/tests/harness/run.cjs /home/user/SON-HAZ-NE-kosu/tests/scenarios/17_kamera_kararma.js --url http://localhost:8080/index.html --size 640x360 --timeout 1800 --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/once_v04_tam/tekrar/17_kamera_kararma_yeni_2.json",
+  "cwd": "/home/user/SON-HAZ-NE-kosu",
+  "sunucular": [
+   "statik sunucu http://localhost:8080 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8080"
+  ],
+  "commit": "5479e3b76bb33a517efa9ec60c418105a98bcec6",
+  "senaryoSha256": "87fe3a63ec05b1f6a180b3599edfeb0a1e27d8b255bae58faac549d9dc97a8a0",
+  "adim": null,
+  "url": "http://localhost:8080/index.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 2,
+   "id": "Oyun başladı",
+   "etiket": "Oyun başladı",
+   "ok": true,
+   "deger": "playing",
+   "beklenen": {
+    "eq": "playing"
+   },
+   "sure_ms": 14887,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 4,
+   "id": "K01",
+   "etiket": "K01 Kenney ağaç/çalı/kaya/yapı modellerinde tam metal malzeme yok (18 model; önce hepsi metalness 1)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 7,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 6,
+   "id": "K02",
+   "etiket": "K02 Yakın-kamera silinmesi: bitki örtüsü (≥ 4 örnekli çizim), yelken+küpeşte/direk, oyuncu (self), NPC ve hayvan (char)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 12,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 8,
+   "id": "K03",
+   "etiket": "K03 Silinme gölgelendiricisi: 0,3 m uzaktaki siyah düzlem çizilmez (görüntü düzlemsizle aynı), 4 m uzaktaki çizilir (> %97 siyah), 1,1 m uzaktaki kısmen",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 12178,
+   "benzetim": {
+    "sim": 2,
+    "adim": 18,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 10,
+   "id": "K04",
+   "etiket": "K04 Güvertede 4 noktada 2 eğim × 24 açıda baş→kamera doğrusu gemi gövdesini kesmez, kamera gövdeye girmez",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 727,
+   "benzetim": {
+    "sim": 207,
+    "adim": 393,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 12,
+   "id": "K05",
+   "etiket": "K05 Güvertede alttan bakışta (−0,25) 3 noktada 16 açıda karanlık kare yok (önce kıç direkte en düşük 17, medyan 98)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 45465,
+   "benzetim": {
+    "sim": 261,
+    "adim": 504,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 14,
+   "id": "K06",
+   "etiket": "K06 İskelede gemi yanında 2 eğim × 24 açıda kamera gövdeye girmez, gövde görüşü kesmez",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 218,
+   "benzetim": {
+    "sim": 312,
+    "adim": 585,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 16,
+   "id": "K07",
+   "etiket": "K07 Mağara tünelinde (2 nokta + duvar dibi) ve odasında 3 eğim × 24 açıda kamera tünel kesitinin dışına çıkmaz, başa yapışmaz (medyan ≥ 0,9 m; duvara doğru açılarda duvar çarpıştırıcısı kamerayı zaten yaklaştırır)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1103,
+   "benzetim": {
+    "sim": 616,
+    "adim": 1089,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 18,
+   "id": "K08",
+   "etiket": "K08 Ormanda (2 eğim × 32 açı) ve palmiyelerin arasında (2 × 16) karanlık kare yok",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 86395,
+   "benzetim": {
+    "sim": 718,
+    "adim": 1251,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 20,
+   "id": "K09",
+   "etiket": "K09 Su altı geçişi histerezisli (−6 cm: açılmaz, −20 cm: açılır, −2 cm: kapanmaz, +5 cm: kapanır)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 41,
+   "benzetim": {
+    "sim": 719,
+    "adim": 1257,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 22,
+   "id": "K10",
+   "etiket": "K10 Tek bir NaN/Inf yazan yüzey parlamayla tüm ekrana yayılıp kareyi karartmaz (parlaklık temel değerin ≥ %80'i)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2186,
+   "benzetim": {
+    "sim": 720,
+    "adim": 1266,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 24,
+   "id": "K11",
+   "etiket": "K11 Sıfır normalli yüzey (yumuşak ve düz gölgeli) yarım kayan noktalı hedefte NaN/Inf piksel üretmez",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1062,
+   "benzetim": {
+    "sim": 720,
+    "adim": 1266,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 26,
+   "id": "K12",
+   "etiket": "K12 Kamerayla oyuncu arasındaki bitki örtüsü görüş çizgisi çevresinde seyrelir (2,6 m uzaktaki siyah düzlem: ekran ortası silindir açıkken görünür, kapalıyken > %97 siyah)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 6746,
+   "benzetim": {
+    "sim": 721,
+    "adim": 1284,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 33
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 2,
+  "toplam": 34,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 216,
+ "sonuc": {
+  "durum": "GECTI",
+  "cikisKodu": 0,
+  "neden": [],
+  "onaySayisi": 13,
+  "kontrolSayisi": 13,
+  "gecen": 13,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": "tarayici+benzetim",
+  "turSayim": {
+   "tarayici": 3,
+   "tarayici+benzetim": 10
+  }
+ },
+ "sure": {
+  "hazirMs": 8581,
+  "toplamMs": 212455,
+  "yerlesmeMs": 1002
+ }
+}

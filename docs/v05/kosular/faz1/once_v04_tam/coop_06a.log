@@ -1,0 +1,57 @@
+Kaptan/host {"code":"MNXKLF"}
+Tayfa/join {"room":"Güvenlik Odası"}
+Lostromo/join {"room":"Güvenlik Odası"}
+Kaptan/roster [{"id":"HOST","name":"Kaptan"},{"id":"guest","name":"Kötü"},{"id":"guest","name":"Kaptan"}]
+PASS H02 Konuk adı HTML'den arındırılır (roster) → [{"id":"HOST","name":"Kaptan"},{"id":"guest","name":"Kötü"},{"id":"guest","name":"Kaptan"}]
+PASS H04 Ev sahibiyle aynı adlı konuk ev sahibini listeden düşürmez → [{"id":"HOST","name":"Kaptan"},{"id":"guest","name":"Kötü"},{"id":"guest","name":"Kaptan"}]
+Kaptan/hs "host-started"
+Tayfa/gs "guest-started"
+Lostromo/gs "guest-started"
+tick 2 @ 39.4s
+PASS 3 oyuncu da oyunda → ["playing","playing","playing"]
+Kaptan/team {"html":"<div class=\"tm\"><span style=\"color:#6ad0f0\">●</span> Kötü <i><b style=\"width:100%\"></b></i></div><div class=\"tm\"><span style=\"color:#ff8a70\">●</span> Kaptan <i><b style=\"width:100%\"></b></i></div>","hasImg":false,"text":"● Kötü ● Kaptan "}
+PASS H02 HUD takım listesinde script/img etiketi yok → {"html":"<div class=\"tm\"><span style=\"color:#6ad0f0\">●</span> Kötü <i><b style=\"width:100%\"></b></i></div><div class=\"tm\"><span style=\"color:#ff8a70\">●</span> Kaptan <i><b style=\"width:100%\"></b></i></div>","hasImg":false,"text":"● Kötü ● Kaptan "}
+tick 1 @ 41.5s
+Tayfa/acts 1
+PASS H11 Ev sahibinin atış efekti konukta işlenir → 1
+[test] altın bütçesi @ 42.2s
+tick 2 @ 42.2s
+PASS H07 Altın paylaşım bütçesi: 30000 istenen, ≤20000 işlenir → {"delta":12000}
+[test] hasar sahteciliği @ 43.8s
+Kaptan/enemy "enohzatgi"
+tick 1 @ 43.8s
+tick 1 @ 44.5s
+Kaptan/hp-far {"hp":170,"max":170,"alive":true}
+PASS H07 Uzaktan sahte hasar ev sahibinde işlenmez → {"hp":170,"max":170,"alive":true}
+tick 1.5 @ 45.2s
+tick 1 @ 46.5s
+Kaptan/hp-near {"hp":10,"max":170,"rd":2}
+PASS H07 Yakından sahte 99999 hasar üst sınıra (≤160×1.25) kırpılır → {"hp":10,"max":170,"rd":2}
+[test] büyük mesaj @ 47.2s
+tick 2 @ 47.2s
+Kaptan/chats 1
+PASS H07/H22 200 KB sohbet düşürülür, normal sohbet işlenir → 1
+[test] kopma temizliği @ 53.6s
+Tayfa/g1-helm "aadd0402-1214-4c5b-9a72-a93e9bca9554"
+tick 1.5 @ 53.6s
+Lostromo/g2-lock-before "aadd0402-1214-4c5b-9a72-a93e9bca9554"
+Tayfa sekme kapandı
+tick 0.2 @ 56.0s
+tick 0.2 @ 57.1s
+tick 0.2 @ 58.2s
+tick 0.2 @ 59.3s
+tick 0.2 @ 60.4s
+tick 0.2 @ 61.5s
+tick 0.2 @ 62.6s
+tick 0.2 @ 63.8s
+tick 0.2 @ 64.9s
+tick 0.2 @ 66.0s
+tick 0.2 @ 67.1s
+tick 0.2 @ 68.2s
+tick 0.2 @ 69.3s
+tick 0.2 @ 70.4s
+tick 1 @ 70.5s
+PASS H13 Kopan konuğun dümen kilidi ev sahibinde ve diğer konukta kalkar → {"lockBefore":"aadd0402-1214-4c5b-9a72-a93e9bca9554","lockHost":null,"lockG2":null,"remotesHost":1,"waitedMs":14000}
+[test] 6a tamam
+checks: 10 fails: 0 pageErrors: 0 (275.3 s)
+SONUC: GECTI (çıkış 0) kontrol 10/10 | ev() istisnası 0, kapalı sayfa atlama 19, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 8 farklı/104

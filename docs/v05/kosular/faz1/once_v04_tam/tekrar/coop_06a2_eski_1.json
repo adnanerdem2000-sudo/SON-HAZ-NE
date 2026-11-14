@@ -1,0 +1,43 @@
+{
+ "scenario": "tests/scenarios/coop/06a2_mesaj_kopma.cjs",
+ "players": 3,
+ "checks": [
+  {
+   "label": "3 oyuncu da oyunda",
+   "ok": true,
+   "detail": [
+    "playing",
+    "playing",
+    "playing"
+   ]
+  },
+  {
+   "label": "H07/H22 200 KB sohbet düşürülür, normal sohbet işlenir",
+   "ok": true,
+   "detail": 1
+  },
+  {
+   "label": "H13 Kopan konuğun dümen kilidi ev sahibinde ve diğer konukta kalkar",
+   "ok": true,
+   "detail": {
+    "lockBefore": "0eaef38e-76ee-4622-bc2d-8e2fd07b09aa",
+    "lockHostBefore": "0eaef38e-76ee-4622-bc2d-8e2fd07b09aa",
+    "lockHost": null,
+    "lockG2": null,
+    "remotesHost": 1
+   }
+  }
+ ],
+ "errors": {
+  "Kaptan": [],
+  "Tayfa": [],
+  "Lostromo": []
+ },
+ "pageErrors": {
+  "Kaptan": [],
+  "Tayfa": [],
+  "Lostromo": []
+ },
+ "fails": 0,
+ "ms": 304407
+}

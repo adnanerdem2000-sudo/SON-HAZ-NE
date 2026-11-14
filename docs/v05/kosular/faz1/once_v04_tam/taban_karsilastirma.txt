@@ -1,0 +1,70 @@
+00_acilis                    taban 6/6  yeni 6/6  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0
+02_arazi_kurtarma            taban 7/7  yeni 7/7  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0
+02_arazi_yedek               taban 12/12  yeni 12/12  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0
+[ek] 02_arazi_yedek_badurl   taban 12/12  yeni 12/12  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/6
+[ek] 02_arazi_yedek_crash    taban 12/12  yeni 12/12  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0
+[ek] 02_arazi_yedek_noworker taban 12/12  yeni 12/12  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0
+02_tek_dosya                 taban 4/4  yeni 4/4  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0
+03_fizik_dt                  taban 0/0  yeni 0/0  OLCUM         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0
+03_fizik_duzeltmeler         taban 14/14  yeni 14/14  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0
+04_karakter                  taban 21/21  yeni 21/21  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0
+05_dusman_ai                 taban 18/18  yeni 18/18  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0
+06_arayuz_960                taban 4/4  yeni 4/4  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0
+07_dunya_kesif               taban 10/10  yeni 10/10  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0
+07_ekonomi                   taban 3/3  yeni 3/3  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0
+08_kalicilik                 taban 12/12  yeni 12/12  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0
+09_performans                taban 8/9  yeni 9/9  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0  [kararsız diye kayıtlı]
+    düzeldi (taban KALDI → yeni GEÇTİ): Ganimet kesesi, gemi ve bosslar (kraken, Taş Muhafız, Volkanik Dev) oluştur/kaldır döngülerinde geometri/doku büyümez (Aşama 9)
+11_arayuz_sizinti            taban 6/6  yeni 6/6  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0
+12_kayit_dongusu             taban 4/4  yeni 4/4  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0
+13_donma                     taban 9/9  yeni 9/9  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0
+14_deniz_ekipmani            taban 16/16  yeni 14/16  KALDI         çıkış 1  izinsiz k/a 0/0  izinli k/a 0/0
+    REGRESYON: G06 Ağ sürünün üstüne atılınca birkaç balık çıkar ("Ağ" kaydıyla çantaya), ağ toplanıp gizlenir
+    REGRESYON: L03 Kayıt/yüklemede zıpkın, ağ, maske, palet ve hava keseleri korunur
+    neden: başarısız kontrol ya da adım: 2
+15_iskele_kamera             taban 14/14  yeni 14/14  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0
+16_kosu_poz_ganimet          taban 23/23  yeni 23/23  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0
+17_kamera_kararma            taban 13/13  yeni 5/13  KALDI         çıkış 1  izinsiz k/a 0/0  izinli k/a 0/0
+    REGRESYON: K05 Güvertede alttan bakışta (−0,25) 3 noktada 16 açıda karanlık kare yok (önce kıç direkte en düşük 17, medyan 98)
+    REGRESYON: K06 İskelede gemi yanında 2 eğim × 24 açıda kamera gövdeye girmez, gövde görüşü kesmez
+    REGRESYON: K07 Mağara tünelinde (2 nokta + duvar dibi) ve odasında 3 eğim × 24 açıda kamera tünel kesitinin dışına çıkmaz, başa yapışmaz (medyan ≥ 0,9 m; duvara doğru açılarda duvar çarpıştırıcısı kamerayı zaten yaklaştırır)
+    REGRESYON: K08 Ormanda (2 eğim × 32 açı) ve palmiyelerin arasında (2 × 16) karanlık kare yok
+    REGRESYON: K09 Su altı geçişi histerezisli (−6 cm: açılmaz, −20 cm: açılır, −2 cm: kapanmaz, +5 cm: kapanır)
+    REGRESYON: K10 Tek bir NaN/Inf yazan yüzey parlamayla tüm ekrana yayılıp kareyi karartmaz (parlaklık temel değerin ≥ %80'i)
+    REGRESYON: K11 Sıfır normalli yüzey (yumuşak ve düz gölgeli) yarım kayan noktalı hedefte NaN/Inf piksel üretmez
+    REGRESYON: K12 Kamerayla oyuncu arasındaki bitki örtüsü görüş çizgisi çevresinde seyrelir (2,6 m uzaktaki siyah düzlem: ekran ortası silindir açıkken görünür, kapalıyken > %97 siyah)
+    neden: başarısız kontrol ya da adım: 16; sayfa hatası (pageerror): 1; adım istisnası (evalErrors): 8
+coop_06a                     taban 10/10  yeni 10/10  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0  kapaliAtlama 19 evalErr 0
+coop_06a2                    taban 3/3  yeni 0/3  KALDI         çıkış 1  izinsiz k/a 0/0  izinli k/a 0/0  kapaliAtlama 5 evalErr 0
+    REGRESYON: 3 oyuncu da oyunda
+    REGRESYON: H07/H22 200 KB sohbet düşürülür, normal sohbet işlenir
+    REGRESYON: H13 Kopan konuğun dümen kilidi ev sahibinde ve diğer konukta kalkar
+    neden: başarısız kontrol ya da ev() istisnası: 3
+coop_06b                     taban 18/18  yeni 18/18  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0  kapaliAtlama 0 evalErr 0
+coop_06c                     taban 2/7  yeni 7/7  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0  kapaliAtlama 18 evalErr 0  [kararsız diye kayıtlı]
+    düzeldi (taban KALDI → yeni GEÇTİ): D4-02 4 oyuncu da oyunda
+    düzeldi (taban KALDI → yeni GEÇTİ): D4-03 Her oyuncu 3 uzak oyuncu görür
+    düzeldi (taban KALDI → yeni GEÇTİ): D4-04 Sohbet diğer 3 oyuncuya ulaşır
+    düzeldi (taban KALDI → yeni GEÇTİ): D4-05 Konuğun hareketi diğer konukta görünür
+    düzeldi (taban KALDI → yeni GEÇTİ): D4-06 Menüye dönen konuk aynı adla geri gelir; roster 4 kayıt, çift ad yok, 3 uzak oyuncu görür
+coop_06d                     taban 9/9  yeni 9/9  GECTI         çıkış 0  izinsiz k/a 0/0  izinli k/a 0/0  kapaliAtlama 0 evalErr 0
+
+ÖZET (resmî taban kümesi, 25 koşu): tabanda tümüyle geçen 23 koşunun 20'i yeni koşuda da tümüyle geçti; tabanda geçen 246 kontrolün 233'i geçti.
+EK koşular (işçisiz kipler vb.): tümüyle geçen 3 koşunun 3'i; geçen 36 kontrolün 36'i. Toplam regresyon 13, kayıp 0.
+SORUNLAR:
+  - 14_deniz_ekipmani: REGRESYON — G06 Ağ sürünün üstüne atılınca birkaç balık çıkar ("Ağ" kaydıyla çantaya), ağ toplanıp gizlenir (taban true → yeni false)
+  - 14_deniz_ekipmani: REGRESYON — L03 Kayıt/yüklemede zıpkın, ağ, maske, palet ve hava keseleri korunur (taban true → yeni false)
+  - 14_deniz_ekipmani: tabanda tümüyle geçen koşu yeni koşuda KALDI (başarısız kontrol ya da adım: 2)
+  - 17_kamera_kararma: REGRESYON — K05 Güvertede alttan bakışta (−0,25) 3 noktada 16 açıda karanlık kare yok (önce kıç direkte en düşük 17, medyan 98) (taban true → yeni "page.evaluate: Target crashed ")
+  - 17_kamera_kararma: REGRESYON — K06 İskelede gemi yanında 2 eğim × 24 açıda kamera gövdeye girmez, gövde görüşü kesmez (taban true → yeni "page.evaluate: Target crashed ")
+  - 17_kamera_kararma: REGRESYON — K07 Mağara tünelinde (2 nokta + duvar dibi) ve odasında 3 eğim × 24 açıda kamera tünel kesitinin dışına çıkmaz, başa yapışmaz (medyan ≥ 0,9 m; duvara doğru açılarda duvar çarpıştırıcısı kamerayı zaten yaklaştırır) (taban true → yeni "page.evaluate: Target crashed ")
+  - 17_kamera_kararma: REGRESYON — K08 Ormanda (2 eğim × 32 açı) ve palmiyelerin arasında (2 × 16) karanlık kare yok (taban true → yeni "page.evaluate: Target crashed ")
+  - 17_kamera_kararma: REGRESYON — K09 Su altı geçişi histerezisli (−6 cm: açılmaz, −20 cm: açılır, −2 cm: kapanmaz, +5 cm: kapanır) (taban true → yeni "page.evaluate: Target crashed ")
+  - 17_kamera_kararma: REGRESYON — K10 Tek bir NaN/Inf yazan yüzey parlamayla tüm ekrana yayılıp kareyi karartmaz (parlaklık temel değerin ≥ %80'i) (taban true → yeni "page.evaluate: Target crashed ")
+  - 17_kamera_kararma: REGRESYON — K11 Sıfır normalli yüzey (yumuşak ve düz gölgeli) yarım kayan noktalı hedefte NaN/Inf piksel üretmez (taban true → yeni "page.evaluate: Target crashed ")
+  - 17_kamera_kararma: REGRESYON — K12 Kamerayla oyuncu arasındaki bitki örtüsü görüş çizgisi çevresinde seyrelir (2,6 m uzaktaki siyah düzlem: ekran ortası silindir açıkken görünür, kapalıyken > %97 siyah) (taban true → yeni "page.evaluate: Target crashed ")
+  - 17_kamera_kararma: tabanda tümüyle geçen koşu yeni koşuda KALDI (başarısız kontrol ya da adım: 16; sayfa hatası (pageerror): 1; adım istisnası (evalErrors): 8)
+  - coop_06a2: REGRESYON — 3 oyuncu da oyunda (taban ["playing","playing","playing"] → yeni ["playing","menu","playing"])
+  - coop_06a2: REGRESYON — H07/H22 200 KB sohbet düşürülür, normal sohbet işlenir (taban 1 → yeni 0)
+  - coop_06a2: REGRESYON — H13 Kopan konuğun dümen kilidi ev sahibinde ve diğer konukta kalkar (taban {"lockBefore":"4650731b-e5bb-4ea5-b78e-a7b34b6da1b1","lockHostBefore":"4650731b- → yeni {"lockBefore":null,"lockHostBefore":null,"lockHost":null,"lockG2":null,"remotesHost":1})
+  - coop_06a2: tabanda tümüyle geçen koşu yeni koşuda KALDI (başarısız kontrol ya da ev() istisnası: 3)

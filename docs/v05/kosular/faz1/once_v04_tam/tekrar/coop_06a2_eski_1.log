@@ -1,0 +1,51 @@
+Kaptan/host {"code":"76WHTK"}
+Tayfa/join {"room":"Güvenlik Odası 2"}
+Lostromo/join {"room":"Güvenlik Odası 2"}
+Kaptan/hs "host-started"
+Tayfa/gs "guest-started"
+Lostromo/gs "guest-started"
+tick 1 @ 45.2s
+PASS 3 oyuncu da oyunda → ["playing","playing","playing"]
+[test] büyük mesaj @ 46.6s
+tick 1.5 @ 46.6s
+Kaptan/chats 1
+PASS H07/H22 200 KB sohbet düşürülür, normal sohbet işlenir → 1
+[test] kopma temizliği @ 48.5s
+Tayfa/g1-helm "0eaef38e-76ee-4622-bc2d-8e2fd07b09aa"
+tick 1.5 @ 48.5s
+Lostromo/g2-lock-before "0eaef38e-76ee-4622-bc2d-8e2fd07b09aa"
+Kaptan/host-lock-before "0eaef38e-76ee-4622-bc2d-8e2fd07b09aa"
+tick 0.2 @ 53.2s
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+tick 0.2 @ 54.4s
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+tick 0.2 @ 55.5s
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+tick 0.2 @ 56.6s
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+tick 0.2 @ 57.7s
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+tick 0.2 @ 58.9s
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+tick 0.2 @ 60.0s
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+tick 0.2 @ 61.1s
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+tick 0.2 @ 62.2s
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+tick 0.2 @ 63.3s
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+tick 0.2 @ 64.5s
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+tick 0.2 @ 65.6s
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+[test] kopma algılandı @ 65.7s (bekleme 12000 ms)
+tick 1 @ 65.7s
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+PASS H13 Kopan konuğun dümen kilidi ev sahibinde ve diğer konukta kalkar → {"lockBefore":"0eaef38e-76ee-4622-bc2d-8e2fd07b09aa","lockHostBefore":"0eaef38e-76ee-4622-bc2d-8e2fd07b09aa","lockHost":null,"lockG2":null,"remotesHost":1}
+[test] 6a-2 tamam @ 66.6s
+checks: 3 fails: 0 pageErrors: 0 (304.4 s)

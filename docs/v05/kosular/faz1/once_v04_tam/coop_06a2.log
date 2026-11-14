@@ -1,0 +1,26 @@
+Kaptan/host {"code":"YQCDTC"}
+Tayfa/join {"room":"Güvenlik Odası 2"}
+Lostromo/join {"room":"Güvenlik Odası 2"}
+Kaptan/hs "host-started"
+Tayfa/gs "guest-started"
+Lostromo/gs "guest-started"
+tick 1 @ 35.8s
+FAIL 3 oyuncu da oyunda → ["playing","menu","playing"]
+[test] büyük mesaj @ 40.4s
+tick 1.5 @ 40.4s
+Kaptan/chats 0
+FAIL H07/H22 200 KB sohbet düşürülür, normal sohbet işlenir → 0
+[test] kopma temizliği @ 41.4s
+Tayfa/g1-helm "local"
+tick 1.5 @ 41.4s
+Lostromo/g2-lock-before null
+Kaptan/host-lock-before null
+Tayfa sekme kapandı
+[test] kopma algılandı @ 46.5s (bekleme 0 ms)
+tick 1 @ 46.5s
+GORUNTU /home/user/SON-HAZ-NE-kosu/tests/out/goruntu/06a2_mesaj_kopma_2026-11-14T10-16-24-055Z_26529/ilk_kalan_Kaptan.png
+GORUNTU /home/user/SON-HAZ-NE-kosu/tests/out/goruntu/06a2_mesaj_kopma_2026-11-14T10-16-24-055Z_26529/ilk_kalan_Lostromo.png
+FAIL H13 Kopan konuğun dümen kilidi ev sahibinde ve diğer konukta kalkar → {"lockBefore":null,"lockHostBefore":null,"lockHost":null,"lockG2":null,"remotesHost":1}
+[test] 6a-2 tamam @ 47.1s
+checks: 3 fails: 3 pageErrors: 0 (255.1 s)
+SONUC: KALDI (çıkış 1) kontrol 0/3 | ev() istisnası 0, kapalı sayfa atlama 5, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 6 farklı/102 | neden: başarısız kontrol ya da ev() istisnası: 3

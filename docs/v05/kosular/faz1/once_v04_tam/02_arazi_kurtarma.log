@@ -1,0 +1,16 @@
+ready in 6.7 s
+R: "ok"
+PASS Oyun başladı → "playing"
+PASS İşçiler çalışıyor → 3
+R: {"pendingAtKill":158,"inflightAtKill":6,"workers":0,"fallback":true,"failures":4}
+PASS Tüm işçiler düşünce yedek kipi açıldı → true
+PASS İşçisiz prepare() karo ağlarını üretti → 19
+R: {"ms":1060,"stats":{"tiles":158,"meshes":39,"hires":1,"tris":55872,"queue":120,"jobs":122,"workers":0,"fallback":true,"failures":4,"mode":""}}
+PASS Öksüz iş yok: her bekleyen iş ya kuyrukta ya bir şeritte ya da bir işçide (askıda söz yok) → 0
+R: {"orphans":[],"inflightLeftInQueue":6}
+R: "ok"
+PASS Kuyruk ana iş parçacığında ilerliyor (12 sn) → true
+R: {"jobsBefore":117,"jobsAfter12s":111}
+PASS Oyun döngüsü 4 sn hatasız sürdü → true
+errors: 0 pageErrors: 0 fails: 0 (54.0 s)
+SONUC: GECTI (çıkış 0) kontrol 7/7, onay 7 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 6 farklı/38
