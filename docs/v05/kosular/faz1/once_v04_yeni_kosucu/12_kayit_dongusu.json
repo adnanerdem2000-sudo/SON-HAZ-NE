@@ -1,0 +1,346 @@
+{
+ "scenario": "tests/scenarios/12_kayit_dongusu.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": "ok",
+   "ms": 35
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   },
+   "ms": 14947
+  },
+  {
+   "n": 3,
+   "label": null,
+   "expect": {
+    "label": "K01 Üç ardışık kayıt/yükleme döngüsünde oyuncu, gemi, ada, tehlike ve düşman grubu durumu korunur",
+    "ok": true,
+    "value": true
+   },
+   "ms": 8187
+  },
+  {
+   "n": 4,
+   "label": null,
+   "result": [
+    {
+     "k": 1,
+     "ok": true,
+     "state": "playing",
+     "hp": 65,
+     "hpOk": true,
+     "sword": true,
+     "bait": 11,
+     "shipHp": 51,
+     "shipOk": true,
+     "pruva": 41,
+     "pruvaOk": true,
+     "opened": 1,
+     "openedOk": true,
+     "gone": 1,
+     "campCd": 100.00000000000006,
+     "campOk": true,
+     "pos": [
+      -57,
+      120
+     ],
+     "posOk": true,
+     "allOk": true
+    },
+    {
+     "k": 2,
+     "ok": true,
+     "state": "playing",
+     "hp": 70,
+     "hpOk": true,
+     "sword": true,
+     "bait": 13,
+     "shipHp": 52,
+     "shipOk": true,
+     "pruva": 42,
+     "pruvaOk": true,
+     "opened": 2,
+     "openedOk": true,
+     "gone": 2,
+     "campCd": 101.00000000000006,
+     "campOk": true,
+     "pos": [
+      -54,
+      120
+     ],
+     "posOk": true,
+     "sizePrev": 16453,
+     "size": 16495,
+     "allOk": true
+    },
+    {
+     "k": 3,
+     "ok": true,
+     "state": "playing",
+     "hp": 75,
+     "hpOk": true,
+     "sword": true,
+     "bait": 16,
+     "shipHp": 53,
+     "shipOk": true,
+     "pruva": 43,
+     "pruvaOk": true,
+     "opened": 3,
+     "openedOk": true,
+     "gone": 2,
+     "campCd": 102.00000000000006,
+     "campOk": true,
+     "pos": [
+      -51,
+      120
+     ],
+     "posOk": true,
+     "sizePrev": 16495,
+     "size": 16606,
+     "allOk": true
+    }
+   ],
+   "ms": 1253
+  },
+  {
+   "n": 5,
+   "label": null,
+   "expect": {
+    "label": "K02 Kayıt boyutu döngüler arasında kontrolsüz büyümez (3. ≤ 1,5 × 1.)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 854
+  },
+  {
+   "n": 6,
+   "label": null,
+   "result": [
+    16453,
+    16495,
+    16606
+   ],
+   "ms": 206
+  },
+  {
+   "n": 7,
+   "label": null,
+   "expect": {
+    "label": "K03 Üçüncü yüklemeden sonra oyun açık, konum/sağlık geçerli",
+    "ok": true,
+    "value": true
+   },
+   "ms": 122
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 6279,
+ "ms": 35361,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/scenarios/12_kayit_dongusu.js",
+ "meta": {},
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8080/index.html?test=1",
+  "verilenUrl": "http://localhost:8080/index.html",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T07:29:36.548Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs /home/user/SON-HAZ-NE-w2/tests/scenarios/12_kayit_dongusu.js --url http://localhost:8080/index.html --size 640x360 --timeout 1800 --report docs/v05/kosular/faz1/once_v04_yeni_kosucu/12_kayit_dongusu.json",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://localhost:8080 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8080"
+  ],
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd-kirli",
+  "senaryoSha256": "858f00286a33408b3c61450a9e1f98105b6132c0104aa1537f7b9c12813be186",
+  "adim": null,
+  "url": "http://localhost:8080/index.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 2,
+   "id": "Oyun başladı",
+   "etiket": "Oyun başladı",
+   "ok": true,
+   "deger": "playing",
+   "beklenen": {
+    "eq": "playing"
+   },
+   "sure_ms": 9568,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 3,
+   "id": "K01",
+   "etiket": "K01 Üç ardışık kayıt/yükleme döngüsünde oyuncu, gemi, ada, tehlike ve düşman grubu durumu korunur",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 5672,
+   "benzetim": {
+    "sim": 6,
+    "adim": 90,
+    "press": 0,
+    "tap": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 5,
+   "id": "K02",
+   "etiket": "K02 Kayıt boyutu döngüler arasında kontrolsüz büyümez (3. ≤ 1,5 × 1.)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 600,
+   "benzetim": {
+    "sim": 6,
+    "adim": 90,
+    "press": 0,
+    "tap": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 7,
+   "id": "K03",
+   "etiket": "K03 Üçüncü yüklemeden sonra oyun açık, konum/sağlık geçerli",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 97,
+   "benzetim": {
+    "sim": 6,
+    "adim": 90,
+    "press": 0,
+    "tap": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 33
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 2,
+  "toplam": 34,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [],
+ "agIstekSayisi": 216,
+ "sonuc": {
+  "durum": "GECTI",
+  "cikisKodu": 0,
+  "neden": [],
+  "onaySayisi": 4,
+  "kontrolSayisi": 4,
+  "gecen": 4,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": "tarayici+benzetim",
+  "turSayim": {
+   "tarayici": 1,
+   "tarayici+benzetim": 3
+  }
+ },
+ "sure": {
+  "hazirMs": 6279,
+  "toplamMs": 35361
+ }
+}

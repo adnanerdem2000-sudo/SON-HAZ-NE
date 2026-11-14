@@ -1,0 +1,15 @@
+$ node /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_onceki/run.cjs tests/fixtures/kosucu/z_tur.js --size 320x200 --timeout 90 --url http://127.0.0.1:32827/z_tur.html --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/z.json
+ready in 0.2 s
+PASS Z01 Oyunun kendi rAF döngüsü game.update çağırdı → true
+R: "üç doğrudan adım"
+PASS Z02 Doğrudan game.update ile ileri sarıldı → true
+GOTO http://127.0.0.1:32827/z_tur.html?test=1
+R: 30
+PASS Z03 DK.sim bir kez çağrıldı → 1
+R: "yeniden yükleme planlandı"
+R: 60
+PASS Z04 Sayfanın kendi yeniden yüklemesinden sonra DK.sim → 1
+errors: 0 pageErrors: 0 fails: 0 (2.1 s)
+SONUC: GECTI (çıkış 0) kontrol 4/4, onay 4 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0
+
+[çıkış 0]

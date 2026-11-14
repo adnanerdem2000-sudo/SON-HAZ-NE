@@ -1,0 +1,74 @@
+Kaptan/host {"code":"WKATLY"}
+Tayfa/join {"room":"Güvenlik Odası"}
+Lostromo/join {"room":"Güvenlik Odası"}
+Kaptan/roster [{"id":"HOST","name":"Kaptan"},{"id":"guest","name":"Kötü"},{"id":"guest","name":"Kaptan"}]
+PASS H02 Konuk adı HTML'den arındırılır (roster) → [{"id":"HOST","name":"Kaptan"},{"id":"guest","name":"Kötü"},{"id":"guest","name":"Kaptan"}]
+PASS H04 Ev sahibiyle aynı adlı konuk ev sahibini listeden düşürmez → [{"id":"HOST","name":"Kaptan"},{"id":"guest","name":"Kötü"},{"id":"guest","name":"Kaptan"}]
+Kaptan/hs "host-started"
+Tayfa/gs "guest-started"
+Lostromo/gs "guest-started"
+tick 2 @ 51.6s
+PASS 3 oyuncu da oyunda → ["playing","playing","playing"]
+Kaptan/team {"html":"<div class=\"tm\"><span style=\"color:#6ad0f0\">●</span> Kötü <i><b style=\"width:100%\"></b></i></div><div class=\"tm\"><span style=\"color:#ff8a70\">●</span> Kaptan <i><b style=\"width:100%\"></b></i></div>","hasImg":false,"text":"● Kötü ● Kaptan "}
+PASS H02 HUD takım listesinde script/img etiketi yok → {"html":"<div class=\"tm\"><span style=\"color:#6ad0f0\">●</span> Kötü <i><b style=\"width:100%\"></b></i></div><div class=\"tm\"><span style=\"color:#ff8a70\">●</span> Kaptan <i><b style=\"width:100%\"></b></i></div>","hasImg":false,"text":"● Kötü ● Kaptan "}
+tick 1 @ 53.6s
+Tayfa/acts 1
+PASS H11 Ev sahibinin atış efekti konukta işlenir → 1
+[test] altın bütçesi @ 54.3s
+tick 2 @ 54.3s
+PASS H07 Altın paylaşım bütçesi: 30000 istenen, ≤20000 işlenir → {"delta":12000}
+[test] hasar sahteciliği @ 55.7s
+Kaptan/enemy "enpwt8vgf"
+tick 1 @ 55.7s
+tick 1 @ 56.4s
+Kaptan/hp-far {"hp":170,"max":170,"alive":true}
+PASS H07 Uzaktan sahte hasar ev sahibinde işlenmez → {"hp":170,"max":170,"alive":true}
+tick 1.5 @ 57.1s
+tick 1 @ 58.5s
+Kaptan/hp-near {"hp":10,"max":170,"rd":3}
+PASS H07 Yakından sahte 99999 hasar üst sınıra (≤160×1.25) kırpılır → {"hp":10,"max":170,"rd":3}
+[test] büyük mesaj @ 59.2s
+tick 2 @ 59.2s
+Kaptan/chats 1
+PASS H07/H22 200 KB sohbet düşürülür, normal sohbet işlenir → 1
+[test] kopma temizliği @ 67.5s
+Tayfa/g1-helm "93125974-c14d-4c53-8e2f-a451889a30e8"
+tick 1.5 @ 67.5s
+Lostromo/g2-lock-before "93125974-c14d-4c53-8e2f-a451889a30e8"
+tick 0.2 @ 70.1s
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+tick 0.2 @ 71.2s
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+tick 0.2 @ 72.2s
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+tick 0.2 @ 73.3s
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+tick 0.2 @ 74.4s
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+tick 0.2 @ 75.5s
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+tick 0.2 @ 76.6s
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+tick 0.2 @ 77.7s
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+tick 0.2 @ 78.8s
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+tick 0.2 @ 79.9s
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+tick 0.2 @ 81.0s
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+tick 0.2 @ 82.1s
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+tick 0.2 @ 83.2s
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+tick 0.2 @ 84.3s
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+tick 1 @ 84.4s
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+PASS H13 Kopan konuğun dümen kilidi ev sahibinde ve diğer konukta kalkar → {"lockBefore":"93125974-c14d-4c53-8e2f-a451889a30e8","lockHost":null,"lockG2":null,"remotesHost":1,"waitedMs":14000}
+[test] 6a tamam
+checks: 10 fails: 0 pageErrors: 0 (323.4 s)

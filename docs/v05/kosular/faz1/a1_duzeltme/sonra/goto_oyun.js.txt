@@ -1,0 +1,10 @@
+// Gerçek oyunda goto + beforeunload: oyun sürerken (G.state 'playing') kullanıcı etkileşiminden sonra sayfadan ayrılmak
+// main.js'teki beforeunload onayını açar; goto adımı onu kabul etmeli ve yeni sayfa menüde açılmalı.
+[
+ {js: `DK.G.noAutoPause=true; DK.handlers.startGame({kind:'solo', slot:2, data:null}); 'ok'`},
+ {wait: 4000, expect: {js: `DK.G.state`, eq: 'playing', label: 'G01 Oyun başladı'}},
+ {click: [320, 180]},
+ {expect: {js: `navigator.userActivation ? navigator.userActivation.hasBeenActive : null`, eq: true, label: 'G02 Sayfada kullanıcı etkileşimi var'}},
+ {goto: 'index.html'},
+ {expect: {js: `DK.G.state`, eq: 'menu', label: 'G03 goto sonrası yeni sayfa menüde'}},
+]

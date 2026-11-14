@@ -1,0 +1,12 @@
+ready in 8.2 s
+PASS Sayfa hazır → true
+R: "online"
+R: {"found":true,"text":"Oda kur","buttons":11}
+PASS H05 960×540: Oda Kur panelinde "Odayı oluştur" düğmesi görünür alanda → true
+R: {"btn":{"x":689,"y":467,"w":141,"h":43,"bottom":510},"vh":540,"vw":960}
+R: "ok"
+PASS Oyun başladı → "playing"
+R: "ok"
+PASS H14 960×540: kalıcı HUD panelleri üst üste binmiyor (geçici bildirim↔sohbet/görev çakışması hariç) → true
+R: {"rects":{"ship-panel":[648,104,938,308],"quest-tracker":[22,250,342,320],"chat-box":[22,196,402,240],"time-panel":[650,12,942,99],"hotbar":[259,462,701,520],"notify-stack":[22,112,368,188],"minimap":[762,342,938,518]},"over":[],"vh":540,"vw":960}
+errors: 0 pageErrors: 0 fails: 0 (65.6 s)

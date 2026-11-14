@@ -1,0 +1,537 @@
+{
+ "scenario": "tests/scenarios/02_arazi_yedek.js",
+ "url": "http://localhost:8080/index.html?terrain=crash",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "Sayfa hazır (yükleme ekranı aşıldı)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 19
+  },
+  {
+   "n": 2,
+   "label": null,
+   "result": {
+    "mode": "crash",
+    "workers": 0,
+    "fallback": true,
+    "failures": [
+     "işçi 0: hata: Uncaught Error: Test: arazi işçisi çökmesi",
+     "işçi 1: hata: Uncaught Error: Test: arazi işçisi çökmesi",
+     "işçi 2: hata: Uncaught Error: Test: arazi işçisi çökmesi",
+     "hata: Uncaught Error: Test: arazi işçisi çökmesi"
+    ],
+    "stats": {
+     "tiles": 125,
+     "meshes": 125,
+     "hires": 15,
+     "tris": 311168,
+     "queue": 0,
+     "jobs": 0,
+     "workers": 0,
+     "fallback": true,
+     "failures": 4,
+     "mode": "crash"
+    }
+   },
+   "ms": 6
+  },
+  {
+   "n": 3,
+   "label": null,
+   "expect": {
+    "label": "Menü sahnesinde karo ağları üretildi",
+    "ok": true,
+    "value": 125
+   },
+   "ms": 3
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "Okyanus derinlik penceresi hazır",
+    "ok": true,
+    "value": true
+   },
+   "ms": 4
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": "ok",
+   "ms": 32
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   },
+   "ms": 31998
+  },
+  {
+   "n": 7,
+   "label": null,
+   "result": {
+    "startMs": 333,
+    "pendingJobs": 24,
+    "queue": 22
+   },
+   "ms": 9
+  },
+  {
+   "n": 8,
+   "label": null,
+   "expect": {
+    "label": "Oyuncu zemine basıyor",
+    "ok": true,
+    "value": true
+   },
+   "ms": 250
+  },
+  {
+   "n": 9,
+   "label": null,
+   "expect": {
+    "label": "Yüksek çözünürlüklü karolar (yükseklik ızgarası + ağ)",
+    "ok": true,
+    "value": 22
+   },
+   "ms": 27
+  },
+  {
+   "n": 10,
+   "label": null,
+   "expect": {
+    "label": "Uzak bölge prepare() sonuçlanıyor (askıda kalmıyor)",
+    "ok": false,
+    "error": "page.evaluate: Target page, context or browser has been closed"
+   },
+   "ms": 120479
+  },
+  {
+   "n": 11,
+   "label": null,
+   "expect": {
+    "label": "Derinlik penceresi yeni bölgeye taşındı",
+    "ok": false,
+    "error": "page.evaluate: Target page, context or browser has been closed"
+   },
+   "ms": 2
+  },
+  {
+   "n": 12,
+   "label": null,
+   "error": "page.evaluate: Target page, context or browser has been closed",
+   "ms": 1
+  },
+  {
+   "n": 13,
+   "label": null,
+   "expect": {
+    "label": "Tuz Pazarı çevresinde karo ağları var",
+    "ok": false,
+    "error": "page.evaluate: Target page, context or browser has been closed"
+   },
+   "ms": 1
+  },
+  {
+   "n": 14,
+   "label": null,
+   "expect": {
+    "label": "Harita ızgarası isteği sonuçlanıyor",
+    "ok": false,
+    "error": "page.evaluate: Target page, context or browser has been closed"
+   },
+   "ms": 0
+  },
+  {
+   "n": 15,
+   "label": null,
+   "expect": {
+    "label": "Uzak adada yürüme (zemin sorgusu tutarlı)",
+    "ok": false,
+    "error": "page.evaluate: Target page, context or browser has been closed"
+   },
+   "ms": 1
+  },
+  {
+   "n": 16,
+   "label": null,
+   "error": "page.evaluate: Target page, context or browser has been closed",
+   "ms": 0
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 7,
+ "evalErrors": 2,
+ "readyMs": 5592,
+ "harnessError": "page.waitForTimeout: Target page, context or browser has been closed",
+ "ms": 162505,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/scenarios/02_arazi_yedek.js",
+ "meta": {},
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8080/index.html?terrain=crash&test=1",
+  "verilenUrl": "http://localhost:8080/index.html?terrain=crash",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T07:36:12.156Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs /home/user/SON-HAZ-NE-w2/tests/scenarios/02_arazi_yedek.js --url 'http://localhost:8080/index.html?terrain=crash' --size 640x360 --timeout 1800 --report docs/v05/kosular/faz1/once_v04_yeni_kosucu/02_arazi_yedek_crash.json",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://localhost:8080 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8080"
+  ],
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd-kirli",
+  "senaryoSha256": "59be1a7b183f8ae9babfffc62049f473593f79cebec8750a91a394afc48db538",
+  "adim": {
+   "n": 10,
+   "js": "(async()=>{ const t0=performance.now(); await DK.terrain.prepare(1900, 950, {radius: 300}); const ms=performance.now()-t0; window._prepMs=Math.round(ms); return true; })()"
+  },
+  "url": "http://localhost:8080/index.html?terrain=crash&test=1"
+ },
+ "kontroller": [
+  {
+   "n": 1,
+   "id": "Sayfa hazır (yükleme ekranı aşıldı)",
+   "etiket": "Sayfa hazır (yükleme ekranı aşıldı)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 17,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 3,
+   "id": "Menü sahnesinde karo ağları üretildi",
+   "etiket": "Menü sahnesinde karo ağları üretildi",
+   "ok": true,
+   "deger": 125,
+   "beklenen": {
+    "gte": 20
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 4,
+   "id": "Okyanus derinlik penceresi hazır",
+   "etiket": "Okyanus derinlik penceresi hazır",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 6,
+   "id": "Oyun başladı",
+   "etiket": "Oyun başladı",
+   "ok": true,
+   "deger": "playing",
+   "beklenen": {
+    "eq": "playing"
+   },
+   "sure_ms": 26516,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 8,
+   "id": "Oyuncu zemine basıyor",
+   "etiket": "Oyuncu zemine basıyor",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 238,
+   "benzetim": {
+    "sim": 1,
+    "adim": 90,
+    "press": 0,
+    "tap": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 9,
+   "id": "Yüksek çözünürlüklü karolar (yükseklik ızgarası ",
+   "etiket": "Yüksek çözünürlüklü karolar (yükseklik ızgarası + ağ)",
+   "ok": true,
+   "deger": 22,
+   "beklenen": {
+    "gte": 4
+   },
+   "sure_ms": 13,
+   "benzetim": {
+    "sim": 1,
+    "adim": 90,
+    "press": 0,
+    "tap": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 10,
+   "id": "Uzak bölge prepare() sonuçlanıyor (askıda kalmıy",
+   "etiket": "Uzak bölge prepare() sonuçlanıyor (askıda kalmıyor)",
+   "ok": false,
+   "deger": null,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 120476,
+   "benzetim": null,
+   "tur": null,
+   "hata": "istisna: page.evaluate: Target page, context or browser has been closed",
+   "goruntu": null,
+   "turNot": "ölçülemedi (sayfa yanıt vermedi)"
+  },
+  {
+   "n": 11,
+   "id": "Derinlik penceresi yeni bölgeye taşındı",
+   "etiket": "Derinlik penceresi yeni bölgeye taşındı",
+   "ok": false,
+   "deger": null,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 0,
+   "benzetim": null,
+   "tur": null,
+   "hata": "istisna: page.evaluate: Target page, context or browser has been closed",
+   "goruntu": null,
+   "turNot": "ölçülemedi (sayfa yanıt vermedi)"
+  },
+  {
+   "n": 13,
+   "id": "Tuz Pazarı çevresinde karo ağları var",
+   "etiket": "Tuz Pazarı çevresinde karo ağları var",
+   "ok": false,
+   "deger": null,
+   "beklenen": {
+    "gte": 6
+   },
+   "sure_ms": 1,
+   "benzetim": null,
+   "tur": null,
+   "hata": "istisna: page.evaluate: Target page, context or browser has been closed",
+   "goruntu": null,
+   "turNot": "ölçülemedi (sayfa yanıt vermedi)"
+  },
+  {
+   "n": 14,
+   "id": "Harita ızgarası isteği sonuçlanıyor",
+   "etiket": "Harita ızgarası isteği sonuçlanıyor",
+   "ok": false,
+   "deger": null,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 0,
+   "benzetim": null,
+   "tur": null,
+   "hata": "istisna: page.evaluate: Target page, context or browser has been closed",
+   "goruntu": null,
+   "turNot": "ölçülemedi (sayfa yanıt vermedi)"
+  },
+  {
+   "n": 15,
+   "id": "Uzak adada yürüme (zemin sorgusu tutarlı)",
+   "etiket": "Uzak adada yürüme (zemin sorgusu tutarlı)",
+   "ok": false,
+   "deger": null,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 0,
+   "benzetim": null,
+   "tur": null,
+   "hata": "istisna: page.evaluate: Target page, context or browser has been closed",
+   "goruntu": null,
+   "turNot": "ölçülemedi (sayfa yanıt vermedi)"
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [
+   {
+    "n": 12,
+    "tur": "js",
+    "hata": "page.evaluate: Target page, context or browser has been closed"
+   },
+   {
+    "n": 16,
+    "tur": "js",
+    "hata": "page.evaluate: Target page, context or browser has been closed"
+   }
+  ],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "Arazi işçisi 0 devre dışı (hata: Uncaught Error: Test: arazi işçisi çökmesi); 2 iş yeniden kuyruğa alınıyor",
+   "url": "http://localhost:8080/js/world/terrain.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "Arazi işçisi 1 devre dışı (hata: Uncaught Error: Test: arazi işçisi çökmesi); 2 iş yeniden kuyruğa alınıyor",
+   "url": "http://localhost:8080/js/world/terrain.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "Arazi işçisi 2 devre dışı (hata: Uncaught Error: Test: arazi işçisi çökmesi); 2 iş yeniden kuyruğa alınıyor",
+   "url": "http://localhost:8080/js/world/terrain.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "Arazi üretimi ana iş parçacığına alındı (hata: Uncaught Error: Test: arazi işçisi çökmesi)",
+   "url": "http://localhost:8080/js/world/terrain.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 33
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 6,
+  "toplam": 38,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [],
+ "agIstekSayisi": 216,
+ "sonuc": {
+  "durum": "KOSUCU_HATASI",
+  "cikisKodu": 1,
+  "neden": [
+   "başarısız kontrol ya da adım: 7",
+   "adım istisnası (evalErrors): 2",
+   "koşucu hatası: page.waitForTimeout: Target page, context or browser has been closed"
+  ],
+  "onaySayisi": 12,
+  "kontrolSayisi": 11,
+  "gecen": 6,
+  "kalan": 5,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": "tarayici+benzetim",
+  "turSayim": {
+   "tarayici": 4,
+   "tarayici+benzetim": 2,
+   "null": 5
+  }
+ },
+ "sure": {
+  "hazirMs": 5592,
+  "toplamMs": 162505
+ }
+}

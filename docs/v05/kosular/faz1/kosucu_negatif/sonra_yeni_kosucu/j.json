@@ -1,0 +1,143 @@
+{
+ "scenario": "tests/fixtures/kosucu/i_baslatmasiz.js",
+ "url": "http://127.0.0.1:35867/depolama.html",
+ "size": [
+  320,
+  200
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "H01 Sayfa yüklenirken localStorage SecurityError attı",
+    "ok": true,
+    "value": "SecurityError"
+   },
+   "ms": 4
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 259,
+ "ms": 269,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/fixtures/kosucu/i_baslatmasiz.js",
+ "meta": {},
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://127.0.0.1:35867/depolama.html?test=1",
+  "verilenUrl": "http://127.0.0.1:35867/depolama.html",
+  "gorunum": [
+   320,
+   200
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   320,
+   200
+  ],
+  "ci": false,
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T07:28:13.850Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs /home/user/SON-HAZ-NE-w2/tests/fixtures/kosucu/i_baslatmasiz.js --size 320x200 --timeout 90 --url http://127.0.0.1:35867/depolama.html --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/sonra_yeni_kosucu/j.json --baslatma tests/fixtures/kosucu/depolama_engelle.js",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://127.0.0.1:35867 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 35867"
+  ],
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd-kirli",
+  "senaryoSha256": "4ca90fa72c7a0e9c5b536c6e6934f9a2c81b45f0a139301fef5fb711248ade02",
+  "adim": null,
+  "url": "http://127.0.0.1:35867/depolama.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 1,
+   "id": "H01",
+   "etiket": "H01 Sayfa yüklenirken localStorage SecurityError attı",
+   "ok": true,
+   "deger": "SecurityError",
+   "beklenen": {
+    "eq": "SecurityError"
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [],
+ "uyariSayim": {
+  "farkli": 0,
+  "toplam": 0,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [],
+ "agIstekSayisi": 1,
+ "sonuc": {
+  "durum": "GECTI",
+  "cikisKodu": 0,
+  "neden": [],
+  "onaySayisi": 1,
+  "kontrolSayisi": 1,
+  "gecen": 1,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": "tarayici",
+  "turSayim": {
+   "tarayici": 1
+  }
+ },
+ "sure": {
+  "hazirMs": 259,
+  "toplamMs": 269
+ }
+}

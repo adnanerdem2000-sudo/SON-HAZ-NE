@@ -1,0 +1,7 @@
+$ node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs tests/fixtures/kosucu/c_onaysiz.js --size 320x200 --timeout 90 --url http://127.0.0.1:45535/temiz.html --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/son/kosucu_negatif/ag.json --izin-hata ( # bozuk desen
+
+[stderr]
+izin listesi (--izin-hata): geçersiz düzenli ifade "(": Invalid regular expression: /(/: Unterminated group
+Kullanım: node tests/harness/run.cjs <senaryo.js> [--url ...] [--size WxH] [--report r.json] [--uretim] [--izin-hata "desen # gerekçe"] [--degisken ad=deger] [--baslatma betik.js] [--goruntu kalan|hep|yok] [--yerlesme ms]
+
+[çıkış 2]

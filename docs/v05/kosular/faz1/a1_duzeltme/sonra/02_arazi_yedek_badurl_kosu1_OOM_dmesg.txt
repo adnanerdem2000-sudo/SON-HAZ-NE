@@ -1,0 +1,37 @@
+# A1 düzeltici — 02_arazi_yedek ?terrain=badurl 1. koşusunda 'Target crashed' (PAGECRASH): çekirdek günlüğündeki bellek cgroup OOM kayıtları
+# Bash araç sürecinin memcg sınırı: 14338772992 bayt (~13,35 GiB); swap yok.
+# Sütunlar: pid, uid, tgid, total_vm (sayfa), rss (sayfa = 4 KiB), rss_anon, rss_file, ... ad. 1 sayfa = 4 KiB: 1843955 sayfa ≈ 7,0 GiB.
+# Uptime 32199 s = bu koşu (09:00, A1 düzeltilmiş koşucu). 14836/15422/15847 s = aynı imza, A1 çalışmasından önce (~04:11–04:28; eski koşucu dönemi).
+
+[14836.742893] memory: usage 14002708kB, limit 14002708kB, failcnt 370572
+[14836.742952] [   2685]     0  2685 13737467  2100137  2099445      692         0 35221504        0             0 chrome-headless
+[14836.742953] [   2687]     0  2687 13755892     2614     1984      630         0   360448        0             0 chrome-headless
+[14836.742955] [   2688]     0  2688 13755891     2577     1984      593         0   364544        0             0 chrome-headless
+[14836.742957] [   2704]     0  2704 13810097   135496   134902      594         0  3162112        0           200 chrome-headless
+[14836.742958] [   2711]     0  2711 13704839     7424     6753      671         0   602112        0             0 chrome-headless
+[14836.742960] [   2730]     0  2730 381105564  1209681  1209174      507         0 19005440        0           300 chrome-headless
+[14836.743050] Memory cgroup out of memory: Killed process 2730 (chrome-headless) total-vm:1524422256kB, anon-rss:4836696kB, file-rss:2028kB, shmem-rss:0kB, UID:0 pgtables:18560kB oom_score_adj:300
+[15422.715230] memory: usage 14002708kB, limit 14002708kB, failcnt 442720
+[15422.715290] [   4819]     0  4819 13739516  1792508  1791839      669         0 31436800        0             0 chrome-headless
+[15422.715292] [   4821]     0  4821 13755890     2642     1984      658         0   372736        0             0 chrome-headless
+[15422.715294] [   4822]     0  4822 13755891     2667     1984      683         0   360448        0             0 chrome-headless
+[15422.715296] [   4837]     0  4837 13806805   127066   126401      665         0  3112960        0           200 chrome-headless
+[15422.715298] [   4845]     0  4845 13704839     7446     6750      696         0   602112        0             0 chrome-headless
+[15422.715299] [   4865]     0  4865 381105728  1527404  1526892      512         0 21008384        0           300 chrome-headless
+[15422.715352] Memory cgroup out of memory: Killed process 4865 (chrome-headless) total-vm:1524422912kB, anon-rss:6107568kB, file-rss:2048kB, shmem-rss:0kB, UID:0 pgtables:20516kB oom_score_adj:300
+[15847.548125] memory: usage 14002708kB, limit 14002708kB, failcnt 1681341
+[15847.548196] [   5991]     0  5991 13739516  1635732  1635068      664         0 29392896        0             0 chrome-headless
+[15847.548198] [   5993]     0  5993 13755891     2641     1984      657         0   360448        0             0 chrome-headless
+[15847.548199] [   5994]     0  5994 13755890     2646     1984      662         0   360448        0             0 chrome-headless
+[15847.548201] [   6009]     0  6009 13813816   100789   100168      621         0  2793472        0           200 chrome-headless
+[15847.548203] [   6017]     0  6017 13704839     7495     6847      648         0   614400        0             0 chrome-headless
+[15847.548204] [   6037]     0  6037 381108650  1708565  1707999      566         0 22827008        0           300 chrome-headless
+[15847.548273] Memory cgroup out of memory: Killed process 6037 (chrome-headless) total-vm:1524434600kB, anon-rss:6831996kB, file-rss:2264kB, shmem-rss:0kB, UID:0 pgtables:22292kB oom_score_adj:300
+[32199.249001] memory: usage 14002708kB, limit 14002708kB, failcnt 5099719
+[32199.249061] [  32122]     0 32122 13741293  1843955  1843332      623         0 31686656        0             0 chrome-headless
+[32199.249062] [  32124]     0 32124 13755890     2588     1984      604         0   360448        0             0 chrome-headless
+[32199.249064] [  32125]     0 32125 13755892     2611     1984      627         0   360448        0             0 chrome-headless
+[32199.249081] [  32140]     0 32140 13801958    97782    97152      630         0  2375680        0           200 chrome-headless
+[32199.249083] [  32147]     0 32147 13704839     7377     6695      682         0   598016        0             0 chrome-headless
+[32199.249084] [  32181]     0 32181 379622728  1501997  1501506      491         0 21209088        0           300 chrome-headless
+[32199.249145] Memory cgroup out of memory: Killed process 32181 (chrome-headless) total-vm:1518490912kB, anon-rss:6006024kB, file-rss:1964kB, shmem-rss:0kB, UID:0 pgtables:20712kB oom_score_adj:300

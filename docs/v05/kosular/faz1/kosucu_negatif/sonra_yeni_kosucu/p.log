@@ -1,0 +1,8 @@
+$ node /home/user/SON-HAZ-NE-w2/tests/harness/coop.cjs tests/fixtures/kosucu/p_coop_baslatma.cjs --players 2 --size 320x200 --timeout 120 --url http://127.0.0.1:35867/coop.html --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/sonra_yeni_kosucu/p.json
+Kaptan/baslatma "tamam"
+Tayfa/baslatma "tamam"
+PASS P01 Başlatma betiği her oyuncuda çalıştı → ["tamam","tamam"]
+checks: 1 fails: 0 pageErrors: 0 (0.3 s)
+SONUC: GECTI (çıkış 0) kontrol 1/1 | ev() istisnası 0, kapalı sayfa atlama 0, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0
+
+[çıkış 0]

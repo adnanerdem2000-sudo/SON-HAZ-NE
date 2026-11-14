@@ -1,0 +1,298 @@
+{
+ "arac": "tests/node/kosucu_negatif.mjs",
+ "tarih": "2026-11-14T08:54:46.755Z",
+ "kosucuDizin": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_sahte_kosucu",
+ "ciktiDizin": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_cikti/neg_sahte_onceki_arac",
+ "durum": "GECTI",
+ "cekirdekKalan": [],
+ "yanlisGecenler": [],
+ "kalanlar": [],
+ "durumlar": [
+  {
+   "ad": "a",
+   "cekirdek": true,
+   "kosucu": "run",
+   "aciklama": "console.error('x 404 y')",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KALDI"
+   },
+   "gercek": {
+    "cikis": 1,
+    "durum": null,
+    "sema": "rapor yok"
+   },
+   "sonuc": "GECTI (yalnız çıkış kodu; şema 1 raporunda durum yok)",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": true
+    }
+   ],
+   "rapor": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_cikti/neg_sahte_onceki_arac/a.json",
+   "gunluk": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_cikti/neg_sahte_onceki_arac/a.log",
+   "sureMs": 24
+  },
+  {
+   "ad": "b",
+   "cekirdek": true,
+   "kosucu": "run",
+   "aciklama": "olmayan görsel isteği (HTTP 404)",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KALDI"
+   },
+   "gercek": {
+    "cikis": 1,
+    "durum": null,
+    "sema": "rapor yok"
+   },
+   "sonuc": "GECTI (yalnız çıkış kodu; şema 1 raporunda durum yok)",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": true
+    }
+   ],
+   "rapor": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_cikti/neg_sahte_onceki_arac/b.json",
+   "gunluk": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_cikti/neg_sahte_onceki_arac/b.log",
+   "sureMs": 17
+  },
+  {
+   "ad": "c",
+   "cekirdek": true,
+   "kosucu": "run",
+   "aciklama": "onaysız senaryo",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KALDI"
+   },
+   "gercek": {
+    "cikis": 1,
+    "durum": null,
+    "sema": "rapor yok"
+   },
+   "sonuc": "GECTI (yalnız çıkış kodu; şema 1 raporunda durum yok)",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": true
+    }
+   ],
+   "rapor": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_cikti/neg_sahte_onceki_arac/c.json",
+   "gunluk": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_cikti/neg_sahte_onceki_arac/c.log",
+   "sureMs": 20
+  },
+  {
+   "ad": "f",
+   "cekirdek": true,
+   "kosucu": "coop",
+   "aciklama": "co-op ev() istisnası",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KALDI"
+   },
+   "gercek": {
+    "cikis": 1,
+    "durum": null,
+    "sema": "rapor yok"
+   },
+   "sonuc": "GECTI (yalnız çıkış kodu; şema 1 raporunda durum yok)",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": true
+    }
+   ],
+   "rapor": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_cikti/neg_sahte_onceki_arac/f.json",
+   "gunluk": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_cikti/neg_sahte_onceki_arac/f.log",
+   "sureMs": 20
+  },
+  {
+   "ad": "i",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "aynı beklenti başlatma betiği olmadan (olumsuz kontrol) + ilk başarısızlık görüntüsü",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KALDI"
+   },
+   "gercek": {
+    "cikis": 1,
+    "durum": null,
+    "sema": "rapor yok"
+   },
+   "sonuc": "GECTI (yalnız çıkış kodu; şema 1 raporunda durum yok)",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": true
+    }
+   ],
+   "rapor": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_cikti/neg_sahte_onceki_arac/i.json",
+   "gunluk": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_cikti/neg_sahte_onceki_arac/i.log",
+   "sureMs": 17
+  },
+  {
+   "ad": "l",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "test kipi istendi ama window.DK yok",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KOSUCU_HATASI"
+   },
+   "gercek": {
+    "cikis": 1,
+    "durum": null,
+    "sema": "rapor yok"
+   },
+   "sonuc": "GECTI (yalnız çıkış kodu; şema 1 raporunda durum yok)",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": true
+    }
+   ],
+   "rapor": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_cikti/neg_sahte_onceki_arac/l.json",
+   "gunluk": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_cikti/neg_sahte_onceki_arac/l.log",
+   "sureMs": 16
+  },
+  {
+   "ad": "m2",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "--uretim ama sayfada DK var: U00 kalır",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KALDI"
+   },
+   "gercek": {
+    "cikis": 1,
+    "durum": null,
+    "sema": "rapor yok"
+   },
+   "sonuc": "GECTI (yalnız çıkış kodu; şema 1 raporunda durum yok)",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": true
+    }
+   ],
+   "rapor": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_cikti/neg_sahte_onceki_arac/m2.json",
+   "gunluk": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_cikti/neg_sahte_onceki_arac/m2.log",
+   "sureMs": 17
+  },
+  {
+   "ad": "o",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "yeni adım türleri (olumsuz)",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KALDI"
+   },
+   "gercek": {
+    "cikis": 1,
+    "durum": null,
+    "sema": "rapor yok"
+   },
+   "sonuc": "GECTI (yalnız çıkış kodu; şema 1 raporunda durum yok)",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": true
+    }
+   ],
+   "rapor": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_cikti/neg_sahte_onceki_arac/o.json",
+   "gunluk": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_cikti/neg_sahte_onceki_arac/o.log",
+   "sureMs": 15
+  },
+  {
+   "ad": "s",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "yazım hatalı adım alanı ('expext')",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KOSUCU_HATASI"
+   },
+   "gercek": {
+    "cikis": 1,
+    "durum": null,
+    "sema": "rapor yok"
+   },
+   "sonuc": "GECTI (yalnız çıkış kodu; şema 1 raporunda durum yok)",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": true
+    }
+   ],
+   "rapor": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_cikti/neg_sahte_onceki_arac/s.json",
+   "gunluk": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_cikti/neg_sahte_onceki_arac/s.log",
+   "sureMs": 16
+  },
+  {
+   "ad": "q",
+   "cekirdek": false,
+   "kosucu": "coop",
+   "aciklama": "co-op onaysız senaryo",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KALDI"
+   },
+   "gercek": {
+    "cikis": 1,
+    "durum": null,
+    "sema": "rapor yok"
+   },
+   "sonuc": "GECTI (yalnız çıkış kodu; şema 1 raporunda durum yok)",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": true
+    }
+   ],
+   "rapor": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_cikti/neg_sahte_onceki_arac/q.json",
+   "gunluk": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_cikti/neg_sahte_onceki_arac/q.log",
+   "sureMs": 15
+  },
+  {
+   "ad": "r",
+   "cekirdek": false,
+   "kosucu": "coop",
+   "aciklama": "co-op konsol hatası",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KALDI"
+   },
+   "gercek": {
+    "cikis": 1,
+    "durum": null,
+    "sema": "rapor yok"
+   },
+   "sonuc": "GECTI (yalnız çıkış kodu; şema 1 raporunda durum yok)",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": true
+    }
+   ],
+   "rapor": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_cikti/neg_sahte_onceki_arac/r.json",
+   "gunluk": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_cikti/neg_sahte_onceki_arac/r.log",
+   "sureMs": 16
+  }
+ ]
+}

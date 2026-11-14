@@ -1,0 +1,313 @@
+{
+ "scenario": "tests/scenarios/00_acilis.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "Ana menü görünür",
+    "ok": true,
+    "value": true
+   },
+   "ms": 15
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "Menü düğmeleri",
+    "ok": true,
+    "value": 8
+   },
+   "ms": 4
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": "ok",
+   "ms": 15
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   },
+   "ms": 15586
+  },
+  {
+   "n": 5,
+   "label": null,
+   "expect": {
+    "label": "Oyuncu dünyada",
+    "ok": true,
+    "value": true
+   },
+   "ms": 572
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "Arazi karoları yüklendi",
+    "ok": true,
+    "value": 129
+   },
+   "ms": 22
+  },
+  {
+   "n": 7,
+   "label": null,
+   "expect": {
+    "label": "Arazi işçileri çalışıyor",
+    "ok": true,
+    "value": 3
+   },
+   "ms": 12
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 6018,
+ "ms": 26258,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/scenarios/00_acilis.js",
+ "meta": {},
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8080/index.html?test=1",
+  "verilenUrl": "http://localhost:8080/index.html",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T07:28:29.664Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs /home/user/SON-HAZ-NE-w2/tests/scenarios/00_acilis.js --url http://localhost:8080/index.html --size 640x360 --timeout 1800 --report docs/v05/kosular/faz1/once_v04_yeni_kosucu/00_acilis.json",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://localhost:8080 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8080"
+  ],
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd-kirli",
+  "senaryoSha256": "44fe4f71cba0d7912166879f9b3470380d02a805d68ca0e18c420490fd7c3382",
+  "adim": null,
+  "url": "http://localhost:8080/index.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 1,
+   "id": "Ana menü görünür",
+   "etiket": "Ana menü görünür",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 12,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 2,
+   "id": "Menü düğmeleri",
+   "etiket": "Menü düğmeleri",
+   "ok": true,
+   "deger": 8,
+   "beklenen": {
+    "gte": 8
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 4,
+   "id": "Oyun başladı",
+   "etiket": "Oyun başladı",
+   "ok": true,
+   "deger": "playing",
+   "beklenen": {
+    "eq": "playing"
+   },
+   "sure_ms": 8697,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 5,
+   "id": "Oyuncu dünyada",
+   "etiket": "Oyuncu dünyada",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 256,
+   "benzetim": {
+    "sim": 1,
+    "adim": 60,
+    "press": 0,
+    "tap": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 6,
+   "id": "Arazi karoları yüklendi",
+   "etiket": "Arazi karoları yüklendi",
+   "ok": true,
+   "deger": 129,
+   "beklenen": {
+    "gte": 10
+   },
+   "sure_ms": 17,
+   "benzetim": {
+    "sim": 1,
+    "adim": 60,
+    "press": 0,
+    "tap": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 7,
+   "id": "Arazi işçileri çalışıyor",
+   "etiket": "Arazi işçileri çalışıyor",
+   "ok": true,
+   "deger": 3,
+   "beklenen": {
+    "gte": 1
+   },
+   "sure_ms": 5,
+   "benzetim": {
+    "sim": 1,
+    "adim": 60,
+    "press": 0,
+    "tap": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 33
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 2,
+  "toplam": 34,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [],
+ "agIstekSayisi": 216,
+ "sonuc": {
+  "durum": "GECTI",
+  "cikisKodu": 0,
+  "neden": [],
+  "onaySayisi": 6,
+  "kontrolSayisi": 6,
+  "gecen": 6,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": "tarayici+benzetim",
+  "turSayim": {
+   "tarayici": 3,
+   "tarayici+benzetim": 3
+  }
+ },
+ "sure": {
+  "hazirMs": 6018,
+  "toplamMs": 26258
+ }
+}

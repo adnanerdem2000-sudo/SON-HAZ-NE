@@ -1,0 +1,32 @@
+$ node /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/kosucu_eski/run.cjs tests/fixtures/kosucu/x_dongusel.js --size 320x200 --timeout 90 --url http://127.0.0.1:33013/temiz.html --report /dev/null/kosucu_negatif/x2.json
+ready in 0.2 s
+PASS X01 Sabit sayfa açıldı → 2
+EVALERR Converting circular structure to JSON
+    --> starting at object with constructor 'Object'
+    --- property 'kendi' closes the circle
+EVALERR Do not know how to serialize a BigInt
+FAIL (hata) X02 Döngüsel değer truthy Converting circular structure to JSON
+    --> starting at object with constructor 'Object'
+    --- property 'kendi' closes the circle
+errors: 0 pageErrors: 0 fails: 3 evalErrors: 2 (0.2 s)
+HARNESS ERROR ENOTDIR: not a directory, mkdir '/dev/null/kosucu_negatif'
+errors: 0 pageErrors: 0 fails: 3 evalErrors: 2 HARNESS ERROR (senaryo koşmadı) (0.2 s)
+
+[stderr]
+node:fs:1377
+  const result = binding.mkdir(
+                         ^
+
+Error: ENOTDIR: not a directory, mkdir '/dev/null/kosucu_negatif'
+    at Object.mkdirSync (node:fs:1377:26)
+    at finish (/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/kosucu_eski/run.cjs:50:26)
+    at /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/kosucu_eski/run.cjs:100:11 {
+  errno: -20,
+  code: 'ENOTDIR',
+  syscall: 'mkdir',
+  path: '/dev/null/kosucu_negatif'
+}
+
+Node.js v22.22.0
+
+[çıkış 1]

@@ -1,0 +1,71 @@
+{
+ "scenario": "tests/fixtures/kosucu/o_adimlar_olumsuz.js",
+ "url": "http://127.0.0.1:33013/adimlar.html",
+ "size": [
+  320,
+  200
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null
+  },
+  {
+   "n": 2,
+   "label": null
+  },
+  {
+   "n": 3,
+   "label": null,
+   "metrics": {
+    "label": "m1",
+    "heapMB": 1.5,
+    "heapTotalMB": 2.3,
+    "backingMB": 0,
+    "embedderMB": 1.4,
+    "nodes": 38,
+    "listeners": 15,
+    "docs": 4,
+    "frames": 4
+   }
+  },
+  {
+   "n": 4,
+   "label": null,
+   "metrics": {
+    "label": "m2",
+    "heapMB": 1.5,
+    "heapTotalMB": 2.3,
+    "backingMB": 0,
+    "embedderMB": 1.4,
+    "nodes": 38,
+    "listeners": 15,
+    "docs": 4,
+    "frames": 4
+   }
+  },
+  {
+   "n": 5,
+   "label": null
+  },
+  {
+   "n": 6,
+   "label": null
+  },
+  {
+   "n": 7,
+   "label": null,
+   "expect": {
+    "label": "O05 Sağlam kontrol",
+    "ok": true,
+    "value": 1
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 143,
+ "ms": 157
+}

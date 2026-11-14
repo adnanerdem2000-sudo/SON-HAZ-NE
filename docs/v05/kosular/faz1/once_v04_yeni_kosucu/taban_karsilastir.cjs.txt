@@ -1,0 +1,37 @@
+// Taban (docs/v05/taban_kosusu_44d548c/*.json, eski koşucu) ile yeni koşucu raporlarını kontrol kontrol karşılaştırır.
+// Eşleme: aynı senaryo + aynı etiket (Faz 9 tasarımı §6.6). Ölçüt: tabanda geçen her kontrol yeni koşuda da geçmeli.
+const fs = require('fs'), path = require('path');
+const [tabanDizin, yeniDizin, ciktiJson] = process.argv.slice(2);
+const ciftler = [
+  ['00_acilis', '00_acilis'], ['08_kalicilik', '08_kalicilik'], ['12_kayit_dongusu', '12_kayit_dongusu'],
+  ['02_arazi_yedek', '02_arazi_yedek'], ['02_arazi_yedek_crash', '02_arazi_yedek_crash'],
+  ['02_arazi_yedek_badurl', '02_arazi_yedek_badurl'], ['02_arazi_yedek_badurl', '02_arazi_yedek_badurl_izinsiz'],
+  ['02_tek_dosya', '02_tek_dosya'], ['03_fizik_dt', '03_fizik_dt'], ['03_fizik_dt', '03_fizik_dt_metasiz_KALDI'], ['coop_06a2', 'coop_06a2_kosu4_son_surum'], ['coop_06a2', 'coop_06a2_kosu1_KALDI'], ['coop_06a2', 'coop_06a2_kosu3'], ['coop_06a2', 'tani/coop_06a2_tani_yeni1'],
+];
+const kontroller = (r) => r.checks ? r.checks.map((c) => ({ etiket: c.label, ok: c.ok, deger: c.detail }))
+  : r.steps.filter((s) => s.expect).map((s) => ({ etiket: s.expect.label, ok: s.expect.ok, deger: s.expect.value ?? s.expect.error }));
+const ozet = [];
+let tabanGecen = 0, yeniGecen = 0, eslesmeyen = 0;
+for (const [t, y] of ciftler) {
+  const tp = path.join(tabanDizin, t + '.json'), yp = path.join(yeniDizin, y + '.json');
+  if (!fs.existsSync(yp)) { ozet.push({ taban: t, yeni: y, durum: 'YENİ RAPOR YOK' }); continue; }
+  const T = JSON.parse(fs.readFileSync(tp, 'utf8')), Y = JSON.parse(fs.readFileSync(yp, 'utf8'));
+  const tk = kontroller(T), yk = kontroller(Y);
+  const satirlar = tk.map((a) => {
+    const b = yk.find((x) => x.etiket === a.etiket);
+    if (!b) eslesmeyen++;
+    const ayniDeger = b ? JSON.stringify(a.deger) === JSON.stringify(b.deger) : null;
+    return { etiket: a.etiket, taban: a.ok, yeni: b ? b.ok : 'EŞLEŞME YOK', degerAyni: ayniDeger, tabanDeger: ayniDeger ? undefined : a.deger, yeniDeger: ayniDeger ? undefined : b && b.deger };
+  });
+  const fazla = yk.filter((b) => !tk.find((a) => a.etiket === b.etiket)).map((b) => b.etiket);
+  const tg = satirlar.filter((s) => s.taban === true).length, yg = satirlar.filter((s) => s.taban === true && s.yeni === true).length;
+  if (!y.includes('izinsiz') && !y.startsWith('tani/') && !y.includes('kosu1') && !y.includes('kosu3') && !y.includes('metasiz')) { tabanGecen += tg; yeniGecen += yg; }
+  const yeniOzel = Y.sonuc ? { durum: Y.sonuc.durum, cikis: Y.sonuc.cikisKodu, izinsizKonsol: Y.sonuc.izinsizKonsol, izinsizAg: Y.sonuc.izinsizAg, izinliKonsol: Y.sonuc.izinliKonsol, izinliAg: Y.sonuc.izinliAg, evalErrors: Array.isArray(Y.evalErrors) ? Y.evalErrors.length : Y.evalErrors, kapaliAtlama: Y.kapaliAtlama, uyariFarkli: Y.uyariSayim && Y.uyariSayim.farkli, uyariToplam: Y.uyariSayim && Y.uyariSayim.toplam, neden: Y.sonuc.neden } : null;
+  const tabanHata = T.errors ? (Array.isArray(T.errors) ? T.errors.length : Object.values(T.errors).reduce((s, a) => s + a.length, 0)) : null;
+  ozet.push({ taban: t, yeni: y, tabanGecen: tg, tabanToplam: tk.length, yenideTabanGecenlerdenGecen: yg, yeniToplam: yk.length, fazlaKontrol: fazla, tabanErrors: tabanHata, yeni: yeniOzel, kontroller: satirlar });
+  console.log(`${t.padEnd(24)} ↔ ${y.padEnd(32)} taban ${tg}/${tk.length}  yeni ${yk.filter((x) => x.ok).length}/${yk.length}  (tabanda geçenlerden yeni koşuda geçen ${yg}/${tg})  ` +
+    (yeniOzel ? `durum ${yeniOzel.durum} çıkış ${yeniOzel.cikis} izinsiz k/a ${yeniOzel.izinsizKonsol}/${yeniOzel.izinsizAg} izinli k/a ${yeniOzel.izinliKonsol}/${yeniOzel.izinliAg}${yeniOzel.kapaliAtlama !== undefined ? ' kapaliAtlama ' + yeniOzel.kapaliAtlama + ' evalErr ' + yeniOzel.evalErrors : ''}` : ''));
+  for (const s of satirlar) if (s.yeni !== true || s.taban !== true) console.log(`    ${s.taban === true ? 'taban GEÇTİ' : 'taban KALDI'} → yeni ${s.yeni === true ? 'GEÇTİ' : s.yeni === false ? 'KALDI' : s.yeni}: ${s.etiket}`);
+}
+console.log(`\nToplam (resmî eşleşmeler: son koşucu sürümüyle alınanlar; izinsiz badurl, metasız 03, 06a2'nin 1. ve 3. koşusu ve tanı koşusu hariç): tabanda geçen ${tabanGecen} kontrolün ${yeniGecen}'i yeni koşucuyla da geçti; eşleşmeyen etiket ${eslesmeyen}.`);
+if (ciktiJson) fs.writeFileSync(ciktiJson, JSON.stringify({ tarih: new Date().toISOString(), tabanDizin, yeniDizin, tabanGecen, yeniGecen, eslesmeyen, ciftler: ozet }, null, 1));

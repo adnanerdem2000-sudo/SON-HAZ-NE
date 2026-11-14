@@ -1,0 +1,681 @@
+{
+ "scenario": "tests/scenarios/03_fizik_duzeltmeler.js",
+ "url": "http://localhost:8081/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": "ok",
+   "ms": 29
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   },
+   "ms": 11486
+  },
+  {
+   "n": 3,
+   "label": null,
+   "expect": {
+    "label": "Alt adım sayısı: 1/15→4, 1/60→1, 0.1 s→6 (üst sınır)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 83
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "Uzun karede zıplama tuşu tek zıplama üretir",
+    "ok": true,
+    "value": 1
+   },
+   "ms": 720
+  },
+  {
+   "n": 5,
+   "label": null,
+   "expect": {
+    "label": "Geri tepme mesafesi 15/60/144 FPS arasında %20 içinde",
+    "ok": true,
+    "value": true
+   },
+   "ms": 1449
+  },
+  {
+   "n": 6,
+   "label": null,
+   "result": {
+    "fps15": 1.597,
+    "fps60": 1.597,
+    "fps144": 1.439
+   },
+   "ms": 258
+  },
+  {
+   "n": 7,
+   "label": null,
+   "expect": {
+    "label": "Sığ su bandında (≈1.4 m) mod en çok bir kez değişir (titreşim yok)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 834
+  },
+  {
+   "n": 8,
+   "label": null,
+   "result": {
+    "pos": [
+     -123.4,
+     58.3
+    ],
+    "depth": 1.42,
+    "changes": 1,
+    "mode": "swim"
+   },
+   "ms": 218
+  },
+  {
+   "n": 9,
+   "label": null,
+   "expect": {
+    "label": "Düşük dayanıklılıkta savunma bayrağı kare kare titreşmez (3 saniyede en çok 2 geçiş: başla, tükenince bırak)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 1285
+  },
+  {
+   "n": 10,
+   "label": null,
+   "result": {
+    "toggles": 2,
+    "stamina": 3.5
+   },
+   "ms": 2
+  },
+  {
+   "n": 11,
+   "label": null,
+   "expect": {
+    "label": "lineBlocked 400 m doğruda engeli bulur, boş doğruda bulmaz",
+    "ok": true,
+    "value": true
+   },
+   "ms": 75
+  },
+  {
+   "n": 12,
+   "label": null,
+   "expect": {
+    "label": "Mermi süpürmesi: kutu içinden başlayan parça engellenir",
+    "ok": true,
+    "value": true
+   },
+   "ms": 39
+  },
+  {
+   "n": 13,
+   "label": null,
+   "expect": {
+    "label": "Taşınan demirli gemi eski çapa noktasına fırlamaz",
+    "ok": true,
+    "value": true
+   },
+   "ms": 4115
+  },
+  {
+   "n": 14,
+   "label": null,
+   "result": {
+    "hadPt": true,
+    "moved": 0.38,
+    "speed": 0.09
+   },
+   "ms": 4122
+  },
+  {
+   "n": 15,
+   "label": null,
+   "expect": {
+    "label": "Kinematik gemiye çarpma: NaN yok, hasar makul",
+    "ok": true,
+    "value": true
+   },
+   "ms": 63
+  },
+  {
+   "n": 16,
+   "label": null,
+   "result": {
+    "nan": false,
+    "dmg": 30,
+    "vz": -1.2
+   },
+   "ms": 91
+  },
+  {
+   "n": 17,
+   "label": null,
+   "expect": {
+    "label": "Yüksek platforma yandan girilmez (yan yüz çarpıştırıcı)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 374
+  },
+  {
+   "n": 18,
+   "label": null,
+   "result": {
+    "z": 121.45,
+    "y": 11.37,
+    "top": 16.49,
+    "inside": false
+   },
+   "ms": 2
+  },
+  {
+   "n": 19,
+   "label": null,
+   "expect": {
+    "label": "Hızlı gülle tek adımda gövdeyi aşsa da isabet eder (süpürme, tünelleme yok)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 13
+  },
+  {
+   "n": 20,
+   "label": null,
+   "result": {
+    "hp": 86,
+    "max": 100,
+    "ballsLeft": 0,
+    "before": 1,
+    "beam": 4.4
+   },
+   "ms": 3
+  },
+  {
+   "n": 21,
+   "label": null,
+   "expect": {
+    "label": "Yüzen oyuncu 20 km haritanın kenarında durur",
+    "ok": true,
+    "value": true
+   },
+   "ms": 24729
+  },
+  {
+   "n": 22,
+   "label": null,
+   "result": {
+    "x": 9729.3
+   },
+   "ms": 3
+  },
+  {
+   "n": 23,
+   "label": null,
+   "expect": {
+    "label": "Oyun döngüsü düzeltmelerden sonra hatasız sürüyor",
+    "ok": true,
+    "value": true
+   },
+   "ms": 1977
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 5598,
+ "ms": 62621,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/scenarios/03_fizik_duzeltmeler.js",
+ "meta": {},
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8081/index.html?test=1",
+  "verilenUrl": "http://localhost:8081/index.html",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T09:04:00.828Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs /home/user/SON-HAZ-NE-w2/tests/scenarios/03_fizik_duzeltmeler.js --url http://localhost:8081/index.html --size 640x360 --timeout 1800 --report docs/v05/kosular/faz1/a1_duzeltme/sonra/03_fizik_duzeltmeler_w2.json",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://localhost:8081 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8081"
+  ],
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd-kirli",
+  "senaryoSha256": "1c6f84c733fa6da525cb155177b1955a2a2b8df733f39f49f657794a477daea7",
+  "adim": null,
+  "url": "http://localhost:8081/index.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 2,
+   "id": "Oyun başladı",
+   "etiket": "Oyun başladı",
+   "ok": true,
+   "deger": "playing",
+   "beklenen": {
+    "eq": "playing"
+   },
+   "sure_ms": 6537,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 3,
+   "id": "Alt adım sayısı: 1/15→4, 1/60→1, 0.1",
+   "etiket": "Alt adım sayısı: 1/15→4, 1/60→1, 0.1 s→6 (üst sınır)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 52,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 3
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 4,
+   "id": "Uzun karede zıplama tuşu tek zıplama",
+   "etiket": "Uzun karede zıplama tuşu tek zıplama üretir",
+   "ok": true,
+   "deger": 1,
+   "beklenen": {
+    "eq": 1
+   },
+   "sure_ms": 359,
+   "benzetim": {
+    "sim": 1,
+    "adim": 30,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 33
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 5,
+   "id": "Geri tepme mesafesi 15/60/144 FPS arasında",
+   "etiket": "Geri tepme mesafesi 15/60/144 FPS arasında %20 içinde",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 712,
+   "benzetim": {
+    "sim": 4,
+    "adim": 84,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 364
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 7,
+   "id": "Sığ su bandında (≈1.4 m) mod",
+   "etiket": "Sığ su bandında (≈1.4 m) mod en çok bir kez değişir (titreşim yok)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 401,
+   "benzetim": {
+    "sim": 4,
+    "adim": 84,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 604
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 9,
+   "id": "Düşük dayanıklılıkta savunma bayrağı kare kare",
+   "etiket": "Düşük dayanıklılıkta savunma bayrağı kare kare titreşmez (3 saniyede en çok 2 geçiş: başla, tükenince bırak)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 538,
+   "benzetim": {
+    "sim": 4,
+    "adim": 84,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 784
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 11,
+   "id": "lineBlocked 400 m doğruda engeli bulur,",
+   "etiket": "lineBlocked 400 m doğruda engeli bulur, boş doğruda bulmaz",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 27,
+   "benzetim": {
+    "sim": 4,
+    "adim": 84,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 784
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 12,
+   "id": "Mermi süpürmesi: kutu içinden başlayan parça",
+   "etiket": "Mermi süpürmesi: kutu içinden başlayan parça engellenir",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 21,
+   "benzetim": {
+    "sim": 4,
+    "adim": 84,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 784
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 13,
+   "id": "Taşınan demirli gemi eski çapa noktasına",
+   "etiket": "Taşınan demirli gemi eski çapa noktasına fırlamaz",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 337,
+   "benzetim": {
+    "sim": 6,
+    "adim": 276,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 784
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 15,
+   "id": "Kinematik gemiye çarpma: NaN yok, hasar",
+   "etiket": "Kinematik gemiye çarpma: NaN yok, hasar makul",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 45,
+   "benzetim": {
+    "sim": 6,
+    "adim": 276,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 784
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 17,
+   "id": "Yüksek platforma yandan girilmez (yan yüz",
+   "etiket": "Yüksek platforma yandan girilmez (yan yüz çarpıştırıcı)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 372,
+   "benzetim": {
+    "sim": 7,
+    "adim": 456,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 784
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 19,
+   "id": "Hızlı gülle tek adımda gövdeyi aşsa",
+   "etiket": "Hızlı gülle tek adımda gövdeyi aşsa da isabet eder (süpürme, tünelleme yok)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 6,
+   "benzetim": {
+    "sim": 7,
+    "adim": 456,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 784
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 21,
+   "id": "Yüzen oyuncu 20 km haritanın kenarında",
+   "etiket": "Yüzen oyuncu 20 km haritanın kenarında durur",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 583,
+   "benzetim": {
+    "sim": 8,
+    "adim": 696,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 784
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 23,
+   "id": "Oyun döngüsü düzeltmelerden sonra hatasız sürüyo",
+   "etiket": "Oyun döngüsü düzeltmelerden sonra hatasız sürüyor",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 310,
+   "benzetim": {
+    "sim": 9,
+    "adim": 756,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 784
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8081/vendor/three/three.core.js",
+   "sayi": 33
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8081/vendor/three/three.core.js",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 2,
+  "toplam": 34,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 216,
+ "sonuc": {
+  "durum": "GECTI",
+  "cikisKodu": 0,
+  "neden": [],
+  "onaySayisi": 14,
+  "kontrolSayisi": 14,
+  "gecen": 14,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": "tarayici+benzetim",
+  "turSayim": {
+   "tarayici": 1,
+   "tarayici+benzetim": 13
+  }
+ },
+ "sure": {
+  "hazirMs": 5598,
+  "toplamMs": 62621,
+  "yerlesmeMs": 1000
+ }
+}

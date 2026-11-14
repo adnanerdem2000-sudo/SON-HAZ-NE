@@ -1,0 +1,11 @@
+// inceleme a1: sabit sayfalar için bağımlılıksız statik sunucu (yalnız 127.0.0.1)
+const http = require('http'), fs = require('fs'), path = require('path');
+const KOK = path.join(__dirname, 'sabit');
+const port = Number(process.argv[2] || 8097);
+http.createServer((req, res) => {
+  const ad = decodeURIComponent(new URL(req.url, 'http://x').pathname).replace(/^\/+/, '');
+  const dosya = path.join(KOK, ad);
+  if (!dosya.startsWith(KOK + path.sep) || !fs.existsSync(dosya) || !fs.statSync(dosya).isFile()) { res.writeHead(404, { 'Content-Type': 'text/plain' }); res.end('yok'); return; }
+  res.writeHead(200, { 'Content-Type': /\.html$/.test(dosya) ? 'text/html; charset=utf-8' : 'text/javascript; charset=utf-8', 'Cache-Control': 'no-store' });
+  fs.createReadStream(dosya).pipe(res);
+}).listen(port, '127.0.0.1', () => console.log('sunucu', port));

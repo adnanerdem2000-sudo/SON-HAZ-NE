@@ -1,0 +1,31 @@
+{
+ "scenario": "tests/fixtures/kosucu/u_sayfa_hatasi.js",
+ "url": "http://127.0.0.1:33013/u_sayfa_hatasi.html",
+ "size": [
+  320,
+  200
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "U01 Sabit sayfa açıldı",
+    "ok": true,
+    "value": "object"
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [
+  "kosucu_negatif u: yakalanmamış sayfa hatası | Error: kosucu_negatif u: yakalanmamış sayfa hatası |     at http://127.0.0.1:33013/u_sayfa_hatasi.html:8:28"
+ ],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 186,
+ "ms": 394
+}

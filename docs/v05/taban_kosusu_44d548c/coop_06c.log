@@ -1,0 +1,33 @@
+Kaptan/host {"code":"9W3MCG"}
+Tayfa/join {"room":"Dört Kişilik Oda"}
+Lostromo/join {"room":"Dört Kişilik Oda"}
+Topçu/join {"room":"Dört Kişilik Oda"}
+Kaptan/roster ["Kaptan","Tayfa","Lostromo","Topçu"]
+PASS D4-01 Lobide 4 kayıt → ["Kaptan","Tayfa","Lostromo","Topçu"]
+Kaptan/hs "host-started"
+Tayfa/gs "guest-started"
+Lostromo/gs "guest-started"
+Topçu/gs "guest-started"
+tick 2 @ 58.8s
+FAIL D4-02 4 oyuncu da oyunda → ["playing","menu","playing","playing"]
+FAIL D4-03 Her oyuncu 3 uzak oyuncu görür → [2,0,2,2]
+tick 1.5 @ 72.3s
+FAIL D4-04 Sohbet diğer 3 oyuncuya ulaşır → [0,1,0,0]
+tick 2 @ 73.6s
+FAIL D4-05 Konuğun hareketi diğer konukta görünür → {"before":[2,212],"after":[2,212]}
+Topçu/g3-menu "menu"
+tick 1 @ 89.0s
+tick 0.5 @ 91.3s
+Topçu/rejoin {"room":"Dört Kişilik Oda"}
+Topçu/gs2 "guest-restarted"
+tick 2 @ 107.3s
+FAIL D4-06 Menüye dönen konuk aynı adla geri gelir; roster 4 kayıt, çift ad yok, 3 uzak oyuncu görür → {"name3":"Topçu","leftState":"menu","rosterAfterLeave":["Kaptan","Lostromo"],"rosterAfterRejoin":["Kaptan","Lostromo","Topçu"],"g3state":"playing","g3remotes":2}
+tick 1 @ 128.1s
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+EVALERR Tayfa  page.evaluate: Target page, context or browser has been closed
+PASS D4-07 Sekmesi kapanan konuk herkeste kalkar (≤ 25 sn) → {"rem":[2,2,2],"waitedMs":0}
+[test] 4 oyuncu tamam @ 128.8s
+checks: 7 fails: 5 pageErrors: 0 (579.3 s)

@@ -1,0 +1,605 @@
+{
+ "arac": "tests/node/kosucu_negatif.mjs",
+ "tarih": "2026-11-14T07:15:12.530Z",
+ "kosucuDizin": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/kosucu_eski",
+ "ciktiDizin": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu",
+ "durum": "KALDI",
+ "cekirdekKalan": [
+  "a",
+  "b",
+  "c",
+  "f"
+ ],
+ "yanlisGecenler": [
+  "a",
+  "b",
+  "c",
+  "f",
+  "l",
+  "m2",
+  "o",
+  "s",
+  "q",
+  "r"
+ ],
+ "kalanlar": [
+  "a",
+  "b",
+  "c",
+  "f",
+  "h",
+  "j",
+  "k",
+  "l",
+  "m2",
+  "n",
+  "o",
+  "s",
+  "p",
+  "q",
+  "r"
+ ],
+ "durumlar": [
+  {
+   "ad": "a",
+   "cekirdek": true,
+   "kosucu": "run",
+   "aciklama": "console.error('x 404 y')",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KALDI"
+   },
+   "gercek": {
+    "cikis": 0,
+    "durum": null,
+    "sema": "şema 1 (eski)"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": true,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": false,
+     "deger": 0
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/a.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/a.log",
+   "sureMs": 416
+  },
+  {
+   "ad": "b",
+   "cekirdek": true,
+   "kosucu": "run",
+   "aciklama": "olmayan görsel isteği (HTTP 404)",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KALDI"
+   },
+   "gercek": {
+    "cikis": 0,
+    "durum": null,
+    "sema": "şema 1 (eski)"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": true,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": false,
+     "deger": 0
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/b.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/b.log",
+   "sureMs": 515
+  },
+  {
+   "ad": "c",
+   "cekirdek": true,
+   "kosucu": "run",
+   "aciklama": "onaysız senaryo",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KALDI"
+   },
+   "gercek": {
+    "cikis": 0,
+    "durum": null,
+    "sema": "şema 1 (eski)"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": true,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": false,
+     "deger": 0
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/c.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/c.log",
+   "sureMs": 490
+  },
+  {
+   "ad": "d",
+   "cekirdek": true,
+   "kosucu": "run",
+   "aciklama": "meta.olcum (onaysız ölçüm)",
+   "beklenen": {
+    "cikis": 0,
+    "durum": "OLCUM"
+   },
+   "gercek": {
+    "cikis": 0,
+    "durum": null,
+    "sema": "şema 1 (eski)"
+   },
+   "sonuc": "GECTI (yalnız çıkış kodu; şema 1 raporunda durum yok)",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": true
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/d.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/d.log",
+   "sureMs": 463
+  },
+  {
+   "ad": "e",
+   "cekirdek": true,
+   "kosucu": "run",
+   "aciklama": "izin listesindeki hatalar (meta.izinliHatalar; metin + adres)",
+   "beklenen": {
+    "cikis": 0,
+    "durum": "GECTI"
+   },
+   "gercek": {
+    "cikis": 0,
+    "durum": null,
+    "sema": "şema 1 (eski)"
+   },
+   "sonuc": "GECTI (yalnız çıkış kodu; şema 1 raporunda durum yok)",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": true
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/e.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/e.log",
+   "sureMs": 534
+  },
+  {
+   "ad": "f",
+   "cekirdek": true,
+   "kosucu": "coop",
+   "aciklama": "co-op ev() istisnası",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KALDI"
+   },
+   "gercek": {
+    "cikis": 0,
+    "durum": null,
+    "sema": "şema 1 (eski)"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": true,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": false,
+     "deger": 0
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/f.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/f.log",
+   "sureMs": 690
+  },
+  {
+   "ad": "g",
+   "cekirdek": true,
+   "kosucu": "coop",
+   "aciklama": "kapatılmış sayfada tick()",
+   "beklenen": {
+    "cikis": 0,
+    "durum": "GECTI"
+   },
+   "gercek": {
+    "cikis": 0,
+    "durum": null,
+    "sema": "şema 1 (eski)"
+   },
+   "sonuc": "GECTI (yalnız çıkış kodu; şema 1 raporunda durum yok)",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": true
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/g.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/g.log",
+   "sureMs": 886
+  },
+  {
+   "ad": "e2",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "izinler komut satırından (--izin-hata)",
+   "beklenen": {
+    "cikis": 0,
+    "durum": "GECTI"
+   },
+   "gercek": {
+    "cikis": 0,
+    "durum": null,
+    "sema": "şema 1 (eski)"
+   },
+   "sonuc": "GECTI (yalnız çıkış kodu; şema 1 raporunda durum yok)",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": true
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/e2.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/e2.log",
+   "sureMs": 609
+  },
+  {
+   "ad": "h",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "başlatma betiği (meta.baslatma) localStorage → SecurityError",
+   "beklenen": {
+    "cikis": 0,
+    "durum": "GECTI"
+   },
+   "gercek": {
+    "cikis": 1,
+    "durum": null,
+    "sema": "şema 1 (eski)"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": false,
+     "deger": 1
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/h.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/h.log",
+   "sureMs": 569
+  },
+  {
+   "ad": "i",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "aynı beklenti başlatma betiği olmadan (olumsuz kontrol) + ilk başarısızlık görüntüsü",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KALDI"
+   },
+   "gercek": {
+    "cikis": 1,
+    "durum": null,
+    "sema": "şema 1 (eski)"
+   },
+   "sonuc": "GECTI (yalnız çıkış kodu; şema 1 raporunda durum yok)",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": true
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/i.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/i.log",
+   "sureMs": 520
+  },
+  {
+   "ad": "j",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "başlatma betiği dosyadan (--baslatma)",
+   "beklenen": {
+    "cikis": 0,
+    "durum": "GECTI"
+   },
+   "gercek": {
+    "cikis": 1,
+    "durum": null,
+    "sema": "şema 1 (eski)"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": false,
+     "deger": 1
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/j.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/j.log",
+   "sureMs": 524
+  },
+  {
+   "ad": "k",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "test=1 kendiliğinden + parametre koruma + tür ölçümü",
+   "beklenen": {
+    "cikis": 0,
+    "durum": "GECTI"
+   },
+   "gercek": {
+    "cikis": 1,
+    "durum": null,
+    "sema": "şema 1 (eski)"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": false,
+     "deger": 1
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/k.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/k.log",
+   "sureMs": 569
+  },
+  {
+   "ad": "l",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "test kipi istendi ama window.DK yok",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KOSUCU_HATASI"
+   },
+   "gercek": {
+    "cikis": 0,
+    "durum": null,
+    "sema": "şema 1 (eski)"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": true,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": false,
+     "deger": 0
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/l.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/l.log",
+   "sureMs": 492
+  },
+  {
+   "ad": "m",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "--uretim: test parametresi yok, U00 geçer",
+   "beklenen": {
+    "cikis": 0,
+    "durum": "GECTI"
+   },
+   "gercek": {
+    "cikis": 0,
+    "durum": null,
+    "sema": "şema 1 (eski)"
+   },
+   "sonuc": "GECTI (yalnız çıkış kodu; şema 1 raporunda durum yok)",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": true
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/m.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/m.log",
+   "sureMs": 509
+  },
+  {
+   "ad": "m2",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "--uretim ama sayfada DK var: U00 kalır",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KALDI"
+   },
+   "gercek": {
+    "cikis": 0,
+    "durum": null,
+    "sema": "şema 1 (eski)"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": true,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": false,
+     "deger": 0
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/m2.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/m2.log",
+   "sureMs": 588
+  },
+  {
+   "ad": "n",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "yeni adım türleri (olumlu)",
+   "beklenen": {
+    "cikis": 0,
+    "durum": "GECTI"
+   },
+   "gercek": {
+    "cikis": 1,
+    "durum": null,
+    "sema": "şema 1 (eski)"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": false,
+     "deger": 1
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/n.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/n.log",
+   "sureMs": 629
+  },
+  {
+   "ad": "o",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "yeni adım türleri (olumsuz)",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KALDI"
+   },
+   "gercek": {
+    "cikis": 0,
+    "durum": null,
+    "sema": "şema 1 (eski)"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": true,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": false,
+     "deger": 0
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/o.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/o.log",
+   "sureMs": 549
+  },
+  {
+   "ad": "s",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "yazım hatalı adım alanı ('expext')",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KOSUCU_HATASI"
+   },
+   "gercek": {
+    "cikis": 0,
+    "durum": null,
+    "sema": "şema 1 (eski)"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": true,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": false,
+     "deger": 0
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/s.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/s.log",
+   "sureMs": 511
+  },
+  {
+   "ad": "p",
+   "cekirdek": false,
+   "kosucu": "coop",
+   "aciklama": "co-op başlatma betiği (meta.baslatma)",
+   "beklenen": {
+    "cikis": 0,
+    "durum": "GECTI"
+   },
+   "gercek": {
+    "cikis": 1,
+    "durum": null,
+    "sema": "şema 1 (eski)"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": false,
+     "deger": 1
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/p.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/p.log",
+   "sureMs": 554
+  },
+  {
+   "ad": "q",
+   "cekirdek": false,
+   "kosucu": "coop",
+   "aciklama": "co-op onaysız senaryo",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KALDI"
+   },
+   "gercek": {
+    "cikis": 0,
+    "durum": null,
+    "sema": "şema 1 (eski)"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": true,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": false,
+     "deger": 0
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/q.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/q.log",
+   "sureMs": 542
+  },
+  {
+   "ad": "r",
+   "cekirdek": false,
+   "kosucu": "coop",
+   "aciklama": "co-op konsol hatası",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KALDI"
+   },
+   "gercek": {
+    "cikis": 0,
+    "durum": null,
+    "sema": "şema 1 (eski)"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": true,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": false,
+     "deger": 0
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/r.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/r.log",
+   "sureMs": 572
+  }
+ ]
+}

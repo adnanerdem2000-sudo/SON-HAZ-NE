@@ -1,0 +1,30 @@
+{
+ "scenario": "tests/fixtures/kosucu/ab_gec_hata.js",
+ "url": "http://127.0.0.1:33013/temiz.html",
+ "size": [
+  320,
+  200
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "AB01 Sabit sayfa açıldı",
+    "ok": true,
+    "value": 1
+   }
+  },
+  {
+   "n": 2,
+   "label": null,
+   "result": "planlandı"
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 152,
+ "ms": 157
+}

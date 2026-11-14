@@ -1,0 +1,9 @@
+$ node /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_onceki/run.cjs tests/fixtures/kosucu/t_zaman_asimi.js --size 320x200 --timeout 3 --url http://127.0.0.1:32827/temiz.html --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/t.json
+ready in 0.2 s
+PASS T01 Zaman aşımından önceki kontrol → 1
+TIMEOUT
+errors: 0 pageErrors: 0 fails: 0 TIMEOUT (3.2 s)
+SONUC: ZAMAN_ASIMI (çıkış 1) kontrol 1/1, onay 2 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: zaman aşımı (3 sn)
+HARNESS ERROR page.waitForTimeout: Target page, context or browser has been closed
+
+[çıkış 1]

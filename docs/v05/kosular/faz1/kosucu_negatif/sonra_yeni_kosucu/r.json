@@ -1,0 +1,173 @@
+{
+ "scenario": "tests/fixtures/kosucu/r_coop_konsol.cjs",
+ "players": 2,
+ "checks": [
+  {
+   "label": "R01 Sayfa açıldı",
+   "ok": true,
+   "detail": "object"
+  }
+ ],
+ "errors": {
+  "Kaptan": [
+   "coop sabit sayfa hatası"
+  ],
+  "Tayfa": [
+   "coop sabit sayfa hatası"
+  ]
+ },
+ "pageErrors": {
+  "Kaptan": [],
+  "Tayfa": []
+ },
+ "fails": 0,
+ "evalErrors": [],
+ "kapaliAtlama": 0,
+ "kapaliIstisna": 0,
+ "kapananlar": [],
+ "ms": 436,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/fixtures/kosucu/r_coop_konsol.cjs",
+ "meta": {},
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://127.0.0.1:35867/coop.html?hata=1&test=1",
+  "verilenUrl": "http://127.0.0.1:35867/coop.html?hata=1",
+  "gorunum": [
+   320,
+   200
+  ],
+  "oyuncu": 2
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   320,
+   200
+  ],
+  "ci": false,
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T07:28:23.280Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/coop.cjs /home/user/SON-HAZ-NE-w2/tests/fixtures/kosucu/r_coop_konsol.cjs --players 2 --size 320x200 --timeout 120 --url 'http://127.0.0.1:35867/coop.html?hata=1' --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/sonra_yeni_kosucu/r.json",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://127.0.0.1:35867 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 35867",
+   "PeerJS sinyal sunucusu 127.0.0.1:9000 — node tests/peer-server.cjs (peer modülü NODE_PATH'te)"
+  ],
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd-kirli",
+  "senaryoSha256": "1545ff8e1d41e962532336c42fab66d945627c6b5abb07560cb2ccf3dd53bb34",
+  "adim": null,
+  "url": "http://127.0.0.1:35867/coop.html?hata=1&test=1"
+ },
+ "kontroller": [
+  {
+   "n": 1,
+   "id": "R01",
+   "etiket": "R01 Sayfa açıldı",
+   "ok": true,
+   "deger": "object",
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [
+   {
+    "oyuncu": "Kaptan",
+    "ileti": "coop sabit sayfa hatası",
+    "url": "http://127.0.0.1:35867/coop.html?hata=1&test=1",
+    "satir": 9,
+    "isci": false,
+    "sayi": 1
+   },
+   {
+    "oyuncu": "Tayfa",
+    "ileti": "coop sabit sayfa hatası",
+    "url": "http://127.0.0.1:35867/coop.html?hata=1&test=1",
+    "satir": 9,
+    "isci": false,
+    "sayi": 1
+   }
+  ],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [],
+ "uyariSayim": {
+  "farkli": 0,
+  "toplam": 0,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "goruntuler": [
+  {
+   "ad": "son",
+   "oyuncular": [
+    {
+     "oyuncu": "Kaptan",
+     "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/r_coop_konsol_2026-11-14T07-28-23-085Z_16172/son_Kaptan.png"
+    },
+    {
+     "oyuncu": "Tayfa",
+     "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/r_coop_konsol_2026-11-14T07-28-23-085Z_16172/son_Tayfa.png"
+    }
+   ]
+  }
+ ],
+ "sonuc": {
+  "durum": "KALDI",
+  "cikisKodu": 1,
+  "neden": [
+   "izinsiz konsol hatası: 2"
+  ],
+  "onaySayisi": 1,
+  "kontrolSayisi": 1,
+  "gecen": 1,
+  "kalan": 0,
+  "izinsizKonsol": 2,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "evalErrors": 0,
+  "kapaliAtlama": 0,
+  "kapaliIstisna": 0,
+  "tur": "tarayici+webrtc"
+ },
+ "sure": {
+  "hazirMs": 367,
+  "toplamMs": 436
+ }
+}

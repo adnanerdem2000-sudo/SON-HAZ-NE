@@ -1,0 +1,29 @@
+{
+ "scenario": "tests/fixtures/kosucu/s_bilinmeyen_alan.js",
+ "url": "http://127.0.0.1:37919/temiz.html",
+ "size": [
+  320,
+  200
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "S01 Sağlam kontrol",
+    "ok": true,
+    "value": 1
+   }
+  },
+  {
+   "n": 2,
+   "label": null
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 161,
+ "ms": 163
+}

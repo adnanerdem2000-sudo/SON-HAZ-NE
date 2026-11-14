@@ -1,0 +1,60 @@
+Kaptan/host {"code":"AKUJ7S"}
+Tayfa/join {"room":"Senkron Odası"}
+Kaptan/hs "host-started"
+Tayfa/gs "guest-started"
+PASS 2 oyuncu oyunda
+[test] profil host: {"sim02ms":72,"topPerFrameMs":[["fish",0.67],["megafauna",0.35],["hud",0.23],["animals",0.2],["npcs",0.08],["details",0.08],["net",0.07],["player",0.03]]}
+[test] profil guest: {"sim02ms":22,"topPerFrameMs":[["fish",0.17],["animals",0.13],["details",0.12],["hud",0.1],["npcs",0.08],["player",0.03],["treasure",0.02],["hazards",0.02]]}
+[test] 1 sandık ganimeti @ 40.7s
+Kaptan/crate {"id":"core_kamp_cr0","x":-46.5,"z":-231}
+PASS Kırılabilir sandık var → {"id":"core_kamp_cr0","x":-46.5,"z":-231}
+Tayfa/g-break "gone"
+Kaptan/host-pickups ["pkkycm4pm"]
+Tayfa/guest-pickups ["pkkycm4pm"]
+PASS B03/H01 Konuğun kırdığı sandığın kesesi ev sahibinde doğar ve konukta aynı kimlikle görünür → {"pk0":0,"pkHost":["pkkycm4pm"],"pkGuest":["pkkycm4pm"]}
+PASS H01 Konuk keseyi alır: eşya konuğa geçer, kese ev sahibinde kalkar → {"gained":1,"goneHost":true}
+[test] 2 ambar @ 45.1s
+Kaptan/hold {"id":"ship_main","x":10.083853277393327,"z":284.50325451854184,"held":1,"cid":"chn3kh3gp"}
+Tayfa/g-onship 1
+Tayfa/g-carry {"carrying":"chn3kh3gp","chests":[["chn3kh3gp","carried",["36c0b5d9-4212-4f7c-b165-636a1054e73b"]]]}
+Kaptan/h-hold {"hold":0,"chest":[["carried",["36c0b5d9-4212-4f7c-b165-636a1054e73b"]]]}
+PASS H10/H03 Konuk ambardan sandığı alır: ev sahibi ambarı boşalır, sandık konuğun taşımasında → {"carryG":{"carrying":"chn3kh3gp","chests":[["chn3kh3gp","carried",["36c0b5d9-4212-4f7c-b165-636a1054e73b"]]]},"holdH":{"hold":0,"chest":[["carried",["36c0b5d9-4212-4f7c-b165-636a1054e73b"]]]}}
+Kaptan/h-after-stow {"hold":1,"ghosts":0}
+PASS H03 Konuk sandığı ambara koyunca ev sahibinde hayalet sandık kalmaz → {"hold":1,"ghosts":0}
+[test] 3 yüzen nesne @ 48.7s
+Kaptan/float "f45nuaq5"
+Tayfa/g-float {"net":true,"pos":[3.5,212],"label":"Şişeyi al"}
+PASS B08/H08 Yüzen şişe konukta görünür (ağ kopyası) → {"net":true,"pos":[3.5,212],"label":"Şişeyi al"}
+Tayfa/g-bottle {"has":true,"still":false}
+PASS H08 Konuk şişeyi alır: eşya konuğa geçer, nesne iki tarafta da kalkar → {"bottle":{"has":true,"still":false},"bottleHost":false}
+[test] 4 uzak oyuncu bilgisi @ 61.7s
+Kaptan/h-remote {"ship":"ship_main","mode":"deck","onGround":true}
+PASS F-02 Ev sahibinde uzak oyuncunun gemi referansı var (güverte düşmanları ulaşılabilir sayar) → {"ship":"ship_main","mode":"deck","onGround":true}
+Kaptan/h-air true
+Kaptan/h-air false
+PASS F-12 Zıplayan konuk ev sahibinde havada görünür (tepinmeden zıplayarak kaçma) → false
+[test] 5 gemi senkronu @ 63.2s
+Kaptan/h-ship {"holes":1,"fallen":true}
+Tayfa/g-ship1 {"holes":1,"balls":42,"planks":7,"fallen":true}
+PASS E-02/E-06/E-07 Konuk deliği, gülle/tahta sayısını ve devrik direği görür → {"holes":1,"balls":42,"planks":7,"fallen":true}
+Kaptan/h-repair {"holes":0,"fallen":false}
+Tayfa/g-ship2 {"holes":0,"fallen":false}
+PASS E-07/E-02 Direk onarımı ve delik onarımı konukta geri alınır → {"holes":0,"fallen":false}
+Tayfa/g-sunk {"sunk":true,"visible":false}
+PASS H12 Batık bayrağı konukta: gemi görünmez → {"sunk":true,"visible":false}
+[test] 6 lav @ 70.5s
+Tayfa/g-hp 72
+PASS F-15 Lav havuzu uzak oyuncuyu da yakar → 72
+[test] 7 ses @ 77.1s
+Kaptan/enemy "enh1kdj9e"
+Kaptan/h-heard {"awareness":1.2,"state":"strafe","lastKnown":true}
+PASS F-13 Konuğun silah sesi ev sahibi düşmanını uyarır → {"awareness":1.2,"state":"strafe","lastKnown":true}
+[test] 8 kb @ 84.9s
+Tayfa/g-kb 0.16
+PASS F-11 Boss süpürmesinin geri tepmesi konukta uygulanır (0.3 sn sonra sönümlenmiş kalıntı > 0) → 0.16
+[test] 9 mermiler @ 85.1s
+Kaptan/archer "envh22dtn"
+PASS F-06 Düşman mermileri konukta görsel olarak izlenir → {"vis":1,"shotsHost":1,"natural":true}
+PASS Senaryo sonunda iki taraf da oyunda → ["playing","playing"]
+[test] 6b tamam @ 92.6s
+checks: 18 fails: 0 pageErrors: 0 (196.0 s)

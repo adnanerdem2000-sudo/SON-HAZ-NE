@@ -1,0 +1,24 @@
+{
+ "scenario": "tests/fixtures/kosucu/aa_coop_soz.cjs",
+ "players": 2,
+ "checks": [
+  {
+   "label": "AA01 Ev sahibinde bayrak doğru (await unutuldu)",
+   "ok": true
+  },
+  {
+   "label": "AA02 Sağlam kontrol",
+   "ok": true
+  }
+ ],
+ "errors": {
+  "Kaptan": [],
+  "Tayfa": []
+ },
+ "pageErrors": {
+  "Kaptan": [],
+  "Tayfa": []
+ },
+ "fails": 0,
+ "ms": 226
+}

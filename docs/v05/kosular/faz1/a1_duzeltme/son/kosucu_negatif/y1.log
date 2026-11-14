@@ -1,0 +1,7 @@
+$ node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs tests/fixtures/kosucu/y1_expect_yabanci.js --size 320x200 --timeout 90 --url http://127.0.0.1:45535/temiz.html --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/son/kosucu_negatif/y1.json
+HARNESS ERROR adım 1: expect içinde bilinmeyen alan truthly (yazım hatası mı? bilinenler: js, label, eq, truthy, gte, lte)
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/goruntu/y1_expect_yabanci_2026-11-14T09-20-10-221Z_10446/son.png
+errors: 0 pageErrors: 0 fails: 0 HARNESS ERROR (senaryo koşmadı) (0.2 s)
+SONUC: KOSUCU_HATASI (çıkış 1) kontrol 0/0, onay - | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: koşucu hatası: adım 1: expect içinde bilinmeyen alan truthly (yazım hatası mı? bilinenler: js, label, eq, truthy, gte, lte)
+
+[çıkış 1]

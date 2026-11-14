@@ -1,0 +1,25 @@
+{
+ "scenario": "tests/fixtures/kosucu/m_uretim.js",
+ "url": "http://127.0.0.1:33013/dk_yok.html",
+ "size": [
+  320,
+  200
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "M01 Adreste test parametresi yok",
+    "ok": true,
+    "value": false
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 173,
+ "ms": 176
+}

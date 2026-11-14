@@ -1,0 +1,7 @@
+$ node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs tests/fixtures/kosucu/a_konsol_404.js --size 320x200 --timeout 90 --url http://127.0.0.1:45535/a_konsol_404.html --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/son/kosucu_negatif/ah.json --izin-hata x 404 y
+
+[stderr]
+izin listesi (--izin-hata): gerekçe zorunlu (desen "x 404 y"); biçim: --izin-hata '<desen> # <gerekçe>'
+Kullanım: node tests/harness/run.cjs <senaryo.js> [--url ...] [--size WxH] [--report r.json] [--uretim] [--izin-hata "desen # gerekçe"] [--degisken ad=deger] [--baslatma betik.js] [--goruntu kalan|hep|yok] [--yerlesme ms]
+
+[çıkış 2]

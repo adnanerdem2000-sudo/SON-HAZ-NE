@@ -1,0 +1,47 @@
+Kaptan/host {"code":"D6GFD8"}
+Tayfa/join {"room":"Güvenlik Odası 2"}
+Lostromo/join {"room":"Güvenlik Odası 2"}
+Kaptan/hs "host-started"
+Tayfa/gs "guest-started"
+Lostromo/gs "guest-started"
+TANI-DOKUM gs-sonrasi Kaptan {"state":"playing","online":true,"isHost":true,"myId":"dksh-v1-D6GFD8","remotes":0,"snapSeen":false,"lastHostMsgAge":null,"tani":[{"t":954,"ev":"state","from":"menu","to":"playing"}],"panel":[]}
+TANI-DOKUM gs-sonrasi Tayfa {"state":"playing","online":true,"isHost":false,"myId":"968e626f-4d5c-4774-8595-b8ec0a35b899","remotes":1,"snapSeen":false,"lastHostMsgAge":11,"tani":[{"t":2021,"ev":"state","from":"menu","to":"playing"}],"panel":[]}
+EV-TIMEOUT 47.2s gs
+TANI-DOKUM gs-sonrasi Lostromo {"state":"playing","online":true,"isHost":false,"myId":"bfae633c-208e-4a0f-9650-47465368dae4","remotes":2,"snapSeen":true,"lastHostMsgAge":36,"tani":[{"t":2250,"ev":"state","from":"menu","to":"playing"}],"panel":[]}
+tick 1 @ 48.2s
+TANI-DOKUM ilk-tick-sonrasi Kaptan {"state":"playing","online":true,"isHost":true,"myId":"dksh-v1-D6GFD8","remotes":2,"snapSeen":false,"lastHostMsgAge":null,"tani":[{"t":954,"ev":"state","from":"menu","to":"playing"}],"panel":[]}
+TANI-DOKUM ilk-tick-sonrasi Tayfa {"state":"playing","online":true,"isHost":false,"myId":"968e626f-4d5c-4774-8595-b8ec0a35b899","remotes":2,"snapSeen":true,"lastHostMsgAge":102,"tani":[{"t":2021,"ev":"state","from":"menu","to":"playing"}],"panel":[]}
+TANI-DOKUM ilk-tick-sonrasi Lostromo {"state":"playing","online":true,"isHost":false,"myId":"bfae633c-208e-4a0f-9650-47465368dae4","remotes":2,"snapSeen":true,"lastHostMsgAge":153,"tani":[{"t":2250,"ev":"state","from":"menu","to":"playing"}],"panel":[]}
+PASS 3 oyuncu da oyunda → ["playing","playing","playing"]
+[test] büyük mesaj @ 71.9s
+tick 1.5 @ 71.9s
+Kaptan/chats 1
+PASS H07/H22 200 KB sohbet düşürülür, normal sohbet işlenir → 1
+[test] kopma temizliği @ 73.1s
+Tayfa/g1-helm "968e626f-4d5c-4774-8595-b8ec0a35b899"
+tick 1.5 @ 73.1s
+Lostromo/g2-lock-before "968e626f-4d5c-4774-8595-b8ec0a35b899"
+Kaptan/host-lock-before "968e626f-4d5c-4774-8595-b8ec0a35b899"
+Tayfa sekme kapandı
+tick 0.2 @ 75.6s
+tick 0.2 @ 76.7s
+tick 0.2 @ 77.8s
+tick 0.2 @ 78.9s
+tick 0.2 @ 80.0s
+tick 0.2 @ 81.1s
+tick 0.2 @ 82.2s
+tick 0.2 @ 83.3s
+tick 0.2 @ 84.4s
+tick 0.2 @ 85.5s
+tick 0.2 @ 86.6s
+tick 0.2 @ 87.7s
+tick 0.2 @ 88.8s
+tick 0.2 @ 89.9s
+[test] kopma algılandı @ 90.0s (bekleme 14000 ms)
+tick 1 @ 90.0s
+PASS H13 Kopan konuğun dümen kilidi ev sahibinde ve diğer konukta kalkar → {"lockBefore":"968e626f-4d5c-4774-8595-b8ec0a35b899","lockHostBefore":"968e626f-4d5c-4774-8595-b8ec0a35b899","lockHost":null,"lockG2":null,"remotesHost":1}
+[test] 6a-2 tamam @ 90.6s
+TANI-DOKUM son Kaptan {"state":"playing","online":true,"isHost":true,"myId":"dksh-v1-D6GFD8","remotes":1,"snapSeen":false,"lastHostMsgAge":null,"tani":[{"t":954,"ev":"state","from":"menu","to":"playing"}],"panel":[]}
+TANI-DOKUM son Lostromo {"state":"playing","online":true,"isHost":false,"myId":"bfae633c-208e-4a0f-9650-47465368dae4","remotes":1,"snapSeen":true,"lastHostMsgAge":92,"tani":[{"t":2250,"ev":"state","from":"menu","to":"playing"}],"panel":[]}
+checks: 3 fails: 0 pageErrors: 0 (276.1 s)
+SONUC: GECTI (çıkış 0) kontrol 3/3 | ev() istisnası 0, kapalı sayfa atlama 19, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 7 farklı/103

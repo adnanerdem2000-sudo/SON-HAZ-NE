@@ -1,0 +1,7 @@
+$ node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs tests/fixtures/kosucu/w_sozdizimi.js --size 320x200 --timeout 90 --url http://127.0.0.1:40315/temiz.html --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/sonra/kosucu_negatif/w.json
+HARNESS ERROR Unexpected token '}'
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/goruntu/w_sozdizimi_2026-11-14T08-55-49-277Z_29996/son.png
+errors: 0 pageErrors: 0 fails: 0 HARNESS ERROR (senaryo koşmadı) (0.3 s)
+SONUC: KOSUCU_HATASI (çıkış 1) kontrol 0/0, onay - | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: koşucu hatası: Unexpected token '}'
+
+[çıkış 1]

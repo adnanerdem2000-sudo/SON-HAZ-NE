@@ -1,0 +1,18 @@
+// inceleme a1 (run.cjs): yanlış GEÇTİ ve yanlış tür yolları, tek koşuda. Doğru bir koşucu bu senaryoyu KALDI saymalı
+// (X02–X04 değer yanlış; kanıt adımlarında sayfa istisnası var) ve X01/X05'i 'tarayici+benzetim' ölçmeli.
+[
+ // X01: DK.sim kullanılmadan oyun döngüsü doğrudan ileri sarılır (03_fizik_duzeltmeler 'Alt adım sayısı' kontrolü gibi)
+ {expect: {js: `(() => { for (let i = 0; i < 60; i++) DK.game.update(1/60); return +DK.game.t.toFixed(3); })()`, eq: 1, label: 'X01 game.update ile 1 sn ileri sarildi'}},
+ // X02: aralık onayı (gte + lte): yalnız son karşılaştırıcı uygulanır
+ {expect: {js: `-5`, gte: 1, lte: 10, label: 'X02 Deger 1..10 araliginda'}},
+ // X04: null >= 0 (JS zorlaması)
+ {expect: {js: `null`, gte: 0, label: 'X04 Deger >= 0 (null dondu)'}},
+ // kanıt adımlarında sayfa istisnası: yalnız SNAPFAIL yazılır
+ {snapjs: ['/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a1/cikti/b_snapjs.jpg', `DK.snapFrom([0,0,0],[1,1,1])`]},
+ {view: ['/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a1/cikti/b_view.jpg', [0,0,0], [1,1,1]]},
+ // X05: sayfanın kendi yeniden yüklemesi, ardından DK.sim; sonraki kontrolün türü
+ {js: `setTimeout(() => location.reload(), 30); 'yeniden yukleme planlandi'`},
+ {wait: 1500},
+ {js: `DK.sim(2)`},
+ {expect: {js: `window.__simSayisi`, eq: 1, label: 'X05 Yeniden yuklemeden sonra DK.sim bir kez cagrildi'}},
+]

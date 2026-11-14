@@ -1,0 +1,7 @@
+// A1 düzeltici: senaryodaki yakalanmamış söz reddi (unhandledRejection) → koşu KOSUCU_HATASI raporuyla 1 ile bitmeli (asılı kalmamalı)
+module.exports = async ({ check }) => {
+  check('YK01 Sağlam kontrol', true);
+  Promise.reject(new Error('kosucu: yakalanmamış söz reddi denemesi'));
+  await new Promise((r) => setTimeout(r, 300));
+  check('YK02 Bu kontrole varılmamalı (koşu kapanıyor)', true);
+};

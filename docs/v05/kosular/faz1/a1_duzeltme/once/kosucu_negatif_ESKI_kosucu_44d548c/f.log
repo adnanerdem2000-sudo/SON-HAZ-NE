@@ -1,0 +1,11 @@
+$ node /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/kosucu_eski/coop.cjs tests/fixtures/kosucu/f_coop_istisna.cjs --players 2 --size 320x200 --timeout 120 --url http://127.0.0.1:33013/coop.html --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_ESKI_kosucu_44d548c/f.json
+EVALERR Kaptan yapay page.evaluate: Error: yapay istisna (kosucu_negatif f)
+    at eval (eval at evaluate (:311:30), <anonymous>:1:16)
+    at eval (eval at evaluate (:311:30), <anonymous>:1:65)
+    at eval (<anonymous>)
+    at UtilityScript.evaluate (<anonymous>:311:30)
+    at UtilityScript.<anonymous> (<anonymous>:1:44
+PASS F01 İstisnadan sonraki kontrol
+checks: 1 fails: 0 pageErrors: 0 (0.2 s)
+
+[çıkış 0]

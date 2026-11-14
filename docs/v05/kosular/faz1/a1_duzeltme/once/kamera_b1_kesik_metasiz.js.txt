@@ -1,0 +1,5 @@
+// A1 düzeltici (A1-12, önce): batch_b1_town_pier.js'nin değişiklikten önceki ilk iki adımı (git HEAD; meta yok) — kesilmiş kopya
+[
+{js: `DK.G.noAutoPause=true; DK.handlers.startGame({kind:'solo', slot:2, data:null}); 'ok'`},
+{wait: 4000, expect: {js: `DK.G.state`, eq: 'playing', label: 'Oyun başladı'}},
+]

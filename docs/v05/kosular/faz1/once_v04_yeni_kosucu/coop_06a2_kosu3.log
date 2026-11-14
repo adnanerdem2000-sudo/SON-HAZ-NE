@@ -1,0 +1,37 @@
+Kaptan/host {"code":"W8M6LC"}
+Tayfa/join {"room":"Güvenlik Odası 2"}
+Lostromo/join {"room":"Güvenlik Odası 2"}
+Kaptan/hs "host-started"
+Tayfa/gs "guest-started"
+Lostromo/gs "guest-started"
+tick 1 @ 36.7s
+PASS 3 oyuncu da oyunda → ["playing","playing","playing"]
+[test] büyük mesaj @ 37.7s
+tick 1.5 @ 37.7s
+Kaptan/chats 1
+PASS H07/H22 200 KB sohbet düşürülür, normal sohbet işlenir → 1
+[test] kopma temizliği @ 38.9s
+Tayfa/g1-helm "19ff6f00-54a1-4d2a-8d37-1d6663496e4c"
+tick 1.5 @ 38.9s
+Lostromo/g2-lock-before "19ff6f00-54a1-4d2a-8d37-1d6663496e4c"
+Kaptan/host-lock-before "19ff6f00-54a1-4d2a-8d37-1d6663496e4c"
+Tayfa sekme kapandı
+tick 0.2 @ 42.2s
+tick 0.2 @ 43.3s
+tick 0.2 @ 44.4s
+tick 0.2 @ 45.5s
+tick 0.2 @ 46.6s
+tick 0.2 @ 47.7s
+tick 0.2 @ 48.8s
+tick 0.2 @ 49.9s
+tick 0.2 @ 51.0s
+tick 0.2 @ 52.1s
+tick 0.2 @ 53.2s
+tick 0.2 @ 54.3s
+tick 0.2 @ 55.4s
+[test] kopma algılandı @ 55.5s (bekleme 13000 ms)
+tick 1 @ 55.5s
+PASS H13 Kopan konuğun dümen kilidi ev sahibinde ve diğer konukta kalkar → {"lockBefore":"19ff6f00-54a1-4d2a-8d37-1d6663496e4c","lockHostBefore":"19ff6f00-54a1-4d2a-8d37-1d6663496e4c","lockHost":null,"lockG2":null,"remotesHost":1}
+[test] 6a-2 tamam @ 55.9s
+checks: 3 fails: 0 pageErrors: 0 (243.9 s)
+SONUC: GECTI (çıkış 0) kontrol 3/3 | ev() istisnası 0, kapalı sayfa atlama 18, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 7 farklı/103

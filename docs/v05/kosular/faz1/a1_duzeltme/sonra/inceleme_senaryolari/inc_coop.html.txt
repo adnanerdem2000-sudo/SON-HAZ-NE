@@ -1,0 +1,17 @@
+<!doctype html>
+<meta charset="utf-8">
+<link rel="icon" href="data:,">
+<title>inceleme a1: coop birleşik sabit</title>
+<!-- coop.cjs'in beklediği en küçük DK + iki oyun davranışı taklidi:
+     hataUret(): bir sonraki görevde yakalanmamış istisna (pageerror)
+     cik(): oyunun "Çıkış" akışı gibi window.close() (js/ui/menu.js quit()) -->
+<script>
+  window.__simSayisi = 0;
+  window.DK = {
+    G: { noAutoPause: false, profile: { appearance: { name: '' } } },
+    sim(sn = 1) { window.__simSayisi++; return Math.round(sn * 30); },
+    hataUret() { setTimeout(() => { throw new Error('inceleme: Tayfa sayfasinda yakalanmamis oyun hatasi'); }, 0); return 'planlandi'; },
+    cik() { setTimeout(() => window.close(), 50); return 'kapatiliyor'; },
+  };
+  window.__ready = true;
+</script>

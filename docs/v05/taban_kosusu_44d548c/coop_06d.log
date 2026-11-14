@@ -1,0 +1,32 @@
+Kaptan/host {"code":"MD9D7N"}
+Tayfa/join {"room":"Ganimet Odası"}
+PASS Konuk odaya bağlandı → {"room":"Ganimet Odası"}
+Kaptan/hs "host-started"
+Tayfa/gs "guest-started"
+PASS 2 oyuncu oyunda ve bağlı
+[test] 1 yere bırak @ 38.2s
+Tayfa/g-drop {"btn":true,"n":4,"left":0}
+Kaptan/h-drop {"id":"pk3hn3a5s","keep":true,"body":true,"n":4}
+PASS C01 Konuğun "Yere bırak"ı ev sahibinde kese olarak doğar (fizikli, uzun ömürlü) ve konukta aynı kimlikle görünür → {"drop":{"btn":true,"n":4,"left":0},"hostPk":{"id":"pk3hn3a5s","keep":true,"body":true,"n":4},"guestSees":true}
+PASS C02 Konuk bıraktığı keseyi geri alır: eşya konuğun çantasına döner, kese ev sahibinde kalkar → {"back":4,"goneH":true}
+[test] 2 sandık @ 40.7s
+Kaptan/h-chest {"id":"chet86kyj","coins":139}
+Tayfa/g-open "req"
+PASS C03 Konuğun açtığı sandığın altını doğrudan konuğun çantasına gider; ev sahibinde kese doğmaz; sandık iki tarafta da kalkar → {"g0":"req","gGot":139,"coins":139,"hSacks":0,"chestGone":true}
+[test] 3 kısmi @ 42.6s
+Kaptan/h-part "pk8wdmwnz"
+Kaptan/h-part2 {"alive":true,"items":[["hayvan_postu",2]]}
+Tayfa/g-part {"alive":true,"items":[["hayvan_postu",2]]}
+PASS C04 Ev sahibinde kısmen sığan kese yerinde kalır (1 post alındı, 2 kaldı); konuktaki kopya da 2 post gösterir → {"hp":{"alive":true,"items":[["hayvan_postu",2]]},"gp":{"alive":true,"items":[["hayvan_postu",2]]}}
+[test] 4 güverte @ 44.4s
+Kaptan/h-deck {"id":"pkjv7zms3","ship":"ship_main","att":true,"pos":[10.4,1.18,285.18]}
+Tayfa/g-deck {"ship":"ship_main","parent":true,"dy":1.5,"d":0.02}
+PASS C05 Güverteye düşen kese konukta da gemiye bağlıdır (suya düşmez, ev sahibiyle aynı yerde) → {"deck":{"id":"pkjv7zms3","ship":"ship_main","att":true,"pos":[10.4,1.18,285.18]},"gDeck":{"ship":"ship_main","parent":true,"dy":1.5,"d":0.02}}
+[test] 5 av @ 45.6s
+Kaptan/h-animal {"id":"an0","x":-108.70873604008355,"z":90.71280974016925}
+Tayfa/g-move "ok"
+Tayfa/g-hit "hit"
+PASS C06 Konuğun öldürdüğü hayvan ev sahibinde öldüren olarak konuğu taşır (XP konuğa) → {"by":"9141578a-c6d2-4bdb-8b57-34eb1a25641e","gid":"9141578a-c6d2-4bdb-8b57-34eb1a25641e"}
+PASS Senaryo sonunda iki taraf da oyunda → ["playing","playing"]
+[test] 06d tamam @ 48.6s
+checks: 9 fails: 0 pageErrors: 0 (146.9 s)

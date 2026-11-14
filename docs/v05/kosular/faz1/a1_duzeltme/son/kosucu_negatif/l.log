@@ -1,0 +1,8 @@
+$ node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs tests/fixtures/kosucu/l_dk_yok.js --size 320x200 --timeout 90 --url http://127.0.0.1:45535/dk_yok.html --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/son/kosucu_negatif/l.json
+ready in 0.2 s
+HARNESS ERROR Test kipi açılmadı: sayfa üretim yapıtı mı ya da köken yerel değil mi? (typeof window.DK = undefined, adres http://127.0.0.1:45535/dk_yok.html?test=1)
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/goruntu/l_dk_yok_2026-11-14T09-19-36-528Z_9056/son.png
+errors: 0 pageErrors: 0 fails: 0 HARNESS ERROR (senaryo koşmadı) (0.3 s)
+SONUC: KOSUCU_HATASI (çıkış 1) kontrol 0/0, onay 1 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: koşucu hatası: Test kipi açılmadı: sayfa üretim yapıtı mı ya da köken yerel değil mi? (typeof window.DK = undefined, adres http://127.0.0.1:45535/dk_yok.html?test=1)
+
+[çıkış 1]

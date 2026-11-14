@@ -1,0 +1,20 @@
+{
+ "scenario": "tests/fixtures/kosucu/f_coop_istisna.cjs",
+ "players": 2,
+ "checks": [
+  {
+   "label": "F01 İstisnadan sonraki kontrol",
+   "ok": true
+  }
+ ],
+ "errors": {
+  "Kaptan": [],
+  "Tayfa": []
+ },
+ "pageErrors": {
+  "Kaptan": [],
+  "Tayfa": []
+ },
+ "fails": 0,
+ "ms": 248
+}

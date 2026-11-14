@@ -1,0 +1,9 @@
+FAIL W01 Ev sahibinde bayrak dogru (await unutuldu) [check()'e söz (Promise) verildi: await unutulmuş, değer denetlenmedi]
+Kaptan/bayrak false
+Kaptan/gec-hata "planlandi"
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/goruntu/e_coop_gec_2026-11-14T09-18-26-872Z_7929/ilk_kalan_Kaptan.png
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/goruntu/e_coop_gec_2026-11-14T09-18-26-872Z_7929/ilk_kalan_Tayfa.png
+Kaptan PAGEERR: inceleme: son adimdan 300 ms sonra gelen oyun hatasi | Error: inceleme: son adimdan 300 ms sonra gelen oyun hatasi |     at eval (eval at evaluate (:311:30), <anonymous>:1:26)
+YERLESME: senaryodan sonraki 1000 ms içinde 1 yeni hata kaydı geldi
+checks: 1 fails: 1 pageErrors: 1 (1.4 s)
+SONUC: KALDI (çıkış 1) kontrol 0/1 | ev() istisnası 0, kapalı sayfa atlama 0, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: başarısız kontrol ya da ev() istisnası: 1; sayfa hatası (pageerror): 1

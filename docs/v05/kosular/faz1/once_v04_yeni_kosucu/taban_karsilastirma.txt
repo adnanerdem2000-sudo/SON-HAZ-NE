@@ -1,0 +1,19 @@
+00_acilis                ↔ 00_acilis                        taban 6/6  yeni 6/6  (tabanda geçenlerden yeni koşuda geçen 6/6)  durum GECTI çıkış 0 izinsiz k/a 0/0 izinli k/a 0/0
+08_kalicilik             ↔ 08_kalicilik                     taban 12/12  yeni 12/12  (tabanda geçenlerden yeni koşuda geçen 12/12)  durum GECTI çıkış 0 izinsiz k/a 0/0 izinli k/a 0/0
+12_kayit_dongusu         ↔ 12_kayit_dongusu                 taban 4/4  yeni 4/4  (tabanda geçenlerden yeni koşuda geçen 4/4)  durum GECTI çıkış 0 izinsiz k/a 0/0 izinli k/a 0/0
+02_arazi_yedek           ↔ 02_arazi_yedek                   taban 12/12  yeni 12/12  (tabanda geçenlerden yeni koşuda geçen 12/12)  durum GECTI çıkış 0 izinsiz k/a 0/0 izinli k/a 0/0
+02_arazi_yedek_crash     ↔ 02_arazi_yedek_crash             taban 12/12  yeni 12/12  (tabanda geçenlerden yeni koşuda geçen 12/12)  durum GECTI çıkış 0 izinsiz k/a 0/0 izinli k/a 0/0
+02_arazi_yedek_badurl    ↔ 02_arazi_yedek_badurl            taban 12/12  yeni 12/12  (tabanda geçenlerden yeni koşuda geçen 12/12)  durum GECTI çıkış 0 izinsiz k/a 0/0 izinli k/a 0/6
+02_arazi_yedek_badurl    ↔ 02_arazi_yedek_badurl_izinsiz    taban 12/12  yeni 12/12  (tabanda geçenlerden yeni koşuda geçen 12/12)  durum KALDI çıkış 1 izinsiz k/a 0/6 izinli k/a 0/0
+02_tek_dosya             ↔ 02_tek_dosya                     taban 4/4  yeni 4/4  (tabanda geçenlerden yeni koşuda geçen 4/4)  durum GECTI çıkış 0 izinsiz k/a 0/0 izinli k/a 0/0
+03_fizik_dt              ↔ 03_fizik_dt                      taban 0/0  yeni 0/0  (tabanda geçenlerden yeni koşuda geçen 0/0)  durum OLCUM çıkış 0 izinsiz k/a 0/0 izinli k/a 0/0
+03_fizik_dt              ↔ 03_fizik_dt_metasiz_KALDI        taban 0/0  yeni 0/0  (tabanda geçenlerden yeni koşuda geçen 0/0)  durum KALDI çıkış 1 izinsiz k/a 0/0 izinli k/a 0/0
+coop_06a2                ↔ coop_06a2_kosu4_son_surum        taban 3/3  yeni 3/3  (tabanda geçenlerden yeni koşuda geçen 3/3)  durum GECTI çıkış 0 izinsiz k/a 0/0 izinli k/a 0/0 kapaliAtlama 18 evalErr 0
+coop_06a2                ↔ coop_06a2_kosu1_KALDI            taban 3/3  yeni 0/3  (tabanda geçenlerden yeni koşuda geçen 0/3)  durum KALDI çıkış 1 izinsiz k/a 0/0 izinli k/a 0/0 kapaliAtlama 5 evalErr 0
+    taban GEÇTİ → yeni KALDI: 3 oyuncu da oyunda
+    taban GEÇTİ → yeni KALDI: H07/H22 200 KB sohbet düşürülür, normal sohbet işlenir
+    taban GEÇTİ → yeni KALDI: H13 Kopan konuğun dümen kilidi ev sahibinde ve diğer konukta kalkar
+coop_06a2                ↔ coop_06a2_kosu3                  taban 3/3  yeni 3/3  (tabanda geçenlerden yeni koşuda geçen 3/3)  durum GECTI çıkış 0 izinsiz k/a 0/0 izinli k/a 0/0 kapaliAtlama 18 evalErr 0
+coop_06a2                ↔ tani/coop_06a2_tani_yeni1        taban 3/3  yeni 3/3  (tabanda geçenlerden yeni koşuda geçen 3/3)  durum GECTI çıkış 0 izinsiz k/a 0/0 izinli k/a 0/0 kapaliAtlama 19 evalErr 0
+
+Toplam (resmî eşleşmeler: son koşucu sürümüyle alınanlar; izinsiz badurl, metasız 03, 06a2'nin 1. ve 3. koşusu ve tanı koşusu hariç): tabanda geçen 65 kontrolün 65'i yeni koşucuyla da geçti; eşleşmeyen etiket 0.

@@ -1,0 +1,16 @@
+// inceleme a1 (coop.cjs): (1) aynı adla mk() yeniden katılımı önceki sayfa hatasını siliyor mu,
+// (2) oyunun kendi window.close()'u (menu.quit gibi) kasıtlı kapatmadan ayırt ediliyor mu. Doğru koşucu: KALDI (pageerror).
+module.exports = async ({ host, guests, ev, tick, check, mk, log }) => {
+  const g = guests[0];
+  await ev(g, `DK.hataUret()`, 'hata');
+  await host.waitForTimeout(500);
+  await g.context().close();                 // Tayfa kasıtlı ayrılır
+  const yeni = await mk('Tayfa');            // aynı adla yeniden katılır (harness'in verdiği mk)
+  check('C01 Yeniden katilan Tayfa hazir', (await ev(yeni, `typeof DK`, 'dk')) === 'object');
+  await ev(yeni, `DK.cik()`, 'cik');         // oyunun "Çıkış" akışı sekmeyi kapatır (beklenmedik)
+  await host.waitForTimeout(800);
+  await tick(1);
+  const s = await ev(yeni, `window.__simSayisi`, 'yeni-sim');
+  check('C02 Ev sahibi ilerledi', (await ev(host, `window.__simSayisi`, 'host-sim')) >= 5);
+  log('yeni Tayfa kapali mi: ' + yeni.isClosed() + ', ev() degeri: ' + s);
+};

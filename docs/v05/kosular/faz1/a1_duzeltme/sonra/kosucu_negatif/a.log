@@ -1,0 +1,10 @@
+$ node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs tests/fixtures/kosucu/a_konsol_404.js --size 320x200 --timeout 90 --url http://127.0.0.1:40315/a_konsol_404.html --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/sonra/kosucu_negatif/a.json
+ERR: x 404 y
+ready in 0.2 s
+PASS A01 Sabit sayfa açıldı → 2
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/goruntu/a_konsol_404_2026-11-14T08-55-01-676Z_27942/son.png
+errors: 1 pageErrors: 0 fails: 0 (1.2 s)
+IZINSIZ KONSOL ×1: x 404 y @ http://127.0.0.1:40315/a_konsol_404.html?test=1
+SONUC: KALDI (çıkış 1) kontrol 1/1, onay 1 | izinsiz konsol 1, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: izinsiz konsol hatası: 1
+
+[çıkış 1]

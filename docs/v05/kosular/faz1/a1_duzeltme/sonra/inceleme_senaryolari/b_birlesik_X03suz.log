@@ -1,0 +1,30 @@
+ready in 0.2 s
+PASS X01 game.update ile 1 sn ileri sarildi → 1
+FAIL X02 Deger 1..10 araliginda → -5
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/goruntu/a1fix_b_birlesik_X03suz_2026-11-14T09-18-20-378Z_7736/ilk_kalan.png
+FAIL X04 Deger >= 0 (null dondu) → null
+SNAPFAIL page.evaluate: Error: inceleme: snapFrom cizimde kirildi
+    at Object.snapFrom (http://127.0.0.1:8097/inc_a.html?test=1:11:24)
+    at eval (eval at evaluate (:311:30), <anonymous>:1:4)
+    at eval (<
+EVALERR page.evaluate: Error: inceleme: snapFrom cizimde kirildi
+    at Object.snapFrom (http://127.0.0.1:8097/inc_a.html?test=1:11:24)
+    at eval (eval at evaluate (:311:30), <anonymous>:1:4)
+    at eval (<anonymous>)
+    at UtilityScript.evaluate (<anonymous>:311:30)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+SNAPFAIL page.evaluate: Error: inceleme: snapFrom cizimde kirildi
+    at Object.snapFrom (http://127.0.0.1:8097/inc_a.html?test=1:11:24)
+    at eval (eval at evaluate (:311:30), <anonymous>:1:4)
+    at eval (<
+EVALERR page.evaluate: Error: inceleme: snapFrom cizimde kirildi
+    at Object.snapFrom (http://127.0.0.1:8097/inc_a.html?test=1:11:24)
+    at eval (eval at evaluate (:311:30), <anonymous>:1:4)
+    at eval (<anonymous>)
+    at UtilityScript.evaluate (<anonymous>:311:30)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+R: "yeniden yukleme planlandi"
+R: 60
+PASS X05 Yeniden yuklemeden sonra DK.sim bir kez cagrildi → 1
+errors: 0 pageErrors: 0 fails: 4 evalErrors: 2 (2.8 s)
+SONUC: KALDI (çıkış 1) kontrol 2/4, onay 4 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: başarısız kontrol ya da adım: 4; adım istisnası (evalErrors): 2

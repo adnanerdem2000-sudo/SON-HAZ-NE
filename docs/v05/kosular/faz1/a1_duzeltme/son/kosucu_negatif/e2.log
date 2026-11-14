@@ -1,0 +1,14 @@
+$ node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs tests/fixtures/kosucu/e2_izinli_cli.js --size 320x200 --timeout 90 --url http://127.0.0.1:45535/e_izinli.html --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/son/kosucu_negatif/e2.json --izin-hata beklenen-hata: kosucu_negatif # sabit sayfa kasıtlı basar --izin-hata izinli-eksik\.png$ # sabit sayfa kasıtlı ister
+HTTP 404 http://127.0.0.1:45535/izinli-eksik.png
+ERR: Failed to load resource: the server responded with a status of 404 (Not Found)
+ERR: beklenen-hata: kosucu_negatif e
+ready in 0.2 s
+PASS E01 Görsel öğesi var → 1
+errors: 2 pageErrors: 0 fails: 0 (1.2 s)
+IZINLI ×1 (beklenen-hata: kosucu_negatif): beklenen-hata: kosucu_negatif e
+IZINLI ×1 (izinli-eksik\.png$): 404 http://127.0.0.1:45535/izinli-eksik.png
+IZIN ×1 (cli, hepsi) beklenen-hata: kosucu_negatif — sabit sayfa kasıtlı basar
+IZIN ×1 (cli, hepsi) izinli-eksik\.png$ — sabit sayfa kasıtlı ister
+SONUC: GECTI (çıkış 0) kontrol 1/1, onay 1 | izinsiz konsol 0, ağ 0 | izinli konsol 1, ağ 1 | uyarı 0 farklı/0
+
+[çıkış 0]

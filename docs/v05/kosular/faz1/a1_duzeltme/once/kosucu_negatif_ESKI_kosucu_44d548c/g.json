@@ -1,0 +1,21 @@
+{
+ "scenario": "tests/fixtures/kosucu/g_coop_kapali.cjs",
+ "players": 2,
+ "checks": [
+  {
+   "label": "G01 Kapalı sekmeden sonra ev sahibi ilerledi",
+   "ok": true,
+   "detail": 5
+  }
+ ],
+ "errors": {
+  "Kaptan": [],
+  "Tayfa": []
+ },
+ "pageErrors": {
+  "Kaptan": [],
+  "Tayfa": []
+ },
+ "fails": 0,
+ "ms": 424
+}

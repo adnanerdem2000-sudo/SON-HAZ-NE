@@ -1,0 +1,7 @@
+$ node /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/kosucu_eski/run.cjs tests/fixtures/kosucu/u_sayfa_hatasi.js --size 320x200 --timeout 90 --url http://127.0.0.1:33013/u_sayfa_hatasi.html --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_ESKI_kosucu_44d548c/u.json
+PAGEERR: kosucu_negatif u: yakalanmamış sayfa hatası | Error: kosucu_negatif u: yakalanmamış sayfa hatası |     at http://127.0.0.1:33013/u_sayfa_hatasi.html:8:28
+ready in 0.2 s
+PASS U01 Sabit sayfa açıldı → "object"
+errors: 0 pageErrors: 1 fails: 0 (0.4 s)
+
+[çıkış 1]

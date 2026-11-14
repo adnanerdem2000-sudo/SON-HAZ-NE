@@ -1,0 +1,1611 @@
+{
+ "arac": "tests/node/kosucu_negatif.mjs",
+ "tarih": "2026-11-14T08:54:13.621Z",
+ "kosucuDizin": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_onceki",
+ "ciktiDizin": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu",
+ "eskiKosucuKipi": false,
+ "durum": "KALDI",
+ "cekirdekKalan": [],
+ "yanlisGecenler": [
+  "y1",
+  "y2",
+  "y3",
+  "y4",
+  "ka",
+  "aa",
+  "ab",
+  "ac",
+  "ad",
+  "ae",
+  "af",
+  "ah",
+  "ai"
+ ],
+ "kalanlar": [
+  "v",
+  "y1",
+  "y2",
+  "y3",
+  "y4",
+  "z",
+  "ka",
+  "aa",
+  "ab",
+  "ac",
+  "ad",
+  "ae",
+  "af",
+  "ag",
+  "ag2",
+  "ah",
+  "ai"
+ ],
+ "durumlar": [
+  {
+   "ad": "t",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "zaman aşımı: ZAMAN_ASIMI, rapor yazılır, kalan adım koşmaz",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "ZAMAN_ASIMI",
+    "rapor": true
+   },
+   "gercek": {
+    "cikis": 1,
+    "sinyal": null,
+    "durum": "ZAMAN_ASIMI",
+    "sema": "dk-test-raporu/2"
+   },
+   "sonuc": "GECTI",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "süreç kendiliğinden bitti (asılı kalmadı)",
+     "ok": true
+    },
+    {
+     "ad": "süre ≤ 60000 ms",
+     "ok": true
+    },
+    {
+     "ad": "durum",
+     "ok": true
+    },
+    {
+     "ad": "eski alanlar korunmuş",
+     "ok": true
+    },
+    {
+     "ad": "sema dk-test-raporu/2",
+     "ok": true
+    },
+    {
+     "ad": "ortam alanı (playwright, tarayıcı, GL)",
+     "ok": true
+    },
+    {
+     "ad": "tekrar.komut senaryoyu içeriyor",
+     "ok": true
+    },
+    {
+     "ad": "sonuc.cikisKodu = süreç çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "timeout alanı",
+     "ok": true
+    },
+    {
+     "ad": "T01 geçti, T02 koşmadı",
+     "ok": true
+    },
+    {
+     "ad": "T02 için PASS basılmadı",
+     "ok": true
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/t.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/t.log",
+   "sureMs": 3529
+  },
+  {
+   "ad": "t2",
+   "cekirdek": false,
+   "kosucu": "coop",
+   "aciklama": "co-op zaman aşımı: geç gelen kontrol sayılmaz",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "ZAMAN_ASIMI",
+    "rapor": true
+   },
+   "gercek": {
+    "cikis": 1,
+    "sinyal": null,
+    "durum": "ZAMAN_ASIMI",
+    "sema": "dk-test-raporu/2"
+   },
+   "sonuc": "GECTI",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "süreç kendiliğinden bitti (asılı kalmadı)",
+     "ok": true
+    },
+    {
+     "ad": "süre ≤ 60000 ms",
+     "ok": true
+    },
+    {
+     "ad": "durum",
+     "ok": true
+    },
+    {
+     "ad": "eski alanlar korunmuş",
+     "ok": true
+    },
+    {
+     "ad": "sema dk-test-raporu/2",
+     "ok": true
+    },
+    {
+     "ad": "ortam alanı (playwright, tarayıcı, GL)",
+     "ok": true
+    },
+    {
+     "ad": "tekrar.komut senaryoyu içeriyor",
+     "ok": true
+    },
+    {
+     "ad": "sonuc.cikisKodu = süreç çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "yalnız T01 sayıldı",
+     "ok": true
+    },
+    {
+     "ad": "T02 için PASS basılmadı",
+     "ok": true
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/t2.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/t2.log",
+   "sureMs": 5451
+  },
+  {
+   "ad": "u",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "yakalanmamış sayfa hatası (pageerror)",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KALDI",
+    "rapor": true
+   },
+   "gercek": {
+    "cikis": 1,
+    "sinyal": null,
+    "durum": "KALDI",
+    "sema": "dk-test-raporu/2"
+   },
+   "sonuc": "GECTI",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "süreç kendiliğinden bitti (asılı kalmadı)",
+     "ok": true
+    },
+    {
+     "ad": "durum",
+     "ok": true
+    },
+    {
+     "ad": "eski alanlar korunmuş",
+     "ok": true
+    },
+    {
+     "ad": "sema dk-test-raporu/2",
+     "ok": true
+    },
+    {
+     "ad": "ortam alanı (playwright, tarayıcı, GL)",
+     "ok": true
+    },
+    {
+     "ad": "tekrar.komut senaryoyu içeriyor",
+     "ok": true
+    },
+    {
+     "ad": "sonuc.cikisKodu = süreç çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "hatalar.sayfa: 1 (kosucu_negatif u)",
+     "ok": true
+    },
+    {
+     "ad": "neden: sayfa hatası",
+     "ok": true
+    },
+    {
+     "ad": "U01 geçti",
+     "ok": true
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/u.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/u.log",
+   "sureMs": 719
+  },
+  {
+   "ad": "v",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "bağlantı reddedildi (requestfailed, HTTP yanıtı yok)",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KALDI",
+    "rapor": true
+   },
+   "gercek": {
+    "cikis": 1,
+    "sinyal": null,
+    "durum": "KALDI",
+    "sema": "dk-test-raporu/2"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "süreç kendiliğinden bitti (asılı kalmadı)",
+     "ok": true
+    },
+    {
+     "ad": "durum",
+     "ok": true
+    },
+    {
+     "ad": "eski alanlar korunmuş",
+     "ok": true
+    },
+    {
+     "ad": "sema dk-test-raporu/2",
+     "ok": true
+    },
+    {
+     "ad": "ortam alanı (playwright, tarayıcı, GL)",
+     "ok": true
+    },
+    {
+     "ad": "tekrar.komut senaryoyu içeriyor",
+     "ok": true
+    },
+    {
+     "ad": "sonuc.cikisKodu = süreç çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "ağ: başarısız istek kapali-kapi.png (ERR_CONNECTION_REFUSED)",
+     "ok": false,
+     "deger": [
+      {
+       "oyuncu": null,
+       "tur": "basarisiz",
+       "url": "http://127.0.0.1:1/kapali-kapi.png",
+       "hata": "net::ERR_UNSAFE_PORT",
+       "kaynakTuru": "image",
+       "yontem": "GET",
+       "sayi": 1
+      }
+     ]
+    },
+    {
+     "ad": "konsol iletisi ağ kaydıyla tekilleşti",
+     "ok": true
+    },
+    {
+     "ad": "neden: izinsiz ağ hatası",
+     "ok": true
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/v.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/v.log",
+   "sureMs": 562
+  },
+  {
+   "ad": "w",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "sözdizimi bozuk senaryo",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KOSUCU_HATASI",
+    "rapor": true
+   },
+   "gercek": {
+    "cikis": 1,
+    "sinyal": null,
+    "durum": "KOSUCU_HATASI",
+    "sema": "dk-test-raporu/2"
+   },
+   "sonuc": "GECTI",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "süreç kendiliğinden bitti (asılı kalmadı)",
+     "ok": true
+    },
+    {
+     "ad": "durum",
+     "ok": true
+    },
+    {
+     "ad": "eski alanlar korunmuş",
+     "ok": true
+    },
+    {
+     "ad": "sema dk-test-raporu/2",
+     "ok": true
+    },
+    {
+     "ad": "ortam alanı (playwright, tarayıcı, GL)",
+     "ok": true
+    },
+    {
+     "ad": "tekrar.komut senaryoyu içeriyor",
+     "ok": true
+    },
+    {
+     "ad": "sonuc.cikisKodu = süreç çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "harnessError: sözdizimi",
+     "ok": true
+    },
+    {
+     "ad": "adımlar koşmadı",
+     "ok": true
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/w.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/w.log",
+   "sureMs": 584
+  },
+  {
+   "ad": "y1",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "expect'te yazım hatalı karşılaştırıcı ('truthly')",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KOSUCU_HATASI",
+    "rapor": true
+   },
+   "gercek": {
+    "cikis": 0,
+    "sinyal": null,
+    "durum": "GECTI",
+    "sema": "dk-test-raporu/2"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": true,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": false,
+     "deger": 0
+    },
+    {
+     "ad": "süreç kendiliğinden bitti (asılı kalmadı)",
+     "ok": true
+    },
+    {
+     "ad": "durum",
+     "ok": false,
+     "deger": "GECTI"
+    },
+    {
+     "ad": "eski alanlar korunmuş",
+     "ok": true
+    },
+    {
+     "ad": "sema dk-test-raporu/2",
+     "ok": true
+    },
+    {
+     "ad": "ortam alanı (playwright, tarayıcı, GL)",
+     "ok": true
+    },
+    {
+     "ad": "tekrar.komut senaryoyu içeriyor",
+     "ok": true
+    },
+    {
+     "ad": "sonuc.cikisKodu = süreç çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "harnessError: bilinmeyen alan truthly",
+     "ok": false
+    },
+    {
+     "ad": "adımlar koşmadı",
+     "ok": false,
+     "deger": 1
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/y1.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/y1.log",
+   "sureMs": 590
+  },
+  {
+   "ad": "y2",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "bütün karşılaştırıcılar uygulanır; gte/lte yalnız sonlu sayıyla",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KALDI",
+    "rapor": true
+   },
+   "gercek": {
+    "cikis": 0,
+    "sinyal": null,
+    "durum": "GECTI",
+    "sema": "dk-test-raporu/2"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": true,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": false,
+     "deger": 0
+    },
+    {
+     "ad": "süreç kendiliğinden bitti (asılı kalmadı)",
+     "ok": true
+    },
+    {
+     "ad": "durum",
+     "ok": false,
+     "deger": "GECTI"
+    },
+    {
+     "ad": "eski alanlar korunmuş",
+     "ok": true
+    },
+    {
+     "ad": "sema dk-test-raporu/2",
+     "ok": true
+    },
+    {
+     "ad": "ortam alanı (playwright, tarayıcı, GL)",
+     "ok": true
+    },
+    {
+     "ad": "tekrar.komut senaryoyu içeriyor",
+     "ok": true
+    },
+    {
+     "ad": "sonuc.cikisKodu = süreç çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "Y02 (−5, 1..10) kaldı",
+     "ok": false,
+     "deger": {
+      "n": 1,
+      "id": "Y02",
+      "etiket": "Y02 Değer 1..10 aralığında (−5 dönüyor)",
+      "ok": true,
+      "deger": -5,
+      "beklenen": {
+       "gte": 1,
+       "lte": 10
+      },
+      "sure_ms": 1,
+      "benzetim": {
+       "sim": 0,
+       "adim": 0,
+       "press": 0,
+       "tap": 0
+      },
+      "tur": "tarayici",
+      "hata": null,
+      "goruntu": null
+     }
+    },
+    {
+     "ad": "Y03 (null ≥ 0) kaldı",
+     "ok": false,
+     "deger": {
+      "n": 2,
+      "id": "Y03",
+      "etiket": "Y03 Değer ≥ 0 (null dönüyor)",
+      "ok": true,
+      "deger": null,
+      "beklenen": {
+       "gte": 0
+      },
+      "sure_ms": 2,
+      "benzetim": {
+       "sim": 0,
+       "adim": 0,
+       "press": 0,
+       "tap": 0
+      },
+      "tur": "tarayici",
+      "hata": null,
+      "goruntu": null
+     }
+    },
+    {
+     "ad": "Y04 ([] ≤ 5) kaldı",
+     "ok": false,
+     "deger": {
+      "n": 3,
+      "id": "Y04",
+      "etiket": "Y04 Değer ≤ 5 (boş dizi dönüyor)",
+      "ok": true,
+      "deger": [],
+      "beklenen": {
+       "lte": 5
+      },
+      "sure_ms": 2,
+      "benzetim": {
+       "sim": 0,
+       "adim": 0,
+       "press": 0,
+       "tap": 0
+      },
+      "tur": "tarayici",
+      "hata": null,
+      "goruntu": null
+     }
+    },
+    {
+     "ad": "Y05 (5, 1..10) geçti",
+     "ok": true
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/y2.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/y2.log",
+   "sureMs": 549
+  },
+  {
+   "ad": "y3",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "karşılaştırıcısız expect",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KOSUCU_HATASI",
+    "rapor": true
+   },
+   "gercek": {
+    "cikis": 0,
+    "sinyal": null,
+    "durum": "GECTI",
+    "sema": "dk-test-raporu/2"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": true,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": false,
+     "deger": 0
+    },
+    {
+     "ad": "süreç kendiliğinden bitti (asılı kalmadı)",
+     "ok": true
+    },
+    {
+     "ad": "durum",
+     "ok": false,
+     "deger": "GECTI"
+    },
+    {
+     "ad": "eski alanlar korunmuş",
+     "ok": true
+    },
+    {
+     "ad": "sema dk-test-raporu/2",
+     "ok": true
+    },
+    {
+     "ad": "ortam alanı (playwright, tarayıcı, GL)",
+     "ok": true
+    },
+    {
+     "ad": "tekrar.komut senaryoyu içeriyor",
+     "ok": true
+    },
+    {
+     "ad": "sonuc.cikisKodu = süreç çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "harnessError: karşılaştırıcı yok",
+     "ok": false
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/y3.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/y3.log",
+   "sureMs": 541
+  },
+  {
+   "ad": "y4",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "sınırsız agSay",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KOSUCU_HATASI",
+    "rapor": true
+   },
+   "gercek": {
+    "cikis": 0,
+    "sinyal": null,
+    "durum": "GECTI",
+    "sema": "dk-test-raporu/2"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": true,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": false,
+     "deger": 0
+    },
+    {
+     "ad": "süreç kendiliğinden bitti (asılı kalmadı)",
+     "ok": true
+    },
+    {
+     "ad": "durum",
+     "ok": false,
+     "deger": "GECTI"
+    },
+    {
+     "ad": "eski alanlar korunmuş",
+     "ok": true
+    },
+    {
+     "ad": "sema dk-test-raporu/2",
+     "ok": true
+    },
+    {
+     "ad": "ortam alanı (playwright, tarayıcı, GL)",
+     "ok": true
+    },
+    {
+     "ad": "tekrar.komut senaryoyu içeriyor",
+     "ok": true
+    },
+    {
+     "ad": "sonuc.cikisKodu = süreç çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "harnessError: sınır yok",
+     "ok": false
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/y4.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/y4.log",
+   "sureMs": 551
+  },
+  {
+   "ad": "z",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "tür ölçümü: rAF döngüsü, doğrudan game.update, DK.sim, sayfanın kendi yeniden yüklemesi",
+   "beklenen": {
+    "cikis": 0,
+    "durum": "GECTI",
+    "rapor": true
+   },
+   "gercek": {
+    "cikis": 0,
+    "sinyal": null,
+    "durum": "GECTI",
+    "sema": "dk-test-raporu/2"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "süreç kendiliğinden bitti (asılı kalmadı)",
+     "ok": true
+    },
+    {
+     "ad": "durum",
+     "ok": true
+    },
+    {
+     "ad": "eski alanlar korunmuş",
+     "ok": true
+    },
+    {
+     "ad": "sema dk-test-raporu/2",
+     "ok": true
+    },
+    {
+     "ad": "ortam alanı (playwright, tarayıcı, GL)",
+     "ok": true
+    },
+    {
+     "ad": "tekrar.komut senaryoyu içeriyor",
+     "ok": true
+    },
+    {
+     "ad": "sonuc.cikisKodu = süreç çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "Z01 tarayici (rAF döngüsünün game.update çağrıları sayılmadı)",
+     "ok": false,
+     "deger": {
+      "n": 2,
+      "id": "Z01",
+      "etiket": "Z01 Oyunun kendi rAF döngüsü game.update çağırdı",
+      "ok": true,
+      "deger": true,
+      "beklenen": {
+       "truthy": true
+      },
+      "sure_ms": 2,
+      "benzetim": {
+       "sim": 0,
+       "adim": 0,
+       "press": 0,
+       "tap": 0
+      },
+      "tur": "tarayici",
+      "hata": null,
+      "goruntu": null
+     }
+    },
+    {
+     "ad": "Z02 tarayici+benzetim (doğrudan game.update: update 3, sim 0)",
+     "ok": false,
+     "deger": {
+      "n": 4,
+      "id": "Z02",
+      "etiket": "Z02 Doğrudan game.update ile ileri sarıldı",
+      "ok": true,
+      "deger": true,
+      "beklenen": {
+       "truthy": true
+      },
+      "sure_ms": 1,
+      "benzetim": {
+       "sim": 0,
+       "adim": 0,
+       "press": 0,
+       "tap": 0
+      },
+      "tur": "tarayici",
+      "hata": null,
+      "goruntu": null
+     }
+    },
+    {
+     "ad": "Z03 tarayici+benzetim (sim 1, adım 30, update 0)",
+     "ok": false,
+     "deger": {
+      "n": 7,
+      "id": "Z03",
+      "etiket": "Z03 DK.sim bir kez çağrıldı",
+      "ok": true,
+      "deger": 1,
+      "beklenen": {
+       "eq": 1
+      },
+      "sure_ms": 1,
+      "benzetim": {
+       "sim": 1,
+       "adim": 30,
+       "press": 0,
+       "tap": 0
+      },
+      "tur": "tarayici+benzetim",
+      "hata": null,
+      "goruntu": null
+     }
+    },
+    {
+     "ad": "Z04 tarayici+benzetim (kendi yeniden yüklemesinden sonra sim 1, adım 60)",
+     "ok": false,
+     "deger": {
+      "n": 11,
+      "id": "Z04",
+      "etiket": "Z04 Sayfanın kendi yeniden yüklemesinden sonra DK.sim",
+      "ok": true,
+      "deger": 1,
+      "beklenen": {
+       "eq": 1
+      },
+      "sure_ms": 2,
+      "benzetim": {
+       "sim": 0,
+       "adim": 0,
+       "press": 0,
+       "tap": 0
+      },
+      "tur": "tarayici",
+      "hata": null,
+      "goruntu": null
+     }
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/z.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/z.log",
+   "sureMs": 2361
+  },
+  {
+   "ad": "ka",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "kanıt adımları: sayfa istisnası ve data: olmayan dönüş adım hatası; dosya yazımı yalnız uyarı",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KALDI",
+    "rapor": true
+   },
+   "gercek": {
+    "cikis": 0,
+    "sinyal": null,
+    "durum": "GECTI",
+    "sema": "dk-test-raporu/2"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": true,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": false,
+     "deger": 0
+    },
+    {
+     "ad": "süreç kendiliğinden bitti (asılı kalmadı)",
+     "ok": true
+    },
+    {
+     "ad": "durum",
+     "ok": false,
+     "deger": "GECTI"
+    },
+    {
+     "ad": "eski alanlar korunmuş",
+     "ok": true
+    },
+    {
+     "ad": "sema dk-test-raporu/2",
+     "ok": true
+    },
+    {
+     "ad": "ortam alanı (playwright, tarayıcı, GL)",
+     "ok": true
+    },
+    {
+     "ad": "tekrar.komut senaryoyu içeriyor",
+     "ok": true
+    },
+    {
+     "ad": "sonuc.cikisKodu = süreç çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "snap, view, snapjs adım hatası",
+     "ok": false,
+     "deger": [
+      null,
+      null,
+      null
+     ]
+    },
+    {
+     "ad": "hatalar.degerlendirme: 3 kanıt hatası",
+     "ok": false,
+     "deger": []
+    },
+    {
+     "ad": "evalErrors = 3",
+     "ok": false,
+     "deger": 0
+    },
+    {
+     "ad": "yazılamayan dosya: adım hatası değil, kanıt uyarısı",
+     "ok": false,
+     "deger": {
+      "adim": {
+       "n": 5,
+       "label": null,
+       "ms": 1
+      }
+     }
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/ka.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/ka.log",
+   "sureMs": 512
+  },
+  {
+   "ad": "aa",
+   "cekirdek": false,
+   "kosucu": "coop",
+   "aciklama": "co-op check()'e söz (await unutuldu)",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KALDI",
+    "rapor": true
+   },
+   "gercek": {
+    "cikis": 0,
+    "sinyal": null,
+    "durum": "GECTI",
+    "sema": "dk-test-raporu/2"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": true,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": false,
+     "deger": 0
+    },
+    {
+     "ad": "süreç kendiliğinden bitti (asılı kalmadı)",
+     "ok": true
+    },
+    {
+     "ad": "durum",
+     "ok": false,
+     "deger": "GECTI"
+    },
+    {
+     "ad": "eski alanlar korunmuş",
+     "ok": true
+    },
+    {
+     "ad": "sema dk-test-raporu/2",
+     "ok": true
+    },
+    {
+     "ad": "ortam alanı (playwright, tarayıcı, GL)",
+     "ok": true
+    },
+    {
+     "ad": "tekrar.komut senaryoyu içeriyor",
+     "ok": true
+    },
+    {
+     "ad": "sonuc.cikisKodu = süreç çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "AA01 kaldı (söz)",
+     "ok": false,
+     "deger": {
+      "n": 1,
+      "id": "AA01",
+      "etiket": "AA01 Ev sahibinde bayrak doğru (await unutuldu)",
+      "ok": true,
+      "deger": null,
+      "beklenen": {
+       "truthy": true
+      },
+      "sure_ms": 2,
+      "benzetim": null,
+      "tur": "tarayici+webrtc",
+      "hata": null,
+      "goruntu": null
+     }
+    },
+    {
+     "ad": "AA02 geçti",
+     "ok": true
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/aa.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/aa.log",
+   "sureMs": 584
+  },
+  {
+   "ad": "ab",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "son adımdan sonra gelen eşzamansız sayfa hatası (yerleşme)",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KALDI",
+    "rapor": true
+   },
+   "gercek": {
+    "cikis": 0,
+    "sinyal": null,
+    "durum": "GECTI",
+    "sema": "dk-test-raporu/2"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": true,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": false,
+     "deger": 0
+    },
+    {
+     "ad": "süreç kendiliğinden bitti (asılı kalmadı)",
+     "ok": true
+    },
+    {
+     "ad": "durum",
+     "ok": false,
+     "deger": "GECTI"
+    },
+    {
+     "ad": "eski alanlar korunmuş",
+     "ok": true
+    },
+    {
+     "ad": "sema dk-test-raporu/2",
+     "ok": true
+    },
+    {
+     "ad": "ortam alanı (playwright, tarayıcı, GL)",
+     "ok": true
+    },
+    {
+     "ad": "tekrar.komut senaryoyu içeriyor",
+     "ok": true
+    },
+    {
+     "ad": "sonuc.cikisKodu = süreç çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "geç gelen sayfa hatası kaydedildi",
+     "ok": false,
+     "deger": []
+    },
+    {
+     "ad": "yerleşme ≥ 1000 ms",
+     "ok": false,
+     "deger": {
+      "hazirMs": 196,
+      "toplamMs": 205
+     }
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/ab.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/ab.log",
+   "sureMs": 535
+  },
+  {
+   "ad": "ac",
+   "cekirdek": false,
+   "kosucu": "coop",
+   "aciklama": "co-op: senaryodan sonra gelen eşzamansız sayfa hatası (yerleşme)",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KALDI",
+    "rapor": true
+   },
+   "gercek": {
+    "cikis": 0,
+    "sinyal": null,
+    "durum": "GECTI",
+    "sema": "dk-test-raporu/2"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": true,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": false,
+     "deger": 0
+    },
+    {
+     "ad": "süreç kendiliğinden bitti (asılı kalmadı)",
+     "ok": true
+    },
+    {
+     "ad": "durum",
+     "ok": false,
+     "deger": "GECTI"
+    },
+    {
+     "ad": "eski alanlar korunmuş",
+     "ok": true
+    },
+    {
+     "ad": "sema dk-test-raporu/2",
+     "ok": true
+    },
+    {
+     "ad": "ortam alanı (playwright, tarayıcı, GL)",
+     "ok": true
+    },
+    {
+     "ad": "tekrar.komut senaryoyu içeriyor",
+     "ok": true
+    },
+    {
+     "ad": "sonuc.cikisKodu = süreç çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "geç gelen sayfa hatası (Kaptan)",
+     "ok": false,
+     "deger": []
+    },
+    {
+     "ad": "yerleşme ≥ 1000 ms",
+     "ok": false,
+     "deger": {
+      "hazirMs": 239,
+      "toplamMs": 243
+     }
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/ac.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/ac.log",
+   "sureMs": 528
+  },
+  {
+   "ad": "ad",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "gerekçesiz izin (meta)",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KOSUCU_HATASI",
+    "rapor": true
+   },
+   "gercek": {
+    "cikis": 0,
+    "sinyal": null,
+    "durum": "GECTI",
+    "sema": "dk-test-raporu/2"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": true,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": false,
+     "deger": 0
+    },
+    {
+     "ad": "süreç kendiliğinden bitti (asılı kalmadı)",
+     "ok": true
+    },
+    {
+     "ad": "durum",
+     "ok": false,
+     "deger": "GECTI"
+    },
+    {
+     "ad": "eski alanlar korunmuş",
+     "ok": true
+    },
+    {
+     "ad": "sema dk-test-raporu/2",
+     "ok": true
+    },
+    {
+     "ad": "ortam alanı (playwright, tarayıcı, GL)",
+     "ok": true
+    },
+    {
+     "ad": "tekrar.komut senaryoyu içeriyor",
+     "ok": true
+    },
+    {
+     "ad": "sonuc.cikisKodu = süreç çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "harnessError: gerekçe zorunlu",
+     "ok": false
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/ad.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/ad.log",
+   "sureMs": 516
+  },
+  {
+   "ad": "ae",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "her şeyle eşleşen izin deseni ('.*')",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KOSUCU_HATASI",
+    "rapor": true
+   },
+   "gercek": {
+    "cikis": 0,
+    "sinyal": null,
+    "durum": "GECTI",
+    "sema": "dk-test-raporu/2"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": true,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": false,
+     "deger": 0
+    },
+    {
+     "ad": "süreç kendiliğinden bitti (asılı kalmadı)",
+     "ok": true
+    },
+    {
+     "ad": "durum",
+     "ok": false,
+     "deger": "GECTI"
+    },
+    {
+     "ad": "eski alanlar korunmuş",
+     "ok": true
+    },
+    {
+     "ad": "sema dk-test-raporu/2",
+     "ok": true
+    },
+    {
+     "ad": "ortam alanı (playwright, tarayıcı, GL)",
+     "ok": true
+    },
+    {
+     "ad": "tekrar.komut senaryoyu içeriyor",
+     "ok": true
+    },
+    {
+     "ad": "sonuc.cikisKodu = süreç çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "harnessError: boş dizgeyle eşleşiyor",
+     "ok": false
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/ae.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/ae.log",
+   "sureMs": 501
+  },
+  {
+   "ad": "af",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "ağ için yazılmış izin, betiğin bastığı konsol hatasını (konum adresi) izinli yapmaz",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KALDI",
+    "rapor": true
+   },
+   "gercek": {
+    "cikis": 0,
+    "sinyal": null,
+    "durum": "GECTI",
+    "sema": "dk-test-raporu/2"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": true,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": false,
+     "deger": 0
+    },
+    {
+     "ad": "süreç kendiliğinden bitti (asılı kalmadı)",
+     "ok": true
+    },
+    {
+     "ad": "durum",
+     "ok": false,
+     "deger": "GECTI"
+    },
+    {
+     "ad": "eski alanlar korunmuş",
+     "ok": true
+    },
+    {
+     "ad": "sema dk-test-raporu/2",
+     "ok": true
+    },
+    {
+     "ad": "ortam alanı (playwright, tarayıcı, GL)",
+     "ok": true
+    },
+    {
+     "ad": "tekrar.komut senaryoyu içeriyor",
+     "ok": true
+    },
+    {
+     "ad": "sonuc.cikisKodu = süreç çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "betiğin hatası izinsiz",
+     "ok": false,
+     "deger": []
+    },
+    {
+     "ad": "af-eksik.png 404 izinli",
+     "ok": true
+    },
+    {
+     "ad": "konsolda izinli yok",
+     "ok": false,
+     "deger": [
+      {
+       "oyuncu": null,
+       "ileti": "kosucu_negatif af: betiğin bastığı gerçek hata",
+       "url": "http://127.0.0.1:32827/af_betik.js",
+       "satir": 1,
+       "isci": false,
+       "izin": "af[-_]",
+       "sayi": 1
+      }
+     ]
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/af.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/af.log",
+   "sureMs": 564
+  },
+  {
+   "ad": "ag",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "bozuk --izin-hata düzenli ifadesi: kullanım hatası (çıkış 2)",
+   "beklenen": {
+    "cikis": 2,
+    "durum": null,
+    "rapor": false
+   },
+   "gercek": {
+    "cikis": 1,
+    "sinyal": null,
+    "durum": null,
+    "sema": "rapor yok"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": false,
+     "deger": 1
+    },
+    {
+     "ad": "süreç kendiliğinden bitti (asılı kalmadı)",
+     "ok": true
+    },
+    {
+     "ad": "süre ≤ 15000 ms",
+     "ok": true
+    },
+    {
+     "ad": "rapor yazılmadı (beklenen)",
+     "ok": true
+    },
+    {
+     "ad": "ileti: geçersiz düzenli ifade",
+     "ok": true
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/ag.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/ag.log",
+   "sureMs": 264
+  },
+  {
+   "ad": "ag2",
+   "cekirdek": false,
+   "kosucu": "coop",
+   "aciklama": "co-op: bozuk --izin-hata düzenli ifadesi: kullanım hatası (çıkış 2)",
+   "beklenen": {
+    "cikis": 2,
+    "durum": null,
+    "rapor": false
+   },
+   "gercek": {
+    "cikis": 1,
+    "sinyal": null,
+    "durum": null,
+    "sema": "rapor yok"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": false,
+     "deger": 1
+    },
+    {
+     "ad": "süreç kendiliğinden bitti (asılı kalmadı)",
+     "ok": true
+    },
+    {
+     "ad": "süre ≤ 15000 ms",
+     "ok": true
+    },
+    {
+     "ad": "rapor yazılmadı (beklenen)",
+     "ok": true
+    },
+    {
+     "ad": "ileti: geçersiz düzenli ifade",
+     "ok": true
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/ag2.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/ag2.log",
+   "sureMs": 284
+  },
+  {
+   "ad": "ah",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "gerekçesiz --izin-hata: kullanım hatası (çıkış 2)",
+   "beklenen": {
+    "cikis": 2,
+    "durum": null,
+    "rapor": false
+   },
+   "gercek": {
+    "cikis": 0,
+    "sinyal": null,
+    "durum": "GECTI",
+    "sema": "dk-test-raporu/2"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": true,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": false,
+     "deger": 0
+    },
+    {
+     "ad": "süreç kendiliğinden bitti (asılı kalmadı)",
+     "ok": true
+    },
+    {
+     "ad": "süre ≤ 15000 ms",
+     "ok": true
+    },
+    {
+     "ad": "rapor yazılmadı (beklenen)",
+     "ok": false,
+     "deger": true
+    },
+    {
+     "ad": "ileti: gerekçe zorunlu",
+     "ok": false,
+     "deger": null
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/ah.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/ah.log",
+   "sureMs": 486
+  },
+  {
+   "ad": "ai",
+   "cekirdek": false,
+   "kosucu": "coop",
+   "aciklama": "co-op: aynı adla mk() ile yeniden katılım önceki sekmenin sayfa hatasını silmez",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KALDI",
+    "rapor": true
+   },
+   "gercek": {
+    "cikis": 0,
+    "sinyal": null,
+    "durum": "GECTI",
+    "sema": "dk-test-raporu/2"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": true,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": false,
+     "deger": 0
+    },
+    {
+     "ad": "süreç kendiliğinden bitti (asılı kalmadı)",
+     "ok": true
+    },
+    {
+     "ad": "durum",
+     "ok": false,
+     "deger": "GECTI"
+    },
+    {
+     "ad": "eski alanlar korunmuş",
+     "ok": true
+    },
+    {
+     "ad": "sema dk-test-raporu/2",
+     "ok": true
+    },
+    {
+     "ad": "ortam alanı (playwright, tarayıcı, GL)",
+     "ok": true
+    },
+    {
+     "ad": "tekrar.komut senaryoyu içeriyor",
+     "ok": true
+    },
+    {
+     "ad": "sonuc.cikisKodu = süreç çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "pageErrors.Tayfa: ilk sekmenin hatası",
+     "ok": false,
+     "deger": {
+      "Kaptan": [],
+      "Tayfa": []
+     }
+    },
+    {
+     "ad": "yeni sekmenin anahtarı Tayfa#2",
+     "ok": false,
+     "deger": [
+      "Kaptan",
+      "Tayfa"
+     ]
+    },
+    {
+     "ad": "hatalar.sayfa: oyuncu Tayfa",
+     "ok": false,
+     "deger": []
+    },
+    {
+     "ad": "AI01 geçti",
+     "ok": true
+    }
+   ],
+   "rapor": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/ai.json",
+   "gunluk": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/ai.log",
+   "sureMs": 1151
+  }
+ ]
+}

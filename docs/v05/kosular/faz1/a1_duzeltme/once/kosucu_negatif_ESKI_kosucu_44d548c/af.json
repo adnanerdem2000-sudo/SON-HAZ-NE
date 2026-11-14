@@ -1,0 +1,31 @@
+{
+ "scenario": "tests/fixtures/kosucu/af_konum.js",
+ "url": "http://127.0.0.1:33013/af_konum.html",
+ "size": [
+  320,
+  200
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "AF01 Görsel öğesi var",
+    "ok": true,
+    "value": 1
+   }
+  }
+ ],
+ "errors": [
+  "kosucu_negatif af: betiğin bastığı gerçek hata"
+ ],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 142,
+ "ms": 145
+}

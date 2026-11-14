@@ -1,0 +1,10 @@
+$ node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs tests/fixtures/kosucu/k_test_param.js --size 320x200 --timeout 90 --url http://127.0.0.1:35867/temiz.html?a=1&b=x%20y --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/sonra_yeni_kosucu/k.json
+ready in 0.2 s
+PASS K01 test=1 kendiliğinden eklendi → "1"
+PASS K02 Diğer parametreler korundu → "?a=1&b=x%20y&test=1"
+R: 30
+PASS K03 DK.sim bir kez çağrıldı → 1
+errors: 0 pageErrors: 0 fails: 0 (0.3 s)
+SONUC: GECTI (çıkış 0) kontrol 3/3, onay 3 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0
+
+[çıkış 0]

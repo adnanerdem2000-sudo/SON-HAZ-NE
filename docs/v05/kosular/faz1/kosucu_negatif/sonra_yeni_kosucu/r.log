@@ -1,0 +1,13 @@
+$ node /home/user/SON-HAZ-NE-w2/tests/harness/coop.cjs tests/fixtures/kosucu/r_coop_konsol.cjs --players 2 --size 320x200 --timeout 120 --url http://127.0.0.1:35867/coop.html?hata=1 --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/sonra_yeni_kosucu/r.json
+Kaptan ERR: coop sabit sayfa hatası
+Tayfa ERR: coop sabit sayfa hatası
+Kaptan/dk "object"
+PASS R01 Sayfa açıldı → "object"
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/goruntu/r_coop_konsol_2026-11-14T07-28-23-085Z_16172/son_Kaptan.png
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/goruntu/r_coop_konsol_2026-11-14T07-28-23-085Z_16172/son_Tayfa.png
+checks: 1 fails: 0 pageErrors: 0 (0.4 s)
+IZINSIZ KONSOL Kaptan ×1: coop sabit sayfa hatası @ http://127.0.0.1:35867/coop.html?hata=1&test=1
+IZINSIZ KONSOL Tayfa ×1: coop sabit sayfa hatası @ http://127.0.0.1:35867/coop.html?hata=1&test=1
+SONUC: KALDI (çıkış 1) kontrol 1/1 | ev() istisnası 0, kapalı sayfa atlama 0, kapanışta istisna 0 | izinsiz konsol 2, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: izinsiz konsol hatası: 2
+
+[çıkış 1]

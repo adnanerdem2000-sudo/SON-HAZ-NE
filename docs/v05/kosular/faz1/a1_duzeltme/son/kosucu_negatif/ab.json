@@ -1,0 +1,166 @@
+{
+ "scenario": "tests/fixtures/kosucu/ab_gec_hata.js",
+ "url": "http://127.0.0.1:45535/temiz.html",
+ "size": [
+  320,
+  200
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "AB01 Sabit sayfa açıldı",
+    "ok": true,
+    "value": 1
+   },
+   "ms": 3
+  },
+  {
+   "n": 2,
+   "label": null,
+   "result": "planlandı",
+   "ms": 2
+  }
+ ],
+ "errors": [],
+ "pageErrors": [
+  "kosucu_negatif ab: son adımdan 300 ms sonra gelen hata | Error: kosucu_negatif ab: son adımdan 300 ms sonra gelen hata |     at eval (eval at evaluate (:311:30), <anonymous>:1:26)"
+ ],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 209,
+ "ms": 1243,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/fixtures/kosucu/ab_gec_hata.js",
+ "meta": {},
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://127.0.0.1:45535/temiz.html?test=1",
+  "verilenUrl": "http://127.0.0.1:45535/temiz.html",
+  "gorunum": [
+   320,
+   200
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   320,
+   200
+  ],
+  "ci": false,
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T09:20:20.281Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs /home/user/SON-HAZ-NE-w2/tests/fixtures/kosucu/ab_gec_hata.js --size 320x200 --timeout 90 --url http://127.0.0.1:45535/temiz.html --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/son/kosucu_negatif/ab.json",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://127.0.0.1:45535 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 45535"
+  ],
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd-kirli",
+  "senaryoSha256": "f60ed8f20197e5f2926ff4879fe07bef62c3e06c583071ab78763c894faf4fee",
+  "adim": null,
+  "url": "http://127.0.0.1:45535/temiz.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 1,
+   "id": "AB01",
+   "etiket": "AB01 Sabit sayfa açıldı",
+   "ok": true,
+   "deger": 1,
+   "beklenen": {
+    "eq": 1
+   },
+   "sure_ms": 1,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [
+   "kosucu_negatif ab: son adımdan 300 ms sonra gelen hata | Error: kosucu_negatif ab: son adımdan 300 ms sonra gelen hata |     at eval (eval at evaluate (:311:30), <anonymous>:1:26)"
+  ],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [],
+ "uyariSayim": {
+  "farkli": 0,
+  "toplam": 0,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [
+  {
+   "ad": "son",
+   "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/ab_gec_hata_2026-11-14T09-20-20-133Z_11007/son.png",
+   "tuval": null
+  }
+ ],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 1,
+ "sonuc": {
+  "durum": "KALDI",
+  "cikisKodu": 1,
+  "neden": [
+   "sayfa hatası (pageerror): 1"
+  ],
+  "onaySayisi": 1,
+  "kontrolSayisi": 1,
+  "gecen": 1,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": "tarayici",
+  "turSayim": {
+   "tarayici": 1
+  }
+ },
+ "sure": {
+  "hazirMs": 209,
+  "toplamMs": 1243,
+  "yerlesmeMs": 1000
+ }
+}

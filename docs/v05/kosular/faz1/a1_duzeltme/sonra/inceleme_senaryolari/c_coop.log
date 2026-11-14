@@ -1,0 +1,14 @@
+Tayfa/hata "planlandi"
+Tayfa PAGEERR: inceleme: Tayfa sayfasinda yakalanmamis oyun hatasi | Error: inceleme: Tayfa sayfasinda yakalanmamis oyun hatasi |     at http://127.0.0.1:8097/inc_coop.html?test=1:13:43
+Tayfa sekme kapandı
+Tayfa#2: 'Tayfa' adıyla yeniden katılan sekme (rapor anahtarı Tayfa#2)
+Tayfa#2/dk "object"
+PASS C01 Yeniden katilan Tayfa hazir
+Tayfa#2/cik "kapatiliyor"
+Tayfa#2/yeni-sim 0
+Kaptan/host-sim 5
+PASS C02 Ev sahibi ilerledi
+[test] yeni Tayfa kapali mi: false, ev() degeri: 0
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/goruntu/c_coop_2026-11-14T09-18-23-617Z_7827/son_Kaptan.png
+checks: 2 fails: 0 pageErrors: 1 (2.9 s)
+SONUC: KALDI (çıkış 1) kontrol 2/2 | ev() istisnası 0, kapalı sayfa atlama 5, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 1 farklı/1 | neden: sayfa hatası (pageerror): 1

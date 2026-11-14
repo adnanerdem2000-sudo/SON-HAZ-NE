@@ -1,0 +1,6 @@
+FAIL (a) console.error('x 404 y'): beklenen çıkış 1/KALDI, gelen çıkış 1/rapor yok | kalan denetimler: rapor yazıldı ve okunabildi
+FAIL (b) olmayan görsel isteği (HTTP 404): beklenen çıkış 1/KALDI, gelen çıkış 1/rapor yok | kalan denetimler: rapor yazıldı ve okunabildi
+FAIL (c) onaysız senaryo: beklenen çıkış 1/KALDI, gelen çıkış 1/rapor yok | kalan denetimler: rapor yazıldı ve okunabildi
+FAIL (f) co-op ev() istisnası: beklenen çıkış 1/KALDI, gelen çıkış 1/rapor yok | kalan denetimler: rapor yazıldı ve okunabildi
+
+kosucu_negatif: KALDI — kalan: [a, b, c, f]; çekirdekte kalan: [a, b, c, f]; koşucunun yanlışlıkla geçirdiği: [] (koşucu dizini ../../../tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_sahte_kosucu)

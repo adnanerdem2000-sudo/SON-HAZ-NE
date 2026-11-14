@@ -1,0 +1,7 @@
+$ node /home/user/SON-HAZ-NE-w2/tests/harness/coop.cjs tests/fixtures/kosucu/q_coop_onaysiz.cjs --players 2 --size 320x200 --timeout 120 --url http://127.0.0.1:45535/coop.html --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/son/kosucu_negatif/ag2.json --izin-hata ( # bozuk desen
+
+[stderr]
+izin listesi (--izin-hata): geçersiz düzenli ifade "(": Invalid regular expression: /(/: Unterminated group
+Kullanım: node tests/harness/coop.cjs <senaryo.cjs> [--players N] [--size WxH] [--url ...] [--report r.json] [--izin-hata "desen # gerekçe"] [--baslatma betik.js] [--goruntu kalan|hep|yok] [--yerlesme ms]
+
+[çıkış 2]

@@ -1,0 +1,26 @@
+ready in 5.8 s
+R: "ok"
+PASS Oyun başladı → "playing"
+PASS Alt adım sayısı: 1/15→4, 1/60→1, 0.1 s→6 (üst sınır) → true
+PASS Uzun karede zıplama tuşu tek zıplama üretir → 1
+PASS Geri tepme mesafesi 15/60/144 FPS arasında %20 içinde → true
+R: {"fps15":1.597,"fps60":1.597,"fps144":1.439}
+PASS Sığ su bandında (≈1.4 m) mod en çok bir kez değişir (titreşim yok) → true
+R: {"pos":[-123.4,58.3],"depth":1.41,"changes":1,"mode":"swim"}
+PASS Düşük dayanıklılıkta savunma bayrağı kare kare titreşmez (3 saniyede en çok 2 geçiş: başla, tükenince bırak) → true
+R: {"toggles":2,"stamina":3.5}
+PASS lineBlocked 400 m doğruda engeli bulur, boş doğruda bulmaz → true
+PASS Mermi süpürmesi: kutu içinden başlayan parça engellenir → true
+PASS Taşınan demirli gemi eski çapa noktasına fırlamaz → true
+R: {"hadPt":true,"moved":0.39,"speed":0.11}
+PASS Kinematik gemiye çarpma: NaN yok, hasar makul → true
+R: {"nan":false,"dmg":30,"vz":-1.2}
+PASS Yüksek platforma yandan girilmez (yan yüz çarpıştırıcı) → true
+R: {"z":121.45,"y":11.37,"top":16.49,"inside":false}
+PASS Hızlı gülle tek adımda gövdeyi aşsa da isabet eder (süpürme, tünelleme yok) → true
+R: {"hp":86,"max":100,"ballsLeft":0,"before":1,"beam":4.4}
+PASS Yüzen oyuncu 20 km haritanın kenarında durur → true
+R: {"x":9729.3}
+PASS Oyun döngüsü düzeltmelerden sonra hatasız sürüyor → true
+errors: 0 pageErrors: 0 fails: 0 (55.7 s)
+SONUC: GECTI (çıkış 0) kontrol 14/14, onay 14 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34

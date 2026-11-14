@@ -1,0 +1,6 @@
+// inceleme a1 (run.cjs sağlamlık): js adımı döngüsel bir nesne döndürür (Playwright döngüsel değerleri taşır).
+// Doğru koşucu: KALDI ya da KOSUCU_HATASI, çıkış 1, rapor yazılmış; süreç --timeout içinde biter.
+[
+ {expect: {js: `1 + 1`, eq: 2, label: 'Z01 Sabit sayfa acildi'}},
+ {js: `(() => { const a = { ad: 'dongusel' }; a.kendi = a; return a; })()`},
+]

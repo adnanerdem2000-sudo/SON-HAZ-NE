@@ -1,0 +1,10 @@
+ready in 6.3 s
+R: "ok"
+PASS Oyun başladı → "playing"
+PASS K01 Üç ardışık kayıt/yükleme döngüsünde oyuncu, gemi, ada, tehlike ve düşman grubu durumu korunur → true
+R: [{"k":1,"ok":true,"state":"playing","hp":65,"hpOk":true,"sword":true,"bait":11,"shipHp":51,"shipOk":true,"pruva":41,"pruvaOk":true,"opened":1,"openedOk":true,"gone":1,"campCd":100.00000000000006,"campOk":true,"pos":[-57,120],"posOk":true,"allOk":true},{"k":2,"ok":true,"state":"playing","hp":70,"hpOk":true,"sword":true,"bait":13,"shipHp":52,"shipOk":true,"pruva":42,"pruvaOk":true,"opened":2,"openedOk":true,"gone":2,"campCd":101.00000000000006,"campOk":true,"pos":[-54,120],"posOk":true,"sizePrev":16453,"size":16495,"allOk":true},{"k":3,"ok":true,"state":"playing","hp":75,"hpOk":true,"sword":true,"bait":16,"shipHp":53,"shipOk":true,"pruva":43,"pruvaOk":true,"opened":3,"openedOk":true,"gone":2,"campCd":102.00000000000006,"campOk":true,"pos":[-51,120],"posOk":true,"sizePrev":16495,"size":16606,"allOk":true}]
+PASS K02 Kayıt boyutu döngüler arasında kontrolsüz büyümez (3. ≤ 1,5 × 1.) → true
+R: [16453,16495,16606]
+PASS K03 Üçüncü yüklemeden sonra oyun açık, konum/sağlık geçerli → true
+errors: 0 pageErrors: 0 fails: 0 (35.4 s)
+SONUC: GECTI (çıkış 0) kontrol 4/4, onay 4 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34

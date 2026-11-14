@@ -1,0 +1,193 @@
+{
+ "scenario": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a1/senaryo/c_coop.cjs",
+ "players": 2,
+ "checks": [
+  {
+   "label": "C01 Yeniden katilan Tayfa hazir",
+   "ok": true
+  },
+  {
+   "label": "C02 Ev sahibi ilerledi",
+   "ok": true
+  }
+ ],
+ "errors": {
+  "Kaptan": [],
+  "Tayfa": [],
+  "Tayfa#2": []
+ },
+ "pageErrors": {
+  "Kaptan": [],
+  "Tayfa": [
+   "inceleme: Tayfa sayfasinda yakalanmamis oyun hatasi | Error: inceleme: Tayfa sayfasinda yakalanmamis oyun hatasi |     at http://127.0.0.1:8097/inc_coop.html?test=1:13:43"
+  ],
+  "Tayfa#2": []
+ },
+ "fails": 0,
+ "evalErrors": [],
+ "kapaliAtlama": 5,
+ "kapaliIstisna": 0,
+ "kapananlar": [
+  {
+   "oyuncu": "Tayfa",
+   "ms": 781
+  }
+ ],
+ "ms": 2908,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "../../../tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a1/senaryo/c_coop.cjs",
+ "meta": {},
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://127.0.0.1:8097/inc_coop.html?test=1",
+  "verilenUrl": "http://127.0.0.1:8097/inc_coop.html",
+  "gorunum": [
+   640,
+   360
+  ],
+  "oyuncu": 2
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T09:18:23.762Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/coop.cjs /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a1/senaryo/c_coop.cjs --players 2 --url http://127.0.0.1:8097/inc_coop.html --timeout 60 --report docs/v05/kosular/faz1/a1_duzeltme/sonra/inceleme_senaryolari/c_coop.json",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://127.0.0.1:8097 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8097",
+   "PeerJS sinyal sunucusu 127.0.0.1:9000 — node tests/peer-server.cjs (peer modülü NODE_PATH'te)"
+  ],
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd-kirli",
+  "senaryoSha256": "518b8e969093a78a9b65ba3b9f6d4a9ef3c0b5679de6ff9a00d3f9e628ba442e",
+  "adim": null,
+  "url": "http://127.0.0.1:8097/inc_coop.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 1,
+   "id": "C01",
+   "etiket": "C01 Yeniden katilan Tayfa hazir",
+   "ok": true,
+   "deger": null,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 580,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 2,
+   "id": "C02",
+   "etiket": "C02 Ev sahibi ilerledi",
+   "ok": true,
+   "deger": null,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1024,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [
+   {
+    "oyuncu": "Tayfa",
+    "ileti": "inceleme: Tayfa sayfasinda yakalanmamis oyun hatasi | Error: inceleme: Tayfa sayfasinda yakalanmamis oyun hatasi |     at http://127.0.0.1:8097/inc_coop.html?test=1:13:43"
+   }
+  ],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": "Tayfa#2",
+   "ileti": "Scripts may close only the windows that were opened by them.",
+   "url": "http://127.0.0.1:8097/inc_coop.html?test=1",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 1,
+  "toplam": 1,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "goruntuler": [
+  {
+   "ad": "son",
+   "oyuncular": [
+    {
+     "oyuncu": "Kaptan",
+     "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/c_coop_2026-11-14T09-18-23-617Z_7827/son_Kaptan.png"
+    },
+    {
+     "oyuncu": "Tayfa",
+     "sayfa": null,
+     "not": "sekme kapalı"
+    }
+   ]
+  }
+ ],
+ "sonuc": {
+  "durum": "KALDI",
+  "cikisKodu": 1,
+  "neden": [
+   "sayfa hatası (pageerror): 1"
+  ],
+  "onaySayisi": 2,
+  "kontrolSayisi": 2,
+  "gecen": 2,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "evalErrors": 0,
+  "kapaliAtlama": 5,
+  "kapaliIstisna": 0,
+  "tur": "tarayici+webrtc"
+ },
+ "sure": {
+  "hazirMs": 274,
+  "toplamMs": 2908,
+  "yerlesmeMs": 1001
+ }
+}

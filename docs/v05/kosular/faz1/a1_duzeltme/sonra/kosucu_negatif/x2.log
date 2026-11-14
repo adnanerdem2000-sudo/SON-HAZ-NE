@@ -1,0 +1,12 @@
+$ node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs tests/fixtures/kosucu/x_dongusel.js --size 320x200 --timeout 90 --url http://127.0.0.1:40315/temiz.html --report /dev/null/kosucu_negatif/x2.json
+ready in 0.3 s
+PASS X01 Sabit sayfa açıldı → 2
+R: {"ad":"dongusel","kendi":"[Döngüsel]"}
+R: "1180591620717411303424n"
+PASS X02 Döngüsel değer truthy → {"ad":"d","kendi":"[Döngüsel]"}
+errors: 0 pageErrors: 0 fails: 0 (1.3 s)
+RAPOR YAZILAMADI: rapor yazılamadı: ENOTDIR: not a directory, mkdir '/dev/null/kosucu_negatif'
+YEDEK RAPOR da yazılamadı: ENOTDIR: not a directory, mkdir '/dev/null/kosucu_negatif'
+SONUC: KOSUCU_HATASI (çıkış 1) kontrol 2/2, onay 2 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: rapor yazılamadı: ENOTDIR: not a directory, mkdir '/dev/null/kosucu_negatif'
+
+[çıkış 1]

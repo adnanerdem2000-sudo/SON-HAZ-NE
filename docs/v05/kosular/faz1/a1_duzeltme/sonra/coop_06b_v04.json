@@ -1,0 +1,663 @@
+{
+ "scenario": "tests/scenarios/coop/06b_esitlik_senkron.cjs",
+ "players": 2,
+ "checks": [
+  {
+   "label": "2 oyuncu oyunda",
+   "ok": true
+  },
+  {
+   "label": "Kırılabilir sandık var",
+   "ok": true,
+   "detail": {
+    "id": "core_kamp_cr0",
+    "x": -46.5,
+    "z": -231
+   }
+  },
+  {
+   "label": "B03/H01 Konuğun kırdığı sandığın kesesi ev sahibinde doğar ve konukta aynı kimlikle görünür",
+   "ok": true,
+   "detail": {
+    "pk0": 0,
+    "pkHost": [
+     "pkcqlagkb"
+    ],
+    "pkGuest": [
+     "pkcqlagkb"
+    ]
+   }
+  },
+  {
+   "label": "H01 Konuk keseyi alır: eşya konuğa geçer, kese ev sahibinde kalkar",
+   "ok": true,
+   "detail": {
+    "gained": 1,
+    "goneHost": true
+   }
+  },
+  {
+   "label": "H10/H03 Konuk ambardan sandığı alır: ev sahibi ambarı boşalır, sandık konuğun taşımasında",
+   "ok": true,
+   "detail": {
+    "carryG": {
+     "carrying": "ch17fw4k0",
+     "chests": [
+      [
+       "ch17fw4k0",
+       "carried",
+       [
+        "4a01d0c4-6dce-457c-ac22-4345e448904e"
+       ]
+      ]
+     ]
+    },
+    "holdH": {
+     "hold": 0,
+     "chest": [
+      [
+       "carried",
+       [
+        "4a01d0c4-6dce-457c-ac22-4345e448904e"
+       ]
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "label": "H03 Konuk sandığı ambara koyunca ev sahibinde hayalet sandık kalmaz",
+   "ok": true,
+   "detail": {
+    "hold": 1,
+    "ghosts": 0
+   }
+  },
+  {
+   "label": "B08/H08 Yüzen şişe konukta görünür (ağ kopyası)",
+   "ok": true,
+   "detail": {
+    "net": true,
+    "pos": [
+     4.2,
+     212
+    ],
+    "label": "Şişeyi al"
+   }
+  },
+  {
+   "label": "H08 Konuk şişeyi alır: eşya konuğa geçer, nesne iki tarafta da kalkar",
+   "ok": true,
+   "detail": {
+    "bottle": {
+     "has": true,
+     "still": false
+    },
+    "bottleHost": false
+   }
+  },
+  {
+   "label": "F-02 Ev sahibinde uzak oyuncunun gemi referansı var (güverte düşmanları ulaşılabilir sayar)",
+   "ok": true,
+   "detail": {
+    "ship": "ship_main",
+    "mode": "deck",
+    "onGround": true
+   }
+  },
+  {
+   "label": "F-12 Zıplayan konuk ev sahibinde havada görünür (tepinmeden zıplayarak kaçma)",
+   "ok": true,
+   "detail": false
+  },
+  {
+   "label": "E-02/E-06/E-07 Konuk deliği, gülle/tahta sayısını ve devrik direği görür",
+   "ok": true,
+   "detail": {
+    "holes": 1,
+    "balls": 42,
+    "planks": 7,
+    "fallen": true
+   }
+  },
+  {
+   "label": "E-07/E-02 Direk onarımı ve delik onarımı konukta geri alınır",
+   "ok": true,
+   "detail": {
+    "holes": 0,
+    "fallen": false
+   }
+  },
+  {
+   "label": "H12 Batık bayrağı konukta: gemi görünmez",
+   "ok": true,
+   "detail": {
+    "sunk": true,
+    "visible": false
+   }
+  },
+  {
+   "label": "F-15 Lav havuzu uzak oyuncuyu da yakar",
+   "ok": true,
+   "detail": 72
+  },
+  {
+   "label": "F-13 Konuğun silah sesi ev sahibi düşmanını uyarır",
+   "ok": true,
+   "detail": {
+    "awareness": 1.2,
+    "state": "strafe",
+    "lastKnown": true
+   }
+  },
+  {
+   "label": "F-11 Boss süpürmesinin geri tepmesi konukta uygulanır (0.3 sn sonra sönümlenmiş kalıntı > 0)",
+   "ok": true,
+   "detail": 0.16
+  },
+  {
+   "label": "F-06 Düşman mermileri konukta görsel olarak izlenir",
+   "ok": true,
+   "detail": {
+    "vis": 1,
+    "shotsHost": 1,
+    "natural": false
+   }
+  },
+  {
+   "label": "Senaryo sonunda iki taraf da oyunda",
+   "ok": true,
+   "detail": [
+    "playing",
+    "playing"
+   ]
+  }
+ ],
+ "errors": {
+  "Kaptan": [],
+  "Tayfa": []
+ },
+ "pageErrors": {
+  "Kaptan": [],
+  "Tayfa": []
+ },
+ "fails": 0,
+ "evalErrors": [],
+ "kapaliAtlama": 0,
+ "kapaliIstisna": 0,
+ "kapananlar": [],
+ "ms": 148703,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/scenarios/coop/06b_esitlik_senkron.cjs",
+ "meta": {},
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8080/index.html?peerhost=127.0.0.1&peerport=9000&test=1",
+  "verilenUrl": "http://localhost:8080/index.html?peerhost=127.0.0.1&peerport=9000",
+  "gorunum": [
+   640,
+   360
+  ],
+  "oyuncu": 2
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T09:08:28.323Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/coop.cjs /home/user/SON-HAZ-NE-w2/tests/scenarios/coop/06b_esitlik_senkron.cjs --players 2 --size 640x360 --timeout 1200 --url 'http://localhost:8080/index.html?peerhost=127.0.0.1&peerport=9000' --report docs/v05/kosular/faz1/a1_duzeltme/sonra/coop_06b_v04.json",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://localhost:8080 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8080",
+   "PeerJS sinyal sunucusu 127.0.0.1:9000 — node tests/peer-server.cjs (peer modülü NODE_PATH'te)"
+  ],
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd-kirli",
+  "senaryoSha256": "08d1fb2da5c8156b189aaed0e63f885b2210d14a8690fab099b77e20d711aabf",
+  "adim": null,
+  "url": "http://localhost:8080/index.html?peerhost=127.0.0.1&peerport=9000&test=1"
+ },
+ "kontroller": [
+  {
+   "n": 1,
+   "id": "2 oyuncu oyunda",
+   "etiket": "2 oyuncu oyunda",
+   "ok": true,
+   "deger": null,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 31801,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 2,
+   "id": "Kırılabilir sandık var",
+   "etiket": "Kırılabilir sandık var",
+   "ok": true,
+   "deger": {
+    "id": "core_kamp_cr0",
+    "x": -46.5,
+    "z": -231
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 945,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 3,
+   "id": "B03/H01",
+   "etiket": "B03/H01 Konuğun kırdığı sandığın kesesi ev sahibinde doğar ve konukta aynı kimlikle görünür",
+   "ok": true,
+   "deger": {
+    "pk0": 0,
+    "pkHost": [
+     "pkcqlagkb"
+    ],
+    "pkGuest": [
+     "pkcqlagkb"
+    ]
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2557,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 4,
+   "id": "H01",
+   "etiket": "H01 Konuk keseyi alır: eşya konuğa geçer, kese ev sahibinde kalkar",
+   "ok": true,
+   "deger": {
+    "gained": 1,
+    "goneHost": true
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1313,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 5,
+   "id": "H10/H03",
+   "etiket": "H10/H03 Konuk ambardan sandığı alır: ev sahibi ambarı boşalır, sandık konuğun taşımasında",
+   "ok": true,
+   "deger": {
+    "carryG": {
+     "carrying": "ch17fw4k0",
+     "chests": [
+      [
+       "ch17fw4k0",
+       "carried",
+       [
+        "4a01d0c4-6dce-457c-ac22-4345e448904e"
+       ]
+      ]
+     ]
+    },
+    "holdH": {
+     "hold": 0,
+     "chest": [
+      [
+       "carried",
+       [
+        "4a01d0c4-6dce-457c-ac22-4345e448904e"
+       ]
+      ]
+     ]
+    }
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 10086,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 6,
+   "id": "H03",
+   "etiket": "H03 Konuk sandığı ambara koyunca ev sahibinde hayalet sandık kalmaz",
+   "ok": true,
+   "deger": {
+    "hold": 1,
+    "ghosts": 0
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 820,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 7,
+   "id": "B08/H08",
+   "etiket": "B08/H08 Yüzen şişe konukta görünür (ağ kopyası)",
+   "ok": true,
+   "deger": {
+    "net": true,
+    "pos": [
+     4.2,
+     212
+    ],
+    "label": "Şişeyi al"
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1084,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 8,
+   "id": "H08",
+   "etiket": "H08 Konuk şişeyi alır: eşya konuğa geçer, nesne iki tarafta da kalkar",
+   "ok": true,
+   "deger": {
+    "bottle": {
+     "has": true,
+     "still": false
+    },
+    "bottleHost": false
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 991,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 9,
+   "id": "F-02",
+   "etiket": "F-02 Ev sahibinde uzak oyuncunun gemi referansı var (güverte düşmanları ulaşılabilir sayar)",
+   "ok": true,
+   "deger": {
+    "ship": "ship_main",
+    "mode": "deck",
+    "onGround": true
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 861,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 10,
+   "id": "F-12",
+   "etiket": "F-12 Zıplayan konuk ev sahibinde havada görünür (tepinmeden zıplayarak kaçma)",
+   "ok": true,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 293,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 11,
+   "id": "E-02/E-06/E-07",
+   "etiket": "E-02/E-06/E-07 Konuk deliği, gülle/tahta sayısını ve devrik direği görür",
+   "ok": true,
+   "deger": {
+    "holes": 1,
+    "balls": 42,
+    "planks": 7,
+    "fallen": true
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 963,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 12,
+   "id": "E-07/E-02",
+   "etiket": "E-07/E-02 Direk onarımı ve delik onarımı konukta geri alınır",
+   "ok": true,
+   "deger": {
+    "holes": 0,
+    "fallen": false
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1131,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 13,
+   "id": "H12",
+   "etiket": "H12 Batık bayrağı konukta: gemi görünmez",
+   "ok": true,
+   "deger": {
+    "sunk": true,
+    "visible": false
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 731,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 14,
+   "id": "F-15",
+   "etiket": "F-15 Lav havuzu uzak oyuncuyu da yakar",
+   "ok": true,
+   "deger": 72,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2474,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 15,
+   "id": "F-13",
+   "etiket": "F-13 Konuğun silah sesi ev sahibi düşmanını uyarır",
+   "ok": true,
+   "deger": {
+    "awareness": 1.2,
+    "state": "strafe",
+    "lastKnown": true
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1327,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 16,
+   "id": "F-11",
+   "etiket": "F-11 Boss süpürmesinin geri tepmesi konukta uygulanır (0.3 sn sonra sönümlenmiş kalıntı > 0)",
+   "ok": true,
+   "deger": 0.16,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 178,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 17,
+   "id": "F-06",
+   "etiket": "F-06 Düşman mermileri konukta görsel olarak izlenir",
+   "ok": true,
+   "deger": {
+    "vis": 1,
+    "shotsHost": 1,
+    "natural": false
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 12878,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 18,
+   "id": "Senaryo sonunda iki taraf da oyunda",
+   "etiket": "Senaryo sonunda iki taraf da oyunda",
+   "ok": true,
+   "deger": [
+    "playing",
+    "playing"
+   ],
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 3,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": "Kaptan",
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 33
+  },
+  {
+   "oyuncu": "Kaptan",
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": "Tayfa",
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 33
+  },
+  {
+   "oyuncu": "Tayfa",
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 4,
+  "toplam": 68,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "goruntuler": [],
+ "sonuc": {
+  "durum": "GECTI",
+  "cikisKodu": 0,
+  "neden": [],
+  "onaySayisi": 18,
+  "kontrolSayisi": 18,
+  "gecen": 18,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "evalErrors": 0,
+  "kapaliAtlama": 0,
+  "kapaliIstisna": 0,
+  "tur": "tarayici+webrtc"
+ },
+ "sure": {
+  "hazirMs": 77264,
+  "toplamMs": 148703,
+  "yerlesmeMs": 1001
+ }
+}

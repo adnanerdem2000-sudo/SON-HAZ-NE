@@ -1,0 +1,16 @@
+ready in 0.3 s
+PASS X01 game.update ile 1 sn ileri sarildi → 1
+PASS X02 Deger 1..10 araliginda → -5
+PASS X03 Yazim hatali karsilastirici → false
+PASS X04 Deger >= 0 (null dondu) → null
+SNAPFAIL page.evaluate: Error: inceleme: snapFrom cizimde kirildi
+    at Object.snapFrom (http://127.0.0.1:8097/inc_a.html?test=1:11:24)
+    at eval (eval at evaluate (:311:30), <anonymous>:1:4)
+    at eval (<
+SNAPFAIL page.evaluate: Error: inceleme: snapFrom cizimde kirildi
+    at Object.snapFrom (http://127.0.0.1:80
+R: "yeniden yukleme planlandi"
+R: 60
+PASS X05 Yeniden yuklemeden sonra DK.sim bir kez cagrildi → 1
+errors: 0 pageErrors: 0 fails: 0 (1.8 s)
+SONUC: GECTI (çıkış 0) kontrol 5/5, onay 5 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0

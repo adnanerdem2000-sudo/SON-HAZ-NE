@@ -1,0 +1,25 @@
+{
+ "scenario": "tests/fixtures/kosucu/y1_expect_yabanci.js",
+ "url": "http://127.0.0.1:33013/temiz.html",
+ "size": [
+  320,
+  200
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "Y01 Yazım hatalı karşılaştırıcı",
+    "ok": true,
+    "value": false
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 168,
+ "ms": 172
+}

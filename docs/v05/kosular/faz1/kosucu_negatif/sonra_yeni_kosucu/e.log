@@ -1,0 +1,12 @@
+$ node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs tests/fixtures/kosucu/e_izinli.js --size 320x200 --timeout 90 --url http://127.0.0.1:35867/e_izinli.html --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/sonra_yeni_kosucu/e.json
+ERR: beklenen-hata: kosucu_negatif e
+HTTP 404 http://127.0.0.1:35867/izinli-eksik.png
+ERR: Failed to load resource: the server responded with a status of 404 (Not Found)
+ready in 0.2 s
+PASS E01 Görsel öğesi var → 1
+errors: 2 pageErrors: 0 fails: 0 (0.2 s)
+IZINLI ×1 (beklenen-hata: kosucu_negatif): beklenen-hata: kosucu_negatif e
+IZINLI ×1 (izinli-eksik\.png$): 404 http://127.0.0.1:35867/izinli-eksik.png
+SONUC: GECTI (çıkış 0) kontrol 1/1, onay 1 | izinsiz konsol 0, ağ 0 | izinli konsol 1, ağ 1 | uyarı 0 farklı/0
+
+[çıkış 0]

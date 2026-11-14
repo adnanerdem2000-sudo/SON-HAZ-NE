@@ -1,0 +1,26 @@
+$ node /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/kosucu_eski/coop.cjs tests/fixtures/kosucu/p_coop_baslatma.cjs --players 2 --size 320x200 --timeout 120 --url http://127.0.0.1:33013/coop.html --report /dev/null/kosucu_negatif/x3.json
+Kaptan/baslatma undefined
+Tayfa/baslatma undefined
+FAIL P01 Başlatma betiği her oyuncuda çalıştı → [null,null]
+checks: 1 fails: 1 pageErrors: 0 (0.2 s)
+HARNESS ERROR ENOTDIR: not a directory, mkdir '/dev/null/kosucu_negatif'
+checks: 1 fails: 1 pageErrors: 0 (0.2 s)
+
+[stderr]
+node:fs:1377
+  const result = binding.mkdir(
+                         ^
+
+Error: ENOTDIR: not a directory, mkdir '/dev/null/kosucu_negatif'
+    at Object.mkdirSync (node:fs:1377:26)
+    at finish (/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/kosucu_eski/coop.cjs:46:26)
+    at /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/kosucu_eski/coop.cjs:66:11 {
+  errno: -20,
+  code: 'ENOTDIR',
+  syscall: 'mkdir',
+  path: '/dev/null/kosucu_negatif'
+}
+
+Node.js v22.22.0
+
+[çıkış 1]

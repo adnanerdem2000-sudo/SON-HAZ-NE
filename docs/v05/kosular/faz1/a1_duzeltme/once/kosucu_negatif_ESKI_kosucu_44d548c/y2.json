@@ -1,0 +1,52 @@
+{
+ "scenario": "tests/fixtures/kosucu/y2_expect_aralik.js",
+ "url": "http://127.0.0.1:33013/temiz.html",
+ "size": [
+  320,
+  200
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "Y02 Değer 1..10 aralığında (−5 dönüyor)",
+    "ok": true,
+    "value": -5
+   }
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "Y03 Değer ≥ 0 (null dönüyor)",
+    "ok": true,
+    "value": null
+   }
+  },
+  {
+   "n": 3,
+   "label": null,
+   "expect": {
+    "label": "Y04 Değer ≤ 5 (boş dizi dönüyor)",
+    "ok": true,
+    "value": []
+   }
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "Y05 Değer 1..10 aralığında (5 dönüyor)",
+    "ok": true,
+    "value": 5
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 158,
+ "ms": 166
+}

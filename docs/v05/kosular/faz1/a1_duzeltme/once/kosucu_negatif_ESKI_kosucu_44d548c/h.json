@@ -1,0 +1,29 @@
+{
+ "scenario": "tests/fixtures/kosucu/h_baslatma.js",
+ "url": "http://127.0.0.1:33013/depolama.html",
+ "size": [
+  320,
+  200
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "H01 Sayfa yüklenirken localStorage SecurityError attı",
+    "ok": false,
+    "value": "ok"
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 1,
+ "evalErrors": 0,
+ "readyMs": 161,
+ "ms": 164
+}

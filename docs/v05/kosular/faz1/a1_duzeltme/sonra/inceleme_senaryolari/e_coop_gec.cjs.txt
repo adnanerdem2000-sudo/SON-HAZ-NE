@@ -1,0 +1,6 @@
+// inceleme a1 (coop.cjs): (1) check()'e await edilmemiş bir söz (Promise) verilirse; (2) son adımın planladığı eşzamansız
+// oyun hatası (ör. sonradan reddedilen bir işlem) koşu bittikten hemen önce/sonra gelirse. Doğru koşucu: KALDI.
+module.exports = async ({ host, ev, check }) => {
+  check('W01 Ev sahibinde bayrak dogru (await unutuldu)', ev(host, `false`, 'bayrak'));
+  await ev(host, `setTimeout(() => { throw new Error('inceleme: son adimdan 300 ms sonra gelen oyun hatasi'); }, 300); 'planlandi'`, 'gec-hata');
+};

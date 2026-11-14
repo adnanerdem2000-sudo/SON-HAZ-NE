@@ -1,0 +1,8 @@
+$ node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs tests/fixtures/kosucu/i_baslatmasiz.js --size 320x200 --timeout 90 --url http://127.0.0.1:35867/depolama.html --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/sonra_yeni_kosucu/j.json --baslatma tests/fixtures/kosucu/depolama_engelle.js
+başlatma betiği: 0 meta, 1 dosya
+ready in 0.3 s
+PASS H01 Sayfa yüklenirken localStorage SecurityError attı → "SecurityError"
+errors: 0 pageErrors: 0 fails: 0 (0.3 s)
+SONUC: GECTI (çıkış 0) kontrol 1/1, onay 1 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0
+
+[çıkış 0]

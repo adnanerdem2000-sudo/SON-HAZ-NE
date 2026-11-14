@@ -1,0 +1,24 @@
+{
+ "scenario": "tests/fixtures/kosucu/p_coop_baslatma.cjs",
+ "players": 2,
+ "checks": [
+  {
+   "label": "P01 Başlatma betiği her oyuncuda çalıştı",
+   "ok": false,
+   "detail": [
+    null,
+    null
+   ]
+  }
+ ],
+ "errors": {
+  "Kaptan": [],
+  "Tayfa": []
+ },
+ "pageErrors": {
+  "Kaptan": [],
+  "Tayfa": []
+ },
+ "fails": 1,
+ "ms": 234
+}

@@ -1,0 +1,22 @@
+{
+ "scenario": "tests/fixtures/kosucu/t2_coop_zaman_asimi.cjs",
+ "players": 2,
+ "checks": [
+  {
+   "label": "T01 Zaman aşımından önceki kontrol",
+   "ok": true
+  }
+ ],
+ "errors": {
+  "Kaptan": [],
+  "Tayfa": []
+ },
+ "pageErrors": {
+  "Kaptan": [],
+  "Tayfa": []
+ },
+ "fails": 0,
+ "timeout": true,
+ "ms": 5088,
+ "harnessError": "page.waitForTimeout: Target page, context or browser has been closed"
+}

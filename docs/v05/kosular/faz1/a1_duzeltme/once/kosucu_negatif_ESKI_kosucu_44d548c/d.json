@@ -1,0 +1,27 @@
+{
+ "scenario": "tests/fixtures/kosucu/d_olcum.js",
+ "url": "http://127.0.0.1:33013/temiz.html",
+ "size": [
+  320,
+  200
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null
+  },
+  {
+   "n": 2,
+   "label": null,
+   "result": {
+    "olcum": 42
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 173,
+ "ms": 176
+}

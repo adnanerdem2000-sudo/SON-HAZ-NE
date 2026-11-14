@@ -1,0 +1,16 @@
+// dist tek HTML'in bir KOPYASINDA window.__DK_FILES içinden tek bir gömülü dosyayı siler (K-11 kabul denemesi). Kaynağa dokunmaz.
+const fs = require('fs');
+const [kaynak, hedef, anahtar = 'assets/models/chest.glb'] = process.argv.slice(2);
+let s = fs.readFileSync(kaynak, 'utf8');
+const bas = s.indexOf('<script>window.__DK_FILES=');
+const son = s.indexOf(';</script>', bas);
+if (bas < 0 || son < 0) throw new Error('__DK_FILES betiği bulunamadı');
+const jsonBas = bas + '<script>window.__DK_FILES='.length;
+const F = JSON.parse(s.slice(jsonBas, son));
+const once = Object.keys(F).length;
+if (!(anahtar in F)) throw new Error('anahtar yok: ' + anahtar);
+delete F[anahtar];
+s = s.slice(0, jsonBas) + JSON.stringify(F) + s.slice(son);
+fs.writeFileSync(hedef, s);
+const F2 = JSON.parse(s.slice(jsonBas, s.indexOf(';</script>', bas)));
+console.log(JSON.stringify({ kaynak, hedef, anahtar, gomuluOnce: once, gomuluSonra: Object.keys(F2).length, anahtarVarMi: anahtar in F2, boyutOnce: fs.statSync(kaynak).size, boyutSonra: fs.statSync(hedef).size }));

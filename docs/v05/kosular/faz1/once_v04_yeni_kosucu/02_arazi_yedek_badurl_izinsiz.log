@@ -1,0 +1,29 @@
+HTTP 404 http://localhost:8080/js/world/terrainWorker.missing.js
+NETFAIL: http://localhost:8080/js/world/terrainWorker.missing.js
+HTTP 404 http://localhost:8080/js/world/terrainWorker.missing.js
+NETFAIL: http://localhost:8080/js/world/terrainWorker.missing.js
+HTTP 404 http://localhost:8080/js/world/terrainWorker.missing.js
+NETFAIL: http://localhost:8080/js/world/terrainWorker.missing.js
+ready in 5.1 s
+PASS Sayfa hazır (yükleme ekranı aşıldı) → true
+R: {"mode":"badurl","workers":0,"fallback":true,"failures":["işçi 0: hata: yükleme/çalışma hatası","işçi 1: hata: yükleme/çalışma hatası","işçi 2: hata: yükleme/çalışma hatası","hata: yükleme/çalışma hatası"],"stats":{"tiles":125,"meshes":125,"hires":15,"tris":311168,"queue":0,"jobs":0,"workers":0,"fallback":true,"failures":4,"mode":"badurl"}}
+PASS Menü sahnesinde karo ağları üretildi → 125
+PASS Okyanus derinlik penceresi hazır → true
+R: "ok"
+PASS Oyun başladı → "playing"
+R: {"startMs":195,"pendingJobs":22,"queue":20}
+PASS Oyuncu zemine basıyor → true
+PASS Yüksek çözünürlüklü karolar (yükseklik ızgarası + ağ) → 22
+PASS Uzak bölge prepare() sonuçlanıyor (askıda kalmıyor) → true
+PASS Derinlik penceresi yeni bölgeye taşındı → true
+R: {"prepMs":184,"prepUnder45s":true,"stats":{"tiles":129,"meshes":129,"hires":31,"tris":518400,"queue":0,"jobs":0,"workers":0,"fallback":true,"failures":4,"mode":"badurl"}}
+PASS Tuz Pazarı çevresinde karo ağları var → 21
+PASS Harita ızgarası isteği sonuçlanıyor → true
+PASS Uzak adada yürüme (zemin sorgusu tutarlı) → true
+R: "ok"
+PASS Kuyruk ilerliyor (askıda iş yok) → true
+R: {"jobsBefore":110,"jobsAfter8s":0,"fallback":true}
+errors: 3 pageErrors: 0 fails: 0 (97.6 s)
+IZINSIZ AG ×3: 404 http://localhost:8080/js/world/terrainWorker.missing.js
+IZINSIZ AG ×3: net::ERR_FAILED http://localhost:8080/js/world/terrainWorker.missing.js
+SONUC: KALDI (çıkış 1) kontrol 12/12, onay 12 | izinsiz konsol 0, ağ 6 | izinli konsol 0, ağ 0 | uyarı 6 farklı/38 | neden: izinsiz ağ hatası (≥ 400 yanıt ya da başarısız istek): 6

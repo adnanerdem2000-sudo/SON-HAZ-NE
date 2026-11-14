@@ -1,0 +1,1004 @@
+{
+ "scenario": "tests/scenarios/04_karakter.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": "ok",
+   "ms": 28
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   },
+   "ms": 15809
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": "çizim kısıldı",
+   "ms": 84
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "C01 Yüzerken gövde kaldırması Character.update tarafından uygulanıyor",
+    "ok": true,
+    "value": true
+   },
+   "ms": 1301
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": {
+    "mode": "swim",
+    "lift": 1,
+    "modelY": 1.01,
+    "baseY": 0.01,
+    "pitch": 1.2
+   },
+   "ms": 3
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "C18 Dalışta kuşanılan kılıç elde belirmez, çıkışta elde",
+    "ok": true,
+    "value": true
+   },
+   "ms": 19
+  },
+  {
+   "n": 7,
+   "label": null,
+   "result": {
+    "swimHeld": null,
+    "afterExit": "sword",
+    "equipped": "sword"
+   },
+   "ms": 2
+  },
+  {
+   "n": 8,
+   "label": null,
+   "expect": {
+    "label": "C10 Sprint bayrağı düşük dayanıklılıkta titreşmez (geçişler ≥0.4 sn aralıklı, en çok 3)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 967
+  },
+  {
+   "n": 9,
+   "label": null,
+   "result": {
+    "toggles": 2,
+    "frames": [
+     37,
+     100
+    ],
+    "minGapFrames": 63,
+    "stamina": 24.4
+   },
+   "ms": 335
+  },
+  {
+   "n": 10,
+   "label": null,
+   "expect": {
+    "label": "C13 3 m/s hızda Walk klibi (ayak kayması bandı kapandı)",
+    "ok": true,
+    "value": "Walk"
+   },
+   "ms": 495
+  },
+  {
+   "n": 11,
+   "label": null,
+   "expect": {
+    "label": "C07 Kamera duvarın içinden bakmaz: mesafe ≥1.5 m kısalır, duvar kalkınca açılır",
+    "ok": true,
+    "value": true
+   },
+   "ms": 480
+  },
+  {
+   "n": 12,
+   "label": null,
+   "result": {
+    "d0": 5.07,
+    "dWall": 2.77,
+    "dAfter": 5.07
+   },
+   "ms": 16
+  },
+  {
+   "n": 13,
+   "label": null,
+   "expect": {
+    "label": "C08 Dümende eller çark halkasında (yarıçap 0.5 m)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 126
+  },
+  {
+   "n": 14,
+   "label": null,
+   "ms": 5614
+  },
+  {
+   "n": 15,
+   "label": null,
+   "expect": {
+    "label": "C08 İstasyon bırakılınca IK hedefleri temiz, silah yeniden elde",
+    "ok": true,
+    "value": true
+   },
+   "ms": 5300
+  },
+  {
+   "n": 16,
+   "label": null,
+   "result": {
+    "dl": 0.5,
+    "dr": 0.5,
+    "hands": 1,
+    "held": null,
+    "cleared": true,
+    "reheld": "sword"
+   },
+   "ms": 3
+  },
+  {
+   "n": 17,
+   "label": null,
+   "expect": {
+    "label": "C08 Topta eller kundak arkasında (iki el ayrı, topa yakın)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 272
+  },
+  {
+   "n": 18,
+   "label": null,
+   "ms": 3373
+  },
+  {
+   "n": 19,
+   "label": null,
+   "result": {
+    "dl": 0.84,
+    "handsApart": 0.56,
+    "playerToCannon": 1.2
+   },
+   "ms": 3290
+  },
+  {
+   "n": 20,
+   "label": null,
+   "result": "ok",
+   "ms": 5
+  },
+  {
+   "n": 21,
+   "label": null,
+   "expect": {
+    "label": "C09 Güvertede zıplama: JumpStart klibi ve havada süre sayacı",
+    "ok": true,
+    "value": true
+   },
+   "ms": 175
+  },
+  {
+   "n": 22,
+   "label": null,
+   "result": {
+    "anim": "JumpStart",
+    "vy": 6.13,
+    "airT": 0.32,
+    "localY": 0.9
+   },
+   "ms": 6
+  },
+  {
+   "n": 23,
+   "label": null,
+   "expect": {
+    "label": "C09 Güvertede kaçınma gerçekten yer değiştiriyor",
+    "ok": true,
+    "value": true
+   },
+   "ms": 90
+  },
+  {
+   "n": 24,
+   "label": null,
+   "result": {
+    "moved": 2.96,
+    "started": true,
+    "from": [
+     -1.56,
+     -0.72
+    ],
+    "to": [
+     -1.56,
+     2.25
+    ]
+   },
+   "ms": 7
+  },
+  {
+   "n": 25,
+   "label": null,
+   "expect": {
+    "label": "C12 Gemiye binişte kuşanılan silah yeniden elde",
+    "ok": true,
+    "value": "sword"
+   },
+   "ms": 119
+  },
+  {
+   "n": 26,
+   "label": null,
+   "expect": {
+    "label": "C23 Batan gemide dümen bırakılır, kilit kalkar, oyuncu güverteden ayrılır",
+    "ok": true,
+    "value": true
+   },
+   "ms": 51
+  },
+  {
+   "n": 27,
+   "label": null,
+   "result": {
+    "mode": "ground",
+    "lock": null
+   },
+   "ms": 22
+  },
+  {
+   "n": 28,
+   "label": null,
+   "expect": {
+    "label": "C06 Ölümde meşgul eylem iptal, tamamlanma geri çağrısı ateşlenmez",
+    "ok": true,
+    "value": true
+   },
+   "ms": 1163
+  },
+  {
+   "n": 29,
+   "label": null,
+   "result": {
+    "busyCleared": true,
+    "busyDoneFired": false,
+    "dead": true,
+    "rag": true
+   },
+   "ms": 4
+  },
+  {
+   "n": 30,
+   "label": null,
+   "expect": {
+    "label": "C19 Ragdoll sonrası dirilişte ayağa kalkış eylemi",
+    "ok": true,
+    "value": true
+   },
+   "ms": 3
+  },
+  {
+   "n": 31,
+   "label": null,
+   "result": {
+    "action": "getup",
+    "anim": "LieUp",
+    "rag": false
+   },
+   "ms": 1
+  },
+  {
+   "n": 32,
+   "label": null,
+   "expect": {
+    "label": "C22/C21 Yerde yatan oyuncuda zehir can düşürmez ve etkileşim yapılamaz",
+    "ok": true,
+    "value": true
+   },
+   "ms": 654
+  },
+  {
+   "n": 33,
+   "label": null,
+   "result": {
+    "hpAfter1s": 5,
+    "interactCurrent": null
+   },
+   "ms": 120
+  },
+  {
+   "n": 34,
+   "label": null,
+   "expect": {
+    "label": "C05 Olta atışı yakın dövüş (slash) eylemi kullanmıyor",
+    "ok": true,
+    "value": true
+   },
+   "ms": 70
+  },
+  {
+   "n": 35,
+   "label": null,
+   "result": {
+    "action": "throw",
+    "state": "fly"
+   },
+   "ms": 18
+  },
+  {
+   "n": 36,
+   "label": null,
+   "expect": {
+    "label": "C25 Döngülü kazı klibi ağ durumunda loop=1 (uzak oyuncuda donmaz)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 13
+  },
+  {
+   "n": 37,
+   "label": null,
+   "result": {
+    "anim": "Heavy2H",
+    "loop": 1
+   },
+   "ms": 6
+  },
+  {
+   "n": 38,
+   "label": null,
+   "expect": {
+    "label": "C26 Sandık alırken equip olayı yayılıyor (hotbar güncellenir)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 6
+  },
+  {
+   "n": 39,
+   "label": null,
+   "expect": {
+    "label": "C27 Veri verilen 3 adet ekleme 3 ayrı yığın üretir",
+    "ok": true,
+    "value": true
+   },
+   "ms": 4
+  },
+  {
+   "n": 40,
+   "label": null,
+   "expect": {
+    "label": "Oyun döngüsü Aşama 4 sonrası hatasız sürüyor",
+    "ok": true,
+    "value": true
+   },
+   "ms": 422
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 5191,
+ "ms": 50209,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/scenarios/04_karakter.js",
+ "meta": {},
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8080/index.html?test=1",
+  "verilenUrl": "http://localhost:8080/index.html",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T09:05:15.609Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs /home/user/SON-HAZ-NE-w2/tests/scenarios/04_karakter.js --url http://localhost:8080/index.html --size 640x360 --timeout 1800 --report docs/v05/kosular/faz1/a1_duzeltme/sonra/04_karakter_v04.json",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://localhost:8080 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8080"
+  ],
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd-kirli",
+  "senaryoSha256": "61a94ff8eb3496e4853ef1c752a3bea0476e36bd382aee95691e83442e0c1113",
+  "adim": null,
+  "url": "http://localhost:8080/index.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 2,
+   "id": "Oyun başladı",
+   "etiket": "Oyun başladı",
+   "ok": true,
+   "deger": "playing",
+   "beklenen": {
+    "eq": "playing"
+   },
+   "sure_ms": 10431,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 4,
+   "id": "C01",
+   "etiket": "C01 Yüzerken gövde kaldırması Character.update tarafından uygulanıyor",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 558,
+   "benzetim": {
+    "sim": 2,
+    "adim": 210,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 6,
+   "id": "C18",
+   "etiket": "C18 Dalışta kuşanılan kılıç elde belirmez, çıkışta elde",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 5,
+   "benzetim": {
+    "sim": 2,
+    "adim": 210,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 8,
+   "id": "C10",
+   "etiket": "C10 Sprint bayrağı düşük dayanıklılıkta titreşmez (geçişler ≥0.4 sn aralıklı, en çok 3)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 477,
+   "benzetim": {
+    "sim": 2,
+    "adim": 210,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 180
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 10,
+   "id": "C13",
+   "etiket": "C13 3 m/s hızda Walk klibi (ayak kayması bandı kapandı)",
+   "ok": true,
+   "deger": "Walk",
+   "beklenen": {
+    "eq": "Walk"
+   },
+   "sure_ms": 277,
+   "benzetim": {
+    "sim": 2,
+    "adim": 210,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 180
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 11,
+   "id": "C07",
+   "etiket": "C07 Kamera duvarın içinden bakmaz: mesafe ≥1.5 m kısalır, duvar kalkınca açılır",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 372,
+   "benzetim": {
+    "sim": 5,
+    "adim": 450,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 180
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 13,
+   "id": "C08",
+   "etiket": "C08 Dümende eller çark halkasında (yarıçap 0.5 m)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 106,
+   "benzetim": {
+    "sim": 6,
+    "adim": 480,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 180
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 15,
+   "id": "C08",
+   "etiket": "C08 İstasyon bırakılınca IK hedefleri temiz, silah yeniden elde",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 5298,
+   "benzetim": {
+    "sim": 6,
+    "adim": 480,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 180
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 17,
+   "id": "C08",
+   "etiket": "C08 Topta eller kundak arkasında (iki el ayrı, topa yakın)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 127,
+   "benzetim": {
+    "sim": 7,
+    "adim": 510,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 180
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 21,
+   "id": "C09",
+   "etiket": "C09 Güvertede zıplama: JumpStart klibi ve havada süre sayacı",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 131,
+   "benzetim": {
+    "sim": 9,
+    "adim": 546,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 181
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 23,
+   "id": "C09",
+   "etiket": "C09 Güvertede kaçınma gerçekten yer değiştiriyor",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 72,
+   "benzetim": {
+    "sim": 10,
+    "adim": 576,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 217
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 25,
+   "id": "C12",
+   "etiket": "C12 Gemiye binişte kuşanılan silah yeniden elde",
+   "ok": true,
+   "deger": "sword",
+   "beklenen": {
+    "eq": "sword"
+   },
+   "sure_ms": 5,
+   "benzetim": {
+    "sim": 10,
+    "adim": 576,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 217
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 26,
+   "id": "C23",
+   "etiket": "C23 Batan gemide dümen bırakılır, kilit kalkar, oyuncu güverteden ayrılır",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 45,
+   "benzetim": {
+    "sim": 11,
+    "adim": 588,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 217
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 28,
+   "id": "C06",
+   "etiket": "C06 Ölümde meşgul eylem iptal, tamamlanma geri çağrısı ateşlenmez",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 547,
+   "benzetim": {
+    "sim": 12,
+    "adim": 798,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 217
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 30,
+   "id": "C19",
+   "etiket": "C19 Ragdoll sonrası dirilişte ayağa kalkış eylemi",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 12,
+    "adim": 798,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 217
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 32,
+   "id": "C22/C21",
+   "etiket": "C22/C21 Yerde yatan oyuncuda zehir can düşürmez ve etkileşim yapılamaz",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 340,
+   "benzetim": {
+    "sim": 14,
+    "adim": 978,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 217
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 34,
+   "id": "C05",
+   "etiket": "C05 Olta atışı yakın dövüş (slash) eylemi kullanmıyor",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 46,
+   "benzetim": {
+    "sim": 14,
+    "adim": 978,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 217
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 36,
+   "id": "C25",
+   "etiket": "C25 Döngülü kazı klibi ağ durumunda loop=1 (uzak oyuncuda donmaz)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 5,
+   "benzetim": {
+    "sim": 14,
+    "adim": 978,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 217
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 38,
+   "id": "C26",
+   "etiket": "C26 Sandık alırken equip olayı yayılıyor (hotbar güncellenir)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 3,
+   "benzetim": {
+    "sim": 14,
+    "adim": 978,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 217
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 39,
+   "id": "C27",
+   "etiket": "C27 Veri verilen 3 adet ekleme 3 ayrı yığın üretir",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 14,
+    "adim": 978,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 217
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 40,
+   "id": "Oyun döngüsü Aşama 4 sonrası hatasız",
+   "etiket": "Oyun döngüsü Aşama 4 sonrası hatasız sürüyor",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 211,
+   "benzetim": {
+    "sim": 15,
+    "adim": 1038,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 217
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 33
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 2,
+  "toplam": 34,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 216,
+ "sonuc": {
+  "durum": "GECTI",
+  "cikisKodu": 0,
+  "neden": [],
+  "onaySayisi": 21,
+  "kontrolSayisi": 21,
+  "gecen": 21,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": "tarayici+benzetim",
+  "turSayim": {
+   "tarayici": 1,
+   "tarayici+benzetim": 20
+  }
+ },
+ "sure": {
+  "hazirMs": 5191,
+  "toplamMs": 50209,
+  "yerlesmeMs": 1002
+ }
+}

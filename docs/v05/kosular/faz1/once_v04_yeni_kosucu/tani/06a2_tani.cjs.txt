@@ -1,0 +1,27 @@
+// Tanı sarmalayıcısı: tests/scenarios/coop/06a2_mesaj_kopma.cjs'i DEĞİŞTİRMEDEN koşar. Her oyuncuda hostLeft nedenini,
+// G.state geçişlerini ve ağla ilgili log/info iletilerini kaydeder; 'gs' ve ilk tick sonrasında durum dökümü alır.
+const asil = require('/home/user/SON-HAZ-NE-w2/tests/scenarios/coop/06a2_mesaj_kopma.cjs');
+module.exports = async (ctx) => {
+  const { pages } = ctx;
+  const dok = async (an) => {
+    for (const p of pages) {
+      if (p.isClosed()) continue;
+      try { console.log('TANI-DOKUM', an, p.playerName, JSON.stringify(await p.evaluate(`({ state: DK.G.state, online: DK.G.online, isHost: DK.G.isHost, myId: DK.G.myId, remotes: DK.G.remotes.size, snapSeen: DK.net._snapSeen, lastHostMsgAge: DK.net._lastHostMsg ? Math.round(performance.now() - DK.net._lastHostMsg) : null, tani: window.__tani, panel: [...document.querySelectorAll('.panel')].map(e => e.innerText.slice(0, 200)) })`))); }
+      catch (e) { console.log('TANI-DOKUM', an, p.playerName, 'hata', e.message.slice(0, 120)); }
+    }
+  };
+  for (const p of pages) {
+    p.on('console', (m) => { const t = m.type(); if (t !== 'error' && t !== 'warning') { const s = m.text(); if (/ağ|net|peer|bağlan|host|konuk|join|oda|kop|ayrıl/i.test(s)) console.log('TANI-LOG', p.playerName, t, s.slice(0, 200)); } });
+    await p.evaluate(`(() => { window.__tani = []; const t0 = performance.now(); const G = DK.G; let son = G.state;
+      G.on('hostLeft', (why) => window.__tani.push({ t: Math.round(performance.now() - t0), ev: 'hostLeft', why: String(why || '(neden yok: bağlantı close)') }));
+      setInterval(() => { if (G.state !== son) { window.__tani.push({ t: Math.round(performance.now() - t0), ev: 'state', from: son, to: G.state }); son = G.state; } }, 50);
+      return 'ok'; })()`);
+  }
+  const ev0 = ctx.ev;
+  let tickSay = 0;
+  ctx.ev = async (p, js, label, o) => { const r = await ev0(p, js, label, o); if (label === 'gs' && p === pages[pages.length - 1]) await dok('gs-sonrasi'); return r; };
+  const tick0 = ctx.tick;
+  ctx.tick = async (sec) => { await tick0(sec); tickSay++; if (tickSay === 1) await dok('ilk-tick-sonrasi'); };
+  await asil(ctx);
+  await dok('son');
+};

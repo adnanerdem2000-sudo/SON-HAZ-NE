@@ -1,0 +1,84 @@
+{
+ "scenario": "tests/fixtures/kosucu/z_tur.js",
+ "url": "http://127.0.0.1:33013/z_tur.html",
+ "size": [
+  320,
+  200
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "Z01 Oyunun kendi rAF döngüsü game.update çağırdı",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": "üç doğrudan adım"
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "Z02 Doğrudan game.update ile ileri sarıldı",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 5,
+   "label": null
+  },
+  {
+   "n": 6,
+   "label": null,
+   "result": 30
+  },
+  {
+   "n": 7,
+   "label": null,
+   "expect": {
+    "label": "Z03 DK.sim bir kez çağrıldı",
+    "ok": true,
+    "value": 1
+   }
+  },
+  {
+   "n": 8,
+   "label": null,
+   "result": "yeniden yükleme planlandı"
+  },
+  {
+   "n": 9,
+   "label": null
+  },
+  {
+   "n": 10,
+   "label": null,
+   "result": 60
+  },
+  {
+   "n": 11,
+   "label": null,
+   "expect": {
+    "label": "Z04 Sayfanın kendi yeniden yüklemesinden sonra DK.sim",
+    "ok": true,
+    "value": 1
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 147,
+ "ms": 1968
+}

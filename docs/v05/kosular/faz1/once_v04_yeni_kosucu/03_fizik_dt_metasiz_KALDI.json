@@ -1,0 +1,234 @@
+{
+ "scenario": "tests/scenarios/03_fizik_dt.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": "ok",
+   "ms": 19
+  },
+  {
+   "n": 2,
+   "label": null,
+   "result": {
+    "yuru3s": {
+     "15fps": 12.596,
+     "30fps": 12.596,
+     "60fps": 12.596,
+     "120fps": 12.585
+    },
+    "sprint3s": {
+     "15fps": 20.165,
+     "30fps": 20.165,
+     "60fps": 20.165,
+     "120fps": 20.141
+    },
+    "zipla": {
+     "15fps": {
+      "maxY": 1.183,
+      "air": 0.6
+     },
+     "30fps": {
+      "maxY": 1.183,
+      "air": 0.633
+     },
+     "60fps": {
+      "maxY": 1.183,
+      "air": 0.65
+     },
+     "120fps": {
+      "maxY": 1.214,
+      "air": 0.658
+     }
+    },
+    "kacin": {
+     "15fps": 5.317,
+     "30fps": 5.317,
+     "60fps": 5.317,
+     "120fps": 5.267
+    }
+   },
+   "ms": 16383
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": {
+    "15fps": {
+     "gemi12s": 86.36,
+     "hiz": 4.893,
+     "donus8s_derece": -170.9
+    },
+    "30fps": {
+     "gemi12s": 85.71,
+     "hiz": 4.97,
+     "donus8s_derece": -164.3
+    },
+    "60fps": {
+     "gemi12s": 88.27,
+     "hiz": 4.863,
+     "donus8s_derece": -169.2
+    },
+    "120fps": {
+     "gemi12s": 88.33,
+     "hiz": 4.919,
+     "donus8s_derece": -165.9
+    }
+   },
+   "ms": 10685
+  },
+  {
+   "n": 4,
+   "label": null,
+   "result": {
+    "15fps": {
+     "x": -60.723,
+     "y": 11.486,
+     "sleeping": false
+    },
+    "30fps": {
+     "x": -60.732,
+     "y": 11.484,
+     "sleeping": false
+    },
+    "60fps": {
+     "x": -61.275,
+     "y": 11.365,
+     "sleeping": false
+    },
+    "120fps": {
+     "x": -62.061,
+     "y": 11.232,
+     "sleeping": false
+    }
+   },
+   "ms": 6955
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 5341,
+ "ms": 52551,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/scenarios/03_fizik_dt.js",
+ "meta": {},
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8080/index.html?test=1",
+  "verilenUrl": "http://localhost:8080/index.html",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T07:08:21.979Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs /home/user/SON-HAZ-NE-w2/tests/scenarios/03_fizik_dt.js --url http://localhost:8080/index.html --size 640x360 --timeout 1800 --report docs/v05/kosular/faz1/once_v04_yeni_kosucu/03_fizik_dt.json",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://localhost:8080 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8080"
+  ],
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd-kirli",
+  "senaryoSha256": "dd56c648af973728273d59b44c64dbcf0c47d66ce41e9f904806fcd04cca6c5d",
+  "adim": null,
+  "url": "http://localhost:8080/index.html?test=1"
+ },
+ "kontroller": [],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 33
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 2,
+  "toplam": 34,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [
+  {
+   "ad": "son",
+   "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/03_fizik_dt_2026-11-14T07-08-21-855Z_6028/son.png",
+   "tuval": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/03_fizik_dt_2026-11-14T07-08-21-855Z_6028/son_tuval.jpg"
+  }
+ ],
+ "agIstekSayisi": 216,
+ "sonuc": {
+  "durum": "KALDI",
+  "cikisKodu": 1,
+  "neden": [
+   "senaryo hiç onay içermiyor (ölçüm betiği mi? meta.olcum ile işaretleyin)"
+  ],
+  "onaySayisi": 0,
+  "kontrolSayisi": 0,
+  "gecen": 0,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": null,
+  "turSayim": {}
+ },
+ "sure": {
+  "hazirMs": 5341,
+  "toplamMs": 52551
+ }
+}

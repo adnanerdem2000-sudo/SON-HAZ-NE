@@ -1,0 +1,11 @@
+$ node /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_onceki/run.cjs tests/fixtures/kosucu/b_gorsel_404.js --size 320x200 --timeout 90 --url http://127.0.0.1:32827/v_baglanti.html --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/v.json
+NETFAIL: http://127.0.0.1:1/kapali-kapi.png
+ERR: Failed to load resource: net::ERR_UNSAFE_PORT
+ready in 0.2 s
+PASS B01 Görsel öğesi var → 1
+GORUNTU /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/out/goruntu/b_gorsel_404_2026-11-14T08-54-02-176Z_26138/son.png
+errors: 2 pageErrors: 0 fails: 0 (0.3 s)
+IZINSIZ AG ×1: net::ERR_UNSAFE_PORT http://127.0.0.1:1/kapali-kapi.png
+SONUC: KALDI (çıkış 1) kontrol 1/1, onay 1 | izinsiz konsol 0, ağ 1 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: izinsiz ağ hatası (≥ 400 yanıt ya da başarısız istek): 1
+
+[çıkış 1]

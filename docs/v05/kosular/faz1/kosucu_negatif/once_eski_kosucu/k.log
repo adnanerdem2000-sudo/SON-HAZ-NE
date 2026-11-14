@@ -1,0 +1,9 @@
+$ node /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/kosucu_eski/run.cjs tests/fixtures/kosucu/k_test_param.js --size 320x200 --timeout 90 --url http://127.0.0.1:37919/temiz.html?a=1&b=x%20y --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/k.json
+ready in 0.2 s
+FAIL K01 test=1 kendiliğinden eklendi → null
+FAIL K02 Diğer parametreler korundu → "?a=1&b=x%20y"
+R: 30
+PASS K03 DK.sim bir kez çağrıldı → 1
+errors: 0 pageErrors: 0 fails: 2 (0.2 s)
+
+[çıkış 1]

@@ -1,0 +1,292 @@
+{
+ "scenario": "tests/scenarios/02_tek_dosya.js",
+ "url": "file:///home/user/SON-HAZ-NE/dist/DenizKorsanlari-SonHazine.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "Tek dosya: sayfa hazır",
+    "ok": true,
+    "value": true
+   },
+   "ms": 25
+  },
+  {
+   "n": 2,
+   "label": null,
+   "result": {
+    "proto": "file:",
+    "workers": 3,
+    "fallback": false,
+    "failures": [],
+    "url": "data:text/javascript;charset=utf-8,(()%3",
+    "stats": {
+     "tiles": 125,
+     "meshes": 125,
+     "hires": 15,
+     "tris": 311168,
+     "queue": 0,
+     "jobs": 0,
+     "workers": 3,
+     "fallback": false,
+     "failures": 0,
+     "mode": ""
+    }
+   },
+   "ms": 12
+  },
+  {
+   "n": 3,
+   "label": null,
+   "expect": {
+    "label": "Tek dosya (file://): arazi işçileri çalışıyor",
+    "ok": true,
+    "value": 3
+   },
+   "ms": 4
+  },
+  {
+   "n": 4,
+   "label": null,
+   "result": "ok",
+   "ms": 12
+  },
+  {
+   "n": 5,
+   "label": null,
+   "expect": {
+    "label": "Tek dosya: oyun başladı",
+    "ok": true,
+    "value": "playing"
+   },
+   "ms": 19195
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "Tek dosya: oyuncu zemine basıyor",
+    "ok": true,
+    "value": true
+   },
+   "ms": 597
+  },
+  {
+   "n": 7,
+   "label": null,
+   "result": {
+    "tiles": 129,
+    "meshes": 129,
+    "hires": 22,
+    "tris": 399168,
+    "queue": 0,
+    "jobs": 0,
+    "workers": 3,
+    "fallback": false,
+    "failures": 0,
+    "mode": ""
+   },
+   "ms": 189
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 5001,
+ "ms": 28098,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/scenarios/02_tek_dosya.js",
+ "meta": {},
+ "hedef": {
+  "tip": "tek-test",
+  "url": "file:///home/user/SON-HAZ-NE/dist/DenizKorsanlari-SonHazine.html?test=1",
+  "verilenUrl": "file:///home/user/SON-HAZ-NE/dist/DenizKorsanlari-SonHazine.html",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T07:41:21.033Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs /home/user/SON-HAZ-NE-w2/tests/scenarios/02_tek_dosya.js --url file:///home/user/SON-HAZ-NE/dist/DenizKorsanlari-SonHazine.html --size 640x360 --timeout 1800 --report docs/v05/kosular/faz1/once_v04_yeni_kosucu/02_tek_dosya.json",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [],
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd-kirli",
+  "senaryoSha256": "5402efe888f41d89f28f981eb6bc1097e6b359133c72568715057bf95786c4d7",
+  "adim": null,
+  "url": "file:///home/user/SON-HAZ-NE/dist/DenizKorsanlari-SonHazine.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 1,
+   "id": "Tek dosya: sayfa hazır",
+   "etiket": "Tek dosya: sayfa hazır",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 21,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 3,
+   "id": "Tek dosya (file://): arazi işçileri çalışıyor",
+   "etiket": "Tek dosya (file://): arazi işçileri çalışıyor",
+   "ok": true,
+   "deger": 3,
+   "beklenen": {
+    "gte": 1
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 5,
+   "id": "Tek dosya: oyun başladı",
+   "etiket": "Tek dosya: oyun başladı",
+   "ok": true,
+   "deger": "playing",
+   "beklenen": {
+    "eq": "playing"
+   },
+   "sure_ms": 12694,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 6,
+   "id": "Tek dosya: oyuncu zemine basıyor",
+   "etiket": "Tek dosya: oyuncu zemine basıyor",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 265,
+   "benzetim": {
+    "sim": 1,
+    "adim": 60,
+    "press": 0,
+    "tap": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "file:///home/user/SON-HAZ-NE/dist/DenizKorsanlari-SonHazine.html?test=1",
+   "sayi": 33
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "file:///home/user/SON-HAZ-NE/dist/DenizKorsanlari-SonHazine.html?test=1",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 2,
+  "toplam": 34,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [],
+ "agIstekSayisi": 27,
+ "sonuc": {
+  "durum": "GECTI",
+  "cikisKodu": 0,
+  "neden": [],
+  "onaySayisi": 4,
+  "kontrolSayisi": 4,
+  "gecen": 4,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": "tarayici+benzetim",
+  "turSayim": {
+   "tarayici": 3,
+   "tarayici+benzetim": 1
+  }
+ },
+ "sure": {
+  "hazirMs": 5001,
+  "toplamMs": 28098
+ }
+}

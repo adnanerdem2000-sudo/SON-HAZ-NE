@@ -1,0 +1,27 @@
+# Faz 1 Adım A1 (Y0/Y1) koşularında kullanılan koşucu dosyaları (sha256) — 2026-11-14T07:48:44Z
+ebb5d160f2897b947b171d847f93fd8866e57c2a6fe1853862f672c15223ad82  tests/harness/run.cjs
+f76fb40296ca46ae59d30aa920cd399cddfe7fedee9bd548a3079c16304437e4  tests/harness/coop.cjs
+df46e152ccf6a8f5c8f10ced72ef67a3a62bd4060061a5b6956b557de0f4e2f8  tests/harness/ortak.cjs
+be68913dc2a569560d3107587a2cae654c30be18d0e09adfb77a0b1cf048aadd  tests/node/kosucu_negatif.mjs
+bf3caea96f6146819f5faa645cffa1c9736a9dc0bcd3045bdcb940f4b3a3fd7a  tests/scenarios/03_fizik_dt.js
+#
+# Bu SON sürümle alınanlar: kosucu_negatif/sonra_yeni_kosucu/*; once_v04_yeni_kosucu/{00_acilis,08_kalicilik,12_kayit_dongusu,03_fizik_dt,02_arazi_yedek,02_arazi_yedek_badurl,02_arazi_yedek_badurl_izinsiz,02_arazi_yedek_crash,02_tek_dosya,coop_06a2_kosu4_son_surum}; chest_glb/02_tek_dosya_chest_yok_YENI_kosucu; v03_uyum/00_acilis_YENI_kosucu; once_v04_yeni_kosucu/tani/goto_beforeunload_oyun.
+# Ara sürümlerle alınanlar (yalnız kanıt; son sürümden farkları: bilinmeyen adım alanı denetimi ve zaman aşımı sonrası çıktı koruması — normal koşuda etkisiz): once_v04_yeni_kosucu/{coop_06a2_kosu1_KALDI,coop_06a2_kosu3,03_fizik_dt_metasiz_KALDI,02_arazi_yedek_crash_KESILDI_bash_sinir160sn}, once_v04_yeni_kosucu/tani/coop_06a2_tani_yeni1.
+# 02_arazi_yedek_crash_KESILDI_bash_sinir160sn: SONUÇ DEĞİL — Bash çağrısının 160 sn sınırı koşuyu kesti (SIGTERM); yalnız süre gözlemi (prepare > 120 sn) için saklandı.
+# Eski koşucu (önce): git show HEAD:tests/harness/{run,coop}.cjs (= 44d548c ile aynı); scratchpad kopyası kosucu_eski/
+cf2c01b782d9b9b38e1d809e7d93dedd2ede818b9d59d6263b4bc413fba49242  HEAD:tests/harness/run.cjs
+366fea378b2a042e8d92eeb562c68e0baa3f73c8123853bf9d7c9740d411f24b  HEAD:tests/harness/coop.cjs
+# Eski koşucuyla alınanlar: kosucu_negatif/once_eski_kosucu/*; chest_glb/02_tek_dosya_chest_yok_ESKI_kosucu; v03_uyum/00_acilis_ESKI_kosucu
+# v0.4 dist: 75587dd915dcfee513652f5407211ba5b84e0d8ef025b618b66e7e618b8450e3  /home/user/SON-HAZ-NE/dist/DenizKorsanlari-SonHazine.html
+#
+# ---- A1 inceleme düzeltmesi (düzeltici, 2026-11-14T09:19:08Z) — koşucunun SON sürümü artık budur:
+591dff27aa01267eac15b113ce91db320cb1a9c086ba537b1e06108a68cd31dd  tests/harness/run.cjs
+a6e0e14c4bd1153ce8dd59ced1c0a40bbbe9cb44a107f91b3fe501761f00a717  tests/harness/coop.cjs
+df191a99737582179be90753afc329d022fdf713694e487d115f0a92961af995  tests/harness/ortak.cjs
+098ac29b7f55b7bf436bef080093aa9528ccd823c17505ca364431c1fba8466e  tests/node/kosucu_negatif.mjs
+# Yukarıdaki "Bu SON sürümle alınanlar" listesi uygulayıcının sürümüyle (run.cjs ebb5d160…, coop.cjs f76fb402…, ortak.cjs df46e152…,
+# kosucu_negatif.mjs be68913d…) alındı; o sürüm artık ara sürümdür. Düzeltmeler: A1-01 … A1-12 (bkz. a1_duzeltme/).
+# Bu sürümle alınanlar: a1_duzeltme/sonra/* ve a1_duzeltme/son/*.
+# Düzeltmeden önceki sürümle (uygulayıcının sürümü; scratchpad kopyası a1fix_onceki/, sha256 a1_duzeltme/once/onceki_kosucu_sha256.txt)
+# alınanlar: a1_duzeltme/once/* (A1-01 asılma kanıtları, yeni negatif durumların önceki koşucudaki sonucu, A1-05 sahte koşucu,
+# A1-12 metasız kesik kamera taraması). a1_duzeltme/once/kosucu_negatif_ESKI_kosucu_44d548c: yeni araç (--eski-kosucu) + eski koşucu (cf2c01b7…/366fea37…).

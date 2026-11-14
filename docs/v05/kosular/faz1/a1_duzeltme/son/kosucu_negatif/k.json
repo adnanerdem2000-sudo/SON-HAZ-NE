@@ -1,0 +1,221 @@
+{
+ "scenario": "tests/fixtures/kosucu/k_test_param.js",
+ "url": "http://127.0.0.1:45535/temiz.html?a=1&b=x%20y",
+ "size": [
+  320,
+  200
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "K01 test=1 kendiliğinden eklendi",
+    "ok": true,
+    "value": "1"
+   },
+   "ms": 4
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "K02 Diğer parametreler korundu",
+    "ok": true,
+    "value": "?a=1&b=x%20y&test=1"
+   },
+   "ms": 4
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": 30,
+   "ms": 1
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "K03 DK.sim bir kez çağrıldı",
+    "ok": true,
+    "value": 1
+   },
+   "ms": 4
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 218,
+ "ms": 1236,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/fixtures/kosucu/k_test_param.js",
+ "meta": {},
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://127.0.0.1:45535/temiz.html?a=1&b=x%20y&test=1",
+  "verilenUrl": "http://127.0.0.1:45535/temiz.html?a=1&b=x%20y",
+  "gorunum": [
+   320,
+   200
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   320,
+   200
+  ],
+  "ci": false,
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T09:19:35.031Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs /home/user/SON-HAZ-NE-w2/tests/fixtures/kosucu/k_test_param.js --size 320x200 --timeout 90 --url 'http://127.0.0.1:45535/temiz.html?a=1&b=x%20y' --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/son/kosucu_negatif/k.json",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://127.0.0.1:45535 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 45535"
+  ],
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd-kirli",
+  "senaryoSha256": "e7d9e82e9f338c56611d25532fed6c717841614ec022f50779fb1361fdd5b874",
+  "adim": null,
+  "url": "http://127.0.0.1:45535/temiz.html?a=1&b=x%20y&test=1"
+ },
+ "kontroller": [
+  {
+   "n": 1,
+   "id": "K01",
+   "etiket": "K01 test=1 kendiliğinden eklendi",
+   "ok": true,
+   "deger": "1",
+   "beklenen": {
+    "eq": "1"
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 2,
+   "id": "K02",
+   "etiket": "K02 Diğer parametreler korundu",
+   "ok": true,
+   "deger": "?a=1&b=x%20y&test=1",
+   "beklenen": {
+    "eq": "?a=1&b=x%20y&test=1"
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 4,
+   "id": "K03",
+   "etiket": "K03 DK.sim bir kez çağrıldı",
+   "ok": true,
+   "deger": 1,
+   "beklenen": {
+    "eq": 1
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 1,
+    "adim": 30,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [],
+ "uyariSayim": {
+  "farkli": 0,
+  "toplam": 0,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 1,
+ "sonuc": {
+  "durum": "GECTI",
+  "cikisKodu": 0,
+  "neden": [],
+  "onaySayisi": 3,
+  "kontrolSayisi": 3,
+  "gecen": 3,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": "tarayici+benzetim",
+  "turSayim": {
+   "tarayici": 2,
+   "tarayici+benzetim": 1
+  }
+ },
+ "sure": {
+  "hazirMs": 218,
+  "toplamMs": 1236,
+  "yerlesmeMs": 1000
+ }
+}

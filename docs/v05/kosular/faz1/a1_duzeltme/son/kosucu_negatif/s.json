@@ -1,0 +1,120 @@
+{
+ "scenario": "tests/fixtures/kosucu/s_bilinmeyen_alan.js",
+ "url": "http://127.0.0.1:45535/temiz.html",
+ "size": [
+  320,
+  200
+ ],
+ "steps": [],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": null,
+ "harnessError": "adım 2: bilinmeyen adım alanı expext (yazım hatası mı? bilinenler: label, wait, rotaKok, goto, bekleSecici, tikla, js, degisken, expect, key, down, up, metrics, click, view, snap, snapjs, shot, agSay, metrikKarsilastir)",
+ "ms": 243,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/fixtures/kosucu/s_bilinmeyen_alan.js",
+ "meta": {},
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://127.0.0.1:45535/temiz.html?test=1",
+  "verilenUrl": "http://127.0.0.1:45535/temiz.html",
+  "gorunum": [
+   320,
+   200
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   320,
+   200
+  ],
+  "ci": false,
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T09:19:46.952Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs /home/user/SON-HAZ-NE-w2/tests/fixtures/kosucu/s_bilinmeyen_alan.js --size 320x200 --timeout 90 --url http://127.0.0.1:45535/temiz.html --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/son/kosucu_negatif/s.json",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://127.0.0.1:45535 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 45535"
+  ],
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd-kirli",
+  "senaryoSha256": "d7f8c36bd74d96a69a0051ff20c42bf1aa2507ff732aa38edce52a24627a23f0",
+  "adim": null,
+  "url": "http://127.0.0.1:45535/temiz.html?test=1"
+ },
+ "kontroller": [],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [],
+ "uyariSayim": {
+  "farkli": 0,
+  "toplam": 0,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [
+  {
+   "ad": "son",
+   "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/s_bilinmeyen_alan_2026-11-14T09-19-46-785Z_9453/son.png",
+   "tuval": null
+  }
+ ],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 0,
+ "sonuc": {
+  "durum": "KOSUCU_HATASI",
+  "cikisKodu": 1,
+  "neden": [
+   "koşucu hatası: adım 2: bilinmeyen adım alanı expext (yazım hatası mı? bilinenler: label, wait, rotaKok, goto, bekleSecici, tikla, js, degisken, expect, key, down, up, metrics, click, view, snap, snapjs, shot, agSay, metrikKarsilastir)"
+  ],
+  "onaySayisi": null,
+  "kontrolSayisi": 0,
+  "gecen": 0,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": null,
+  "turSayim": {}
+ },
+ "sure": {
+  "hazirMs": null,
+  "toplamMs": 243,
+  "yerlesmeMs": null
+ }
+}

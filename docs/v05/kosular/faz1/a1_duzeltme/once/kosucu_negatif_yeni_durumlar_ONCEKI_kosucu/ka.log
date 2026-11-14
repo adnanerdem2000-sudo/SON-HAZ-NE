@@ -1,0 +1,13 @@
+$ node /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_onceki/run.cjs tests/fixtures/kosucu/ka_kanit.js --size 320x200 --timeout 90 --url http://127.0.0.1:32827/kanit.html --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/ka.json
+ready in 0.2 s
+PASS KA01 Sabit sayfa açıldı → 1
+SNAPFAIL page.evaluate: Error: kosucu_negatif ka: snap çizimde kırıldı
+    at Object.snap (http://127.0.0.1:3
+SNAPFAIL page.evaluate: Error: kosucu_negatif ka: snapFrom çizimde kırıldı
+    at Object.snapFrom (http://127
+SNAPFAIL Cannot read properties of null (reading 'split')
+SNAPFAIL ENOTDIR: not a directory, mkdir '/dev/null/kosucu_negatif'
+errors: 0 pageErrors: 0 fails: 0 (0.2 s)
+SONUC: GECTI (çıkış 0) kontrol 1/1, onay 1 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0
+
+[çıkış 0]

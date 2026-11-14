@@ -1,0 +1,32 @@
+$ node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs tests/fixtures/kosucu/ka_kanit.js --size 320x200 --timeout 90 --url http://127.0.0.1:45535/kanit.html --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/son/kosucu_negatif/ka.json
+ready in 0.2 s
+PASS KA01 Sabit sayfa açıldı → 1
+SNAPFAIL page.evaluate: Error: kosucu_negatif ka: snap çizimde kırıldı
+    at Object.snap (http://127.0.0.1:45535/kanit.html?test=1:9:20)
+    at eval (eval at evaluate (:311:30), <anonymous>:1:4)
+    at eval (
+EVALERR page.evaluate: Error: kosucu_negatif ka: snap çizimde kırıldı
+    at Object.snap (http://127.0.0.1:45535/kanit.html?test=1:9:20)
+    at eval (eval at evaluate (:311:30), <anonymous>:1:4)
+    at eval (<anonymous>)
+    at UtilityScript.evaluate (<anonymous>:311:30)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/goruntu/ka_kanit_2026-11-14T09-20-16-899Z_10840/ilk_kalan.png
+SNAPFAIL page.evaluate: Error: kosucu_negatif ka: snapFrom çizimde kırıldı
+    at Object.snapFrom (http://127.0.0.1:45535/kanit.html?test=1:10:24)
+    at eval (eval at evaluate (:311:30), <anonymous>:1:4)
+    
+EVALERR page.evaluate: Error: kosucu_negatif ka: snapFrom çizimde kırıldı
+    at Object.snapFrom (http://127.0.0.1:45535/kanit.html?test=1:10:24)
+    at eval (eval at evaluate (:311:30), <anonymous>:1:4)
+    at eval (<anonymous>)
+    at UtilityScript.evaluate (<anonymous>:311:30)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+SNAPFAIL snapjs data: adresi dönmedi
+EVALERR snapjs: ifade data: adresi döndürmedi (gelen null)
+SNAPFAIL snapjs dosya yazılamadı
+KANIT UYARISI snapjs ENOTDIR: not a directory, mkdir '/dev/null/kosucu_negatif'
+errors: 0 pageErrors: 0 fails: 3 evalErrors: 3 (1.3 s)
+SONUC: KALDI (çıkış 1) kontrol 1/1, onay 1 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | kanıt uyarısı 1 | neden: başarısız kontrol ya da adım: 3; adım istisnası (evalErrors): 3
+
+[çıkış 1]

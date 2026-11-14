@@ -1,0 +1,14 @@
+ready in 6.2 s
+R: "ok"
+PASS Oyun başladı → "playing"
+R: "ok"
+R: [{"opened":true,"addedWhileOpen":1,"netAfterClose":0},{"opened":true,"addedWhileOpen":1,"netAfterClose":0},{"opened":true,"addedWhileOpen":1,"netAfterClose":0}]
+PASS H24 Oluşturucu closeAll ile kapanınca window mouseup dinleyicisi kalmaz (3 açılış) → true
+PASS H24 (kontrol) Oluşturucu açıkken rAF döngüsü çalışıyordu → true
+R: "ok"
+PASS H24 Kapanıştan sonra oluşturucu rAF döngüsü durur (600 ms içinde çağrı yok) → true
+R: [["loop:other",9]]
+R: {"maps":1,"top":"test","depth":2}
+PASS H23 Üstte panel varken ikinci harita açılmaz (yığında 1 harita) → true
+PASS Arayüz testlerinden sonra oyun açık, yığın boş → true
+errors: 0 pageErrors: 0 fails: 0 (29.4 s)

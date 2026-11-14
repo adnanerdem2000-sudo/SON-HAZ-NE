@@ -1,0 +1,13 @@
+PASS (yalnız çıkış kodu; şema 1) (a) console.error('x 404 y'): beklenen çıkış 1/KALDI, gelen çıkış 1/-
+PASS (yalnız çıkış kodu; şema 1) (b) olmayan görsel isteği (HTTP 404): beklenen çıkış 1/KALDI, gelen çıkış 1/-
+PASS (yalnız çıkış kodu; şema 1) (c) onaysız senaryo: beklenen çıkış 1/KALDI, gelen çıkış 1/-
+PASS (yalnız çıkış kodu; şema 1) (f) co-op ev() istisnası: beklenen çıkış 1/KALDI, gelen çıkış 1/-
+PASS (yalnız çıkış kodu; şema 1) (i) aynı beklenti başlatma betiği olmadan (olumsuz kontrol) + ilk başarısızlık görüntüsü: beklenen çıkış 1/KALDI, gelen çıkış 1/-
+PASS (yalnız çıkış kodu; şema 1) (l) test kipi istendi ama window.DK yok: beklenen çıkış 1/KOSUCU_HATASI, gelen çıkış 1/-
+PASS (yalnız çıkış kodu; şema 1) (m2) --uretim ama sayfada DK var: U00 kalır: beklenen çıkış 1/KALDI, gelen çıkış 1/-
+PASS (yalnız çıkış kodu; şema 1) (o) yeni adım türleri (olumsuz): beklenen çıkış 1/KALDI, gelen çıkış 1/-
+PASS (yalnız çıkış kodu; şema 1) (s) yazım hatalı adım alanı ('expext'): beklenen çıkış 1/KOSUCU_HATASI, gelen çıkış 1/-
+PASS (yalnız çıkış kodu; şema 1) (q) co-op onaysız senaryo: beklenen çıkış 1/KALDI, gelen çıkış 1/-
+PASS (yalnız çıkış kodu; şema 1) (r) co-op konsol hatası: beklenen çıkış 1/KALDI, gelen çıkış 1/-
+
+kosucu_negatif: GECTI — kalan: []; çekirdekte kalan: []; koşucunun yanlışlıkla geçirdiği: [] (koşucu dizini ../../../tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a1/sahte_kosucu)

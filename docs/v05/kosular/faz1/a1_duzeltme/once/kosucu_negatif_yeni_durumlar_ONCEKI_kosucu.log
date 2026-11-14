@@ -1,0 +1,23 @@
+PASS (t) zaman aşımı: ZAMAN_ASIMI, rapor yazılır, kalan adım koşmaz: beklenen çıkış 1/ZAMAN_ASIMI, gelen çıkış 1/ZAMAN_ASIMI
+PASS (t2) co-op zaman aşımı: geç gelen kontrol sayılmaz: beklenen çıkış 1/ZAMAN_ASIMI, gelen çıkış 1/ZAMAN_ASIMI
+PASS (u) yakalanmamış sayfa hatası (pageerror): beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI
+FAIL (v) bağlantı reddedildi (requestfailed, HTTP yanıtı yok): beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI | kalan denetimler: ağ: başarısız istek kapali-kapi.png (ERR_CONNECTION_REFUSED)
+PASS (w) sözdizimi bozuk senaryo: beklenen çıkış 1/KOSUCU_HATASI, gelen çıkış 1/KOSUCU_HATASI
+FAIL (y1) expect'te yazım hatalı karşılaştırıcı ('truthly'): beklenen çıkış 1/KOSUCU_HATASI, gelen çıkış 0/GECTI ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu; durum; harnessError: bilinmeyen alan truthly; adımlar koşmadı
+FAIL (y2) bütün karşılaştırıcılar uygulanır; gte/lte yalnız sonlu sayıyla: beklenen çıkış 1/KALDI, gelen çıkış 0/GECTI ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu; durum; Y02 (−5, 1..10) kaldı; Y03 (null ≥ 0) kaldı; Y04 ([] ≤ 5) kaldı
+FAIL (y3) karşılaştırıcısız expect: beklenen çıkış 1/KOSUCU_HATASI, gelen çıkış 0/GECTI ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu; durum; harnessError: karşılaştırıcı yok
+FAIL (y4) sınırsız agSay: beklenen çıkış 1/KOSUCU_HATASI, gelen çıkış 0/GECTI ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu; durum; harnessError: sınır yok
+FAIL (z) tür ölçümü: rAF döngüsü, doğrudan game.update, DK.sim, sayfanın kendi yeniden yüklemesi: beklenen çıkış 0/GECTI, gelen çıkış 0/GECTI | kalan denetimler: Z01 tarayici (rAF döngüsünün game.update çağrıları sayılmadı); Z02 tarayici+benzetim (doğrudan game.update: update 3, sim 0); Z03 tarayici+benzetim (sim 1, adım 30, update 0); Z04 tarayici+benzetim (kendi yeniden yüklemesinden sonra sim 1, adım 60)
+FAIL (ka) kanıt adımları: sayfa istisnası ve data: olmayan dönüş adım hatası; dosya yazımı yalnız uyarı: beklenen çıkış 1/KALDI, gelen çıkış 0/GECTI ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu; durum; snap, view, snapjs adım hatası; hatalar.degerlendirme: 3 kanıt hatası; evalErrors = 3; yazılamayan dosya: adım hatası değil, kanıt uyarısı
+FAIL (aa) co-op check()'e söz (await unutuldu): beklenen çıkış 1/KALDI, gelen çıkış 0/GECTI ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu; durum; AA01 kaldı (söz)
+FAIL (ab) son adımdan sonra gelen eşzamansız sayfa hatası (yerleşme): beklenen çıkış 1/KALDI, gelen çıkış 0/GECTI ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu; durum; geç gelen sayfa hatası kaydedildi; yerleşme ≥ 1000 ms
+FAIL (ac) co-op: senaryodan sonra gelen eşzamansız sayfa hatası (yerleşme): beklenen çıkış 1/KALDI, gelen çıkış 0/GECTI ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu; durum; geç gelen sayfa hatası (Kaptan); yerleşme ≥ 1000 ms
+FAIL (ad) gerekçesiz izin (meta): beklenen çıkış 1/KOSUCU_HATASI, gelen çıkış 0/GECTI ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu; durum; harnessError: gerekçe zorunlu
+FAIL (ae) her şeyle eşleşen izin deseni ('.*'): beklenen çıkış 1/KOSUCU_HATASI, gelen çıkış 0/GECTI ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu; durum; harnessError: boş dizgeyle eşleşiyor
+FAIL (af) ağ için yazılmış izin, betiğin bastığı konsol hatasını (konum adresi) izinli yapmaz: beklenen çıkış 1/KALDI, gelen çıkış 0/GECTI ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu; durum; betiğin hatası izinsiz; konsolda izinli yok
+FAIL (ag) bozuk --izin-hata düzenli ifadesi: kullanım hatası (çıkış 2): beklenen çıkış 2/rapor yok, gelen çıkış 1/rapor yok | kalan denetimler: çıkış kodu
+FAIL (ag2) co-op: bozuk --izin-hata düzenli ifadesi: kullanım hatası (çıkış 2): beklenen çıkış 2/rapor yok, gelen çıkış 1/rapor yok | kalan denetimler: çıkış kodu
+FAIL (ah) gerekçesiz --izin-hata: kullanım hatası (çıkış 2): beklenen çıkış 2/rapor yok, gelen çıkış 0/GECTI ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu; rapor yazılmadı (beklenen); ileti: gerekçe zorunlu
+FAIL (ai) co-op: aynı adla mk() ile yeniden katılım önceki sekmenin sayfa hatasını silmez: beklenen çıkış 1/KALDI, gelen çıkış 0/GECTI ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu; durum; pageErrors.Tayfa: ilk sekmenin hatası; yeni sekmenin anahtarı Tayfa#2; hatalar.sayfa: oyuncu Tayfa
+
+kosucu_negatif: KALDI — kalan: [v, y1, y2, y3, y4, z, ka, aa, ab, ac, ad, ae, af, ag, ag2, ah, ai]; çekirdekte kalan: []; koşucunun yanlışlıkla geçirdiği: [y1, y2, y3, y4, ka, aa, ab, ac, ad, ae, af, ah, ai] (koşucu dizini ../../../tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_onceki)

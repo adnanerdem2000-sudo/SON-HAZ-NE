@@ -1,0 +1,22 @@
+ready in 6.2 s
+R: "ok"
+PASS Oyun başladı → "playing"
+R: {"crId":"core_kamp_cr0","kgId":"core_kamp_keg0","carried":"chdnhxhgl","chests":1,"islandsSaved":true,"hazardsGone":3,"shipSunk":true,"campCd":222}
+PASS Kayıt verisi ada/tehlike/taşınan sandık/batık gemi/kamp durumunu içeriyor → true
+R: {"opened":true,"freed":true,"temple":true,"gone":true,"carried":true,"sunk":true,"camp":true}
+R: "reloading"
+PASS Kayıt yüklendi, oyun başladı → "playing"
+PASS B02/B-08 Ada ödülleri, tutsaklar ve tapınak mekanizması yüklemede geri geliyor → true
+PASS Kırılmış sandık ve patlamış fıçı yüklemede yeniden kurulmuyor → true
+R: {"crateStillThere":false,"kegStillThere":false,"gone":["core_kamp_cr0","core_kamp_keg0","core_kamp_cr1"]}
+PASS B04 Taşınan sandık kayıtta; yüklemede oyuncunun yanında yerde → true
+R: {"state":"ground","d":0.6}
+PASS E-13/A1 Batık gemi batık yüklenir, parça/direk/top hasarı korunur, oyuncu güverteye bindirilmez → true
+R: {"sunk":true,"visible":false,"pruva":50,"mast0":0,"cannon0":30,"hp":60,"playerMode":"ground"}
+PASS A5/F-07 Kamp bekleme süresi yüklemede korunur (yükleme sonrası geçen süre düşülür) → true
+PASS Sandık ve kese kimlikleri benzersiz → true
+PASS Bozuk kayıt dosyası güvenle reddedilir (null), liste çökmez → true
+PASS Bozuk ana kayıt varken .bak yedeği okunur → true
+PASS Oyun döngüsü yükleme sonrası hatasız sürüyor → true
+errors: 0 pageErrors: 0 fails: 0 (30.8 s)
+SONUC: GECTI (çıkış 0) kontrol 12/12, onay 12 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34

@@ -1,0 +1,21 @@
+ready in 6.5 s
+R: "ok"
+PASS Oyun başladı → "playing"
+PASS D01 Dünya yarı boyutu 10 km (20×20 km korunur) → 10000
+PASS D02 Dik olmayan şekillerde su çizgisi sıçraması ≤ 0,40 m (kıyı dikişi yok) → 0.251
+R: {"seam":{"worst":0.251,"at":["kara_girdap","spire",6,35],"n":65016,"big":0,"islands":54},"steep":{"worst":1.403,"at":["timsah_batakligi","swamp",6,230],"n":12091,"big":30,"islands":13},"ms":361}
+PASS D02b 1 mm inceltmede süreksizlik (tüm 67 ada, tüm şekiller) = 0 → 0
+R: {"total":0,"byShape":{},"ex":[]}
+PASS D03 Yüzen oyuncu 3 gelgit × çukur/tepe + sağanak çukurunda basamaklardan T başlığına çıkar (≤ 2 kip değişimi) → true
+R: {"tz":273.5,"top":2.25,"runs":[{"tide":-0.55,"scale":1,"ph":"trough","amp":0.11,"minWh":-0.58,"t":3.5,"x":17.61,"y":2.25,"mode":"ground","switches":1,"ok":true},{"tide":-0.55,"scale":1,"ph":"crest","amp":0.11,"minWh":-0.59,"t":3.5,"x":17.61,"y":2.25,"mode":"ground","switches":1,"ok":true},{"tide":0,"scale":1,"ph":"trough","amp":0.11,"minWh":-0.05,"t":3.75,"x":16.86,"y":2.25,"mode":"ground","switches":1,"ok":true},{"tide":0,"scale":1,"ph":"crest","amp":0.12,"minWh":-0.04,"t":3.75,"x":17.18,"y":2.25,"mode":"ground","switches":1,"ok":true},{"tide":0.55,"scale":1,"ph":"trough","amp":0.12,"minWh":0.5,"t":3.75,"x":17.53,"y":2.25,"mode":"ground","switches":1,"ok":true},{"tide":0.55,"scale":1,"ph":"crest","amp":0.12,"minWh":0.51,"t":4,"x":16.77,"y":2.25,"mode":"ground","switches":1,"ok":true},{"tide":-0.55,"scale":1.5,"ph":"trough","amp":0.17,"minWh":-0.6,"t":3.75,"x":17.18,"y":2.25,"mode":"ground","switches":1,"ok":true}]}
+PASS D08 −1,5 m basamağında 60 sn bekleyen oyuncu en çok 1 kip değişimi yapar (sağanak dalgası, barınakta) → true
+R: {"switches":0,"modes":{"ground":240},"x":24.6,"y":-1.2}
+PASS D07 Liman barınağı: merdivende dalga genliği açık denizin ≤ %35'i ve ≤ 0,35 m → true
+R: {"near":0.087,"far":0.539,"far2":0.13,"ratio":0.16}
+PASS D04 Her yordamsal adacıkta en az bir geçerli belirleyici özellik → true
+R: {"total":67,"featureless":0,"featurelessIds":[],"bad":[],"poolAdded":22,"typesByRegion":{"merkez":["beach_wreck","camp","fort","lighthouse","market","port","ruin","ruined_town"],"buzul":["beach_wreck","boss_sea","camp","port","ruin"],"tropik":["beach_wreck","camp","port","ruin","sunken_city","temple"],"volkan":["beach_wreck","boss_land","camp","mine","port","ruin"],"col":["beach_wreck","camp","mine","port","prison","ruin"],"hayalet":["beach_wreck","boss_sea","camp","graveyard","ruin"]}}
+PASS D06 Otomatik özellikler araziye uygun (yapı çevresi ≥ 1 m, batık ≥ −0,6 m) → true
+R: {"n":22,"bad":[]}
+PASS D05 Havuz özellikli adacıklar hatasız kurulur ve sökülür → true
+R: {"out":[["ada_merkez_0","beach_wreck",true,20],["ada_merkez_2","beach_wreck",true,5],["ada_merkez_7","beach_wreck",true,3],["ada_buzul_0","ruin",true,6],["ada_buzul_3","beach_wreck",true,4],["ada_buzul_4","ruin",true,6]],"errs":[]}
+errors: 0 pageErrors: 0 fails: 0 (40.0 s)

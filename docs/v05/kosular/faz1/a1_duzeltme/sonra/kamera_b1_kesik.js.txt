@@ -1,0 +1,7 @@
+// A1 düzeltici (A1-12): kamera_tarama/batch_b1_town_pier.js'nin ilk üç satırı (meta + açılış) — taramanın kendisi ~24 dk sürdüğü için
+// yalnız koşucunun meta.olcum'u okuyup tek onaylı betiği OLCUM saydığını göstermek için kesilmiş kopya.
+[
+{meta: {olcum: true, aciklama: 'Kamera parlaklık taraması (ölçüm betiği): asıl ölçüt analiz.cjs; tek onay (Oyun başladı) yalnız açılışı doğrular (Faz 9 tasarımı §1.8, K-13)'}},
+{js: `DK.G.noAutoPause=true; DK.handlers.startGame({kind:'solo', slot:2, data:null}); 'ok'`},
+{wait: 4000, expect: {js: `DK.G.state`, eq: 'playing', label: 'Oyun başladı'}},
+]

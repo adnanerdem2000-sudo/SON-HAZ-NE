@@ -1,0 +1,22 @@
+$ node /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_onceki/coop.cjs tests/fixtures/kosucu/q_coop_onaysiz.cjs --players 2 --size 320x200 --timeout 120 --url http://127.0.0.1:32827/coop.html --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/ag2.json --izin-hata ( # bozuk desen
+
+[stderr]
+/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_onceki/ortak.cjs:93
+    try { re = new RegExp(z.desen, String(z.bayrak || '').replace(/[gy]/g, '')); } catch (e) { throw new Error(`izin listesi: geçersiz düzenli ifade ${JSON.stringify(z.desen)}: ${e.message}`); }
+                                                                                                     ^
+
+Error: izin listesi: geçersiz düzenli ifade "(": Invalid regular expression: /(/: Unterminated group
+    at /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_onceki/ortak.cjs:93:102
+    at Array.map (<anonymous>)
+    at Object.izinleriDerle (/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_onceki/ortak.cjs:88:14)
+    at /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_onceki/coop.cjs:55:19
+    at Object.<anonymous> (/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_onceki/coop.cjs:220:3)
+    at Module._compile (node:internal/modules/cjs/loader:1706:14)
+    at Object..js (node:internal/modules/cjs/loader:1839:10)
+    at Module.load (node:internal/modules/cjs/loader:1441:32)
+    at Function._load (node:internal/modules/cjs/loader:1263:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+
+Node.js v22.22.0
+
+[çıkış 1]

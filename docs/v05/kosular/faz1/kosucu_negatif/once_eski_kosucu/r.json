@@ -1,0 +1,25 @@
+{
+ "scenario": "tests/fixtures/kosucu/r_coop_konsol.cjs",
+ "players": 2,
+ "checks": [
+  {
+   "label": "R01 Sayfa açıldı",
+   "ok": true,
+   "detail": "object"
+  }
+ ],
+ "errors": {
+  "Kaptan": [
+   "coop sabit sayfa hatası"
+  ],
+  "Tayfa": [
+   "coop sabit sayfa hatası"
+  ]
+ },
+ "pageErrors": {
+  "Kaptan": [],
+  "Tayfa": []
+ },
+ "fails": 0,
+ "ms": 236
+}

@@ -1,0 +1,28 @@
+{
+ "scenario": "tests/fixtures/kosucu/b_gorsel_404.js",
+ "url": "http://127.0.0.1:33013/v_baglanti.html",
+ "size": [
+  320,
+  200
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "B01 Görsel öğesi var",
+    "ok": true,
+    "value": 1
+   }
+  }
+ ],
+ "errors": [
+  "NET http://127.0.0.1:65530/kapali-kapi.png net::ERR_CONNECTION_REFUSED",
+  "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+ ],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 157,
+ "ms": 160
+}

@@ -1,0 +1,13 @@
+$ node /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/kosucu_eski/run.cjs tests/fixtures/kosucu/n_adimlar.js --size 320x200 --timeout 90 --url http://127.0.0.1:37919/adimlar.html --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/once_eski_kosucu/n.json
+ready in 0.2 s
+FAIL N01 tikla (metinle) → undefined
+FAIL N02 tikla (seçiciyle) → undefined
+FAIL N03 degisken sayfaya kondu → undefined
+M: {"label":"m1","heapMB":1.5,"heapTotalMB":2.3,"backingMB":0,"embedderMB":1.4,"nodes":38,"listeners":15,"docs":4,"frames":4}
+M: {"label":"m2","heapMB":1.5,"heapTotalMB":2.3,"backingMB":0,"embedderMB":1.4,"nodes":38,"listeners":15,"docs":4,"frames":4}
+FAIL N05 goto: yeni sayfa, test=1 eklendi → false
+FAIL N06 degisken gezinmeden sonra da var → undefined
+FAIL N08 rotaKok: sahte https köken, alt kaynak rotadan → "http://127.0.0.1:37919|true|undefined"
+errors: 0 pageErrors: 0 fails: 6 (0.2 s)
+
+[çıkış 1]

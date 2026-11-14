@@ -1,0 +1,17 @@
+ERR: Fetch API cannot load file:///tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/chest_yok/assets/models/chest.glb. URL scheme "file" is not supported.
+ERR: Fetch API cannot load file:///tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/chest_yok/assets/models/chest.glb. URL scheme "file" is not supported.
+ERR: Fetch API cannot load file:///tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/chest_yok/assets/models/chest.glb. URL scheme "file" is not supported.
+ERR: Model yüklenemedi: chest Failed to fetch
+ready in 7.4 s
+PASS Tek dosya: sayfa hazır → true
+R: {"proto":"file:","workers":3,"fallback":false,"failures":[],"url":"data:text/javascript;charset=utf-8,(()%3","stats":{"tiles":125,"meshes":125,"hires":15,"tris":311168,"queue":0,"jobs":0,"workers":3,"fallback":false,"failures":0,"mode":""}}
+PASS Tek dosya (file://): arazi işçileri çalışıyor → 3
+R: "ok"
+PASS Tek dosya: oyun başladı → "playing"
+PASS Tek dosya: oyuncu zemine basıyor → true
+R: {"tiles":129,"meshes":129,"hires":22,"tris":400960,"queue":0,"jobs":4,"workers":3,"fallback":false,"failures":0,"mode":""}
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_tek_dosya_2026-11-14T07-41-55-166Z_19026/son.png
+errors: 4 pageErrors: 0 fails: 0 (51.1 s)
+IZINSIZ KONSOL ×3: Fetch API cannot load file:///tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/chest_yok/assets/models/chest.glb. URL scheme "file" is not supported. @ file:///tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/chest_yok/DenizKorsanlari-SonHazine.html?test=1
+IZINSIZ KONSOL ×1: Model yüklenemedi: chest Failed to fetch @ file:///tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/chest_yok/DenizKorsanlari-SonHazine.html?test=1
+SONUC: KALDI (çıkış 1) kontrol 4/4, onay 4 | izinsiz konsol 4, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34 | neden: izinsiz konsol hatası: 4

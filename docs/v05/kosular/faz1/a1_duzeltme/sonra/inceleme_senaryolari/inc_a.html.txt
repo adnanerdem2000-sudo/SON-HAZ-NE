@@ -1,0 +1,15 @@
+<!doctype html>
+<meta charset="utf-8">
+<link rel="icon" href="data:,">
+<title>inceleme a1: run.cjs birleşik sabit</title>
+<!-- DK.sim, oyun döngüsünü (DK.game.update) çizimsiz ilerletir; DK.snapFrom çizim hatasını taklit eder (istisna atar). -->
+<script>
+  window.__simSayisi = 0;
+  window.DK = {
+    game: { t: 0, update(dt) { this.t += dt; } },
+    sim(sn = 1, dt = 1 / 30) { window.__simSayisi++; const n = Math.round(sn / dt); for (let i = 0; i < n; i++) window.DK.game.update(dt); return n; },
+    snapFrom() { throw new Error('inceleme: snapFrom cizimde kirildi'); },
+  };
+  window.__ready = true;
+</script>
+<p>inceleme a1</p>

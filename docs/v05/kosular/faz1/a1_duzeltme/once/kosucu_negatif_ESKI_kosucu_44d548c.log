@@ -1,0 +1,47 @@
+FAIL (a) console.error('x 404 y'): beklenen çıkış 1/KALDI, gelen çıkış 0/- ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu
+FAIL (b) olmayan görsel isteği (HTTP 404): beklenen çıkış 1/KALDI, gelen çıkış 0/- ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu
+FAIL (c) onaysız senaryo: beklenen çıkış 1/KALDI, gelen çıkış 0/- ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu
+PASS (yalnız çıkış kodu; şema 1) (d) meta.olcum (onaysız ölçüm): beklenen çıkış 0/OLCUM, gelen çıkış 0/-
+PASS (yalnız çıkış kodu; şema 1) (e) izin listesindeki hatalar (meta.izinliHatalar; metin + adres): beklenen çıkış 0/GECTI, gelen çıkış 0/-
+FAIL (f) co-op ev() istisnası: beklenen çıkış 1/KALDI, gelen çıkış 0/- ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu
+PASS (yalnız çıkış kodu; şema 1) (g) kapatılmış sayfada tick(): beklenen çıkış 0/GECTI, gelen çıkış 0/-
+PASS (yalnız çıkış kodu; şema 1) (e2) izinler komut satırından (--izin-hata): beklenen çıkış 0/GECTI, gelen çıkış 0/-
+FAIL (h) başlatma betiği (meta.baslatma) localStorage → SecurityError: beklenen çıkış 0/GECTI, gelen çıkış 1/- | kalan denetimler: çıkış kodu
+PASS (yalnız çıkış kodu; şema 1) (i) aynı beklenti başlatma betiği olmadan (olumsuz kontrol) + ilk başarısızlık görüntüsü: beklenen çıkış 1/KALDI, gelen çıkış 1/-
+FAIL (j) başlatma betiği dosyadan (--baslatma): beklenen çıkış 0/GECTI, gelen çıkış 1/- | kalan denetimler: çıkış kodu
+FAIL (k) test=1 kendiliğinden + parametre koruma + tür ölçümü: beklenen çıkış 0/GECTI, gelen çıkış 1/- | kalan denetimler: çıkış kodu
+FAIL (l) test kipi istendi ama window.DK yok: beklenen çıkış 1/KOSUCU_HATASI, gelen çıkış 0/- ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu
+PASS (yalnız çıkış kodu; şema 1) (m) --uretim: test parametresi yok, U00 geçer: beklenen çıkış 0/GECTI, gelen çıkış 0/-
+FAIL (m2) --uretim ama sayfada DK var: U00 kalır: beklenen çıkış 1/KALDI, gelen çıkış 0/- ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu
+FAIL (n) yeni adım türleri (olumlu): beklenen çıkış 0/GECTI, gelen çıkış 1/- | kalan denetimler: çıkış kodu
+FAIL (o) yeni adım türleri (olumsuz): beklenen çıkış 1/KALDI, gelen çıkış 0/- ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu
+FAIL (s) yazım hatalı adım alanı ('expext'): beklenen çıkış 1/KOSUCU_HATASI, gelen çıkış 0/- ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu
+FAIL (p) co-op başlatma betiği (meta.baslatma): beklenen çıkış 0/GECTI, gelen çıkış 1/- | kalan denetimler: çıkış kodu
+FAIL (q) co-op onaysız senaryo: beklenen çıkış 1/KALDI, gelen çıkış 0/- ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu
+FAIL (r) co-op konsol hatası: beklenen çıkış 1/KALDI, gelen çıkış 0/- ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu
+PASS (yalnız çıkış kodu; şema 1) (t) zaman aşımı: ZAMAN_ASIMI, rapor yazılır, kalan adım koşmaz: beklenen çıkış 1/ZAMAN_ASIMI, gelen çıkış 1/-
+PASS (yalnız çıkış kodu; şema 1) (t2) co-op zaman aşımı: geç gelen kontrol sayılmaz: beklenen çıkış 1/ZAMAN_ASIMI, gelen çıkış 1/-
+PASS (yalnız çıkış kodu; şema 1) (u) yakalanmamış sayfa hatası (pageerror): beklenen çıkış 1/KALDI, gelen çıkış 1/-
+FAIL (v) bağlantı reddedildi (requestfailed, HTTP yanıtı yok): beklenen çıkış 1/KALDI, gelen çıkış 0/- ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu
+PASS (yalnız çıkış kodu; şema 1) (w) sözdizimi bozuk senaryo: beklenen çıkış 1/KOSUCU_HATASI, gelen çıkış 1/-
+FAIL (x) döngüsel ve BigInt js dönüş değerleri: rapor yazılır, süreç kendiliğinden biter: beklenen çıkış 0/GECTI, gelen çıkış 1/rapor yok | kalan denetimler: çıkış kodu; rapor yazıldı ve okunabildi
+FAIL (x2) yazılamayan --report yolu: süreç asılı kalmaz, çıkış 1: beklenen çıkış 1/rapor yok, gelen çıkış 1/rapor yok | kalan denetimler: RAPOR YAZILAMADI satırı; SONUC: KOSUCU_HATASI (çıkış 1)
+FAIL (x3) co-op: yazılamayan --report yolu: süreç asılı kalmaz, çıkış 1: beklenen çıkış 1/rapor yok, gelen çıkış 1/rapor yok | kalan denetimler: RAPOR YAZILAMADI satırı; SONUC: KOSUCU_HATASI (çıkış 1)
+FAIL (y1) expect'te yazım hatalı karşılaştırıcı ('truthly'): beklenen çıkış 1/KOSUCU_HATASI, gelen çıkış 0/- ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu
+FAIL (y2) bütün karşılaştırıcılar uygulanır; gte/lte yalnız sonlu sayıyla: beklenen çıkış 1/KALDI, gelen çıkış 0/- ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu
+FAIL (y3) karşılaştırıcısız expect: beklenen çıkış 1/KOSUCU_HATASI, gelen çıkış 0/- ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu
+FAIL (y4) sınırsız agSay: beklenen çıkış 1/KOSUCU_HATASI, gelen çıkış 0/- ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu
+PASS (yalnız çıkış kodu; şema 1) (z) tür ölçümü: rAF döngüsü, doğrudan game.update, DK.sim, sayfanın kendi yeniden yüklemesi: beklenen çıkış 0/GECTI, gelen çıkış 0/-
+FAIL (ka) kanıt adımları: sayfa istisnası ve data: olmayan dönüş adım hatası; dosya yazımı yalnız uyarı: beklenen çıkış 1/KALDI, gelen çıkış 0/- ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu
+FAIL (aa) co-op check()'e söz (await unutuldu): beklenen çıkış 1/KALDI, gelen çıkış 0/- ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu
+FAIL (ab) son adımdan sonra gelen eşzamansız sayfa hatası (yerleşme): beklenen çıkış 1/KALDI, gelen çıkış 0/- ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu
+FAIL (ac) co-op: senaryodan sonra gelen eşzamansız sayfa hatası (yerleşme): beklenen çıkış 1/KALDI, gelen çıkış 0/- ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu
+FAIL (ad) gerekçesiz izin (meta): beklenen çıkış 1/KOSUCU_HATASI, gelen çıkış 0/- ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu
+FAIL (ae) her şeyle eşleşen izin deseni ('.*'): beklenen çıkış 1/KOSUCU_HATASI, gelen çıkış 0/- ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu
+FAIL (af) ağ için yazılmış izin, betiğin bastığı konsol hatasını (konum adresi) izinli yapmaz: beklenen çıkış 1/KALDI, gelen çıkış 0/- ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu
+FAIL (ag) bozuk --izin-hata düzenli ifadesi: kullanım hatası (çıkış 2): beklenen çıkış 2/rapor yok, gelen çıkış 0/- ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu; rapor yazılmadı (beklenen); ileti: geçersiz düzenli ifade
+FAIL (ag2) co-op: bozuk --izin-hata düzenli ifadesi: kullanım hatası (çıkış 2): beklenen çıkış 2/rapor yok, gelen çıkış 0/- ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu; rapor yazılmadı (beklenen); ileti: geçersiz düzenli ifade
+FAIL (ah) gerekçesiz --izin-hata: kullanım hatası (çıkış 2): beklenen çıkış 2/rapor yok, gelen çıkış 0/- ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu; rapor yazılmadı (beklenen); ileti: gerekçe zorunlu
+FAIL (ai) co-op: aynı adla mk() ile yeniden katılım önceki sekmenin sayfa hatasını silmez: beklenen çıkış 1/KALDI, gelen çıkış 0/- ← KOŞUCU YANLIŞLIKLA GEÇİRDİ | kalan denetimler: çıkış kodu
+
+kosucu_negatif: KALDI — kalan: [a, b, c, f, h, j, k, l, m2, n, o, s, p, q, r, v, x, x2, x3, y1, y2, y3, y4, ka, aa, ab, ac, ad, ae, af, ag, ag2, ah, ai]; çekirdekte kalan: [a, b, c, f]; koşucunun yanlışlıkla geçirdiği: [a, b, c, f, l, m2, o, s, q, r, v, y1, y2, y3, y4, ka, aa, ab, ac, ad, ae, af, ag, ag2, ah, ai] (koşucu dizini ../../../tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/kosucu_eski)

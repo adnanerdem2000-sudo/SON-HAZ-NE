@@ -1,0 +1,23 @@
+PASS (a) console.error('x 404 y'): beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI
+PASS (b) olmayan görsel isteği (HTTP 404): beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI
+PASS (c) onaysız senaryo: beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI
+PASS (d) meta.olcum (onaysız ölçüm): beklenen çıkış 0/OLCUM, gelen çıkış 0/OLCUM
+PASS (e) izin listesindeki hatalar (meta.izinliHatalar; metin + adres): beklenen çıkış 0/GECTI, gelen çıkış 0/GECTI
+PASS (f) co-op ev() istisnası: beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI
+PASS (g) kapatılmış sayfada tick(): beklenen çıkış 0/GECTI, gelen çıkış 0/GECTI
+PASS (e2) izinler komut satırından (--izin-hata): beklenen çıkış 0/GECTI, gelen çıkış 0/GECTI
+PASS (h) başlatma betiği (meta.baslatma) localStorage → SecurityError: beklenen çıkış 0/GECTI, gelen çıkış 0/GECTI
+PASS (i) aynı beklenti başlatma betiği olmadan (olumsuz kontrol) + ilk başarısızlık görüntüsü: beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI
+PASS (j) başlatma betiği dosyadan (--baslatma): beklenen çıkış 0/GECTI, gelen çıkış 0/GECTI
+PASS (k) test=1 kendiliğinden + parametre koruma + tür ölçümü: beklenen çıkış 0/GECTI, gelen çıkış 0/GECTI
+PASS (l) test kipi istendi ama window.DK yok: beklenen çıkış 1/KOSUCU_HATASI, gelen çıkış 1/KOSUCU_HATASI
+PASS (m) --uretim: test parametresi yok, U00 geçer: beklenen çıkış 0/GECTI, gelen çıkış 0/GECTI
+PASS (m2) --uretim ama sayfada DK var: U00 kalır: beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI
+PASS (n) yeni adım türleri (olumlu): beklenen çıkış 0/GECTI, gelen çıkış 0/GECTI
+PASS (o) yeni adım türleri (olumsuz): beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI
+PASS (s) yazım hatalı adım alanı ('expext'): beklenen çıkış 1/KOSUCU_HATASI, gelen çıkış 1/KOSUCU_HATASI
+PASS (p) co-op başlatma betiği (meta.baslatma): beklenen çıkış 0/GECTI, gelen çıkış 0/GECTI
+PASS (q) co-op onaysız senaryo: beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI
+PASS (r) co-op konsol hatası: beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI
+
+kosucu_negatif: GECTI — kalan: []; çekirdekte kalan: []; koşucunun yanlışlıkla geçirdiği: [] (koşucu dizini tests/harness)

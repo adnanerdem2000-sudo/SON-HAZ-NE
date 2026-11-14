@@ -1,0 +1,27 @@
+{
+ "scenario": "tests/fixtures/kosucu/e2_izinli_cli.js",
+ "url": "http://127.0.0.1:33013/e_izinli.html",
+ "size": [
+  320,
+  200
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "E01 Görsel öğesi var",
+    "ok": true,
+    "value": 1
+   }
+  }
+ ],
+ "errors": [
+  "beklenen-hata: kosucu_negatif e"
+ ],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 149,
+ "ms": 151
+}

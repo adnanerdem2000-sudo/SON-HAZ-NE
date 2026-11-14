@@ -1,0 +1,12 @@
+$ node /home/user/SON-HAZ-NE-w2/tests/harness/coop.cjs tests/fixtures/kosucu/ai_coop_yeniden.cjs --players 2 --size 320x200 --timeout 120 --url http://127.0.0.1:45535/coop.html --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/son/kosucu_negatif/ai.json
+Tayfa/hata "planlandı"
+Tayfa PAGEERR: kosucu_negatif ai: Tayfa sayfasında yakalanmamış oyun hatası | Error: kosucu_negatif ai: Tayfa sayfasında yakalanmamış oyun hatası |     at http://127.0.0.1:45535/coop.html?test=1:11:43
+Tayfa sekme kapandı
+Tayfa#2: 'Tayfa' adıyla yeniden katılan sekme (rapor anahtarı Tayfa#2)
+Tayfa#2/dk "object"
+PASS AI01 Yeniden katılan Tayfa hazır
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/goruntu/ai_coop_yeniden_2026-11-14T09-20-27-177Z_11430/son_Kaptan.png
+checks: 1 fails: 0 pageErrors: 1 (1.9 s)
+SONUC: KALDI (çıkış 1) kontrol 1/1 | ev() istisnası 0, kapalı sayfa atlama 0, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: sayfa hatası (pageerror): 1
+
+[çıkış 1]

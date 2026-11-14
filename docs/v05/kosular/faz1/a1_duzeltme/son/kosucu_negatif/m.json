@@ -1,0 +1,155 @@
+{
+ "scenario": "tests/fixtures/kosucu/m_uretim.js",
+ "url": "http://127.0.0.1:45535/dk_yok.html",
+ "size": [
+  320,
+  200
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "M01 Adreste test parametresi yok",
+    "ok": true,
+    "value": false
+   },
+   "ms": 3
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 229,
+ "ms": 1240,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/fixtures/kosucu/m_uretim.js",
+ "meta": {},
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://127.0.0.1:45535/dk_yok.html",
+  "verilenUrl": "http://127.0.0.1:45535/dk_yok.html",
+  "gorunum": [
+   320,
+   200
+  ],
+  "uretim": true
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   320,
+   200
+  ],
+  "ci": false,
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T09:19:37.322Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs /home/user/SON-HAZ-NE-w2/tests/fixtures/kosucu/m_uretim.js --size 320x200 --timeout 90 --url http://127.0.0.1:45535/dk_yok.html --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/son/kosucu_negatif/m.json --uretim",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://127.0.0.1:45535 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 45535"
+  ],
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd-kirli",
+  "senaryoSha256": "cc7727134df1b27c0ab404cd1fc31bc46f64858b9cfaeb81f3512de3d9e50188",
+  "adim": null,
+  "url": "http://127.0.0.1:45535/dk_yok.html"
+ },
+ "kontroller": [
+  {
+   "n": 0,
+   "id": "U00",
+   "etiket": "U00 Üretimde test kancası yok",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 1,
+   "id": "M01",
+   "etiket": "M01 Adreste test parametresi yok",
+   "ok": true,
+   "deger": false,
+   "beklenen": {
+    "eq": false
+   },
+   "sure_ms": 1,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [],
+ "uyariSayim": {
+  "farkli": 0,
+  "toplam": 0,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 1,
+ "sonuc": {
+  "durum": "GECTI",
+  "cikisKodu": 0,
+  "neden": [],
+  "onaySayisi": 1,
+  "kontrolSayisi": 2,
+  "gecen": 2,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": "tarayici",
+  "turSayim": {
+   "tarayici": 2
+  }
+ },
+ "sure": {
+  "hazirMs": 229,
+  "toplamMs": 1240,
+  "yerlesmeMs": 1001
+ }
+}

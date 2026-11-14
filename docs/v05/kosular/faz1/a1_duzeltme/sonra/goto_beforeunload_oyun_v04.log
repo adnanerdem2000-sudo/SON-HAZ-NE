@@ -1,0 +1,9 @@
+ready in 5.2 s
+R: "ok"
+PASS G01 Oyun başladı → "playing"
+PASS G02 Sayfada kullanıcı etkileşimi var → true
+DIALOG beforeunload kabul edildi 
+GOTO http://localhost:8080/index.html?test=1
+PASS G03 goto sonrası yeni sayfa menüde → "menu"
+errors: 0 pageErrors: 0 fails: 0 (35.6 s)
+SONUC: GECTI (çıkış 0) kontrol 3/3, onay 3 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/68

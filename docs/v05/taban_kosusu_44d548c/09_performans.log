@@ -1,0 +1,24 @@
+ready in 7.0 s
+PASS Sayfa hazır → true
+R: {"tag":"menu","calls":422,"tris":853502,"geos":228,"texs":137,"progs":86,"heapMB":116,"simMsPerFrame":0.5}
+R: "ok"
+PASS Oyun başladı → "playing"
+R: {"tag":"liman","calls":1035,"tris":1253702,"geos":753,"texs":200,"progs":95,"heapMB":122,"simMsPerFrame":2.67}
+PASS Liman: çizim çağrısı ≤ 1100 (ölçülen bütçe; v0.3: 1 036) ve benzetim < 40 ms/kare (yazılımsal ortam üst sınırı) → true
+PASS Orman adası (Kadim Tapınak) içeriği kuruldu → true
+R: {"tag":"orman_adasi","calls":301,"tris":552624,"geos":401,"texs":180,"progs":95,"heapMB":121,"simMsPerFrame":1.31,"built":true,"prepMs":1366,"buildLoopMs":185}
+R: {"tag":"firtina","calls":317,"tris":697430,"geos":403,"texs":181,"progs":97,"heapMB":137,"simMsPerFrame":1.73}
+R: "ok"
+R: {"tag":"boss_kraken","calls":317,"tris":686804,"geos":414,"texs":181,"progs":97,"heapMB":110,"simMsPerFrame":1.15,"bossAlive":true}
+R: "ok"
+PASS Ada içeriği 3 kur/sök döngüsünde geometri/doku sayacını büyütmez (dispose tam) → true
+PASS Hayvan bölgesi: ısınma döngüsünden sonra 3 doğur/sil döngüsünde geometri/doku büyümez (B14) → true
+R: [{"kind":"boar","n":7,"dG":0,"dT":0},{"kind":"croc","n":3,"dG":0,"dT":0},{"kind":"snake","n":6,"dG":0,"dT":0},{"kind":"bat","n":7,"dG":0,"dT":0}]
+PASS Düşman (sabit görünüm) ısınma sonrası 3×4 doğur/kaldır döngüsünde geometri/doku büyümez (B14) → true
+R: {"dG":0,"dT":0,"rows":[[441,184],[441,184],[441,184],[441,184]],"note":"sabit tohum: aynı görünüm/kit her döngüde; ilk döngü kit/şapka ilk yüklemesi (ısınma), ölçüm sonraki 3 döngü"}
+FAIL Ganimet kesesi, gemi ve bosslar (kraken, Taş Muhafız, Volkanik Dev) oluştur/kaldır döngülerinde geometri/doku büyümez (Aşama 9) → false
+R: {"loot":{"dG":0,"dT":0},"ship":{"dG":0,"dT":0},"kraken":{"dG":0,"dT":0},"tas_muhafiz":{"dG":0,"dT":0},"volkanik_dev":{"dG":5,"dT":0}}
+R: {"before":{"g":418,"t":181},"after":{"g":418,"t":181},"dropG":0,"dropT":0,"cycles":[{"built":421,"dropped":421,"tex":181},{"built":421,"dropped":421,"tex":181},{"built":421,"dropped":421,"tex":181}],"growthG":0,"growthT":0}
+R: [{"tag":"menu","calls":422,"tris":853502,"geos":228,"texs":137,"progs":86,"heapMB":116,"simMsPerFrame":0.5},{"tag":"liman","calls":1035,"tris":1253702,"geos":753,"texs":200,"progs":95,"heapMB":122,"simMsPerFrame":2.67},{"tag":"orman_adasi","calls":301,"tris":552624,"geos":401,"texs":180,"progs":95,"heapMB":121,"simMsPerFrame":1.31},{"tag":"firtina","calls":317,"tris":697430,"geos":403,"texs":181,"progs":97,"heapMB":137,"simMsPerFrame":1.73},{"tag":"boss_kraken","calls":317,"tris":686804,"geos":414,"texs":181,"progs":97,"heapMB":110,"simMsPerFrame":1.15,"bossAlive":true}]
+PASS Oyun döngüsü ölçümlerden sonra hatasız → true
+errors: 0 pageErrors: 0 fails: 1 (104.2 s)

@@ -1,0 +1,9 @@
+$ node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs tests/fixtures/kosucu/m_uretim.js --size 320x200 --timeout 90 --url http://127.0.0.1:35867/temiz.html --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu_negatif/sonra_yeni_kosucu/m2.json --uretim
+ready in 0.3 s
+FAIL U00 Üretimde test kancası yok → false
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/goruntu/m_uretim_2026-11-14T07-28-16-219Z_15673/ilk_kalan.png
+PASS M01 Adreste test parametresi yok → false
+errors: 0 pageErrors: 0 fails: 1 (0.4 s)
+SONUC: KALDI (çıkış 1) kontrol 1/2, onay 1 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: başarısız kontrol ya da adım: 1
+
+[çıkış 1]

@@ -1,0 +1,31 @@
+ready in 6.2 s
+R: "ok"
+PASS Oyun başladı → "playing"
+R: {"root":223,"shallow":240,"top":2.25,"end":272}
+PASS I01 Kasabadan iskeleye zıplamadan yürünür (3 şerit; kök basamağı ≤ 0,3 m — önce 0,76 m idi) → true
+R: [{"x":8.2,"z":239.9,"y":2.25,"maxVy":0,"ok":true},{"x":10,"z":237.5,"y":2.25,"maxVy":0,"ok":true},{"x":11.8,"z":239.9,"y":2.25,"maxVy":0,"ok":true}]
+PASS I02 Sığ kesimde (kum −1,95 m üstü) güvertenin altına yandan girilmez: 6 yaklaşmada gövde güverte izdüşümüne girmez → true
+R: [{"side":-1,"z":226,"x":7.17,"y":1.5,"inside":0},{"side":-1,"z":230,"x":7.17,"y":0.66,"inside":0},{"side":-1,"z":234,"x":7.17,"y":-0.34,"inside":0},{"side":1,"z":226,"x":12.83,"y":1.5,"inside":0},{"side":1,"z":230,"x":12.83,"y":0.66,"inside":0},{"side":1,"z":234,"x":12.83,"y":-0.34,"inside":0}]
+PASS I03 Güverte altından kıyıya yüzen oyuncu sığ kesim sınırında durur (alçak güvertenin içinden geçmez) → true
+R: {"start":248,"minZ":240.35,"mode":"swim","bad":0}
+PASS I04 Derin kesimde güverte altından karşıya yüzülür: baş güvertenin altında kalır, karede ≤ 0,3 m yer değiştirme → true
+R: {"z":258.6,"x":22.06,"maxTop":0.7,"jump":0.09,"mode":"swim"}
+PASS I05 Güverte kenarında yürüyen oyuncu direklerin içinden geçmez (direk çarpıştırıcısı, ≥ 30 direk) → true
+R: {"posts":39,"out":[{"x":7.75,"minD":0.55,"z":243.7},{"x":12.25,"minD":0.55,"z":243.7}]}
+PASS I06 İskele yanındaki yük yığını kumun üstünde (çarpıştırıcı üstü < 3,0 m; önce 3,6 m) → true
+R: {"y0":-0.41,"y1":2.45,"sand":0.87}
+PASS I07 Ada limanı iskelelerine karadan zıplamadan çıkılır; sığ kesimin altına yandan girilmez (ilk 4 liman) → true
+R: [{"id":"tuz_pazari_port_0","step":0.24,"along":14.5,"y":2.9,"ok":true,"sideInside":0},{"id":"kuzeyfener_port_0","step":0.82,"along":14.5,"y":2.9,"ok":true,"sideInside":0},{"id":"zumrut_koy_port_0","step":0.26,"along":14.5,"y":2.9,"ok":true,"sideInside":0},{"id":"kul_limani_port_0","step":0.23,"along":14.5,"y":2.9,"ok":true,"sideInside":0}]
+PASS C01 İskelede 96 kamera açısında kamera güverte altına inmez; −0,9 eğimde 8 açıda görüntü parlaklığı > 20 (önce 3,5–5,1) → true
+R: {"n":96,"under":0,"minL":116,"lums":[160,168.5,164.8,122,122,116,117.6,130.3]}
+PASS C02 Arkadaki iskele feneri kamerayı başa çekmez (kamera–baş > 3 m; önce ≈ 0,5 m, şapka ekranı kaplıyordu) → true
+R: {"lampZ":238,"camHead":4.6,"hidden":false}
+PASS C03 Duvara yaslanınca (kamera < 0,8 m) karakter gizlenir, meşale ışığı yanmaya devam eder; dümene geçince karakter görünür → true
+R: {"wallZ":202.7,"camHead":0.4,"hidden":true,"torchLit":true,"helmVisible":true,"stale":0}
+PASS C04 Dalgalı denizde (waveScale 1,6) yüzeyde yüzerken 144 kamera açısında kamera su altına geçmez → true
+R: {"n":144,"bad":0,"pUnder":0,"spot":{"x":24,"z":367}}
+PASS C05 Dalışta 96 kamera açısında kamera su altında kalır (yüzeyi kesip yarı karanlık görüntü yok) → true
+R: {"n":96,"bad":0,"depth":7.25,"under":true}
+PASS M01 Duraklatma menüsünde "null" yazısı yok (tek oyunculu) → true
+R: {"ok":true,"hasNull":false}
+errors: 0 pageErrors: 0 fails: 0 (57.2 s)

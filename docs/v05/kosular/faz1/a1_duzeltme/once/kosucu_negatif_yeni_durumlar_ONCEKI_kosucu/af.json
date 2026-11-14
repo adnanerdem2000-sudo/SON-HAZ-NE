@@ -1,0 +1,181 @@
+{
+ "scenario": "tests/fixtures/kosucu/af_konum.js",
+ "url": "http://127.0.0.1:32827/af_konum.html",
+ "size": [
+  320,
+  200
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "AF01 Görsel öğesi var",
+    "ok": true,
+    "value": 1
+   },
+   "ms": 4
+  }
+ ],
+ "errors": [
+  "Failed to load resource: the server responded with a status of 404 (Not Found)",
+  "kosucu_negatif af: betiğin bastığı gerçek hata"
+ ],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 212,
+ "ms": 225,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/fixtures/kosucu/af_konum.js",
+ "meta": {
+  "izinliHatalar": [
+   {
+    "desen": "af[-_]",
+    "gerekce": "af-eksik.png sabit sayfada kasıtlı eksik (ağ için yazılmış geniş desen denemesi)"
+   }
+  ]
+ },
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://127.0.0.1:32827/af_konum.html?test=1",
+  "verilenUrl": "http://127.0.0.1:32827/af_konum.html",
+  "gorunum": [
+   320,
+   200
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   320,
+   200
+  ],
+  "ci": false,
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "tarih": "2026-11-14T08:54:11.245Z"
+ },
+ "tekrar": {
+  "komut": "node /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/a1fix_onceki/run.cjs /home/user/SON-HAZ-NE-w2/tests/fixtures/kosucu/af_konum.js --size 320x200 --timeout 90 --url http://127.0.0.1:32827/af_konum.html --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/once/kosucu_negatif_yeni_durumlar_ONCEKI_kosucu/af.json",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://127.0.0.1:32827 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 32827"
+  ],
+  "commit": null,
+  "senaryoSha256": "1d1ac4d12b1155de2e951c8b3e472f149b4b22bf09f9aed944cb7c0f759be9c6",
+  "adim": null,
+  "url": "http://127.0.0.1:32827/af_konum.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 1,
+   "id": "AF01",
+   "etiket": "AF01 Görsel öğesi var",
+   "ok": true,
+   "deger": 1,
+   "beklenen": {
+    "eq": 1
+   },
+   "sure_ms": 1,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [
+   {
+    "oyuncu": null,
+    "ileti": "kosucu_negatif af: betiğin bastığı gerçek hata",
+    "url": "http://127.0.0.1:32827/af_betik.js",
+    "satir": 1,
+    "isci": false,
+    "izin": "af[-_]",
+    "sayi": 1
+   }
+  ],
+  "konsolAgEslesen": 1,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [
+   {
+    "oyuncu": null,
+    "tur": "yanit",
+    "url": "http://127.0.0.1:32827/af-eksik.png",
+    "durum": 404,
+    "metin": "Not Found",
+    "kaynakTuru": "image",
+    "izin": "af[-_]",
+    "sayi": 1
+   }
+  ],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [],
+ "uyariSayim": {
+  "farkli": 0,
+  "toplam": 0,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  },
+  {
+   "desen": "af[-_]",
+   "gerekce": "af-eksik.png sabit sayfada kasıtlı eksik (ağ için yazılmış geniş desen denemesi)",
+   "tur": "hepsi",
+   "kaynak": "meta",
+   "eslesme": 2
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [],
+ "agIstekSayisi": 3,
+ "sonuc": {
+  "durum": "GECTI",
+  "cikisKodu": 0,
+  "neden": [],
+  "onaySayisi": 1,
+  "kontrolSayisi": 1,
+  "gecen": 1,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 1,
+  "izinliAg": 1,
+  "tur": "tarayici",
+  "turSayim": {
+   "tarayici": 1
+  }
+ },
+ "sure": {
+  "hazirMs": 212,
+  "toplamMs": 225
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "scenario": "tests/fixtures/kosucu/t_zaman_asimi.js",
+ "url": "http://127.0.0.1:33013/temiz.html",
+ "size": [
+  320,
+  200
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "T01 Zaman aşımından önceki kontrol",
+    "ok": true,
+    "value": 1
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 171,
+ "timeout": true,
+ "ms": 3132,
+ "harnessError": "page.waitForTimeout: Target page, context or browser has been closed"
+}

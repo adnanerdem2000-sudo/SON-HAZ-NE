@@ -1,0 +1,10 @@
+#!/bin/bash
+# A1 düzeltici: koşu sırasında chrome-headless ve node süreçlerinin RSS'ini (MB) ve memcg kullanımını 2 sn'de bir yazar. Kullanım: <çıktı> <süre_sn>
+OUT=$1; N=${2:-200}
+D=/sys/fs/cgroup/memory/process_api/01a1d75e-360c-7090-aa08-2fbc0bebcc4d/claude-code-bash
+for i in $(seq 1 $((N/2))); do
+  t=$(date +%T)
+  cg=$(( $(cat $D/memory.usage_in_bytes) / 1048576 ))
+  ps -eo pid,rss,comm,args --sort=-rss | awk -v t=$t -v cg=$cg 'NR>1 && ($3 ~ /chrome|node/) && NR<9 { printf "%s cg=%dMB pid=%s rss=%dMB %s %s\n", t, cg, $1, $2/1024, $3, substr($0, index($0,$4), 60) }' >> $OUT
+  sleep 2
+done

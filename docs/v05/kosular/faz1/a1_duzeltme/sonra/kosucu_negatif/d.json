@@ -1,0 +1,123 @@
+{
+ "scenario": "tests/fixtures/kosucu/d_olcum.js",
+ "url": "http://127.0.0.1:40315/temiz.html",
+ "size": [
+  320,
+  200
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": {
+    "olcum": 42
+   },
+   "ms": 2
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 188,
+ "ms": 1194,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/fixtures/kosucu/d_olcum.js",
+ "meta": {
+  "olcum": true,
+  "aciklama": "kosucu_negatif (d): onaysız ölçüm betiği"
+ },
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://127.0.0.1:40315/temiz.html?test=1",
+  "verilenUrl": "http://127.0.0.1:40315/temiz.html",
+  "gorunum": [
+   320,
+   200
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   320,
+   200
+  ],
+  "ci": false,
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T08:55:06.385Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs /home/user/SON-HAZ-NE-w2/tests/fixtures/kosucu/d_olcum.js --size 320x200 --timeout 90 --url http://127.0.0.1:40315/temiz.html --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/sonra/kosucu_negatif/d.json",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://127.0.0.1:40315 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 40315"
+  ],
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd-kirli",
+  "senaryoSha256": "fa1b85c023e4dffb51f3e8e12ab6f8eb058ed93e1e57247ea285dd11f59d0695",
+  "adim": null,
+  "url": "http://127.0.0.1:40315/temiz.html?test=1"
+ },
+ "kontroller": [],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [],
+ "uyariSayim": {
+  "farkli": 0,
+  "toplam": 0,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 1,
+ "sonuc": {
+  "durum": "OLCUM",
+  "cikisKodu": 0,
+  "neden": [],
+  "onaySayisi": 0,
+  "kontrolSayisi": 0,
+  "gecen": 0,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": null,
+  "turSayim": {}
+ },
+ "sure": {
+  "hazirMs": 188,
+  "toplamMs": 1194,
+  "yerlesmeMs": 1000
+ }
+}

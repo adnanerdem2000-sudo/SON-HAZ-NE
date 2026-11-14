@@ -1,0 +1,145 @@
+{
+ "scenario": "tests/fixtures/kosucu/p_coop_baslatma.cjs",
+ "players": 2,
+ "checks": [
+  {
+   "label": "P01 Başlatma betiği her oyuncuda çalıştı",
+   "ok": true,
+   "detail": [
+    "tamam",
+    "tamam"
+   ]
+  }
+ ],
+ "errors": {
+  "Kaptan": [],
+  "Tayfa": []
+ },
+ "pageErrors": {
+  "Kaptan": [],
+  "Tayfa": []
+ },
+ "fails": 0,
+ "evalErrors": [],
+ "kapaliAtlama": 0,
+ "kapaliIstisna": 0,
+ "kapananlar": [],
+ "ms": 1291,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/fixtures/kosucu/p_coop_baslatma.cjs",
+ "meta": {
+  "baslatma": "window.__BASLATMA_COOP = 'tamam';"
+ },
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://127.0.0.1:40315/coop.html?test=1",
+  "verilenUrl": "http://127.0.0.1:40315/coop.html",
+  "gorunum": [
+   320,
+   200
+  ],
+  "oyuncu": 2
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   320,
+   200
+  ],
+  "ci": false,
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T08:55:31.831Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/coop.cjs /home/user/SON-HAZ-NE-w2/tests/fixtures/kosucu/p_coop_baslatma.cjs --players 2 --size 320x200 --timeout 120 --url http://127.0.0.1:40315/coop.html --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/sonra/kosucu_negatif/p.json",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://127.0.0.1:40315 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 40315",
+   "PeerJS sinyal sunucusu 127.0.0.1:9000 — node tests/peer-server.cjs (peer modülü NODE_PATH'te)"
+  ],
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd-kirli",
+  "senaryoSha256": "808d3ebb0321f841ab21332c39ff4847c170d6b6eba9e4d9596a19b8c68c339f",
+  "adim": null,
+  "url": "http://127.0.0.1:40315/coop.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 1,
+   "id": "P01",
+   "etiket": "P01 Başlatma betiği her oyuncuda çalıştı",
+   "ok": true,
+   "deger": [
+    "tamam",
+    "tamam"
+   ],
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 4,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [],
+ "uyariSayim": {
+  "farkli": 0,
+  "toplam": 0,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "goruntuler": [],
+ "sonuc": {
+  "durum": "GECTI",
+  "cikisKodu": 0,
+  "neden": [],
+  "onaySayisi": 1,
+  "kontrolSayisi": 1,
+  "gecen": 1,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "evalErrors": 0,
+  "kapaliAtlama": 0,
+  "kapaliIstisna": 0,
+  "tur": "tarayici+webrtc"
+ },
+ "sure": {
+  "hazirMs": 285,
+  "toplamMs": 1291,
+  "yerlesmeMs": 1001
+ }
+}

@@ -1,0 +1,22 @@
+ready in 0.1 s
+PASS Z01 Sabit sayfa acildi → 2
+EVALERR Converting circular structure to JSON
+    --> starting at object with constructor 'Object'
+    --- property 'kendi' closes the circle
+errors: 0 pageErrors: 0 fails: 1 evalErrors: 1 (0.1 s)
+HARNESS ERROR Converting circular structure to JSON
+    --> starting at object with constructor 'Object'
+    --- property 'kendi' closes the circle
+errors: 0 pageErrors: 0 fails: 1 evalErrors: 1 HARNESS ERROR (senaryo koşmadı) (0.1 s)
+/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a1/kosucu_eski/run.cjs:50
+    if (reportPath) { fs.mkdirSync(path.dirname(reportPath), { recursive: true }); fs.writeFileSync(reportPath, JSON.stringify(report, null, 1)); }
+                                                                                                                     ^
+
+TypeError: Converting circular structure to JSON
+    --> starting at object with constructor 'Object'
+    --- property 'kendi' closes the circle
+    at JSON.stringify (<anonymous>)
+    at finish (/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a1/kosucu_eski/run.cjs:50:118)
+    at /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_a1/kosucu_eski/run.cjs:100:11
+
+Node.js v22.22.0

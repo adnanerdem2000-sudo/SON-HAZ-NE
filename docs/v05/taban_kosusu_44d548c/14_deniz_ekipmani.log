@@ -1,0 +1,35 @@
+ready in 6.4 s
+R: "ok"
+PASS Oyun başladı → "playing"
+R: {"x":12.829488066708116,"z":369.8997994641622}
+PASS D01 C ile dalış; nefes ≈ 50 sn (2/sn), maskeyle ≈ 80 sn; nefes bitince can azalır; yüzeyde nefes dolar; ilk girişte tuş ipucu → true
+R: {"hint":"Dalmak için C basılı tut, çıkmak için Boşluk · nefes ≈ 50 sn","under":true,"depth":4.28,"base":2,"mask":1.25,"ratio":1.6,"breathSec":50,"maskSec":80,"drown":14.4,"refill":100,"surf":true}
+PASS D02 Hava kesesi nefes < 12 iken kendiliğinden kullanılır (+45), su altında elle de kullanılır, su üstünde kullanılmaz → true
+R: {"aboveRefused":true,"auto":55.7,"left":1,"manual":true,"left2":0}
+PASS D03 Yüzme paleti çantadayken yüzme hızı ≈ ×1,35 → true
+R: {"v0":2.62,"v1":3.54,"ratio":1.35}
+PASS G01 Zıpkın: eşya yokken kuşanılmaz; 6 tuşuyla kuşanılır, suda elde kalır; araç çubuğunda 7 yuva → true
+R: {"without":"none","eq":"harpoon","held":"harpoon","heldWater":"harpoon","slots":7,"ui":false,"paused":false,"dead":false,"carry":false,"has":true,"w":13.4,"msg":["Bu eşyaya sahip değilsin.","Zıpkın: sağ tık nişan, sol tık fırlat. Su altında balığa, kıyıdan/güverteden suya atabilirsin."]}
+PASS G02 Su altında 3 m öteki balığa zıpkın: yoldaki ilk balık vurulur (sürüde hedefin önündeki de olabilir), çantaya "Zıpkın" kaydıyla girer, koleksiyon sayılır, zıpkın ipiyle geri döner → true
+R: {"key":"sardalya","name":"Sardalya","dist":3.02,"flying":"fly","hedefVuruldu":true,"vurulan":"Sardalya","added":1,"bait":"Zıpkın","w":0.08,"len":16,"stats":1,"state":"idle","heldVisible":true,"ropeHidden":true}
+PASS G03 Kaçan (canlı) sürüye 2,5 m’den balığın o anki yerine atışta en az yarısında balık vurulur (4 m sonucu raporlanır) → true
+R: {"n":12,"near":"5/6","far":"4/6"}
+PASS G04 Zıpkın köpekbalığına hasar verir → true
+R: {"hp":130,"max":160,"dmg":30}
+PASS G05 İskeleden sağ tık nişan + sol tık: zıpkın nişangâh yönünde (açı farkı < 26°) suya girer ve geri döner → true
+R: {"aiming":true,"cross":true,"st":"fly","dot":0.999,"wet":true,"end":"idle"}
+PASS G06 Ağ sürünün üstüne atılınca birkaç balık çıkar ("Ağ" kaydıyla çantaya), ağ toplanıp gizlenir → true
+R: {"placed":26,"species":"Sardalya","st":"fly","haul":{"caught":6,"lost":0,"fromSchool":6},"added":6,"baits":["Ağ"],"end":"idle","netHidden":true}
+PASS G07 Ağ iskeleye/karaya atılınca "Ağ suya ulaşmadı" uyarısı, balık eklenmez → true
+R: {"msg":"Ağ suya ulaşmadı — suya daha yakın dur ya da daha uzağa at.","added":0,"state":"idle"}
+PASS G08 Ağ yırtılınca envanterden düşer, son ağsa el boşalır → true
+R: {"left":0,"eq":"none"}
+PASS R01 Olta: iskeleden atış, vuruş, mücadele (gerginlik < 0,8 iken sar, > 0,6 iken balığın tersine A/D) ve yakalama uçtan uca çalışır (≤ 4 deneme); mücadelede A/D oyuncuyu yürütmez → true
+R: {"res":[{"att":0,"st1":"wait","st2":"bite","st3":"fight","t":5,"maxT":0.63,"moved":0,"mode":"ground","got":1}],"fish":"Cerrah Balığı","bait":"Solucan Yemi","yem":4}
+PASS L01 Deniz ekipmanı dükkânlarda (Yusuf 5 kalem, Rıza, Halil Reis, Kaçakçı) ve hazine sandığı ganimetinde çıkar → true
+R: {"fisher":["zipkin","balik_agi","dalis_maskesi","palet","hava_kesesi"],"rizaAir":true,"trader":true,"smuggler":true,"chestLoot":["dalis_maskesi","hava_kesesi","palet","usta_zipkin","zipkin"]}
+PASS L02 Martı Batığı sandığı dalınca açılır; içerik doğrudan çantaya gider (kese yüzeye süzülmez); ikinci kez açılmaz → true
+R: {"chest":{"x":545,"y":-23.7,"z":467},"lbl":"Batık sandığını aç","gold":130,"spawned":0,"again":false}
+PASS L03 Kayıt/yüklemede zıpkın, ağ, maske, palet ve hava keseleri korunur → true
+R: {"zipkin":1,"ag":1,"maske":1,"palet":1,"kese":3}
+errors: 0 pageErrors: 0 fails: 0 (39.3 s)

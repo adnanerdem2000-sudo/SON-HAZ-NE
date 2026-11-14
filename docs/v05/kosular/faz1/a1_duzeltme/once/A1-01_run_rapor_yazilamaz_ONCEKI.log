@@ -1,0 +1,10 @@
+ready in 0.2 s
+PASS K01 test=1 kendiliğinden eklendi → "1"
+FAIL K02 Diğer parametreler korundu → "?test=1"
+GORUNTU /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/out/goruntu/k_test_param_2026-11-14T08-53-04-059Z_25789/ilk_kalan.png
+R: 30
+PASS K03 DK.sim bir kez çağrıldı → 1
+errors: 0 pageErrors: 0 fails: 1 (0.3 s)
+SONUC: KALDI (çıkış 1) kontrol 2/3, onay 3 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: başarısız kontrol ya da adım: 1
+HARNESS ERROR ENOTDIR: not a directory, mkdir '/dev/null/kosucu_negatif'
+[çıkış 124]

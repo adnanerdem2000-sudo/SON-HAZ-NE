@@ -1,0 +1,29 @@
+{
+ "scenario": "tests/fixtures/kosucu/ad_izin_gerekcesiz.js",
+ "url": "http://127.0.0.1:33013/a_konsol_404.html",
+ "size": [
+  320,
+  200
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "AD01 Sabit sayfa açıldı",
+    "ok": true,
+    "value": 2
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 139,
+ "ms": 142
+}

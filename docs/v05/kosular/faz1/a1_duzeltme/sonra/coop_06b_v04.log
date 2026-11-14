@@ -1,0 +1,62 @@
+Kaptan/host {"code":"UYY6E9"}
+Tayfa/join {"room":"Senkron Odası"}
+Kaptan/hs "host-started"
+Tayfa/gs "guest-started"
+PASS 2 oyuncu oyunda
+[test] profil host: {"sim02ms":35,"topPerFrameMs":[["fish",0.33],["hud",0.17],["npcs",0.12],["animals",0.07],["details",0.07],["net",0.05],["effects",0.02],["enemies",0.02]]}
+[test] profil guest: {"sim02ms":21,"topPerFrameMs":[["net",0.4],["details",0.32],["fish",0.3],["hud",0.23],["player",0.15],["animals",0.13],["npcs",0.12],["quests",0.05]]}
+[test] 1 sandık ganimeti @ 32.7s
+Kaptan/crate {"id":"core_kamp_cr0","x":-46.5,"z":-231}
+PASS Kırılabilir sandık var → {"id":"core_kamp_cr0","x":-46.5,"z":-231}
+Tayfa/g-break "gone"
+Kaptan/host-pickups ["pkcqlagkb"]
+Tayfa/guest-pickups ["pkcqlagkb"]
+PASS B03/H01 Konuğun kırdığı sandığın kesesi ev sahibinde doğar ve konukta aynı kimlikle görünür → {"pk0":0,"pkHost":["pkcqlagkb"],"pkGuest":["pkcqlagkb"]}
+PASS H01 Konuk keseyi alır: eşya konuğa geçer, kese ev sahibinde kalkar → {"gained":1,"goneHost":true}
+[test] 2 ambar @ 36.6s
+Kaptan/hold {"id":"ship_main","x":10.082835846800261,"z":284.50213992439103,"held":1,"cid":"ch17fw4k0"}
+Tayfa/g-onship 1
+Tayfa/g-carry {"carrying":"ch17fw4k0","chests":[["ch17fw4k0","carried",["4a01d0c4-6dce-457c-ac22-4345e448904e"]]]}
+Kaptan/h-hold {"hold":0,"chest":[["carried",["4a01d0c4-6dce-457c-ac22-4345e448904e"]]]}
+PASS H10/H03 Konuk ambardan sandığı alır: ev sahibi ambarı boşalır, sandık konuğun taşımasında → {"carryG":{"carrying":"ch17fw4k0","chests":[["ch17fw4k0","carried",["4a01d0c4-6dce-457c-ac22-4345e448904e"]]]},"holdH":{"hold":0,"chest":[["carried",["4a01d0c4-6dce-457c-ac22-4345e448904e"]]]}}
+Kaptan/h-after-stow {"hold":1,"ghosts":0}
+PASS H03 Konuk sandığı ambara koyunca ev sahibinde hayalet sandık kalmaz → {"hold":1,"ghosts":0}
+[test] 3 yüzen nesne @ 47.5s
+Kaptan/float "foifcg60"
+Tayfa/g-float {"net":true,"pos":[4.2,212],"label":"Şişeyi al"}
+PASS B08/H08 Yüzen şişe konukta görünür (ağ kopyası) → {"net":true,"pos":[4.2,212],"label":"Şişeyi al"}
+Tayfa/g-bottle {"has":true,"still":false}
+PASS H08 Konuk şişeyi alır: eşya konuğa geçer, nesne iki tarafta da kalkar → {"bottle":{"has":true,"still":false},"bottleHost":false}
+[test] 4 uzak oyuncu bilgisi @ 49.6s
+Kaptan/h-remote {"ship":"ship_main","mode":"deck","onGround":true}
+PASS F-02 Ev sahibinde uzak oyuncunun gemi referansı var (güverte düşmanları ulaşılabilir sayar) → {"ship":"ship_main","mode":"deck","onGround":true}
+Kaptan/h-air true
+Kaptan/h-air false
+PASS F-12 Zıplayan konuk ev sahibinde havada görünür (tepinmeden zıplayarak kaçma) → false
+[test] 5 gemi senkronu @ 50.8s
+Kaptan/h-ship {"holes":1,"fallen":true}
+Tayfa/g-ship1 {"holes":1,"balls":42,"planks":7,"fallen":true}
+PASS E-02/E-06/E-07 Konuk deliği, gülle/tahta sayısını ve devrik direği görür → {"holes":1,"balls":42,"planks":7,"fallen":true}
+Kaptan/h-repair {"holes":0,"fallen":false}
+Tayfa/g-ship2 {"holes":0,"fallen":false}
+PASS E-07/E-02 Direk onarımı ve delik onarımı konukta geri alınır → {"holes":0,"fallen":false}
+Tayfa/g-sunk {"sunk":true,"visible":false}
+PASS H12 Batık bayrağı konukta: gemi görünmez → {"sunk":true,"visible":false}
+[test] 6 lav @ 54.4s
+Tayfa/g-hp 72
+PASS F-15 Lav havuzu uzak oyuncuyu da yakar → 72
+[test] 7 ses @ 56.0s
+Kaptan/enemy "entkf1dn0"
+Kaptan/h-heard {"awareness":1.2,"state":"strafe","lastKnown":true}
+PASS F-13 Konuğun silah sesi ev sahibi düşmanını uyarır → {"awareness":1.2,"state":"strafe","lastKnown":true}
+[test] 8 kb @ 57.4s
+Tayfa/g-kb 0.16
+PASS F-11 Boss süpürmesinin geri tepmesi konukta uygulanır (0.3 sn sonra sönümlenmiş kalıntı > 0) → 0.16
+[test] 9 mermiler @ 57.6s
+Kaptan/archer "eng9h4wci"
+Kaptan/forced-shot 1
+PASS F-06 Düşman mermileri konukta görsel olarak izlenir → {"vis":1,"shotsHost":1,"natural":false}
+PASS Senaryo sonunda iki taraf da oyunda → ["playing","playing"]
+[test] 6b tamam @ 70.4s
+checks: 18 fails: 0 pageErrors: 0 (148.7 s)
+SONUC: GECTI (çıkış 0) kontrol 18/18 | ev() istisnası 0, kapalı sayfa atlama 0, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 4 farklı/68

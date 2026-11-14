@@ -1,0 +1,30 @@
+HTTP 404 http://localhost:8080/js/world/terrainWorker.missing.js
+NETFAIL: http://localhost:8080/js/world/terrainWorker.missing.js
+HTTP 404 http://localhost:8080/js/world/terrainWorker.missing.js
+NETFAIL: http://localhost:8080/js/world/terrainWorker.missing.js
+HTTP 404 http://localhost:8080/js/world/terrainWorker.missing.js
+NETFAIL: http://localhost:8080/js/world/terrainWorker.missing.js
+ready in 5.2 s
+PASS Sayfa hazır (yükleme ekranı aşıldı) → true
+R: {"mode":"badurl","workers":0,"fallback":true,"failures":["işçi 0: hata: yükleme/çalışma hatası","işçi 1: hata: yükleme/çalışma hatası","işçi 2: hata: yükleme/çalışma hatası","hata: yükleme/çalışma hatası"],"stats":{"tiles":125,"meshes":125,"hires":15,"tris":311168,"queue":0,"jobs":0,"workers":0,"fallback":true,"failures":4,"mode":"badurl"}}
+PASS Menü sahnesinde karo ağları üretildi → 125
+PASS Okyanus derinlik penceresi hazır → true
+R: "ok"
+PASS Oyun başladı → "playing"
+R: {"startMs":213,"pendingJobs":19,"queue":17}
+PASS Oyuncu zemine basıyor → true
+PAGECRASH
+FAIL (hata) Yüksek çözünürlüklü karolar (yükseklik ızgarası + ağ) page.evaluate: Target crashed 
+FAIL (hata) Uzak bölge prepare() sonuçlanıyor (askıda kalmıyor) page.evaluate: Target crashed 
+FAIL (hata) Derinlik penceresi yeni bölgeye taşındı page.evaluate: Target crashed 
+EVALERR page.evaluate: Target crashed 
+FAIL (hata) Tuz Pazarı çevresinde karo ağları var page.evaluate: Target crashed 
+FAIL (hata) Harita ızgarası isteği sonuçlanıyor page.evaluate: Target crashed 
+FAIL (hata) Uzak adada yürüme (zemin sorgusu tutarlı) page.evaluate: Target crashed 
+EVALERR page.evaluate: Target crashed 
+HARNESS ERROR page.waitForTimeout: Page crashed
+errors: 3 pageErrors: 1 fails: 8 evalErrors: 2 HARNESS ERROR (senaryo koşmadı) (133.4 s)
+IZINLI ×3 (terrainWorker\.missing\.js$): 404 http://localhost:8080/js/world/terrainWorker.missing.js
+IZINLI ×3 (terrainWorker\.missing\.js$): net::ERR_FAILED http://localhost:8080/js/world/terrainWorker.missing.js
+IZIN ×6 (cli, hepsi) terrainWorker\.missing\.js$ — badurl test kipi (js/world/terrain.js:61) işçi adresini kasıtlı olarak var olmayan terrainWorker.missing.js dosyasına çevirir; 3 işçi için 404 yanıtı ve request
+SONUC: KOSUCU_HATASI (çıkış 1) kontrol 5/11, onay 12 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 6 | uyarı 6 farklı/38 | neden: başarısız kontrol ya da adım: 8; sayfa hatası (pageerror): 1; adım istisnası (evalErrors): 2; koşucu hatası: page.waitForTimeout: Page crashed

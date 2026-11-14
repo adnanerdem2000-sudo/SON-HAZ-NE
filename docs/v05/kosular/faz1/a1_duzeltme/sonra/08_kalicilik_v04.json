@@ -1,0 +1,603 @@
+{
+ "scenario": "tests/scenarios/08_kalicilik.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": "ok",
+   "ms": 32
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   },
+   "ms": 15992
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": {
+    "crId": "core_kamp_cr0",
+    "kgId": "core_kamp_keg0",
+    "carried": "choj8uqpg",
+    "chests": 1,
+    "islandsSaved": true,
+    "hazardsGone": 3,
+    "shipSunk": true,
+    "campCd": 222
+   },
+   "ms": 133
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "Kayıt verisi ada/tehlike/taşınan sandık/batık gemi/kamp durumunu içeriyor",
+    "ok": true,
+    "value": true
+   },
+   "ms": 21
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": {
+    "opened": true,
+    "freed": true,
+    "temple": true,
+    "gone": true,
+    "carried": true,
+    "sunk": true,
+    "camp": true
+   },
+   "ms": 11
+  },
+  {
+   "n": 6,
+   "label": null,
+   "result": "reloading",
+   "ms": 23
+  },
+  {
+   "n": 7,
+   "label": null,
+   "expect": {
+    "label": "Kayıt yüklendi, oyun başladı",
+    "ok": true,
+    "value": "playing"
+   },
+   "ms": 5281
+  },
+  {
+   "n": 8,
+   "label": null,
+   "expect": {
+    "label": "B02/B-08 Ada ödülleri, tutsaklar ve tapınak mekanizması yüklemede geri geliyor",
+    "ok": true,
+    "value": true
+   },
+   "ms": 3
+  },
+  {
+   "n": 9,
+   "label": null,
+   "expect": {
+    "label": "Kırılmış sandık ve patlamış fıçı yüklemede yeniden kurulmuyor",
+    "ok": true,
+    "value": true
+   },
+   "ms": 10
+  },
+  {
+   "n": 10,
+   "label": null,
+   "result": {
+    "crateStillThere": false,
+    "kegStillThere": false,
+    "gone": [
+     "core_kamp_cr0",
+     "core_kamp_keg0",
+     "core_kamp_cr1"
+    ]
+   },
+   "ms": 3
+  },
+  {
+   "n": 11,
+   "label": null,
+   "expect": {
+    "label": "B04 Taşınan sandık kayıtta; yüklemede oyuncunun yanında yerde",
+    "ok": true,
+    "value": true
+   },
+   "ms": 3
+  },
+  {
+   "n": 12,
+   "label": null,
+   "result": {
+    "state": "ground",
+    "d": 0.6
+   },
+   "ms": 2
+  },
+  {
+   "n": 13,
+   "label": null,
+   "expect": {
+    "label": "E-13/A1 Batık gemi batık yüklenir, parça/direk/top hasarı korunur, oyuncu güverteye bindirilmez",
+    "ok": true,
+    "value": true
+   },
+   "ms": 5
+  },
+  {
+   "n": 14,
+   "label": null,
+   "result": {
+    "sunk": true,
+    "visible": false,
+    "pruva": 50,
+    "mast0": 0,
+    "cannon0": 30,
+    "hp": 60,
+    "playerMode": "ground"
+   },
+   "ms": 1
+  },
+  {
+   "n": 15,
+   "label": null,
+   "expect": {
+    "label": "A5/F-07 Kamp bekleme süresi yüklemede korunur (yükleme sonrası geçen süre düşülür)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 1
+  },
+  {
+   "n": 16,
+   "label": null,
+   "expect": {
+    "label": "Sandık ve kese kimlikleri benzersiz",
+    "ok": true,
+    "value": true
+   },
+   "ms": 2
+  },
+  {
+   "n": 17,
+   "label": null,
+   "expect": {
+    "label": "Bozuk kayıt dosyası güvenle reddedilir (null), liste çökmez",
+    "ok": true,
+    "value": true
+   },
+   "ms": 3
+  },
+  {
+   "n": 18,
+   "label": null,
+   "expect": {
+    "label": "Bozuk ana kayıt varken .bak yedeği okunur",
+    "ok": true,
+    "value": true
+   },
+   "ms": 3
+  },
+  {
+   "n": 19,
+   "label": null,
+   "expect": {
+    "label": "Oyun döngüsü yükleme sonrası hatasız sürüyor",
+    "ok": true,
+    "value": true
+   },
+   "ms": 808
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 4987,
+ "ms": 32016,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/scenarios/08_kalicilik.js",
+ "meta": {},
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8080/index.html?test=1",
+  "verilenUrl": "http://localhost:8080/index.html",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T08:57:48.781Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs /home/user/SON-HAZ-NE-w2/tests/scenarios/08_kalicilik.js --url http://localhost:8080/index.html --size 640x360 --timeout 1800 --report docs/v05/kosular/faz1/a1_duzeltme/sonra/08_kalicilik_v04.json",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://localhost:8080 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8080"
+  ],
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd-kirli",
+  "senaryoSha256": "a74d32158779a2951dcf9a3d1df87684f5475a4bc58b362868f001cc75c0255c",
+  "adim": null,
+  "url": "http://localhost:8080/index.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 2,
+   "id": "Oyun başladı",
+   "etiket": "Oyun başladı",
+   "ok": true,
+   "deger": "playing",
+   "beklenen": {
+    "eq": "playing"
+   },
+   "sure_ms": 10291,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 4,
+   "id": "Kayıt verisi ada/tehlike/taşınan sandık/batık ge",
+   "etiket": "Kayıt verisi ada/tehlike/taşınan sandık/batık gemi/kamp durumunu içeriyor",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 10,
+   "benzetim": {
+    "sim": 1,
+    "adim": 15,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 7,
+   "id": "Kayıt yüklendi, oyun başladı",
+   "etiket": "Kayıt yüklendi, oyun başladı",
+   "ok": true,
+   "deger": "playing",
+   "beklenen": {
+    "eq": "playing"
+   },
+   "sure_ms": 274,
+   "benzetim": {
+    "sim": 1,
+    "adim": 15,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 8,
+   "id": "B02/B-08",
+   "etiket": "B02/B-08 Ada ödülleri, tutsaklar ve tapınak mekanizması yüklemede geri geliyor",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 1,
+    "adim": 15,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 9,
+   "id": "Kırılmış sandık ve patlamış fıçı yüklemede",
+   "etiket": "Kırılmış sandık ve patlamış fıçı yüklemede yeniden kurulmuyor",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 6,
+   "benzetim": {
+    "sim": 1,
+    "adim": 15,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 11,
+   "id": "B04",
+   "etiket": "B04 Taşınan sandık kayıtta; yüklemede oyuncunun yanında yerde",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1,
+   "benzetim": {
+    "sim": 1,
+    "adim": 15,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 13,
+   "id": "E-13/A1",
+   "etiket": "E-13/A1 Batık gemi batık yüklenir, parça/direk/top hasarı korunur, oyuncu güverteye bindirilmez",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 3,
+   "benzetim": {
+    "sim": 1,
+    "adim": 15,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 15,
+   "id": "A5/F-07",
+   "etiket": "A5/F-07 Kamp bekleme süresi yüklemede korunur (yükleme sonrası geçen süre düşülür)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 0,
+   "benzetim": {
+    "sim": 1,
+    "adim": 15,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 16,
+   "id": "Sandık ve kese kimlikleri benzersiz",
+   "etiket": "Sandık ve kese kimlikleri benzersiz",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1,
+   "benzetim": {
+    "sim": 1,
+    "adim": 15,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 17,
+   "id": "Bozuk kayıt dosyası güvenle reddedilir (null),",
+   "etiket": "Bozuk kayıt dosyası güvenle reddedilir (null), liste çökmez",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1,
+   "benzetim": {
+    "sim": 1,
+    "adim": 15,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 18,
+   "id": "Bozuk ana kayıt varken .bak yedeği",
+   "etiket": "Bozuk ana kayıt varken .bak yedeği okunur",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 1,
+    "adim": 15,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 19,
+   "id": "Oyun döngüsü yükleme sonrası hatasız sürüyor",
+   "etiket": "Oyun döngüsü yükleme sonrası hatasız sürüyor",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 169,
+   "benzetim": {
+    "sim": 2,
+    "adim": 75,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 33
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 2,
+  "toplam": 34,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 216,
+ "sonuc": {
+  "durum": "GECTI",
+  "cikisKodu": 0,
+  "neden": [],
+  "onaySayisi": 12,
+  "kontrolSayisi": 12,
+  "gecen": 12,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": "tarayici+benzetim",
+  "turSayim": {
+   "tarayici": 1,
+   "tarayici+benzetim": 11
+  }
+ },
+ "sure": {
+  "hazirMs": 4987,
+  "toplamMs": 32016,
+  "yerlesmeMs": 1001
+ }
+}

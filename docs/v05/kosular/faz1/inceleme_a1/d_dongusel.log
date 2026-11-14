@@ -1,0 +1,11 @@
+ready in 0.2 s
+PASS Z01 Sabit sayfa acildi → 2
+EVALERR Converting circular structure to JSON
+    --> starting at object with constructor 'Object'
+    --- property 'kendi' closes the circle
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/goruntu/d_dongusel_2026-11-14T08-13-02-702Z_21942/ilk_kalan.png
+errors: 0 pageErrors: 0 fails: 1 evalErrors: 1 (0.3 s)
+SONUC: KALDI (çıkış 1) kontrol 1/1, onay 1 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: başarısız kontrol ya da adım: 1; adım istisnası (evalErrors): 1
+HARNESS ERROR Converting circular structure to JSON
+    --> starting at object with constructor 'Object'
+    --- property 'kendi' closes the circle

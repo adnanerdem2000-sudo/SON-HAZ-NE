@@ -1,0 +1,21 @@
+ready in 6.9 s
+PASS Sayfa hazır (yükleme ekranı aşıldı) → true
+R: {"mode":"","workers":3,"fallback":false,"failures":[],"stats":{"tiles":125,"meshes":125,"hires":15,"tris":311168,"queue":0,"jobs":0,"workers":3,"fallback":false,"failures":0,"mode":""}}
+PASS Menü sahnesinde karo ağları üretildi → 125
+PASS Okyanus derinlik penceresi hazır → true
+R: "ok"
+PASS Oyun başladı → "playing"
+R: {"startMs":196,"pendingJobs":0,"queue":0}
+PASS Oyuncu zemine basıyor → true
+PASS Yüksek çözünürlüklü karolar (yükseklik ızgarası + ağ) → 22
+PASS Uzak bölge prepare() sonuçlanıyor (askıda kalmıyor) → true
+PASS Derinlik penceresi yeni bölgeye taşındı → true
+R: {"prepMs":361,"prepUnder45s":true,"stats":{"tiles":129,"meshes":129,"hires":31,"tris":518400,"queue":0,"jobs":0,"workers":3,"fallback":false,"failures":0,"mode":""}}
+PASS Tuz Pazarı çevresinde karo ağları var → 21
+PASS Harita ızgarası isteği sonuçlanıyor → true
+PASS Uzak adada yürüme (zemin sorgusu tutarlı) → true
+R: "ok"
+PASS Kuyruk ilerliyor (askıda iş yok) → true
+R: {"jobsBefore":0,"jobsAfter8s":0,"fallback":false}
+errors: 0 pageErrors: 0 fails: 0 (69.6 s)
+SONUC: GECTI (çıkış 0) kontrol 12/12, onay 12 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34

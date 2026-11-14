@@ -1,0 +1,40 @@
+ready in 6.3 s
+R: "ok"
+PASS Oyun başladı → "playing"
+R: "çizim kısıldı"
+PASS C01 Yüzerken gövde kaldırması Character.update tarafından uygulanıyor → true
+R: {"mode":"swim","lift":1,"modelY":1.01,"baseY":0.01,"pitch":1.2}
+PASS C18 Dalışta kuşanılan kılıç elde belirmez, çıkışta elde → true
+R: {"swimHeld":null,"afterExit":"sword","equipped":"sword"}
+PASS C10 Sprint bayrağı düşük dayanıklılıkta titreşmez (geçişler ≥0.4 sn aralıklı, en çok 3) → true
+R: {"toggles":2,"frames":[37,100],"minGapFrames":63,"stamina":24.4}
+PASS C13 3 m/s hızda Walk klibi (ayak kayması bandı kapandı) → "Walk"
+PASS C07 Kamera duvarın içinden bakmaz: mesafe ≥1.5 m kısalır, duvar kalkınca açılır → true
+R: {"d0":5.07,"dWall":2.77,"dAfter":5.07}
+PASS C08 Dümende eller çark halkasında (yarıçap 0.5 m) → true
+PASS C08 İstasyon bırakılınca IK hedefleri temiz, silah yeniden elde → true
+R: {"dl":0.5,"dr":0.5,"hands":1,"held":null,"cleared":true,"reheld":"sword"}
+PASS C08 Topta eller kundak arkasında (iki el ayrı, topa yakın) → true
+R: {"dl":0.85,"handsApart":0.56,"playerToCannon":1.2}
+R: "ok"
+PASS C09 Güvertede zıplama: JumpStart klibi ve havada süre sayacı → true
+R: {"anim":"JumpStart","vy":6.13,"airT":0.32,"localY":0.9}
+PASS C09 Güvertede kaçınma gerçekten yer değiştiriyor → true
+R: {"moved":2.97,"started":true,"from":[-1.56,-0.72],"to":[-1.56,2.25]}
+PASS C12 Gemiye binişte kuşanılan silah yeniden elde → "sword"
+PASS C23 Batan gemide dümen bırakılır, kilit kalkar, oyuncu güverteden ayrılır → true
+R: {"mode":"ground","lock":null}
+PASS C06 Ölümde meşgul eylem iptal, tamamlanma geri çağrısı ateşlenmez → true
+R: {"busyCleared":true,"busyDoneFired":false,"dead":true,"rag":true}
+PASS C19 Ragdoll sonrası dirilişte ayağa kalkış eylemi → true
+R: {"action":"getup","anim":"LieUp","rag":false}
+PASS C22/C21 Yerde yatan oyuncuda zehir can düşürmez ve etkileşim yapılamaz → true
+R: {"hpAfter1s":5,"interactCurrent":null}
+PASS C05 Olta atışı yakın dövüş (slash) eylemi kullanmıyor → true
+R: {"action":"throw","state":"fly"}
+PASS C25 Döngülü kazı klibi ağ durumunda loop=1 (uzak oyuncuda donmaz) → true
+R: {"anim":"Heavy2H","loop":1}
+PASS C26 Sandık alırken equip olayı yayılıyor (hotbar güncellenir) → true
+PASS C27 Veri verilen 3 adet ekleme 3 ayrı yığın üretir → true
+PASS Oyun döngüsü Aşama 4 sonrası hatasız sürüyor → true
+errors: 0 pageErrors: 0 fails: 0 (46.0 s)

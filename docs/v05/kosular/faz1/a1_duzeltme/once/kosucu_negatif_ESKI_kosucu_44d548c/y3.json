@@ -1,0 +1,25 @@
+{
+ "scenario": "tests/fixtures/kosucu/y3_karsilastiricisiz.js",
+ "url": "http://127.0.0.1:33013/temiz.html",
+ "size": [
+  320,
+  200
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "Y06 Karşılaştırıcısız onay",
+    "ok": true,
+    "value": false
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 170,
+ "ms": 174
+}

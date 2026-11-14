@@ -1,0 +1,285 @@
+{
+ "scenario": "tests/fixtures/kosucu/o_adimlar_olumsuz.js",
+ "url": "http://127.0.0.1:40315/adimlar.html",
+ "size": [
+  320,
+  200
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "error": "locator.click: Timeout 1500ms exceeded.\nCall log:\n  - waiting for locator('#gizli')\n    - locator resolved to <button id=\"gizli\">Gizli düğme</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    3 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 50",
+   "goruntu": {
+    "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/o_adimlar_olumsuz_2026-11-14T08-55-27-003Z_29241/ilk_kalan.png",
+    "tuval": null
+   },
+   "ms": 1534
+  },
+  {
+   "n": 2,
+   "label": null,
+   "agSay": {
+    "label": "O02 agSay sınırı aşıldı (ana sayfa 1 kez istendi)",
+    "ok": false,
+    "value": 1
+   },
+   "ms": 3
+  },
+  {
+   "n": 3,
+   "label": null,
+   "metrics": {
+    "label": "m1",
+    "heapMB": 2.5,
+    "heapTotalMB": 3.4,
+    "backingMB": 0,
+    "embedderMB": 1.4,
+    "nodes": 40,
+    "listeners": 28,
+    "docs": 4,
+    "frames": 4
+   },
+   "ms": 8
+  },
+  {
+   "n": 4,
+   "label": null,
+   "metrics": {
+    "label": "m2",
+    "heapMB": 2.5,
+    "heapTotalMB": 3.4,
+    "backingMB": 0,
+    "embedderMB": 1.4,
+    "nodes": 40,
+    "listeners": 28,
+    "docs": 4,
+    "frames": 4
+   },
+   "ms": 3
+  },
+  {
+   "n": 5,
+   "label": null,
+   "metrikKarsilastir": {
+    "label": "O03 metrikKarsilastir sınırı aşıldı",
+    "ok": false,
+    "value": 0
+   },
+   "ms": 2
+  },
+  {
+   "n": 6,
+   "label": null,
+   "error": "page.waitForSelector: Timeout 1000ms exceeded.\nCall log:\n  - waiting for locator('#hic-yok') to be visible\n",
+   "ms": 1001
+  },
+  {
+   "n": 7,
+   "label": null,
+   "expect": {
+    "label": "O05 Sağlam kontrol",
+    "ok": true,
+    "value": 1
+   },
+   "ms": 5
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 4,
+ "evalErrors": 2,
+ "readyMs": 217,
+ "ms": 3783,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/fixtures/kosucu/o_adimlar_olumsuz.js",
+ "meta": {},
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://127.0.0.1:40315/adimlar.html?test=1",
+  "verilenUrl": "http://127.0.0.1:40315/adimlar.html",
+  "gorunum": [
+   320,
+   200
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   320,
+   200
+  ],
+  "ci": false,
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T08:55:27.144Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs /home/user/SON-HAZ-NE-w2/tests/fixtures/kosucu/o_adimlar_olumsuz.js --size 320x200 --timeout 90 --url http://127.0.0.1:40315/adimlar.html --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/sonra/kosucu_negatif/o.json",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://127.0.0.1:40315 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 40315"
+  ],
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd-kirli",
+  "senaryoSha256": "ff095505e2d954196c8112c1c9e7b549ac0062bc1d4f6999b5a3df0dee5c986f",
+  "adim": {
+   "n": 1,
+   "js": "#gizli"
+  },
+  "url": "http://127.0.0.1:40315/adimlar.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 2,
+   "id": "O02",
+   "etiket": "O02 agSay sınırı aşıldı (ana sayfa 1 kez istendi)",
+   "ok": false,
+   "deger": 1,
+   "beklenen": {
+    "enCok": 0
+   },
+   "sure_ms": 0,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "istek sayısı 1, sınır {\"enCok\":0}",
+   "goruntu": null
+  },
+  {
+   "n": 5,
+   "id": "O03",
+   "etiket": "O03 metrikKarsilastir sınırı aşıldı",
+   "ok": false,
+   "deger": 0,
+   "beklenen": {
+    "enCokFark": -1
+   },
+   "sure_ms": 0,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "fark 0, sınır {\"enCokFark\":-1}",
+   "goruntu": null
+  },
+  {
+   "n": 7,
+   "id": "O05",
+   "etiket": "O05 Sağlam kontrol",
+   "ok": true,
+   "deger": 1,
+   "beklenen": {
+    "eq": 1
+   },
+   "sure_ms": 3,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [
+   {
+    "n": 1,
+    "tur": "tikla",
+    "hata": "locator.click: Timeout 1500ms exceeded.\nCall log:\n  - waiting for locator('#gizli')\n    - locator resolved to <button id=\"gizli\">Gizli düğme</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    3 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 50"
+   },
+   {
+    "n": 6,
+    "tur": "bekleSecici",
+    "hata": "page.waitForSelector: Timeout 1000ms exceeded.\nCall log:\n  - waiting for locator('#hic-yok') to be visible\n"
+   }
+  ],
+  "kesildi": false
+ },
+ "uyarilar": [],
+ "uyariSayim": {
+  "farkli": 0,
+  "toplam": 0,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [
+  {
+   "ad": "ilk_kalan",
+   "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/o_adimlar_olumsuz_2026-11-14T08-55-27-003Z_29241/ilk_kalan.png",
+   "tuval": null
+  }
+ ],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 1,
+ "sonuc": {
+  "durum": "KALDI",
+  "cikisKodu": 1,
+  "neden": [
+   "başarısız kontrol ya da adım: 4",
+   "adım istisnası (evalErrors): 2"
+  ],
+  "onaySayisi": 3,
+  "kontrolSayisi": 3,
+  "gecen": 1,
+  "kalan": 2,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": "tarayici",
+  "turSayim": {
+   "tarayici": 3
+  }
+ },
+ "sure": {
+  "hazirMs": 217,
+  "toplamMs": 3783,
+  "yerlesmeMs": 1001
+ }
+}

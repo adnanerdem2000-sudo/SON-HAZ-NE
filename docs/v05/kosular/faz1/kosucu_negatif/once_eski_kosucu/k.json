@@ -1,0 +1,48 @@
+{
+ "scenario": "tests/fixtures/kosucu/k_test_param.js",
+ "url": "http://127.0.0.1:37919/temiz.html?a=1&b=x%20y",
+ "size": [
+  320,
+  200
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "K01 test=1 kendiliğinden eklendi",
+    "ok": false,
+    "value": null
+   }
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "K02 Diğer parametreler korundu",
+    "ok": false,
+    "value": "?a=1&b=x%20y"
+   }
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": 30
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "K03 DK.sim bir kez çağrıldı",
+    "ok": true,
+    "value": 1
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 2,
+ "evalErrors": 0,
+ "readyMs": 174,
+ "ms": 186
+}

@@ -1,0 +1,34 @@
+ready in 6.3 s
+R: "ok"
+PASS Oyun başladı → "playing"
+R: {"hour":12.008333333333308,"night":false,"weather":"parcali","fog":0.00033057092356765896,"rain":0}
+PASS Algı: açık görüş hattında düşman 3 sn içinde oyuncuyu fark eder → true
+R: {"d":15,"vision":24,"awareness":1.2,"state":"strafe","target":true,"fog":0.0019032516392808578,"yawErr":0,"inList":true}
+PASS Algı: 1 m kalın duvar arkasındaki oyuncu görülmez → true
+R: {"awareness":0,"state":"patrol","target":false}
+PASS Duyma: sırtı dönük düşman silah sesine tepki verir → true
+R: {"before":{"a":0.03,"s":"patrol"},"after":{"a":1.2,"s":"strafe","lastKnown":true}}
+PASS Yığılma yok: aynı noktada doğan 4 düşman 2 sn içinde ayrılır (min mesafe > 0.6 m) → true
+R: {"minD":1.81}
+PASS Saldırı telgrafı: hazırlık ≥0.35 sn, vuruş hazırlıktan önce işlenmez → true
+R: {"started":0,"hitAt":0.44,"hitFrame":null,"hp":74.2}
+PASS F-03 Sersemlik hafif vuruşla iptal olmaz → true
+PASS F-05 Çağırma hazırlığı hafif vuruşla bozulmaz → true
+PASS F-07 Kamp bekleme süresi kayıt/yükleme ile korunur → true
+PASS F-07 Tümü öldürülmüş kamp uzaklaşınca tam yenilenme süresine girer (anında yeniden doğma yok) → true
+R: {"camp":{"savedCd":123,"restoredCd":123},"camp2":{"cooldown":300,"respawn":300,"spawned":false}}
+PASS F-16 Tabanca ışını duvar arkasındaki düşmana isabet etmez → true
+R: {"free":true,"blocked":null,"terrain":{"gy":11.46,"maxBetween":11.67},"inTargets":true}
+PASS ek-110 Boğulmuş denizci yakalaması oyuncuyu gerçekten yavaşlatır → true
+PASS F-10 noLoot düşmanı ganimet/XP vermez, normal düşman verir → true
+R: {"noLoot":{"loots":0,"kills":0},"normal":{"loots":1,"kills":1}}
+PASS F-08 100 m uzaktaki düşman hedefi varsa her adım güncellenir (seyreltme yok) → true
+R: {"accNoTarget":0.217,"accTarget":0}
+PASS ek-109 Gemi batınca güvertedeki canlı tayfa boğulur (kalıcı deniz dibi düşmanı yok) → true
+R: {"alive":false,"ship":false}
+PASS Zayıf nokta: zırhlı düşman arkadan 1.6× hasar alır (önden 1×) → true
+R: {"front":10,"back":16,"mult":1.6}
+PASS Boss evreleri: can eşiklerinde çağırma ve öfke tetiklenir → true
+R: {"kizil":{"state":"summon","summoned":1,"hpFrac":0.5},"kaptan":{"enraged":true,"summoned":2,"hpFrac":0.3}}
+PASS Oyun döngüsü Aşama 5 sonrası hatasız sürüyor → true
+errors: 0 pageErrors: 0 fails: 0 (29.6 s)

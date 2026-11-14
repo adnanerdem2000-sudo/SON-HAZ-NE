@@ -1,0 +1,21 @@
+$ node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs tests/fixtures/kosucu/n_adimlar.js --size 320x200 --timeout 90 --url http://127.0.0.1:40315/adimlar.html --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/a1_duzeltme/sonra/kosucu_negatif/n.json
+ready in 0.2 s
+PASS N01 tikla (metinle) → 1
+PASS N02 tikla (seçiciyle) → 2
+DEGISKEN kirkiki = 42
+PASS N03 degisken sayfaya kondu → 42
+M: {"label":"m1","heapMB":2.7,"heapTotalMB":4.1,"backingMB":0,"embedderMB":1.4,"nodes":42,"listeners":28,"docs":4,"frames":4}
+M: {"label":"m2","heapMB":2.7,"heapTotalMB":4.1,"backingMB":0,"embedderMB":1.4,"nodes":42,"listeners":28,"docs":4,"frames":4}
+PASS N04 metrikKarsilastir (dinleyici farkı ≤ 5) → 0
+DIALOG beforeunload kabul edildi 
+GOTO http://127.0.0.1:40315/adimlar2.html?test=1
+PASS N05 goto: yeni sayfa, test=1 eklendi → "1"
+PASS N06 degisken gezinmeden sonra da var → 42
+PASS N07 agSay: ikinci sayfa bir kez istendi → 1
+ROTA https://oyun.ornek → /home/user/SON-HAZ-NE-w2/tests/fixtures/kosucu
+GOTO https://oyun.ornek/rota.html?test=1
+PASS N08 rotaKok: sahte https köken, alt kaynak rotadan → "https://oyun.ornek|true|1"
+errors: 0 pageErrors: 0 fails: 0 (1.8 s)
+SONUC: GECTI (çıkış 0) kontrol 8/8, onay 8 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0
+
+[çıkış 0]

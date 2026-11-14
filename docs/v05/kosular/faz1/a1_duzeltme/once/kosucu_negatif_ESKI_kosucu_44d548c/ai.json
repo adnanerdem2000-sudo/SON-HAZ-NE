@@ -1,0 +1,20 @@
+{
+ "scenario": "tests/fixtures/kosucu/ai_coop_yeniden.cjs",
+ "players": 2,
+ "checks": [
+  {
+   "label": "AI01 Yeniden katılan Tayfa hazır",
+   "ok": true
+  }
+ ],
+ "errors": {
+  "Kaptan": [],
+  "Tayfa": []
+ },
+ "pageErrors": {
+  "Kaptan": [],
+  "Tayfa": []
+ },
+ "fails": 0,
+ "ms": 821
+}

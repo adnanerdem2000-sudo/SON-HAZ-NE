@@ -1,0 +1,279 @@
+{
+ "scenario": "tests/scenarios/coop/06a2_mesaj_kopma.cjs",
+ "players": 3,
+ "checks": [
+  {
+   "label": "3 oyuncu da oyunda",
+   "ok": false,
+   "detail": [
+    "playing",
+    "menu",
+    "playing"
+   ]
+  },
+  {
+   "label": "H07/H22 200 KB sohbet düşürülür, normal sohbet işlenir",
+   "ok": false,
+   "detail": 0
+  },
+  {
+   "label": "H13 Kopan konuğun dümen kilidi ev sahibinde ve diğer konukta kalkar",
+   "ok": false,
+   "detail": {
+    "lockBefore": null,
+    "lockHostBefore": null,
+    "lockHost": null,
+    "lockG2": null,
+    "remotesHost": 1
+   }
+  }
+ ],
+ "errors": {
+  "Kaptan": [],
+  "Tayfa": [],
+  "Lostromo": []
+ },
+ "pageErrors": {
+  "Kaptan": [],
+  "Tayfa": [],
+  "Lostromo": []
+ },
+ "fails": 3,
+ "evalErrors": [],
+ "kapaliAtlama": 5,
+ "kapaliIstisna": 0,
+ "kapananlar": [
+  {
+   "oyuncu": "Tayfa",
+   "ms": 232161
+  }
+ ],
+ "ms": 236809,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/scenarios/coop/06a2_mesaj_kopma.cjs",
+ "meta": {},
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8080/index.html?peerhost=127.0.0.1&peerport=9000&test=1",
+  "verilenUrl": "http://localhost:8080/index.html?peerhost=127.0.0.1&peerport=9000",
+  "gorunum": [
+   480,
+   270
+  ],
+  "oyuncu": 3
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   480,
+   270
+  ],
+  "ci": false,
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T06:51:31.044Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/coop.cjs /home/user/SON-HAZ-NE-w2/tests/scenarios/coop/06a2_mesaj_kopma.cjs --players 3 --size 480x270 --timeout 900 --url 'http://localhost:8080/index.html?peerhost=127.0.0.1&peerport=9000' --report docs/v05/kosular/faz1/once_v04_yeni_kosucu/coop_06a2.json",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://localhost:8080 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8080",
+   "PeerJS sinyal sunucusu 127.0.0.1:9000 — node tests/peer-server.cjs (peer modülü NODE_PATH'te)"
+  ],
+  "commit": "eacad761986b038adbcf0c8e18fc9632809f5bbd-kirli",
+  "senaryoSha256": "6cffeaedc70c30b83beaa7ecd232f4e16af549fd3dacee5f12aae5f1adcad160",
+  "adim": {
+   "n": 1,
+   "js": null,
+   "neden": "FAIL 3 oyuncu da oyunda"
+  },
+  "url": "http://localhost:8080/index.html?peerhost=127.0.0.1&peerport=9000&test=1"
+ },
+ "kontroller": [
+  {
+   "n": 1,
+   "id": "3 oyuncu da oyunda",
+   "etiket": "3 oyuncu da oyunda",
+   "ok": false,
+   "deger": [
+    "playing",
+    "menu",
+    "playing"
+   ],
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 38814,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": "kontrol yanlış (false) döndü",
+   "goruntu": [
+    {
+     "oyuncu": "Kaptan",
+     "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/06a2_mesaj_kopma_2026-11-14T06-51-30-895Z_3729/ilk_kalan_Kaptan.png"
+    },
+    {
+     "oyuncu": "Tayfa",
+     "sayfa": null,
+     "not": "sekme kapalı"
+    },
+    {
+     "oyuncu": "Lostromo",
+     "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/06a2_mesaj_kopma_2026-11-14T06-51-30-895Z_3729/ilk_kalan_Lostromo.png"
+    }
+   ]
+  },
+  {
+   "n": 2,
+   "id": "H07/H22",
+   "etiket": "H07/H22 200 KB sohbet düşürülür, normal sohbet işlenir",
+   "ok": false,
+   "deger": 0,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 946,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": "kontrol yanlış (false) döndü",
+   "goruntu": null
+  },
+  {
+   "n": 3,
+   "id": "H13",
+   "etiket": "H13 Kopan konuğun dümen kilidi ev sahibinde ve diğer konukta kalkar",
+   "ok": false,
+   "deger": {
+    "lockBefore": null,
+    "lockHostBefore": null,
+    "lockHost": null,
+    "lockG2": null,
+    "remotesHost": 1
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 5548,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": "kontrol yanlış (false) döndü",
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": "Kaptan",
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 33
+  },
+  {
+   "oyuncu": "Kaptan",
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": "Tayfa",
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 33
+  },
+  {
+   "oyuncu": "Tayfa",
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": "Lostromo",
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 33
+  },
+  {
+   "oyuncu": "Lostromo",
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 6,
+  "toplam": 102,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "goruntuler": [
+  {
+   "ad": "ilk_kalan",
+   "oyuncular": [
+    {
+     "oyuncu": "Kaptan",
+     "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/06a2_mesaj_kopma_2026-11-14T06-51-30-895Z_3729/ilk_kalan_Kaptan.png"
+    },
+    {
+     "oyuncu": "Tayfa",
+     "sayfa": null,
+     "not": "sekme kapalı"
+    },
+    {
+     "oyuncu": "Lostromo",
+     "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/06a2_mesaj_kopma_2026-11-14T06-51-30-895Z_3729/ilk_kalan_Lostromo.png"
+    }
+   ]
+  }
+ ],
+ "sonuc": {
+  "durum": "KALDI",
+  "cikisKodu": 1,
+  "neden": [
+   "başarısız kontrol ya da ev() istisnası: 3"
+  ],
+  "onaySayisi": 3,
+  "kontrolSayisi": 3,
+  "gecen": 0,
+  "kalan": 3,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "evalErrors": 0,
+  "kapaliAtlama": 5,
+  "kapaliIstisna": 0,
+  "tur": "tarayici+webrtc"
+ },
+ "sure": {
+  "hazirMs": 191500,
+  "toplamMs": 236809
+ }
+}

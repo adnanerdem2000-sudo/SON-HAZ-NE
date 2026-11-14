@@ -1,0 +1,930 @@
+{
+ "tarih": "2026-11-14T07:48:34.726Z",
+ "tabanDizin": "docs/v05/taban_kosusu_44d548c",
+ "yeniDizin": "docs/v05/kosular/faz1/once_v04_yeni_kosucu",
+ "tabanGecen": 65,
+ "yeniGecen": 65,
+ "eslesmeyen": 0,
+ "ciftler": [
+  {
+   "taban": "00_acilis",
+   "yeni": {
+    "durum": "GECTI",
+    "cikis": 0,
+    "izinsizKonsol": 0,
+    "izinsizAg": 0,
+    "izinliKonsol": 0,
+    "izinliAg": 0,
+    "evalErrors": 0,
+    "uyariFarkli": 2,
+    "uyariToplam": 34,
+    "neden": []
+   },
+   "tabanGecen": 6,
+   "tabanToplam": 6,
+   "yenideTabanGecenlerdenGecen": 6,
+   "yeniToplam": 6,
+   "fazlaKontrol": [],
+   "tabanErrors": 0,
+   "kontroller": [
+    {
+     "etiket": "Ana menü görünür",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Menü düğmeleri",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Oyun başladı",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Oyuncu dünyada",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Arazi karoları yüklendi",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Arazi işçileri çalışıyor",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    }
+   ]
+  },
+  {
+   "taban": "08_kalicilik",
+   "yeni": {
+    "durum": "GECTI",
+    "cikis": 0,
+    "izinsizKonsol": 0,
+    "izinsizAg": 0,
+    "izinliKonsol": 0,
+    "izinliAg": 0,
+    "evalErrors": 0,
+    "uyariFarkli": 2,
+    "uyariToplam": 34,
+    "neden": []
+   },
+   "tabanGecen": 12,
+   "tabanToplam": 12,
+   "yenideTabanGecenlerdenGecen": 12,
+   "yeniToplam": 12,
+   "fazlaKontrol": [],
+   "tabanErrors": 0,
+   "kontroller": [
+    {
+     "etiket": "Oyun başladı",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Kayıt verisi ada/tehlike/taşınan sandık/batık gemi/kamp durumunu içeriyor",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Kayıt yüklendi, oyun başladı",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "B02/B-08 Ada ödülleri, tutsaklar ve tapınak mekanizması yüklemede geri geliyor",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Kırılmış sandık ve patlamış fıçı yüklemede yeniden kurulmuyor",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "B04 Taşınan sandık kayıtta; yüklemede oyuncunun yanında yerde",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "E-13/A1 Batık gemi batık yüklenir, parça/direk/top hasarı korunur, oyuncu güverteye bindirilmez",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "A5/F-07 Kamp bekleme süresi yüklemede korunur (yükleme sonrası geçen süre düşülür)",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Sandık ve kese kimlikleri benzersiz",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Bozuk kayıt dosyası güvenle reddedilir (null), liste çökmez",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Bozuk ana kayıt varken .bak yedeği okunur",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Oyun döngüsü yükleme sonrası hatasız sürüyor",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    }
+   ]
+  },
+  {
+   "taban": "12_kayit_dongusu",
+   "yeni": {
+    "durum": "GECTI",
+    "cikis": 0,
+    "izinsizKonsol": 0,
+    "izinsizAg": 0,
+    "izinliKonsol": 0,
+    "izinliAg": 0,
+    "evalErrors": 0,
+    "uyariFarkli": 2,
+    "uyariToplam": 34,
+    "neden": []
+   },
+   "tabanGecen": 4,
+   "tabanToplam": 4,
+   "yenideTabanGecenlerdenGecen": 4,
+   "yeniToplam": 4,
+   "fazlaKontrol": [],
+   "tabanErrors": 0,
+   "kontroller": [
+    {
+     "etiket": "Oyun başladı",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "K01 Üç ardışık kayıt/yükleme döngüsünde oyuncu, gemi, ada, tehlike ve düşman grubu durumu korunur",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "K02 Kayıt boyutu döngüler arasında kontrolsüz büyümez (3. ≤ 1,5 × 1.)",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "K03 Üçüncü yüklemeden sonra oyun açık, konum/sağlık geçerli",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    }
+   ]
+  },
+  {
+   "taban": "02_arazi_yedek",
+   "yeni": {
+    "durum": "GECTI",
+    "cikis": 0,
+    "izinsizKonsol": 0,
+    "izinsizAg": 0,
+    "izinliKonsol": 0,
+    "izinliAg": 0,
+    "evalErrors": 0,
+    "uyariFarkli": 2,
+    "uyariToplam": 34,
+    "neden": []
+   },
+   "tabanGecen": 12,
+   "tabanToplam": 12,
+   "yenideTabanGecenlerdenGecen": 12,
+   "yeniToplam": 12,
+   "fazlaKontrol": [],
+   "tabanErrors": 0,
+   "kontroller": [
+    {
+     "etiket": "Sayfa hazır (yükleme ekranı aşıldı)",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Menü sahnesinde karo ağları üretildi",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Okyanus derinlik penceresi hazır",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Oyun başladı",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Oyuncu zemine basıyor",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Yüksek çözünürlüklü karolar (yükseklik ızgarası + ağ)",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": false,
+     "tabanDeger": 25,
+     "yeniDeger": 22
+    },
+    {
+     "etiket": "Uzak bölge prepare() sonuçlanıyor (askıda kalmıyor)",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Derinlik penceresi yeni bölgeye taşındı",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Tuz Pazarı çevresinde karo ağları var",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Harita ızgarası isteği sonuçlanıyor",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Uzak adada yürüme (zemin sorgusu tutarlı)",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Kuyruk ilerliyor (askıda iş yok)",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    }
+   ]
+  },
+  {
+   "taban": "02_arazi_yedek_crash",
+   "yeni": {
+    "durum": "GECTI",
+    "cikis": 0,
+    "izinsizKonsol": 0,
+    "izinsizAg": 0,
+    "izinliKonsol": 0,
+    "izinliAg": 0,
+    "evalErrors": 0,
+    "uyariFarkli": 6,
+    "uyariToplam": 38,
+    "neden": []
+   },
+   "tabanGecen": 12,
+   "tabanToplam": 12,
+   "yenideTabanGecenlerdenGecen": 12,
+   "yeniToplam": 12,
+   "fazlaKontrol": [],
+   "tabanErrors": 0,
+   "kontroller": [
+    {
+     "etiket": "Sayfa hazır (yükleme ekranı aşıldı)",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Menü sahnesinde karo ağları üretildi",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Okyanus derinlik penceresi hazır",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Oyun başladı",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Oyuncu zemine basıyor",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Yüksek çözünürlüklü karolar (yükseklik ızgarası + ağ)",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Uzak bölge prepare() sonuçlanıyor (askıda kalmıyor)",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Derinlik penceresi yeni bölgeye taşındı",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Tuz Pazarı çevresinde karo ağları var",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Harita ızgarası isteği sonuçlanıyor",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Uzak adada yürüme (zemin sorgusu tutarlı)",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Kuyruk ilerliyor (askıda iş yok)",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    }
+   ]
+  },
+  {
+   "taban": "02_arazi_yedek_badurl",
+   "yeni": {
+    "durum": "GECTI",
+    "cikis": 0,
+    "izinsizKonsol": 0,
+    "izinsizAg": 0,
+    "izinliKonsol": 0,
+    "izinliAg": 6,
+    "evalErrors": 0,
+    "uyariFarkli": 6,
+    "uyariToplam": 38,
+    "neden": []
+   },
+   "tabanGecen": 12,
+   "tabanToplam": 12,
+   "yenideTabanGecenlerdenGecen": 12,
+   "yeniToplam": 12,
+   "fazlaKontrol": [],
+   "tabanErrors": 3,
+   "kontroller": [
+    {
+     "etiket": "Sayfa hazır (yükleme ekranı aşıldı)",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Menü sahnesinde karo ağları üretildi",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Okyanus derinlik penceresi hazır",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Oyun başladı",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Oyuncu zemine basıyor",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Yüksek çözünürlüklü karolar (yükseklik ızgarası + ağ)",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": false,
+     "tabanDeger": 25,
+     "yeniDeger": 22
+    },
+    {
+     "etiket": "Uzak bölge prepare() sonuçlanıyor (askıda kalmıyor)",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Derinlik penceresi yeni bölgeye taşındı",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Tuz Pazarı çevresinde karo ağları var",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Harita ızgarası isteği sonuçlanıyor",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Uzak adada yürüme (zemin sorgusu tutarlı)",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Kuyruk ilerliyor (askıda iş yok)",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    }
+   ]
+  },
+  {
+   "taban": "02_arazi_yedek_badurl",
+   "yeni": {
+    "durum": "KALDI",
+    "cikis": 1,
+    "izinsizKonsol": 0,
+    "izinsizAg": 6,
+    "izinliKonsol": 0,
+    "izinliAg": 0,
+    "evalErrors": 0,
+    "uyariFarkli": 6,
+    "uyariToplam": 38,
+    "neden": [
+     "izinsiz ağ hatası (≥ 400 yanıt ya da başarısız istek): 6"
+    ]
+   },
+   "tabanGecen": 12,
+   "tabanToplam": 12,
+   "yenideTabanGecenlerdenGecen": 12,
+   "yeniToplam": 12,
+   "fazlaKontrol": [],
+   "tabanErrors": 3,
+   "kontroller": [
+    {
+     "etiket": "Sayfa hazır (yükleme ekranı aşıldı)",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Menü sahnesinde karo ağları üretildi",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Okyanus derinlik penceresi hazır",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Oyun başladı",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Oyuncu zemine basıyor",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Yüksek çözünürlüklü karolar (yükseklik ızgarası + ağ)",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": false,
+     "tabanDeger": 25,
+     "yeniDeger": 22
+    },
+    {
+     "etiket": "Uzak bölge prepare() sonuçlanıyor (askıda kalmıyor)",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Derinlik penceresi yeni bölgeye taşındı",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Tuz Pazarı çevresinde karo ağları var",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Harita ızgarası isteği sonuçlanıyor",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Uzak adada yürüme (zemin sorgusu tutarlı)",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Kuyruk ilerliyor (askıda iş yok)",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    }
+   ]
+  },
+  {
+   "taban": "02_tek_dosya",
+   "yeni": {
+    "durum": "GECTI",
+    "cikis": 0,
+    "izinsizKonsol": 0,
+    "izinsizAg": 0,
+    "izinliKonsol": 0,
+    "izinliAg": 0,
+    "evalErrors": 0,
+    "uyariFarkli": 2,
+    "uyariToplam": 34,
+    "neden": []
+   },
+   "tabanGecen": 4,
+   "tabanToplam": 4,
+   "yenideTabanGecenlerdenGecen": 4,
+   "yeniToplam": 4,
+   "fazlaKontrol": [],
+   "tabanErrors": 0,
+   "kontroller": [
+    {
+     "etiket": "Tek dosya: sayfa hazır",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Tek dosya (file://): arazi işçileri çalışıyor",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Tek dosya: oyun başladı",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "Tek dosya: oyuncu zemine basıyor",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    }
+   ]
+  },
+  {
+   "taban": "03_fizik_dt",
+   "yeni": {
+    "durum": "OLCUM",
+    "cikis": 0,
+    "izinsizKonsol": 0,
+    "izinsizAg": 0,
+    "izinliKonsol": 0,
+    "izinliAg": 0,
+    "evalErrors": 0,
+    "uyariFarkli": 2,
+    "uyariToplam": 34,
+    "neden": []
+   },
+   "tabanGecen": 0,
+   "tabanToplam": 0,
+   "yenideTabanGecenlerdenGecen": 0,
+   "yeniToplam": 0,
+   "fazlaKontrol": [],
+   "tabanErrors": 0,
+   "kontroller": []
+  },
+  {
+   "taban": "03_fizik_dt",
+   "yeni": {
+    "durum": "KALDI",
+    "cikis": 1,
+    "izinsizKonsol": 0,
+    "izinsizAg": 0,
+    "izinliKonsol": 0,
+    "izinliAg": 0,
+    "evalErrors": 0,
+    "uyariFarkli": 2,
+    "uyariToplam": 34,
+    "neden": [
+     "senaryo hiç onay içermiyor (ölçüm betiği mi? meta.olcum ile işaretleyin)"
+    ]
+   },
+   "tabanGecen": 0,
+   "tabanToplam": 0,
+   "yenideTabanGecenlerdenGecen": 0,
+   "yeniToplam": 0,
+   "fazlaKontrol": [],
+   "tabanErrors": 0,
+   "kontroller": []
+  },
+  {
+   "taban": "coop_06a2",
+   "yeni": {
+    "durum": "GECTI",
+    "cikis": 0,
+    "izinsizKonsol": 0,
+    "izinsizAg": 0,
+    "izinliKonsol": 0,
+    "izinliAg": 0,
+    "evalErrors": 0,
+    "kapaliAtlama": 18,
+    "uyariFarkli": 7,
+    "uyariToplam": 103,
+    "neden": []
+   },
+   "tabanGecen": 3,
+   "tabanToplam": 3,
+   "yenideTabanGecenlerdenGecen": 3,
+   "yeniToplam": 3,
+   "fazlaKontrol": [],
+   "tabanErrors": 0,
+   "kontroller": [
+    {
+     "etiket": "3 oyuncu da oyunda",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "H07/H22 200 KB sohbet düşürülür, normal sohbet işlenir",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "H13 Kopan konuğun dümen kilidi ev sahibinde ve diğer konukta kalkar",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": false,
+     "tabanDeger": {
+      "lockBefore": "4650731b-e5bb-4ea5-b78e-a7b34b6da1b1",
+      "lockHostBefore": "4650731b-e5bb-4ea5-b78e-a7b34b6da1b1",
+      "lockHost": null,
+      "lockG2": null,
+      "remotesHost": 1
+     },
+     "yeniDeger": {
+      "lockBefore": "0aa65f50-2def-43e9-982d-d6fad2bada0e",
+      "lockHostBefore": "0aa65f50-2def-43e9-982d-d6fad2bada0e",
+      "lockHost": null,
+      "lockG2": null,
+      "remotesHost": 1
+     }
+    }
+   ]
+  },
+  {
+   "taban": "coop_06a2",
+   "yeni": {
+    "durum": "KALDI",
+    "cikis": 1,
+    "izinsizKonsol": 0,
+    "izinsizAg": 0,
+    "izinliKonsol": 0,
+    "izinliAg": 0,
+    "evalErrors": 0,
+    "kapaliAtlama": 5,
+    "uyariFarkli": 6,
+    "uyariToplam": 102,
+    "neden": [
+     "başarısız kontrol ya da ev() istisnası: 3"
+    ]
+   },
+   "tabanGecen": 3,
+   "tabanToplam": 3,
+   "yenideTabanGecenlerdenGecen": 0,
+   "yeniToplam": 3,
+   "fazlaKontrol": [],
+   "tabanErrors": 0,
+   "kontroller": [
+    {
+     "etiket": "3 oyuncu da oyunda",
+     "taban": true,
+     "yeni": false,
+     "degerAyni": false,
+     "tabanDeger": [
+      "playing",
+      "playing",
+      "playing"
+     ],
+     "yeniDeger": [
+      "playing",
+      "menu",
+      "playing"
+     ]
+    },
+    {
+     "etiket": "H07/H22 200 KB sohbet düşürülür, normal sohbet işlenir",
+     "taban": true,
+     "yeni": false,
+     "degerAyni": false,
+     "tabanDeger": 1,
+     "yeniDeger": 0
+    },
+    {
+     "etiket": "H13 Kopan konuğun dümen kilidi ev sahibinde ve diğer konukta kalkar",
+     "taban": true,
+     "yeni": false,
+     "degerAyni": false,
+     "tabanDeger": {
+      "lockBefore": "4650731b-e5bb-4ea5-b78e-a7b34b6da1b1",
+      "lockHostBefore": "4650731b-e5bb-4ea5-b78e-a7b34b6da1b1",
+      "lockHost": null,
+      "lockG2": null,
+      "remotesHost": 1
+     },
+     "yeniDeger": {
+      "lockBefore": null,
+      "lockHostBefore": null,
+      "lockHost": null,
+      "lockG2": null,
+      "remotesHost": 1
+     }
+    }
+   ]
+  },
+  {
+   "taban": "coop_06a2",
+   "yeni": {
+    "durum": "GECTI",
+    "cikis": 0,
+    "izinsizKonsol": 0,
+    "izinsizAg": 0,
+    "izinliKonsol": 0,
+    "izinliAg": 0,
+    "evalErrors": 0,
+    "kapaliAtlama": 18,
+    "uyariFarkli": 7,
+    "uyariToplam": 103,
+    "neden": []
+   },
+   "tabanGecen": 3,
+   "tabanToplam": 3,
+   "yenideTabanGecenlerdenGecen": 3,
+   "yeniToplam": 3,
+   "fazlaKontrol": [],
+   "tabanErrors": 0,
+   "kontroller": [
+    {
+     "etiket": "3 oyuncu da oyunda",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "H07/H22 200 KB sohbet düşürülür, normal sohbet işlenir",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "H13 Kopan konuğun dümen kilidi ev sahibinde ve diğer konukta kalkar",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": false,
+     "tabanDeger": {
+      "lockBefore": "4650731b-e5bb-4ea5-b78e-a7b34b6da1b1",
+      "lockHostBefore": "4650731b-e5bb-4ea5-b78e-a7b34b6da1b1",
+      "lockHost": null,
+      "lockG2": null,
+      "remotesHost": 1
+     },
+     "yeniDeger": {
+      "lockBefore": "19ff6f00-54a1-4d2a-8d37-1d6663496e4c",
+      "lockHostBefore": "19ff6f00-54a1-4d2a-8d37-1d6663496e4c",
+      "lockHost": null,
+      "lockG2": null,
+      "remotesHost": 1
+     }
+    }
+   ]
+  },
+  {
+   "taban": "coop_06a2",
+   "yeni": {
+    "durum": "GECTI",
+    "cikis": 0,
+    "izinsizKonsol": 0,
+    "izinsizAg": 0,
+    "izinliKonsol": 0,
+    "izinliAg": 0,
+    "evalErrors": 0,
+    "kapaliAtlama": 19,
+    "uyariFarkli": 7,
+    "uyariToplam": 103,
+    "neden": []
+   },
+   "tabanGecen": 3,
+   "tabanToplam": 3,
+   "yenideTabanGecenlerdenGecen": 3,
+   "yeniToplam": 3,
+   "fazlaKontrol": [],
+   "tabanErrors": 0,
+   "kontroller": [
+    {
+     "etiket": "3 oyuncu da oyunda",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "H07/H22 200 KB sohbet düşürülür, normal sohbet işlenir",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": true
+    },
+    {
+     "etiket": "H13 Kopan konuğun dümen kilidi ev sahibinde ve diğer konukta kalkar",
+     "taban": true,
+     "yeni": true,
+     "degerAyni": false,
+     "tabanDeger": {
+      "lockBefore": "4650731b-e5bb-4ea5-b78e-a7b34b6da1b1",
+      "lockHostBefore": "4650731b-e5bb-4ea5-b78e-a7b34b6da1b1",
+      "lockHost": null,
+      "lockG2": null,
+      "remotesHost": 1
+     },
+     "yeniDeger": {
+      "lockBefore": "968e626f-4d5c-4774-8595-b8ec0a35b899",
+      "lockHostBefore": "968e626f-4d5c-4774-8595-b8ec0a35b899",
+      "lockHost": null,
+      "lockG2": null,
+      "remotesHost": 1
+     }
+    }
+   ]
+  }
+ ]
+}
