@@ -1,0 +1,75 @@
+{
+ "scenario": "tests/scenarios/00_acilis.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "Ana menü görünür",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "Menü düğmeleri",
+    "ok": true,
+    "value": 8
+   }
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   }
+  },
+  {
+   "n": 5,
+   "label": null,
+   "expect": {
+    "label": "Oyuncu dünyada",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "Arazi karoları yüklendi",
+    "ok": true,
+    "value": 129
+   }
+  },
+  {
+   "n": 7,
+   "label": null,
+   "expect": {
+    "label": "Arazi işçileri çalışıyor",
+    "ok": true,
+    "value": 3
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 8849,
+ "ms": 29555
+}

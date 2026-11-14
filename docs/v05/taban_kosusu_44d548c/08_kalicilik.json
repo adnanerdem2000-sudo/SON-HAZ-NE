@@ -1,0 +1,195 @@
+{
+ "scenario": "tests/scenarios/08_kalicilik.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   }
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": {
+    "crId": "core_kamp_cr0",
+    "kgId": "core_kamp_keg0",
+    "carried": "chhnjlmwc",
+    "chests": 1,
+    "islandsSaved": true,
+    "hazardsGone": 3,
+    "shipSunk": true,
+    "campCd": 222
+   }
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "Kayıt verisi ada/tehlike/taşınan sandık/batık gemi/kamp durumunu içeriyor",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": {
+    "opened": true,
+    "freed": true,
+    "temple": true,
+    "gone": true,
+    "carried": true,
+    "sunk": true,
+    "camp": true
+   }
+  },
+  {
+   "n": 6,
+   "label": null,
+   "result": "reloading"
+  },
+  {
+   "n": 7,
+   "label": null,
+   "expect": {
+    "label": "Kayıt yüklendi, oyun başladı",
+    "ok": true,
+    "value": "playing"
+   }
+  },
+  {
+   "n": 8,
+   "label": null,
+   "expect": {
+    "label": "B02/B-08 Ada ödülleri, tutsaklar ve tapınak mekanizması yüklemede geri geliyor",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 9,
+   "label": null,
+   "expect": {
+    "label": "Kırılmış sandık ve patlamış fıçı yüklemede yeniden kurulmuyor",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 10,
+   "label": null,
+   "result": {
+    "crateStillThere": false,
+    "kegStillThere": false,
+    "gone": [
+     "core_kamp_cr0",
+     "core_kamp_keg0",
+     "core_kamp_cr1"
+    ]
+   }
+  },
+  {
+   "n": 11,
+   "label": null,
+   "expect": {
+    "label": "B04 Taşınan sandık kayıtta; yüklemede oyuncunun yanında yerde",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 12,
+   "label": null,
+   "result": {
+    "state": "ground",
+    "d": 0.6
+   }
+  },
+  {
+   "n": 13,
+   "label": null,
+   "expect": {
+    "label": "E-13/A1 Batık gemi batık yüklenir, parça/direk/top hasarı korunur, oyuncu güverteye bindirilmez",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 14,
+   "label": null,
+   "result": {
+    "sunk": true,
+    "visible": false,
+    "pruva": 50,
+    "mast0": 0,
+    "cannon0": 30,
+    "hp": 60,
+    "playerMode": "ground"
+   }
+  },
+  {
+   "n": 15,
+   "label": null,
+   "expect": {
+    "label": "A5/F-07 Kamp bekleme süresi yüklemede korunur (yükleme sonrası geçen süre düşülür)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 16,
+   "label": null,
+   "expect": {
+    "label": "Sandık ve kese kimlikleri benzersiz",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 17,
+   "label": null,
+   "expect": {
+    "label": "Bozuk kayıt dosyası güvenle reddedilir (null), liste çökmez",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 18,
+   "label": null,
+   "expect": {
+    "label": "Bozuk ana kayıt varken .bak yedeği okunur",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 19,
+   "label": null,
+   "expect": {
+    "label": "Oyun döngüsü yükleme sonrası hatasız sürüyor",
+    "ok": true,
+    "value": true
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 6659,
+ "ms": 31159
+}

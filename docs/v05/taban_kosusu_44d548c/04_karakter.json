@@ -1,0 +1,368 @@
+{
+ "scenario": "tests/scenarios/04_karakter.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   }
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": "çizim kısıldı"
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "C01 Yüzerken gövde kaldırması Character.update tarafından uygulanıyor",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": {
+    "mode": "swim",
+    "lift": 1,
+    "modelY": 1.01,
+    "baseY": 0.01,
+    "pitch": 1.2
+   }
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "C18 Dalışta kuşanılan kılıç elde belirmez, çıkışta elde",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 7,
+   "label": null,
+   "result": {
+    "swimHeld": null,
+    "afterExit": "sword",
+    "equipped": "sword"
+   }
+  },
+  {
+   "n": 8,
+   "label": null,
+   "expect": {
+    "label": "C10 Sprint bayrağı düşük dayanıklılıkta titreşmez (geçişler ≥0.4 sn aralıklı, en çok 3)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 9,
+   "label": null,
+   "result": {
+    "toggles": 2,
+    "frames": [
+     37,
+     100
+    ],
+    "minGapFrames": 63,
+    "stamina": 24.4
+   }
+  },
+  {
+   "n": 10,
+   "label": null,
+   "expect": {
+    "label": "C13 3 m/s hızda Walk klibi (ayak kayması bandı kapandı)",
+    "ok": true,
+    "value": "Walk"
+   }
+  },
+  {
+   "n": 11,
+   "label": null,
+   "expect": {
+    "label": "C07 Kamera duvarın içinden bakmaz: mesafe ≥1.5 m kısalır, duvar kalkınca açılır",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 12,
+   "label": null,
+   "result": {
+    "d0": 5.07,
+    "dWall": 2.77,
+    "dAfter": 5.07
+   }
+  },
+  {
+   "n": 13,
+   "label": null,
+   "expect": {
+    "label": "C08 Dümende eller çark halkasında (yarıçap 0.5 m)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 14,
+   "label": null
+  },
+  {
+   "n": 15,
+   "label": null,
+   "expect": {
+    "label": "C08 İstasyon bırakılınca IK hedefleri temiz, silah yeniden elde",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 16,
+   "label": null,
+   "result": {
+    "dl": 0.5,
+    "dr": 0.5,
+    "hands": 1,
+    "held": null,
+    "cleared": true,
+    "reheld": "sword"
+   }
+  },
+  {
+   "n": 17,
+   "label": null,
+   "expect": {
+    "label": "C08 Topta eller kundak arkasında (iki el ayrı, topa yakın)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 18,
+   "label": null
+  },
+  {
+   "n": 19,
+   "label": null,
+   "result": {
+    "dl": 0.85,
+    "handsApart": 0.56,
+    "playerToCannon": 1.2
+   }
+  },
+  {
+   "n": 20,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 21,
+   "label": null,
+   "expect": {
+    "label": "C09 Güvertede zıplama: JumpStart klibi ve havada süre sayacı",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 22,
+   "label": null,
+   "result": {
+    "anim": "JumpStart",
+    "vy": 6.13,
+    "airT": 0.32,
+    "localY": 0.9
+   }
+  },
+  {
+   "n": 23,
+   "label": null,
+   "expect": {
+    "label": "C09 Güvertede kaçınma gerçekten yer değiştiriyor",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 24,
+   "label": null,
+   "result": {
+    "moved": 2.97,
+    "started": true,
+    "from": [
+     -1.56,
+     -0.72
+    ],
+    "to": [
+     -1.56,
+     2.25
+    ]
+   }
+  },
+  {
+   "n": 25,
+   "label": null,
+   "expect": {
+    "label": "C12 Gemiye binişte kuşanılan silah yeniden elde",
+    "ok": true,
+    "value": "sword"
+   }
+  },
+  {
+   "n": 26,
+   "label": null,
+   "expect": {
+    "label": "C23 Batan gemide dümen bırakılır, kilit kalkar, oyuncu güverteden ayrılır",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 27,
+   "label": null,
+   "result": {
+    "mode": "ground",
+    "lock": null
+   }
+  },
+  {
+   "n": 28,
+   "label": null,
+   "expect": {
+    "label": "C06 Ölümde meşgul eylem iptal, tamamlanma geri çağrısı ateşlenmez",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 29,
+   "label": null,
+   "result": {
+    "busyCleared": true,
+    "busyDoneFired": false,
+    "dead": true,
+    "rag": true
+   }
+  },
+  {
+   "n": 30,
+   "label": null,
+   "expect": {
+    "label": "C19 Ragdoll sonrası dirilişte ayağa kalkış eylemi",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 31,
+   "label": null,
+   "result": {
+    "action": "getup",
+    "anim": "LieUp",
+    "rag": false
+   }
+  },
+  {
+   "n": 32,
+   "label": null,
+   "expect": {
+    "label": "C22/C21 Yerde yatan oyuncuda zehir can düşürmez ve etkileşim yapılamaz",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 33,
+   "label": null,
+   "result": {
+    "hpAfter1s": 5,
+    "interactCurrent": null
+   }
+  },
+  {
+   "n": 34,
+   "label": null,
+   "expect": {
+    "label": "C05 Olta atışı yakın dövüş (slash) eylemi kullanmıyor",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 35,
+   "label": null,
+   "result": {
+    "action": "throw",
+    "state": "fly"
+   }
+  },
+  {
+   "n": 36,
+   "label": null,
+   "expect": {
+    "label": "C25 Döngülü kazı klibi ağ durumunda loop=1 (uzak oyuncuda donmaz)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 37,
+   "label": null,
+   "result": {
+    "anim": "Heavy2H",
+    "loop": 1
+   }
+  },
+  {
+   "n": 38,
+   "label": null,
+   "expect": {
+    "label": "C26 Sandık alırken equip olayı yayılıyor (hotbar güncellenir)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 39,
+   "label": null,
+   "expect": {
+    "label": "C27 Veri verilen 3 adet ekleme 3 ayrı yığın üretir",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 40,
+   "label": null,
+   "expect": {
+    "label": "Oyun döngüsü Aşama 4 sonrası hatasız sürüyor",
+    "ok": true,
+    "value": true
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 6307,
+ "ms": 46017
+}

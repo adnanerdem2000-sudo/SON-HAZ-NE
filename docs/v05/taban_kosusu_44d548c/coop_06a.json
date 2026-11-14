@@ -1,0 +1,118 @@
+{
+ "scenario": "tests/scenarios/coop/06a_ag_guvenligi.cjs",
+ "players": 3,
+ "checks": [
+  {
+   "label": "H02 Konuk adı HTML'den arındırılır (roster)",
+   "ok": true,
+   "detail": [
+    {
+     "id": "HOST",
+     "name": "Kaptan"
+    },
+    {
+     "id": "guest",
+     "name": "Kötü"
+    },
+    {
+     "id": "guest",
+     "name": "Kaptan"
+    }
+   ]
+  },
+  {
+   "label": "H04 Ev sahibiyle aynı adlı konuk ev sahibini listeden düşürmez",
+   "ok": true,
+   "detail": [
+    {
+     "id": "HOST",
+     "name": "Kaptan"
+    },
+    {
+     "id": "guest",
+     "name": "Kötü"
+    },
+    {
+     "id": "guest",
+     "name": "Kaptan"
+    }
+   ]
+  },
+  {
+   "label": "3 oyuncu da oyunda",
+   "ok": true,
+   "detail": [
+    "playing",
+    "playing",
+    "playing"
+   ]
+  },
+  {
+   "label": "H02 HUD takım listesinde script/img etiketi yok",
+   "ok": true,
+   "detail": {
+    "html": "<div class=\"tm\"><span style=\"color:#6ad0f0\">●</span> Kötü <i><b style=\"width:100%\"></b></i></div><div class=\"tm\"><span style=\"color:#ff8a70\">●</span> Kaptan <i><b style=\"width:100%\"></b></i></div>",
+    "hasImg": false,
+    "text": "● Kötü ● Kaptan "
+   }
+  },
+  {
+   "label": "H11 Ev sahibinin atış efekti konukta işlenir",
+   "ok": true,
+   "detail": 1
+  },
+  {
+   "label": "H07 Altın paylaşım bütçesi: 30000 istenen, ≤20000 işlenir",
+   "ok": true,
+   "detail": {
+    "delta": 12000
+   }
+  },
+  {
+   "label": "H07 Uzaktan sahte hasar ev sahibinde işlenmez",
+   "ok": true,
+   "detail": {
+    "hp": 170,
+    "max": 170,
+    "alive": true
+   }
+  },
+  {
+   "label": "H07 Yakından sahte 99999 hasar üst sınıra (≤160×1.25) kırpılır",
+   "ok": true,
+   "detail": {
+    "hp": 10,
+    "max": 170,
+    "rd": 3
+   }
+  },
+  {
+   "label": "H07/H22 200 KB sohbet düşürülür, normal sohbet işlenir",
+   "ok": true,
+   "detail": 1
+  },
+  {
+   "label": "H13 Kopan konuğun dümen kilidi ev sahibinde ve diğer konukta kalkar",
+   "ok": true,
+   "detail": {
+    "lockBefore": "93125974-c14d-4c53-8e2f-a451889a30e8",
+    "lockHost": null,
+    "lockG2": null,
+    "remotesHost": 1,
+    "waitedMs": 14000
+   }
+  }
+ ],
+ "errors": {
+  "Kaptan": [],
+  "Tayfa": [],
+  "Lostromo": []
+ },
+ "pageErrors": {
+  "Kaptan": [],
+  "Tayfa": [],
+  "Lostromo": []
+ },
+ "fails": 0,
+ "ms": 323446
+}

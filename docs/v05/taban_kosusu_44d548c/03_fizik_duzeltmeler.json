@@ -1,0 +1,223 @@
+{
+ "scenario": "tests/scenarios/03_fizik_duzeltmeler.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   }
+  },
+  {
+   "n": 3,
+   "label": null,
+   "expect": {
+    "label": "Alt adım sayısı: 1/15→4, 1/60→1, 0.1 s→6 (üst sınır)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "Uzun karede zıplama tuşu tek zıplama üretir",
+    "ok": true,
+    "value": 1
+   }
+  },
+  {
+   "n": 5,
+   "label": null,
+   "expect": {
+    "label": "Geri tepme mesafesi 15/60/144 FPS arasında %20 içinde",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 6,
+   "label": null,
+   "result": {
+    "fps15": 1.597,
+    "fps60": 1.597,
+    "fps144": 1.439
+   }
+  },
+  {
+   "n": 7,
+   "label": null,
+   "expect": {
+    "label": "Sığ su bandında (≈1.4 m) mod en çok bir kez değişir (titreşim yok)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 8,
+   "label": null,
+   "result": {
+    "pos": [
+     -123.4,
+     58.3
+    ],
+    "depth": 1.45,
+    "changes": 1,
+    "mode": "swim"
+   }
+  },
+  {
+   "n": 9,
+   "label": null,
+   "expect": {
+    "label": "Düşük dayanıklılıkta savunma bayrağı kare kare titreşmez (3 saniyede en çok 2 geçiş: başla, tükenince bırak)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 10,
+   "label": null,
+   "result": {
+    "toggles": 2,
+    "stamina": 3.5
+   }
+  },
+  {
+   "n": 11,
+   "label": null,
+   "expect": {
+    "label": "lineBlocked 400 m doğruda engeli bulur, boş doğruda bulmaz",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 12,
+   "label": null,
+   "expect": {
+    "label": "Mermi süpürmesi: kutu içinden başlayan parça engellenir",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 13,
+   "label": null,
+   "expect": {
+    "label": "Taşınan demirli gemi eski çapa noktasına fırlamaz",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 14,
+   "label": null,
+   "result": {
+    "hadPt": true,
+    "moved": 0.4,
+    "speed": 0.12
+   }
+  },
+  {
+   "n": 15,
+   "label": null,
+   "expect": {
+    "label": "Kinematik gemiye çarpma: NaN yok, hasar makul",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 16,
+   "label": null,
+   "result": {
+    "nan": false,
+    "dmg": 30,
+    "vz": -1.2
+   }
+  },
+  {
+   "n": 17,
+   "label": null,
+   "expect": {
+    "label": "Yüksek platforma yandan girilmez (yan yüz çarpıştırıcı)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 18,
+   "label": null,
+   "result": {
+    "z": 121.45,
+    "y": 11.37,
+    "top": 16.49,
+    "inside": false
+   }
+  },
+  {
+   "n": 19,
+   "label": null,
+   "expect": {
+    "label": "Hızlı gülle tek adımda gövdeyi aşsa da isabet eder (süpürme, tünelleme yok)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 20,
+   "label": null,
+   "result": {
+    "hp": 86,
+    "max": 100,
+    "ballsLeft": 0,
+    "before": 1,
+    "beam": 4.4
+   }
+  },
+  {
+   "n": 21,
+   "label": null,
+   "expect": {
+    "label": "Yüzen oyuncu 20 km haritanın kenarında durur",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 22,
+   "label": null,
+   "result": {
+    "x": 9729.3
+   }
+  },
+  {
+   "n": 23,
+   "label": null,
+   "expect": {
+    "label": "Oyun döngüsü düzeltmelerden sonra hatasız sürüyor",
+    "ok": true,
+    "value": true
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 7682,
+ "ms": 33241
+}

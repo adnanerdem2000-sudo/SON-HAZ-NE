@@ -1,0 +1,148 @@
+{
+ "scenario": "tests/scenarios/12_kayit_dongusu.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   }
+  },
+  {
+   "n": 3,
+   "label": null,
+   "expect": {
+    "label": "K01 Üç ardışık kayıt/yükleme döngüsünde oyuncu, gemi, ada, tehlike ve düşman grubu durumu korunur",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 4,
+   "label": null,
+   "result": [
+    {
+     "k": 1,
+     "ok": true,
+     "state": "playing",
+     "hp": 65,
+     "hpOk": true,
+     "sword": true,
+     "bait": 11,
+     "shipHp": 51,
+     "shipOk": true,
+     "pruva": 41,
+     "pruvaOk": true,
+     "opened": 1,
+     "openedOk": true,
+     "gone": 1,
+     "campCd": 100.00000000000006,
+     "campOk": true,
+     "pos": [
+      -57,
+      120
+     ],
+     "posOk": true,
+     "allOk": true
+    },
+    {
+     "k": 2,
+     "ok": true,
+     "state": "playing",
+     "hp": 70,
+     "hpOk": true,
+     "sword": true,
+     "bait": 13,
+     "shipHp": 52,
+     "shipOk": true,
+     "pruva": 42,
+     "pruvaOk": true,
+     "opened": 2,
+     "openedOk": true,
+     "gone": 2,
+     "campCd": 101.00000000000006,
+     "campOk": true,
+     "pos": [
+      -54,
+      120
+     ],
+     "posOk": true,
+     "sizePrev": 16416,
+     "size": 16537,
+     "allOk": true
+    },
+    {
+     "k": 3,
+     "ok": true,
+     "state": "playing",
+     "hp": 75,
+     "hpOk": true,
+     "sword": true,
+     "bait": 16,
+     "shipHp": 53,
+     "shipOk": true,
+     "pruva": 43,
+     "pruvaOk": true,
+     "opened": 3,
+     "openedOk": true,
+     "gone": 2,
+     "campCd": 102.00000000000006,
+     "campOk": true,
+     "pos": [
+      -51,
+      120
+     ],
+     "posOk": true,
+     "sizePrev": 16537,
+     "size": 16607,
+     "allOk": true
+    }
+   ]
+  },
+  {
+   "n": 5,
+   "label": null,
+   "expect": {
+    "label": "K02 Kayıt boyutu döngüler arasında kontrolsüz büyümez (3. ≤ 1,5 × 1.)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 6,
+   "label": null,
+   "result": [
+    16416,
+    16537,
+    16607
+   ]
+  },
+  {
+   "n": 7,
+   "label": null,
+   "expect": {
+    "label": "K03 Üçüncü yüklemeden sonra oyun açık, konum/sağlık geçerli",
+    "ok": true,
+    "value": true
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 7159,
+ "ms": 27729
+}

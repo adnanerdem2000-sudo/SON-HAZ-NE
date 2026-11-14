@@ -1,0 +1,388 @@
+{
+ "scenario": "tests/scenarios/07_dunya_kesif.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   }
+  },
+  {
+   "n": 3,
+   "label": null,
+   "expect": {
+    "label": "D01 Dünya yarı boyutu 10 km (20×20 km korunur)",
+    "ok": true,
+    "value": 10000
+   }
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "D02 Dik olmayan şekillerde su çizgisi sıçraması ≤ 0,40 m (kıyı dikişi yok)",
+    "ok": true,
+    "value": 0.251
+   }
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": {
+    "seam": {
+     "worst": 0.251,
+     "at": [
+      "kara_girdap",
+      "spire",
+      6,
+      35
+     ],
+     "n": 65016,
+     "big": 0,
+     "islands": 54
+    },
+    "steep": {
+     "worst": 1.403,
+     "at": [
+      "timsah_batakligi",
+      "swamp",
+      6,
+      230
+     ],
+     "n": 12091,
+     "big": 30,
+     "islands": 13
+    },
+    "ms": 361
+   }
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "D02b 1 mm inceltmede süreksizlik (tüm 67 ada, tüm şekiller) = 0",
+    "ok": true,
+    "value": 0
+   }
+  },
+  {
+   "n": 7,
+   "label": null,
+   "result": {
+    "total": 0,
+    "byShape": {},
+    "ex": []
+   }
+  },
+  {
+   "n": 8,
+   "label": null,
+   "expect": {
+    "label": "D03 Yüzen oyuncu 3 gelgit × çukur/tepe + sağanak çukurunda basamaklardan T başlığına çıkar (≤ 2 kip değişimi)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 9,
+   "label": null,
+   "result": {
+    "tz": 273.5,
+    "top": 2.25,
+    "runs": [
+     {
+      "tide": -0.55,
+      "scale": 1,
+      "ph": "trough",
+      "amp": 0.11,
+      "minWh": -0.58,
+      "t": 3.5,
+      "x": 17.61,
+      "y": 2.25,
+      "mode": "ground",
+      "switches": 1,
+      "ok": true
+     },
+     {
+      "tide": -0.55,
+      "scale": 1,
+      "ph": "crest",
+      "amp": 0.11,
+      "minWh": -0.59,
+      "t": 3.5,
+      "x": 17.61,
+      "y": 2.25,
+      "mode": "ground",
+      "switches": 1,
+      "ok": true
+     },
+     {
+      "tide": 0,
+      "scale": 1,
+      "ph": "trough",
+      "amp": 0.11,
+      "minWh": -0.05,
+      "t": 3.75,
+      "x": 16.86,
+      "y": 2.25,
+      "mode": "ground",
+      "switches": 1,
+      "ok": true
+     },
+     {
+      "tide": 0,
+      "scale": 1,
+      "ph": "crest",
+      "amp": 0.12,
+      "minWh": -0.04,
+      "t": 3.75,
+      "x": 17.18,
+      "y": 2.25,
+      "mode": "ground",
+      "switches": 1,
+      "ok": true
+     },
+     {
+      "tide": 0.55,
+      "scale": 1,
+      "ph": "trough",
+      "amp": 0.12,
+      "minWh": 0.5,
+      "t": 3.75,
+      "x": 17.53,
+      "y": 2.25,
+      "mode": "ground",
+      "switches": 1,
+      "ok": true
+     },
+     {
+      "tide": 0.55,
+      "scale": 1,
+      "ph": "crest",
+      "amp": 0.12,
+      "minWh": 0.51,
+      "t": 4,
+      "x": 16.77,
+      "y": 2.25,
+      "mode": "ground",
+      "switches": 1,
+      "ok": true
+     },
+     {
+      "tide": -0.55,
+      "scale": 1.5,
+      "ph": "trough",
+      "amp": 0.17,
+      "minWh": -0.6,
+      "t": 3.75,
+      "x": 17.18,
+      "y": 2.25,
+      "mode": "ground",
+      "switches": 1,
+      "ok": true
+     }
+    ]
+   }
+  },
+  {
+   "n": 10,
+   "label": null,
+   "expect": {
+    "label": "D08 −1,5 m basamağında 60 sn bekleyen oyuncu en çok 1 kip değişimi yapar (sağanak dalgası, barınakta)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 11,
+   "label": null,
+   "result": {
+    "switches": 0,
+    "modes": {
+     "ground": 240
+    },
+    "x": 24.6,
+    "y": -1.2
+   }
+  },
+  {
+   "n": 12,
+   "label": null,
+   "expect": {
+    "label": "D07 Liman barınağı: merdivende dalga genliği açık denizin ≤ %35'i ve ≤ 0,35 m",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 13,
+   "label": null,
+   "result": {
+    "near": 0.087,
+    "far": 0.539,
+    "far2": 0.13,
+    "ratio": 0.16
+   }
+  },
+  {
+   "n": 14,
+   "label": null,
+   "expect": {
+    "label": "D04 Her yordamsal adacıkta en az bir geçerli belirleyici özellik",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 15,
+   "label": null,
+   "result": {
+    "total": 67,
+    "featureless": 0,
+    "featurelessIds": [],
+    "bad": [],
+    "poolAdded": 22,
+    "typesByRegion": {
+     "merkez": [
+      "beach_wreck",
+      "camp",
+      "fort",
+      "lighthouse",
+      "market",
+      "port",
+      "ruin",
+      "ruined_town"
+     ],
+     "buzul": [
+      "beach_wreck",
+      "boss_sea",
+      "camp",
+      "port",
+      "ruin"
+     ],
+     "tropik": [
+      "beach_wreck",
+      "camp",
+      "port",
+      "ruin",
+      "sunken_city",
+      "temple"
+     ],
+     "volkan": [
+      "beach_wreck",
+      "boss_land",
+      "camp",
+      "mine",
+      "port",
+      "ruin"
+     ],
+     "col": [
+      "beach_wreck",
+      "camp",
+      "mine",
+      "port",
+      "prison",
+      "ruin"
+     ],
+     "hayalet": [
+      "beach_wreck",
+      "boss_sea",
+      "camp",
+      "graveyard",
+      "ruin"
+     ]
+    }
+   }
+  },
+  {
+   "n": 16,
+   "label": null,
+   "expect": {
+    "label": "D06 Otomatik özellikler araziye uygun (yapı çevresi ≥ 1 m, batık ≥ −0,6 m)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 17,
+   "label": null,
+   "result": {
+    "n": 22,
+    "bad": []
+   }
+  },
+  {
+   "n": 18,
+   "label": null,
+   "expect": {
+    "label": "D05 Havuz özellikli adacıklar hatasız kurulur ve sökülür",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 19,
+   "label": null,
+   "result": {
+    "out": [
+     [
+      "ada_merkez_0",
+      "beach_wreck",
+      true,
+      20
+     ],
+     [
+      "ada_merkez_2",
+      "beach_wreck",
+      true,
+      5
+     ],
+     [
+      "ada_merkez_7",
+      "beach_wreck",
+      true,
+      3
+     ],
+     [
+      "ada_buzul_0",
+      "ruin",
+      true,
+      6
+     ],
+     [
+      "ada_buzul_3",
+      "beach_wreck",
+      true,
+      4
+     ],
+     [
+      "ada_buzul_4",
+      "ruin",
+      true,
+      6
+     ]
+    ],
+    "errs": []
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 6547,
+ "ms": 40016
+}

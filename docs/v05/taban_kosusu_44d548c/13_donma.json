@@ -1,0 +1,273 @@
+{
+ "scenario": "tests/scenarios/13_donma.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   }
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "P01 Gemiyle yaklaşınca ada birden çok karede kurulur; karedeki ada işi ≤ 35 ms (önce tek karede 55–58 ms; ölçülen tipik 6–11 ms, pay: bu ortamdaki GC/işlemci beklemesi)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": {
+    "kurulduMu": true,
+    "kare": 409,
+    "kareSayisi": 16,
+    "enUzunAdaKaresiMs": 10.5,
+    "isMs": 70.3,
+    "p99": 5.2,
+    "npc": 5
+   }
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "P02 Karelere bölünmüş kurulum eşzamanlı kurulumla birebir aynı adayı üretir (5 ada: liman, pazar, tapınak, hapishane, volkan)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 7,
+   "label": null,
+   "result": [
+    {
+     "id": "tuz_pazari",
+     "ayni": true,
+     "kare": 6,
+     "enUzunMs": 4.8,
+     "npc": 5
+    },
+    {
+     "id": "gizli_pazar",
+     "ayni": true,
+     "kare": 3,
+     "enUzunMs": 3.9,
+     "npc": 2
+    },
+    {
+     "id": "kadim_tapinak",
+     "ayni": true,
+     "kare": 6,
+     "enUzunMs": 3.1,
+     "npc": 0
+    },
+    {
+     "id": "demirkapi",
+     "ayni": true,
+     "kare": 4,
+     "enUzunMs": 3.2,
+     "npc": 3
+    },
+    {
+     "id": "ates_dagi",
+     "ayni": true,
+     "kare": 8,
+     "enUzunMs": 3.1,
+     "npc": 0
+    }
+   ]
+  },
+  {
+   "n": 8,
+   "label": null,
+   "expect": {
+    "label": "P03 Ada kurulurken uzaklaşılırsa yarım iş iptal edilir; çarpıştırıcı/NPC/sahne nesnesi kalmaz",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 9,
+   "label": null,
+   "result": {
+    "yarim": {
+     "cols": 801,
+     "npcs": 5,
+     "built": false,
+     "job": "tuz_pazari",
+     "sahnede": false,
+     "adim": 86,
+     "evre": "batch"
+    },
+    "sonra": {
+     "cols": 0,
+     "npcs": 0,
+     "built": false,
+     "job": null,
+     "sahnede": false
+    }
+   }
+  },
+  {
+   "n": 10,
+   "label": null,
+   "expect": {
+    "label": "P04 _drop ve yeni oturum başlangıcı yarım kalan ada işini kaynaklarıyla temizler",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 11,
+   "label": null,
+   "result": {
+    "once": {
+     "cols": 169,
+     "npcs": 2,
+     "built": false,
+     "job": "gizli_pazar",
+     "sahnede": false
+    },
+    "drop": {
+     "cols": 0,
+     "npcs": 0,
+     "built": false,
+     "job": null,
+     "sahnede": false
+    },
+    "once2": {
+     "cols": 55,
+     "npcs": 0,
+     "built": false,
+     "job": "gizli_pazar",
+     "sahnede": false
+    },
+    "start": {
+     "cols": 0,
+     "npcs": 0,
+     "built": false,
+     "job": null,
+     "sahnede": false
+    }
+   }
+  },
+  {
+   "n": 12,
+   "label": null,
+   "expect": {
+    "label": "P06 Bekleyen iş varken eşzamanlı kurulum işi tamamlar (tek grup, 5 liman NPC’si, çift kurulum yok)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 13,
+   "label": null,
+   "result": {
+    "cols": 801,
+    "npcs": 5,
+    "built": true,
+    "job": null,
+    "sahnede": true,
+    "bekleyen": true,
+    "npcIds": 5,
+    "tekil": 5,
+    "grup": 1
+   }
+  },
+  {
+   "n": 14,
+   "label": null,
+   "expect": {
+    "label": "P07 Balık sürüleri hareket eder; konum/hız geçerli, örnek sayısı > 0",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 15,
+   "label": null,
+   "result": {
+    "suru": 16,
+    "ornek": 313,
+    "hareket": 2.2,
+    "nan": false
+   }
+  },
+  {
+   "n": 16,
+   "label": null,
+   "expect": {
+    "label": "P08 Tapınak bulmacası: çözüm yeniden kurulumda ve kayıt yüklemede korunur (kapı açık, boss koşulu), levye hata vermez, eski kayıt biçimi onarılır",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 17,
+   "label": null,
+   "result": {
+    "cozuldu": {
+     "done": true,
+     "hatalar": 0,
+     "sekil": "done,seq"
+    },
+    "yenidenKur": {
+     "sekil": "done,seq",
+     "done": true,
+     "levye": "ok",
+     "kapiAcik": true,
+     "bossDurumu": true
+    },
+    "kayitYukle": {
+     "kayittaki": "done,seq",
+     "sekil": "done,seq",
+     "done": true,
+     "levye": "ok",
+     "kapiAcik": true
+    },
+    "eskiBicim": {
+     "sekil": "done,seq",
+     "seq": "2",
+     "done": false,
+     "levye": "ok"
+    }
+   }
+  },
+  {
+   "n": 18,
+   "label": null,
+   "expect": {
+    "label": "Oyun döngüsü testlerden sonra hatasız",
+    "ok": true,
+    "value": true
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 6650,
+ "ms": 39099
+}

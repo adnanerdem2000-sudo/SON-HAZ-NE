@@ -1,0 +1,129 @@
+{
+ "scenario": "tests/scenarios/11_arayuz_sizinti.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   }
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 4,
+   "label": null,
+   "result": [
+    {
+     "opened": true,
+     "addedWhileOpen": 1,
+     "netAfterClose": 0
+    },
+    {
+     "opened": true,
+     "addedWhileOpen": 1,
+     "netAfterClose": 0
+    },
+    {
+     "opened": true,
+     "addedWhileOpen": 1,
+     "netAfterClose": 0
+    }
+   ]
+  },
+  {
+   "n": 5,
+   "label": null,
+   "expect": {
+    "label": "H24 Oluşturucu closeAll ile kapanınca window mouseup dinleyicisi kalmaz (3 açılış)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "H24 (kontrol) Oluşturucu açıkken rAF döngüsü çalışıyordu",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 7,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 8,
+   "label": null
+  },
+  {
+   "n": 9,
+   "label": null,
+   "expect": {
+    "label": "H24 Kapanıştan sonra oluşturucu rAF döngüsü durur (600 ms içinde çağrı yok)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 10,
+   "label": null,
+   "result": [
+    [
+     "loop:other",
+     9
+    ]
+   ]
+  },
+  {
+   "n": 11,
+   "label": null,
+   "result": {
+    "maps": 1,
+    "top": "test",
+    "depth": 2
+   }
+  },
+  {
+   "n": 12,
+   "label": null,
+   "expect": {
+    "label": "H23 Üstte panel varken ikinci harita açılmaz (yığında 1 harita)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 13,
+   "label": null,
+   "expect": {
+    "label": "Arayüz testlerinden sonra oyun açık, yığın boş",
+    "ok": true,
+    "value": true
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 6202,
+ "ms": 29444
+}

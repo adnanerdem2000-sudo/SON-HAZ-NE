@@ -1,0 +1,135 @@
+{
+ "scenario": "tests/scenarios/02_arazi_kurtarma.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   }
+  },
+  {
+   "n": 3,
+   "label": null,
+   "expect": {
+    "label": "İşçiler çalışıyor",
+    "ok": true,
+    "value": 3
+   }
+  },
+  {
+   "n": 4,
+   "label": null,
+   "result": {
+    "pendingAtKill": 158,
+    "inflightAtKill": 6,
+    "workers": 0,
+    "fallback": true,
+    "failures": 4
+   }
+  },
+  {
+   "n": 5,
+   "label": null,
+   "expect": {
+    "label": "Tüm işçiler düşünce yedek kipi açıldı",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "İşçisiz prepare() karo ağlarını üretti",
+    "ok": true,
+    "value": 13
+   }
+  },
+  {
+   "n": 7,
+   "label": null,
+   "result": {
+    "ms": 1071,
+    "stats": {
+     "tiles": 158,
+     "meshes": 15,
+     "hires": 1,
+     "tris": 16128,
+     "queue": 145,
+     "jobs": 146,
+     "workers": 0,
+     "fallback": true,
+     "failures": 4,
+     "mode": ""
+    }
+   }
+  },
+  {
+   "n": 8,
+   "label": null,
+   "expect": {
+    "label": "Öksüz iş yok: her bekleyen iş ya kuyrukta ya bir şeritte ya da bir işçide (askıda söz yok)",
+    "ok": true,
+    "value": 0
+   }
+  },
+  {
+   "n": 9,
+   "label": null,
+   "result": {
+    "orphans": [],
+    "inflightLeftInQueue": 6
+   }
+  },
+  {
+   "n": 10,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 11,
+   "label": null,
+   "expect": {
+    "label": "Kuyruk ana iş parçacığında ilerliyor (12 sn)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 12,
+   "label": null,
+   "result": {
+    "jobsBefore": 142,
+    "jobsAfter12s": 138
+   }
+  },
+  {
+   "n": 13,
+   "label": null,
+   "expect": {
+    "label": "Oyun döngüsü 4 sn hatasız sürdü",
+    "ok": true,
+    "value": true
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 7202,
+ "ms": 51602
+}

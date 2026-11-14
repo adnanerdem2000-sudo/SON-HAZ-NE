@@ -1,0 +1,186 @@
+{
+ "scenario": "tests/scenarios/coop/06b_esitlik_senkron.cjs",
+ "players": 2,
+ "checks": [
+  {
+   "label": "2 oyuncu oyunda",
+   "ok": true
+  },
+  {
+   "label": "Kırılabilir sandık var",
+   "ok": true,
+   "detail": {
+    "id": "core_kamp_cr0",
+    "x": -46.5,
+    "z": -231
+   }
+  },
+  {
+   "label": "B03/H01 Konuğun kırdığı sandığın kesesi ev sahibinde doğar ve konukta aynı kimlikle görünür",
+   "ok": true,
+   "detail": {
+    "pk0": 0,
+    "pkHost": [
+     "pkkycm4pm"
+    ],
+    "pkGuest": [
+     "pkkycm4pm"
+    ]
+   }
+  },
+  {
+   "label": "H01 Konuk keseyi alır: eşya konuğa geçer, kese ev sahibinde kalkar",
+   "ok": true,
+   "detail": {
+    "gained": 1,
+    "goneHost": true
+   }
+  },
+  {
+   "label": "H10/H03 Konuk ambardan sandığı alır: ev sahibi ambarı boşalır, sandık konuğun taşımasında",
+   "ok": true,
+   "detail": {
+    "carryG": {
+     "carrying": "chn3kh3gp",
+     "chests": [
+      [
+       "chn3kh3gp",
+       "carried",
+       [
+        "36c0b5d9-4212-4f7c-b165-636a1054e73b"
+       ]
+      ]
+     ]
+    },
+    "holdH": {
+     "hold": 0,
+     "chest": [
+      [
+       "carried",
+       [
+        "36c0b5d9-4212-4f7c-b165-636a1054e73b"
+       ]
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "label": "H03 Konuk sandığı ambara koyunca ev sahibinde hayalet sandık kalmaz",
+   "ok": true,
+   "detail": {
+    "hold": 1,
+    "ghosts": 0
+   }
+  },
+  {
+   "label": "B08/H08 Yüzen şişe konukta görünür (ağ kopyası)",
+   "ok": true,
+   "detail": {
+    "net": true,
+    "pos": [
+     3.5,
+     212
+    ],
+    "label": "Şişeyi al"
+   }
+  },
+  {
+   "label": "H08 Konuk şişeyi alır: eşya konuğa geçer, nesne iki tarafta da kalkar",
+   "ok": true,
+   "detail": {
+    "bottle": {
+     "has": true,
+     "still": false
+    },
+    "bottleHost": false
+   }
+  },
+  {
+   "label": "F-02 Ev sahibinde uzak oyuncunun gemi referansı var (güverte düşmanları ulaşılabilir sayar)",
+   "ok": true,
+   "detail": {
+    "ship": "ship_main",
+    "mode": "deck",
+    "onGround": true
+   }
+  },
+  {
+   "label": "F-12 Zıplayan konuk ev sahibinde havada görünür (tepinmeden zıplayarak kaçma)",
+   "ok": true,
+   "detail": false
+  },
+  {
+   "label": "E-02/E-06/E-07 Konuk deliği, gülle/tahta sayısını ve devrik direği görür",
+   "ok": true,
+   "detail": {
+    "holes": 1,
+    "balls": 42,
+    "planks": 7,
+    "fallen": true
+   }
+  },
+  {
+   "label": "E-07/E-02 Direk onarımı ve delik onarımı konukta geri alınır",
+   "ok": true,
+   "detail": {
+    "holes": 0,
+    "fallen": false
+   }
+  },
+  {
+   "label": "H12 Batık bayrağı konukta: gemi görünmez",
+   "ok": true,
+   "detail": {
+    "sunk": true,
+    "visible": false
+   }
+  },
+  {
+   "label": "F-15 Lav havuzu uzak oyuncuyu da yakar",
+   "ok": true,
+   "detail": 72
+  },
+  {
+   "label": "F-13 Konuğun silah sesi ev sahibi düşmanını uyarır",
+   "ok": true,
+   "detail": {
+    "awareness": 1.2,
+    "state": "strafe",
+    "lastKnown": true
+   }
+  },
+  {
+   "label": "F-11 Boss süpürmesinin geri tepmesi konukta uygulanır (0.3 sn sonra sönümlenmiş kalıntı > 0)",
+   "ok": true,
+   "detail": 0.16
+  },
+  {
+   "label": "F-06 Düşman mermileri konukta görsel olarak izlenir",
+   "ok": true,
+   "detail": {
+    "vis": 1,
+    "shotsHost": 1,
+    "natural": true
+   }
+  },
+  {
+   "label": "Senaryo sonunda iki taraf da oyunda",
+   "ok": true,
+   "detail": [
+    "playing",
+    "playing"
+   ]
+  }
+ ],
+ "errors": {
+  "Kaptan": [],
+  "Tayfa": []
+ },
+ "pageErrors": {
+  "Kaptan": [],
+  "Tayfa": []
+ },
+ "fails": 0,
+ "ms": 195978
+}

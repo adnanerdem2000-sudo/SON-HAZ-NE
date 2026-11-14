@@ -1,0 +1,105 @@
+{
+ "scenario": "tests/scenarios/coop/06c_dort_oyuncu.cjs",
+ "players": 4,
+ "checks": [
+  {
+   "label": "D4-01 Lobide 4 kayıt",
+   "ok": true,
+   "detail": [
+    "Kaptan",
+    "Tayfa",
+    "Lostromo",
+    "Topçu"
+   ]
+  },
+  {
+   "label": "D4-02 4 oyuncu da oyunda",
+   "ok": false,
+   "detail": [
+    "playing",
+    "menu",
+    "playing",
+    "playing"
+   ]
+  },
+  {
+   "label": "D4-03 Her oyuncu 3 uzak oyuncu görür",
+   "ok": false,
+   "detail": [
+    2,
+    0,
+    2,
+    2
+   ]
+  },
+  {
+   "label": "D4-04 Sohbet diğer 3 oyuncuya ulaşır",
+   "ok": false,
+   "detail": [
+    0,
+    1,
+    0,
+    0
+   ]
+  },
+  {
+   "label": "D4-05 Konuğun hareketi diğer konukta görünür",
+   "ok": false,
+   "detail": {
+    "before": [
+     2,
+     212
+    ],
+    "after": [
+     2,
+     212
+    ]
+   }
+  },
+  {
+   "label": "D4-06 Menüye dönen konuk aynı adla geri gelir; roster 4 kayıt, çift ad yok, 3 uzak oyuncu görür",
+   "ok": false,
+   "detail": {
+    "name3": "Topçu",
+    "leftState": "menu",
+    "rosterAfterLeave": [
+     "Kaptan",
+     "Lostromo"
+    ],
+    "rosterAfterRejoin": [
+     "Kaptan",
+     "Lostromo",
+     "Topçu"
+    ],
+    "g3state": "playing",
+    "g3remotes": 2
+   }
+  },
+  {
+   "label": "D4-07 Sekmesi kapanan konuk herkeste kalkar (≤ 25 sn)",
+   "ok": true,
+   "detail": {
+    "rem": [
+     2,
+     2,
+     2
+    ],
+    "waitedMs": 0
+   }
+  }
+ ],
+ "errors": {
+  "Kaptan": [],
+  "Tayfa": [],
+  "Lostromo": [],
+  "Topçu": []
+ },
+ "pageErrors": {
+  "Kaptan": [],
+  "Tayfa": [],
+  "Lostromo": [],
+  "Topçu": []
+ },
+ "fails": 5,
+ "ms": 579329
+}

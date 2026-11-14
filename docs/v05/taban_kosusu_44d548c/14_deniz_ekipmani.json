@@ -1,0 +1,393 @@
+{
+ "scenario": "tests/scenarios/14_deniz_ekipmani.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   }
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": {
+    "x": 12.829488066708116,
+    "z": 369.8997994641622
+   }
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "D01 C ile dalış; nefes ≈ 50 sn (2/sn), maskeyle ≈ 80 sn; nefes bitince can azalır; yüzeyde nefes dolar; ilk girişte tuş ipucu",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": {
+    "hint": "Dalmak için C basılı tut, çıkmak için Boşluk · nefes ≈ 50 sn",
+    "under": true,
+    "depth": 4.28,
+    "base": 2,
+    "mask": 1.25,
+    "ratio": 1.6,
+    "breathSec": 50,
+    "maskSec": 80,
+    "drown": 14.4,
+    "refill": 100,
+    "surf": true
+   }
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "D02 Hava kesesi nefes < 12 iken kendiliğinden kullanılır (+45), su altında elle de kullanılır, su üstünde kullanılmaz",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 7,
+   "label": null,
+   "result": {
+    "aboveRefused": true,
+    "auto": 55.7,
+    "left": 1,
+    "manual": true,
+    "left2": 0
+   }
+  },
+  {
+   "n": 8,
+   "label": null,
+   "expect": {
+    "label": "D03 Yüzme paleti çantadayken yüzme hızı ≈ ×1,35",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 9,
+   "label": null,
+   "result": {
+    "v0": 2.62,
+    "v1": 3.54,
+    "ratio": 1.35
+   }
+  },
+  {
+   "n": 10,
+   "label": null,
+   "expect": {
+    "label": "G01 Zıpkın: eşya yokken kuşanılmaz; 6 tuşuyla kuşanılır, suda elde kalır; araç çubuğunda 7 yuva",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 11,
+   "label": null,
+   "result": {
+    "without": "none",
+    "eq": "harpoon",
+    "held": "harpoon",
+    "heldWater": "harpoon",
+    "slots": 7,
+    "ui": false,
+    "paused": false,
+    "dead": false,
+    "carry": false,
+    "has": true,
+    "w": 13.4,
+    "msg": [
+     "Bu eşyaya sahip değilsin.",
+     "Zıpkın: sağ tık nişan, sol tık fırlat. Su altında balığa, kıyıdan/güverteden suya atabilirsin."
+    ]
+   }
+  },
+  {
+   "n": 12,
+   "label": null,
+   "expect": {
+    "label": "G02 Su altında 3 m öteki balığa zıpkın: yoldaki ilk balık vurulur (sürüde hedefin önündeki de olabilir), çantaya \"Zıpkın\" kaydıyla girer, koleksiyon sayılır, zıpkın ipiyle geri döner",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 13,
+   "label": null,
+   "result": {
+    "key": "sardalya",
+    "name": "Sardalya",
+    "dist": 3.02,
+    "flying": "fly",
+    "hedefVuruldu": true,
+    "vurulan": "Sardalya",
+    "added": 1,
+    "bait": "Zıpkın",
+    "w": 0.08,
+    "len": 16,
+    "stats": 1,
+    "state": "idle",
+    "heldVisible": true,
+    "ropeHidden": true
+   }
+  },
+  {
+   "n": 14,
+   "label": null,
+   "expect": {
+    "label": "G03 Kaçan (canlı) sürüye 2,5 m’den balığın o anki yerine atışta en az yarısında balık vurulur (4 m sonucu raporlanır)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 15,
+   "label": null,
+   "result": {
+    "n": 12,
+    "near": "5/6",
+    "far": "4/6"
+   }
+  },
+  {
+   "n": 16,
+   "label": null,
+   "expect": {
+    "label": "G04 Zıpkın köpekbalığına hasar verir",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 17,
+   "label": null,
+   "result": {
+    "hp": 130,
+    "max": 160,
+    "dmg": 30
+   }
+  },
+  {
+   "n": 18,
+   "label": null,
+   "expect": {
+    "label": "G05 İskeleden sağ tık nişan + sol tık: zıpkın nişangâh yönünde (açı farkı < 26°) suya girer ve geri döner",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 19,
+   "label": null,
+   "result": {
+    "aiming": true,
+    "cross": true,
+    "st": "fly",
+    "dot": 0.999,
+    "wet": true,
+    "end": "idle"
+   }
+  },
+  {
+   "n": 20,
+   "label": null,
+   "expect": {
+    "label": "G06 Ağ sürünün üstüne atılınca birkaç balık çıkar (\"Ağ\" kaydıyla çantaya), ağ toplanıp gizlenir",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 21,
+   "label": null,
+   "result": {
+    "placed": 26,
+    "species": "Sardalya",
+    "st": "fly",
+    "haul": {
+     "caught": 6,
+     "lost": 0,
+     "fromSchool": 6
+    },
+    "added": 6,
+    "baits": [
+     "Ağ"
+    ],
+    "end": "idle",
+    "netHidden": true
+   }
+  },
+  {
+   "n": 22,
+   "label": null,
+   "expect": {
+    "label": "G07 Ağ iskeleye/karaya atılınca \"Ağ suya ulaşmadı\" uyarısı, balık eklenmez",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 23,
+   "label": null,
+   "result": {
+    "msg": "Ağ suya ulaşmadı — suya daha yakın dur ya da daha uzağa at.",
+    "added": 0,
+    "state": "idle"
+   }
+  },
+  {
+   "n": 24,
+   "label": null,
+   "expect": {
+    "label": "G08 Ağ yırtılınca envanterden düşer, son ağsa el boşalır",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 25,
+   "label": null,
+   "result": {
+    "left": 0,
+    "eq": "none"
+   }
+  },
+  {
+   "n": 26,
+   "label": null,
+   "expect": {
+    "label": "R01 Olta: iskeleden atış, vuruş, mücadele (gerginlik < 0,8 iken sar, > 0,6 iken balığın tersine A/D) ve yakalama uçtan uca çalışır (≤ 4 deneme); mücadelede A/D oyuncuyu yürütmez",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 27,
+   "label": null,
+   "result": {
+    "res": [
+     {
+      "att": 0,
+      "st1": "wait",
+      "st2": "bite",
+      "st3": "fight",
+      "t": 5,
+      "maxT": 0.63,
+      "moved": 0,
+      "mode": "ground",
+      "got": 1
+     }
+    ],
+    "fish": "Cerrah Balığı",
+    "bait": "Solucan Yemi",
+    "yem": 4
+   }
+  },
+  {
+   "n": 28,
+   "label": null,
+   "expect": {
+    "label": "L01 Deniz ekipmanı dükkânlarda (Yusuf 5 kalem, Rıza, Halil Reis, Kaçakçı) ve hazine sandığı ganimetinde çıkar",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 29,
+   "label": null,
+   "result": {
+    "fisher": [
+     "zipkin",
+     "balik_agi",
+     "dalis_maskesi",
+     "palet",
+     "hava_kesesi"
+    ],
+    "rizaAir": true,
+    "trader": true,
+    "smuggler": true,
+    "chestLoot": [
+     "dalis_maskesi",
+     "hava_kesesi",
+     "palet",
+     "usta_zipkin",
+     "zipkin"
+    ]
+   }
+  },
+  {
+   "n": 30,
+   "label": null,
+   "expect": {
+    "label": "L02 Martı Batığı sandığı dalınca açılır; içerik doğrudan çantaya gider (kese yüzeye süzülmez); ikinci kez açılmaz",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 31,
+   "label": null,
+   "result": {
+    "chest": {
+     "x": 545,
+     "y": -23.7,
+     "z": 467
+    },
+    "lbl": "Batık sandığını aç",
+    "gold": 130,
+    "spawned": 0,
+    "again": false
+   }
+  },
+  {
+   "n": 32,
+   "label": null
+  },
+  {
+   "n": 33,
+   "label": null,
+   "expect": {
+    "label": "L03 Kayıt/yüklemede zıpkın, ağ, maske, palet ve hava keseleri korunur",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 34,
+   "label": null,
+   "result": {
+    "zipkin": 1,
+    "ag": 1,
+    "maske": 1,
+    "palet": 1,
+    "kese": 3
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 6413,
+ "ms": 39260
+}

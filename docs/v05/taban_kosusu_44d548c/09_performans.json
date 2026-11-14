@@ -1,0 +1,361 @@
+{
+ "scenario": "tests/scenarios/09_performans.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "Sayfa hazır",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 2,
+   "label": null,
+   "result": {
+    "tag": "menu",
+    "calls": 422,
+    "tris": 853502,
+    "geos": 228,
+    "texs": 137,
+    "progs": 86,
+    "heapMB": 116,
+    "simMsPerFrame": 0.5
+   }
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   }
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": {
+    "tag": "liman",
+    "calls": 1035,
+    "tris": 1253702,
+    "geos": 753,
+    "texs": 200,
+    "progs": 95,
+    "heapMB": 122,
+    "simMsPerFrame": 2.67
+   }
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "Liman: çizim çağrısı ≤ 1100 (ölçülen bütçe; v0.3: 1 036) ve benzetim < 40 ms/kare (yazılımsal ortam üst sınırı)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 7,
+   "label": null,
+   "expect": {
+    "label": "Orman adası (Kadim Tapınak) içeriği kuruldu",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 8,
+   "label": null,
+   "result": {
+    "tag": "orman_adasi",
+    "calls": 301,
+    "tris": 552624,
+    "geos": 401,
+    "texs": 180,
+    "progs": 95,
+    "heapMB": 121,
+    "simMsPerFrame": 1.31,
+    "built": true,
+    "prepMs": 1366,
+    "buildLoopMs": 185
+   }
+  },
+  {
+   "n": 9,
+   "label": null,
+   "result": {
+    "tag": "firtina",
+    "calls": 317,
+    "tris": 697430,
+    "geos": 403,
+    "texs": 181,
+    "progs": 97,
+    "heapMB": 137,
+    "simMsPerFrame": 1.73
+   }
+  },
+  {
+   "n": 10,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 11,
+   "label": null,
+   "result": {
+    "tag": "boss_kraken",
+    "calls": 317,
+    "tris": 686804,
+    "geos": 414,
+    "texs": 181,
+    "progs": 97,
+    "heapMB": 110,
+    "simMsPerFrame": 1.15,
+    "bossAlive": true
+   }
+  },
+  {
+   "n": 12,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 13,
+   "label": null,
+   "expect": {
+    "label": "Ada içeriği 3 kur/sök döngüsünde geometri/doku sayacını büyütmez (dispose tam)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 14,
+   "label": null,
+   "expect": {
+    "label": "Hayvan bölgesi: ısınma döngüsünden sonra 3 doğur/sil döngüsünde geometri/doku büyümez (B14)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 15,
+   "label": null,
+   "result": [
+    {
+     "kind": "boar",
+     "n": 7,
+     "dG": 0,
+     "dT": 0
+    },
+    {
+     "kind": "croc",
+     "n": 3,
+     "dG": 0,
+     "dT": 0
+    },
+    {
+     "kind": "snake",
+     "n": 6,
+     "dG": 0,
+     "dT": 0
+    },
+    {
+     "kind": "bat",
+     "n": 7,
+     "dG": 0,
+     "dT": 0
+    }
+   ]
+  },
+  {
+   "n": 16,
+   "label": null,
+   "expect": {
+    "label": "Düşman (sabit görünüm) ısınma sonrası 3×4 doğur/kaldır döngüsünde geometri/doku büyümez (B14)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 17,
+   "label": null,
+   "result": {
+    "dG": 0,
+    "dT": 0,
+    "rows": [
+     [
+      441,
+      184
+     ],
+     [
+      441,
+      184
+     ],
+     [
+      441,
+      184
+     ],
+     [
+      441,
+      184
+     ]
+    ],
+    "note": "sabit tohum: aynı görünüm/kit her döngüde; ilk döngü kit/şapka ilk yüklemesi (ısınma), ölçüm sonraki 3 döngü"
+   }
+  },
+  {
+   "n": 18,
+   "label": null,
+   "expect": {
+    "label": "Ganimet kesesi, gemi ve bosslar (kraken, Taş Muhafız, Volkanik Dev) oluştur/kaldır döngülerinde geometri/doku büyümez (Aşama 9)",
+    "ok": false,
+    "value": false
+   }
+  },
+  {
+   "n": 19,
+   "label": null,
+   "result": {
+    "loot": {
+     "dG": 0,
+     "dT": 0
+    },
+    "ship": {
+     "dG": 0,
+     "dT": 0
+    },
+    "kraken": {
+     "dG": 0,
+     "dT": 0
+    },
+    "tas_muhafiz": {
+     "dG": 0,
+     "dT": 0
+    },
+    "volkanik_dev": {
+     "dG": 5,
+     "dT": 0
+    }
+   }
+  },
+  {
+   "n": 20,
+   "label": null,
+   "result": {
+    "before": {
+     "g": 418,
+     "t": 181
+    },
+    "after": {
+     "g": 418,
+     "t": 181
+    },
+    "dropG": 0,
+    "dropT": 0,
+    "cycles": [
+     {
+      "built": 421,
+      "dropped": 421,
+      "tex": 181
+     },
+     {
+      "built": 421,
+      "dropped": 421,
+      "tex": 181
+     },
+     {
+      "built": 421,
+      "dropped": 421,
+      "tex": 181
+     }
+    ],
+    "growthG": 0,
+    "growthT": 0
+   }
+  },
+  {
+   "n": 21,
+   "label": null,
+   "result": [
+    {
+     "tag": "menu",
+     "calls": 422,
+     "tris": 853502,
+     "geos": 228,
+     "texs": 137,
+     "progs": 86,
+     "heapMB": 116,
+     "simMsPerFrame": 0.5
+    },
+    {
+     "tag": "liman",
+     "calls": 1035,
+     "tris": 1253702,
+     "geos": 753,
+     "texs": 200,
+     "progs": 95,
+     "heapMB": 122,
+     "simMsPerFrame": 2.67
+    },
+    {
+     "tag": "orman_adasi",
+     "calls": 301,
+     "tris": 552624,
+     "geos": 401,
+     "texs": 180,
+     "progs": 95,
+     "heapMB": 121,
+     "simMsPerFrame": 1.31
+    },
+    {
+     "tag": "firtina",
+     "calls": 317,
+     "tris": 697430,
+     "geos": 403,
+     "texs": 181,
+     "progs": 97,
+     "heapMB": 137,
+     "simMsPerFrame": 1.73
+    },
+    {
+     "tag": "boss_kraken",
+     "calls": 317,
+     "tris": 686804,
+     "geos": 414,
+     "texs": 181,
+     "progs": 97,
+     "heapMB": 110,
+     "simMsPerFrame": 1.15,
+     "bossAlive": true
+    }
+   ]
+  },
+  {
+   "n": 22,
+   "label": null,
+   "expect": {
+    "label": "Oyun döngüsü ölçümlerden sonra hatasız",
+    "ok": true,
+    "value": true
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 1,
+ "evalErrors": 0,
+ "readyMs": 6964,
+ "ms": 104236
+}

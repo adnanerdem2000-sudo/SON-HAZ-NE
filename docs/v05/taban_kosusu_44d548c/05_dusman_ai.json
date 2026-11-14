@@ -1,0 +1,332 @@
+{
+ "scenario": "tests/scenarios/05_dusman_ai.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   }
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": {
+    "hour": 12.008333333333308,
+    "night": false,
+    "weather": "parcali",
+    "fog": 0.00033057092356765896,
+    "rain": 0
+   }
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "Algı: açık görüş hattında düşman 3 sn içinde oyuncuyu fark eder",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": {
+    "d": 15,
+    "vision": 24,
+    "awareness": 1.2,
+    "state": "strafe",
+    "target": true,
+    "fog": 0.0019032516392808578,
+    "yawErr": 0,
+    "inList": true
+   }
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "Algı: 1 m kalın duvar arkasındaki oyuncu görülmez",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 7,
+   "label": null,
+   "result": {
+    "awareness": 0,
+    "state": "patrol",
+    "target": false
+   }
+  },
+  {
+   "n": 8,
+   "label": null,
+   "expect": {
+    "label": "Duyma: sırtı dönük düşman silah sesine tepki verir",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 9,
+   "label": null,
+   "result": {
+    "before": {
+     "a": 0.03,
+     "s": "patrol"
+    },
+    "after": {
+     "a": 1.2,
+     "s": "strafe",
+     "lastKnown": true
+    }
+   }
+  },
+  {
+   "n": 10,
+   "label": null,
+   "expect": {
+    "label": "Yığılma yok: aynı noktada doğan 4 düşman 2 sn içinde ayrılır (min mesafe > 0.6 m)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 11,
+   "label": null,
+   "result": {
+    "minD": 1.81
+   }
+  },
+  {
+   "n": 12,
+   "label": null,
+   "expect": {
+    "label": "Saldırı telgrafı: hazırlık ≥0.35 sn, vuruş hazırlıktan önce işlenmez",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 13,
+   "label": null,
+   "result": {
+    "started": 0,
+    "hitAt": 0.44,
+    "hitFrame": null,
+    "hp": 74.2
+   }
+  },
+  {
+   "n": 14,
+   "label": null,
+   "expect": {
+    "label": "F-03 Sersemlik hafif vuruşla iptal olmaz",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 15,
+   "label": null,
+   "expect": {
+    "label": "F-05 Çağırma hazırlığı hafif vuruşla bozulmaz",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 16,
+   "label": null,
+   "expect": {
+    "label": "F-07 Kamp bekleme süresi kayıt/yükleme ile korunur",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 17,
+   "label": null,
+   "expect": {
+    "label": "F-07 Tümü öldürülmüş kamp uzaklaşınca tam yenilenme süresine girer (anında yeniden doğma yok)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 18,
+   "label": null,
+   "result": {
+    "camp": {
+     "savedCd": 123,
+     "restoredCd": 123
+    },
+    "camp2": {
+     "cooldown": 300,
+     "respawn": 300,
+     "spawned": false
+    }
+   }
+  },
+  {
+   "n": 19,
+   "label": null,
+   "expect": {
+    "label": "F-16 Tabanca ışını duvar arkasındaki düşmana isabet etmez",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 20,
+   "label": null,
+   "result": {
+    "free": true,
+    "blocked": null,
+    "terrain": {
+     "gy": 11.46,
+     "maxBetween": 11.67
+    },
+    "inTargets": true
+   }
+  },
+  {
+   "n": 21,
+   "label": null,
+   "expect": {
+    "label": "ek-110 Boğulmuş denizci yakalaması oyuncuyu gerçekten yavaşlatır",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 22,
+   "label": null,
+   "expect": {
+    "label": "F-10 noLoot düşmanı ganimet/XP vermez, normal düşman verir",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 23,
+   "label": null,
+   "result": {
+    "noLoot": {
+     "loots": 0,
+     "kills": 0
+    },
+    "normal": {
+     "loots": 1,
+     "kills": 1
+    }
+   }
+  },
+  {
+   "n": 24,
+   "label": null,
+   "expect": {
+    "label": "F-08 100 m uzaktaki düşman hedefi varsa her adım güncellenir (seyreltme yok)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 25,
+   "label": null,
+   "result": {
+    "accNoTarget": 0.217,
+    "accTarget": 0
+   }
+  },
+  {
+   "n": 26,
+   "label": null,
+   "expect": {
+    "label": "ek-109 Gemi batınca güvertedeki canlı tayfa boğulur (kalıcı deniz dibi düşmanı yok)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 27,
+   "label": null,
+   "result": {
+    "alive": false,
+    "ship": false
+   }
+  },
+  {
+   "n": 28,
+   "label": null,
+   "expect": {
+    "label": "Zayıf nokta: zırhlı düşman arkadan 1.6× hasar alır (önden 1×)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 29,
+   "label": null,
+   "result": {
+    "front": 10,
+    "back": 16,
+    "mult": 1.6
+   }
+  },
+  {
+   "n": 30,
+   "label": null,
+   "expect": {
+    "label": "Boss evreleri: can eşiklerinde çağırma ve öfke tetiklenir",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 31,
+   "label": null,
+   "result": {
+    "kizil": {
+     "state": "summon",
+     "summoned": 1,
+     "hpFrac": 0.5
+    },
+    "kaptan": {
+     "enraged": true,
+     "summoned": 2,
+     "hpFrac": 0.3
+    }
+   }
+  },
+  {
+   "n": 32,
+   "label": null,
+   "expect": {
+    "label": "Oyun döngüsü Aşama 5 sonrası hatasız sürüyor",
+    "ok": true,
+    "value": true
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 6269,
+ "ms": 29582
+}

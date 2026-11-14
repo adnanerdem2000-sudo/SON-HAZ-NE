@@ -1,0 +1,126 @@
+{
+ "scenario": "tests/scenarios/coop/06d_ganimet_canta.cjs",
+ "players": 2,
+ "checks": [
+  {
+   "label": "Konuk odaya bağlandı",
+   "ok": true,
+   "detail": {
+    "room": "Ganimet Odası"
+   }
+  },
+  {
+   "label": "2 oyuncu oyunda ve bağlı",
+   "ok": true
+  },
+  {
+   "label": "C01 Konuğun \"Yere bırak\"ı ev sahibinde kese olarak doğar (fizikli, uzun ömürlü) ve konukta aynı kimlikle görünür",
+   "ok": true,
+   "detail": {
+    "drop": {
+     "btn": true,
+     "n": 4,
+     "left": 0
+    },
+    "hostPk": {
+     "id": "pk3hn3a5s",
+     "keep": true,
+     "body": true,
+     "n": 4
+    },
+    "guestSees": true
+   }
+  },
+  {
+   "label": "C02 Konuk bıraktığı keseyi geri alır: eşya konuğun çantasına döner, kese ev sahibinde kalkar",
+   "ok": true,
+   "detail": {
+    "back": 4,
+    "goneH": true
+   }
+  },
+  {
+   "label": "C03 Konuğun açtığı sandığın altını doğrudan konuğun çantasına gider; ev sahibinde kese doğmaz; sandık iki tarafta da kalkar",
+   "ok": true,
+   "detail": {
+    "g0": "req",
+    "gGot": 139,
+    "coins": 139,
+    "hSacks": 0,
+    "chestGone": true
+   }
+  },
+  {
+   "label": "C04 Ev sahibinde kısmen sığan kese yerinde kalır (1 post alındı, 2 kaldı); konuktaki kopya da 2 post gösterir",
+   "ok": true,
+   "detail": {
+    "hp": {
+     "alive": true,
+     "items": [
+      [
+       "hayvan_postu",
+       2
+      ]
+     ]
+    },
+    "gp": {
+     "alive": true,
+     "items": [
+      [
+       "hayvan_postu",
+       2
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "label": "C05 Güverteye düşen kese konukta da gemiye bağlıdır (suya düşmez, ev sahibiyle aynı yerde)",
+   "ok": true,
+   "detail": {
+    "deck": {
+     "id": "pkjv7zms3",
+     "ship": "ship_main",
+     "att": true,
+     "pos": [
+      10.4,
+      1.18,
+      285.18
+     ]
+    },
+    "gDeck": {
+     "ship": "ship_main",
+     "parent": true,
+     "dy": 1.5,
+     "d": 0.02
+    }
+   }
+  },
+  {
+   "label": "C06 Konuğun öldürdüğü hayvan ev sahibinde öldüren olarak konuğu taşır (XP konuğa)",
+   "ok": true,
+   "detail": {
+    "by": "9141578a-c6d2-4bdb-8b57-34eb1a25641e",
+    "gid": "9141578a-c6d2-4bdb-8b57-34eb1a25641e"
+   }
+  },
+  {
+   "label": "Senaryo sonunda iki taraf da oyunda",
+   "ok": true,
+   "detail": [
+    "playing",
+    "playing"
+   ]
+  }
+ ],
+ "errors": {
+  "Kaptan": [],
+  "Tayfa": []
+ },
+ "pageErrors": {
+  "Kaptan": [],
+  "Tayfa": []
+ },
+ "fails": 0,
+ "ms": 146900
+}

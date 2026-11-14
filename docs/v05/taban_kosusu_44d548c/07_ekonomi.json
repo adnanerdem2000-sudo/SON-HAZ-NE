@@ -1,0 +1,103 @@
+{
+ "scenario": "tests/scenarios/07_ekonomi.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   }
+  },
+  {
+   "n": 3,
+   "label": null,
+   "expect": {
+    "label": "B01 Hiçbir tüccar çifti için satış fiyatı alış fiyatına ulaşmıyor (al-sat döngüsü yok)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 4,
+   "label": null,
+   "result": {
+    "exploit": false,
+    "roles": [
+     "general",
+     "fisher",
+     "weapons",
+     "treasure",
+     "cartographer",
+     "smuggler",
+     "trader"
+    ],
+    "pairs": []
+   }
+  },
+  {
+   "n": 5,
+   "label": null,
+   "expect": {
+    "label": "B07 Tümünü sat: usta kılıç, dürbün, mermi, gülle ve hazine haritası kalır; inci satılır",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 6,
+   "label": null,
+   "result": {
+    "role": "general",
+    "before": [
+     "kilic",
+     "tabanca",
+     "mermi",
+     "kurek",
+     "olta",
+     "yem_solucan",
+     "fener",
+     "pusula",
+     "muz",
+     "ekmek",
+     "usta_kilic",
+     "durbun",
+     "gulle",
+     "hazine_haritasi",
+     "inci"
+    ],
+    "after": [
+     "kilic",
+     "tabanca",
+     "mermi",
+     "kurek",
+     "olta",
+     "yem_solucan",
+     "fener",
+     "pusula",
+     "usta_kilic",
+     "durbun",
+     "gulle",
+     "hazine_haritasi"
+    ]
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 6362,
+ "ms": 24636
+}

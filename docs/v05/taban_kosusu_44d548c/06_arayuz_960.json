@@ -1,0 +1,152 @@
+{
+ "scenario": "tests/scenarios/06_arayuz_960.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  960,
+  540
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "Sayfa hazır",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 2,
+   "label": null,
+   "result": "online"
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": {
+    "found": true,
+    "text": "Oda kur",
+    "buttons": 11
+   }
+  },
+  {
+   "n": 4,
+   "label": null
+  },
+  {
+   "n": 5,
+   "label": null,
+   "expect": {
+    "label": "H05 960×540: Oda Kur panelinde \"Odayı oluştur\" düğmesi görünür alanda",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 6,
+   "label": null,
+   "result": {
+    "btn": {
+     "x": 689,
+     "y": 467,
+     "w": 141,
+     "h": 43,
+     "bottom": 510
+    },
+    "vh": 540,
+    "vw": 960
+   }
+  },
+  {
+   "n": 7,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 8,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   }
+  },
+  {
+   "n": 9,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 10,
+   "label": null
+  },
+  {
+   "n": 11,
+   "label": null,
+   "expect": {
+    "label": "H14 960×540: kalıcı HUD panelleri üst üste binmiyor (geçici bildirim↔sohbet/görev çakışması hariç)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 12,
+   "label": null,
+   "result": {
+    "rects": {
+     "ship-panel": [
+      648,
+      104,
+      938,
+      308
+     ],
+     "quest-tracker": [
+      22,
+      250,
+      342,
+      320
+     ],
+     "chat-box": [
+      22,
+      196,
+      402,
+      240
+     ],
+     "time-panel": [
+      650,
+      12,
+      942,
+      99
+     ],
+     "hotbar": [
+      259,
+      462,
+      701,
+      520
+     ],
+     "notify-stack": [
+      22,
+      112,
+      368,
+      188
+     ],
+     "minimap": [
+      762,
+      342,
+      938,
+      518
+     ]
+    },
+    "over": [],
+    "vh": 540,
+    "vw": 960
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 8239,
+ "ms": 65642
+}

@@ -1,0 +1,600 @@
+{
+ "scenario": "tests/scenarios/16_kosu_poz_ganimet.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   }
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "K01 Açık kumsalda 1,0–1,5 m derinlikte 20 sn beklerken (3 dalga evresi × 2 dalga ölçeği) yüzme↔yürüme en çok 1 kez değişir (önce 1,25–1,4 m’de 2–6 kez)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": {
+    "durum": 36,
+    "enCok": 1,
+    "kalan": []
+   }
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "K02 Kıyı boyunca ≈1,2 m derinlikte 8 sn yürüyüşte yüzme↔yürüme değişmez",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 7,
+   "label": null,
+   "result": {
+    "sw": 0,
+    "derinlik": [
+     1.15,
+     1.24
+    ],
+    "mode": "ground"
+   }
+  },
+  {
+   "n": 8,
+   "label": null,
+   "expect": {
+    "label": "K03 Yerinde zıplamada ve 1,2 m inişte iniş duraksaması yok (önce ≥ 0,9 m’de 0,3 sn duruyordu); 2,5 m düşüşte var",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 9,
+   "label": null,
+   "result": {
+    "zipla": false,
+    "d12": false,
+    "d25": true
+   }
+  },
+  {
+   "n": 10,
+   "label": null,
+   "expect": {
+    "label": "P01 Karada gövde eğimi/kaldırma kendiliğinden sıfırlanır; suda yüzerken ölüp limanda doğan karakter yerde ve dik",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 11,
+   "label": null,
+   "result": {
+    "yerde": {
+     "rx": 0,
+     "lift": 0,
+     "y": 0
+    },
+    "suda": {
+     "rx": 1.2,
+     "lift": 1
+    },
+    "olu": true,
+    "ui": false,
+    "dogdu": {
+     "mode": "ground",
+     "dead": false,
+     "rx": 0,
+     "lift": 0,
+     "y": 0
+    }
+   }
+  },
+  {
+   "n": 12,
+   "label": null,
+   "expect": {
+    "label": "V01 Varil ve kristal kaya modelleri ortalı; yüzen varil toplama noktasında görünür (önce 10 m ötede)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 13,
+   "label": null,
+   "result": {
+    "barrel": 0,
+    "crystal_rock": 0,
+    "yuzenVaril": 0
+   }
+  },
+  {
+   "n": 14,
+   "label": null,
+   "expect": {
+    "label": "A01 Öldürülen hayvanlar türüne göre et/deri/diş/tüy düşürür (15 tür); kese E ile toplanınca et çantaya girer",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 15,
+   "label": null,
+   "result": {
+    "out": [
+     {
+      "kind": "boar",
+      "ids": "domuz_eti,hayvan_postu",
+      "ok": true
+     },
+     {
+      "kind": "deer",
+      "ids": "geyik_eti,hayvan_postu",
+      "ok": true
+     },
+     {
+      "kind": "stag",
+      "ids": "geyik_eti,hayvan_postu",
+      "ok": true
+     },
+     {
+      "kind": "croc",
+      "ids": "timsah_eti,timsah_derisi",
+      "ok": true
+     },
+     {
+      "kind": "wolf",
+      "ids": "hayvan_postu",
+      "ok": true
+     },
+     {
+      "kind": "polar",
+      "ids": "ayi_eti,hayvan_postu",
+      "ok": true
+     },
+     {
+      "kind": "crab",
+      "ids": "yengec_eti",
+      "ok": true
+     },
+     {
+      "kind": "giantcrab",
+      "ids": "yengec_eti,istiridye",
+      "ok": true
+     },
+     {
+      "kind": "snake",
+      "ids": "yilan_derisi",
+      "ok": true
+     },
+     {
+      "kind": "frog",
+      "ids": "kurbaga_bacagi",
+      "ok": true
+     },
+     {
+      "kind": "parrot",
+      "ids": "papagan_tuyu",
+      "ok": true
+     },
+     {
+      "kind": "monkey",
+      "ids": "muz",
+      "ok": true
+     },
+     {
+      "kind": "yeti",
+      "ids": "hayvan_postu",
+      "ok": true
+     },
+     {
+      "kind": "fox",
+      "ids": "hayvan_postu",
+      "ok": true
+     },
+     {
+      "kind": "bat",
+      "ids": "yarasa_kanadi",
+      "ok": true
+     }
+    ],
+    "topla": "Ganimeti topla",
+    "got": 2
+   }
+  },
+  {
+   "n": 16,
+   "label": null,
+   "expect": {
+    "label": "A02 Köpekbalığı öldürülünce et ve diş düşer (önce boş tablo)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 17,
+   "label": null,
+   "result": {
+    "ids": "kopekbaligi_eti×2,kopekbaligi_disi×1"
+   }
+  },
+  {
+   "n": 18,
+   "label": null,
+   "expect": {
+    "label": "A03 Çiğ et yenebilir (Can +5…+12); handa ayrı \"Av etini kızarttır\" seçeneği çiğ etleri Kızarmış Et (Can +45) yapar, 5 altın/parça; balıklara dokunmaz",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 19,
+   "label": null,
+   "result": {
+    "rawTypes": 7,
+    "heal": {
+     "cig": 10,
+     "pismis": 45
+    },
+    "nRaw": 6,
+    "label": "Av etini aşçıya kızarttır (5 altın / parça)",
+    "fishLabel": "Hanın aşçısına balık pişirt (5 altın / balık)",
+    "pismisEt": 6,
+    "altin": 30,
+    "kalanCig": 0,
+    "baliklarDokunulmadi": true
+   }
+  },
+  {
+   "n": 20,
+   "label": null,
+   "expect": {
+    "label": "A03b Kızartma çanta sınırını aşmaz: sığmayan etler çiğ kalır ve bildirilir",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 21,
+   "label": null,
+   "result": {
+    "cooked": 6,
+    "leftRaw": 4,
+    "weight": 44.9,
+    "cap": 45,
+    "msg": "6 parça et kızartıldı. 4 parça pişirilemedi (altın ya da çanta yeri yetmedi)."
+   }
+  },
+  {
+   "n": 22,
+   "label": null,
+   "expect": {
+    "label": "A04 Maymunun kaptığı muz öldürülünce keseden geri düşer; öldürme olayı öldüreni taşır",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 23,
+   "label": null,
+   "result": {
+    "muz": true,
+    "by": "local",
+    "me": "local"
+   }
+  },
+  {
+   "n": 24,
+   "label": null,
+   "expect": {
+    "label": "T01 Çanta doluyken deniz kabuğu/istiridye toplanmaz, yerinde kalır, \"Çantan dolu\" uyarısı; yer açılınca toplanır (önce sessizce kayboluyordu)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 25,
+   "label": null,
+   "result": {
+    "full": true,
+    "lost": {
+     "taken": false,
+     "visible": true,
+     "n": 0,
+     "msg": "Çantan dolu — önce yük boşalt (envanter: Tab)."
+    },
+    "afterFree": {
+     "taken": true,
+     "got": 1
+    }
+   }
+  },
+  {
+   "n": 26,
+   "label": null,
+   "expect": {
+    "label": "T02 Yere bırakılan eşya E ile çantaya geri alınır; çanta doluysa sığmayan kısım kese olarak yere bırakılır ve bildirilir",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 27,
+   "label": null,
+   "result": {
+    "label": "Ganimeti topla",
+    "back": 3,
+    "redrop": true,
+    "msg": "Çantan dolu (81.5/45 kg): Hayvan Postu ×3 yanına bırakıldı."
+   }
+  },
+  {
+   "n": 28,
+   "label": null,
+   "expect": {
+    "label": "T03 Kısmen sığan kese: sığan çantaya, kalanı aynı kesede yerinde kalır (yeni kese fırlamaz); dolu çantada istem \"Ganimet — çantan dolu\" ve NPC yanında \"Konuş\" istemi bastırılmaz",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 29,
+   "label": null,
+   "result": {
+    "lbl1": "Ganimeti topla",
+    "got": 1,
+    "same": true,
+    "left": 2,
+    "newSacks": 0,
+    "lbl2": "Ganimet — çantan dolu",
+    "pri2": 0.4,
+    "stays": true,
+    "msg": "Çantan dolu (44.0/45 kg) — kese yerinde duruyor. Envanter (Tab): yük boşalt ya da sat.",
+    "npcLbl": "Konuş: Yaşlı Kaptan Tuzla"
+   }
+  },
+  {
+   "n": 30,
+   "label": null,
+   "expect": {
+    "label": "T04 Güverteye düşen kese gemiye bağlanır (önce tahtadan gövdenin içine, denize düşüyordu), gemiyle gider, güvertede E ile alınır; gemi kalkınca kese suya düşüp yüzer",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 31,
+   "label": null,
+   "result": {
+    "att": true,
+    "follow": 0,
+    "above": 1.55,
+    "moved": 3.8,
+    "smoved": 3.79,
+    "lbl": "Ganimeti topla",
+    "got": 2,
+    "ship2": {
+     "att2": true,
+     "inScene": true,
+     "body": true,
+     "alive": true,
+     "dyWater": 0.34
+    }
+   }
+  },
+  {
+   "n": 32,
+   "label": null,
+   "expect": {
+    "label": "T05 Kayıktan yüzen varil ve kese toplanır (önce \"Kayıktan in\" istemi hep öndeydi); varil içeriği doğrudan çantaya; toplanınca çıkış istemi geri gelir",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 33,
+   "label": null,
+   "result": {
+    "lbl": "Yüzen varili al",
+    "gained": true,
+    "sacks": 0,
+    "lbl2": "Ganimeti topla",
+    "got2": 1,
+    "after": "boat_exit"
+   }
+  },
+  {
+   "n": 34,
+   "label": null,
+   "expect": {
+    "label": "T06 Envanterden \"Yere bırak\": kese ganimet olayıyla doğar (co-op güvenli), bırakılan kılıç elden de bırakılır, kese 5 dk sonra kaybolmaz, E ile geri alınır",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 35,
+   "label": null,
+   "result": {
+    "btn": true,
+    "eq0": "sword",
+    "eq1": "none",
+    "keep": true,
+    "alive400": true,
+    "lbl": "Ganimeti topla",
+    "back": 1,
+    "nK": 1
+   }
+  },
+  {
+   "n": 36,
+   "label": null,
+   "expect": {
+    "label": "T07 Koşarak kesenin üstünden geçince kese tekmelenip kaçmaz (önce 3 m fırlıyordu)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 37,
+   "label": null,
+   "result": {
+    "run0": 1.65,
+    "minD": 0,
+    "moved": 0,
+    "dir": [
+     0,
+     1
+    ]
+   }
+  },
+  {
+   "n": 38,
+   "label": null,
+   "expect": {
+    "label": "T08 Sandık açılınca (kazılan, ada \"Eski sandık\", batık sandığı) içerik doğrudan çantaya gider; ikinci bir kese toplamak gerekmez",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 39,
+   "label": null,
+   "result": {
+    "coins": 104,
+    "gotGold": 104,
+    "gotOthers": true,
+    "sacks1": 0,
+    "isl": {
+     "label": "Sandığı aç",
+     "gold": 109,
+     "sacks": 0
+    },
+    "wreck": {
+     "gold": 65,
+     "sacks": 0
+    }
+   }
+  },
+  {
+   "n": 40,
+   "label": null,
+   "expect": {
+    "label": "T09 HUD altın satırında çanta yükü (Çanta x/45 kg) gösterilir, çanta dolunca kırmızıya döner",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 41,
+   "label": null,
+   "result": {
+    "t1": "Çanta 26/45 kg",
+    "full1": false,
+    "t2": "Çanta 45/45 kg",
+    "full2": true
+   }
+  },
+  {
+   "n": 42,
+   "label": null,
+   "expect": {
+    "label": "T10 Güverteden küpeşteye yanaşan yüzen nesne kancayla alınır (önce güverteden hiç alınamıyordu)",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 43,
+   "label": null,
+   "result": {
+    "d": 2.41,
+    "lbl": "Şişeyi al (kancayla)",
+    "got": 1,
+    "sunk": false
+   }
+  },
+  {
+   "n": 44,
+   "label": null,
+   "expect": {
+    "label": "K05 16 sn W+Shift koşuda dayanıklılık bitince sprint aç/kapa döngüsü (en çok 3 geçiş) ve kare başına ani hız düşüşü (< 0,35 m/s) yok",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 45,
+   "label": null,
+   "result": {
+    "edges": 3,
+    "maxDrop": 0.15,
+    "clipChanges": 6,
+    "clips": [
+     "0.0:Walk",
+     "0.1:Run",
+     "0.2:Sprint",
+     "7.1:Run",
+     "10.5:Sprint",
+     "14.7:Run"
+    ]
+   }
+  },
+  {
+   "n": 46,
+   "label": null,
+   "expect": {
+    "label": "K06 Koşarken (4,4 m/s) dört kez 90° dönüşte klip Koş→Yürü→Koş arasında gidip gelmez",
+    "ok": true,
+    "value": true
+   }
+  },
+  {
+   "n": 47,
+   "label": null,
+   "result": {
+    "seq": [],
+    "walkFrames": 0
+   }
+  },
+  {
+   "n": 48,
+   "label": null,
+   "result": {
+    "runs": 32,
+    "dips": 13
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 6303,
+ "ms": 148981
+}

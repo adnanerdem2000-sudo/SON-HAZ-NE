@@ -1,0 +1,115 @@
+{
+ "scenario": "tests/scenarios/03_fizik_dt.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": "ok"
+  },
+  {
+   "n": 2,
+   "label": null,
+   "result": {
+    "yuru3s": {
+     "15fps": 12.596,
+     "30fps": 12.596,
+     "60fps": 12.596,
+     "120fps": 12.585
+    },
+    "sprint3s": {
+     "15fps": 20.165,
+     "30fps": 20.165,
+     "60fps": 20.165,
+     "120fps": 20.141
+    },
+    "zipla": {
+     "15fps": {
+      "maxY": 1.183,
+      "air": 0.6
+     },
+     "30fps": {
+      "maxY": 1.183,
+      "air": 0.633
+     },
+     "60fps": {
+      "maxY": 1.183,
+      "air": 0.65
+     },
+     "120fps": {
+      "maxY": 1.214,
+      "air": 0.658
+     }
+    },
+    "kacin": {
+     "15fps": 5.317,
+     "30fps": 5.317,
+     "60fps": 5.317,
+     "120fps": 5.267
+    }
+   }
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": {
+    "15fps": {
+     "gemi12s": 87.78,
+     "hiz": 4.905,
+     "donus8s_derece": -168.6
+    },
+    "30fps": {
+     "gemi12s": 87.5,
+     "hiz": 4.939,
+     "donus8s_derece": -163.1
+    },
+    "60fps": {
+     "gemi12s": 87.63,
+     "hiz": 4.802,
+     "donus8s_derece": -173.5
+    },
+    "120fps": {
+     "gemi12s": 82.64,
+     "hiz": 5.01,
+     "donus8s_derece": -173.2
+    }
+   }
+  },
+  {
+   "n": 4,
+   "label": null,
+   "result": {
+    "15fps": {
+     "x": -60.723,
+     "y": 11.486,
+     "sleeping": false
+    },
+    "30fps": {
+     "x": -60.732,
+     "y": 11.484,
+     "sleeping": false
+    },
+    "60fps": {
+     "x": -61.275,
+     "y": 11.365,
+     "sleeping": false
+    },
+    "120fps": {
+     "x": -62.061,
+     "y": 11.232,
+     "sleeping": false
+    }
+   }
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 6073,
+ "ms": 47936
+}
