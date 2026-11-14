@@ -36,9 +36,9 @@
  "ozet": {
   "toplam": 234,
   "durum": {
-   "acik": 231,
-   "duzeltildi": 1,
-   "kismi": 2
+   "acik": 228,
+   "duzeltildi": 2,
+   "kismi": 4
   },
   "oncelik": {
    "düşük": 80,
@@ -57,7 +57,7 @@
    "Faz 8": 32,
    "Faz 9": 15
   },
-  "not": "oncelik ve birincilFaz sayımları kapanan maddeler dahil 234 kaydın hepsini sayar; KNOWN_ISSUES.md'nin özeti yalnız ana tablodaki (açık + kısmen düzeltilmiş) maddeleri sayar (233; düşük 79, Faz 1 27). Fark KI-225'tir (düşük, Faz 1, duzeltildi)."
+  "not": "oncelik ve birincilFaz sayımları kapanan maddeler dahil 234 kaydın hepsini sayar; KNOWN_ISSUES.md'nin özeti yalnız ana tablodaki (açık + kısmen düzeltilmiş) maddeleri sayar (232; orta 120, düşük 79, Faz 1 26). Fark KI-225 (düşük, Faz 1) ve KI-144'tür (orta, Faz 1); ikisi de duzeltildi."
  },
  "sorunlar": {
   "KI-001": {
@@ -3004,7 +3004,7 @@
    "not": null
   },
   "KI-142": {
-   "durum": "acik",
+   "durum": "kismi",
    "faz": 1,
    "fazEk": [
     9
@@ -3020,13 +3020,16 @@
     "K-03"
    ],
    "ilgili": [],
-   "commit": null,
-   "testler": [],
-   "kanit": null,
-   "not": null
+   "commit": "0079178",
+   "testler": [
+    "tests/node/yayin_ref.mjs:YR1-YR7",
+    "tests/node/yayin_ref.mjs:YR4b"
+   ],
+   "kanit": "docs/v05/kosular/faz1/a2/duzeltme/son/yayin_ref.log",
+   "not": "Düzeltilen kısım: v0.5 dalının pages.yml'ünde deploy yalnız refs/heads/claude/hopeful-cray-o1jw6w'da; kabukta harfe duyarlı ikinci denetim; cancel-in-progress false (Faz 1 A2, 0079178; FIX_REPORT §Faz 1 / KI-142). İş akışı tetiklenmedi; GitHub'ın if değerlendirmesi ölçülmedi. Kalan: canlı dal canlıya alımla; öteki uzak dallar (claude/denetim-v0.4) ve github-pages ortamının dal politikası — Faz 9 Y9/Y12 (A2-G-04)."
   },
   "KI-143": {
-   "durum": "acik",
+   "durum": "kismi",
    "faz": 1,
    "fazEk": [
     9
@@ -3042,13 +3045,22 @@
     "K-07"
    ],
    "ilgili": [],
-   "commit": null,
-   "testler": [],
-   "kanit": null,
-   "not": null
+   "commit": "1709023",
+   "testler": [
+    "tests/scenarios/53_test_kipi.js:TK01",
+    "tests/scenarios/53_test_kipi.js:TK02",
+    "tests/scenarios/53_test_kipi.js:TK02b",
+    "tests/scenarios/53_test_kipi.js:TK05",
+    "tests/scenarios/53_test_kipi.js:TK05b",
+    "tests/scenarios/53_test_kipi.js:TK09",
+    "tests/node/test_kipi.mjs:K1-K5",
+    "tests/node/test_kipi.mjs:AP"
+   ],
+   "kanit": "docs/v05/kosular/faz1/a2/duzeltme/son/53_test_kipi.log",
+   "not": "Düzeltilen kısım: window.DK ve yardımcılar yalnız ?test=1 VE yerel kökende (js/core/testmode.js, js/test/kancalar.js; Faz 1 A2, 1709023; FIX_REPORT §Faz 1 / KI-143). Kalan: tek HTML'de kancalar pakette, file: altında ?test=1 ile açılıyor — üretim saplaması Faz 9 Y4 (tasarım §5.5)."
   },
   "KI-144": {
-   "durum": "acik",
+   "durum": "duzeltildi",
    "faz": 1,
    "fazEk": [],
    "fazMetni": "Faz 1",
@@ -3062,10 +3074,23 @@
     "K-08"
    ],
    "ilgili": [],
-   "commit": null,
-   "testler": [],
-   "kanit": null,
-   "not": null
+   "commit": "1709023",
+   "testler": [
+    "tests/scenarios/53_test_kipi.js:TK03",
+    "tests/scenarios/53_test_kipi.js:TK03b",
+    "tests/scenarios/53_test_kipi.js:TK03c",
+    "tests/scenarios/53_test_kipi.js:TK04",
+    "tests/scenarios/53_test_kipi.js:TK05",
+    "tests/scenarios/53_test_kipi.js:TK05c",
+    "tests/scenarios/53_test_kipi.js:TK05d",
+    "tests/scenarios/53_test_kipi.js:TK08",
+    "tests/scenarios/53_test_kipi.js:TK08b",
+    "tests/scenarios/53_test_kipi.js:TK08c",
+    "tests/node/test_kipi.mjs:K4",
+    "tests/node/test_kipi.mjs:SN00-SN36"
+   ],
+   "kanit": "docs/v05/kosular/faz1/a2/duzeltme/son/53_test_kipi.log",
+   "not": "FIX_REPORT.md §Faz 1 / KI-144; KNOWN_ISSUES.md 'Kapanan maddeler' (Faz 1 Adım A2 (Y3), 1709023). ?peerhost/peerport/peerpath/peersecure ve ?terrain yalnız test kipinde (testParam); peerhost test kipinde de yalnız geri döngü adresi (K9-20). 53_test_kipi 25/25; test_kipi 100/100 (docs/v05/kosular/faz1/a2/duzeltme/son/test_kipi.log)."
   },
   "KI-145": {
    "durum": "acik",
