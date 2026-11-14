@@ -1,0 +1,919 @@
+{
+ "scenario": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/d14/v04_duz.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": "ok",
+   "ms": 14
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   },
+   "ms": 15183
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": {
+    "x": 12.829488066708116,
+    "z": 369.8997994641622
+   },
+   "ms": 1215
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "D01 C ile dalış; nefes ≈ 50 sn (2/sn), maskeyle ≈ 80 sn; nefes bitince can azalır; yüzeyde nefes dolar; ilk girişte tuş ipucu",
+    "ok": true,
+    "value": true
+   },
+   "ms": 3626
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": {
+    "hint": "Dalmak için C basılı tut, çıkmak için Boşluk · nefes ≈ 50 sn",
+    "under": true,
+    "depth": 4.3,
+    "base": 2,
+    "mask": 1.25,
+    "ratio": 1.6,
+    "breathSec": 50,
+    "maskSec": 80,
+    "drown": 14.4,
+    "refill": 100,
+    "surf": true
+   },
+   "ms": 4
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "D02 Hava kesesi nefes < 12 iken kendiliğinden kullanılır (+45), su altında elle de kullanılır, su üstünde kullanılmaz",
+    "ok": true,
+    "value": true
+   },
+   "ms": 254
+  },
+  {
+   "n": 7,
+   "label": null,
+   "result": {
+    "aboveRefused": true,
+    "auto": 55.7,
+    "left": 1,
+    "manual": true,
+    "left2": 0
+   },
+   "ms": 213
+  },
+  {
+   "n": 8,
+   "label": null,
+   "expect": {
+    "label": "D03 Yüzme paleti çantadayken yüzme hızı ≈ ×1,35",
+    "ok": true,
+    "value": true
+   },
+   "ms": 776
+  },
+  {
+   "n": 9,
+   "label": null,
+   "result": {
+    "v0": 2.62,
+    "v1": 3.54,
+    "ratio": 1.35
+   },
+   "ms": 13
+  },
+  {
+   "n": 10,
+   "label": null,
+   "expect": {
+    "label": "G01 Zıpkın: eşya yokken kuşanılmaz; 6 tuşuyla kuşanılır, suda elde kalır; araç çubuğunda 7 yuva",
+    "ok": true,
+    "value": true
+   },
+   "ms": 132
+  },
+  {
+   "n": 11,
+   "label": null,
+   "result": {
+    "without": "none",
+    "eq": "harpoon",
+    "held": "harpoon",
+    "heldWater": "harpoon",
+    "slots": 7,
+    "ui": false,
+    "paused": false,
+    "dead": false,
+    "carry": false,
+    "has": true,
+    "w": 13.4,
+    "msg": [
+     "Bu eşyaya sahip değilsin.",
+     "Zıpkın: sağ tık nişan, sol tık fırlat. Su altında balığa, kıyıdan/güverteden suya atabilirsin."
+    ]
+   },
+   "ms": 28
+  },
+  {
+   "n": 12,
+   "label": null,
+   "expect": {
+    "label": "G02 Su altında 3 m öteki balığa zıpkın: yoldaki ilk balık vurulur (sürüde hedefin önündeki de olabilir), çantaya \"Zıpkın\" kaydıyla girer, koleksiyon sayılır, zıpkın ipiyle geri döner",
+    "ok": true,
+    "value": true
+   },
+   "ms": 511
+  },
+  {
+   "n": 13,
+   "label": null,
+   "result": {
+    "key": "sardalya",
+    "name": "Sardalya",
+    "dist": 3.08,
+    "flying": "fly",
+    "hedefVuruldu": false,
+    "vurulan": "Sardalya",
+    "added": 1,
+    "bait": "Zıpkın",
+    "w": 0.06,
+    "len": 14,
+    "stats": 1,
+    "state": "idle",
+    "heldVisible": true,
+    "ropeHidden": true
+   },
+   "ms": 420
+  },
+  {
+   "n": 14,
+   "label": null,
+   "expect": {
+    "label": "G03 Kaçan (canlı) sürüye 2,5 m’den balığın o anki yerine atışta en az yarısında balık vurulur (4 m sonucu raporlanır)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 1597
+  },
+  {
+   "n": 15,
+   "label": null,
+   "result": {
+    "n": 12,
+    "near": "5/6",
+    "far": "4/6"
+   },
+   "ms": 32
+  },
+  {
+   "n": 16,
+   "label": null,
+   "expect": {
+    "label": "G04 Zıpkın köpekbalığına hasar verir",
+    "ok": true,
+    "value": true
+   },
+   "ms": 1114
+  },
+  {
+   "n": 17,
+   "label": null,
+   "result": {
+    "hp": 130,
+    "max": 160,
+    "dmg": 30
+   },
+   "ms": 7
+  },
+  {
+   "n": 18,
+   "label": null,
+   "expect": {
+    "label": "G05 İskeleden sağ tık nişan + sol tık: zıpkın nişangâh yönünde (açı farkı < 26°) suya girer ve geri döner",
+    "ok": true,
+    "value": true
+   },
+   "ms": 1357
+  },
+  {
+   "n": 19,
+   "label": null,
+   "result": {
+    "aiming": true,
+    "cross": true,
+    "st": "fly",
+    "dot": 0.999,
+    "wet": true,
+    "end": "idle"
+   },
+   "ms": 4
+  },
+  {
+   "n": 20,
+   "label": null,
+   "expect": {
+    "label": "G06 Ağ sürünün üstüne atılınca birkaç balık çıkar (\"Ağ\" kaydıyla çantaya), ağ toplanıp gizlenir",
+    "ok": true,
+    "value": true
+   },
+   "ms": 483
+  },
+  {
+   "n": 21,
+   "label": null,
+   "result": {
+    "placed": 14,
+    "species": "Uçan Balık",
+    "st": "fly",
+    "haul": {
+     "caught": 6,
+     "lost": 0,
+     "fromSchool": 6
+    },
+    "added": 6,
+    "baits": [
+     "Ağ"
+    ],
+    "end": "idle",
+    "netHidden": true,
+    "yer": {
+     "eski": 45,
+     "yeni": 100,
+     "temizlenen": 6
+    }
+   },
+   "ms": 6
+  },
+  {
+   "n": 22,
+   "label": null,
+   "expect": {
+    "label": "G07 Ağ iskeleye/karaya atılınca \"Ağ suya ulaşmadı\" uyarısı, balık eklenmez",
+    "ok": true,
+    "value": true
+   },
+   "ms": 450
+  },
+  {
+   "n": 23,
+   "label": null,
+   "result": {
+    "msg": "Ağ suya ulaşmadı — suya daha yakın dur ya da daha uzağa at.",
+    "added": 0,
+    "state": "idle"
+   },
+   "ms": 145
+  },
+  {
+   "n": 24,
+   "label": null,
+   "expect": {
+    "label": "G08 Ağ yırtılınca envanterden düşer, son ağsa el boşalır",
+    "ok": true,
+    "value": true
+   },
+   "ms": 808
+  },
+  {
+   "n": 25,
+   "label": null,
+   "result": {
+    "left": 0,
+    "eq": "none"
+   },
+   "ms": 2
+  },
+  {
+   "n": 26,
+   "label": null,
+   "expect": {
+    "label": "R01 Olta: iskeleden atış, vuruş, mücadele (gerginlik < 0,8 iken sar, > 0,6 iken balığın tersine A/D) ve yakalama uçtan uca çalışır (≤ 4 deneme); mücadelede A/D oyuncuyu yürütmez",
+    "ok": true,
+    "value": true
+   },
+   "ms": 712
+  },
+  {
+   "n": 27,
+   "label": null,
+   "result": {
+    "res": [
+     {
+      "att": 0,
+      "st1": "wait",
+      "st2": "bite",
+      "st3": "fight",
+      "t": 5.1,
+      "maxT": 0.6,
+      "moved": 0,
+      "mode": "ground",
+      "got": 1
+     }
+    ],
+    "fish": "Uçan Balık",
+    "bait": "Solucan Yemi",
+    "yem": 4
+   },
+   "ms": 5
+  },
+  {
+   "n": 28,
+   "label": null,
+   "expect": {
+    "label": "L01 Deniz ekipmanı dükkânlarda (Yusuf 5 kalem, Rıza, Halil Reis, Kaçakçı) ve hazine sandığı ganimetinde çıkar",
+    "ok": true,
+    "value": true
+   },
+   "ms": 10
+  },
+  {
+   "n": 29,
+   "label": null,
+   "result": {
+    "fisher": [
+     "zipkin",
+     "balik_agi",
+     "dalis_maskesi",
+     "palet",
+     "hava_kesesi"
+    ],
+    "rizaAir": true,
+    "trader": true,
+    "smuggler": true,
+    "chestLoot": [
+     "dalis_maskesi",
+     "hava_kesesi",
+     "palet",
+     "usta_zipkin",
+     "zipkin"
+    ]
+   },
+   "ms": 2
+  },
+  {
+   "n": 30,
+   "label": null,
+   "expect": {
+    "label": "L02 Martı Batığı sandığı dalınca açılır; içerik doğrudan çantaya gider (kese yüzeye süzülmez); ikinci kez açılmaz",
+    "ok": true,
+    "value": true
+   },
+   "ms": 67
+  },
+  {
+   "n": 31,
+   "label": null,
+   "result": {
+    "chest": {
+     "x": 545,
+     "y": -23.7,
+     "z": 467
+    },
+    "lbl": "Batık sandığını aç",
+    "gold": 124,
+    "spawned": 0,
+    "again": false
+   },
+   "ms": 8
+  },
+  {
+   "n": 32,
+   "label": null,
+   "ms": 81
+  },
+  {
+   "n": 33,
+   "label": null,
+   "expect": {
+    "label": "L03 Kayıt/yüklemede zıpkın, ağ, maske, palet ve hava keseleri korunur",
+    "ok": true,
+    "value": true
+   },
+   "ms": 5040
+  },
+  {
+   "n": 34,
+   "label": null,
+   "result": {
+    "zipkin": 1,
+    "ag": 1,
+    "maske": 1,
+    "palet": 1,
+    "kese": 3,
+    "yer": {
+     "birakilanBalik": 11,
+     "gereken": 7.5,
+     "kapasite": null,
+     "bos": 34.58
+    }
+   },
+   "ms": 38
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 6136,
+ "ms": 45632,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "../../../tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/d14/v04_duz.js",
+ "meta": {},
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8080/index.html?test=1",
+  "verilenUrl": "http://localhost:8080/index.html",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "5479e3b76bb33a517efa9ec60c418105a98bcec6",
+  "dal": "HEAD",
+  "kirli": false,
+  "tarih": "2026-11-14T17:18:03.242Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-kosu/tests/harness/run.cjs /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/d14/v04_duz.js --url http://localhost:8080/index.html --size 640x360 --timeout 900 --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/t14/ikinci/v04_duz.json",
+  "cwd": "/home/user/SON-HAZ-NE",
+  "sunucular": [
+   "statik sunucu http://localhost:8080 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8080"
+  ],
+  "commit": "5479e3b76bb33a517efa9ec60c418105a98bcec6",
+  "senaryoSha256": "d8375b8bde1a418d3ea1270dd6800812269e03c66756758d562214fa03d0c666",
+  "adim": null,
+  "url": "http://localhost:8080/index.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 2,
+   "id": "Oyun başladı",
+   "etiket": "Oyun başladı",
+   "ok": true,
+   "deger": "playing",
+   "beklenen": {
+    "eq": "playing"
+   },
+   "sure_ms": 9426,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 4,
+   "id": "D01",
+   "etiket": "D01 C ile dalış; nefes ≈ 50 sn (2/sn), maskeyle ≈ 80 sn; nefes bitince can azalır; yüzeyde nefes dolar; ilk girişte tuş ipucu",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1660,
+   "benzetim": {
+    "sim": 9,
+    "adim": 708,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 6,
+   "id": "D02",
+   "etiket": "D02 Hava kesesi nefes < 12 iken kendiliğinden kullanılır (+45), su altında elle de kullanılır, su üstünde kullanılmaz",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 176,
+   "benzetim": {
+    "sim": 11,
+    "adim": 789,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 8,
+   "id": "D03",
+   "etiket": "D03 Yüzme paleti çantadayken yüzme hızı ≈ ×1,35",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 433,
+   "benzetim": {
+    "sim": 15,
+    "adim": 1005,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 10,
+   "id": "G01",
+   "etiket": "G01 Zıpkın: eşya yokken kuşanılmaz; 6 tuşuyla kuşanılır, suda elde kalır; araç çubuğunda 7 yuva",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 87,
+   "benzetim": {
+    "sim": 19,
+    "adim": 1033,
+    "press": 1,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 12,
+   "id": "G02",
+   "etiket": "G02 Su altında 3 m öteki balığa zıpkın: yoldaki ilk balık vurulur (sürüde hedefin önündeki de olabilir), çantaya \"Zıpkın\" kaydıyla girer, koleksiyon sayılır, zıpkın ipiyle geri döner",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 241,
+   "benzetim": {
+    "sim": 22,
+    "adim": 1146,
+    "press": 1,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 14,
+   "id": "G03",
+   "etiket": "G03 Kaçan (canlı) sürüye 2,5 m’den balığın o anki yerine atışta en az yarısında balık vurulur (4 m sonucu raporlanır)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1227,
+   "benzetim": {
+    "sim": 70,
+    "adim": 1782,
+    "press": 1,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 16,
+   "id": "G04",
+   "etiket": "G04 Zıpkın köpekbalığına hasar verir",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1076,
+   "benzetim": {
+    "sim": 72,
+    "adim": 1814,
+    "press": 1,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 18,
+   "id": "G05",
+   "etiket": "G05 İskeleden sağ tık nişan + sol tık: zıpkın nişangâh yönünde (açı farkı < 26°) suya girer ve geri döner",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 599,
+   "benzetim": {
+    "sim": 116,
+    "adim": 1897,
+    "press": 1,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 20,
+   "id": "G06",
+   "etiket": "G06 Ağ sürünün üstüne atılınca birkaç balık çıkar (\"Ağ\" kaydıyla çantaya), ağ toplanıp gizlenir",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 367,
+   "benzetim": {
+    "sim": 119,
+    "adim": 2116,
+    "press": 1,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 22,
+   "id": "G07",
+   "etiket": "G07 Ağ iskeleye/karaya atılınca \"Ağ suya ulaşmadı\" uyarısı, balık eklenmez",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 354,
+   "benzetim": {
+    "sim": 121,
+    "adim": 2185,
+    "press": 1,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 24,
+   "id": "G08",
+   "etiket": "G08 Ağ yırtılınca envanterden düşer, son ağsa el boşalır",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 393,
+   "benzetim": {
+    "sim": 123,
+    "adim": 2341,
+    "press": 1,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 26,
+   "id": "R01",
+   "etiket": "R01 Olta: iskeleden atış, vuruş, mücadele (gerginlik < 0,8 iken sar, > 0,6 iken balığın tersine A/D) ve yakalama uçtan uca çalışır (≤ 4 deneme); mücadelede A/D oyuncuyu yürütmez",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 547,
+   "benzetim": {
+    "sim": 283,
+    "adim": 2568,
+    "press": 1,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 28,
+   "id": "L01",
+   "etiket": "L01 Deniz ekipmanı dükkânlarda (Yusuf 5 kalem, Rıza, Halil Reis, Kaçakçı) ve hazine sandığı ganimetinde çıkar",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 6,
+   "benzetim": {
+    "sim": 283,
+    "adim": 2568,
+    "press": 1,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 30,
+   "id": "L02",
+   "etiket": "L02 Martı Batığı sandığı dalınca açılır; içerik doğrudan çantaya gider (kese yüzeye süzülmez); ikinci kez açılmaz",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 65,
+   "benzetim": {
+    "sim": 286,
+    "adim": 2583,
+    "press": 1,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 33,
+   "id": "L03",
+   "etiket": "L03 Kayıt/yüklemede zıpkın, ağ, maske, palet ve hava keseleri korunur",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 12,
+   "benzetim": {
+    "sim": 287,
+    "adim": 2592,
+    "press": 1,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 33
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 2,
+  "toplam": 34,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 216,
+ "sonuc": {
+  "durum": "GECTI",
+  "cikisKodu": 0,
+  "neden": [],
+  "onaySayisi": 16,
+  "kontrolSayisi": 16,
+  "gecen": 16,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": "tarayici+benzetim",
+  "turSayim": {
+   "tarayici": 1,
+   "tarayici+benzetim": 15
+  }
+ },
+ "sure": {
+  "hazirMs": 6136,
+  "toplamMs": 45632,
+  "yerlesmeMs": 1001
+ }
+}

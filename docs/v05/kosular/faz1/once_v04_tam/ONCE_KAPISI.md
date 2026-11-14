@@ -95,6 +95,8 @@ Süreç belleği ölçümlü ayrı bir inceleme ve gerekirse koşucu düzeltmesi
 
 **Sonuç:** Dolu çantada "çantanda yer yok" davranışı tasarım gereği. Hata oyunda değil; testin ön koşulu önceki adımların rastgele sonucuna bağlı. Faz 1 içinde G06 ve L03'ten önce çantada yer açan bir test sağlamlaştırması yapılacak. Onaylar değişmeyecek; düzeltme hem v0.4'te hem w2'de sınanacak.
 
+**Yapıldı:** G06, R01 ve L03 için ön koşul eklendi; onaylar aynı. Deney ve sonuçlar `../t14/README.md` içinde. R01'in de aynı ön koşula bağlı olduğu deneyde ortaya çıktı.
+
 ### 06a2: konuğun menüye düşmesi
 
 **Zaman çizelgesi:**

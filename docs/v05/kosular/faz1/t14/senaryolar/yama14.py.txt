@@ -1,0 +1,68 @@
+#!/usr/bin/env python3
+"""14_deniz_ekipmani için test ön koşulu düzeltmesi ve belirlenimli yeniden üretim deneyi.
+
+Kullanım:
+  python3 yama14.py <girdi.js> <cikti.js> [--duzelt] [--doldur balik|esya]
+
+--duzelt        : _yerAc yardımcısını ekler; G06 ağ atışından ve L03 ekipman eklemesinden önce çantada yer açar.
+                  Onay ifadeleri (G06 ve L03 'return ...' satırları) DEĞİŞMEZ.
+--doldur balik  : (yalnız deney) G06'dan ve L03'ten hemen önce çantayı ağır balıklarla doldurur (boş ≤ 0,04 kg: en hafif balık 0,05 kg).
+--doldur esya   : (yalnız deney) aynı, ama balık olmayan eşyayla (kürek); _yerAc'ın kapasite yedeği yolunu sınar.
+"""
+import sys
+
+args = sys.argv[1:]
+src, dst = args[0], args[1]
+duzelt = '--duzelt' in args
+doldur = args[args.index('--doldur') + 1] if '--doldur' in args else None
+s = open(src, encoding='utf8').read()
+
+
+def tek(eski, yeni):
+    global s
+    n = s.count(eski)
+    assert n == 1, f'çapa {n} kez bulundu: {eski[:90]!r}'
+    s = s.replace(eski, yeni)
+
+
+DROP = "   window._drop=(...ids)=>{ const p=DK.G.player; p.inv.stacks=p.inv.stacks.filter(s=>!ids.includes(s.id)); p.inv._changed(); };\n"
+G06_BAS = " // G06 ağ: sürünün üstüne atılan ağ birkaç balık çıkarır\n"
+G06_ATIS = "     const n0=_fishN(); DK.tpCamera.yaw=pick.yaw; DK.seagear.throwNet(p, 0.5);"
+G06_SONUC = "baits:[...new Set(got.map(x=>x.data?.bait))], end:DK.seagear.n.state, netHidden:!DK.seagear.netMesh.visible};"
+G06_FINALLY = "finally { F.update=fu; } })()`, truthy: true, label: 'G06 "
+L03_BAS = " // L03 kayıt/yükleme: deniz ekipmanı çantada korunur\n"
+L03_EKLE = "_drop('zipkin','balik_agi','dalis_maskesi','palet','hava_kesesi'); for (const k of ['zipkin','balik_agi','dalis_maskesi','palet']) p.inv.add(k);"
+L03_R = "kese:p.inv.count('hava_kesesi')}; window._L03=r;"
+
+if duzelt:
+    # Yardımcı: önceki adımlardan kalan balıkları çantadan çıkarır; yine de 'kg' kadar boş yer yoksa kapasiteyi
+    # gereken kadar artırır (L02'nin sandık için yaptığı gibi). Ne yapıldığını döndürür; adım sonucuna yazılır.
+    tek(DROP, DROP + "   window._yerAc=(kg)=>{ const inv=DK.G.player.inv; const balik=inv.stacks.filter(s=>s.id.startsWith('balik:')).length; inv.stacks=inv.stacks.filter(s=>!s.id.startsWith('balik:')); inv._changed(); const yer={birakilanBalik:balik, gereken:kg, kapasite:null}; if (inv.free() < kg) { yer.kapasite={eski:inv.capacity, yeni:Math.ceil(inv.weight()+kg)}; inv.capacity=yer.kapasite.yeni; } yer.bos=+inv.free().toFixed(2); return yer; };\n")
+    # G06: ağ en çok 6 balık çıkarır (seagear NET_MAX); ağa girebilen türlerin en ağırı 12 kg (morina). Çantada önceki
+    # adımların rastgele balıkları varken ağın balıkları sığmayıp 'yer yok' sayılıyordu (önce kapısı, ONCE_KAPISI.md).
+    tek(G06_ATIS, "     window._G06yer=_yerAc(6*12+0.5); " + G06_ATIS.lstrip())
+    tek(G06_SONUC, G06_SONUC[:-2] + ", yer:window._G06yer};")
+    tek(G06_FINALLY, "finally { F.update=fu; if (window._G06yer?.kapasite) p.inv.capacity=window._G06yer.kapasite.eski; } })()`, truthy: true, label: 'G06 ")
+    # L03: zıpkın 2,2 + ağ 2,5 + maske 0,5 + palet 0,9 + 3 kese 0,9 = 7,0 kg yer gerekir; L02 sandık için kapasiteyi geçici
+    # artırıp geri aldığından çanta L02 sonrası kapasitenin üstünde kalabiliyordu (A2 tanısı: 48,11/45 kg).
+    tek(L03_EKLE, L03_EKLE.replace("_drop('zipkin','balik_agi','dalis_maskesi','palet','hava_kesesi');", "_drop('zipkin','balik_agi','dalis_maskesi','palet','hava_kesesi'); window._L03yer=_yerAc(7.5);"))
+    tek(L03_R, "kese:p.inv.count('hava_kesesi')}; window._L03={...r, yer:window._L03yer};")
+
+if doldur:
+    if doldur == 'balik':
+        kod = "(()=>{ const inv=DK.G.player.inv; let i=0; while (inv.free() > 0.04 && i<400) { const w=Math.max(0.01, Math.min(6, inv.free()-0.02)); inv.stacks.push({id:'balik:snapper', n:1, data:{key:'snapper', name:'Snapper', weight:+w.toFixed(2), value:10, bait:'Deney'}}); i++; } inv._changed(); return {deney:'çanta balıkla dolduruldu', eklenen:i, agirlik:+inv.weight().toFixed(2), kapasite:inv.capacity, bos:+inv.free().toFixed(2)}; })()"
+    elif doldur == 'esya':
+        # kürek 2 kg: boş yer 0,04 kg'ın altına inene dek eklenir; son kürek çantayı kapasitenin biraz üstüne taşıyabilir
+        # (L02 sonrasındaki 'kapasite aşılmış' durumunu da taklit eder).
+        kod = "(()=>{ const inv=DK.G.player.inv; let i=0; while (inv.free() > 0.04 && i<400) { inv.stacks.push({id:'kurek', n:1}); i++; } inv._changed(); return {deney:'çanta eşyayla dolduruldu (balıksız)', eklenen:i, agirlik:+inv.weight().toFixed(2), kapasite:inv.capacity, bos:+inv.free().toFixed(2), balik:inv.stacks.filter(s=>s.id.startsWith('balik:')).length}; })()"
+    else:
+        raise SystemExit('--doldur balik|esya')
+    # balık dolgusunda: önceki balıklar çantada kalır, dolgu üstüne eklenir (gerçek kalma durumunu taklit eder).
+    # eşya dolgusunda: önce balıklar çıkarılır ki _yerAc'ın balık bırakması yer açmasın; kapasite yedeği sınanır.
+    on = "(()=>{ const inv=DK.G.player.inv; inv.stacks=inv.stacks.filter(s=>!s.id.startsWith('balik:')); inv._changed(); return 'balıklar çıkarıldı (deney)'; })()" if doldur == 'esya' else None
+    adimlar = (f" {{js: `{on}`}},\n" if on else '') + f" {{js: `{kod}`}},\n"
+    tek(G06_BAS, adimlar + G06_BAS)
+    tek(L03_BAS, adimlar + L03_BAS)
+
+open(dst, 'w', encoding='utf8').write(s)
+print('yazıldı:', dst, 'duzelt' if duzelt else '', ('doldur=' + doldur) if doldur else '')

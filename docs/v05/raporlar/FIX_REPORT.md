@@ -215,3 +215,20 @@ Uygulamadan sonra ayrı bir inceleme 13 bulgu çıkardı. Ayrı bir düzeltici 1
 
 **Durum kaydı:** `docs/v05/raporlar/durum.json` (A5, şema `dk-durum/1`) her KI'nin durumunu, commit'ini, testlerini ve kanıtını tutar. Faz 1–8'de elle güncellenir (tasarım §7.3-4).
 
+### Test sağlamlaştırması — `14_deniz_ekipmani` çanta yeri ön koşulu
+
+**Bulgu:** Önce kapısında görüldü; A2 tanısı aynı yeri gösterdi. Önceki adımların rastgele balıkları ve L02'nin geçici kapasite artışı çantayı dolduruyordu. Bu yüzden G06 (ağ), R01 (olta) ve L03 (kayıt) sığmayan eşyayı sessizce kaybedip kalabiliyordu. Oyunun davranışı tasarım gereği doğru; kusur testteydi.
+
+**Değişiklik** (`tests/scenarios/14_deniz_ekipmani.js`):
+- `_yerAc(kg)` yardımcısı eklendi: eski balıkları bırakır, yine yer yoksa kapasiteyi büyütür.
+- **G06:** Atış süresince kapasiteyi büyütür, sonra ağın balıklarını çıkarıp kapasiteyi geri koyar (iz bırakmaz).
+- **R01:** `_yerAc(200,5)` uygulanır; iskelede yakalanabilen en ağır tür 200 kg.
+- **L03:** `_yerAc(7,5)` uygulanır.
+- Onay ifadeleri ve 16 etiket bayt bayt aynı.
+
+**Kanıt** (`docs/v05/kosular/faz1/t14/README.md`): Yapay dolu çantayla kalma iki sürümde de belirlenimli yeniden üretildi; özgün test v0.4'te ve w2'de G06/L03'te KALDI. Düzeltmenin ilk iki sürümünde iki ayrı kırılganlık bulundu:
+- G06'nın kapasiteyi yalnız geri koyması, R01'in oltasını eklenemez hâle getiriyordu.
+- R01'in kendi yer ön koşulu yoktu.
+
+Son sürüm 6 çeşidin 6'sında ve commit'lenen dosyayla w2'de 16/16 GEÇTİ.
+
