@@ -1,0 +1,887 @@
+{
+ "area": "E — Co-op senkronu ve oturum dayanıklılığı",
+ "summary": "v0.4'te co-op, tek bir güvenilir ve sıralı PeerJS veri kanalı üzerinden ev sahibi otoriteli çalışıyor: anlık görüntü 15 Hz, ağır kısımlar 7,5 Hz, yanında olay iletileri var. v0.3'e göre yüzen nesneler (varil, şişe, kazazede, gök taşı parçası) artık konuğa iletiliyor; kalp atışı, kopma temizliği ve kısmi mesaj doğrulaması eklenmiş. Uzak varlıklar ise zaman damgası olmadan 'son hedefe sönümlü yaklaşma' ile çiziliyor. Benzetimde 1,2 sn'lik bir tıkanma, koşan oyuncuyu 8 m'den fazla ışınlıyor. Yakın/uzak ayrımı (ilgi alanı) yok. Gemi kumandasında tahmin ve uzlaştırma yok. Konuğun dümende Boşluk ile yelken açıp kapaması basışların yalnız %37–50'sinde tutuyor. Otomatik yeniden bağlanma, oda sahibi devri ve projenin yönettiği bir TURN sunucusu yok. 13. belgedeki tasarım hiç uygulanmamış. PeerJS 1.5.5'in kendi ücretsiz TURN sunucuları örtük olarak kullanılıyor; belgeler ise 'TURN yok' diyor. Ev sahibi otoritesi 'shipFull', 'hold', 'lootReq' ve 'st' iletilerinde delinebiliyor: bir konuk ev sahibinin gemisini değiştirebiliyor, gemi adına kalıcı XSS yerleştirebiliyor, ambara ve keselere sınırsız eşya koyabiliyor. Normal oyunda bile herhangi bir konuğun ambar işlemi, ev sahibi ambarındaki balıkları siliyor. Geç katılan konuğa yüzen nesneler, kilitler ve bulmaca/ada durumu aktarılmıyor. Ada sandıkları, tutsaklar ve tapınaklar istemciye yerel olduğu için ödüller çoğaltılabiliyor. Ortak zar oyunu ve oyuncular arası ticaret hiç yok. Konuk rütbesi kaydediliyor ama periyodik kayıt yok ve co-op testinde hiç ölçülmemiş. Co-op testleri çekirdek akışları sınıyor; varil/kazazede/gök taşı, zar, yeniden bağlanma, ev sahibi ayrılması, gecikme/kayıp ve konuk kaydı için senaryo yok. 4 oyunculu 06c senaryosu taban koşusunda 2/7 ile kaldı.",
+ "systems": [
+  {
+   "name": "Snapshot sistemi (ev sahibi → konuk)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "net.js:712-722 (1/15 sn gönderim), _hostSnapshot net.js:734-743 (oyuncular/gemiler/yüzenler/mermiler her görüntüde; en/bo/an/mf/time/wfx/we/ch iki görüntüde bir), _applySnap net.js:655-693; tek güvenilir sıralı JSON kanalı net.js:418. Test: coop/06b 18/18, coop/06d 9/9 (12. belge, 16. belge, v05 taban koşusu).",
+   "note": "Zaman damgası, sıra numarası, delta ve sırasız durum kanalı yok; 02. belge ölçümü 2,3–3 KB/görüntü, konuk başına ~20–36 KB/sn (E-08, E-09)."
+  },
+  {
+   "name": "Uzak oyuncu konumu",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "Konuk 'st' 15 Hz (net.js:718, player.js:986-993) → ev sahibi r.target (net.js:276, 643-647) → snap.players (net.js:736-737) → RemotePlayer.update sönümlü yaklaşma, >8 m ışınlanma (net.js:96-101); güvertede gemiye göre yerel koordinat (net.js:92-95). Test: 06c D4-05 (08. belge §8.3 GEÇTİ; v05 taban koşusunda KALDI), 06b F-02/F-12 GEÇTİ.",
+   "note": "Ara bellekli interpolasyon yok; /tmp/denetim_alan/uzak_oyuncu_sim.mjs: 7 m/sn'de 1,2 sn tıkanma → 8,4 m sıçrama. 'st' yükü doğrulanmıyor (E-04)."
+  },
+  {
+   "name": "Uzak oyuncu animasyonu",
+   "status": "dogrulanmamis",
+   "evidence": "'st' içindeki anim/up/loop/swimP/air/carry/mode alanları (player.js:989-991) → RemotePlayer.update c.play/playUpper/ragdoll/overlay (net.js:109-122). Co-op senaryolarında animasyon kontrolü yok.",
+   "note": "15 Hz'de kısa tek seferlik klipler kaçabilir; ragdoll yalnız 'Ragdoll' adıyla tetikleniyor."
+  },
+  {
+   "name": "Uzak oyuncu ekipmanı ve görünümü",
+   "status": "dogrulanmamis",
+   "evidence": "Eldeki silah 'eq' → c.hold (net.js:115); taşıma pozu 'carry' (net.js:116). 'torch' gönderiliyor (player.js:990) ama uygulanmıyor; terzide görünüm değişince ('app', net.js:274) RemotePlayer yeniden kurulmuyor (net.js:643-647). Test yok.",
+   "note": "Meşale ışığı ve kıyafet değişikliği diğer oyunculara yansımıyor (E-20)."
+  },
+  {
+   "name": "Can, yaralı düşme ve kaldırma",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "hp/down 'st' alanları (player.js:990); ev sahibi kaynaklı hasar 'hurt' iletisiyle (net.js:150, 536-540); co-op'ta yaralı düşme player.js:211-216 → 'downed' (net.js:183, 385); kaldırma sağlayıcısı net.js:724-731 → 'revive' (net.js:386, 576). Test: 06b F-15 (lav uzak oyuncuyu yakar) ve F-11 (geri tepme) GEÇTİ; kaldırma akışı test edilmedi.",
+   "note": "'downed' bildirimi yalnız ev sahibinde gösteriliyor, diğer konuklara yayılmıyor; konukta 'downed' işleyicisi yok; 'revive' hedef/mesafe doğrulamasız; patlama hasarı konuklara işlemiyor (E-18)."
+  },
+  {
+   "name": "Gemiler (konum, hız, dümen)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "ship.netState/applyNet (ship.js:704-731); clientUpdate 0,25 sn hız öngörüsü + 8/sn sönüm + 12 m sıçrama (ship.js:566-579), 30 m'de doğrudan atama (ship.js:712); konuk dümeni 'helm' (net.js:719, 362; kilit denetimli). Test: 06b F-02 ve gemi kontrolleri GEÇTİ.",
+   "note": "Konuğun yelken komutu görüntüyle eziliyor, dümeni bırakınca dümen açısı ev sahibinde kalıyor (E-10); kumanda için yerel tahmin yok."
+  },
+  {
+   "name": "Gemi hasarı (delik, bölge, direk, top, yangın, batma)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "netState 15–22. alanlar (ship.js:705-708), applyNet (ship.js:715-730). Test: 06b E-02/E-06/E-07/H12 GEÇTİ (08. belge §8.2).",
+   "note": "Konuğun tersane tamiri ev sahibine kısmen ulaşıyor (E-12); konuğun 'gemiyi kurtar' işlemi yerel kalıyor (E-13)."
+  },
+  {
+   "name": "Gemi topları",
+   "status": "dogrulanmamis",
+   "evidence": "Konuk 'fire' (net.js:181, 363; kilit ve 0–15 indis denetimi), ev sahibi 'cannon' yayını nişan açılarıyla (net.js:180, 573; konukta yalnız görsel gülle, G.visualOnlyBalls), gülle sayısı netState[20]. Co-op top atışı testi yok.",
+   "note": "İsabet ve hasar yalnız ev sahibinde hesaplanıyor (tasarım)."
+  },
+  {
+   "name": "Yelkenler",
+   "status": "hatali_kararsiz",
+   "evidence": "sail/sailTarget netState[5..6]; applyNet konuğun yerel sailTarget'ını her görüntüde eziyor (ship.js:714); konuk 'helm' iletisinde sail gönderiyor (net.js:719); yelken istasyonu 'shipCmd sails' (shipControl.js:78, net.js:624, değer sınırlanmıyor). /tmp/denetim_alan/dumen_yelken_sim.mjs: konuğun Boşluk basışlarının %37–50'si tutuyor.",
+   "note": "Bilinen E-15 (02. belge) hâlâ açık (E-10)."
+  },
+  {
+   "name": "Çapa",
+   "status": "dogrulanmamis",
+   "evidence": "anchorT/anchorState netState[7..8], applyNet ship.js:714-716; konuk 'shipCmd anchor' → ev sahibi toggleAnchor (net.js:623), ses için shipCmdFx (net.js:575). Co-op çapa testi yok."
+  },
+  {
+   "name": "Düşmanlar",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "enemies.netSnapshot/applySnapshot (enemies.js:1641, 1650-1660), konukta _interp (sönüm 10, enemies.js:1621-1638); konuk vuruşu netHurtEnemy (enemies.js:358-361) → ev sahibinde 6/80 m ve 160 hasar sınırı (net.js:278-287); mermiler görsel (net.js:657, enemies.js:1643-1649); nüfus tüm oyunculara göre (enemies.js:1543). Test: 06a H07, 06b F-06/F-13 GEÇTİ.",
+   "note": "Telgraf halkaları konukta yok (11. belge #15); mesafe süzgeci yok (E-09)."
+  },
+  {
+   "name": "Bosslar",
+   "status": "hatali_kararsiz",
+   "evidence": "Yalnız etkin boss: bosses.netSnapshot/applySnapshot (bosses.js:1118-1122), türe özel netExtra; konuk hasarı netHurtBossApply mesafe denetimi olmadan (net.js:288, bosses.js:1041-1046). Taş Muhafız rün sütunları konukta oluşmuyor (11. belge #14). Test: yalnız 06b F-11 (geri tepme); boss savaşları uçtan uca oynanmadı (#12).",
+   "note": "Konuk her yerden boss hasarı gönderebiliyor (E-03)."
+  },
+  {
+   "name": "Kara hayvanları",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "animals.netSnapshot tüm listeyi gönderiyor (animals.js:828), applySnapshot ve konukta _interp (animals.js:811-813, 829-838); konuk vuruşu 80 m sınırlı (net.js:290); nüfus tüm oyunculara göre (animals.js:791). Test: 06d C06 (konuğun avı) GEÇTİ (12. belge 9/9).",
+   "note": "Görüntünün en büyük payı hayvan listesi (1,4–1,9 KB), mesafe süzgeci yok."
+  },
+  {
+   "name": "Deniz canlıları (deniz devleri, balık sürüleri)",
+   "status": "dogrulanmamis",
+   "evidence": "megafauna.netSnapshot/applySnapshot/_interp (megafauna.js:725-746); konuk vuruşu 120 m sınırlı (net.js:291). Balık sürüleri, zıpkın ve ağ istemciye yerel (11. belge #38). v03_coop3_referans.cjs yalnız v0.3 referansı; v0.4 için 12/16. belgede sonuç kaydı yok."
+  },
+  {
+   "name": "Hazine sandıkları (kazı, taşıma, açma)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "chestSpawn/State/Gone (net.js:165-167, 556-558), chestReq ve carryOk (net.js:293-299, 555), kazı ev sahibinde (treasure.js:207-239, net.js:292), dünya iletisinde sandıklar (net.js:516). Test: 06b H10/H03, 06d C03 GEÇTİ.",
+   "note": "Ada ödül sandıkları ağa bağlı değil (E-06); 'chestReq' ve 'dig' mesafe denetimsiz (E-03)."
+  },
+  {
+   "name": "Ganimet keseleri",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "Konuk ganimeti lootReq ile ev sahibinde doğuyor (treasure.js:84-92, net.js:301-314); pickupSpawn/Gone/Items (net.js:168-170, 559-561), pickupReq (net.js:300), güverteye bağlı kese (net.js:581-591). Test: 06b B03/H01 ve 06d C01–C05 GEÇTİ (12. belge 18/18, 9/9; v05 taban koşusu).",
+   "note": "Konuk tablo içeriğini kendisi belirleyebiliyor (E-03); kısmi kese davranışı farklı (11. belge #49)."
+  },
+  {
+   "name": "Bulmacalar (tehlike bloğu, tapınak, sunak)",
+   "status": "hatali_kararsiz",
+   "evidence": "Blok itme/çözme olay iletileri (hazards.js:508-519, 548-553, 672-680); tapınak/sunak/tutsak durumu islands.js'de istemciye yerel, ağ kodu yok (islands.js:747-748, 858-859, 956-963); geç katılımda hazards.solved ve islands durumu aktarılmıyor (net.js:510-522). Co-op bulmaca testi yok.",
+   "note": "E-05, E-06."
+  },
+  {
+   "name": "Çevre tehlikeleri (fıçı, kırılır sandık, yuvarlanan kaya, lav, patlama)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "'hazard' olayları (net.js:148, 360, 566; hazards.netApply 672-680); lav havuzu uzak oyuncuyu yakıyor (enemies.js:1467-1470). Test: 06b F-15 GEÇTİ; fıçı senkronu yalnız v0.3 referansında (v03_coop3_referans.cjs).",
+   "note": "Gülle ve lav bombası patlamaları konuklara hasar vermiyor (combat.js:53, E-18); ev sahibinde kurulmamış adanın tehlikeleri yok sayılıyor (#36); 'hazard' iletisi doğrulanmıyor (E-03)."
+  },
+  {
+   "name": "Hava durumu",
+   "status": "dogrulanmamis",
+   "evidence": "'weather' yayını (net.js:176, 570) + snap.time içinde hava anahtarı, tahmin, rüzgâr ve ıslaklık (net.js:741, 678-686); su hortumları weatherfx.netState/applyNet (net.js:687, weatherfx.js:349-350). v0.4 co-op testlerinde hava kontrolü yok (TEST_RAPORU.md'de yalnız v0.2 doğrulaması var)."
+  },
+  {
+   "name": "Zaman (gün, saat, uyuma, hızlı yolculuk)",
+   "status": "dogrulanmamis",
+   "evidence": "snap.time[0] ve [3] (net.js:741, 680-681); 'sleep' (main.js:267, net.js:571); 'teleport' (main.js:297, net.js:544-553). v0.4 co-op testi yok.",
+   "note": "Hızlı yolculukta uzaktaki konuklar da limana taşınıyor (tasarım)."
+  },
+  {
+   "name": "Dinamik olaylar (yüzen varil/şişe/kazazede/gök taşı, buzdağı, hayalet ışık, volkan, plankton, düşman gemisi, fırtına)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "floatSpawn/floats/floatGone/floatReq (events.js:79, 193, 232-248; net.js:158-160, 324, 541-542, 656); worldEvents.netState/applyNet (worldEvents.js:312-356); düşman gemisi gemi görüntüsüyle, fırtına 'weather' ile. Test: 06b B08/H08 (yalnız şişe) GEÇTİ; varil, kazazede, gök taşı ve ışıklar için test yok.",
+   "note": "Geç katılımda yüzen nesneler yok (E-05); olaylar ev sahibi çevresinde üretiliyor, bildirim/ödül/XP ev sahibinde kalıyor (E-17); uzaktaki konukta buzdağı örgüsü sürekli kurulup siliniyor (E-21)."
+  },
+  {
+   "name": "Görev/hikâye ilerlemesi ve harita işaretleri",
+   "status": "dogrulanmamis",
+   "evidence": "Ev sahibi 'story' yayını (net.js:174, 568); konuktan ev sahibine en çok +1 aşama (net.js:326-333); dünya iletisinde görev durumu (net.js:518, main.js:336); işaretler (net.js:359, 565). Co-op görev testi yok.",
+   "note": "Konukta aşama doğrudan yazılıyor, quests.advance çağrılmıyor: 'Yeni görev' bildirimi ve 150 XP konuğa gelmiyor (net.js:568 ile quests.js:127-135 karşılaştırması); bayraklar herhangi bir anahtar için true yapılabiliyor (E-03, E-17)."
+  },
+  {
+   "name": "Ambar (hold) senkronu",
+   "status": "hatali_kararsiz",
+   "evidence": "Konuk ambarın tamamını gönderiyor (treasure.js:417, panels.js:101/147); ev sahibi bunu {items, chests} olarak yeniden kuruyor ve 'fish' alanını düşürüyor (net.js:351-352); balık ambara konunca ya da alınınca ağ iletisi yok (fishing.js:248, panels.js:150-152); yakınlık denetimi konuğun bildirdiği gemi alanıyla atlanabiliyor (net.js:349). Test: 06b H10/H03 (yalnız sandık).",
+   "note": "Bilinen #13 ve G_icerik-ek-statik-161 (E-02)."
+  },
+  {
+   "name": "Dümen/top kilitleri",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "İstasyon alma/bırakma (shipControl.js:174-212), 'lock' iletisi (net.js:179, 366-372, 572), kopmada kilit temizliği yayını (net.js:399). Test: 06a ve 06a2 H13 GEÇTİ.",
+   "note": "Reddedilen istek konuğa bildirilmiyor ama diğer konuklara 'on' olarak yayılıyor; kilitler dünya iletisinde yok (E-11, E-05)."
+  },
+  {
+   "name": "Kayık (rowboat)",
+   "status": "dogrulanmamis",
+   "evidence": "snap.rb (net.js:740, 673), 'boat' ve 'boatSt' iletileri (net.js:178, 364-365, 634-641). Test yok.",
+   "note": "'boatSt' değerleri doğrulanmıyor, 'driver' alanını herkes atayabiliyor (E-03)."
+  },
+  {
+   "name": "Sohbet",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "net.js:275 (240 karakter, gönderen adı ev sahibinde belirleniyor), 499-503; main.js:363-371 metin düğümleri ve renk doğrulaması. Test: 06a/06a2 H07/H22, 06c D4-04 GEÇTİ."
+  },
+  {
+   "name": "Kalp atışı ve kopma algılama",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "Ev sahibi 15 sn sessiz kalan konuğu düşürüyor (net.js:704); konuk 25 sn'de hostLeft, 6 sn'de zayıf bağlantı uyarısı (net.js:705-708); her geçerli ileti kalp atışı sayılıyor (net.js:239, 527); 2 sn ping (net.js:445-448). Test: 06a H13 (14 sn), 06a2 (12 sn), 06c D4-07 GEÇTİ.",
+   "note": "Ev sahibi sekmesi arka plandayken pong'lar nedeniyle dünya sessizce donuyor (E-07); düşürülen konuğa neden bildirilmiyor (E-16)."
+  },
+  {
+   "name": "Elle yeniden katılım (aynı kodla)",
+   "status": "hatali_kararsiz",
+   "evidence": "join() her seferinde yeni bir Peer açıyor (net.js:410-443); aynı adla eşleşme (net.js:255) fiilen çalışmıyor çünkü _dropPeer kaydı roster'dan siliyor (net.js:394); renk roster uzunluğundan seçiliyor (net.js:257). Test: 06c D4-06 (08. belge GEÇTİ; v05 taban koşusunda KALDI, 2/7).",
+   "note": "E-16."
+  },
+  {
+   "name": "Otomatik yeniden bağlanma ve oturumu sürdürme",
+   "status": "eksik",
+   "evidence": "Bağlantı kapanınca yalnız hostLeft (net.js:441) → menüye dönüş (main.js:313-318); otomatik yeniden deneme ve ICE yeniden başlatma yok; yeniden katılan konuk limanda doğuyor (main.js:341)."
+  },
+  {
+   "name": "Ev sahibi ayrılması ve oda sahibi devri",
+   "status": "eksik",
+   "evidence": "hostLeft → game.stop + net.leave + menü (main.js:313-318); worldFull, heir, claim ve hostMigrating kodda yok (js/ altında grep); 13. belge 'uygulanmamış tasarım' diyor."
+  },
+  {
+   "name": "TURN / NAT geçişi",
+   "status": "dogrulanmamis",
+   "evidence": "peerOpts() config vermiyor (net.js:49-55); vendor/peerjs/peerjs.min.js 1.5.5 varsayılanı STUN + turn:eu-0/us-0.turn.peerjs.com:3478 (peerjs/peerjsp) içeriyor, yani örtük bir üçüncü taraf TURN var; getStats tanılaması, projenin kendi TURN'ü ve 443/TLS desteği yok. Gerçek NAT testi yapılmadı (16. belge §16.6).",
+   "note": "13. belge §1 'yalnızca STUN' diyor, bu yanlış."
+  },
+  {
+   "name": "Oda kurma ve katılma (özel kod)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "net.host (net.js:198-221), join (net.js:410-443), hello/welcome, sürüm ve oda dolu denetimi (net.js:250-268); menu.hostScreen/joinScreen/lobby (menu.js:180-302). Test: tüm co-op senaryoları DK.net.host/join kullanıyor; 06a H02/H04 GEÇTİ."
+  },
+  {
+   "name": "Oda şifresi",
+   "status": "dogrulanmamis",
+   "evidence": "net.js:252 düz karşılaştırma; 'info' yanıtında yalnız şifre bayrağı var (net.js:226); ret sonrası bağlantı açık kalıyor. Hiçbir co-op testi şifreli oda kurmuyor (hepsinde pw:'')."
+  },
+  {
+   "name": "Herkese açık oda listesi ve hızlı katıl",
+   "status": "dogrulanmamis",
+   "evidence": "12 sabit küresel yuva dksh-v1-pub-0..11 (net.js:28, 202-206, 451-467); menu.joinScreen tarama ve quickJoin (menu.js:237-262). Test yok.",
+   "note": "Kimlikler öngörülebilir; ev sahibinin oyuncu atma aracı yok (E-22)."
+  },
+  {
+   "name": "Ortak zar oyunu",
+   "status": "eksik",
+   "evidence": "js/ui/dice.js:15-75 yalnız NPC'ye karşı tek oyunculu panel; ağ iletisi yok; dosya v0.3 ile birebir aynı (diff boş). Tek oyunculu zarın yalnız v0.3 referans testi var (tests/scenarios/v03/dice1.js); v0.4 kaydı yok."
+  },
+  {
+   "name": "Oyuncular arası ticaret",
+   "status": "eksik",
+   "evidence": "Takas/teklif iletisi ya da arayüzü yok; yalnız satış geliri paylaşımı (shop.earn → netShareGold, shop.js:120-129, net.js:175, 373-383) ve yere bırakma/alma keseleri (treasure.js:84-92) var."
+  },
+  {
+   "name": "Satış geliri paylaşımı",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "shop.earn (shop.js:120-129); ev sahibinde ileti başına 5000 ve dakikada 20 000 sınırı (net.js:373-383). Test: 06a H07 yalnız kötü niyetli 300×100 altın iletisi; meşru paylaşım testi yok.",
+   "note": "Konuk büyük satış yapınca pay kırpılıyor, aradaki fark kayboluyor (E-19)."
+  },
+  {
+   "name": "Konuk korsan rütbesi kalıcılığı",
+   "status": "dogrulanmamis",
+   "evidence": "saveNow'ın konuk dalı dksh.guest.0 yazıyor ve progress._guestSave çağırıyor (main.js:199-206); progress.start (progress.js:94-107); seviye atlama ve yetenek öğrenmede anında kayıt (progress.js:138, 149); beforeunload/visibilitychange'de kayıt (main.js:382-385). 09. belge: 'Bu yol 2 oyunculu senaryoda doğrudan ölçülmedi'.",
+   "note": "Periyodik kayıt yok; eski yuva kaydı daha yeni anahtarın önüne geçiyor (E-15)."
+  },
+  {
+   "name": "Konuk mesajı doğrulama (ev sahibi otoritesi)",
+   "status": "hatali_kararsiz",
+   "evidence": "KNOWN listesi, saniyede 120 ileti ve 64 KB sınırı ('st' ve 'ping' muaf) (net.js:46, 241-249). Doğrulananlar: hurtEnemy/Animal/Marine, stunEnemy, lootReq konumu, holdTake, chestState/Gone, lock, gold, marker, chat, story aşaması, helm, fire. Doğrulanmayanlar: shipFull, st, hazard, dig, chestReq, pickupReq, hurtBoss mesafesi, shipCmd değerleri, boat/boatSt, revive, app, maps. Test: 06a 10/10 (yalnız ilk gruptan seçilmiş iletiler).",
+   "note": "E-01, E-02, E-03, E-04."
+  },
+  {
+   "name": "Geç katılımda dünya durumu",
+   "status": "hatali_kararsiz",
+   "evidence": "_sendWorld yalnız gemi, sandık, kese, görev, zaman ve kayık gönderiyor (net.js:510-522); applyFloats tanımadığı kimliği atlıyor (events.js:243); yükleme sırasında gelen olaylar systems.start ile siliniyor (treasure.js:105-110, events.js:46-48).",
+   "note": "E-05."
+  },
+  {
+   "name": "Snapshot interpolasyonu ve tahmin/uzlaştırma",
+   "status": "eksik",
+   "evidence": "İletilerde zaman damgası yok; tüm uzak varlıklar son hedefe üstel olarak yaklaşıyor (net.js:96-101, enemies.js:1621-1625, megafauna.js:740-746, events.js:66); yalnız gemide 0,25 sn hız öngörüsü var (ship.js:569-574); konuğun gemi kumandası için yerel tahmin yok."
+  },
+  {
+   "name": "İlgi alanı yönetimi (yakına sık, uzağa seyrek güncelleme)",
+   "status": "eksik",
+   "evidence": "_hostSnapshot tüm listeleri tüm konuklara aynı sıklıkta yayınlıyor (net.js:734-743, broadcast net.js:489)."
+  }
+ ],
+ "issues": [
+  {
+   "id": "E-01",
+   "title": "'shipFull' iletisi doğrulanmadan uygulanıyor: konuk ev sahibinin gemisini değiştirebiliyor, gemi adıyla kalıcı XSS yerleştirebiliyor",
+   "file": "js/net/net.js",
+   "func": "_hostData 'shipFull' (358) → _shipFull (610-619); main.js netReplaceShip (348-351); hud.js:302/310 (innerHTML)",
+   "rootCause": "Konuktan gelen tam gemi nesnesi (serialize) olduğu gibi uygulanıyor. replace bayrağı ev sahibinin gemisini shipControl.replaceShip ile değiştiriyor; upg, hold, hp, holes, cannonballs, planks, name ve look doğrudan atanıyor. Ad HTML'den arındırılmıyor ve hud.js'de innerHTML ile basılıyor. Bu değerler ship.serialize ile ev sahibi kaydına giriyor.",
+   "impact": "Herkese açık odaya katılan bir yabancı ev sahibinin gemisini sloop'a çevirip geliştirmelerini ve ambarını silebilir; otomatik kayıtla bu kalıcı ilerleme kaybına dönüşür. Gemi adına betik koyarak ev sahibinde ve tüm konuklarda kalıcı XSS çalıştırabilir: kayıt her yüklenip gemiye binildiğinde yeniden tetiklenir ve localStorage kayıtları okunabilir/silinebilir. Meşru kullanımda da konuğun bayat ambar/gülle/tahta değerleri ev sahibininkini eziyor.",
+   "priority": "kritik",
+   "fix": "Konuktan tam durum kabul edilmemeli. Tersane işlemleri niyet iletisine çevrilmeli ({t:'shipOp', op:'repair'|'upgrade'|'look'|'buyShip', ...}); ev sahibi koşulları ve sınırları doğrulayıp kendi gemisine uygulamalı. Ad cleanName ile arındırılmalı, HUD'da textContent kullanılmalı. replace yalnız ev sahibinin kendi işleminde geçerli olmalı.",
+   "repro": "2 oyunculu oda. Konuk konsolu: DK.net.toHost({t:'shipFull', ship:{...DK.G.ship.serialize(), name:'<img src=x onerror=alert(1)>'}}) → ev sahibi gemiye binince betik çalışır. DK.net.toHost({t:'shipFull', replace:true, ship:{id:DK.G.ship.id, typeId:'sloop', name:'x', upg:{hull:0,sails:0,cannons:0}, hold:{items:{},chests:[]}}}) → ev sahibinin gemisi sloop olur, ambar boşalır, otomatik kayıtla kalıcılaşır.",
+   "acceptance": "Yeni co-op senaryosu: sahte shipFull/replace iletilerinden sonra ev sahibinde typeId, upg, hold ve name değişmez; HUD'da ad metin olarak görünür; konuğun meşru tamir/geliştirme/görünüm niyetleri ev sahibinde uygulanır ve konuğa geri yansır.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "02: H07 (kısmen giderildi), E_gemi-ek-statik-114, H_coop_ui-ek-statik-192"
+  },
+  {
+   "id": "E-02",
+   "title": "Ambar konuktan tam nesne olarak kabul ediliyor: balıklar siliniyor, son yazan kazanıyor, yakınlık denetimi atlatılıyor, keyfî eşya giriyor",
+   "file": "js/net/net.js",
+   "func": "_hostData 'hold' (345-357); treasure.stowInHold (treasure.js:398-418); panels.js 'Ambara koy' (101) ve balık alma (150-152); fishing.store (fishing.js:245-250)",
+   "rootCause": "Ambar niyet olarak değil, konuğun yerel kopyasının tamamı olarak gönderiliyor. Ev sahibi bunu {items, chests} olarak yeniden kuruyor ve hold.fish alanını atıyor (net.js:351-352). Balık ambara konunca ya da alınınca hiç ağ iletisi gönderilmiyor (fishing.js:248, panels.js:151). Yakınlık denetimi konuğun kendi bildirdiği r.target.ship değerine dayanıyor (net.js:349). Anahtar başına 0–999 adet herhangi bir eşya kabul ediliyor.",
+   "impact": "Normal oyunda: konuk ambara bir sandık ya da eşya koyduğunda ev sahibi ambarındaki tüm balıklar silinir ve kayda böyle yazılır; çanta doluyken otomatik ambara giden nadir ve epik balıklar da buna dahil. İki oyuncu aynı anda ambara bir şey koyarsa biri kaybolur; sandık dünyadan zaten kalkmış olur. Kötü niyetle: ambar her yerden boşaltılabilir ya da altin_para gibi eşyalarla 999'ar doldurulup sınırsız altın elde edilir.",
+   "priority": "yuksek",
+   "fix": "Ambar işlemleri holdPut/holdTake niyet iletilerine çevrilmeli ({kind:'item'|'chest'|'fish', id, n, data}). Ev sahibi tek kaynak olarak balıkları da içeren tam ambarı yayınlamalı. Yakınlık ve gemide olma bilgisi ev sahibindeki gerçek konumla doğrulanmalı.",
+   "repro": "Ev sahibi güvertede 'Ambara koy' ile ambara balık koyar ya da çanta doluyken balık tutar; ardından konuk güvertede herhangi bir eşyayı 'Ambara koy' yapar → ev sahibinde DK.G.ship.hold.fish undefined olur. Kötü niyetli yol: konuk DK.net.toHost({t:'hold', ship:DK.G.ship.id, hold:{items:{altin_para:999}, chests:[]}}). Node kopyası: /tmp/denetim_alan/ev_sahibi_dogrulama_sim.mjs (madde 1).",
+   "acceptance": "06b'ye yeni kontrol: ev sahibi ambara 2 balık koyar, konuk bir sandık ve bir eşya koyar → ev sahibinde 2 balık, sandık ve eşya birlikte durur; eşzamanlı iki koyma işleminde hiçbir şey kaybolmaz; sahte 'hold' iletisi ev sahibi ambarını değiştirmez.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "11: #13; 02: G_icerik-ek-statik-161, H07"
+  },
+  {
+   "id": "E-03",
+   "title": "Konuk belirlediği ganimet tablosunu doğurtabiliyor; sandık/kese/kazı/boss/tehlike iletileri mesafe ve sahiplik denetimsiz",
+   "file": "js/net/net.js",
+   "func": "_hostData: lootReq (301-314), chestReq (293-299), pickupReq (300), dig (292), maps (384), hurtBoss (288; bosses.js:1041-1046), hazard (360), shipCmd (361 → _shipCmd 620-633), boat/boatSt (364-365), revive (386), story (326-333), app (274)",
+   "rootCause": "Ev sahibi konuğun gönderdiği ganimet tablosunu (eşya kimliği ve 0–999 adet, 10 satır) olduğu gibi doğuruyor. Sandık açma/taşıma, kese toplama, kazı, boss hasarı ve tehlike iletilerinde mesafe ya da sahiplik denetimi yok. shipCmd 'sails' değeri sınırlanmıyor; cannonFix/mastFix indisleri doğrulanmıyor ve mastFix her seferinde gemiyi yeniden kuruyor. boatSt ham sayı atıyor; revive hedef ve mesafe denetimsiz; story bayrakları her anahtar için true yapılabiliyor.",
+   "impact": "Bir konuk saniyede 120 iletiyle dilediği yere 10×999 altın/mücevher kesesi doğurabilir; bunu herkes alabilir ve ev sahibi kaydına girer (sınırsız kazanç). Ayrıca dünyanın her yerindeki sandıkları ve keseleri uzaktan açıp alabilir, bossları uzaktan öldürebilir, tüm fıçıları patlatıp bulmacaları çözebilir, hikâye bayraklarını değiştirebilir, kayığı NaN ile bozabilir, mastFix seliyle ev sahibinin kare hızını düşürebilir.",
+   "priority": "kritik",
+   "fix": "Tür başına şema tablosu ve ortak bir doğrulayıcı kurulmalı. lootReq yalnız ev sahibinin bildiği kaynaklara bağlanmalı: kırılan sandık kimliği, ölen düşman kimliği ya da bütçeli taşma iadesi. chestReq, pickupReq, dig, hurtBoss ve hazard için ev sahibindeki uzak oyuncu konumuyla mesafe denetimi yapılmalı. shipCmd değerleri num() ile sınırlanmalı; revive yalnız yaralı hedefe ve ≤3 m içinde kabul edilmeli; story bayrakları beyaz listeden geçmeli. İhlal sayacı tutulup eşik aşılınca bağlantı düşürülmeli.",
+   "repro": "Konuk konsolu: for(let i=0;i<100;i++) DK.net.toHost({t:'lootReq', pos:DK.G.player.pos.toArray(), table:[['altin_para',1,999]], exact:true}) → ev sahibinde 100 kese, toplam 99 900 altın. DK.net.toHost({t:'chestReq', a:'open', id:'<uzaktaki sandık kimliği>'}) → sandığın içeriği konuğa gelir.",
+   "acceptance": "06a'ya sahte lootReq, chestReq, pickupReq, dig, hurtBoss, hazard, shipCmd, boatSt ve revive kontrolleri eklenir; hiçbiri ev sahibi durumunu değiştirmez. Meşru akışlar (06b, 06d) geçmeye devam eder.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "02: H07 (kısmen giderildi); 4. bölüm 'Mesaj şeması doğrulama ve oran sınırı yardımcısı'"
+  },
+  {
+   "id": "E-04",
+   "title": "Oyuncu durumu ('st') doğrulanmıyor, oran ve boyut sınırından muaf: NaN ile mesafe denetimleri atlanıyor, yeniden yayınla bant genişliği tüketiliyor",
+   "file": "js/net/net.js",
+   "func": "_hostData (241-249 muafiyet, 276 'st') → _remoteState (643-647) → RemotePlayer.apply/update (86-124); _hostSnapshot (737) yeniden yayın",
+   "rootCause": "Oran sınırı ve 64 KB boyut sınırı yalnız 'st' ve 'ping' dışındaki iletilere uygulanıyor. 'st' yükü hiç doğrulanmadan r.target olarak saklanıyor ve her anlık görüntüde (15 Hz) tüm konuklara yeniden gönderiliyor. Sayı olmayan x/z değeri uzak oyuncu konumunu kalıcı olarak NaN yapıyor; far denetimi NaN>8 karşılaştırması false döndüğü için kendini düzeltmiyor.",
+   "impact": "Konum NaN olunca 'd > sınır' biçimindeki tüm mesafe denetimleri (hurtEnemy, lootReq, hold/holdTake, floatReq) atlanır. Büyük 'st' iletileri konuk sayısı × 15 Hz oranında yeniden yayılarak ev sahibinin yükleme bant genişliğini tüketir ve oturumu düşürebilir. NaN düşman yapay zekâsına ve diğer konuklara da yayılır.",
+   "priority": "yuksek",
+   "fix": "'st' için alan şeması tanımlanmalı: sayılar num() ile ±10 000 içinde, anim/up/eq/mode beyaz listeden, ship var olan bir gemi kimliği. 1 KB boyut sınırı ve saniyede en çok 30 'st' uygulanmalı; NaN ya da sonsuz içeren ileti yok sayılmalı. RemotePlayer.update'e NaN koruması eklenmeli.",
+   "repro": "Konuk konsolu: DK.net.toHost({t:'st', s:{...DK.G.player.netState(), x:'x'}}) → ev sahibinde [...DK.G.remotes.values()][0].pos.x NaN olur. Ardından 300 m uzaktaki düşmana DK.net.toHost({t:'hurtEnemy', id, dmg:160, kind:'melee'}) → hasar uygulanır. Node kanıtı: /tmp/denetim_alan/ev_sahibi_dogrulama_sim.mjs (madde 2).",
+   "acceptance": "Sahte ya da dev 'st' iletileri yok sayılır ve uzak oyuncu konumu sonlu kalır. 06a'daki uzak hasar kontrolü NaN konumla denendiğinde de reddedilir. 50 KB'lık bir 'st' diğer konuklara yansımaz.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "02: H07 ('st' kapsam dışında kaldı)"
+  },
+  {
+   "id": "E-05",
+   "title": "Geç katılan ya da yüklenmekte olan konuğa yüzen nesneler, kilitler, tehlike/bulmaca ve ada durumu aktarılmıyor",
+   "file": "js/net/net.js",
+   "func": "_sendWorld (510-522); events.applyFloats (events.js:239-248); treasure.start ve events.start (treasure.js:105-117, events.js:46-54); main.js applyWorld (325-342)",
+   "rootCause": "Dünya iletisi yalnız gemi, sandık, kese, görev, zaman ve kayığı taşıyor. Yüzen nesneler, interact.locks, hazards (gone/solved/looted) ve islands (opened/freed/temples) gönderilmiyor. applyFloats tanımadığı kimliği atlıyor. Konuk yüklenirken gelen chestSpawn, floatSpawn, pickupSpawn, lock ve marker iletileri systems.start() tarafından siliniyor ve yeniden gönderilmiyor.",
+   "impact": "Oyun sürerken katılan ya da yeniden katılan konuk ev sahibinin denizdeki varil, şişe, kazazede ve gök taşı parçalarını hiç görmez. Dolu dümeni veya topu boş sanıp alır, girdileri yok sayılır. Ev sahibinin kırdığı sandıkları ya da patlattığı fıçıları yeniden kırıp ganimeti çoğaltabilir. Çözülmüş bulmacayı çözülmemiş görür ve kafes çarpıştırıcısına takılır. Yükleme sırasında doğan sandık konukta hiç belirmez.",
+   "priority": "orta",
+   "fix": "Dünya iletisine netFloats (tür bilgisiyle birlikte), locks, hazards.save() ve islands.save() eklenmeli. Konukta sessionStart'tan sonra ev sahibinden ikinci bir tam eşitleme ({t:'resync'}) istenmeli. applyFloats tanımadığı kimliği türüyle oluşturabilmeli.",
+   "repro": "Ev sahibi oyundayken DK.events.spawnFloating('barrel', <yakın bir konum>) çağırır ve dümene geçer; ardından konuk katılır → konukta DK.events.floating boş kalır ve DK.interact.locks dümen kilidini içermez.",
+   "acceptance": "06b'ye geç katılım bölümü eklenir: ev sahibi önce varil doğurur, dümene geçer, bir fıçı patlatır, bir bulmaca çözer; sonra katılan konukta varil görünür, dümen kilitli, fıçı yok ve bulmaca çözülmüş olur.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "02: G_icerik-ek-statik-164"
+  },
+  {
+   "id": "E-06",
+   "title": "Ada ödül sandıkları, tutsaklar, sunak ve tapınak durumu her istemcide ayrı; co-op'ta ödüller çoğaltılabiliyor",
+   "file": "js/world/islands.js",
+   "func": "_chest (741-750), sunak sandığı (858-859), tutsak hücresi (956-963), update (271-292)",
+   "rootCause": "islands.js'de hiç ağ kodu yok: opened, freed ve templeState her istemcide ayrı tutuluyor. Ada içeriği her istemcide yalnız kendi oyuncusunun çevresinde kuruluyor (islands.js:273). Konuğun ada durumu konuk kaydına yazılmıyor (main.js:203).",
+   "impact": "Co-op'ta her oyuncu aynı ada sandığını ayrı ayrı açıp ganimeti alabilir; konuk her oturumda yeniden açabilir, bu kalıcı bir çoğaltmadır. Ev sahibi tutsakları kurtardığında konukta tutsaklar hücrede görünmeye devam eder ve konuk +120 altını yeniden alır. Tapınak kapısı ve mekanizması iki tarafta farklı durumda olabilir.",
+   "priority": "orta",
+   "fix": "Ada işlemleri ev sahibine istek olarak gönderilmeli ({t:'islandAct', id, a}); ev sahibi durumu değiştirip yayınlamalı, ödülü netGive ile vermeli. Dünya iletisine islands.save() eklenmeli.",
+   "repro": "Ev sahibi ve konuk aynı adada. Ev sahibi 'Sandığı aç' yapar → konukta aynı sandık hâlâ açılabilir ve içerik konuğun çantasına girer. Konuk menüye dönüp yeniden katılınca sandığı bir kez daha açabilir.",
+   "acceptance": "Co-op testi: ev sahibi sandığı açınca konukta 'Sandık boş' görünür. Konuk tutsakları kurtarınca ev sahibinde tutsaklar kalkar ve islands.freed bunu içerir; ev sahibi kaydında da görünür.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "02: G_icerik-ek-statik-164 (geç katılım kısmı)"
+  },
+  {
+   "id": "E-07",
+   "title": "Ev sahibi sekmesi arka plandayken dünya ve anlık görüntüler donuyor; konuklar uyarılmıyor",
+   "file": "js/core/engine.js",
+   "func": "loop (54, 70: yalnız requestAnimationFrame); net.update (net.js:696-732); _hostData 'ping' (net.js:269); _clientData (net.js:527)",
+   "rootCause": "Benzetim ve anlık görüntü gönderimi yalnız rAF döngüsünde çalışıyor; sekme gizlenince rAF duruyor. Ev sahibinin olay işleyicisi ping'lere pong yanıtı vermeye devam ettiği için konuklarda _lastHostMsg tazeleniyor. Bu yüzden 6 sn zayıf bağlantı uyarısı ve 25 sn zaman aşımı hiç tetiklenmiyor.",
+   "impact": "Ev sahibi alt-tab yaptığında düşmanlar, gemi (dümende konuk olsa bile), olaylar ve zaman tüm konuklar için açıklamasız donar. Konuk istekleri işlenir ama sonuçları anlık görüntüyle yansımaz; ortaya yarım bir durum çıkar.",
+   "priority": "orta",
+   "fix": "Ev sahibi görünürlük değişiminde {t:'hostPause', on} yayınlamalı ve konukta 'Kaptan uzakta' göstergesi çıkmalı; ya da Worker tabanlı bir zamanlayıcıyla arka planda 5–10 Hz benzetim ve görüntü sürdürülmeli. Konuk zayıf bağlantıyı pong'a göre değil, son 'snap' iletisinin yaşına göre değerlendirmeli.",
+   "repro": "2 oyunculu oda. Ev sahibi sekmesini 30 sn arka plana alır → konukta DK.enemies.list konumları ve DK.G.ship.x değişmez, hiçbir bildirim çıkmaz.",
+   "acceptance": "Ev sahibi gizlendikten sonra 2 sn içinde konukta duraklama göstergesi çıkar; ya da arka plan benzetimiyle anlık görüntüler en az 5 Hz sürer.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "02: 4. bölüm H_coop_ui 'Kalp atışı zaman aşımı ve yeniden bağlanma akışı'"
+  },
+  {
+   "id": "E-08",
+   "title": "Uzak varlık yumuşatması zaman damgasız ve ara belleksiz: tıkanmada lastik bant etkisi ve ışınlanma oluyor",
+   "file": "js/net/net.js",
+   "func": "RemotePlayer.update (87-124); ship.clientUpdate (ship.js:566-579); enemies._interp (enemies.js:1621-1638); join() kanal seçenekleri (418)",
+   "rootCause": "İletilerde zaman damgası ya da sıra numarası yok. Alıcı yalnız son hedefe 1−e^(−14dt) oranıyla yaklaşıyor ve fark 8 m'yi aşınca tek karede ışınlıyor. Tüm trafik tek güvenilir ve sıralı kanalda olduğu için paket kaybı yeniden iletim bekletmesine (HOL) ve ardından toplu varışa dönüşüyor.",
+   "impact": "/tmp/denetim_alan/uzak_oyuncu_sim.mjs ölçümleri: 7 m/sn koşuda tıkanma olmadan bile 1,1 m geriden izleniyor; 0,6 sn tıkanmada kare başına 0,87 m sıçrama (normalin ~7,5 katı); 1,2 sn ve üstü tıkanmada 8,4–14 m ışınlanma. Gemi 12 m'de sıçrıyor. Kullanıcının 'paket kaybında ışınlanma olmamalı' hedefi karşılanmıyor.",
+   "priority": "orta",
+   "fix": "Görüntüye ev sahibi zamanı (ms) ve sıra numarası eklenmeli. Konukta 100–150 ms geriden ara bellekli interpolasyon yapılmalı; boşlukta en çok 250 ms dış değerleme, sonrasında hız sınırlı yakalama uygulanmalı. Işınlama yalnız açık olaylarda (gemiye biniş, teleport) yapılmalı. Durum iletileri için ordered:false ve maxRetransmits:0 ayarlı ikinci bir DataChannel açılmalı.",
+   "repro": "Node benzetimi (yukarıdaki dosya); ya da tarayıcıda ev sahibinin net.update'ini 1,5 sn atlatıp koşan ev sahibini konuktan izlemek → tek karede 8 m'den büyük sıçrama görülür.",
+   "acceptance": "Yapay gecikme/kayıp testi (%5 kayıp, 100 ms gecikme): uzak oyuncu kare başına normal adımın en çok 2 katı ilerler; 1,5 sn tıkanmada ışınlanma olmaz.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin"
+  },
+  {
+   "id": "E-09",
+   "title": "İlgi alanı yönetimi yok: tüm varlıklar her konuğa aynı sıklıkta ve tam liste olarak gidiyor",
+   "file": "js/net/net.js",
+   "func": "_hostSnapshot (734-743), broadcast (489)",
+   "rootCause": "Tüm oyuncular, gemiler, yüzen nesneler ve mermiler her görüntüde; tüm düşman, hayvan ve deniz devi listeleri her iki görüntüde bir gönderiliyor. Konuğun konumu dikkate alınmıyor ve her konuğa aynı JSON gidiyor.",
+   "impact": "02. belge ölçümü: 2,3–3 KB/görüntü, konuk başına ~20–36 KB/sn, 3 konukta ev sahibi çıkışı ~1 Mbit/sn. Uzak adadaki konuk ilgisiz varlıkları da alır; zayıf bağlantıda tıkanma ve E-08'deki ışınlanma riski artar.",
+   "priority": "orta",
+   "fix": "Konuk başına görüntü üretilmeli: ≤150 m her görüntüde, ≤600 m üç görüntüde bir, ötesi 1 Hz ya da hiç. Değişmeyen alanlar gönderilmemeli (delta); kısaltılmış anahtar ya da ikili serileştirme kullanılmalı; yeni varlıklar ayrı bir 'spawn' iletisiyle bildirilmeli.",
+   "repro": "06b'nin profil adımında ev sahibinde JSON.stringify(snap).length ölçülür; konuk 2 km uzağa taşınır → boyut değişmez.",
+   "acceptance": "Uzaktaki konuğa giden görüntü, yakındaki konuğunkinin en çok %40'ı kadardır; 4 oyunculu oturumda ev sahibi çıkışı 300 kbit/sn'yi aşmaz.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "02: 4. bölüm H_coop_ui 'Snapshot bant genişliği'"
+  },
+  {
+   "id": "E-10",
+   "title": "Konuk dümende: yelken komutu anlık görüntüyle eziliyor (basışların yarıdan fazlası kayboluyor), dümen bırakılınca dümen açısı ev sahibinde kalıyor",
+   "file": "js/ship/ship.js",
+   "func": "applyNet (714: this.sailTarget = s[6]); player._updateHelm (player.js:905-912); net.update 'helm' (net.js:719); shipControl.leaveStation (shipControl.js:194-213)",
+   "rootCause": "Konuk dümende sailTarget'ı yerelde değiştirip 15 Hz'lik 'helm' iletisiyle gönderiyor. Ancak her ev sahibi görüntüsü yerel sailTarget'ı ev sahibinin eski değeriyle eziyor ve konuk bir sonraki iletide bu eski değeri geri gönderiyor. leaveStation dümeni yalnız yerelde sıfırlıyor; ev sahibine rudder:0 gitmiyor ve 'lock' kapanışı da dümeni sıfırlamıyor.",
+   "impact": "/tmp/denetim_alan/dumen_yelken_sim.mjs: konuğun Boşluk ile yelken aç/kapa basışlarının yalnız %37–50'si tutuyor ve bu gecikmeden bağımsız. W/S ayarı yavaş ve titrek. Konuk A ya da D basılıyken dümeni bırakırsa (ya da bağlantısı koparsa) gemi ev sahibinde dönmeye devam eder.",
+   "priority": "orta",
+   "fix": "Dümendeki konuk için applyNet sailTarget'ı ezmemeli; ya da girdi sıra numarasıyla ev sahibinin onayladığı son değer esas alınmalı. Yelken aç/kapa 'shipCmd sails' niyetiyle gitmeli. leaveStation ve _dropPeer'da ev sahibi setRudder(0) uygulamalı; istasyon kilidi kapanınca o istasyonun girdileri sıfırlanmalı.",
+   "repro": "2 oyunculu oda. Konuk dümende aralıklarla 10 kez Boşluk'a basar → ev sahibinde DK.G.ship.sailTarget 10'dan az kez değişir. Konuk A basılıyken E ile dümeni bırakır → ev sahibinde rudderInput sıfırdan farklı kalır.",
+   "acceptance": "Co-op kontrolü: konuğun 10 aç/kapa basışının 10'u da ev sahibinde uygulanır; dümen bırakılınca ev sahibinde rudderInput 0 olur.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "02: E-15, H_coop_ui-ek-statik-197"
+  },
+  {
+   "id": "E-11",
+   "title": "Kilit isteği reddedilince konuğa bildirilmiyor; reddedilen istek diğer konuklara yine de 'on' olarak yayılıyor",
+   "file": "js/net/net.js",
+   "func": "_hostData 'lock' (366-372); shipControl.takeHelm/takeCannon (174-192)",
+   "rootCause": "Ev sahibi kilidi vermese bile {t:'lock', on:true, who:pid} yayınlıyor; kilidin sahibi olmayan konuğun 'off' iletisini de yayınlıyor. İstekte bulunan konuğa ret dönülmüyor ve konuk kilidi yerelde kendine yazmış oluyor.",
+   "impact": "Eşzamanlı istasyon almada ya da geç katılımda konuk 'Dümendesin' mesajını görür ama girdileri yok sayılır. Diğer konuklarda kilidin sahibi yanlış görünür ya da dümen boş sanılır.",
+   "priority": "dusuk",
+   "fix": "Kilit kararı yalnız ev sahibinde verilmeli: istek → {t:'lockResult', id, ok, who}. Yayın yalnız gerçek durum değiştiğinde yapılmalı; konuk ret alınca istasyondan çıkmalı.",
+   "repro": "Ev sahibi dümendeyken geç katılan bir konuk E ile dümene geçer → konukta mode 'helm' olur, ev sahibinde kilit ev sahibinde kalır; üçüncü bir oyuncuda locks.get(gemi+':helm') konuğun kimliğini gösterir.",
+   "acceptance": "Reddedilen istekte konuk istasyondan çıkarılır ve bildirim görür; tüm eşlerde kilit sahibi aynıdır.",
+   "presentIn": "yalniz_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "E-12",
+   "title": "Konuğun tersanede yaptığı tam tamir ev sahibine yalnız gövde/delik/su olarak ulaşıyor; direk, top, bölge hasarı ve yangın onarılmıyor ama ücret tam alınıyor",
+   "file": "js/net/net.js",
+   "func": "_shipFull (610-619); shop.repairShip (shop.js:179-192), repairCost (shop.js:170-178)",
+   "rootCause": "_shipFull yalnız name, upg, hp, holes, water, hold, cannonballs, planks ve look alanlarını uyguluyor; parts, mastHp, cannonHp ve fires atlanıyor. Konuk ise bölge, direk ve top dahil tam ücreti kendi tarafında ödüyor.",
+   "impact": "Konuk Usta Bora'ya tamir parası öder; ev sahibinde direkler, toplar, bölge hasarı ve yangın onarılmaz. Bir sonraki görüntüyle direk konukta da yeniden devrilir; altın boşa gider, gemi yavaş ya da topsuz kalır.",
+   "priority": "orta",
+   "fix": "Tamir de E-01'deki gibi niyet iletisine çevrilmeli: ev sahibi repairShip'teki sıfırlamaların tamamını (parts, mastHp, cannonHp, fires, rebuild) kendi gemisine uygulamalı. Ücret, ev sahibinin onayı geldikten sonra düşülmeli.",
+   "repro": "Ev sahibinde s.mastHp[0]=0 ve s.cannonHp[0]=20 yapılır; konuk limanda 'Gemiyi tamir et' seçer → ev sahibinde mastHp[0] hâlâ 0, cannonHp[0] 20 kalır; 1 sn sonra konuğun kopyası da 0'a döner.",
+   "acceptance": "Co-op testi: konuk tamirinden sonra hem ev sahibinde hem konukta tüm parts=100, mastHp ve cannonHp=100, fires=[] olur ve direk dik durur.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "02: E-07 (önerinin _shipFull kısmı), E_gemi-ek-statik-114"
+  },
+  {
+   "id": "E-13",
+   "title": "Konuğun 'Batan gemimi kurtar' (600 altın) ve 'Tayfa kirala' (500 altın) işlemleri yalnız yerelde çalışıyor; ödenen altın boşa gidiyor",
+   "file": "js/game/events.js",
+   "func": "raiseShip (428-440); quests.js 'Tayfa kirala' (364-368) ve 'Batan gemimi kurtar' seçeneği (470); events.update tayfa bloğu (82-87)",
+   "rootCause": "Her iki işlem de G.online/G.isHost denetimi yapmadan yerelde çalışıyor ve ev sahibine hiçbir ileti gitmiyor. Konuktaki gemi kopyası bir sonraki görüntüyle (applyNet: sunk, x, z) geri alınıyor. G.crewHired konuk kaydına da girmiyor; yalnız ev sahibi kaydında tutuluyor (main.js:77-78).",
+   "impact": "Konuk 600 altın öder; gemi konukta bir an yüzeye çıkar, sonra yeniden batar, ev sahibinde ise batık kalır. 500 altınlık tayfa yalnız konuğun yerel kopyasında su boşaltıp tahta harcar ve her oturumda yeniden satın alınması gerekir.",
+   "priority": "orta",
+   "fix": "Konukta bu işlemler ev sahibine niyet olarak gönderilmeli ({t:'shipOp', op:'raise'|'hireCrew'}) ve ücret ev sahibinin onayıyla düşülmeli; ya da seçenekler konukta 'Bunu kaptan yapabilir' açıklamasıyla devre dışı bırakılmalı.",
+   "repro": "Ev sahibinde gemi batırılır (s.sunk=true). Konuk Usta Bora'da 'Batan gemimi kurtar' seçer → konuğun altını 600 azalır; 1 sn sonra konukta DK.G.ship.sunk yine true olur, ev sahibinde de true kalır.",
+   "acceptance": "Konuğun kurtarma isteği ev sahibinde gemiyi kurtarır: iki tarafta da sunk=false ve gemi limanda. Ya da seçenek konuğa hiç sunulmaz ve konuğun altını değişmez.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "02: E_gemi-ek-statik-113, H_coop_ui-ek-statik-193, E_gemi-ek-statik-115"
+  },
+  {
+   "id": "E-14",
+   "title": "Ev sahibi ayrılınca açık paneller ve G.uiOpen temizlenmiyor; sonraki oturumda girdi kilitli başlıyor",
+   "file": "js/main.js",
+   "func": "G.on('hostLeft') (313-318); ui.close (ui.js:51-67); openChat (main.js:354)",
+   "rootCause": "hostLeft işleyicisi ui.closeAll() çağırmadan game.stop() ile G.state'i 'menu' yapıyor. ui.close G.uiOpen'ı yalnız G.state 'playing' iken sıfırladığı için bayrak true kalıyor. Sohbet girişi odaktayken de G.uiOpen=true kalıyor.",
+   "impact": "Ev sahibi ayrıldığında açık olan envanter ya da dükkân paneli ana menünün üstünde kalır. Sonraki oturumda oyuncu yürüyemez, kamera dönmez, kısayollar çalışmaz (player.js:353, game.js:197-199); bu durum Esc ile duraklatma menüsü açılıp kapatılana kadar sürer.",
+   "priority": "orta",
+   "fix": "hostLeft'te önce ui.closeAll() çağrılmalı, sohbet kutusu kapatılmalı, G.uiOpen=false yapılmalı ve input.unlockPointer() çağrılmalı. game.start başında da G.uiOpen=false atanmalı.",
+   "repro": "Konukta envanter (Tab) açıkken ev sahibi sekmesini kapatır → konukta ana menü ve üstünde açık envanter görünür. Yeni bir oyun başlatılınca DK.G.uiOpen === true olur ve WASD çalışmaz.",
+   "acceptance": "Senaryo: konukta panel açıkken hostLeft gelir → ui.stack boş ve G.uiOpen false olur; yeni oturumda hareket hemen çalışır.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "02: H_coop_ui-ek-statik-190"
+  },
+  {
+   "id": "E-15",
+   "title": "Konuk ilerlemesi için periyodik kayıt yok; çökmeden sonra eski yuva kaydı daha yeni rütbeyi eziyor",
+   "file": "js/game/progress.js",
+   "func": "start (94-107), _guestSave (110); game.update otomatik kayıt (game.js:218); menu.pause (menu.js:348); handlers.saveNow (main.js:199-206)",
+   "rootCause": "Otomatik kayıt yalnız G.isHost iken yapılıyor. Konukta kayıt yalnız seviye atlama, yetenek öğrenme, sekme gizlenmesi/kapanması, menüye dönüş ve hostLeft anlarında oluyor. progress.start, yuva kaydında progress varsa daha yeni olabilecek dksh.progress.guest anahtarına hiç bakmıyor; seviye atlama ise yalnız bu anahtarı güncelliyor.",
+   "impact": "Tarayıcı ya da sekme çöktüğünde veya işlem öldürüldüğünde (özellikle mobilde) son kayıttan bu yana kazanılan XP, eşya ve keşif kaybolur. Çökmeden önce seviye atlanmışsa bir sonraki katılımda eski yuva yüklenir ve yeni seviye kalıcı olarak silinir, çünkü bir sonraki _guestSave eski değeri yazar. Konuk elle de kaydedemiyor.",
+   "priority": "orta",
+   "fix": "Konukta 60–120 sn'de bir yerel kayıt alınmalı ve duraklatma menüsüne 'Kişisel ilerlemeyi kaydet' eklenmeli. progress.start iki kaynaktan (yuva ve anahtar) savedAt ya da seviye+XP'si büyük olanı seçmeli; _guestSave anahtara savedAt yazmalı.",
+   "repro": "Konuk XP kazanıp seviye atlar (dksh.progress.guest yeni seviyeyi içerir). Sekme, beforeunload çalışmadan süreç öldürülerek kapatılır. Konuk yeniden katılınca progress.level eski seviyede başlar.",
+   "acceptance": "2 oyunculu test: konuk seviye atlar, sayfa beforeunload olmadan zorla yeniden yüklenir (localStorage korunur); yeniden katılınca seviye ve XP korunur. 120 sn'lik oynamada en az bir konuk kaydı yazılır.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "02: H16 (03. belgede kapatıldı deniyor, kodda hâlâ açık), A7 (giderildi)"
+  },
+  {
+   "id": "E-16",
+   "title": "Otomatik yeniden bağlanma yok; aynı adla eşleşme ölü kod; dolu odada hayalet yuva; renk çakışması; düşürme nedeni bildirilmiyor",
+   "file": "js/net/net.js",
+   "func": "join (410-443; kapanışta yalnız hostLeft, 441); _hostData 'hello' (250-268); _dropPeer (390-403); update kalp atışı (704)",
+   "rootCause": "Kopmada konuk doğrudan menüye düşürülüyor; otomatik yeniden deneme ya da ICE yeniden başlatma yok. Yeniden katılım eşleşmesi (255) roster'da bağlantısız kayıt arıyor, ama _dropPeer kaydı roster'dan siliyor (394); bu yüzden eşleşme fiilen hiç çalışmıyor. Eski bağlantı, oyundaysa 15 sn, değilse WebRTC kapanışına (30 sn+) kadar yuvayı tutuyor. Renk roster uzunluğundan seçiliyor (257). Ev sahibi düşürdüğü konuğa neden göndermiyor; 'kick' iletisi hiçbir yerde gönderilmiyor.",
+   "impact": "Kısa bir kopmada konuk menüye atılır, kodu yeniden girmek zorunda kalır, limanda doğar (main.js:341) ve taşıdığı sandık yerde kalır. 4/4 dolu odada çöken konuk 15–30 sn boyunca 'Oda dolu' alır. Geri gelen konuk başka bir oyuncuyla aynı rengi alabilir. Ekrandaki 'Oda sahibi ayrıldı' metni yanıltıcıdır. 06c taban koşusu 2/7 ile kaldı (bilinen #37).",
+   "priority": "orta",
+   "fix": "Konukta otomatik yeniden katılma eklenmeli: aynı kod, 1-2-4-8 sn üstel bekleme, 60 sn'ye kadar. Ev sahibi oturum belirteciyle 60 sn boyunca koltuk, konum ve rengi ayırmalı; aynı belirteçle gelen yeni bağlantı eskisini hemen düşürmeli. 'kick'/'drop' nedeni iletisi gönderilmeli, renk boş renk havuzundan seçilmeli, ICE 'failed' durumunda yeniden bağlanma denenmeli.",
+   "repro": "3 oyunculu oda. Konuk sekmesini yeniler ve hemen aynı kodla katılır → ev sahibinde roster'da aynı adla 2 kayıt ve 15 sn boyunca hayalet bir uzak oyuncu görünür. 4/4 dolu odada aynı işlem 'Oda dolu.' ile reddedilir.",
+   "acceptance": "Konuk sekmesi yenilenince en çok 10 sn içinde aynı renk ve konumla oyuna döner; roster'da çift ad olmaz; dolu odada ret alınmaz. 06c 10 ardışık koşuda 7/7 geçer.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "11: #37; 02: 4. bölüm 'Kalp atışı zaman aşımı ve yeniden bağlanma akışı'"
+  },
+  {
+   "id": "E-17",
+   "title": "Olaylar ev sahibi merkezli: konuk çevresinde olay çıkmıyor; bildirim, ödül ve XP konuğa ulaşmıyor",
+   "file": "js/game/events.js",
+   "func": "update (89-95), _classic (122-156), collectFloating (217-219), _updateEnemyShip (301-319); worldEvents.context (worldEvents.js:78-84), _updateWisps (worldEvents.js:163-190); net.js _clientData 'story' (568)",
+   "rootCause": "Olay zamanlayıcısı ve konum seçimi yalnız ev sahibinin oyuncusuna ve gemisine göre yapılıyor. Olay bildirimleri G.notify ile yalnız ev sahibinde çıkıyor. Düşman gemisini ele geçirme altını p.inv.gold ile yalnız ev sahibine gidiyor; shipCaptured ve enemyShipSunk XP'si de yalnız ev sahibine yazılıyor. Gök taşı için rareFind yalnız toplayan ev sahibiyse tetikleniyor. Hayalet ışıklar yalnız ev sahibi yaklaşınca ilerliyor ve olayı yalnız o bitirebiliyor. Konukta 'story' iletisi aşamayı doğrudan yazıyor; advance çağrılmadığı için bildirim ve XP yok.",
+   "impact": "Ev sahibinden uzaktaki konuğun çevresinde hiç olay üretilmez. Ev sahibinin yanındaki konuk nesneyi görür, ama gözcü uyarısını, fırtına ya da düşman gemisi bildirimini ve kuş olayını almaz. Düşman gemisini birlikte yenen konuk altın ve XP alamaz. Konuk hikâye ilerlediğinde 'Yeni görev' görmez ve 150 XP'yi kaçırır.",
+   "priority": "orta",
+   "fix": "Olay bağlamı rastgele ya da en uygun oyuncuya göre seçilmeli; uzak oyuncu konumları ev sahibinde zaten mevcut. Bildirimler {t:'notify', text, kind} ile yayınlanmalı; ödüller shop.earn ve netXp ile paylaştırılmalı; ışıklar en yakın oyuncuya göre ilerlemeli. Konukta 'story' gelince advance'e eşdeğer bildirim ve XP verilmeli.",
+   "repro": "Konuk ev sahibinden 1 km uzakta 10 dk denizde kalır → konukta hiç olay çıkmaz. Ev sahibinin yanında DK.events.trigger('enemyShip') çağrılır → düşman tayfası yenilince yalnız ev sahibinin altını artar.",
+   "acceptance": "Co-op testi: konuğun yakınında tetiklenen olay konukta bildirim üretir; ele geçirme altını ve XP her oyuncuya paylaştırılır; konuk hikâye ilerleyince 'Yeni görev' bildirimini görür.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "02: G_icerik-ek-statik-163; 4. bölüm 'Dünya olaylarını konuklarla paylaş' (kısmen uygulandı) ve 'Konuk hayalet ışık kurulumu'"
+  },
+  {
+   "id": "E-18",
+   "title": "Konuklar gülle ve lav bombası patlamalarından hasar almıyor",
+   "file": "js/game/combat.js",
+   "func": "init → G.on('explosion') (44-54); effects.update gülle zemin çarpması (effects.js:186-187)",
+   "rootCause": "'explosion' işleyicisi yalnız yerel G.player'a hasar veriyor (combat.js:53). Ev sahibindeki patlamada uzak oyuncular denetlenmiyor. Konukta gülleler ve lav bombaları yalnız görsel (G.visualOnlyBalls; net.js:573, worldEvents.js:292) olduğundan konukta hiç patlama olayı üretilmiyor.",
+   "impact": "Volkanik bombardıman ve düşman gemisinin karaya düşen gülleleri yalnız ev sahibine zarar veriyor; konuklar bağışık kalıyor. Bu hem denge hem adalet sorunu.",
+   "priority": "orta",
+   "fix": "Ev sahibinin patlama işleyicisinde G.remotes için mesafe denetimi yapılmalı ve vurulan oyunculara netHurtPlayer({cause:'Patlama'}) gönderilmeli.",
+   "repro": "Ev sahibi ve konuk yan yana. Ev sahibinde DK.G.emit('explosion', {pos:<konuğun konumu>, radius:3.5, dmg:40}) çağrılır → konuğun canı değişmez.",
+   "acceptance": "Co-op testi: konuğun 2 m yakınındaki bir patlama konuğun canını düşürür.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "02: F_dusman-ek-statik-138"
+  },
+  {
+   "id": "E-19",
+   "title": "Konuğun satış payı ev sahibi sınırında kırpılıyor; aradaki fark kayboluyor",
+   "file": "js/net/net.js",
+   "func": "_hostData 'gold' (373-383); shop.earn (shop.js:120-129)",
+   "rootCause": "Satış yapan konuk payı (gold/(n+1)) kendi altınından önceden düşüyor. Ev sahibi ise iletiyi 5000'e kırpıyor ve dakikalık 20 000 bütçeyi aşan iletiyi tamamen atıyor. Aradaki fark kimseye gitmiyor.",
+   "impact": "2 oyunculu odada konuk 12 000 altınlık satış yaparsa ev sahibi 6000 yerine 5000 alır ve 1000 kaybolur. 4 oyunculu odada 30 000'lik satışta üç alıcı 7500 yerine 5000 alır; toplam 7500 kaybolur. Bir dakika içinde çok satış yapan konuğun bütçeyi aşan payı tümden kaybolur.",
+   "priority": "dusuk",
+   "fix": "Pay ev sahibinde hesaplanmalı (konuk satışı bildirir, ev sahibi doğrular); ya da kırpılan fark satan konuğa geri gönderilmeli ({t:'goldRefund'}) ve bütçe aşımında red bildirilmeli.",
+   "repro": "/tmp/denetim_alan/ev_sahibi_dogrulama_sim.mjs (madde 3). Oyunda: 2 oyunculu odada konuk ambardaki 4 efsane sandığı (12 000) satar → ev sahibi yalnız +5000 alır.",
+   "acceptance": "Meşru bir satışta tüm oyunculara dağıtılan toplam, yuvarlama dışında satış tutarına eşittir.",
+   "presentIn": "yalniz_v04",
+   "confidence": "kesin"
+  },
+  {
+   "id": "E-20",
+   "title": "Uzak oyuncunun görünüm değişikliği, meşalesi ve yaralı düşme bildirimi eşitlenmiyor",
+   "file": "js/net/net.js",
+   "func": "_remoteState (643-647), _hostData 'app' (274) ve 'downed' (385), RemotePlayer.update (87-124), _clientData (526-578)",
+   "rootCause": "RemotePlayer yalnız ilk görüldüğünde kuruluyor; terzide görünüm değişince ('app') karakter yeniden kurulmuyor ve isim etiketi güncellenmiyor. 'st' içindeki torch alanı hiç uygulanmıyor. 'downed' ev sahibinde yalnız yerel bildirim olarak kalıyor, diğer konuklara yayılmıyor; konukta 'downed' işleyicisi de yok.",
+   "impact": "Terzide kıyafet değiştiren oyuncu diğerlerinde eski görünümüyle kalır. Gece meşale ışığı diğer oyuncularda görünmez. Yaralı düşen tayfa için diğer konuklar bildirim almaz; yalnız takım listesinde 'YARALI' yazar.",
+   "priority": "dusuk",
+   "fix": "'app' gelince RemotePlayer.char.build(app) çağrılmalı ve etiket yenilenmeli. Uzak oyuncuya meşale görseli ve ışığı eklenmeli. 'downed' ev sahibinde yayınlanmalı ve konukta işlenmeli.",
+   "repro": "Konuk terzide şapka değiştirir → ev sahibindeki uzak karakter değişmez. Konuk F ile meşale yakar → ev sahibinde ışık görünmez.",
+   "acceptance": "Co-op testi: görünüm değişikliği en çok 1 sn içinde diğer oyunculara yansır; meşale durumu eşittir; yaralı bildirimi tüm eşlerde çıkar.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin"
+  },
+  {
+   "id": "E-21",
+   "title": "Ev sahibinden uzaktaki konukta buzdağı örgüleri saniyede ~7 kez kurulup siliniyor",
+   "file": "js/game/worldEvents.js",
+   "func": "update (363-373), applyNet (325-337)",
+   "rootCause": "Konukta update, yerel oyuncudan 1400 m'den uzaktaki buzdağını 'gone' işaretleyip siliyor. Ev sahibi görüntüsü (7,5 Hz) aynı tohumu yeniden gönderdiği için applyNet onu yeniden kuruyor.",
+   "impact": "Buzul olayı sırasında ev sahibinden 1400 m'den uzaktaki konuk her saniye ~7 kez 3–6 ikosahedron örgüsü ve malzemesi kurup bırakır. Ekranda görünmez, ama gereksiz GPU yüklemesi, çöp ve Ship.obstacles dalgalanması yaratır.",
+   "priority": "dusuk",
+   "fix": "applyNet ile gelen (remote:true) buzdağları konukta mesafe ya da süreye göre silinmemeli; ya da ilgi alanı süzgeciyle (E-09) uzak konuğa hiç gönderilmemeli.",
+   "repro": "Ev sahibi buzul bölgesinde DK.worldEvents.trigger('iceberg') çağırır; konuk 2 km uzaktadır → konukta 5 sn boyunca icebergs uzunluğu ve geometri sayacı sürekli dalgalanır.",
+   "acceptance": "Uzaktaki konukta buzdağı sayısı sabit kalır ve renderer.info.memory.geometries dalgalanmaz.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "E-22",
+   "title": "Herkese açık odalar 12 küresel ve öngörülebilir yuvayla sınırlı; ev sahibinin oyuncu atma aracı yok",
+   "file": "js/net/net.js",
+   "func": "host (198-221), listPublic (451-467); menu.lobby (menu.js:264-302)",
+   "rootCause": "Açık odalar PeerJS bulutunda sabit dksh-v1-pub-0..11 kimliklerini kullanıyor; dünya genelinde en çok 12 açık oda olabiliyor ve bu adreslere herkes bağlanabiliyor. 'kick' işleyicisi var ama ev sahibinin bunu gönderebileceği bir arayüz ya da kod yolu yok.",
+   "impact": "Açık odaya giren kötü niyetli bir oyuncu (E-01..E-04) odadan atılamaz. Yuvalar başka kişilerce işgal edilebilir; 13. açık oda kurulamaz.",
+   "priority": "dusuk",
+   "fix": "Lobi ve duraklatma menüsüne 'At' düğmesi ve oturum içi engel listesi eklenmeli. Yuva kimlikleri sürüme bağlı bir tuz ya da önekle türetilmeli; uzun vadede küçük bir lobi sunucusu düşünülmeli.",
+   "repro": "13 sekmede herkese açık oda kurulmaya çalışılır → 13. sekmede 'Tüm herkese açık oda yuvaları dolu' hatası alınır.",
+   "acceptance": "Ev sahibi lobide ve oyunda bir konuğu atabilir; atılan konuk 'Odadan çıkarıldın' mesajını görür ve aynı oturumda yeniden katılamaz.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "02: 4. bölüm 'Oyuncu atma / engelleme arayüzü'"
+  },
+  {
+   "id": "E-23",
+   "title": "Çoklu sekme kilidi yok: aynı dünya yuvası ya da konuk kaydı iki sekmede birbirini eziyor",
+   "file": "js/core/save.js",
+   "func": "write/read (15-45); main.js startOnlineHost/startOnlineGuest (174-197)",
+   "rootCause": "Aynı tarayıcıda iki sekme aynı online yuvayı ya da tek ve küresel konuk anahtarlarını (dksh.guest.0, dksh.progress.guest) kullanabiliyor. BroadcastChannel ya da navigator.locks kullanılmıyor.",
+   "impact": "İki sekmede aynı dünyayı barındırmak ya da iki farklı odaya konuk olarak katılmak kayıtları birbirine ezdirir; son yazan kazanır ve dünya ya da rütbe geri sarılır.",
+   "priority": "dusuk",
+   "fix": "navigator.locks.request('dksh-slot-'+kind+slot) ile yuva kilidi alınmalı; kilit alınamazsa 'Bu dünya başka bir sekmede açık' uyarısı gösterilmeli. Konuk anahtarına savedAt ve sekme kimliği yazılmalı.",
+   "repro": "İki sekmede aynı online yuva 'Oda kur' ile açılır ve farklı ilerlemeler yapılır → yalnız son kaydeden sekmenin durumu kalır.",
+   "acceptance": "İkinci sekme aynı yuvayı açmaya çalıştığında engellenir ve uyarı görür.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin"
+  }
+ ],
+ "userClaims": [
+  {
+   "claim": "(1) Yüzen varil co-op'ta eksik",
+   "v03": "dogru",
+   "v04": "kismen",
+   "evidence": "v0.3: events.js:144-176 spawnFloating ağ yayını yapmıyor; events.update v0.3:75 'if (!G.isHost) return' nedeniyle konukta olay yok; collectFloating (v0.3:182) yerel; v0.3 docs/11_ONLINE_TEST_RAPORU.md §11.3 'yalnızca ev sahibinde'. v0.4: ev sahibi floatSpawn yayınlıyor (events.js:193, net.js:159), konuk ağ kopyası tutuyor (events.js:64-69), 6 m doğrulamalı floatReq var (net.js:324, events.js:232-236), içerik netGive ile konuğa gidiyor (events.js:206-213). Varil için test yok, geç katılımda görünmüyor (net.js:510-522), olay yalnız ev sahibi çevresinde üretiliyor (events.js:124)."
+  },
+  {
+   "claim": "(2) Şişede mesaj co-op'ta eksik",
+   "v03": "dogru",
+   "v04": "kismen",
+   "evidence": "v0.3'te şişe yalnız ev sahibinde vardı (aynı kanıtlar). v0.4'te çekirdek akış düzeltilmiş ve test edilmiş: 06b B08/H08 GEÇTİ (08. belge §8.2), sise_mesaj konuğa gidiyor (events.js:214-216). Kalan eksikler: geç katılan konuk mevcut şişeyi görmüyor (net.js:510-522, events.js:243); 'Suda parlayan bir şişe' bildirimi yalnız ev sahibinde çıkıyor (events.js:140)."
+  },
+  {
+   "claim": "(3) Kazazede co-op'ta eksik",
+   "v03": "dogru",
+   "v04": "kismen",
+   "evidence": "v0.3: kazazede yalnız ev sahibinde ve ödül (shop_reward) yalnız ev sahibine (v0.3 events.js:201-207). v0.4: konuk kurtarınca ev sahibi harita ve 50 altın gönderiyor (events.js:227, net.js:161-162). Ancak harita sitesi ev sahibinin envanterine göre seçiliyor (treasure.js:131-137), kazazede bildirimi konuğa gitmiyor (events.js:150), test yok."
+  },
+  {
+   "claim": "(4) Gök taşı co-op'ta eksik",
+   "v03": "dogru",
+   "v04": "kismen",
+   "evidence": "v0.3: düşüş görseli worldEvents.netState ile eşitleniyordu (v0.3 net.js:586 m.we), ama toplanabilir parça (events.spawnFloating('meteor')) yalnız ev sahibindeydi. v0.4: parça floatSpawn ile yayılıyor (worldEvents.js:223, events.js:193) ve konuk toplayabiliyor. Ancak 'rareFind' (80 XP) ve özel bildirim konukta yok (events.js:217-219); olay yalnız ev sahibinin gece/sakin bağlamında ve çevresinde çıkıyor (worldEvents.js:78-84, 91); test yok."
+  },
+  {
+   "claim": "(5) Diğer dinamik olay nesneleri co-op'ta eksik",
+   "v03": "dogru",
+   "v04": "kismen",
+   "evidence": "v0.3: buzdağı, ışık, volkan ve plankton görselleri senkrondu, ama yüzen sandık, ışıkların bıraktığı sandık ve düşman gemisi enkaz varilleri konuğa ulaşmıyordu. v0.4: bunlar floatSpawn ile yayılıyor. Kalanlar: hayalet ışıkları yalnız ev sahibi ilerletip tamamlayabiliyor (worldEvents.js:167-185); ele geçirme altını ve XP yalnız ev sahibinde (events.js:301-316, progress.js:82-83); konuklar gülle ve lav bombası patlamasından etkilenmiyor (combat.js:53); 'kuşlar' olayı konukta hiçbir şey üretmiyor (events.js:154); olay bildirimleri yalnız ev sahibinde (E-17)."
+  },
+  {
+   "claim": "(6) Konuk korsan rütbesinin kalıcı ilerlemesi eksik",
+   "v03": "kismen",
+   "v04": "kismen",
+   "evidence": "v0.3: seviye ve yetenekler seviye atlama, öğrenme ve stop anlarında dk_progress_guest anahtarına yazılıyordu (v0.3 progress.js:101, 103, 131, 142); konuk saveNow yalnız envanteri kaydediyordu (v0.3 main.js:201); seviye içi XP ve görev/keşif kaydı yoktu. v0.4: dksh.guest.0 envanter+progress+quests içeriyor ve beforeunload/visibilitychange'de de yazılıyor (main.js:199-206, 382-385). Hâlâ periyodik kayıt yok (game.js:218), duraklatma menüsünde konuk için Kaydet yok (menu.js:348), yuva kaydı daha yeni anahtarı eziyor (progress.js:95-99); co-op testinde ölçülmedi (09. belge)."
+  },
+  {
+   "claim": "(7) Ortak zar oyunu eksik",
+   "v03": "dogru",
+   "v04": "dogru",
+   "evidence": "js/ui/dice.js iki sürümde birebir aynı (diff boş): yalnız NPC'ye karşı tek oyunculu panel, ağ iletisi yok (dice.js:15-75); zarcı kesesi modül düzeyinde ve yerel (dice.js:13, 18-19). v0.3 docs/11_ONLINE_TEST_RAPORU.md §11.3 'Zar oyunu tek oyunculu bir paneldir'."
+  },
+  {
+   "claim": "(8) Oyuncular arası ticaret eksik",
+   "v03": "dogru",
+   "v04": "dogru",
+   "evidence": "İki sürümde de takas iletisi ya da arayüzü yok. Yalnız satış geliri paylaşımı (shop.earn → netShareGold, shop.js:120-129) var. v0.4'te konuğun 'Yere bırak'ı ev sahibinde kese olarak doğuyor (treasure.js:84-92, 06d C01) ve dolaylı bir eşya aktarımı mümkün; v0.3'te konuğun bıraktığı kese yalnız konukta kalıyordu (02. belge H01)."
+  },
+  {
+   "claim": "(9) Bağlantı kopması ve tekrar bağlanma eksik",
+   "v03": "dogru",
+   "v04": "kismen",
+   "evidence": "v0.3: uygulama düzeyinde kalp atışı yoktu (WebRTC kapanışı 30 sn+ gecikiyordu; 08. belge §8.1), kopma temizliği diğer konuklara yayılmıyordu (v0.3 net.js:270-285), aynı adlı konuk ev sahibini düşürebiliyordu (v0.3 net.js:214, H04). v0.4: 15/25 sn kalp atışı ve temizlik yayını eklendi (net.js:390-403, 702-708; 06a/06a2 GEÇTİ). Otomatik yeniden bağlanma ve durumu sürdürme yine yok (net.js:441 → main.js:313-318), aynı adla eşleşme ölü kod (net.js:255 ve 394), ev sahibinin arka plana geçmesi algılanmıyor (E-07)."
+  },
+  {
+   "claim": "(10) Host ayrılması ve oturumun devam ettirilememesi",
+   "v03": "dogru",
+   "v04": "dogru",
+   "evidence": "İki sürümde de bağlantı kapanınca hostLeft → game.stop + net.leave + menü (v0.3 main.js:307-312, v0.4 main.js:313-318). Oda sahibi devri kodda yok; 13. belge 'uygulanmamış tasarım' ve 03. belge '(uygulanmadı)' diyor."
+  }
+ ],
+ "docClaims": [
+  {
+   "doc": "docs/denetim/13_TURN_VE_ODA_SAHIBI_DEVRI_TASARIMI.md §1",
+   "claim": "ICE sunucusu olarak yalnızca PeerJS'in varsayılan STUN listesi kullanılır; simetrik NAT arkasındaki oyuncular bağlanamaz (TURN yok).",
+   "verdict": "yanlis",
+   "evidence": "vendor/peerjs/peerjs.min.js (1.5.5) varsayılan config'i stun:stun.l.google.com:19302 ile birlikte turn:eu-0.turn.peerjs.com:3478 ve turn:us-0.turn.peerjs.com:3478 (username 'peerjs') içeriyor; Peer kurucusu options.config verilmezse bunu kullanıyor. net.js:49-55'teki peerOpts config vermiyor. Yani garantisi olmayan, örtük bir üçüncü taraf TURN zaten devrede (443/TLS yok)."
+  },
+  {
+   "doc": "docs/denetim/13_TURN_VE_ODA_SAHIBI_DEVRI_TASARIMI.md (başlık) ve 03_DEGISIKLIK_LISTESI.md",
+   "claim": "TURN ve oda sahibi devri uygulanmamış bir tasarımdır.",
+   "verdict": "dogru",
+   "evidence": "js/ altında iceServers, getStats, worldFull, heir, claim ve hostMigrating aramaları sonuç vermiyor; ev sahibi ayrılınca hostLeft → menü (main.js:313-318)."
+  },
+  {
+   "doc": "docs/denetim/12_TEST_PLANI_VE_SONUCLAR.md satır 13 ve 16_SON_RAPOR.md",
+   "claim": "4 oyunculu co-op (06c) GEÇTİ (7/7).",
+   "verdict": "kismen",
+   "evidence": "Aynı 12. belgenin 123–127. satırları son kodun 7 koşunun 5'inde geçtiğini yazıyor. docs/v05/00_BASLANGIC_KAYDI.md taban koşusu 2/7: 'Tayfa' guest-started olduktan sonra 'menu' durumuna düşmüş, D4-02…D4-06 KALDI (taban_kosusu_44d548c/coop_06c.log)."
+  },
+  {
+   "doc": "docs/denetim/12_TEST_PLANI_VE_SONUCLAR.md satır 14",
+   "claim": "Konuk ayrılıp geri geliyor senaryosu 06a2 ile GEÇTİ.",
+   "verdict": "kismen",
+   "evidence": "06a2 yalnız kopma temizliğini sınıyor, yeniden katılım içermiyor (tests/scenarios/coop/06a2_mesaj_kopma.cjs). Yeniden katılımı yalnız 06c D4-06 (menüden çıkış) sınıyor ve taban koşusunda KALDI. Ağ kopması sonrası yeniden bağlanma senaryosu yok (08. belge §8.4)."
+  },
+  {
+   "doc": "docs/denetim/08_COOP_TESTLERI.md §8.4",
+   "claim": "Yeniden bağlanma: aynı adla yeniden katılım roster eşleşmesiyle korunur.",
+   "verdict": "yanlis",
+   "evidence": "net.js:255'teki eşleşme bağlantısız bir roster kaydı arıyor, ama _dropPeer (net.js:394) kopan oyuncuyu roster'dan siliyor; eski bağlantı açıkken de conns'ta durduğu için eşleşme gerçekleşmiyor. H04 testi başka bir şeyi (ev sahibinin listeden düşmemesi) sınıyor."
+  },
+  {
+   "doc": "docs/denetim/03_DEGISIKLIK_LISTESI.md (A grubu: 'konuk ilerlemesi kaydı … A7/A16, H16/H17')",
+   "claim": "Konukta otomatik kayıt ve duraklatma menüsünde kaydetme (H16) giderildi.",
+   "verdict": "kismen",
+   "evidence": "A7 ve A16 giderilmiş (main.js:203-204, progress.js:58-59, 96-99). H16 açık: otomatik kayıt hâlâ yalnız ev sahibinde (game.js:218 '&& G.isHost'), duraklatma menüsünde Kaydet yalnız ev sahibine gösteriliyor (menu.js:348)."
+  },
+  {
+   "doc": "docs/denetim/03_DEGISIKLIK_LISTESI.md Aşama 6 net.js ve 16_SON_RAPOR.md §16.2",
+   "claim": "Konuk mesajı doğrulama; sandık, ambar ve kilit yetki denetimi yapıldı.",
+   "verdict": "kismen",
+   "evidence": "Doğrulanmayan iletiler: shipFull (net.js:358, 610-619), st (276; oran ve boyut sınırından muaf, 241), hazard (360), dig (292), chestReq (293-299), pickupReq (300), hurtBoss mesafesi (288), shipCmd değerleri (620-633), boat/boatSt (364-365), revive (386), app (274). Ambar yakınlığı konuğun bildirdiği r.target.ship ile atlatılıyor (349); reddedilen kilit yine de yayınlanıyor (371)."
+  },
+  {
+   "doc": "docs/denetim/11_BILINEN_SORUNLAR.md #13",
+   "claim": "Ambar içeriği konuk tarafından bildirilir; ev sahibi sınır ve yakınlık doğrular.",
+   "verdict": "kismen",
+   "evidence": "Sınır var (net.js:351, 0–999 ve 40 sandık), ama yakınlık konuğun kendi 'st' iletisindeki ship alanına dayanıyor (net.js:349). Ayrıca hold.fish düşürülüyor (net.js:352) ve bu, belgede yer almayan bir eşya kaybı."
+  },
+  {
+   "doc": "docs/denetim/11_BILINEN_SORUNLAR.md #37",
+   "claim": "06c aralıklı olarak kalıyor; konuğu menüye düşüren yol hostLeft, kök neden kanıtlanmadı.",
+   "verdict": "dogru",
+   "evidence": "Taban koşusu 2/7 (coop_06c.log). Kodda oyundaki konuğu menüye düşüren tek yol hostLeft (net.js:441 kapanış, 706 zaman aşımı, 577 kick)."
+  },
+  {
+   "doc": "docs/denetim/09_KAYIT_TESTLERI.md",
+   "claim": "Konuk kaydı envanter, rütbe/yetenek ve kişisel görevi saklar; bu yol 2 oyunculu senaryoda doğrudan ölçülmedi.",
+   "verdict": "dogru",
+   "evidence": "main.js:199-206 kaydın içeriğini doğruluyor; tests/ altında dksh.guest.0 ya da progress.guest denetleyen bir senaryo yok (grep)."
+  },
+  {
+   "doc": "docs/denetim/08_COOP_TESTLERI.md §8.2 B08/H08",
+   "claim": "Yüzen şişe konukta ağ kopyası olarak görünür; konuk alınca eşya konuğa gider, nesne iki tarafta da kalkar.",
+   "verdict": "dogru",
+   "evidence": "events.js:193, 232-248; net.js:158-160, 324, 541-542; 06b kontrolü 18/18 içinde GEÇTİ."
+  },
+  {
+   "doc": "docs/11_ONLINE_TEST_RAPORU.md §11.3",
+   "claim": "Yüzen olay nesneleri yalnızca ev sahibinde görünür ve toplanabilir; zar oyunu tek oyunculudur.",
+   "verdict": "kismen",
+   "evidence": "v0.3 için doğru. v0.4'te yüzen nesneler ağa taşındı (events.js:193, net.js:158-160) ama belge güncellenmemiş. Zar hâlâ tek oyunculu (dice.js değişmedi)."
+  },
+  {
+   "doc": "README.md:126",
+   "claim": "Oda kurarken dost ateşi seçeneği var.",
+   "verdict": "yanlis",
+   "evidence": "Seçenek v0.4'te kaldırılmış; menu.js:195'te yalnız açıklama satırı kalmış ve 11. belge #20 bunu doğruluyor."
+  },
+  {
+   "doc": "README.md:127",
+   "claim": "2 dakikada bir otomatik kayıt yapılır.",
+   "verdict": "kismen",
+   "evidence": "Yalnız ev sahibinde ve tek oyunculuda geçerli (game.js:218 '&& G.isHost'); konukta periyodik kayıt yok."
+  },
+  {
+   "doc": "README.md:112",
+   "claim": "Gün, saat, hava, tahmin, ıslaklık ve su hortumları oda sahibinden eşitlenir; uyuma tüm tayfaya yansır.",
+   "verdict": "dogru",
+   "evidence": "net.js:741 (time dizisi ve wfx), 678-687; 'sleep' main.js:267 → net.js:571. Not: v0.4 co-op testlerinde sınanmadı."
+  },
+  {
+   "doc": "TEST_RAPORU.md:200",
+   "claim": "TURN sunucusu olmadığı için eşler arası bağlantı kurulamayabilir; oda sahibi ayrılırsa oturum kapanır.",
+   "verdict": "kismen",
+   "evidence": "İkinci kısım doğru (main.js:313-318). İlk kısım eksik: PeerJS'in varsayılan TURN'ü örtük olarak kullanılıyor; garantisi yok, yalnız 3478 portunda (vendor/peerjs/peerjs.min.js)."
+  },
+  {
+   "doc": "docs/denetim/12_TEST_PLANI_VE_SONUCLAR.md satır 19",
+   "claim": "Yanlış girdi, spam ve hile girişimi senaryosu (06a) GEÇTİ.",
+   "verdict": "kismen",
+   "evidence": "06a yalnız altın bütçesini, hurtEnemy mesafesi ve sınırını, sohbet boyutunu ve ad temizliğini sınıyor. E-01…E-04'teki iletiler (shipFull, hold, lootReq, st, chestReq vb.) test edilmiyor ve doğrulanmıyor."
+  },
+  {
+   "doc": "docs/denetim/03_DEGISIKLIK_LISTESI.md Aşama 6 events.js",
+   "claim": "Yüzen olay nesneleri ağda: ev sahibi doğurur ve yayınlar, konuk kopya tutar, toplama isteği ev sahibinde doğrulanır, ödül konuğa iletilir.",
+   "verdict": "dogru",
+   "evidence": "events.js:189-194, 200-206, 232-248; net.js:158-161, 324, 541-542. Geç katılım aktarımı ise belgede iddia edilmiyor ve yok (E-05)."
+  }
+ ],
+ "requirements": [
+  {
+   "req": "(1) Yüzen varilin co-op'ta düzgün çalışması",
+   "status": "kismen",
+   "evidence": "Ev sahibi doğurup floatSpawn yayınlıyor (events.js:135, 193; net.js:159); konuk ağ kopyası tutuyor (events.js:64-69, 194); toplama isteği 6 m doğrulamalı (net.js:324, events.js:232-236); içerik netGive ile konuğa gidiyor (events.js:206-213). Varile özel test yok (06b yalnız şişeyi sınıyor); geç katılımda görünmüyor (net.js:510-522); bildirim yalnız ev sahibinde (events.js:136).",
+   "plan": "06b'ye varil kontrolü eklenmeli (konuk görür, alır, içerik konuğa geçer, ev sahibinde nesne kalkar). _sendWorld'e netFloats eklenmeli (E-05). Olay bildirimleri konuklara yayınlanmalı ve olay merkezi oyuncular arasından seçilmeli (E-17)."
+  },
+  {
+   "req": "(2) Şişede mesajın co-op'ta düzgün çalışması",
+   "status": "kismen",
+   "evidence": "06b B08/H08 GEÇTİ (08. belge §8.2); sise_mesaj konuğa gidiyor (events.js:214-216). Geç katılımda görünmüyor (net.js:510-522, events.js:243); bildirim yalnız ev sahibinde (events.js:140).",
+   "plan": "Geç katılım aktarımı eklenmeli. Şişe okununca (Nevra ya da envanter) çıkan hazine haritası ve kazı akışı konuk için uçtan uca test edilmeli: harita konukta → kazı ev sahibinde → sandık → açma."
+  },
+  {
+   "req": "(3) Kazazedenin co-op'ta düzgün çalışması",
+   "status": "kismen",
+   "evidence": "Konuk kurtarınca ev sahibi harita ve 50 altın gönderiyor (events.js:227; net.js:161-162). Harita sitesi ev sahibinin envanterine göre seçiliyor (treasure.js:131-137); konuğa kazazede bildirimi gitmiyor (events.js:150); test yok.",
+   "plan": "Site seçimi konuğun mevcut haritalarını (c.info.maps) dışlamalı, konuğa diyalog ve bildirim iletisi gönderilmeli, 06b'ye kazazede kontrolü eklenmeli (konukta hazine_haritasi ve +50 altın, nesne iki tarafta da kalkar)."
+  },
+  {
+   "req": "(4) Gök taşının co-op'ta düzgün çalışması",
+   "status": "kismen",
+   "evidence": "Düşüş görseli anlık görüntüyle geliyor (worldEvents.js:316, 344-351); parçayı yalnız ev sahibi doğuruyor ve yayınlıyor (worldEvents.js:223); konuk toplayınca gok_tasi alıyor, ama rareFind (80 XP) ve özel bildirim konukta yok (events.js:217-219). Olay yalnız ev sahibinin bağlamında çıkıyor (worldEvents.js:78-84, 91); test yok.",
+   "plan": "Konuğa rareFind XP'si netXp ile verilmeli, düşüş bildirimi yayınlanmalı, olay bağlamı uygun bir oyuncuya göre seçilmeli; co-op testi eklenmeli: düşüş → parça konukta görünür → konuk alır → XP ve eşya konuğa gider."
+  },
+  {
+   "req": "(5) Diğer dinamik olay nesnelerinin co-op'ta düzgün çalışması",
+   "status": "kismen",
+   "evidence": "Buzdağı, ışık, volkan ve plankton görselleri senkron (worldEvents.js:312-356); düşman gemisi gemi görüntüsüyle geliyor. Hayalet ışıkları yalnız ev sahibi ilerletip tamamlayabiliyor (worldEvents.js:167-185); ele geçirme altını ve XP yalnız ev sahibinde (events.js:301-316, progress.js:82-83); konuklar patlama hasarı almıyor (combat.js:53); 'kuşlar' olayı konukta hiçbir şey üretmiyor (events.js:154); uzaktaki konukta buzdağı örgüleri sürekli yeniden kuruluyor (E-21).",
+   "plan": "E-17, E-18 ve E-21 düzeltilmeli. Olay türü başına bir co-op kontrol tablosu (buzdağı, ışık, gök taşı, volkan, düşman gemisi, fırtına, plankton) 06b'ye eklenmeli: konukta görsel, bildirim, etkileşim ve ödül ayrı ayrı denetlenmeli."
+  },
+  {
+   "req": "(6) Konuk korsan rütbesinin kalıcı ilerlemesi",
+   "status": "kismen",
+   "evidence": "dksh.guest.0 envanter+progress+quests, dksh.progress.guest ise seviye/yetenek tutuyor (main.js:199-206, progress.js:110, 138, 149); sekme gizlenince/kapanınca kayıt alınıyor (main.js:382-385). Periyodik kayıt yok (game.js:218); duraklatma menüsünde konuk için Kaydet yok (menu.js:348); yuva kaydı daha yeni anahtarın önüne geçiyor (progress.js:95-99); co-op testinde ölçülmedi (09. belge).",
+   "plan": "E-15 düzeltilmeli (konukta 120 sn'lik kayıt, elle kaydetme, iki kaynağın birleştirilmesi). 2 oyunculu test yazılmalı: XP → seviye → zorla yeniden yükleme → yeniden katılım → seviye/XP/yetenek korunur. Ayrıca tek oyunculu rütbe ile konuk rütbesinin ayrı tutulmasının istenip istenmediği kullanıcıya sorulmalı."
+  },
+  {
+   "req": "(7) Ortak zar oyunu",
+   "status": "yok",
+   "evidence": "dice.js:15-75 yalnız NPC'ye karşı ve ağ iletisi içermiyor; dosya v0.3 ile birebir aynı.",
+   "plan": "Ev sahibi otoriteli bir zar masası kurulmalı: diceJoin, diceBet ve diceRoll iletileri; zarı ev sahibi atar, bahis havuzu ev sahibinde tutulur (konuk altını emanete gönderir, sonuçta ev sahibi 'gold' ile dağıtır), kopma ya da çekilmede bahis iade edilir. 2 oyunculu test yazılmalı: bahisler, kazanan, iki tarafta tutarlı bakiye."
+  },
+  {
+   "req": "(8) Oyuncular arası ticaret",
+   "status": "yok",
+   "evidence": "Takas iletisi ya da arayüzü yok; yalnız satış payı (shop.js:120-129) ve yere bırakma/alma keseleri (treasure.js:84-92, net.js:301-314) var.",
+   "plan": "İki aşamalı takas kurulmalı: teklif → iki tarafın onayı → ev sahibi emanetli aktarım (iki konuk envanteri de istemcide tutulduğu için önce emanete gönder, onay belirteciyle iki tarafa da 'give' yap), mesafe sınırı, zaman aşımı ve kopmada iade. Test: eşya ve altın iki yönde aktarılır, iptalde hiçbir şey kaybolmaz."
+  },
+  {
+   "req": "(9) Bağlantı kopması ve tekrar bağlanma",
+   "status": "kismen",
+   "evidence": "Kalp atışı ve kopma temizliği var (net.js:239, 390-403, 702-708); 06a/06a2 H13 ve 06c D4-07 GEÇTİ. Otomatik yeniden bağlanma yok (net.js:441 → main.js:313-318); aynı adla eşleşme ölü kod (net.js:255 ve 394); dolu odada hayalet yuva; konuk limanda doğuyor (main.js:341); ev sahibinin arka plana geçmesi algılanmıyor (E-07); 06c taban koşusu 2/7.",
+   "plan": "E-16 ve E-07 uygulanmalı: oturum belirteci, koltuk ayırma, otomatik yeniden katılma, düşürme nedeni iletisi, duraklama iletisi. Test: konuk sekmesi yenilenir → en çok 10 sn'de aynı konum ve renkle oyunda; ev sahibi gizlenince konukta gösterge çıkar."
+  },
+  {
+   "req": "(10) Host ayrılması ve oturumun devam ettirilebilmesi",
+   "status": "yok",
+   "evidence": "hostLeft → game.stop, net.leave ve menü (main.js:313-318, net.js:441); 13. belgedeki tasarımın hiçbir aşaması kodda yok.",
+   "plan": "13. belgenin A–E sırası uygulanmalı (aşağıdaki host devri satırları). Kısa vadede ev sahibi menüye dönerken konuklara 'Oturum kapanıyor, kaydedildi' iletisi gönderilmeli ve aynı yuvayı yeniden açtığında eski oda koduyla oda kurmayı denemeli; böylece recentRooms bağlantıları çalışır."
+  },
+  {
+   "req": "Ağ akıcılığı: snapshot sistemi",
+   "status": "kismen",
+   "evidence": "15 Hz ev sahibi anlık görüntüsü ve 15 Hz konuk durumu var (net.js:712-743); tek güvenilir sıralı JSON kanalı kullanılıyor (net.js:418); delta, zaman damgası ve sıra numarası yok; 06b/06d GEÇTİ.",
+   "plan": "Görüntüye ev sahibi zamanı ve sıra numarası eklenmeli; durum için sırasız ve yeniden iletimsiz ikinci bir DataChannel açılmalı; delta ve ikili serileştirme uygulanmalı; görüntü boyutu testte ölçülmeli."
+  },
+  {
+   "req": "Ağ akıcılığı: paket kaybında ışınlanma olmaması",
+   "status": "yok",
+   "evidence": "Uzak oyuncu 8 m'de (net.js:96-97), gemi 12 m'de (ship.js:571) ve 30 m'de (ship.js:712) ışınlanıyor. Güvenilir kanalda kayıp HOL tıkanmasına dönüşüyor. /tmp/denetim_alan/uzak_oyuncu_sim.mjs: 7 m/sn'de 1,2 sn tıkanma 8,4 m, 2 sn tıkanma 14 m sıçrama.",
+   "plan": "E-08: ara bellekli interpolasyon, sınırlı dış değerleme ve hız sınırlı yakalama; ışınlama yalnız açık olaylarda. Yapay gecikme/kayıp testi yazılmalı (tc/netem ya da DataChannel'ı programla bekletme)."
+  },
+  {
+   "req": "Ağ akıcılığı: uzak oyuncuya seyrek, yakına sık güncelleme",
+   "status": "yok",
+   "evidence": "_hostSnapshot tüm varlıkları her konuğa aynı sıklıkta gönderiyor (net.js:734-743, 489); hayvan listesi tam gidiyor (animals.js:828).",
+   "plan": "E-09: konuk başına mesafe katmanlı görüntü (≤150 m her görüntü, ≤600 m üçte bir, ötesi 1 Hz); test: uzak konuğa giden görüntü boyutu ve sıklığı."
+  },
+  {
+   "req": "Ağ akıcılığı: snapshot interpolasyonu",
+   "status": "kismen",
+   "evidence": "Zaman damgası olmadan son hedefe üstel yumuşatma var (net.js:96-101, enemies.js:1621-1625, megafauna.js:740-746, events.js:66); gerçek ara bellekli (geride oynatılan) interpolasyon yok.",
+   "plan": "Ortak bir 'NetInterp' yardımcısı yazılmalı: varlık başına son 3–4 görüntü ve ev sahibi zamanı tutulsun, render zamanı = ev sahibi zamanı − 120 ms ile Hermite/doğrusal ara değer bulunsun; oyuncu, gemi, düşman, hayvan ve deniz devinde kullanılsın."
+  },
+  {
+   "req": "Ağ akıcılığı: gerektiğinde tahmin ve uzlaştırma",
+   "status": "yok",
+   "evidence": "Konuğun kendi oyuncusu istemci otoriteli olduğu için tahmine gerek yok. Ancak gemi kumandası ev sahibinde simüle ediliyor ve konukta yerel tahmin yok. Yelken komutu görüntüyle eziliyor (ship.js:714; benzetimde %37–50 başarı, /tmp/denetim_alan/dumen_yelken_sim.mjs). Gemi için yalnız 0,25 sn öngörü var (ship.js:569-574).",
+   "plan": "Konuk dümendeyken gemi yerelde simüle edilmeli ve ev sahibi durumuyla girdi sıra numarası üzerinden uzlaştırılmalı; sailTarget ve rudderInput dümendeki konuk için ezilmemeli; dümen bırakılınca rudder:0 gönderilmeli (E-10)."
+  },
+  {
+   "req": "TURN: mevcut durum ve plan (var olmayan sunucuyu var gibi göstermeme)",
+   "status": "kismen",
+   "evidence": "Kod ICE yapılandırmıyor (net.js:49-55); vendored PeerJS 1.5.5 varsayılanı STUN ile PeerJS'in ücretsiz TURN'ünü (turn:eu-0/us-0.turn.peerjs.com:3478) örtük olarak kullanıyor. Projenin kendi TURN'ü, TLS/443, geçici kimlik uç noktası ve bağlantı türü tanılaması yok. 13. belge ve TEST_RAPORU 'TURN yok' diyor; gerçek NAT testi yapılmadı.",
+   "plan": "peerOpts'a açık bir config.iceServers verilmeli; PeerJS'in ücretsiz TURN'ünün kullanılıp kullanılmayacağına karar verilip belgelenmeli. Ayarlar ya da ?turn= ile kullanıcının kendi TURN'ünü girmesi sağlanmalı. getStats ile 'doğrudan/aktarımlı' rozeti ve RTT gösterilmeli; ICE 'failed' olunca relay zorunlu yeniden deneme yapılmalı. Gerçek sunucu yoksa arayüz ve belgeler bunu açıkça söylemeli; 13. belge §1 düzeltilmeli."
+  },
+  {
+   "req": "Host devri: durum aktarımı",
+   "status": "yok",
+   "evidence": "Tam dünya görüntüsü (worldFull) yok; _sendWorld kısmi (net.js:510-522); game.serialize yalnız ev sahibinde çağrılıyor (game.js:161-178).",
+   "plan": "13. belge Aşama A: game.serialize + geçici durum (enemies, bosses, animals, megafauna, events/worldEvents, hazards, islands) sıkıştırılıp ayrı kanaldan parça parça gönderilmeli (snapshot kanalını bloklamamalı); konukta sessionStorage'da tutulmalı; boyut <400 KB testi yazılmalı."
+  },
+  {
+   "req": "Host devri: yeni host seçimi",
+   "status": "yok",
+   "evidence": "heir iletisi ya da varis sırası yok (js/ altında grep); roster sırası yalnız görüntüleme için kullanılıyor.",
+   "plan": "Roster katılım sırasına göre varis belirlenmeli ve dönem (epoch) numarası tutulmalı; ev sahibi heir'i yayınlamalı, varis daha sık worldFull almalı (13. belge Aşama B)."
+  },
+  {
+   "req": "Host devri: yeniden bağlanma",
+   "status": "yok",
+   "evidence": "Yıldız topolojisi: konuklar birbirine bağlı değil; kopmada menüye dönülüyor (main.js:313-318).",
+   "plan": "hostMigrating durumu eklenmeli (dünya dondurulur, 'Dümen devrediliyor…' gösterilir). Varis aynı oda koduyla ya da kendi Peer kimliğiyle host() açmalı; diğer konuklar 'hello resume' ile bağlanmalı; renk ve konum korunmalı (13. belge Aşama C–D). 3 oyunculu devir testi yazılmalı."
+  },
+  {
+   "req": "Host devri: kayıt bütünlüğü",
+   "status": "kismen",
+   "evidence": "Ev sahibi kaydı geçici yazma ve .bak yedeğiyle korunuyor (save.js:15-45); konuğun kişisel kaydı hostLeft'te yazılıyor (main.js:315). Devirde dünya kaydının hangi tarayıcıda yaşayacağı, eski ev sahibinin eski kaydı ve aynı yuvanın iki sekmede açılması için kural yok (E-23).",
+   "plan": "Kayda worldId ve rev (sürüm sayacı) eklenmeli; devirde yeni ev sahibi aynı worldId'yi daha yüksek rev ile yazmalı; eski ev sahibi döndüğünde 'kayıt eski' uyarısı ve konuk olarak katılma önerisi gösterilmeli; navigator.locks ile yuva kilidi kullanılmalı."
+  },
+  {
+   "req": "Host devri: çift host engeli",
+   "status": "yok",
+   "evidence": "Devir olmadığı için koruma da yok. 13. belge §3.3-7'deki 'claim' ve roster sırası tasarımı, yalnız varisin ev sahibini kaybettiği bölünmüş ağ (split-brain) durumunu çözmüyor.",
+   "plan": "Devralmadan önce diğer konuklardan 'ev sahibi kayıp' onayı (çoğunluk) alınmalı; dönem numarası kullanılmalı; eski ev sahibi daha yüksek dönemli bir 'claim' görünce benzetimi durdurup konuğa dönüşmeli. Test: yalnız bir konuğun ev sahibiyle bağlantısı kesilir → devir başlamaz."
+  }
+ ]
+}

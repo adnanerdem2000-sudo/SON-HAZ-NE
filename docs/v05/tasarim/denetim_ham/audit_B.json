@@ -1,0 +1,1088 @@
+{
+ "area": "B — Multiplayer güvenliği ve host otoritesi",
+ "summary": "v0.4'te ağ katmanına bilinen tür listesi, konuk başına 120 ileti/sn oran sınırı, 64 KB boyut sınırı, hasar üst sınırları, bazı mesafe denetimleri, kilit sahipliği ve dakikada 20 000 altınlık bütçe eklendi. Bu nedenle v0.3'teki ham 'gold += m.amount' ve ham hasar uygulaması kısmen kapandı. Ancak mimari hâlâ 'sonucu konuk bildirir, ev sahibi kırpar' modelinde: hasar miktarı, satış payı, ambar ve gemi durumu, ganimet tablosu ve oyuncu konumu konuğun beyanı. Ayrıca 'st' ve 'ping' iletileri oran ve boyut sınırının dışında kalıyor. Kod okuması ve Node saplama denemeleri (/tmp/denetim_alan/sim.mjs, sim2.mjs) şunları doğruladı: tek bir shipFull, cannonFix indeksli shipCmd ya da sürücüsü olunan kayıkta eksik alanlı boatSt iletisi ev sahibinin oyun döngüsünü veya anlık görüntü yayınını kalıcı olarak durdurabiliyor. hold ve lootReq ile sınırsız eşya ve altın üretilebiliyor (40 sahte efsanevi sandık, 1e12 değerli balık); 'gold' iletisiyle konuk başına saatte 1,2 M altın aktarılabiliyor; 120 ileti/sn ile 19 200 hasar/sn elde ediliyor ve boss hasarında mesafe denetimi hiç yok. Mesafe denetimleri 'd > eşik' biçiminde yazıldığı için NaN konum bunları açık bırakıyor; ağdan gelen balık verisi (color/name) de iconSVG ve itemTip üzerinden kaçışsız innerHTML'e girerek ev sahibinde ve diğer konuklarda saklı XSS oluşturuyor. 06a/06a2 testleri yalnız altın bütçesini, tek hurtEnemy iletisini, sohbet boyutunu, ad temizliğini ve kopma temizliğini sınıyor; buna karşın 12. belgedeki 'hile girişimi GEÇTİ' kaydı kapsamı geniş gösteriyor, F-04 ve E_gemi-ek-statik-114 gibi açık maddeler de 11. belgede izlenmiyor. Kabul ölçütü karşılanmıyor: konuğun kendi envanteri ve XP'si zaten yerel kayıtta tutuluyor. Bu ölçüt ancak niyet tabanlı protokol, ev sahibinde hareket/savaş/ekonomi çözümü ve dünya başına ev sahibinde tutulan konuk profiliyle sağlanabilir. Ev sahibi her durumda dünyanın tek otoritesi olduğundan hilesi önlenemez; bu sınır belgelenmeli ve konuk tarafına doğrulama ile HTML kaçışı eklenmeli.",
+ "systems": [
+  {
+   "name": "Konuk ileti kapısı (KNOWN tür listesi, nesne/tür denetimi)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "js/net/net.js:46 KNOWN, :237 tür kapısı, :270-271 hello/ping dışında conns kaydı şartı; olumsuz yol için test yok",
+   "note": "Bilinmeyen tür ve kayıtsız eş düşürülüyor; tür başına alan şeması yok, 'inter'/'prog' ölü giriş, 'ping' kayıtsız eşe de yanıtlanıyor. v0.3'te yalnız `if (!m || !m.t) return;` (v0.3 net.js:209)."
+  },
+  {
+   "name": "Oran sınırı (konuk başına 120 ileti/sn, sabit pencere)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "net.js:43, :241-247; 06a 'H07 Altın paylaşım bütçesi' koşusunda 300 iletiden 120'si işlendi (+12 000; 08 §8.1 #6; 12 #19 GEÇTİ)",
+   "note": "'st' ve 'ping' muaf (:241); tür başına sınır yok; pencere sınırında 2 ms'de 240 ileti; ihlal yalnız düşürülüyor. v0.3'te hiç yoktu."
+  },
+  {
+   "name": "Boyut sınırı (64 KB)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "net.js:42, :47 approxBytes, :248; 06a/06a2 'H07/H22 200 KB sohbet düşürülür, normal sohbet işlenir' GEÇTİ (08 §8.1 #9; 12 satır 56-57, 87-88)",
+   "note": "'st'/'ping' muaf; ölçüm, PeerJS ayrıştırmayı yaptıktan sonra yeniden JSON'lamayla yapılıyor. v0.3'te yoktu."
+  },
+  {
+   "name": "Altın paylaşım bütçesi (5000/ileti, 20 000/dk/konuk)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "net.js:44, :373-383; 06a 'H07 Altın paylaşım bütçesi: 30000 istenen, ≤20000 işlenir' GEÇTİ (08 §8.1 #6; 12 #19); sim.mjs 2a/2b: 20 000/dk, 1 200 000/saat",
+   "note": "Mekanizma tasarlandığı gibi çalışıyor ama güvenlik hedefini karşılamıyor: miktar konuğun beyanı ve süre boyunca sızdırıyor (B-08)."
+  },
+  {
+   "name": "Oyuncu adı temizliği (cleanName)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "net.js:41, :253 (hello), :530 (konukta roster); 06a 'H02 Konuk adı HTML'den arındırılır' ve 'H02 HUD takım listesinde script/img etiketi yok' GEÇTİ (08 §8.1 #1, #4)",
+   "note": "'app' iletisi adı temizlemeden değiştiriyor (net.js:274) → B-15."
+  },
+  {
+   "name": "Aynı adlı konuk / yeniden katılım eşleşmesi",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "net.js:255; 06a 'H04' GEÇTİ (08 §8.1 #2); 06c D4-06 GEÇTİ (08 §8.3)",
+   "note": "Aynı pid'den tekrar gelen hello roster'a yinelenen kayıt ekliyor (B-15). v0.3'te ev sahibi kaydı düşebiliyordu (H04)."
+  },
+  {
+   "name": "Kalp atışı ve kopma temizliğinin yayılması",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "net.js:239, :390-403, :704-707; 06a2 'H13' GEÇTİ (08 §8.1 #10); 06c D4-07 GEÇTİ (08 §8.3)",
+   "note": "Bir sandığın carriers alanı chestState ile sayı yapılırsa :398'deki `includes` TypeError ile temizlik yarıda kalıyor (B-10). v0.3'te temizlik yayılmıyordu."
+  },
+  {
+   "name": "Uzak oyuncu konum/hareket doğrulaması",
+   "status": "eksik",
+   "evidence": "net.js:276 `case 'st': this._remoteState(pid, c.info, m.s)`; :643-647; RemotePlayer.update :87-124 (8 m üstü farkta anında ışınlar, :96-97)",
+   "note": "Tüm yakınlık denetimleri konuğun beyanına dayanıyor (B-04)."
+  },
+  {
+   "name": "Ev sahibi otoriteli savaş çözümü",
+   "status": "eksik",
+   "evidence": "net.js:145-152 (konuk sonuç iletir), :278-291; enemies.js:340-363 (blok/kaçınma konukta), :376 applyDamage",
+   "note": "Konuk hasarı hesaplıyor, ev sahibi yalnız kırpıyor (B-07; 02 F-04 açık)."
+  },
+  {
+   "name": "Ev sahibi otoriteli ekonomi (satış işlemi)",
+   "status": "eksik",
+   "evidence": "shop.js:89-128 satış ve earn konukta; net.js:175 netShareGold → 'gold'",
+   "note": "Satış niyeti/onayı, txId ve fiyat doğrulaması yok (B-08)."
+  },
+  {
+   "name": "Ambar (hold) otoritesi",
+   "status": "hatali_kararsiz",
+   "evidence": "net.js:345-357 (sandık içeriği slice(0,40) dışında ham); shop.js:156-166; 11 #13 'Açık (orta)'; 06b 'H10/H03' ve 'H03' GEÇTİ (yalnız meşru yol)",
+   "note": "Tam durum gönderiliyor, son yazan kazanıyor; sahte sandık/eşya ile sınırsız ganimet (B-05)."
+  },
+  {
+   "name": "Ganimet yönlendirme (konuk ganimeti ev sahibinde doğar)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "treasure.js:83-92 'loot' → netLootReq; net.js:301-314; 06b 'B03/H01' GEÇTİ; 06d C01–C02 GEÇTİ (12 satır 197-200)",
+   "note": "Eşitlik sorunu çözüldü, ama tablo konuğun beyanı (B-05) ve veri nesnesi XSS taşıyabiliyor (B-06). v0.3'te ganimet yalnız konukta doğuyordu (H01)."
+  },
+  {
+   "name": "Sandık/kese eşitliği (tek taşıyıcı, tek açılış, tek toplama)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "treasure.js:351-367 _grant, :476-493 _openChest (gone/carried koruması), :631-641 _collect (remove); 06d C03 GEÇTİ; 06b H01 GEÇTİ",
+   "note": "Çift verme engelleniyor; yakınlık denetimi yok (B-10), ambar çift satışı açık (11 #16)."
+  },
+  {
+   "name": "Etkileşim kilitleri (lock)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "net.js:366-372 (yalnız boşsa alır, yalnız sahibi bırakır); interact.js:16-19, :33; 06a2 H13 GEÇTİ (yalnız kopma temizliği sınandı)",
+   "note": "Kilit uzaktan, sınırsız sayıda ve kimlik beyaz listesi olmadan alınabiliyor (B-13). v0.3'te herkes adına her kilit yazılabiliyordu."
+  },
+  {
+   "name": "Oyun sürümü/protokol denetimi",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "net.js:27 VER='dksh-v1', :251; v0.3 net.js:26 aynı değer; test yok",
+   "note": "Protokol değiştiği hâlde VER aynı kaldı (B-16)."
+  },
+  {
+   "name": "Tekrar (replay) koruması / işlem kimliği",
+   "status": "eksik",
+   "evidence": "net.js genelinde seq/txId/nonce alanı yok; aynı 'gold' iletisi tekrar işleniyor (sim.mjs 2a)",
+   "note": "Durum değiştiren hiçbir iletide sıra numarası yok."
+  },
+  {
+   "name": "Kötü niyetli bağlantıyı atma (ihlal puanı / kick)",
+   "status": "eksik",
+   "evidence": "net.js:247-248 yalnız düşürüyor; :577 'kick' yalnız konuk tarafında işleniyor, gönderen yok; 14 #20 öneri",
+   "note": "Ev sahibinin konuğu atma arayüzü yok (B-17)."
+  },
+  {
+   "name": "Konukta ev sahibi iletisi doğrulaması",
+   "status": "eksik",
+   "evidence": "net.js:526-579 (_clientData: gold :569, give :543, xp :567, hurt :536-540 tür/aralık denetimsiz)",
+   "note": "Kötü niyetli ev sahibi konuğun yerel kaydını bozabiliyor (B-18)."
+  },
+  {
+   "name": "Ağ kaynaklı metinlerde HTML kaçışı (XSS savunması)",
+   "status": "hatali_kararsiz",
+   "evidence": "items.js:127-136 iconSVG (renk dizgeye gömülür); panels.js:21-40 itemTip/itemCell; ui.js:82 showTip innerHTML; hud.js:60 _xpPop innerHTML; hud.js:462-469 takım listesi kaçışlı (06a H02 GEÇTİ); index.html'de CSP yok",
+   "note": "Takım listesi ve sohbet güvenli; eşya verisi ve XP açılır metni güvenli değil (B-06, B-18)."
+  },
+  {
+   "name": "Ana döngü hata yalıtımı",
+   "status": "hatali_kararsiz",
+   "evidence": "main.js:117-122 tek güncelleyici (game.update → hud.update → net.update → input.endFrame); engine.js:64-67 yalnız güncelleyici düzeyinde try/catch; game.js:222-238 _step varlık başına korumasız",
+   "note": "Tek bozuk gemi/uzak oyuncu/kayık tüm benzetimi, anlık görüntüyü ve girdi temizliğini durduruyor (B-09)."
+  },
+  {
+   "name": "Konuk ilerleme/envanter kaydı (yerel, istemci yetkili)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "main.js:187-206 (konuk kaydı yerel 'guest' yuvası); progress.js:82-90 (dksh.progress.guest)",
+   "note": "Mimari sınır: konuk kendi altın/XP/eşyasını her zaman değiştirebilir ve lootReq/hold/gold ile ev sahibine aktarabilir (B-19)."
+  },
+  {
+   "name": "TURN desteği ve oda sahibi devri",
+   "status": "eksik",
+   "evidence": "13. belge satır 1-4 'uygulanmamış bir tasarım'; net.js peerOpts :49-55'te ICE yapılandırması yok",
+   "note": "Devir uygulanırsa varis tam otorite kazanır; güven modeli buna göre tanımlanmalı."
+  },
+  {
+   "name": "mesaj:hello",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "net.js:250-268 (gönderen :422); 06a H02/H04 GEÇTİ (08 §8.1 #1-#2); sim.mjs 1: üç hello → roster 'HOST,g1,g1,g1'",
+   "note": "Gönderen: konuk (join) | Mevcut: ver eşitliği (:251), şifre (:252), cleanName (:253), kapasite (:256), kopuk aynı adlı konuk kaydının devri (ev sahibi hariç, :255) | Eksik: aynı pid için tekrar reddi, app şeması, şifre deneme sınırı ve yanlış şifrede bağlantıyı kapatma, hello zaman aşımı | Sömürü: tekrar hello ile odayı doldurup yeni oyuncuları 'Oda dolu' ile engelleme; bağlantı başına 120/sn şifre denemesi; bozuk app ile uzak karakter kurulumunu istisnaya düşürme (B-15) | v0.3→v0.4: ad temizliği ve ev sahibi kaydının korunması eklendi; pid yinelemesi ve şifre kaba kuvveti iki sürümde de var."
+  },
+  {
+   "name": "mesaj:ping",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "net.js:269 (conns denetiminden önce), :241 muafiyet; gönderen :447; sim.mjs 10: 1000 × 70 KB ping → 1000 pong",
+   "note": "Gönderen: konuk (2 sn'de bir) | Mevcut: yok (kimlik bile gerekmez) | Eksik: oran, boyut, ts türü, hello öncesi kısıt | Sömürü: büyük ts ile sınırsız pong yansıtma, ev sahibinin yükleme bant genişliğini tüketme (B-15) | v0.3→v0.4: değişmedi."
+  },
+  {
+   "name": "mesaj:ready",
+   "status": "eksik",
+   "evidence": "net.js:273; gönderen :497",
+   "note": "Gönderen: konuk (lobi 'Hazırım') | Mevcut: yok | Eksik: boolean türü | Sömürü: roster'a keyfî değer (etkisi düşük; başlatma hazır olmaya bağlı değil) | v0.3→v0.4: değişmedi."
+  },
+  {
+   "name": "mesaj:app",
+   "status": "eksik",
+   "evidence": "net.js:274; gönderen :498 (lobi), main.js:311 (terzi); sim2.mjs A: 3028 karakterlik '<img…>' ad roster'a girdi",
+   "note": "Gönderen: konuk | Mevcut: yok | Eksik: cleanName, uzunluk/tür, app şeması | Sömürü: 64 KB'a kadar ya da HTML içeren ad (bildirimler, sohbet 'from'); nesne ad → ev sahibi lobisinde el() TypeError (menu.js _lobbyRender :283-295); app.base ile Character kurulumunu istisnaya düşürme (B-15) | v0.3→v0.4: değişmedi; hello'daki temizlik buraya uygulanmadı."
+  },
+  {
+   "name": "mesaj:chat",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "net.js:275; main.js:363-370 metin düğümü ve renk regex'i; 06a/06a2 'H07/H22 200 KB sohbet düşürülür, normal sohbet işlenir' GEÇTİ (08 §8.1 #9); 06c D4-04 GEÇTİ (08 §8.3)",
+   "note": "Gönderen: konuk | Mevcut: str(240), boş metin reddi, from/color ev sahibinden, genel oran ve 64 KB | Eksik: tür başına oran | Sömürü: saniyede 120 sohbet satırı tüm tayfaya (DOM 200 satırla sınırlı) (B-21) | v0.3→v0.4: v0.3'te uzunluk ve oran sınırı yoktu (H22)."
+  },
+  {
+   "name": "mesaj:st",
+   "status": "hatali_kararsiz",
+   "evidence": "net.js:276 → _remoteState :643-647 → RemotePlayer.update :87-124; :241 oran/boyut muafiyeti; :737 ham yansıtma; character.js:653; sim.mjs 3a/3b",
+   "note": "Gönderen: konuk 15 Hz (:718) | Mevcut: yok (yalnız inGame işareti :239) | Eksik: şema, sonlu sayı, hız/ışınlanma sınırı, mode/anim/eq beyaz listesi, oran ve boyut | Sömürü: konum beyanıyla tüm yakınlık denetimlerini aşma; x:'a' ile kalıcı NaN konum ve NaN'da açılan denetimler; eq nesnesiyle ev sahibinde ve konukta net.update istisnası ve anlık görüntünün kesilmesi; büyük 'st' ile bant genişliğini büyütme (B-04) | v0.3→v0.4: işleyici aynı; v0.4'te eklenen mesafe denetimleri NaN atlatmasını anlamlı kıldı."
+  },
+  {
+   "name": "mesaj:act",
+   "status": "eksik",
+   "evidence": "net.js:277 (broadcast'ın 3. argümanı yok sayılır, :489); gönderen :144; _clientData :535; _remoteAct :648-653",
+   "note": "Gönderen: konuk (atk/shoot/dodge) | Mevcut: ev sahibinde efekt pid ile çiziliyor | Eksik: a/anim/dir şeması, from'un ev sahibince atanması, tür oranı | Sömürü: efekt/ses seli; from sahteciliğiyle efekti başka oyuncuya atfetme (B-20) | v0.3→v0.4: v0.3'te from hiç yoktu (H11, efekt çizilmiyordu); v0.4'te from konuktan geliyor."
+  },
+  {
+   "name": "mesaj:hurtEnemy",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "net.js:278-287 (gönderen :145, enemies.js:359); 06a 'H07 Uzaktan sahte hasar ev sahibinde işlenmez' ve 'H07 Yakından sahte 99999 hasar üst sınıra kırpılır' GEÇTİ (08 §8.1 #7-#8); sim.mjs 3b, 4",
+   "note": "Gönderen: konuk | Mevcut: düşman ve uzak oyuncu var; beyan konumla 2B mesafe ≤6 m ('bullet' ise 80 m); dmg 0–160, kb 0–12, yaw ±7, kind ≤16 karakter; by ev sahibinden | Eksik: sıklık/bekleme, silah ve mühimmat, animasyon anı, blok/kaçınma/rise/phased (applyDamage çağrılıyor), NaN'a kapalı karşılaştırma, kind beyaz listesi | Sömürü: 19 200 hasar/sn, ctr bayrağıyla sürekli sersemletme, 'bullet' ile 80 m menzil, ışınlanma/NaN ile her yerden vuruş (B-07, B-04) | v0.3→v0.4: v0.3'te dmg ham (Infinity/negatif) ve mesafe denetimi yoktu."
+  },
+  {
+   "name": "mesaj:hurtBoss",
+   "status": "eksik",
+   "evidence": "net.js:288 → bosses.js:1041-1046 (gönderen bosses.js:103, :219); sim.mjs 5: 9 km uzaktan 220 'tentacle' iletildi; test yok",
+   "note": "Gönderen: konuk | Mevcut: dmg 0–220, boss kimliği eşleşmesi | Eksik: mesafe, kind/pos/ten doğrulaması, sıklık, zayıf noktanın ev sahibinde hesaplanması | Sömürü: dünyanın her yerinden aktif boss'u ~1 sn'de öldürme; Kraken'in derin evre korumasını 'tentacle' türüyle aşma; zayıf nokta çarpanı için pos seçme (B-07) | v0.3→v0.4: v0.3'te dmg de ham."
+  },
+  {
+   "name": "mesaj:stunEnemy",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "net.js:289 (gönderen :151, player.js:201)",
+   "note": "Gönderen: konuk (parry sonrası) | Mevcut: düşman canlı, beyan konumla 3B mesafe <8 m, dur 0,2–3 | Eksik: düşmanın o konuğa yaptığı son saldırı ve parry penceresi, sıklık | Sömürü: 8 m'deki (ışınlanmayla her yerdeki) düşmanı sürekli sersem tutma (B-07) | v0.3→v0.4: v0.3'te mesafe denetimi yoktu ve dur ham."
+  },
+  {
+   "name": "mesaj:hurtAnimal",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "net.js:290 (gönderen :146, animals.js:425); 06d C06 GEÇTİ (meşru öldürmede öldüren konuk; 12 satır 197-200)",
+   "note": "Gönderen: konuk | Mevcut: hayvan canlı, beyan konumla <80 m, dmg 0–160, by ev sahibinden | Eksik: sıklık, yakın dövüş için gerçek menzil, silah | Sömürü: 80 m'deki her hayvanı anında öldürme → ev sahibinde ganimet ve XP (B-07) | v0.3→v0.4: v0.3'te dmg ham, mesafe denetimi ve by yoktu."
+  },
+  {
+   "name": "mesaj:hurtMarine",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "net.js:291 (gönderen :147, megafauna.js:348); test yok",
+   "note": "Gönderen: konuk | Mevcut: canlı, beyan konumla <120 m, dmg 0–160 | Eksik: sıklık, silah/menzil | Sömürü: köpekbalığı, orka vb. anında öldürme (B-07) | v0.3→v0.4: v0.3'te dmg ham ve mesafe denetimi yoktu."
+  },
+  {
+   "name": "mesaj:dig",
+   "status": "eksik",
+   "evidence": "net.js:292 (gönderen :153, treasure.js:209); treasure.js resolveDig :213-235; sim2.mjs F: dig 'abc',null iletildi",
+   "note": "Gönderen: konuk | Mevcut: yok | Eksik: konuğun önünde ≤1,5 m konum, x/z sonluluğu, kürek ve kazı süresi, harita sahipliğinin ev sahibinde doğrulanması | Sömürü: 'maps' ile birlikte 123 kazı alanının tümünü uzaktan kazma; dize/NaN koordinatlı çukur (B-10) | v0.3→v0.4: değişmedi."
+  },
+  {
+   "name": "mesaj:chestReq",
+   "status": "eksik",
+   "evidence": "net.js:293-299 (gönderen :154, treasure.js:348, :473); treasure.js _grant :351-367, _openChest :476-493; 06d C03 GEÇTİ (meşru açma); sim2.mjs E: 4 km'den 'open' işlendi",
+   "note": "Gönderen: konuk | Mevcut: sandık var; pick için tek taşıyıcı/iki kişilik kuralı; open için gone/carried koruması | Eksik: yakınlık, yükselen (rising) sandık denetimi | Sömürü: dünyadaki her sandığı uzaktan açma/taşıma, kayıktaki sandığı çekme (B-10) | v0.3→v0.4: değişmedi."
+  },
+  {
+   "name": "mesaj:pickupReq",
+   "status": "eksik",
+   "evidence": "net.js:300 (gönderen :155, treasure.js:624); _collect :631-641; 06b H01 ve 06d C02 GEÇTİ (meşru yol); sim2.mjs E",
+   "note": "Gönderen: konuk | Mevcut: kese var, remove bayrağı | Eksik: yakınlık | Sömürü: tüm keseleri uzaktan toplama (B-10) | v0.3→v0.4: değişmedi."
+  },
+  {
+   "name": "mesaj:chestState",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "net.js:334-339, _applyChestState :593-601 (gönderen :166); _dropPeer :398",
+   "note": "Gönderen: konuk (bırakma/ambara/kayığa koyma) | Mevcut: sandık var, konuk taşıyıcı ya da beyan konumla <8 m | Eksik: durum geçiş kuralları, carriers/pos/state şeması | Sömürü: başkasının taşıdığı sandığı çalma/ışınlama; state 'gone' ile kayıttan düşürme; carriers=sayı ile _dropPeer'ı kırma (B-10) | v0.3→v0.4: v0.3'te hiç denetim yoktu ve var olmayan sandığı keyfî tier/içerikle yaratıyordu (v0.3 net.js:251, :455)."
+  },
+  {
+   "name": "mesaj:chestGone",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "net.js:340-344 (gönderen :167, shop.js:151)",
+   "note": "Gönderen: konuk (taşınan sandığı satma) | Mevcut: sandık var, konuk taşıyıcı ya da beyan konumla <8 m | Eksik: satışın ev sahibinde gerçekleşmesi | Sömürü: chestReq pick ile uzaktan alınan her sandığı yok etme; satış doğrulanmadan sandık silinir (B-08, B-10) | v0.3→v0.4: v0.3'te denetimsizdi."
+  },
+  {
+   "name": "mesaj:hold",
+   "status": "hatali_kararsiz",
+   "evidence": "net.js:345-357 (gönderen :171: panels.js:101/147, treasure.js:417/432/444, shop.js:164); 06b H10/H03 GEÇTİ (meşru yol); sim2.mjs B; 11 #13",
+   "note": "Gönderen: konuk | Mevcut: gemi var; beyan gemide ya da ≤12 m; items anahtarı <40 ve değer 0–999; chests slice(0,40); gone sandığı için taşıyıcı/8 m | Eksik: sandık içerik/tier/ağırlık şeması, items için ITEMS beyaz listesi ve toplam, kapasite, tam durum yerine niyet (delta), NaN'a kapalı mesafe | Sömürü: 40 sahte efsanevi sandık ve 1e9 altınlık içerik, 999'ar değerli eşya → sınırsız altın; sandık içeriğinde XSS verisi (B-05, B-06) | v0.3→v0.4: v0.3'te s.hold = m.hold tamamen hamdı."
+  },
+  {
+   "name": "mesaj:shipFull",
+   "status": "hatali_kararsiz",
+   "evidence": "net.js:358 → _shipFull :610-619; main.js:348-351; shipControl.js:41-53; sim2.mjs D (upg undefined kaldı)",
+   "note": "Gönderen: konuk (gemi ustası hizmetleri: shop.js:191/206/222/240) | Mevcut: yok | Eksik: tüm alanlar | Sömürü: tek iletiyle ev sahibinin oyun döngüsünü dondurma; ücretsiz gemi/geliştirme; ambar/hp/gülle 1e9; gemiyi silme (B-01) | v0.3→v0.4: değişmedi."
+  },
+  {
+   "name": "mesaj:marker",
+   "status": "dogrulanmamis",
+   "evidence": "net.js:359 (gönderen :173: panels.js:521, quests.js:327); test yok",
+   "note": "Gönderen: konuk | Mevcut: x/z ±10 000, not ≤80, 'by' ev sahibinden, liste ≤61 | Eksik: tür başına oran | Sömürü: saniyede 120 'işaret koydu' bildirimi (B-21) | v0.3→v0.4: v0.3'te hamdı (by sahte, liste sınırsız; 02 H19)."
+  },
+  {
+   "name": "mesaj:hazard",
+   "status": "eksik",
+   "evidence": "net.js:360 → hazards.js netApply :672-680 (gönderen :148: hazards.js:197/293/355/518/548); sim2.mjs G",
+   "note": "Gönderen: konuk | Mevcut: yalnız kimliğin var olması | Eksik: yakınlık, eylem yetkisi, f/x/z şeması | Sömürü: uzaktan fıçı patlatma, kaya salma, bulmaca bloğunu ışınlama, bulmacayı çözme (B-11) | v0.3→v0.4: değişmedi."
+  },
+  {
+   "name": "mesaj:shipCmd",
+   "status": "hatali_kararsiz",
+   "evidence": "net.js:361 → _shipCmd :620-633 (gönderen :177: shipControl.js, shop.js buy/buyForShip, panels.js:99-100); sim.mjs 6a–6e",
+   "note": "Gönderen: konuk | Mevcut: gemi var; addBalls/addPlanks için n 0–200 ve 999 tavanı | Eksik: gemide/istasyonda olma, ödeme/tahta, indeks ve değer aralığı, gemi sahipliği, oran | Sömürü: cannonFix/mastFix dev indeksle ev sahibi sekmesini kilitleme; yelken NaN/1e9; ücretsiz gülle/tahta; tahtasız onarım; uzaktan çapa/kova; rebuild sızıntısı ve reload sıfırlama (B-02) | v0.3→v0.4: addBalls/addPlanks v0.4'te eklendi; gerisi aynı."
+  },
+  {
+   "name": "mesaj:helm",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "net.js:362 (gönderen :719)",
+   "note": "Gönderen: konuk 15 Hz | Mevcut: gemi var, dümen kilidi konukta, rudder ±1, sail 0–1, back boolean | Eksik: konuğun dümende olması (mode/konum), batık gemi denetimi, kilidin meşru alınması | Sömürü: uzaktan alınan kilitle gemiyi her yerden sürme (B-13) | v0.3→v0.4: v0.3'te kilit denetimi yoktu ve değerler hamdı."
+  },
+  {
+   "name": "mesaj:fire",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "net.js:363 (gönderen :181); combat.js fireCannon :300-318 (canFire :301)",
+   "note": "Gönderen: konuk | Mevcut: gemi ve top var, i 0–15, top kilidi konukta, nişan kırpılıyor, canFire (reload/gülle/top hp) | Eksik: istasyonda olma, batık gemi denetimi, kilidin meşru alınması | Sömürü: uzaktan atış; mastFix ile reload sıfırlayıp seri atış (B-13, B-02) | v0.3→v0.4: v0.3'te kilit denetimi yoktu."
+  },
+  {
+   "name": "mesaj:boat",
+   "status": "eksik",
+   "evidence": "net.js:364 → _boatCmd :634-641 (gönderen :178)",
+   "note": "Gönderen: konuk (davit, kayığa binme/inme) | Mevcut: launch yalnız docked iken | Eksik: who === pid, yakınlık, kayığın boş olması | Sömürü: sürücülüğü çalma ya da kendine atama (boatSt önkoşulu); kayıktaki oyuncuyu dock ile davit'e çekme (B-03) | v0.3→v0.4: değişmedi."
+  },
+  {
+   "name": "mesaj:boatSt",
+   "status": "hatali_kararsiz",
+   "evidence": "net.js:365 (gönderen :720); _hostSnapshot :740; player.js:948 (control yalnız yerel sürücüde); sim.mjs 8",
+   "note": "Gönderen: konuk sürücü 15 Hz | Mevcut: driver === pid | Eksik: sonlu sayı, hız/konum sınırı, rp/yaw türü | Sömürü: rp alanı olmayan iletiyle ev sahibinin anlık görüntü yayınını kalıcı olarak kesme; kayığı ışınlama (B-03) | v0.3→v0.4: değişmedi."
+  },
+  {
+   "name": "mesaj:lock",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "net.js:366-372 (gönderen :179); 06a2 H13 GEÇTİ (yalnız kopma temizliği); sim.mjs 7",
+   "note": "Gönderen: konuk (takeHelm/takeCannon/leaveStation) | Mevcut: id ≤64; yalnız boşsa alır; yalnız sahibi bırakır; who ev sahibinden | Eksik: kimlik beyaz listesi, gemide/istasyonda olma, konuk başına sayı, ev sahibi önceliği | Sömürü: ev sahibinin dümen ve top kilitlerini uzaktan alıp tutma (B-13) | v0.3→v0.4: v0.3'te herhangi kilit herhangi oyuncu adına yazılıp silinebiliyordu."
+  },
+  {
+   "name": "mesaj:gold",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "net.js:373-383 (gönderen :175, shop.js:125); 06a 'H07 Altın paylaşım bütçesi' GEÇTİ (08 §8.1 #6); sim.mjs 2a/2b",
+   "note": "Gönderen: konuk (satış payı) | Mevcut: tamsayı 1–5000, konuk başına dakikada ≤20 000, yayına kırpılmış değer gidiyor | Eksik: miktarın ev sahibince hesaplanması, satış doğrulaması, txId/tekrar koruması | Sömürü: konuk başına saatte 1,2 M altın ev sahibine ve tayfaya (B-08) | v0.3→v0.4: v0.3'te hamdı (negatif/1e9, sınırsız)."
+  },
+  {
+   "name": "mesaj:maps",
+   "status": "eksik",
+   "evidence": "net.js:384 (gönderen :182); treasure.js activeSites :146-154; sim2.mjs F",
+   "note": "Gönderen: konuk (harita kazanınca) | Mevcut: yok | Eksik: dizi/tür denetimi, ev sahibinin verdiği haritalarla karşılaştırma | Sömürü: tüm kazı alanlarını etkin yapıp 'dig' ile uzaktan hazine çıkarma; ev sahibi de haritasız kazabilir (B-10) | v0.3→v0.4: değişmedi."
+  },
+  {
+   "name": "mesaj:downed",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "net.js:385 (gönderen :183)",
+   "note": "Gönderen: konuk (yaralı düşünce) | Mevcut: yalnız bildirim | Eksik: konuk durumundan (st.down geçişi) türetme, oran | Sömürü: saniyede 120 'yaralı düştü' bildirimi ve sesi (B-21) | v0.3→v0.4: değişmedi."
+  },
+  {
+   "name": "mesaj:revive",
+   "status": "eksik",
+   "evidence": "net.js:386 (gönderen :727 sağlayıcı → toPeer); player.js revive :236-245; sim2.mjs H",
+   "note": "Gönderen: konuk (yaralıyı kaldırma) | Mevcut: yok (hedef ev sahibi değilse hedefe iletiliyor) | Eksik: hedef downed mı, yakınlık, 2,5 sn süre | Sömürü: ev sahibini ve konukları sürekli kalkma animasyonunda ve 45 canda tutma, meşgul işi iptal ettirme, uzaktan diriltme (B-14) | v0.3→v0.4: değişmedi."
+  },
+  {
+   "name": "mesaj:floatReq",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "net.js:324 → events.js collectFloatingById :232-235 (gönderen :158, events.js:202); 06b H08 GEÇTİ (meşru yol); sim2.mjs I (NaN konumla iletildi)",
+   "note": "Gönderen: konuk | Mevcut: id ≤40, beyan konumla ≤6 m, gone | Eksik: NaN'a kapalı karşılaştırma ('> 6' NaN'da geçer), hareket doğrulaması | Sömürü: ışınlanma ya da NaN konumla tüm yüzen ödülleri (varil, şişe, gök taşı, kazazede +50 altın) toplama (B-10, B-04) | v0.3→v0.4: v0.3'te yüzen nesneler ağda yoktu (B08)."
+  },
+  {
+   "name": "mesaj:inter",
+   "status": "eksik",
+   "evidence": "net.js:46 KNOWN'da; depoda gönderen ve işleyici yok (grep yalnız :46'yı buluyor)",
+   "note": "Gönderen: yok | Mevcut: genel kapı ve oran | Eksik: işleyici ya da KNOWN'dan kaldırma | Sömürü: yok; oran bütçesini boşa tüketen ölü giriş (B-21) | v0.3→v0.4: v0.3'te KNOWN listesi yoktu."
+  },
+  {
+   "name": "mesaj:prog",
+   "status": "eksik",
+   "evidence": "net.js:46 KNOWN'da; depoda gönderen ve işleyici yok (grep yalnız :46'yı buluyor)",
+   "note": "Gönderen: yok | Mevcut: genel kapı ve oran | Eksik: işleyici ya da KNOWN'dan kaldırma | Sömürü: yok; ölü giriş (B-21) | v0.3→v0.4: v0.3'te KNOWN listesi yoktu."
+  },
+  {
+   "name": "mesaj:lootReq",
+   "status": "hatali_kararsiz",
+   "evidence": "net.js:301-314 (gönderen :156, treasure.js:89); treasure.js rollTable :498-509, spawnLoot :550-578; 06b B03/H01 ve 06d C01–C02 GEÇTİ (meşru yol); sim2.mjs C",
+   "note": "Gönderen: konuk ('loot' olayı: kırık sandık, hayvan, 'Yere bırak', çanta taşması) | Mevcut: pos sonlu ve beyan konuma ≤30 m, ≤10 satır, id ≤40, adet 0–999, güverte yalnız beyan gemisinde | Eksik: ITEMS beyaz listesi, veri şeması, kaynağın (öldürülen varlık/kırılan sandık) ev sahibinde doğrulanması, bütçe, NaN'a kapalı mesafe | Sömürü: keyfî eşya/adet/veriyle sınırsız ganimet, 1e12 değerli balık, XSS taşıyan eşya verisi (B-05, B-06) | v0.3→v0.4: v0.4'te eklendi; v0.3'te ganimet yalnız konukta doğuyordu (H01)."
+  },
+  {
+   "name": "mesaj:holdTake",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "net.js:315-323 (gönderen :157, treasure.js:423); takeFromHoldFor :437-448; 06b 'H10/H03' GEÇTİ (12 #12)",
+   "note": "Gönderen: konuk | Mevcut: gemi var; beyan gemide ya da ≤12 m; idx 0–39 | Eksik: NaN'a kapalı mesafe, ambar sandığının meşruluğu (hold sahte olabilir), istasyon yakınlığı | Sömürü: herhangi bir geminin ambarından uzaktan (sahte içerikli) sandık çekme (B-05) | v0.3→v0.4: v0.4'te eklendi (H10)."
+  },
+  {
+   "name": "mesaj:noise",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "net.js:325 (gönderen :164, combat.js:83); 06b F-13 GEÇTİ (meşru yol)",
+   "note": "Gönderen: konuk (adım/atış sesi) | Mevcut: konum r.pos (beyan), radius 0–80, kind ≤16 | Eksik: tür oranı, yarıçapın eylem türüne bağlanması | Sömürü: düşmanları istenen noktaya, örneğin ev sahibinin yanına çekme (B-21) | v0.3→v0.4: v0.4'te eklendi."
+  },
+  {
+   "name": "mesaj:story",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "net.js:326-333 (gönderen :174, quests.js:134, :317); sim.mjs 9; test yok",
+   "note": "Gönderen: konuk (Tuzla/günlük/ilk harita) | Mevcut: stage 0–99 yuvarlanıyor, ileti başına yalnız +1, bayraklar yalnız true ve anahtar <40 | Eksik: aşama koşulunun ev sahibinde doğrulanması, bayrak beyaz listesi, to < STORY.length, oran | Sömürü: 5 iletiyle hikâyeyi bitirme (ev sahibine +750 XP), keyfî bayrak yazma (B-12) | v0.3→v0.4: v0.3'te ev sahibi konuğun hikâye iletisini yok sayıyordu (02 B05)."
+  }
+ ],
+ "issues": [
+  {
+   "id": "B-01",
+   "title": "shipFull iletisi doğrulanmıyor: tek ileti ev sahibinin oyun döngüsünü dondurur, gemiyi değiştirir/siler, ambar ve kaynakları keyfî yazar",
+   "file": "js/net/net.js",
+   "func": "_hostData case 'shipFull' (:358) → _shipFull (:610-619); main.js G.on('netReplaceShip') (:348-351); shipControl.replaceShip (:41-53)",
+   "rootCause": "Gemi hizmetleri (tamir, geliştirme, görünüm, gemi satın alma; shop.js:191/206/222/240) konukta yerel olarak uygulanıyor ve geminin tam durumu 'shipFull' ile gönderiliyor. Ev sahibi typeId, upg, hp, holes, water, hold, cannonballs, planks, look ve replace alanlarının hiçbirini doğrulamadan kendi otoriter gemisine yazıyor ve diğer konuklara yayıyor. Atamalar doğrulamadan önce yapıldığı için `s.upg.hull` istisnası bozuk durumu geri almıyor.",
+   "impact": "Konuk `{t:'shipFull', ship:{id, typeId}}` gönderdiğinde ev sahibinde `s.upg` undefined kalıyor (sim2.mjs D). Ardından Ship.update (ship.js:284 `this.upg.sails`) her alt adımda TypeError atıyor; game._step (game.js:222-238) korumasız olduğundan main.js:117-122'deki tek güncelleyici her karede düşüyor. Sonuç: ev sahibinde fizik, AI, HUD ve ağ duruyor; konuklara anlık görüntü gitmiyor (pong sürdüğü için 'hostLeft' de tetiklenmiyor) ve input.endFrame çağrılmıyor. Oturum çöküyor, son otomatik kayıttan sonraki ilerleme kayboluyor. replace:true ile 'brigantine' gönderilirse 9000 altınlık gemi ücretsiz geliyor ve upg/hold konuktan alınıyor. Geçersiz typeId ile eski gemi dispose ediliyor, yenisi kurulamıyor ve ev sahibinin gemisi dünyadan siliniyor. hp, gülle, tahta ve ambar 1e9 yapılabiliyor.",
+   "priority": "kritik",
+   "fix": "Konuk için 'shipFull' iletisini kaldır ve yerine niyet iletileri koy: repairReq, upgradeReq{kind}, lookReq{look}, buyShipReq{typeId}. Ev sahibi şunları doğrulamalı: konuk, ev sahibi tarafındaki konumuna göre liman/gemi ustası yakınında; kind ∈ {hull,sails,cannons} ve seviye+1 ≤ 3; typeId SHIP_TYPES içinde; look değerleri izinli palette. Konuğun ödemesi doğrulanamadığı için gemi hizmetlerini ev sahibine ayır ya da ev sahibine onay penceresi göster. _shipFull yalnız ev sahibi→konuk yönünde kullanılmalı; konukta da alanlar doğrulanmalı ve atama doğrulamadan sonra atomik yapılmalı.",
+   "repro": "Konuk konsolunda `DK.net.toHost({t:'shipFull', ship:{id: DK.G.ship.id, typeId: DK.G.ship.typeId, look: DK.G.ship.look}})` çalıştırılır. Ev sahibi konsolunda her karede `Cannot read properties of undefined (reading 'sails')` görülür; konuklarda düşman ve gemi hareketi durur. Ücretsiz gemi için: `{t:'shipFull', replace:true, ship:{id:'x', typeId:'brigantine', upg:{hull:3,sails:3,cannons:3}, hold:{items:{},chests:[]}}}`. Node saplama denemesi: /tmp/denetim_alan/sim2.mjs, D satırı.",
+   "acceptance": "Konuktan gelen shipFull ev sahibinde hiçbir alanı değiştirmez (ileti kaydedilip düşürülür). Niyet iletileri yalnız kurala uygun, tek adımlık değişiklik üretir. Yeni co-op testi bu iletileri gönderdikten sonra 10 sn boyunca ev sahibinde net.snapT'nin arttığını, G.ship.upg'nin nesne olarak kaldığını ve sayfa hatasının 0 olduğunu doğrular.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "02:H07 (shipFull kısmı; 03'te H07 kapatılmış gösteriliyor) ve 02:E_gemi-ek-statik-114 (11'de izlenmiyor)"
+  },
+  {
+   "id": "B-02",
+   "title": "shipCmd alanları doğrulanmıyor: cannonFix/mastFix indeksiyle ev sahibi sekmesi kilitlenir, yelken NaN/1e9 olur, gülle/tahta ücretsiz gelir, tahtasız onarım ve uzaktan çapa/kova mümkün",
+   "file": "js/net/net.js",
+   "func": "_hostData case 'shipCmd' (:361) → _shipCmd (:620-633); ship.js netState (:704-708), _build/rebuild (:56-73)",
+   "rootCause": "_shipCmd yalnız gemi kimliğine bakıyor. Konuğun o gemide ya da istasyonda olması, gemi sahipliği (düşman ve tüccar gemileri de G.ships içinde), indeks aralığı (m.i), değer aralığı (m.v), ödeme ve tahta stoku ile ileti oranı denetlenmiyor.",
+   "impact": "`cannonFix` ya da `mastFix` için i=4294967294 gönderilirse cannonHp/mastHp 4 294 967 295 uzunluklu seyrek diziye dönüşüyor (sim.mjs 6e). netState her anlık görüntüde `.map(Math.round)` ile tüm indeksleri dolaşıyor (Node ölçümü: 1e8 uzunlukta 4,4 sn, yani ~190 sn/çağrı) ve JSON üretilemiyor; ev sahibi sekmesi kilitleniyor, kayıt bozuluyor. `sails` 'abc' yapılırsa damp NaN döndürüyor; geminin hızı ve konumu NaN oluyor, güvertedeki ev sahibi de NaN konuma gidiyor. 1e9 değeri fizik dışı hız üretiyor (sim.mjs 6a/6b). addBalls/addPlanks ödemesiz 999 veriyor (6c); repair tahta 0 iken de deliği kapatıp +12 hp veriyor (6d); bail ve anchor dünyanın her yerinden kullanılabiliyor. mastFix her iletide rebuild çağırıyor: eski model bırakılmıyor (ship.js:56-63'te disposeTree yok) ve cannonState.reload sıfırlandığı için fire ile bekleme süresi aşılıyor.",
+   "priority": "kritik",
+   "fix": "cmd için beyaz liste ve tür başına şema tanımla. ship yalnız G.ship (ya da konuğun bindiği oyuncu gemisi) olabilmeli. Konuk, ev sahibi tarafındaki konumuna göre o gemide ve ilgili istasyona 1,6–2,2 m yakında olmalı. i tamsayı, 0 ≤ i < dizi uzunluğu ve hp ≤ 0 olmalı (yani onarım gerçekten gerekli). repair/cannonFix/mastFix ev sahibinde tahta düşmeli, tahta yoksa reddedilmeli. sails için v = num(0,1); bail için 0,6 sn bekleme. addBalls/addPlanks kaldırılmalı ya da ev sahibi onayına bağlanmalı. rebuild eski kökü disposeTree ile bırakmalı. Komut başına oran sınırı ≤4/sn olmalı.",
+   "repro": "Konukta `DK.net.toHost({t:'shipCmd', ship: DK.G.ship.id, cmd:'cannonFix', i: 4294967294})` → ev sahibi sekmesi yanıt vermez. `DK.net.toHost({t:'shipCmd', ship: DK.G.ship.id, cmd:'sails', v:'abc'})` → ev sahibinin gemisi kaybolur (x NaN). Node: /tmp/denetim_alan/sim.mjs 6a–6e. Uzunluk ölçümü: `a=[100,100]; a[1e8]=70; a.map(Math.round)` ≈ 4,4 sn.",
+   "acceptance": "Geçersiz indeks ya da değerde dizi uzunluğu ve sailTarget değişmez (sailTarget ∈ [0,1] kalır). Gemide olmayan konuğun hiçbir shipCmd'si etkili olmaz. Tahta yokken onarım yapılmaz. Saniyede 120 mastFix ev sahibinin geometri sayacını (renderer.info.memory.geometries) artırmaz.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "02:H07 (kısmen); addBalls/addPlanks 02:E-06 düzeltmesiyle eklendi"
+  },
+  {
+   "id": "B-03",
+   "title": "Kayık: konuk kendini sürücü atayabiliyor, boatSt'nin ham değerleri ev sahibinin anlık görüntü yayınını kalıcı olarak kesiyor",
+   "file": "js/net/net.js",
+   "func": "_hostData 'boat' (:364) → _boatCmd (:634-641); 'boatSt' (:365); _hostSnapshot (:740)",
+   "rootCause": "'boat' cmd 'driver' iletisindeki who alanı doğrulanmadan b.driver'a yazılıyor. boatSt'deki x/z/yaw/sp/rp alanları tür, sonluluk ve hız denetimi olmadan atanıyor. Ev sahibinde Rowboat.control yalnız yerel sürücü için çağrıldığından (player.js:948) rowPhase konuğun verdiği değerde kalıyor. _hostSnapshot ise `+b.rowPhase.toFixed(2)` ile bu alanın sayı olduğunu varsayıyor.",
+   "impact": "rp alanı eksik ya da dize olan bir boatSt'den sonra her anlık görüntüde TypeError oluşuyor; ev sahibi hiçbir konuğa 'snap' gönderemiyor. Konuklarda düşmanlar, gemiler ve oyuncular donuyor; pong sürdüğü için 'hostLeft' de çıkmıyor. Bu karelerde input.endFrame de atlanıyor. Ayrıca x/z/yaw NaN'a dönüyor, kayık ışınlanabiliyor ve sınırsız hız alabiliyor; ev sahibi kayıktayken sürücülüğü çalınabiliyor; 'dock' komutuyla kayıktaki oyuncu davit'e çekilebiliyor.",
+   "priority": "kritik",
+   "fix": "driver yalnız şu koşullarda kabul edilmeli: who === pid, kayık boş ve konuk ev sahibi tarafındaki konumuna göre kayığa ≤3 m yakında. boatSt'nin tüm alanları num() ile sonlu yapılmalı; konum önceki konumdan en fazla 6 m/s × dt uzaklaşabilmeli ve dünya sınırıyla kırpılmalı; rp ve yaw sayı olmalı. dock/launch yalnız davit'e yakın konuktan kabul edilmeli. _hostSnapshot'ta sayısal alanlar Number.isFinite ile korunmalı ve anlık görüntü üretimi try/catch ile yalıtılmalı (bir hata yalnız o nesneyi düşürmeli, yayını durdurmamalı).",
+   "repro": "Konukta `DK.net.toHost({t:'boat', cmd:'driver', who: DK.G.myId}); DK.net.toHost({t:'boatSt', x:0, z:0, yaw:0, sp:0})` çalıştırılır. Ev sahibi konsolunda saniyede ~15 kez `Cannot read properties of undefined (reading 'toFixed')` görülür; konukta gelen snap sayısı artmaz. Node: sim.mjs 8.",
+   "acceptance": "Bozuk boatSt'den sonra ev sahibinde snapT artmaya, konuklarda snap gelmeye devam eder. Konuk başkasını sürücü atayamaz. Karede 10 m'lik ışınlanma kırpılır.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin"
+  },
+  {
+   "id": "B-04",
+   "title": "'st' durum iletisi şemasız ve oran/boyut sınırının dışında: konum beyanı tüm yakınlık denetimlerini geçersiz kılıyor, NaN konum denetimleri açıyor, bozuk 'eq' ağ döngüsünü düşürüyor",
+   "file": "js/net/net.js",
+   "func": "_hostData (:241 muafiyet, :276) → _remoteState (:643-647) → RemotePlayer.update (:87-124); _hostSnapshot (:737); player/character.js Character.hold (:646-653)",
+   "rootCause": "Konuk durumu (x, y, z, yaw, mode, eq, anim, ship, hp, down…) doğrulanmadan uzak oyuncunun hedefi oluyor. Hız ya da ışınlanma sınırı yok; 8 m'yi aşan farkta oyuncu anında ışınlanıyor (:96-97). Mesafe denetimleri `d > eşik → reddet` biçiminde yazıldığından NaN değerinde açık kalıyor. 'st' oran ve boyut sınırından muaf ve ham hâli anlık görüntüyle tüm konuklara yansıtılıyor.",
+   "impact": "(1) Konuk istediği konumu bildirerek tüm yakınlık denetimlerini aşabiliyor. (2) `x:'a'` gönderildiğinde r.pos kalıcı olarak NaN oluyor (sim.mjs 3a). Bu durumda hurtEnemy (:284), lootReq (:305), holdTake (:319), hold (:350) ve floatReq (events.js:234) denetimleri açılıyor: 707 m uzaktaki düşmana hasar işlendi (sim.mjs 3b) ve düşmana NaN geri tepme yazıldığı için konumu kalıcı NaN oldu (enemies.js:390-395, 1187-1190). (3) eq nesne ya da sayı olursa Character.hold'da `type.startsWith` TypeError oluşuyor ve ev sahibinin net.update'i her yeni 'st'de düşüyor. Konuk 'st'yi kare hızında gönderirse anlık görüntü hiç gitmiyor ve input.endFrame atlanıyor; aynı ham nesne diğer konuklara yansıdığından onların net.update'i de düşüyor. (4) 64 KB'ı aşan 'st' 15 Hz anlık görüntüyle her konuğa çoğaltılıyor (bant genişliği büyütme).",
+   "priority": "kritik",
+   "fix": "'st' için şema tanımla: sayılar num() ile ve dünya sınırları içinde; mode/anim/up/eq beyaz listede; ship G.ships içinde; hp 0–maxHp arasında. Tür sınırları koy: ≤1 KB ve ≤30/sn. Ev sahibinde hareket doğrulaması yap: önceki konum + azami hız·dt + mod geçiş kuralları; aşımda düzeltme iletisi gönder. Tüm mesafe denetimlerini `!(d <= eşik)` biçimine çevir. Anlık görüntüye ham hedef yerine ev sahibinin süzdüğü durumu koy. RemotePlayer.update'i try/catch ile yalıt.",
+   "repro": "Konukta önce `DK.net.toHost({t:'st', s:{x:'a', z:'b'}})`, ardından 300 m uzaktaki bir düşmana `DK.net.toHost({t:'hurtEnemy', id:'<id>', dmg:999, kind:'melee'})` gönderilir. Ev sahibinde düşman 160 hasar alır ve konumu NaN olur. `setInterval(()=>DK.net.toHost({t:'st', s:{...DK.G.player.netState(), eq:{}}}), 10)` çalıştırıldığında ev sahibinde 'type.startsWith is not a function' hatası görülür ve konuklarda snap kesilir.",
+   "acceptance": "NaN ya da dize konum reddedilir ve r.pos sonlu kalır. 0,07 sn'de 15 m'yi aşan ışınlanma kırpılır. 2 KB'tan büyük ya da saniyede 30'dan fazla 'st' düşürülür. Bozuk eq ile ev sahibinin anlık görüntü yayını kesilmez. 06a'ya NaN konum ve ışınlanma kontrolleri eklenir.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "02:H07 ('st' içindeki NaN konumlar — açık)"
+  },
+  {
+   "id": "B-05",
+   "title": "hold/lootReq/holdTake ile sınırsız ganimet ve altın üretimi: sandık içerikleri ve ganimet tabloları konuğun beyanı",
+   "file": "js/net/net.js",
+   "func": "_hostData 'hold' (:345-357), 'lootReq' (:301-314), 'holdTake' (:315-323); treasure.js takeFromHoldFor (:437-448), rollTable (:498-509), spawnLoot (:550-578); shop.js sellHoldChests (:156-166)",
+   "rootCause": "Ambar tam durum olarak gönderiliyor. hold.items her anahtar için 0–999 kabul ediyor; ITEMS doğrulaması ve anahtar sayısı sınırı yok. hold.chests yalnız slice(0,40) ile ham saklanıyor; id/tier/contents/weight denetlenmiyor. lootReq tablosu tamamen konuğun beyanı: ≤10 satır, adet ≤999, keyfî eşya kimliği, keyfî veri nesnesi ve exact bayrağı. Ev sahibi bunları gerçek dünyada doğurup kaydına yazıyor. Ambar güncellemesinde 'son yazan kazanır' kuralı geçerli.",
+   "impact": "Tek iletiyle 40 sahte 'legend' sandık (her biri 3000 altına satılıyor; içerik altin_para 1e9) ve 999'ar elmas, kraliyet tacı ve altın külçe ambara eklenebiliyor (sim2.mjs B). Ev sahibi limanda ambarı satınca +120 000, sandığı alıp açınca +1e9 altın kazanıyor. lootReq ile 10×999 eşya ya da value 1e12 / weight −1e9 olan bir balık üretilebiliyor (sim2.mjs C); satışı ~1,4e12 altın getiriyor ve çanta kapasitesi sınırsızlaşıyor. Diğer konuklar da aynı keseyi ve ambarı kullanabiliyor. Dürüst oyunda ev sahibi ve konuk ambarı aynı anda değiştirirse eşya kayboluyor.",
+   "priority": "kritik",
+   "fix": "Ambarı niyet iletilerine çevir: holdPut{itemId,n} (ITEMS beyaz listesi ve kapasite denetimiyle), stowReq{chestId} (yalnız ev sahibinde var olan ve konuğun taşıdığı sandık için), holdTake{idx}. Konuktan gelen 'hold' tam durum iletisini kaldır. lootReq'i de kaldır: hayvan, düşman ve kırık sandık ganimeti zaten ev sahibinde ölen ya da kırılan varlıktan doğsun. Konuktan yalnız dropReq{itemId,n,data?} kabul edilsin: ITEMS beyaz listesi; veri yalnız şemalı türlerde ve ev sahibince yeniden üretilmiş olarak (balığın değeri ve ağırlığı türünden hesaplanır); konuk başına dakikalık değer bütçesi. sellHoldChests ev sahibinde tek bir işlem olarak çalışsın.",
+   "repro": "Konuk gemideyken `DK.net.toHost({t:'hold', ship: DK.G.ship.id, hold:{items:{altin_para:999, elmas:999}, chests: Array.from({length:40}, (_, i) => ({id:'f'+i, tier:'legend', contents:[['altin_para', 1e9]]}))}})` gönderir. Ev sahibinin ambar panelinde 40 adet 'Mira Veyl'in Sandığı' görünür; Sedef Hanım'a ambar satışı +120 000 altın getirir. lootReq için: `{t:'lootReq', pos: DK.G.player.pos.toArray(), exact:true, table:[['altin_para',1,999],['balik:x',1,1,{value:1e12, weight:-1e9, rarity:'epik'}]]}`.",
+   "acceptance": "Konuk iletileriyle ev sahibinde var olmayan sandık ya da eşya ambara veya dünyaya eklenemez. 'Kötü konuk' testinden sonra ev sahibinin ambarı, keseleri ve altını değişmez.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "11:#13 ('Açık (orta)' — önemi düşük gösterilmiş); 02:H07 (hold kısmı)"
+  },
+  {
+   "id": "B-06",
+   "title": "Ağdan gelen eşya verisi (balık color/name) kaçışsız innerHTML'e giriyor: ev sahibine ve diğer konuklara saklı XSS",
+   "file": "js/economy/items.js",
+   "func": "iconSVG (:127-136), itemName (:107-110); ui/panels.js itemTip (:21-27), itemCell (:29-40); ui/ui.js showTip (:82); net.js lootReq (:306, row[3]), hold chests (:352)",
+   "rootCause": "iconSVG renk parametresini doğrulamadan SVG dizgesindeki fill özniteliğine gömüyor; itemCell bunu `html:` ile innerHTML'e basıyor. itemTip, balığın adını ve len/weight/zone/value alanlarını kaçışsız HTML'e koyuyor ve showTip bunu innerHTML ile gösteriyor. Ağ katmanı lootReq satırının 4. öğesini ve ambar sandığı içeriğini şemasız aktardığı için bu veriyi konuk belirleyebiliyor.",
+   "impact": "Konuk, color alanı çift tırnakla başlayıp `/><img src=x onerror=...>` ile devam eden bir 'balik:*' eşyasını keseye ya da sahte ambar sandığına koyabiliyor. Ev sahibi ya da başka bir konuk bu eşyayı alıp envanterini açtığında (hücre çizilirken) betik o oyuncunun sayfasında çalışıyor. Bu betik localStorage'daki kayıtları okuyup silebiliyor (aynı github.io kökenini paylaşan diğer projeler dahil). Ev sahibi ele geçirilirse odadaki herkese ileti gönderilebiliyor. index.html'de CSP yok.",
+   "priority": "kritik",
+   "fix": "iconSVG'de renk yalnız /^#[0-9a-f]{3,8}$/i kalıbına uyuyorsa kullanılsın. itemTip ve itemName çıktısı esc() ile kaçışlansın ya da el() ile metin düğümü olarak kurulsun. showTip'e yalnız sabit şablon verilsin. Ağdan gelen eşya verisi ev sahibinde tür şemasıyla yeniden kurulsun (balıkta ad, renk ve değer tür anahtarından türetilsin). Savunma derinliği için CSP eklensin (script-src 'self' + kullanılan CDN; satır içi olay işleyicilerini engeller).",
+   "repro": "Konukta `DK.net.toHost({t:'lootReq', pos: DK.G.player.pos.toArray(), exact:true, table:[['balik:x',1,1,{name:'Balık', color: String.fromCharCode(34)+'/><img src=x onerror=document.title=1>'}]]})` gönderilir. Ev sahibi keseyi E ile alıp Tab ile envanteri açtığında sekme başlığı '1' olur. Not: tarayıcıda çalıştırılmadı; zincir kod okumasıyla doğrulandı.",
+   "acceptance": "Aynı veriyle envanter, ipucu ve ambar panelleri açıldığında DOM'da img/onerror oluşmaz. Birim test: iconSVG({id:'balik:x'}, 'kötü') yalnız varsayılan rengi üretir.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "B-07",
+   "title": "Savaşta hasarı konuk belirliyor: sıklık, silah, menzil ve blok doğrulaması yok; boss hasarı mesafesiz, tür ve konum konuktan",
+   "file": "js/net/net.js",
+   "func": "_hostData 'hurtEnemy' (:278-287), 'hurtBoss' (:288), 'stunEnemy' (:289), 'hurtAnimal' (:290), 'hurtMarine' (:291); bosses.js netHurtBossApply (:1041-1046), Kraken damageMul (:210-216), _hurtTentacle (:217-233); enemies.js hurt (:340-363), applyDamage (:376-397)",
+   "rootCause": "Vuruş konukta çözülüyor ve sonuç (dmg, kind, heavy/fin/ctr/gb, kb, pos, ten) ev sahibine gönderiliyor. Ev sahibi yalnız üst sınır (160/220) ve beyan konuma göre kaba bir mesafe denetimi uyguluyor. Saldırı sıklığı, bekleme süresi, silah, mühimmat ve animasyon anı izlenmiyor. hurt() yerine applyDamage() çağrıldığı için blok, kaçınma, rise ve phased durumları atlanıyor. hurtBoss'ta mesafe ve tür doğrulaması hiç yok.",
+   "impact": "Genel 120 ileti/sn sınırıyla 120×160 = 19 200 hasar/sn elde ediliyor (meşru değer ~40–60; sim.mjs 4). Her düşman, hayvan ve deniz canlısı anında ölüyor; ev sahibine XP payı ve ganimet düşüyor. Boss'a dünyanın her yerinden 220 × zayıf nokta çarpanı (2,2) × 120 ≈ 58 000 hasar/sn verilebiliyor (sim.mjs 5: 9 km'den iletildi). Kraken 'tentacle' türüyle derin (dokunulmaz) evrede de hasar alıyor. ctr bayrağıyla her vuruşta 1,6 sn sersemletme sağlanıyor; stunEnemy ile 8 m'deki (beyan) düşman sürekli sersem tutulabiliyor. Hikâye düşmanları (iskelet_kaptan, kizil_hancer) ev sahibinde öldüğünde aşama ilerliyor, harita parçası ve büyük sandık veriliyor (quests.js:171-190). Dürüst konukta ise yerel blok zarı yüzünden vuruşlar hiç gönderilmeyebiliyor (02 F-04).",
+   "priority": "kritik",
+   "fix": "Niyet tabanlı savaşa geç: konuk attack{seq, move, aimYaw, t}, shoot{seq, dir, t} ve parry{seq, t} gönderir. Ev sahibi, konuğun doğrulanmış konumu ve elindeki silahla combat._meleeHit/shoot mantığını kendisi çalıştırır. SWORD_MOVES'taki dur/hitAt/chainAt değerleriyle bekleme ve kombo durumunu, dayanıklılığı ve tabancanın dolu/boş durumunu ev sahibi tutar. Hedefin hurt() fonksiyonunu çağırır (blok, kaçınma, rise ve phased dahil) ve sonucu (hit/blocked/dodged, hasar) konuğa bildirir. Boss zayıf noktası ve kind ev sahibinde belirlenir. Stun yalnız ev sahibinin kaydettiği düşman saldırısının parry penceresinde kabul edilir. Geçiş dönemi için asgari önlemler: hedef başına konuk başına vuruş/sn sınırı, hurtBoss için mesafe denetimi, kind beyaz listesi ve konuktan pos alınmaması.",
+   "repro": "Konukta `for (let i=0;i<120;i++) DK.net.toHost({t:'hurtBoss', id: DK.bosses.active.id, dmg:220, kind:'tentacle'})` çalıştırılır; etkin boss, konuk nerede olursa olsun ~1 sn'de ölür. `for (let i=0;i<120;i++) DK.net.toHost({t:'hurtEnemy', id:'<6 m içindeki düşman>', dmg:160, kind:'melee', ctr:true})` ise aynı saniyede 19 200 hasar verir.",
+   "acceptance": "Değiştirilmiş bir konukla hedefe uygulanan hasar/sn, ev sahibinin aynı silahla üretebileceği azami değeri %10'dan fazla aşmaz. Menzil dışı vuruş, bekleme süresi ihlali ve uzaktan boss vuruşu reddedilir. 02 F-04'teki yeniden üretme adımlarında vuruş ev sahibinde blok zarıyla çözülür.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "02:F-04 (açık; 11'de yok; 07:31 'Aşama 6'da ele alınır' dediği hâlde ele alınmadı); 02:H07 (hasar kısmı, kısmen)"
+  },
+  {
+   "id": "B-08",
+   "title": "Altın paylaşımı konuğun beyanı: 'gold' iletisiyle konuk başına saatte 1,2 M altın ev sahibine ve tayfaya aktarılıyor; satış doğrulaması, işlem kimliği ve tekrar koruması yok",
+   "file": "js/net/net.js",
+   "func": "_hostData 'gold' (:373-383); relay netShareGold (:175); economy/shop.js earn (:120-128), sell (:89-101), sellCarriedChest (:138-153), sellHoldChests (:156-166)",
+   "rootCause": "Satış ve pay hesaplaması konukta yapılıyor. Ev sahibi yalnız miktarı kırpıyor (≤5000/ileti, konuk başına ≤20 000/dk), ardından doğrudan `G.player.inv.gold += amount` yapıyor ve değeri diğer konuklara yayıyor. Satılan ürün, tüccar, fiyat, zaman ve txId doğrulanmıyor. Ambar satışı her istemcide yerel durumla yapılıyor.",
+   "impact": "Tek bir konuk ev sahibine ve diğer konuklara dakikada 20 000, saatte 1 200 000 altın aktarabiliyor (sim.mjs 2b; 3 konukla saatte 3,6 M). Bu altın ev sahibinin kalıcı kaydına yazılıyor. Aynı ileti tekrar işleniyor. Ambar sandıkları iki istemcide aynı anda satılabiliyor (02 B16).",
+   "priority": "kritik",
+   "fix": "Konuk için 'gold' iletisini kaldır; yerine sellReq{txId,itemId,n,merchantId}, sellChestReq{chestId} ve sellHoldReq koy. Ev sahibi şunları doğrulamalı: tüccara yakınlık, tüccarın açık olduğu saatler, sellPrice, ITEMS ve n sınırı, txId'nin tekilliği ve konuk başına satış değeri bütçesi. earn() yalnız ev sahibinde çalışmalı ve payları herkese ev sahibi yollamalı. Sandık satışları ev sahibindeki sandık nesnesi üzerinden, tek kilitli bir işlem olarak yapılmalı.",
+   "repro": "Konukta `setInterval(() => { for (let i=0;i<4;i++) DK.net.toHost({t:'gold', amount:5000}); }, 60000)` çalıştırılır; ev sahibi her dakika +20 000 altın kazanır. Node: /tmp/denetim_alan/sim.mjs 2a/2b.",
+   "acceptance": "Konuk iletileri, ev sahibinin kendi hesapladığı satış payı dışında ev sahibinin altınını artıramaz. Aynı txId ikinci kez işlenmez. Eşzamanlı iki ambar satışı yalnız tek ödeme üretir.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "02:H07 (gold kısmı, kısmen); 11:#16 / 02:B16 (çift satış, açık)"
+  },
+  {
+   "id": "B-09",
+   "title": "Ana döngüde hata yalıtımı yok: tek bozuk gemi, uzak oyuncu ya da kayık tüm benzetimi, anlık görüntüyü ve girdi temizliğini durduruyor",
+   "file": "js/main.js",
+   "func": "engine.updaters.add (main.js:117-122); core/engine.js start döngüsü (:64-67); game/game.js _step (:222-238), update (:189-219)",
+   "rootCause": "game.update, hud.update, net.update ve input.endFrame tek bir güncelleyicide sırayla çağrılıyor ve yalnız güncelleyici düzeyinde try/catch var. game._step'te varlık başına koruma yok. Ağdan gelen bozuk veri bir varlığı her karede istisnaya soktuğunda zincirin geri kalanı da her karede atlanıyor.",
+   "impact": "Bu eksiklik B-01, B-02, B-03 ve B-04'ü tek iletiyle oturum çökmesine dönüştürüyor. Ev sahibinde fizik, AI ve HUD duruyor; konuklara snap gitmiyor. input.endFrame çağrılmadığı için basılan tuşlar her karede 'basıldı' kalıyor (pressedSet temizlenmiyor: input.js:163-168) ve fare deltası birikiyor. Konuklar pong almaya devam ettiğinden 'ev sahibi ayrıldı' uyarısı da tetiklenmiyor.",
+   "priority": "yuksek",
+   "fix": "Güncelleyicileri ayır (game, hud, net ve input için ayrı updater) ve input.endFrame'i finally bloğunda çağır. game._step ve net.update'te varlık başına try/catch ve karantina uygula: aynı varlık N kez hata verirse devre dışı bırakılsın ve hata bir kez günlüğe yazılsın. _hostSnapshot'ı da nesne başına koru.",
+   "repro": "B-01 ya da B-03'ün yeniden üretme adımları uygulanır. Ardından ev sahibinde `DK.input.pressedSet.size` her basılan tuşla artar ve sıfırlanmaz.",
+   "acceptance": "Bir gemiye kasıtlı olarak upg=undefined yazıldığında yalnız o gemi karantinaya alınır; diğer sistemler, snap yayını ve input.endFrame çalışmaya devam eder (yeni test).",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin"
+  },
+  {
+   "id": "B-10",
+   "title": "Sandık, kese, kazı ve yüzen nesne etkileşimleri uzaktan yapılabiliyor; 'maps' ile tüm kazı alanları sahiplenilebiliyor; başkasının taşıdığı sandık yazılabiliyor",
+   "file": "js/net/net.js",
+   "func": "_hostData 'chestReq' (:293-299), 'pickupReq' (:300), 'dig' (:292), 'maps' (:384), 'floatReq' (:324), 'chestState' (:334-339), 'chestGone' (:340-344); _applyChestState (:593-601); _dropPeer (:398); treasure.js _grant (:351-367), _openChest (:476-493), _collect (:631-641), activeSites (:146-154), resolveDig (:213-235); events.js collectFloatingById (:232-235)",
+   "rootCause": "chestReq, pickupReq ve dig'de yakınlık denetimi yok. floatReq, chestState ve chestGone'da yakınlık beyan konuma göre ölçülüyor (floatReq NaN'da açık kalıyor). 'maps' listesi şemasız ve doğrudan G.remoteMapSites'e giriyor. _applyChestState carriers, state ve pos alanlarını tür denetimi ve geçiş kuralı olmadan yazıyor.",
+   "impact": "Dünyadaki her sandık ve kese 4 km öteden açılıp toplanabiliyor (sim2.mjs E). 'maps' ve 'dig' birlikte kullanılarak 123 kazı alanının tümü 8 dakikada bir uzaktan kazılıp açılabiliyor (resolveDig yalnız alana ≤2,8 m uzaklığa bakıyor). Ev sahibinin taşıdığı sandık carriers=[konuk] ile çalınabiliyor; state 'gone' yapılarak kayda yazılmayacak biçimde kaybettirilebiliyor ya da konumu ışınlanabiliyor. carriers sayı yapılırsa sonraki her kopmada _dropPeer `includes` TypeError ile kilit ve kayık temizliğini yarıda bırakıyor.",
+   "priority": "yuksek",
+   "fix": "Etkileşimlerde ev sahibi tarafındaki (hareketi doğrulanmış) konumla yarıçap denetimi yap; _provide'daki değerler kullanılsın: sandık 2,6 m, kese 2,4 m, yüzen nesne 3,5 m, kazı konuğun önünde ≤1,5 m. Kazı süresini de ev sahibi ölçsün. 'maps' iletisini kaldır; konuğun haritalarını ev sahibinin verdiği harita kayıtlarından türet. chestState/chestGone yerine dropReq, stowReq ve sellChestReq niyetlerini kullan; sandık durumlarını ev sahibinde bir durum makinesiyle yönet. carriers'ın dizi olduğunu doğrula ve _dropPeer'daki döngüyü savunmacı yaz.",
+   "repro": "Konuk 4 km uzaktayken `DK.net.toHost({t:'chestReq', a:'open', id:'<sandık id>'})` gönderir; içerik konuğa geçer. `DK.net.toHost({t:'maps', sites:['<alan id>']}); DK.net.toHost({t:'dig', x:<alan.x>, z:<alan.z>})` gönderildiğinde ev sahibinde hazine sandığı çıkar. Node: sim2.mjs E/F.",
+   "acceptance": "Menzil dışındaki chestReq, pickupReq, dig ve floatReq reddedilir. Ev sahibinin vermediği bir haritayla yapılan kazı sandık çıkarmaz. Başkasının taşıdığı sandığın durumu konuk iletisiyle değişmez. carriers bozuk olsa da kopma temizliği tamamlanır.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "02:H07 ('dig' konum kontrolü — açık)"
+  },
+  {
+   "id": "B-11",
+   "title": "Tehlike/bulmaca iletisi (hazard) hiç doğrulanmıyor: uzaktan fıçı patlatma, kaya salma, bulmaca bloğunu ışınlama ve bulmacayı çözme mümkün",
+   "file": "js/net/net.js",
+   "func": "_hostData 'hazard' (:360); world/hazards.js netApply (:672-680), ignite (:192-198), _explode (:200-245), solve (:508-520)",
+   "rootCause": "İleti olduğu gibi netApply'a verilip yayınlanıyor; tek koşul kimliğin var olması. Eylem yetkisi, yakınlık, fitil süresi (f) ve blok konumu (x,z) doğrulanmıyor.",
+   "impact": "Ev sahibinde kurulu adalardaki barut fıçıları her yerden ve anında (f negatif ya da 0) patlatılabiliyor: ev sahibine 15–85, gemilere 30 hasar veriliyor; düşman ve hayvanlar toplu hasar alıyor (ev sahibinde XP ve ganimet doğuyor). Kaya tuzakları salınabiliyor, bulmaca bloğu keyfî ya da NaN konuma taşınabiliyor. Bulmacalar uzaktan çözülebiliyor ve 'solved' kalıcı kayda yazılıyor.",
+   "priority": "yuksek",
+   "fix": "Konuktan yalnız niyet kabul et: igniteReq{id} (ev sahibi konuğun ateşini ya da mermi vuruşunu kendisi çözdüğünde ya da ≤2 m yakınlıkta meşaleyle), pushReq{id,dir} (blok ev sahibinde fizikle 1,1 m/sn hızla ilerler). roll ve solve yalnız ev sahibinin fiziğinden çıksın. f alanı kaldırılsın.",
+   "repro": "Konukta `DK.net.toHost({t:'hazard', id:'<fıçı id>', a:'ignite', f:0.01})` gönderilir (kimlikler `DK.hazards.list('keg')` ile görülebilir); ev sahibinde fıçı patlar. `{t:'hazard', id:'<bulmaca id>', a:'solve'}` gönderildiğinde kafes açılır. Node: sim2.mjs G.",
+   "acceptance": "Hiçbir tehlike ya da bulmaca durumu, menzil ve fizik doğrulamasından geçmeyen bir konuk iletisiyle değişmez.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin"
+  },
+  {
+   "id": "B-12",
+   "title": "Hikâye iletisi (story) tekrar gönderilerek tüm aşamaları atlatıyor ve keyfî bayrak yazıyor",
+   "file": "js/net/net.js",
+   "func": "_hostData 'story' (:326-333); game/quests.js advance (:127-135)",
+   "rootCause": "'En fazla bir aşama ileri' kuralı ileti başına uygulanıyor, ardışık iletilerle aşılabiliyor. Aşama koşulu ev sahibinde doğrulanmıyor. Bayrak anahtarları için beyaz liste yok (yalnız <40 karakter ve true değeri isteniyor). to < STORY.length denetimi yok.",
+   "impact": "5 iletiyle ana hikâye 0'dan 5'e tamamlanıyor (sim.mjs 9). Ev sahibine aşama başına +150 XP (progress.js storyAdvanced) veriliyor ve ilerleme kalıcı kayda yazılıyor. kizilYenildi, parca1, gunluk ve ilkHazineBulundu gibi bayraklar keyfî olarak açılabiliyor. 6. aşamada STORY[6] undefined olduğundan advance içinde TypeError oluşuyor, ama aşama yine de 6 olarak yazılıyor.",
+   "priority": "yuksek",
+   "fix": "Konuktan yalnız storyReq{event:'talkTuzla'|'takeJournal'|'firstMap'} kabul edilsin. Ev sahibi koşulu kendi dünyasında doğrulasın (NPC'ye ya da günlük nesnesine ev sahibi tarafındaki konumla yakınlık, mevcut aşama, önkoşul bayrakları) ve kendi advance() fonksiyonunu çalıştırsın. Bayrak beyaz listesi ve aşamaya bağlı geçiş tablosu kullanılsın; to < STORY.length koşulu eklensin.",
+   "repro": "Konukta `for (let s=1; s<=5; s++) DK.net.toHost({t:'story', stage:s, flags:{gunluk:true, kizilYenildi:true}})` çalıştırılır; ev sahibinde DK.quests.stage === 5 olur.",
+   "acceptance": "Koşulu sağlanmamış bir aşama ilerletilemez. Beyaz liste dışındaki bayrak reddedilir. Aşama hiçbir zaman STORY.length-1'i aşmaz.",
+   "presentIn": "yalniz_v04",
+   "confidence": "kesin",
+   "knownAs": "02:B05 (v0.4'te giderildi; yerine gelen işleyicide yetki denetimi yok)"
+  },
+  {
+   "id": "B-13",
+   "title": "Dümen ve top kilitleri uzaktan ve sınırsız alınabiliyor: ev sahibi kendi gemisinin dışında kalıyor, konuk gemiyi her yerden sürüp ateşleyebiliyor",
+   "file": "js/net/net.js",
+   "func": "_hostData 'lock' (:366-372), 'helm' (:362), 'fire' (:363); game/interact.js isLocked (:16-19), update (:33); game/shipControl.js takeHelm/takeCannon (:168-188)",
+   "rootCause": "Kilit almanın tek koşulu kilidin boş olması. Konuğun o gemide ya da istasyonda olması, kilit kimliğinin geçerli bir istasyon olması, konuk başına kilit sayısı, ev sahibi önceliği ve geminin batık olup olmadığı denetlenmiyor. helm ve fire yalnız kilit sahipliğine bakıyor.",
+   "impact": "Konuk limandan ya da başka bir adadan ev sahibinin dümen kilidini ve tüm top kilitlerini alabiliyor. Ev sahibi kendi gemisinde '(kullanımda)' uyarısı görüyor ve konuk kopana dek istasyonları kullanamıyor. Konuk gemiyi uzaktan sürebiliyor ve ateşleyebiliyor (sim.mjs 7). Düşman ve tüccar gemilerinin istasyon kilitleri de alınabiliyor. mastFix ile reload sıfırlanarak aralıksız atış yapılabiliyor (B-02).",
+   "priority": "yuksek",
+   "fix": "lock on için: kimlik beyaz listesi (shipId:helm|cannonN|anchor|sails); konuk ev sahibi tarafındaki konumuna göre o gemide ve istasyona ≤1,5 m yakında; konuk başına tek istasyon kilidi; gemi batmamış olmalı. Konuk istasyondan ayrılınca ya da uzaklaşınca ev sahibi kilidi bıraksın. Ev sahibi kendi gemisinde öncelikli olsun (kilidi devralabilsin) ve bir 'tayfayı at' arayüzü olsun. helm ve fire için konuğun st.mode değeri helm/cannon olmalı ve gemi batmamış olmalı.",
+   "repro": "Konuk iskeledeyken `DK.net.toHost({t:'lock', id: DK.G.ship.id+':helm', on:true}); DK.net.toHost({t:'helm', ship: DK.G.ship.id, rudder:1, sail:1, back:false})` gönderir. Ev sahibinin dümen isteminde '(kullanımda)' görünür ve gemi hareket eder.",
+   "acceptance": "Gemide olmayan konuk kilit alamaz. Ev sahibi kendi gemisinin kilidini her zaman geri alabilir. Bir konuk en çok bir istasyon kilidi tutabilir.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "02:H07 (lock/helm kısmı, kısmen)"
+  },
+  {
+   "id": "B-14",
+   "title": "revive iletisi koşulsuz uygulanıyor: ev sahibi ve konuklar uzaktan sürekli 'kalkma' animasyonuna ve 45 cana kilitlenebiliyor",
+   "file": "js/net/net.js",
+   "func": "_hostData 'revive' (:386); _clientData 'revive' (:576); player/player.js revive (:236-245)",
+   "rootCause": "Ev sahibi hedefin yaralı (downed) olduğunu, kaldıranın yakınlığını ve 2,5 sn'lik basılı tutma süresini denetlemiyor. revive() koşulsuz olarak hp=45 ve action=null atıyor, meşgul işi iptal ediyor ve 'getup' başlatıyor.",
+   "impact": "Konuk saniyede 120 revive göndererek ev sahibini (ya da başka bir konuğu) sürekli kalkma animasyonunda ve 45 canda tutabiliyor. Kazı ve onarım gibi meşgul işler iptal oluyor; oyuncu hareket ya da saldırı yapamıyor. Ölü oyuncu uzaktan diriltilebiliyor (sim2.mjs H).",
+   "priority": "yuksek",
+   "fix": "Ev sahibinde: hedef downed değilse reddet; kaldıranın ev sahibi tarafındaki konumu ≤2,5 m olmalı; süre reviveStart/reviveEnd niyetleriyle ev sahibinde ölçülmeli. Konukta da revive yalnız downed iken uygulanmalı. Bu tür için ayrı oran sınırı konmalı.",
+   "repro": "Konukta `setInterval(() => DK.net.toHost({t:'revive', target: DK.net.roster.find(r => r.host).id}), 50)` çalıştırılır; ev sahibinin karakteri sürekli kalkma animasyonunda kalır ve canı 45 olur.",
+   "acceptance": "Yaralı olmayan oyuncuya revive etki etmez. Menzil dışı revive reddedilir. 2,5 sn'den kısa kaldırma kabul edilmez.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin"
+  },
+  {
+   "id": "B-15",
+   "title": "Oturum iletileri: aynı pid'den gelen ikinci 'hello' roster'ı şişiriyor, 'ping' kimliksiz ve sınırsız yansıtılıyor, 'app' adı temizlenmiyor, şifre denemesi sınırsız",
+   "file": "js/net/net.js",
+   "func": "_hostData 'hello' (:250-268), 'ping' (:269), 'app' (:274), 'ready' (:273); ui/menu.js lobby _lobbyRender (:283-295)",
+   "rootCause": "hello aynı bağlantı için tekrar işleniyor ve roster'a yeni kayıt ekleniyor. ping, conns denetiminden önce ve oran/boyut sınırının dışında yanıtlanıyor; ts aynen geri yansıtılıyor. app'teki ad cleanName'den geçmiyor; tür, uzunluk ve app şeması denetimi yok. Yanlış şifrede bağlantı kapatılmıyor.",
+   "impact": "Tek bir konuk tekrar hello göndererek odayı 'dolu' gösterip yeni oyuncuları engelleyebiliyor (sim.mjs 1: roster HOST,g1,g1,g1). ping ile ev sahibinin yükleme bant genişliği tüketilebiliyor (sim.mjs 10: 1000 × 70 KB pong). app ile 64 KB'a kadar ya da HTML içeren bir ad bildirimlere ve sohbete giriyor (sim2.mjs A: 3028 karakterlik ad kabul edildi); ad nesne olursa ev sahibi lobisinde el() 'appendChild' TypeError veriyor ve lobi çizimi bozuluyor. Şifre bağlantı başına saniyede 120 kez denenebiliyor.",
+   "priority": "orta",
+   "fix": "hello bağlantı başına yalnız bir kez işlensin (conns.has(pid) ise yalnız güncelle ya da reddet). hello öncesinde yalnız ping/hello kabul edilsin; 5 sn içinde hello gelmezse bağlantı kapatılsın. ping oran sınırına alınsın (≤5/sn) ve ts sonlu sayıya kırpılsın. app'te cleanName ve app şeması (bilinen anahtarlar, renk regex'i, sabit değer kümeleri) uygulansın. ready boolean olsun. Yanlış şifrede reject gönderilip bağlantı kapatılsın ve eş başına deneme sayacı tutulsun.",
+   "repro": "Konukta `DK.net.hostConn.send({t:'hello', ver:'dksh-v1', name:'X', app:{}})` iki kez çalıştırılır; ev sahibinin `DK.net.roster` listesinde aynı kimlik iki kez görünür. `DK.net.toHost({t:'app', app:{}, name:'<b>'+'Z'.repeat(5000)})` gönderildiğinde ev sahibinin bildirimlerinde 5000 karakteri aşan ad görünür.",
+   "acceptance": "Aynı pid'den gelen ikinci hello roster'ı büyütmez. ping saniyede en çok 5 kez yanıtlanır. app adı da ≤20 karaktere temizlenir. Yanlış şifreden sonra bağlantı kapanır.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "02:H07 ('Ek: hello aynı pid'den tekrar gelirse roster'a yinelenen kayıt' — açık); 02:H02 (yalnız hello yolu kapatıldı)"
+  },
+  {
+   "id": "B-16",
+   "title": "Protokol sürümü artırılmadı: v0.3 ve v0.4 aynı 'dksh-v1' kimliğiyle birbirine bağlanıyor, yeni iletiler sessizce yutuluyor",
+   "file": "js/net/net.js",
+   "func": "VER (:27), _hostData 'hello' (:251), host/listPublic (:198-221, :451-467); v0.3 net.js:26",
+   "rootCause": "v0.3'ten v0.4'e protokol değişti (lootReq, holdTake, floatReq, noise, story, act.from, kalp atışı, addBalls/addPlanks), ama VER aynı kaldı. Sürüm yalnız ilk hello'da tam eşitlikle denetleniyor. Herkese açık oda kimlikleri (dksh-v1-pub-N) iki sürümde ortak.",
+   "impact": "Canlı v0.3 ile v0.4 oyuncuları aynı herkese açık odaları görüyor ve birbirine bağlanabiliyor. v0.4 konuk v0.3 ev sahibine bağlandığında ganimet (lootReq), ambardan alma, yüzen nesne ve hikâye iletileri yutuluyor; eşya kayboluyor ve hatalar görünmüyor. v0.3 konuk v0.4 ev sahibinde ganimeti yalnız kendi ekranında doğuruyor (eski H01 hatası).",
+   "priority": "orta",
+   "fix": "Protokol her değiştiğinde VER artırılsın (ör. 'dksh-v2'). hello'ya {proto, build} eklensin ve reject'te anlaşılır bir ileti verilsin. Herkese açık oda öneki sürüme bağlansın. listPublic uyumsuz sürümdeki odaları gizlesin ya da işaretlesin. Protokol değişikliği için belgelenmiş bir sürüm kuralı olsun.",
+   "repro": "Canlı v0.3 sekmesinde oda kurulur, v0.4 sekmesinden kodla katılınır; bağlantı kabul edilir. v0.4 konuk bir domuz öldürdüğünde ganimet hiçbir tarafta doğmaz, çünkü v0.3 _hostData'da 'lootReq' işleyicisi yok.",
+   "acceptance": "Farklı protokol sürümleri bağlanamaz ve kullanıcıya 'Oyun sürümü farklı' iletisi gösterilir. Herkese açık listede yalnız uyumlu odalar görünür.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "B-17",
+   "title": "Kötü niyetli bağlantı sonlandırılmıyor: ihlaller yalnız düşürülüyor, ihlal puanı ve 'tayfayı at' yok, oran sınırı sabit pencereli ve tür ayrımsız",
+   "file": "js/net/net.js",
+   "func": "_hostData (:236-249), _rate/_gold (:131-132), _dropPeer (:390-403), _clientData 'kick' (:577)",
+   "rootCause": "Oran ya da boyut ihlalinde ileti düşürülüyor ve tek bir uyarı yazılıyor; bağlantı kapatılmıyor. Ev sahibinin konuğu atmak için ne iletisi ne arayüzü var ('kick' yalnız konuk tarafında işleniyor). Sınırlayıcı 1 sn'lik sabit pencere kullanıyor ve türleri ayırmıyor. Boyut, ileti ayrıştırıldıktan sonra ölçülüyor. _rate/_gold kayıtları kopmada temizlenmiyor.",
+   "impact": "Saldırgan konuk süresiz bağlı kalıp tüm saldırıları tekrarlayabiliyor. Ev sahibinin tek çaresi odayı kapatmak; bu da tüm tayfayı düşürüyor. Pencere sınırında 2 ms içinde 240 ileti geçebiliyor.",
+   "priority": "orta",
+   "fix": "Tür başına token-bucket kullan. İhlal puanı tut (ör. 10 sn'de 20 ihlal → 'kick' iletisiyle nedeni bildir, conn.close çağır, kara listeye al). Ev sahibi lobisine ve HUD takım listesine 'tayfayı at' ve 'odayı kilitle' seçenekleri ekle. Boyutu ham veri uzunluğundan ölç. _dropPeer'da _rate/_gold kayıtlarını temizle.",
+   "repro": "Konuk 10 dk boyunca saniyede 500 'gold' iletisi gönderir; bağlantı açık kalır ve ev sahibi konsolunda pencere başına yalnız bir uyarı görünür.",
+   "acceptance": "Sürekli ihlal eden konuk ≤10 sn içinde nedeni bildirilerek atılır. Ev sahibi arayüzden konuğu atabilir. Atılan pid aynı oturumda yeniden kabul edilmez.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "14:#20 ('kick' iletisi önerisi)"
+  },
+  {
+   "id": "B-18",
+   "title": "Konuk ev sahibi iletilerini hiç doğrulamıyor: kötü niyetli ev sahibi konuğun yerel kaydını bozabilir ve XP açılır metniyle XSS çalıştırabilir",
+   "file": "js/net/net.js",
+   "func": "_clientData (:526-579): 'gold' (:569), 'give' (:543), 'xp' (:567), 'hurt' (:536-540), 'story' (:568), 'teleport' (:544-553); ui/hud.js _xpPop (:55-63)",
+   "rootCause": "İstemci ev sahibini tamamen güvenilir sayıyor. Konuğun kalıcı kaydını etkileyen iletilerde tür ve aralık denetimi yok. _xpPop, reason alanını innerHTML ile basıyor.",
+   "impact": "Kötü niyetli ev sahibi konuğun yerel kaydına negatif ya da dize türünde altın, keyfî eşya ve sınırsız XP yazabiliyor; kayıt kalıcı olarak bozuluyor. Konuğu öldürebiliyor ya da ışınlayabiliyor. `{t:'xp', r:'<img onerror=...>'}` iletisiyle konuğun sayfasında betik çalıştırıp localStorage kayıtlarına erişebiliyor.",
+   "priority": "orta",
+   "fix": "Konukta şu denetimler eklensin: gold tamsayı olmalı, |Δ| makul bir sınırı aşmamalı ve negatif olmamalı; give eşyaları ITEMS şemasından geçmeli; xp bir oturum üst sınırını aşmamalı; hurt dmg ≤500 olmalı. _xpPop textContent kullanmalı. Oturum öncesinde kayıt yedeklenmeli ve 'bu oturumda kazanılanlar' özeti gösterilmeli. Güven modeli belgelenmeli.",
+   "repro": "Ev sahibi konsolunda `DK.net.toPeer('<konuk id>', {t:'xp', xp:1, r:'<img src=x onerror=document.title=1>'})` çalıştırılır; konukta sekme başlığı '1' olur. `DK.net.toPeer('<konuk id>', {t:'gold', amount:-1e9})` çalıştırılınca konuğun altını −1e9 olur ve kayda yazılır.",
+   "acceptance": "Bu iletiler konukta reddedilir ya da kırpılır. XP açılır metninde DOM'a etiket enjekte edilmez.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "02:H20 (XP açılır metni innerHTML — 03'te H20 kapatılmış gösterildiği hâlde açık)"
+  },
+  {
+   "id": "B-19",
+   "title": "Konuk envanteri ve ilerlemesi istemci yetkili: değiştirilmiş konuk kendi altınını, XP'sini ve eşyasını sınırsız yazıp ev sahibinin dünyasına aktarabiliyor",
+   "file": "js/main.js",
+   "func": "handlers.startOnlineGuest (:187-197), saveNow (:199-206); game/progress.js start/_guestSave (:82-90); treasure.js 'loot' yönlendirmesi (:83-92)",
+   "rootCause": "Konuğun envanteri, altını, rütbe/yetenekleri ve kişisel görevleri yalnız konuğun localStorage'ında tutuluyor ('guest' yuvası, dksh.progress.guest); ev sahibinde konuk profili yok. Konuk envanteri ile ev sahibinin dünyası arasında 'Yere bırak' (lootReq), ambar ve 'gold' köprüleri var.",
+   "impact": "Konuk konsoldan ya da kaydını düzenleyerek kendine sınırsız altın, eşya ve seviye verebiliyor. 'Yere bırak' ve ambar yoluyla bunları ev sahibinin dünyasına ve diğer konuklara aktarabiliyor; ev sahibi bu eşyaların meşru olup olmadığını bilemiyor. Kabul ölçütü bu mimaride karşılanamıyor.",
+   "priority": "orta",
+   "fix": "Konuk profilini dünya (oda kaydı) başına ev sahibinde tut: konuk ilk katıldığında ev sahibi rastgele bir kimlik belirteci üretsin (konukta localStorage'da saklanır); bu belirteçle eşleşen envanter ve ilerleme ev sahibinin kaydında dursun, konuğun yerel kopyası yalnız önbellek olsun. Ev sahibinin dünyasına yalnız ev sahibi defterinde kaynağı kayıtlı eşyalar girebilsin. Alternatif olarak güven modelini 'arkadaşlarla co-op' diye belgele ve konuktan dünyaya giden köprüleri bütçele.",
+   "repro": "Konuk konsolunda `DK.G.player.inv.gold = 1e9; DK.G.player.inv.add('kraliyet_taci', 50)` çalıştırılır, ardından envanterden 'Yere bırak' seçilir. Ev sahibinde 50 kraliyet tacı içeren bir kese doğar; ev sahibi bunu alıp satabilir.",
+   "acceptance": "Ev sahibinin dünyasına giren konuk kaynaklı eşya ve altın, ev sahibi defterinde kaynağı kayıtlı miktarı aşamaz (yeni test).",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin"
+  },
+  {
+   "id": "B-20",
+   "title": "'act' iletisinde 'from' alanını konuk belirliyor (broadcast'ın üçüncü argümanı yok sayılıyor) ve alanlar doğrulanmıyor",
+   "file": "js/net/net.js",
+   "func": "_hostData 'act' (:277), broadcast (:489), relay netAction (:144), _clientData 'act' (:535), _remoteAct (:648-653)",
+   "rootCause": "`this.broadcast(m, pid, { from: pid })` çağrısında broadcast yalnız iki parametre alıyor, üçüncüsü yok sayılıyor. Konuğun gönderdiği from alanı diğer konuklara aynen gidiyor. a, anim ve dir için şema yok.",
+   "impact": "Konuk atış parlamasını ve sesini başka bir oyuncuya atfedebiliyor. Saniyede 120 atış efekti ve sesi üretilebiliyor. dir sayı olarak gönderilirse _remoteAct'ta TypeError oluşuyor (yalnız istisna, kalıcı etkisi yok).",
+   "priority": "dusuk",
+   "fix": "Yayından önce ileti yeniden kurulsun: `{t:'act', a: beyaz liste, anim: beyaz liste, dir: 3 sonlu sayı (normalize), from: pid}`. Bu tür için oran sınırı ≤10/sn olsun.",
+   "repro": "Konukta `DK.net.toHost({t:'act', a:'shoot', from:'<başka konuk id>', dir:[0,0,1]})` gönderilir; üçüncü oyuncuda atış efekti başka bir konuğun karakterinde görünür.",
+   "acceptance": "Diğer konuklarda act.from her zaman gönderenin kimliğidir. Şemaya uymayan act düşürülür.",
+   "presentIn": "yalniz_v04",
+   "confidence": "kesin"
+  },
+  {
+   "id": "B-21",
+   "title": "KNOWN listesinde işleyicisi olmayan türler ('inter', 'prog') var; 'noise', 'downed', 'marker' ve 'chat' için tür başına oran sınırı yok",
+   "file": "js/net/net.js",
+   "func": "KNOWN (:46), _hostData 'noise' (:325), 'downed' (:385), 'marker' (:359), 'chat' (:275)",
+   "rootCause": "'inter' ve 'prog' için ne gönderen ne işleyici var. Bildirim ya da AI etkisi üreten iletiler yalnız genel 120/sn sınırına tabi. noise, konuğun beyan ettiği konumda 80 m yarıçapla düşmanları uyarıyor.",
+   "impact": "Saniyede 120 'yaralı düştü' ya da 'işaret koydu' bildirimi ve sohbet seli ev sahibinin arayüzünü kullanılmaz hâle getirebiliyor. noise ile düşmanlar istenen noktaya, örneğin ev sahibinin yanına çekilebiliyor. Ölü türler denetim yüzeyini gereksiz yere büyütüyor.",
+   "priority": "dusuk",
+   "fix": "Ölü türleri KNOWN'dan çıkar. noise'u ev sahibinde konuğun eylemlerinden (atış/koşu niyeti) türet ya da ≤2/sn ve yarıçap ≤ eylem türünün yarıçapı olacak biçimde sınırla. downed'ı ev sahibinde st.down geçişinden türet. marker ve chat için ≤2/sn sınırı koy.",
+   "repro": "Konukta `for (let i=0;i<120;i++) DK.net.toHost({t:'downed'})` çalıştırılır; ev sahibinde art arda 'yaralı düştü' bildirimleri ve sesleri çıkar.",
+   "acceptance": "Aynı türden bildirim iletisi saniyede en çok 2 kez işlenir. 'inter' ve 'prog' KNOWN listesinde bulunmaz.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin"
+  }
+ ],
+ "userClaims": [
+  {
+   "claim": "Host, konuktan gelen 'gold' mesajında G.player.inv.gold += m.amount işlemini doğrudan yapıyor.",
+   "v03": "dogru",
+   "v04": "kismen",
+   "evidence": "v0.3 net.js:263: `case 'gold': this.broadcast(m, pid); G.player.inv.gold += m.amount;` — tür ve aralık denetimi yok; negatif değer ve 1e9 geçiyor, ileti olduğu gibi yayınlanıyor. v0.4 net.js:373-383: ekleme hâlâ doğrudan yapılıyor (`G.player.inv.gold += amount`, :382). Ancak amount = Math.round(num(m.amount,0,5000)), ≤0 değer reddediliyor, konuk başına dakikada en çok 20 000 (GOLD_PER_MIN :44) kabul ediliyor ve yayına kırpılmış değer gidiyor. Miktar yine konuğun beyanı; satış doğrulanmıyor, txId yok. Ölçüm (/tmp/denetim_alan/sim.mjs): 1. dakikada 20 000, 60 dakikada 1 200 000 altın. 06a 'H07 Altın paylaşım bütçesi' GEÇTİ (08 §8.1 #6: +12 000)."
+  },
+  {
+   "claim": "Host, konuk sonuçlarını (hurtEnemy, hurtBoss, hurtAnimal, hurtMarine, stunEnemy) doğrudan kabul ediyor; konuk hasar miktarını belirleyebiliyor.",
+   "v03": "dogru",
+   "v04": "kismen",
+   "evidence": "v0.3 net.js:237-241: m.dmg ham olarak (Infinity ve negatif dahil) ve mesafe denetimi olmadan uygulanıyor; stun süresi de ham. v0.4 net.js:278-291: dmg num() ile 0–160 (boss için 0–220) aralığına kırpılıyor. Mesafe sınırları: hurtEnemy ≤6 m (kind 'bullet' ise 80 m), hurtAnimal <80 m, hurtMarine <120 m, stunEnemy <8 m; stun süresi 0,2–3 sn. Bu mesafeler konuğun 'st' ile bildirdiği konuma göre ölçülüyor ve NaN'da açık kalıyor (sim.mjs 3b). hurtBoss'ta mesafe denetimi hiç yok (:288, bosses.js:1041-1046); kind/pos/ten konuktan geliyor. Konuk 0–üst sınır aralığındaki hasarı ve heavy/counter/guardBreak/kind bayraklarını hâlâ kendisi seçiyor. Ev sahibi applyDamage çağırdığı için blok/kaçınma/rise/phased atlanıyor (02 F-04). Sıklık yalnız genel 120 ileti/sn ile sınırlı: sim.mjs 4 aynı saniyede 19 200 hasar gösterdi; sim.mjs 5'te 9 km uzaktan 220'lik 'tentacle' hurtBoss iletisi işlendi."
+  }
+ ],
+ "docClaims": [
+  {
+   "doc": "docs/denetim/03_DEGISIKLIK_LISTESI.md:62",
+   "claim": "net.js'te konuk mesajı doğrulaması yapıldı: bilinen tür listesi, oran sınırı (120/s), boyut sınırı (64 KB), hasar üst sınırları ve mesafe denetimi, sandık/ambar/kilit yetki denetimi, altın bütçesi (H07 düzeltmesi)",
+   "verdict": "kismen",
+   "evidence": "Listelenen mekanizmalar kodda var (net.js:39-47, 237-249, 278-291, 334-383). Ancak: st/ping oran ve boyut sınırından muaf (:241); mesafeler konuğun beyanına dayanıyor ve NaN'da açık; hurtBoss mesafesiz (:288). shipFull (:358), hazard (:360), shipCmd (:361), boat/boatSt (:364-365), dig (:292), maps (:384), chestReq/pickupReq (:293-300) ve revive (:386) doğrulanmıyor. Ambar sandık içeriği ham (:352); kilit edinimi koşulsuz (:369). H07'nin shipFull, hold, dig ve st kısımları hâlâ açık."
+  },
+  {
+   "doc": "docs/denetim/12_TEST_PLANI_VE_SONUCLAR.md:28 (#19)",
+   "claim": "Yanlış girdi/spam/hile girişimi — coop/06a_ag_guvenligi.cjs — GEÇTİ (oran/boyut/hasar/altın/sahte ad)",
+   "verdict": "kismen",
+   "evidence": "06a yalnız şunları sınıyor: ad temizliği (hello yolu), aynı ad, altın bütçesi, 300 m'deki düşmana tek hurtEnemy (dürüst konumla), yakından tek hurtEnemy, 200 KB sohbet ve kopma temizliği. hurtBoss, stunEnemy, hurtAnimal, hurtMarine, shipFull, shipCmd, boat/boatSt, hold/lootReq sahteciliği, hazard, story, lock, revive, st/NaN/ışınlanma ve ping/hello yinelemesi için test yok. Bu iletilerle kritik sömürüler mümkün (B-01…B-08)."
+  },
+  {
+   "doc": "docs/denetim/08_COOP_TESTLERI.md:21 (§8.1 #8)",
+   "claim": "H07 yakından 99999 hasar — GEÇTİ — 160 üst sınır × sersemlik çarpanı → 160 hasar",
+   "verdict": "kismen",
+   "evidence": "Tek ileti için doğru (net.js:285, num(m.dmg,0,160)). Ancak sıklık yalnız genel 120/sn ile sınırlı olduğundan aynı saniyede 19 200 hasar işleniyor (sim.mjs 4). Mesafe denetimi beyan konumla ya da NaN ile aşılıyor (sim.mjs 3b)."
+  },
+  {
+   "doc": "docs/denetim/08_COOP_TESTLERI.md:19 (§8.1 #6)",
+   "claim": "H07 300 × 100 altın 'gold' iletisi — GEÇTİ — işlenen +12000 (oran sınırı 120/s; bütçe ≤20000/dk)",
+   "verdict": "dogru",
+   "evidence": "Ölçüm kodla tutarlı: net.js:241-247'de 120/sn, :373-383'te 20 000/dk sınırı var; sim.mjs 2a da 1. dakikada 20 000 gösterdi. Ancak bu bir hız sınırıdır, doğrulama değildir: konuk başına saatte 1 200 000 altın sızıyor (sim.mjs 2b) → B-08."
+  },
+  {
+   "doc": "docs/denetim/16_SON_RAPOR.md:22",
+   "claim": "Aşama 6: mesaj doğrulama/oran/boyut, altın bütçesi … (06a, 06a2, 06b testleriyle)",
+   "verdict": "kismen",
+   "evidence": "03:62 değerlendirmesine bakınız. Testler meşru akışları ve dar bir saldırı kümesini kapsıyor; 16.6'daki 'test edilemeyenler' listesinde ağ güvenliğinin test edilmeyen kısmı belirtilmemiş."
+  },
+  {
+   "doc": "docs/denetim/13_TURN_VE_ODA_SAHIBI_DEVRI_TASARIMI.md:10-11",
+   "claim": "Tüm dünya otoritesi ev sahibindedir (anlık görüntü 15 Hz; konuklar istek/komut gönderir)",
+   "verdict": "yanlis",
+   "evidence": "Konuklar istek değil sonuç gönderiyor: hasar miktarı (net.js:145-152), altın payı (:175; shop.js:120-126), ambarın tam durumu (:171), geminin tam durumu (:172), sandık durumu (:166-167), kayık konumu (:720), tehlike durumu (:148), hikâye aşaması (:174) ve ganimet tablosu (:156). Ev sahibi bunları yalnız kırpıyor ya da hiç denetlemiyor."
+  },
+  {
+   "doc": "docs/denetim/11_BILINEN_SORUNLAR.md:17 (#13)",
+   "claim": "Ambar içeriği konuk tarafından bildirilir; ev sahibi sınır/yakınlık doğrular ama tam ev sahibi otoritesi yok — Açık (orta)",
+   "verdict": "kismen",
+   "evidence": "Maddenin açık olduğu doğru. Ancak 'sınır doğrular' ifadesi yalnız hold.items için geçerli (net.js:351); sandıklar ham kalıyor (slice(0,40), :352) ve yakınlık beyan konuma dayanıyor (:349-350; NaN'da açık). Sonuç sınırsız ganimet ve altın (sim2.mjs B); önemi 'kritik' olmalı (B-05)."
+  },
+  {
+   "doc": "docs/denetim/07_AI_BOSS_TESTLERI.md:31",
+   "claim": "Co-op'a özgü AI bulguları (F-01, F-02, F-04, …) Aşama 6'da ele alınır.",
+   "verdict": "yanlis",
+   "evidence": "F-04 ele alınmadı: ev sahibi hâlâ applyDamage çağırıyor (net.js:285) ve blok/kaçınma konukta yerel olarak çözülüyor (enemies.js:340-357). 03'te F-04 yer almıyor, 11'de de izlenmiyor."
+  },
+  {
+   "doc": "docs/denetim/03_DEGISIKLIK_LISTESI.md:63",
+   "claim": "hud.js: Takım listesi ad/renk kaçışlı — H02/H20",
+   "verdict": "kismen",
+   "evidence": "Takım listesi esc() ve renk regex'iyle kaçışlanıyor (hud.js:462-469) ve hp için ?? kullanılıyor. Ancak H20'nin ikinci yarısı (XP açılır metninin innerHTML ile basılması, hud.js:60) hâlâ açık."
+  },
+  {
+   "doc": "js/net/net.js:37-38 (kod yorumu)",
+   "claim": "Her mesaj türü için izin verilen alanlar/aralıklar; dışındakiler kırpılır ya da yok sayılır.",
+   "verdict": "yanlis",
+   "evidence": "st, app, ready, act, dig, maps, hazard, shipFull, boat, boatSt, revive ve shipCmd'nin çoğu alanı için alan/aralık denetimi yok (net.js:273-277, 292, 358, 360-361, 364-365, 384, 386, 620-641)."
+  },
+  {
+   "doc": "js/net/net.js:281 (kod yorumu)",
+   "claim": "ev sahibi otoritesi: hasar silah üst sınırına kırpılır; konuk hedefe makul uzaklıkta olmalı (yakın 6 m, mermi 80 m)",
+   "verdict": "kismen",
+   "evidence": "Kırpma var. Ancak 'makul uzaklık' konuğun beyan ettiği konuma göre ölçülüyor ve NaN'da açık kalıyor (sim.mjs 3b); 'bullet' türünü de konuk seçiyor."
+  },
+  {
+   "doc": "docs/denetim/08_COOP_TESTLERI.md:23 (§8.1 #10) ve 03:62",
+   "claim": "Kopmada kilit/sandık/kayık temizliği diğer konuklara yayılır (H13) — GEÇTİ",
+   "verdict": "dogru",
+   "evidence": "_dropPeer (net.js:398-400) temizliği yayınlıyor; 06a2 H13 ve 06c D4-07 GEÇTİ. Not: bir sandığın carriers alanı chestState ile sayı yapılırsa :398'deki `includes` TypeError ile temizlik yarıda kalıyor (B-10)."
+  },
+  {
+   "doc": "docs/denetim/08_COOP_TESTLERI.md:14 (§8.1 #1)",
+   "claim": "H02: konuk adındaki HTML etiketleri ve özel karakterler temizlenir, ad 20 karakterle sınırlanır",
+   "verdict": "kismen",
+   "evidence": "Temizlik yalnız hello yolunda (net.js:253) ve konuk tarafındaki roster'da (:530) uygulanıyor. 'app' iletisi adı temizlemeden değiştiriyor (:274; sim2.mjs A: 3028 karakterlik HTML ad kabul edildi)."
+  },
+  {
+   "doc": "docs/denetim/02_HATA_LISTESI.md:173 (H07, v0.3 tespiti)",
+   "claim": "Ev sahibi konuk mesajlarını doğrulamıyor: keyfî hasar/altın/ambar/sandık içeriği/gemi değişimi/kilit, oran sınırı yok",
+   "verdict": "dogru",
+   "evidence": "v0.3 kodu tespiti birebir doğruluyor (v0.3 net.js:209, 237-263). v0.4'te kısmen giderildi; shipFull, ambar sandık içeriği, dig, st/NaN ve hello yinelemesi hâlâ açık."
+  },
+  {
+   "doc": "docs/denetim/16_SON_RAPOR.md:9",
+   "claim": "Test edilmeyen hiçbir şey test edilmiş gibi yazılmadı.",
+   "verdict": "kismen",
+   "evidence": "12 #19'daki 'hile girişimi GEÇTİ' ifadesi yalnız 06a'daki dar kontrol kümesini kapsıyor. Ağ güvenliğinin geri kalanı test edilmedi ve bu durum 16.6'daki 'test edilemeyen / sınırlı doğrulananlar' listesinde de belirtilmiyor."
+  }
+ ],
+ "requirements": [
+  {
+   "req": "5.1a Konuk doğrudan altın miktarı gönderememeli",
+   "status": "yok",
+   "evidence": "net.js:373-383: 'gold' iletisi konuğun amount alanını (kırparak) ev sahibinin altınına ekliyor; gönderen shop.js:120-126 (earn) → net.js:175. sim.mjs 2a/2b.",
+   "plan": "'gold' türünü konuk için KNOWN'dan çıkar; konuk satışlarını sellReq niyetine çevir. Altın değişimi yalnız ev sahibinde hesaplansın ve yalnız ev sahibinden konuğa 'gold' iletisiyle gitsin."
+  },
+  {
+   "req": "5.1b Konuk yalnız onaylanacak işlem talebi göndermeli",
+   "status": "yok",
+   "evidence": "shop.js:89-128: sell/sellAll/earn konukta yerel çalışıyor; ağda istek/yanıt (sellReq/sellRes) yok.",
+   "plan": "sellReq{txId,itemId,n,merchantId}, sellChestReq{chestId} ve sellHoldReq{shipId} ekle; ev sahibi sellRes{txId,ok,gold,reason} ile yanıtlasın. Konuk eşyayı envanterinden yalnız ok yanıtından sonra düşsün (ya da iyimser olarak düşüp red gelirse geri alsın)."
+  },
+  {
+   "req": "5.1c Satış host'ta doğrulanmalı",
+   "status": "yok",
+   "evidence": "Satış konukta gerçekleşiyor (shop.js:89-101); ev sahibi yalnız pay iletisini görüyor (net.js:373-383). Taşınan sandık konukta satılıp silindikten sonra chestGone gönderiliyor (shop.js:138-153; net.js:340-344).",
+   "plan": "Ev sahibi şunları doğrulasın: tüccar NPC'si ile konuğun ev sahibi tarafındaki konumu arasında ≤4 m; tüccarın açık olduğu saat ve gün (trader/smuggler) ev sahibinin zamanına göre; fiyat ev sahibinde sellPrice ile. Sandık satışları ev sahibindeki sandık nesnesi üzerinden yapılsın."
+  },
+  {
+   "req": "5.1d Ürünün oyuncuda olduğu doğrulanmalı",
+   "status": "yok",
+   "evidence": "Konuk envanteri yalnız konukta tutuluyor (main.js:187-206, 'guest' yuvası); ev sahibinde konuk envanterinin kopyası yok.",
+   "plan": "Kısa vadede: ev sahibi oturum boyunca konuğa verdiği eşyaların defterini tutsun (give/pickup/sandık/yüzen nesne kayıtları) ve satışı bu defterle ve oturum başında bildirilen, bütçelenmiş envanterle sınırlasın. Uzun vadede: konuk envanteri dünya başına ev sahibinde tutulsun (B-19)."
+  },
+  {
+   "req": "5.1e Ürün sayısı, değeri, tüccar, satış fiyatı ve işlem zamanı doğrulanmalı",
+   "status": "yok",
+   "evidence": "Bu alanları taşıyan bir ileti yok; sellPrice (shop.js:50-66) yalnız yerelde hesaplanıyor.",
+   "plan": "sellReq şeması: itemId ITEMS içinde ve tüccarın buys kategorisinde olmalı; n tamsayı ve 1 ile yığın üst sınırı arasında olmalı. Fiyat ev sahibinde hesaplanmalı (konuktan fiyat alınmamalı), zaman damgası ev sahibinin saatinden gelmeli. Konuk başına dakikalık satış değeri bütçesi konmalı."
+  },
+  {
+   "req": "5.1f Aynı satış iki kez işlenememeli",
+   "status": "yok",
+   "evidence": "txId yok; aynı 'gold' iletisi tekrar işleniyor (sim.mjs 2a). Ambar sandıkları iki istemcide eşzamanlı satılabiliyor (shop.js:156-166; 11 #16 / 02 B16 açık).",
+   "plan": "Konuk başına artan txId ve ev sahibinde işlenmiş txId kümesi (pencereli) tut. Ambar ve sandık satışı ev sahibinde tek kilitli işlem olsun; satılan sandığın kimliği ev sahibinde 'satıldı' olarak işaretlensin."
+  },
+  {
+   "req": "5.1g Altın negatif, sonsuz, NaN ya da sınır dışı olamamalı",
+   "status": "kismen",
+   "evidence": "'gold' iletisinde num(0,5000) ve >0 denetimi var (net.js:375-376). Ama inventory.add'deki currency yolu (inventory.js:25) adedi doğrulamıyor: sahte ambar sandığı içeriğiyle altin_para 1e9 eklenebiliyor (sim2.mjs B); adet dize gelirse gold += '5' dize birleştirmesi oluşuyor. Konukta ev sahibinden gelen 'gold' denetlenmiyor (net.js:569).",
+   "plan": "Inventory.gold için bir ayarlayıcı ekle: Number.isFinite, tamsayı ve 0 ≤ gold ≤ 10^9 (ya da tasarımın belirlediği üst sınır). Ağdan gelen tüm adetler num() ile tamsayıya ve üst sınıra kırpılsın; currency ekleme yolu da aynı denetimden geçsin."
+  },
+  {
+   "req": "5.1h İşlem kimliği ve tekrar saldırısı koruması",
+   "status": "yok",
+   "evidence": "net.js'te seq/txId/nonce alanı yok.",
+   "plan": "Durum değiştiren tüm konuk niyetlerinde monoton seq kullan; ev sahibi son 256 seq'i tutsun. Tekrar eden ya da sırası geri giden ileti reddedilsin."
+  },
+  {
+   "req": "5.1i Paylaşılan geliri host hesaplamalı",
+   "status": "kismen",
+   "evidence": "Ev sahibinin kendi satışında pay ev sahibinde hesaplanıyor (shop.js:120-127). Konuk satışında ise payı konuk hesaplıyor (shop.js:122-125) ve ev sahibi aynen dağıtıyor (net.js:382).",
+   "plan": "earn() yalnız ev sahibinde çalışsın; konuk satışında ev sahibi sellRes ile toplamı hesaplayıp payları herkese yollasın."
+  },
+  {
+   "req": "5.1j Konuklara gönderilen miktar host'un hesabı olmalı",
+   "status": "kismen",
+   "evidence": "Ev sahibi kaynaklı paylar (netShareGold → broadcast) ve yüzen nesne ödülü (events.js:227, netGold 50) ev sahibinde hesaplanıyor. Konuk kaynaklı paylar ise konuğun beyanı (net.js:382, broadcast({t:'gold', amount})).",
+   "plan": "5.1i ile aynı: diğer konuklara giden her miktar ev sahibinin satış çözümünden çıksın."
+  },
+  {
+   "req": "5.2a hurtEnemy/hurtBoss/hurtAnimal/hurtMarine/stunEnemy sonuç değil niyet iletecek biçimde yeniden tasarlanmalı",
+   "status": "yok",
+   "evidence": "net.js:145-152'deki relay'ler sonucu (dmg) iletiyor; işleyiciler :278-291.",
+   "plan": "attack{seq, move, aimYaw, t}, shoot{seq, dir, t} ve parry{seq, t} niyetleri tanımla. Ev sahibi combat._meleeHit/shoot mantığını konuğun ev sahibi tarafındaki temsilcisi (RemotePlayer) için kendisi çalıştırsın."
+  },
+  {
+   "req": "5.2b Konuk hasar miktarını belirleyememeli",
+   "status": "kismen",
+   "evidence": "dmg num() ile 0–160/220 aralığına kırpılıyor (net.js:45, 285, 288, 290, 291), ama aralık içindeki değeri konuk seçiyor (sim.mjs 4).",
+   "plan": "dmg alanı yok sayılsın. Hasar ev sahibinde hesaplansın: ev sahibinin silah tablosu (ITEMS[*].dmg) × hamle çarpanı × konuğun beceri çarpanı. Beceri çarpanı doğrulanamadığı için üst sınırla kırpılsın."
+  },
+  {
+   "req": "5.2c Saldıranın kimliği doğrulanmalı",
+   "status": "karsilaniyor",
+   "evidence": "by: pid ev sahibince atanıyor (net.js:285, 288, 290, 291); iletideki by kullanılmıyor. 06d C06 GEÇTİ (öldüren konuk doğru kaydedildi).",
+   "plan": "Bu davranış korunmalı; act.from gibi diğer yansıtılan alanlar da ev sahibince atanmalı (B-20)."
+  },
+  {
+   "req": "5.2d Oyuncu konumu doğrulanmalı",
+   "status": "kismen",
+   "evidence": "Mesafe r.pos ile ölçülüyor (net.js:283-284, 289-291), ama r.pos 'st' iletisindeki beyan (net.js:276) ve RemotePlayer.update :96-100 ışınlanmaya izin veriyor; NaN'da denetim açık kalıyor (sim.mjs 3a/3b).",
+   "plan": "Ev sahibinde hareket doğrulaması yap ve karşılaştırmaları '!(d <= eşik)' biçiminde yaz (B-04)."
+  },
+  {
+   "req": "5.2e Hedef konumu doğrulanmalı",
+   "status": "kismen",
+   "evidence": "Düşman, hayvan ve deniz canlısının konumu ev sahibinden alınıyor (net.js:283, 290, 291). hurtBoss'ta ise konum hiç kullanılmıyor ve info.pos konuktan geliyor (bosses.js:1045).",
+   "plan": "Boss için de ev sahibi tarafındaki konumlar kullanılsın; konuktan pos alınmasın."
+  },
+  {
+   "req": "5.2f Gerçek menzil uygulanmalı",
+   "status": "kismen",
+   "evidence": "Eşikler: yakın 6 m, 'bullet' 80 m (kind konuktan), hayvan 80 m, deniz canlısı 120 m, stun 8 m (net.js:284, 289-291). Meşru yakın dövüş menzili 1,7–2,9 m + hedef yarıçapı (combat.js:18-29). Boss için menzil yok.",
+   "plan": "Menzil = hamle menzili + hedef yarıçapı + 0,5–1 m gecikme payı olsun. Tabanca için ev sahibinde ışın ve görüş hattı (physics DDA) denetlensin."
+  },
+  {
+   "req": "5.2g Silah türü doğrulanmalı",
+   "status": "yok",
+   "evidence": "kind = str(m.kind,16) konuktan geliyor (net.js:285); konuğun elindeki silah ('st'.eq) ve envanteri denetlenmiyor.",
+   "plan": "Silah, ev sahibi tarafındaki konuk durumundan (eq beyaz listesi) ve hasar tablosundan belirlensin; kind'ı ev sahibi atasın."
+  },
+  {
+   "req": "5.2h Saldırı animasyonunun geçerli anı doğrulanmalı",
+   "status": "yok",
+   "evidence": "İletide zaman ya da hamle bilgisi yok; ev sahibi hasarı anında uyguluyor.",
+   "plan": "attack niyetinde move alanı olsun; ev sahibi vuruşu SWORD_MOVES[move].hitAt anında çözsün."
+  },
+  {
+   "req": "5.2i Bekleme süresi uygulanmalı",
+   "status": "yok",
+   "evidence": "Konuk başına son saldırı zamanı tutulmuyor (net.js:278-291).",
+   "plan": "Konuk başına lastAttackT tutulsun; dur·0,8'den önce gelen saldırı reddedilsin."
+  },
+  {
+   "req": "5.2j Saldırı hızı ve kombo sınırı uygulanmalı",
+   "status": "kismen",
+   "evidence": "Yalnız genel 120 ileti/sn sınırı var (net.js:241-247); bu da 19 200 hasar/sn'ye izin veriyor (sim.mjs 4).",
+   "plan": "Kombo durum makinesi ev sahibinde çalışsın (1→2→3, heavy; counter yalnız parry sonrası). Hedef başına, konuk başına vuruş/sn üst sınırı konsun."
+  },
+  {
+   "req": "5.2k Mühimmat denetlenmeli",
+   "status": "kismen",
+   "evidence": "Top gülleleri ev sahibinde sayılıyor (combat.js:301-302), ama shipCmd addBalls ücretsiz (net.js:627). Tabanca mermisi ve yeniden doldurma yalnız konukta tutuluyor (combat.js:93-99).",
+   "plan": "Tabanca için ev sahibinde konuk başına dolu/boş durumu ve yeniden doldurma süresi tutulsun. Mermi stoğu yerel envanterde olduğu için doğrulanamaz; bunun yerine atış hızına üst sınır konsun. addBalls kaldırılsın ya da ücretini ev sahibi doğrulasın."
+  },
+  {
+   "req": "5.2l Hasar çarpanları ev sahibinde belirlenmeli",
+   "status": "kismen",
+   "evidence": "Arkadan vuruş, sersem ve yorgun çarpanları ev sahibinde uygulanıyor (enemies.js:378-385). heavy/finisher/counter/guardBreak/kb bayrakları ise konuktan geliyor (net.js:285).",
+   "plan": "Bayraklar ev sahibinin kombo durumundan türetilsin."
+  },
+  {
+   "req": "5.2m Boss zayıf noktaları ev sahibinde hesaplanmalı",
+   "status": "yok",
+   "evidence": "hurtBoss'ta kind/pos/ten konuktan geliyor (bosses.js:1041-1046); Kraken'in 'tentacle' türü derin evre korumasını aşıyor (bosses.js:210-216).",
+   "plan": "Zayıf nokta ve çarpan, ev sahibinde konuğun konumu/yönü ve boss durumundan hesaplansın; dokunaç vuruşu ev sahibinde hedef çarpışmasıyla belirlensin."
+  },
+  {
+   "req": "5.2n Engellenmiş ya da parry edilmiş saldırılar ev sahibinde çözülmeli",
+   "status": "yok",
+   "evidence": "Blok ve kaçınma konukta bayat durumla hesaplanıyor (enemies.js:340-357); ev sahibi applyDamage ile bunları atlıyor (net.js:285; 02 F-04 açık, 11'de yok). stunEnemy için parry penceresi doğrulanmıyor (net.js:289).",
+   "plan": "Ev sahibi e.hurt() çağırsın ve sonucu (hit/blocked/dodged) konuğa bildirsin. Parry yalnız ev sahibinin kaydettiği saldırının ±0,2 sn penceresinde kabul edilsin."
+  },
+  {
+   "req": "5.2o Hasar host'un savaş kurallarıyla hesaplanmalı",
+   "status": "yok",
+   "evidence": "Konuğun combat/_meleeHit sonucu ağdan sayı olarak geliyor.",
+   "plan": "Tek savaş çözücüsü ev sahibinde olsun; konukta yalnız tahmini efekt (istemci tahmini) kalsın ve ev sahibi gerektiğinde düzeltsin."
+  },
+  {
+   "req": "5.3a Etkileşimlerde yakınlık kontrolü (chestReq, pickupReq, chestState, chestGone, dig, hazard, shipFull, hold, marker)",
+   "status": "kismen",
+   "evidence": "Beyan konumla denetlenenler: chestState/chestGone 8 m (net.js:337, 342); hold 12 m ya da beyan edilen gemi (349-350). Denetimsiz olanlar: chestReq (293-299), pickupReq (300), dig (292), hazard (360), shipFull (358). marker için yakınlık anlamsız, yalnız sınır var (359). Ek olarak lootReq 30 m, holdTake 12 m ve floatReq 6 m denetimleri NaN'da açık kalıyor.",
+   "plan": "Yakınlık ev sahibi tarafındaki (doğrulanmış) konumla ölçülsün; yarıçaplar _provide'dakilerle aynı olsun: sandık 2,6 m, kese 2,4 m, yüzen nesne 3,5 m, ambar istasyonu 1,6 m, kazı 1,5 m. Karşılaştırmalar NaN'da reddedecek biçimde yazılsın."
+  },
+  {
+   "req": "5.3b Aynı sandık iki kişiye verilememeli",
+   "status": "kismen",
+   "evidence": "_grant tek taşıyıcı kuralı uyguluyor (iki kişilik sandık hariç) ve _openChest gone/carried koruması var (treasure.js:351-367, 476-477). Ancak chestState ile taşıyıcı listesi yazılabiliyor (net.js:334-339, 593-601) ve ambar sandığı çift satılabiliyor (11 #16).",
+   "plan": "Sandık durum makinesi ev sahibinde yönetilsin; taşıyıcı listesi konuktan alınmasın; ambar satışı tek kilitli işlem olsun."
+  },
+  {
+   "req": "5.3c Toplanan ganimet tekrar oluşturulamamalı",
+   "status": "yok",
+   "evidence": "Kese 'remove' bayrağıyla ikinci kez toplanamıyor (treasure.js:631-632). Ancak lootReq, hold ve shipFull ile keyfî ganimet yeniden yaratılabiliyor (net.js:301-314, 352, 615).",
+   "plan": "lootReq/hold/shipFull konuktan kaldırılsın; ganimet yalnız ev sahibinde olan olaylardan doğsun; konuk 'bırak' niyeti bütçeli ve şemalı olsun (B-05)."
+  },
+  {
+   "req": "5.3d Başkasının taşıdığı nesne uzaktan değiştirilememeli",
+   "status": "yok",
+   "evidence": "chestState/chestGone yetkisi 'taşıyıcı ya da beyan konumla 8 m' (net.js:337, 342). _applyChestState carriers/state/pos'u türsüz yazıyor (net.js:593-601); ev sahibinin taşıdığı sandık bu yolla düşürülebiliyor (600).",
+   "plan": "Sandık yalnız taşıyıcısının dropReq'iyle bırakılabilsin; diğer konuklar taşınan sandığın durumunu değiştiremesin."
+  },
+  {
+   "req": "5.3e Bulmaca ve çevre durumları yalnız yetkili işlemle değişmeli",
+   "status": "yok",
+   "evidence": "net.js:360'ta hazards.netApply(m) koşulsuz çağrılıyor; hazards.js:672-680'de ignite/break/roll/block/solve uygulanıyor.",
+   "plan": "igniteReq/pushReq niyetleri kullanılsın; solve ve roll yalnız ev sahibinin fiziğinden çıksın (B-11)."
+  },
+  {
+   "req": "5.4a Dümen komutu için oyuncu dümende mi denetlenmeli",
+   "status": "kismen",
+   "evidence": "helm yalnız kilit sahibine bakıyor (net.js:362), ama kilit uzaktan alınabiliyor (366-372). Konuğun 'st'.mode değerinin 'helm' olması ve dümene yakınlığı denetlenmiyor (sim.mjs 7).",
+   "plan": "helm kabul koşulu: konuk ev sahibi tarafındaki konumla dümene ≤1,5 m, mode='helm' ve gemi batmamış olmalı (B-13)."
+  },
+  {
+   "req": "5.4b Atış için oyuncu top başında mı denetlenmeli",
+   "status": "kismen",
+   "evidence": "fire top kilidinin sahibine bakıyor (net.js:363), ama kilit uzaktan alınabiliyor ve istasyon yakınlığı denetlenmiyor.",
+   "plan": "Aynı istasyon yakınlığı ve mode='cannon' koşulu uygulansın."
+  },
+  {
+   "req": "5.4c Gemi komutlarında mesafe denetlenmeli",
+   "status": "yok",
+   "evidence": "lock, helm, fire, shipCmd ve boat'ta konum denetimi yok (net.js:361-372, 620-641).",
+   "plan": "Tüm gemi komutlarında konuğun o gemide ya da kayığın ≤3 m yakınında olduğu ev sahibi tarafındaki konumla denetlensin."
+  },
+  {
+   "req": "5.4d Topun kullanılabilir olduğu denetlenmeli",
+   "status": "kismen",
+   "evidence": "fireCannon → canFire reload, gülle ve top hp'sini denetliyor (combat.js:301; ship.js:681). Ancak mastFix ya da shipFull'daki görünüm değişimi rebuild ile cannonState.reload'u sıfırlıyor (ship.js:68), bu da beklemeyi aşmaya izin veriyor.",
+   "plan": "rebuild reload durumunu korusun; mastFix/look değişimi konuktan kabul edilmesin."
+  },
+  {
+   "req": "5.4e Mühimmat var mı denetlenmeli",
+   "status": "kismen",
+   "evidence": "canFire gülle > 0 koşulunu denetliyor, ama addBalls/addPlanks ücretsiz (net.js:627-628) ve shipFull ile cannonballs keyfî yazılabiliyor (615).",
+   "plan": "Gülle ve tahta stoku yalnız ev sahibinde değişsin; konuk alımı ev sahibi onayına bağlansın."
+  },
+  {
+   "req": "5.4f Geminin batmış olup olmadığı denetlenmeli",
+   "status": "yok",
+   "evidence": "helm, fire ve shipCmd'de s.sunk denetimi yok (net.js:362-363, 620-633); canFire da batık durumunu denetlemiyor (ship.js:681).",
+   "plan": "Batık gemide tüm istasyon komutları reddedilsin."
+  },
+  {
+   "req": "5.4g Komut sırası doğru mu denetlenmeli",
+   "status": "yok",
+   "evidence": "seq yok. Örneğin mastFix→fire→mastFix sırası reload'u aşıyor; dock/launch sırası denetlenmiyor (net.js:637-638).",
+   "plan": "Komutlara seq eklensin ve ev sahibinde istasyon durum makinesi kullanılsın (al → kullan → bırak)."
+  },
+  {
+   "req": "5.4h Kayık için sürücü mü denetlenmeli",
+   "status": "kismen",
+   "evidence": "boatSt'de b.driver === pid denetimi var (net.js:365), ama 'boat' cmd 'driver' iletisindeki who keyfî (639); konuk kendini ya da başkasını sürücü yapabiliyor.",
+   "plan": "driver yalnız who === pid olduğunda, kayık boşken ve konuk yakındayken kabul edilsin (B-03)."
+  },
+  {
+   "req": "5.4i Konum ve hız fizik sınırları içinde olmalı",
+   "status": "kismen",
+   "evidence": "helm'deki rudder/sail num() ile kırpılıyor (362). shipCmd sails ham (624; damp('abc') = NaN, sim.mjs 6a/6b); boatSt ham (365); 'st' ham (276).",
+   "plan": "Tüm konum ve hız alanlarına azami hız·dt ve dünya sınırı uygulansın; sails 0–1 aralığında olsun."
+  },
+  {
+   "req": "5.5a Her mesaj için şema doğrulaması",
+   "status": "kismen",
+   "evidence": "Tür listesi var (net.js:46, 237); bazı türlerde alanlar kırpılıyor (hurt*, gold, marker, lock, hold.items, lootReq, story, helm, fire). st, app, ready, act, dig, maps, hazard, shipFull, shipCmd (çoğu alanı), boat, boatSt, revive ve chestState.c için şema yok.",
+   "plan": "Tür başına bildirimsel şema (alan adı → tür, aralık, uzunluk, beyaz liste) ve tek bir doğrulayıcı yaz. Şema dışı alanlar atılsın, şema ihlali ihlal puanı eklesin."
+  },
+  {
+   "req": "5.5b Tür ve veri tipi denetimi",
+   "status": "kismen",
+   "evidence": "num()/str() bazı alanlarda kullanılıyor (net.js:39-40). boatSt, dig, hazard, shipCmd sails/i/hole ve chestState carriers/pos alanları tür denetimsiz (sim2.mjs D/F, sim.mjs 6a/8).",
+   "plan": "Şema doğrulayıcısı her alanın türünü zorunlu kılsın."
+  },
+  {
+   "req": "5.5c Sonlu sayı denetimi",
+   "status": "kismen",
+   "evidence": "num() Number.isFinite kullanıyor (net.js:39). Ancak num() kullanılmayan alanlarda NaN ve dize geçiyor; mesafe karşılaştırmaları NaN'da açık (284, 305, 319, 350; events.js:234).",
+   "plan": "Tüm sayısal alanlar num() ile alınsın; tüm eşik karşılaştırmaları NaN'da reddedecek biçimde yazılsın."
+  },
+  {
+   "req": "5.5d Min/max sınırları",
+   "status": "kismen",
+   "evidence": "Hasar, altın, marker, lootReq, hold.items, holdTake idx ve fire i sınırlı. cannonFix/mastFix i, sails v ve boatSt alanları sınırsız (sim.mjs 6e: cannonHp uzunluğu 4 294 967 295).",
+   "plan": "Her sayısal alan için tür şemasında aralık tanımlansın; dizi indeksleri gerçek dizi uzunluğuna göre denetlensin."
+  },
+  {
+   "req": "5.5e Paket boyutu sınırı",
+   "status": "kismen",
+   "evidence": "64 KB sınırı var (net.js:42, 248) ve 06a/06a2 GEÇTİ. 'st' ve 'ping' muaf (241); ölçüm ayrıştırmadan sonra yapılıyor.",
+   "plan": "Tüm türlere tür başına boyut sınırı konsun (st ≤1 KB, ping ≤64 B); mümkünse DataChannel düzeyinde ham uzunluk ölçülsün."
+  },
+  {
+   "req": "5.5f Mesaj sıklığı sınırı",
+   "status": "kismen",
+   "evidence": "Konuk başına 120/sn sabit pencereli sınır var (net.js:241-247); 'st' ve 'ping' muaf; tür başına sınır yok.",
+   "plan": "Tür başına token-bucket kullanılsın: st 30/sn, helm ve boatSt 20/sn, saldırı 5/sn, sohbet 2/sn; gold konuktan hiç kabul edilmesin."
+  },
+  {
+   "req": "5.5g Oyuncu yetkisi denetimi",
+   "status": "kismen",
+   "evidence": "Kilit sahipliği (362-363, 369-370), sandık taşıyıcısı (337, 342) ve kayık sürücüsü (365) denetleniyor. Ancak kilit ve sürücülük koşulsuz alınabiliyor; gemi sahipliği/üyeliği denetlenmiyor; revive, hazard, shipFull ve shipCmd için yetki denetimi yok.",
+   "plan": "Her niyet için yetki kuralı tanımlansın: kimin, hangi nesneye, hangi durumda ve hangi uzaklıkta işlem yapabileceği."
+  },
+  {
+   "req": "5.5h Oyun sürümü kontrolü",
+   "status": "kismen",
+   "evidence": "hello'da VER eşitliği denetleniyor (net.js:251). Ancak VER v0.3 ve v0.4'te aynı ('dksh-v1'; v0.3 net.js:26) ve protokol farklı.",
+   "plan": "Protokol sürümü artırılsın; hello'ya proto/build eklensin; herkese açık oda öneki sürüme bağlansın (B-16)."
+  },
+  {
+   "req": "5.5i Tekrar mesajı engelleme",
+   "status": "yok",
+   "evidence": "seq/nonce yok.",
+   "plan": "Monoton seq kullanılsın ve ev sahibinde pencereli bir küme tutulsun."
+  },
+  {
+   "req": "5.5j Hatalı bağlantıyı güvenli sonlandırma",
+   "status": "yok",
+   "evidence": "İhlaller yalnız düşürülüyor (247-248). 'kick' gönderen yok (577 yalnız konukta işleniyor). Yanlış şifrede bağlantı açık kalıyor (252).",
+   "plan": "İhlal puanı tutulsun, 'kick' iletisiyle neden bildirilsin, conn.close çağrılsın ve kara listeye alınsın; ev sahibine 'tayfayı at' arayüzü eklensin (B-17)."
+  },
+  {
+   "req": "Kabul: konuk istemcisini değiştirerek sınırsız altın, XP/rütbe, hasar ya da ganimet üretememeli",
+   "status": "yok",
+   "evidence": "Altın: 'gold' ile saatte 1,2 M (sim.mjs 2b), sahte ambar sandığıyla 1e9 (sim2.mjs B). Ganimet: lootReq ve hold (sim2.mjs B, C). Hasar: 19 200/sn ve mesafesiz boss hasarı (sim.mjs 4, 5). XP: 5 iletiyle hikâye (ev sahibine +750 XP, sim.mjs 9) ve anında öldürmeler (progress.js:64-78). Ayrıca konuğun kendi kaydı yerel (main.js:199-206, progress.js:88-90).",
+   "plan": "Önce kritik maddeler (B-01–B-08), ardından niyet tabanlı protokol uygulanmalı. Konuğun kendi profili için dünya başına ev sahibinde tutulan envanter ve ilerleme kullanılmalı (B-19). Kabul testi olarak 'kötü konuk' senaryosu yazılmalı (öneri: tests/scenarios/coop/06e_kotu_konuk.cjs): bu senaryo tüm saldırı iletilerini gönderir ve ev sahibinin altını, XP'si, ganimeti, boss canı ve gemi durumu değişmeden kalmalı, snapT artmaya devam etmeli."
+  },
+  {
+   "req": "Not: Host'un kendisi hile yaparsa ne olacağı ve sınırı açıkça yazılmalı",
+   "status": "yok",
+   "evidence": "Belgelerde bir güven modeli tanımlanmamış (13. belge yalnız TURN ve oda devrini ele alıyor). Konuk ev sahibi iletilerini doğrulamıyor (net.js:526-579); _xpPop reason alanını innerHTML ile basıyor (hud.js:60).",
+   "plan": "Belgeye yazılacak sınır: (1) PeerJS yıldız topolojisinde ev sahibi dünyanın tek otoritesidir; dünya durumu (düşman, sandık, ganimet, hikâye, gemi) üzerindeki ev sahibi hilesi teknik olarak önlenemez; oyun 'arkadaşlarla co-op' güven modelindedir. (2) Konuğun yerel kaydı ve sayfası korunmalıdır: ev sahibinden gelen gold, give, xp, hurt ve story için tür/aralık denetimi, tüm HTML kaçışları ve oturum öncesi kayıt yedeği (B-18). (3) Oda sahibi devri (13. belge) uygulanırsa varis de aynı tam otoriteyi alır. (4) Rekabetçi ya da ödüllü içerik ve yabancılarla açılan herkese açık odalar için yetkili bir sunucu gerekir; herkese açık odalarda bu risk kullanıcıya belirtilmelidir."
+  }
+ ]
+}

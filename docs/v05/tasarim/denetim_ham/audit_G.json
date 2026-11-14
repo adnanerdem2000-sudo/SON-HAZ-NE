@@ -1,0 +1,899 @@
+{
+ "area": "G — Dünya ve keşif kalitesi",
+ "summary": "v0.4'te 20×20 km dünya, 6 bölge ve 6 biyom, 73 adalık yapı (6 çekirdek + 23 el yapımı özel + 44 yordamsal) v0.3 ile birebir korunuyor. Node determinizm testi bu denetimde de GEÇTİ, kıyı sürekliliği ölçümünün (D02b) analitik kopyası da 73 adada 0 süreksizlik verdi. Kullanıcının saydığı sekiz özel bölgenin hepsi kodda var, ama çoğu ortak 'sandık + düşman' şablonundan ibaret: deniz fenerinin oynanış amacı yok, maden girişleri kapalı cephe, batık şehir rastgele saçılmış kalıntılarla 4 sandıktan oluşuyor, gizli pazar fiziksel olarak 'yalnız gece' kurulmuyor. İki kritik açık bulundu. Birincisi hapishanede: tutsak ödülü, E basılı tutuldukça her 2,5 sn'de +120 altın ve +80 XP olarak tekrarlanıyor (v0.3 ve v0.4). İkincisi co-op'ta: ada ve tehlike durumu konuğa ne aktarılıyor ne de konukta kaydediliyor; konuk her katılışta sandık, sunak, tutsak ve bulmaca ödüllerini yeniden alıyor, gardiyan denetimi de konukta çalışmıyor. Kadim Tapınak'ın sunak sandığı 8 m'lik platformda duruyor ve merdiveni yalnız görsel olduğu için alınamıyor (02'de kayıtlı, hâlâ açık). Node taramasında 123 kazı noktasından 6'sı su altında olduğu için kazılamıyor; bir otomatik harabe de mesa terasında kaldığından yürüyerek ulaşılamıyor. Dikey keşif zayıf: tek bir mağara var; yeraltı gölü, batık gemi odası, su altı geçidi, gizli maden ve tapınak katı yok. Tekrar hissi yüksek (22 aynı harabe, 26 aynı batık, 11 aynı kamp, 5 aynı liman). Özel bölgelerin, bulmacaların ve kazının çoğu v0.4'te gerçekten sınayan bir testle doğrulanmamış.",
+ "systems": [
+  {
+   "name": "Dünya ölçeği, bölge kataloğu ve deterministik ada üretimi (archipelago.js generate/regionAt, worldData.js)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "worldData.js:5 WORLD_SIZE=20000; archipelago.js:7 WORLD_HALF=10000, :19-25 regionAt, :201-279 generate (rng 777). Test: tests/scenarios/07_dunya_kesif.js 'D01 Dünya yarı boyutu 10 km (20×20 km korunur)', 'D04 Her yordamsal adacıkta en az bir geçerli belirleyici özellik'; tests/node/archipelago_sabit.mjs. 12. belge: 07_dunya_kesif 10/10, Node GEÇTİ. Bu denetimde Node testi yeniden koşuldu: GEÇTİ {islands:67, autoFeatures:22}.",
+   "note": "Envanter (Node, salt-okur): 73 ada = 6 çekirdek + 23 el yapımı özel + 44 yordamsal. Bölge: merkez 19, buzul 12, Zümrüt (tropik) 13, volkan 10, çöl 11, hayalet 8. Biyom: tropik 18, cangıl 13, buzul 12, volkan 10, çöl 11, hayalet 9. Yarıçap 38–540 m (yeni adalarda medyan 95 m), yükseklik 6–165 m. 6 liman, 84 POI, 123 kazı noktası, 28 batık kaydı, 81 balık bölgesi, 4 sabit boss alanı (Taş Muhafız alanı tapınak kurulunca eklenir). Kit parça adları: 89 başvurunun 89'u GLB'lerde mevcut."
+  },
+  {
+   "name": "Ada envanteri — çekirdek el yapımı adalar (6; worldData.js:9-40, props.js, port.js, cave.js)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "Test: 15_iskele_kamera I01–I06 (Kırlangıç iskelesi), 07_dunya_kesif D03/D07/D08 (merdiven/barınak), 17_kamera_kararma K07 (Yankı Mağarası), 05_dusman_ai 'F-07 Kamp bekleme süresi kayıt/yükleme ile korunur', 16_kosu_poz_ganimet T01 (kabuk toplama). 12. belgede tümü GEÇTİ.",
+   "note": "Kırlangıç Adası (tropik, r 270, h 58): Kırlangıç Limanı, Yankı Mağarası, Timsah Lagünü ve şelale, Kızıl Hançer Kampı (hikâye 4), Gözcü Tepesi, 5 kazı noktası (1'i gelgitli). Martı Adacığı (tropik, r 82): Üç Palmiye ve kırık heykel (ilk hazine), Martı Batığı (su altı sandığı). Kemik Adası (hayalet, r 135): harabe halkası, mezarlık, 3 düşman grubu, Morvan (hikâye 3). Papağan Kayalıkları (r 48). İkiz Adacıklar Batı (r 44) / Doğu (r 38): İkiz Resifi. 12 elle yazılmış ipucu. Morvan ve Kızıl Hançer hikâye savaşları v0.4'te sınayan bir testle doğrulanmadı."
+  },
+  {
+   "name": "Ada envanteri — el yapımı özel adalar (23; archipelago.js:39-177)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "13_donma P02 'Karelere bölünmüş kurulum eşzamanlı kurulumla birebir aynı adayı üretir (5 ada: liman, pazar, tapınak, hapishane, volkan)' (tuz_pazari, gizli_pazar, kadim_tapinak, demirkapi, ates_dagi); 16 T08 korsan_kasabasi sandığı. Kalan 18 özel ada hiçbir v0.4 testinde kurulmuyor.",
+   "note": "Merkez: Tuz Pazarı (normal, r 230; liman), Terk Edilmiş Korsan Kasabası (normal, r 210; yıkık kasaba + kamp + kale), Gizli Korsan Pazarı (spire, r 125; pazar), Fener Kayası (spire, r 70; fener), Mercan Halkası (atol, r 190; harabe). Buzul: Kuzeyfener (r 260; liman), Buzdişi (glacier, r 430, h 105; kamp + harabe), Kurt Adası (r 240; kamp), Derin Yarık (spire, r 60; Derinlik Yılanı). Zümrüt (cangıl): Zümrüt Koy (r 250; liman), Kadim Tapınak (r 480, h 72; tapınak + Taş Muhafız + harabe), Timsah Bataklığı (swamp, r 320; kamp), Batık Şehir (spire, r 70; su altı şehir). Volkan: Kül Limanı (r 230; liman), Ateş Dağı (volcano, r 540, h 165; Volkanik Dev + kamp + lav gölü), Obsidyen (r 210; haydut madeni). Çöl: Kumsaati (r 240; liman), Demirkapı Hapishanesi (mesa, r 270), Terk Edilmiş Gümüş Madeni (mesa, r 320; iskelet madeni), Kızıl Kanyon (mesa, 380×1,35/0,8, döndürülmüş; harabe). Hayalet: Korsan Mezarlığı (r 320; 2 mezarlık), Sis Adası (r 210; harabe + Lanetli Amiral), Kara Girdap (spire, r 55; Kraken)."
+  },
+  {
+   "name": "Ada envanteri — yordamsal dolgu adacıkları (44; archipelago.js:179-267)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "07_dunya_kesif 'D04 Her yordamsal adacıkta en az bir geçerli belirleyici özellik', 'D05 Havuz özellikli adacıklar hatasız kurulur ve sökülür', 'D06 Otomatik özellikler araziye uygun' (12: 10/10 GEÇTİ). Node envanteri.",
+   "note": "Bölge başına 8/8/9/7/7/5; r 55–186; biçim: normal 19, atol 7, spire 7, volkan 5, bataklık 4, glacier 1, mesa 1. Özellik: karaya oturmuş gemi 26 (14'ü otomatik), harabe 17 (8'i otomatik), kamp 6. Mezarlık, fener ve maden hiç yok. 21 adacıkta yalnız batık var ve düşman grubu yok. Adlar bölge listelerinden (archipelago.js:180-187)."
+  },
+  {
+   "name": "Ada türü: normal (17 özel/çekirdek + 19 yordamsal)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "geo.js:92-95 profil; D02 'Dik olmayan şekillerde su çizgisi sıçraması ≤ 0,40 m', D02b '1 mm inceltmede süreksizlik = 0' GEÇTİ; bu denetimdeki computeHeight kopyası 0.",
+   "note": "Silueti çeşitlendiren parametreler: r/h/hill/coast/seed. Uçurum ya da kayalık kıyı tipi yok."
+  },
+  {
+   "name": "Ada türü: atol (Mercan Halkası + 7 yordamsal)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "geo.js:71-76 lagün + halka; D02b 0. Node: atol kazı noktalarının 8'inin 6'sı su altında (lagün −0,4…−3,5 m).",
+   "note": "ada_merkez_1/4/6'daki kamp ve harabeler lagünün içinde, 2,6 m'lik yapay düzlük tepeciklerinde. Atol kazı noktalarının çoğu kazılamaz (G-04). Mercan görseli yok (G-11)."
+  },
+  {
+   "name": "Ada türü: sivri kayalık/spire (5 özel + 7 yordamsal)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "geo.js:77-78; D02/D02b GEÇTİ; otomatik özellik kuralı (archipelago.js:255) spire'da batık seçer.",
+   "note": "Boss kayalıkları (Derin Yarık, Kara Girdap), Fener Kayası, Gizli Pazar, Batık Şehir bu biçimde. Küçük adacıklarda içerik yalnız batık."
+  },
+  {
+   "name": "Ada türü: volkan (Ateş Dağı + 5 yordamsal)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "geo.js:58-63 koni + krater; islands.js:1082-1121 lav gölü ve hasarı; hazards.js:132-142 gayzer. Lav ve gayzer için v0.4 testi yok (yalnız v03/volc.js görsel betiği, 0 expect).",
+   "note": "Volkan adacıklarının karası yalnız %62–81 oranında yürünebilir (Node BFS). ada_volkan_6 kazı noktası 53,4°'lik sınırda; dik kesim 0,32 m olduğundan zıplamayla aşılabiliyor."
+  },
+  {
+   "name": "Ada türü: mesa (Demirkapı, Gümüş Madeni, Kızıl Kanyon + 1 yordamsal)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "geo.js:64-70 11 m basamak; D02/D02b GEÇTİ. Node minimax: Demirkapı hapishanesi 34,7°, Gümüş Madeni 0°, Kızıl Kanyon kazıları ≤ 46° ile erişilebilir; ada_col_2 harabesi 58,3° ve ≥ 3,24 m dik tırmanış istiyor.",
+   "note": "ada_col_2 'Kızıl Kaya' otomatik harabesi yürüyerek erişilemez (G-09). Basamaklar yalnız görsel; tırmanma mekaniği yok."
+  },
+  {
+   "name": "Ada türü: bataklık/swamp (Timsah Bataklığı + 4 yordamsal)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "geo.js:81-91 (kıyı duvarı v0.4'te giderildi); D02b GEÇTİ (12; 15 R6).",
+   "note": "ada_tropik_5_kazi_0 −1,40 m'lik havuzda, kazılamaz (G-04). İç kıyı 3 m dik (11 #21: tasarım kararı)."
+  },
+  {
+   "name": "Ada türü: buzul/glacier (Buzdişi + 1 yordamsal)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "geo.js:79-80; D02/D02b GEÇTİ; sky.js:356, 380 kar ve sis.",
+   "note": "Bitki yoğunluğu ×0,55. Buzdişi'nde bitki sınırı nedeniyle yoğunluk istenenin %74'ü."
+  },
+  {
+   "name": "Kıyı çizgisi sürekliliği (geo.js islandH:44-51, bataklık :81-91, atol :71-76)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "07_dunya_kesif D02, D02b (12: 10/10); bu denetimde D02b'nin computeHeight kopyası 67 yeni + 6 çekirdek adada 0 süreksizlik verdi.",
+   "note": "v0.3'te 433 süreksizlik vardı (B-05, 15. belge)."
+  },
+  {
+   "name": "Ada içerik akışı ve zaman dilimli kurulum (islands.js:271-435)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "13_donma 'P01 Gemiyle yaklaşınca ada birden çok karede kurulur…', P02, P03, P04, P06; 09_performans kur/sök döngüleri; 12: 13_donma 9/9, 09_performans 9/9.",
+   "note": "BUILD_D 750 m, DROP_D 1150 m, STEP_MS 3."
+  },
+  {
+   "name": "Ada yerleşim determinizmi (LOD bağımsızlığı)",
+   "status": "hatali_kararsiz",
+   "evidence": "islands.js:342 tek rng; _vegetation:438-482 reddedilen adaylar değişken sayıda sayı tüketiyor; 11 #35 ölçümü (tapınak sırası farklı).",
+   "note": "Co-op'ta ev sahibi ile konuk farklı duvar ve çarpıştırıcı düzeni görebiliyor (G-07)."
+  },
+  {
+   "name": "Bitki örtüsü (islands.js VEG:145-204, _vegetation:438-482; çekirdekte props.js:164-285)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "Doğrudan doğruluk testi yok; 17_kamera_kararma K08 ormanda kamera ve 16 K04 orman koşusu yalnız dolaylı. 7 000 örnek sınırı (445).",
+   "note": "Biyom başına tek tablo var, ada başına bir karışım farkı yok. Büyük adalar seyrek: Kadim Tapınak istenenin %26'sı, Timsah Bataklığı %59, Ateş Dağı %65 (G-14)."
+  },
+  {
+   "name": "Çekirdek ada süsleri: mercan, yosun, kabuk/istiridye, deniz kayalıkları, martı, şelale (details.js:189-366)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "16_kosu_poz_ganimet 'T01 Çanta doluyken deniz kabuğu/istiridye toplanmaz…' GEÇTİ; details.js:9 yalnız CORE_ISLANDS/CORE_FISH_ZONES.",
+   "note": "67 yeni adada mercan, yosun ve toplanabilir yok (G-11)."
+  },
+  {
+   "name": "Bölgeye özgü atmosfer (sky.js:270-410; müzik game.js:405-410)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "Buzul: kar, sis, deniz tonu, arazi karı; volkan: kül; çöl: rüzgârlı toz; hayalet: yeşil sis (sky.js:284, 356-383). RW.tropik (183) hiç kullanılmıyor. Sınayan test yok (v03 biomes* görsel betikleri, 0 expect).",
+   "note": "Atmosfer ada düzeyinde değil, bölge düzeyinde. Zümrüt bölgesine özgü atmosfer yok (G-10)."
+  },
+  {
+   "name": "Liman kasabası şablonu ve ada iskeleleri (islands.js _port:544-599, _pier:601-673; ports.js)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "15_iskele_kamera 'I07 Ada limanı iskelelerine karadan zıplamadan çıkılır…' (12: 14/14); 13_donma 'P06 … 5 liman NPC’si, çift kurulum yok'.",
+   "note": "5 limanın hepsi aynı: 10 binalık halka, değirmen, kule, kuyu ve 5 NPC (tüccar, hazine alıcısı, rota kaptanı, gemi ustası, zarcı); yalnız kırmızı/mavi ve ölçek değişiyor. Sudan çıkış merdiveni ve barınak yok (G-08)."
+  },
+  {
+   "name": "Kırlangıç Limanı (port.js:151-334)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "07_dunya_kesif 'D03 Yüzen oyuncu 3 gelgit × çukur/tepe + sağanak çukurunda basamaklardan T başlığına çıkar', D07, D08; 15_iskele_kamera I01–I06; 12. belgede GEÇTİ.",
+   "note": "Dünyadaki tek el yapımı kasaba. Dekor deniz feneri burada da var."
+  },
+  {
+   "name": "Yankı Mağarası (cave.js:11-227; worldData.js:75-83)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "17_kamera_kararma 'K07 Mağara tünelinde … kamera tünel kesitinin dışına çıkmaz' GEÇTİ. Günlük alma (quests.js:296-316) v0.4'te testsiz.",
+   "note": "Dünyadaki tek mağara: tünel ve oda, kristaller, yarasa sürüsü (animals.js:758), hikâye günlüğü. 67 yeni adada mağara yok."
+  },
+  {
+   "name": "Haydut kampı şablonu (islands.js _camp:676-694; 11 adet)",
+   "status": "dogrulanmamis",
+   "evidence": "Hiçbir v0.4 testi ada kampı kurmuyor (D05'in ilk 6 adacığında kamp yok); 05/08 yalnız çekirdek 'kamp' grubunu sınıyor.",
+   "note": "Her kampta 2 fıçı, 2 kırılabilir sandık ve uygun yamaç varsa kaya tuzağı (hazards.js:118-129). Sabit sandık yok."
+  },
+  {
+   "name": "Haydut kalesi (islands.js _fort:697-713; korsan_kasabasi)",
+   "status": "dogrulanmamis",
+   "evidence": "Test yok. `mini: true` bayrağı (archipelago.js:52) hiçbir yerde okunmuyor.",
+   "note": "Kale, 2 kule, duvarlar, 4 fıçı ve 3 sandık var; ödül sandığı yok."
+  },
+  {
+   "name": "Harabe şablonu (islands.js _ruin:716-739; 22 adet)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "D05 otomatik harabeleri (ada_buzul_0, ada_buzul_4) hatasız kurup söküyor; harabe sandığına özgü test yok.",
+   "note": "Her yerde aynı kırık kare avlu, 6 sütun, moloz, 5 karo ve 1 sandık. Hayalet bölgesinde sandık 'zengin'. 14'ü bulmaca adayı."
+  },
+  {
+   "name": "Karaya oturmuş gemi (islands.js _wreck:1001-1022; 26 adet)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "D05 'Havuz özellikli adacıklar hatasız kurulur ve sökülür', D06 '… batık ≥ −0,6 m' GEÇTİ.",
+   "note": "26'sı da aynı yarım silindir gövde, direk, 4 fıçı/sandık ve 1 sandık. İç oda yok."
+  },
+  {
+   "name": "Ada sandıkları ve kalıcılık (islands.js _chest:742-752; save:269)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "16_kosu_poz_ganimet 'T08 Sandık açılınca (kazılan, ada “Eski sandık”, batık sandığı) içerik doğrudan çantaya gider'; 08_kalicilik 'B02/B-08 Ada ödülleri, tutsaklar ve tapınak mekanizması yüklemede geri geliyor' (12: 12/12).",
+   "note": "58 sabit sandık var; 17/67 yeni adada sabit sandık yok. Açılan sandığın modeli kapalı görünmeye devam ediyor. Konukta kalıcılık yok (G-02)."
+  },
+  {
+   "name": "Özel bölge: Batık Şehir (batik_sehir; islands.js _sunken:1025-1038)",
+   "status": "dogrulanmamis",
+   "evidence": "archipelago.js:113-117, 319-320 (−11 m düzlük); hiçbir test kurmuyor.",
+   "note": "Amaç yalnız dalış ganimeti: 26 rastgele saçılmış kalıntı ve 4 sandık (1'i zengin). Sokak ya da meydan düzeni, düşman, bulmaca, oda ve geçit yok."
+  },
+  {
+   "name": "Özel bölge: Terk Edilmiş Gümüş Madeni + Obsidyen madeni (islands.js _mine:870-897)",
+   "status": "dogrulanmamis",
+   "evidence": "Giriş siyah düzlem ve kutu çarpıştırıcısıyla kapalı (876-889; 03:216 statik düzeltme, test yok). `undead` bayrağı (archipelago.js:148) okunmuyor.",
+   "note": "Maden yalnız dış cephe; içine girilemiyor. Dışarıda iskelet (Gümüş) ya da haydut (Obsidyen) grubu, 1 sandık, 3 fıçı, 2 sandık ve kaya tuzağı var."
+  },
+  {
+   "name": "Özel bölge: Korsan Mezarlığı (islands.js _graveyard:755-785; 2 mezarlık)",
+   "status": "dogrulanmamis",
+   "evidence": "archipelago.js:157-163; test yok.",
+   "note": "Gündüz iskeletler, gece hayaletler ve Hayalet Kaptan; 2 zengin sandık. Mahzene girilemiyor, görev bağı yok. Yordamsal hayalet adacıklarında hiç mezarlık yok."
+  },
+  {
+   "name": "Özel bölge: Kadim Tapınak (islands.js _temple:788-867)",
+   "status": "hatali_kararsiz",
+   "evidence": "13_donma 'P08 Tapınak bulmacası: çözüm yeniden kurulumda ve kayıt yüklemede korunur…' GEÇTİ. Sunak platformu y0+8 m ve merdiveni çarpıştırıcısız (821-822, 857).",
+   "note": "Levye bulmacası, kapı ve Taş Muhafız çalışıyor; sunak sandığı erişilemez (G-03). Tek kat; iç oda ya da yeraltı yok."
+  },
+  {
+   "name": "Özel bölge: Gizli Korsan Pazarı (islands.js _market:900-911)",
+   "status": "dogrulanmamis",
+   "evidence": "13_donma P02 yalnız kurulumu sınıyor; kaçakçının saat kapısı (quests.js:448-452) testsiz.",
+   "note": "5 çadır, fenerler, kaçakçı (20:00–05:00 arası satış) ve 'Sorgusuz Alıcı'. Fiziksel pazar her saatte duruyor; gizlilik ya da erişim koşulu yok."
+  },
+  {
+   "name": "Özel bölge: Demirkapı Hapishanesi (islands.js _prison:932-970)",
+   "status": "hatali_kararsiz",
+   "evidence": "Hücre eylemi tek seferlik değil (958-967) ve interact hold döngüsü (interact.js:61-65) eylemi yineliyor; konukta grup kimliği yok (enemies.js:1241).",
+   "note": "5 gardiyan ve 3 tutsak (+120 altın, +80 XP). Ödül sınırsız tekrarlanıyor (G-01); konukta gardiyan denetimi atlanıyor (G-02); kurtarılan tutsağın sonraki rolü yok."
+  },
+  {
+   "name": "Özel bölge: Fener Kayası deniz feneri (islands.js _lighthouse:973-998)",
+   "status": "eksik",
+   "evidence": "Yalnız silindir kule, dönen hüzme ve ışık; etkileşim, düşman ve ödül yok. Harita simgesi 'peak' (archipelago.js:292).",
+   "note": "Oynanış amacı yok, yalnız dekor. Otomatik havuzda fener seçeneği olsa da hiç seçilmiyor (11 #22)."
+  },
+  {
+   "name": "Özel bölge: Terk Edilmiş Korsan Kasabası (islands.js _ruinedTown:914-929 + kamp + kale)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "16 T08 bu adanın 'chest:' eylemini çağırıp altın aldığını doğruluyor (GEÇTİ); kamp ve kale düşmanları testsiz.",
+   "note": "Yıkık binalar, sahne, 1 sandık, 2 düşman grubu, fıçılar ve kaya tuzağı. Kasaba hikâyesi ve görevi yok."
+  },
+  {
+   "name": "Özel ada: Mercan Halkası (atol + harabe)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "archipelago.js:65-69 açıklaması 'Batık sandıklarla dolu'; kodda yalnız halka üzerinde 1 harabe ve 2 kazı noktası var, mercan_halkasi_kazi_1 −1,03 m'de.",
+   "note": "Açıklama ile içerik uyuşmuyor (G-15); mercan yok (G-11)."
+  },
+  {
+   "name": "Boss alanları (Derin Yarık, Kara Girdap, Sis Adası, Ateş Dağı; tapınakta Taş Muhafız)",
+   "status": "dogrulanmamis",
+   "evidence": "archipelago.js:321-322 BOSS_SITES; bosses.js:1081-1093 tetikleyiciler; 11 #12 'Boss savaşları … uçtan uca oynanmadı'.",
+   "note": "Ateş Dağı krater merkezine kıyıdan en çok 26,5° eğimle yürünüyor (Node). Ayrıntı boss alanının denetiminde."
+  },
+  {
+   "name": "Basınç plakası bulmacası (hazards.js _puzzleSite:429-506, _pushBlock:522-554)",
+   "status": "dogrulanmamis",
+   "evidence": "Assert içeren test yok (yalnız v03/haz1-3 görsel betikleri). Aday: hash<6 → 22 harabenin 14'ü (Node).",
+   "note": "Tek bulmaca türü, her yerde aynı (kafes, blok, plaka). Sandık 140–320 altın ve +150 XP."
+  },
+  {
+   "name": "Barut fıçısı ve kırılabilir sandık (hazards.js:163-294)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "08_kalicilik 'Kırılmış sandık ve patlamış fıçı yüklemede yeniden kurulmuyor'; coop/06b 'B03/H01 Konuğun kırdığı sandığın kesesi ev sahibinde doğar ve konukta aynı kimlikle görünür' (12: 12/12, 18/18).",
+   "note": "Konuğa katılımda patlamış fıçı ve kırık sandık bilgisi gitmiyor (G-02)."
+  },
+  {
+   "name": "Kaya tuzağı (hazards.js:297-426)",
+   "status": "dogrulanmamis",
+   "evidence": "Test yok; 11 #4 ve #19 açık.",
+   "note": "Yalnız kamp ve madenlerde, uygun yamaç bulunursa."
+  },
+  {
+   "name": "Buhar gayzeri ve lav gölü (hazards.js:557-604; islands.js:1082-1121)",
+   "status": "dogrulanmamis",
+   "evidence": "Assert içeren test yok (v03/volc.js görsel).",
+   "note": "8 adada gayzer adayı var; normal biçimli küçük volkan adacıklarında (ada_volkan_1, ada_volkan_4) gayzer yok."
+  },
+  {
+   "name": "Hazine haritası, kazı ve ipucu nesneleri (treasure.js:129-262; archipelago.js:330-346; worldData.js:107-171)",
+   "status": "hatali_kararsiz",
+   "evidence": "tests/scenarios altında startDig/resolveDig çağıran v0.4 kontrolü yok (yalnız v03 tmap/full/g10b, 0 expect). Node: 123 noktanın 6'sı kazılamaz (su altında).",
+   "note": "111 üretilmiş ipucu 6 nesne türü ve tek cümle kalıbından oluşuyor. Gelgit kazısı yalnız çekirdekte (gelgit_1). Haritadaki X bulanıklığı katmana göre değişiyor."
+  },
+  {
+   "name": "Keşif sistemi (quests.js:249-272: ada/POI keşfi, keşif sisi, +25 XP, Kâşif başarımı)",
+   "status": "dogrulanmamis",
+   "evidence": "Testlerde 'discovered' kullanımı yok.",
+   "note": "84 POI ve 73 ada keşfi var; adaya özgü keşif içeriği (yazıt, manzara noktası, koleksiyon) yok."
+  },
+  {
+   "name": "Co-op'ta ada/tehlike durumu eşitliği ve konuk kalıcılığı",
+   "status": "hatali_kararsiz",
+   "evidence": "net.js:510-522 dünya iletisinde islands/hazards yok; main.js:193 konuk verisi; enemies.js:1241 net() grup kimliği içermiyor.",
+   "note": "G-02: konuk her katılışta ödülleri yeniden alıyor, gardiyan denetimi atlanıyor, kapı ve kafes durumu farklı."
+  },
+  {
+   "name": "Tekrar eden yapı şablonları (liste)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "Node sayımı ve kurucu kodları: _ruin 22 (islands.js:716), _wreck 26 (1001), _camp 11 (676), _port 5 (544), _graveyard 2 (755), _mine 2 (870); kazı ipucu 6 tür (archipelago.js:335); düşman aileleri haydut/iskelet/hayalet (230-237).",
+   "note": "Tek düzenli harabe avlusu ve aynı bulmaca (14). Aynı batık gövdesi. Aynı çadır halkası, kampta aynı fıçı/sandık/kaya tuzağı. 5 limanın tamamı aynı yerleşim ve NPC kadrosu. Aynı sandık modeli ve 2 ganimet tablosu (mid/rich). Her adada aynı deniz kayalığı (rock_tall). Bitki biyom başına tek tablo. Tek mağara."
+  },
+  {
+   "name": "Dikey keşif: dağ zirveleri / yükselti",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "Yükseklik var: Ateş Dağı 165 m (krater, lav, Volkanik Dev), Buzdişi 105 m, mesa basamakları 11 m, Gözcü Tepesi POI (worldData.js:95). Tırmanma yalnız gemi merdiveninde (player.js:971 startClimb); ny<0,6'da tırmanılamıyor (player.js:566-576).",
+   "note": "Zirvelerde içerik, manzara noktası ya da ödül yok."
+  },
+  {
+   "name": "Dikey keşif: mağaralar",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "Yalnız Yankı Mağarası (cave.js).",
+   "note": "Yeni 67 adada mağara üreteci yok."
+  },
+  {
+   "name": "Dikey keşif: yeraltı gölleri",
+   "status": "eksik",
+   "evidence": "Kodda yeraltı su hacmi ya da göl yok (cave.js tek tünel ve oda).",
+   "note": ""
+  },
+  {
+   "name": "Dikey keşif: batık gemi odaları",
+   "status": "eksik",
+   "evidence": "Martı Batığı (props.js:446-487) ve 26 karaya oturmuş gemi (islands.js:1001-1022) tek parça açık gövde.",
+   "note": "İç kabin ya da ambar odası yok."
+  },
+  {
+   "name": "Dikey keşif: su altı geçitleri",
+   "status": "eksik",
+   "evidence": "Su altı içeriği yalnız Batık Şehir saçılması ve Martı Batığı sandığı.",
+   "note": ""
+  },
+  {
+   "name": "Dikey keşif: gizli madenler",
+   "status": "eksik",
+   "evidence": "Maden girişleri çarpıştırıcıyla kapalı cephe (islands.js:876-889).",
+   "note": ""
+  },
+  {
+   "name": "Dikey keşif: tapınak katları",
+   "status": "eksik",
+   "evidence": "Kadim Tapınak tek avlu ve erişilemeyen tek sunak platformundan oluşuyor (islands.js:795-825).",
+   "note": ""
+  },
+  {
+   "name": "Dikey keşif: su altı alanları (Batık Şehir, Martı Batığı)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "16 T08 Martı Batığı sandığını (seagear.openWreck) sınıyor (GEÇTİ); Batık Şehir testsiz.",
+   "note": "Martı Batığı sandığı kayda yazılmıyor (G-05)."
+  }
+ ],
+ "issues": [
+  {
+   "id": "G-01",
+   "title": "Hapishane: tutsak kurtarma ödülü sınırsız tekrarlanıyor (E basılı tutuldukça her 2,5 sn +120 altın, +80 XP)",
+   "file": "js/world/islands.js",
+   "func": "islands._prison (hücre etkileşimi, satır 956-967) + interact.update hold dalı (js/game/interact.js:61-65)",
+   "rootCause": "Hücre kapısı eylemi `this.freed.has(key)` denetlemiyor. Serbest bırakmadan sonra B.inter kaydı silinmiyor ve kaydın `cond` alanı yok (islands.js:958). interact.update, hold süresi olan adaylarda tuş basılı kaldıkça her 2,5 sn'de `best.action(p)` çağırıyor (interact.js:62-64). Gardiyan sayısı 0 kaldıkça her çağrı `G.player.inv.gold += 120` (963) ve prisonerFreed (965 → progress.js:84, +80 XP) üretiyor. Kayıt yalnız ada yeniden kurulunca eklenmiyor (956).",
+   "impact": "Gardiyanları bir kez temizleyen oyuncu, hücre kapısında E'yi basılı tutarak dakikada yaklaşık 2 880 altın ve 1 920 XP kazanıyor. Ekonomi ile rütbe/yetenek ilerlemesi tümden kırılıyor. Etki tek oyunculu oyunda, ev sahibinde ve konukta aynı; ada boşaltılana kadar (1 150 m) sürüyor.",
+   "priority": "kritik",
+   "fix": "Eylemin başına `if (this.freed?.has(key)) return;` ekle. Kayda `cond: () => !this.freed?.has(key)` ver ya da serbest bırakınca B.inter'den çıkar. prisonerFreed yalnız ilk serbest bırakmada yayılsın. Altın shop.earn üzerinden verilsin (paylaşım ve istatistik için). Co-op'ta karar ev sahibinde verilsin (G-02).",
+   "repro": "Yeni oyun aç. Konsolda: `const I=DK.archipelago.EXTRA_ISLANDS.find(i=>i.id==='demirkapi'); await DK.terrain.prepare(-6653,2548,{radius:400}); DK.islands._build(I)`. Oyuncuyu 'free:demirkapi_prison_0:0' kaydının konumuna ışınla. `DK.enemies.list.filter(e=>e.group==='demirkapi_prison_0').forEach(e=>{e.alive=false})` (ya da gardiyanları öldür). Ardından `DK.input.down.add('KeyE'); DK.sim(10)`. Sonuç: altın +480, 'Tutsak kurtarıldı' XP olayı 4 kez.",
+   "acceptance": "Yeni senaryo kontrolü: (1) İlk serbest bırakmada altın tam +120, prisonerFreed 1 kez. (2) Aynı kapıda 10 sn daha E basılıyken altın değişmez, istem görünmez. (3) Üç hücrenin toplamı en çok +360. (4) Ada yeniden kurulunca ve kayıt yüklenince istem çıkmaz.",
+   "presentIn": "v03_ve_v04",
+   "knownAs": "Kayıtlı değil (02 B02'nin 'ödül olaylarını tek seferlik yap' önerisi uygulanmamış; v0.4 yalnız yeniden yükleme yolunu kapattı)",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "G-02",
+   "title": "Co-op: ada/tehlike kalıcı durumu konuğa aktarılmıyor ve konukta kaydedilmiyor — konuk her katılışta sandık/sunak/tutsak/bulmaca ödüllerini yeniden alıyor, gardiyan denetimi konukta işlemiyor",
+   "file": "js/net/net.js",
+   "func": "net._sendWorld (510-522); main.js handlers.startOnlineGuest (187-194) ve saveNow konuk dalı (201-205); islands.start (253-267); hazards.start (76-84); enemies.net (1240-1242) / applySnapshot (1650-1660)",
+   "rootCause": "Dünya iletisi yalnız gemi, sandık, kese, görev, zaman ve kayık bilgisini taşıyor; islands (opened, freed, temples) ve hazards (solved, looted, gone) yok. Konuk game.start'a yalnız {player, progress, quests} veriyor (main.js:193), bu yüzden islands.start ve hazards.start konukta boş kümelerle başlıyor. Konuk kaydı (203) da bu kümeleri yazmıyor. Ödüller konukta yerel üretiliyor: sandık ve sunak lootToBag ile doğrudan konuğun çantasına (islands.js:749, 860; treasure.js:95-100), tutsak altını doğrudan (963), XP olayları da yerel (progress.js:84-86). Ayrıca düşman ağ görüntüsünde grup kimliği yok (enemies.js:1241); konukta yaratılan kopyaların `group` alanı boş (1655), bu yüzden gardiyan sayımı (islands.js:959) konukta hep 0. v0.3'te konuğun sandık ganimeti toplanamayan keseye dönüşüyordu (B03), sömürü tutsak altını ve XP ile sınırlıydı.",
+   "impact": "Konuk odadan çıkıp yeniden katılarak şunları sınırsız yineliyor: ada sandıkları (58 sabit sandık; zengin tablo 120–260 altın + külçe/mücevher), tapınak sunağı, gizli bulmaca sandıkları (140–320 altın, +150 XP), tutsak ödülleri (+120 altın, +80 XP) ve tapınak XP'si (+250). Kazanç konuk kaydına yazılıyor. Gardiyanlar canlıyken bile konuk tutsakları serbest bırakabiliyor. Ayrıca ev sahibinin açtığı tapınak kapısı ve kafes konukta kapalı görünüyor ve çarpıştırıcısı yerinde duruyor (dünya tutarsızlığı).",
+   "priority": "kritik",
+   "fix": "Bir kerelik kümeleri ev sahibi tutsun. Dünya iletisine islands.save() ve hazards.save() eklensin; değişiklikler (opened, freed, temple, solved, looted, gone) olay olarak yayınlansın. Konuğun sandık/sunak/tutsak/bulmaca eylemi, kaynak kimliğiyle ev sahibine istek olarak gitsin; ev sahibi kümede yoksa ödülü üretip netGive ile versin. enemies.net() içine grup kimliği eklensin ya da gardiyan denetimi ev sahibinde yapılsın.",
+   "repro": "tests/harness/coop.cjs ile iki sekme aç: ev sahibi oda açar, konuk katılır. Konuk korsan_kasabasi'na ışınlanıp `DK.islands.built.get('korsan_kasabasi').inter.find(i=>i.id.startsWith('chest:')).action()` çalıştırır; altın artar. Konuk ayrılıp yeniden katılır ve aynı eylemi tekrarlar; altın yine artar. Demirkapı'da ev sahibinin gardiyanları canlıyken konukta hücre eylemi +120 altın verir.",
+   "acceptance": "Co-op testi: (1) Konuğun açtığı ada sandığı ev sahibinin opened kümesine girer. (2) İkinci denemede ve yeniden katılımdan sonra 'Sandık boş' çıkar. (3) Ev sahibinde gardiyan canlıyken konuk tutsağı serbest bırakamaz. (4) Tapınak kapısı ve kafes durumu iki istemcide aynıdır. (5) Konuk kaydı bir kerelik ödülleri tekrar vermez.",
+   "presentIn": "v03_ve_v04",
+   "knownAs": "02: G_icerik-ek-statik-164 (düşük olarak kayıtlı, sömürü boyutu yazılmamış); 02 B_dunya özeti 'Ada kalıcı durumu … co-op konuklar için de paylaşılmıyor'",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "G-03",
+   "title": "Kadim Tapınak sunak sandığı erişilemez: 8 m'lik sunak platformunun merdiveni yalnız görsel",
+   "file": "js/world/islands.js",
+   "func": "islands._temple (satır 821-824, 857-862) + physics.addPlatform (js/world/physics.js:71-77)",
+   "rootCause": "`kk:dungeon:stairs_wide` çarpıştırıcı ya da platform olmadan yerleştiriliyor (islands.js:821; model 7×5,1×4 birim, ölçek ×1,6). Sunak tek bir platform; üstü y0 + 5,1·1,6·0,98 ≈ y0+8,0 m (822). v0.4'te addPlatform, `top > 3` olduğunda yan kutuyu −50'den başlatıyor (physics.js:76), yani sunak 8 m'lik katı bir blok. Oyuncu en çok 0,6 m'lik basamak çıkabiliyor, zıplama yaklaşık 1,24 m (player.js:17, 558). Etkileşim |Δy| ≤ 3,5 m istiyor (islands.js:1155), sunak istemi ise y0+8,96'da (857).",
+   "impact": "Tapınak bulmacasının asıl ödülü hiçbir oyuncuya ulaşmıyor: 400–700 altın, %60 Kraliyet Tacı, altın heykelcik, %50 elmas, antik vazo. templeLooted hiç tetiklenmiyor. Bulmaca yalnız +250 XP ve Taş Muhafız savaşını açıyor.",
+   "priority": "yuksek",
+   "fix": "Merdiven boyunca basamak platformları ekle: örneğin 10 basamak × 0,8 m yükselme, `addPlatform(..., false)` + tam yükseklikte yan kutu (port.js:202-216 kalıbı). Ya da eğimli bir rampa ekle. Alternatif olarak sunağı alçalt ya da istemi platformun dibinden de ver. Yol haritası 14 #9'daki işin karşılığı.",
+   "repro": "`const I=DK.archipelago.EXTRA_ISLANDS.find(i=>i.id==='kadim_tapinak'); await DK.terrain.prepare(I.x,I.z,{radius:500}); DK.islands._build(I)`. Yazıttaki sırayla levyeleri çevir (P08'deki gibi). Kapı açılınca merdivene (x 1900, z ≈ 7396) W ile yürü: oyuncunun y değeri y0'da kalıyor, 'Sunak sandığını aç' istemi çıkmıyor. `DK.physics.groundAt(1900, 7394, y0+1)` y0 döndürüyor.",
+   "acceptance": "Senaryo: bulmaca çözüldükten sonra ışınlanmadan kapıdan yürüyen oyuncu 20 sn içinde platformun üstüne çıkar (pos.y ≥ y0+7,9). İstem görünür, ganimet bir kez verilir, ikinci denemede 'Sandık boş' çıkar.",
+   "presentIn": "v03_ve_v04",
+   "knownAs": "02: B_dunya-ek-statik-34, B_dunya-ek-calistir-37 (ve D-13); 14. belge #9 'tapınak sunağına erişim (basamak platformları)'. 11'de açık madde olarak yok.",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "G-04",
+   "title": "6 üretilmiş kazı noktası su altında (atol lagünü/bataklık havuzu): bu hazine haritaları kazılamıyor",
+   "file": "js/world/archipelago.js",
+   "func": "kazı noktası üretimi (üst düzey blok, satır 330-346) + treasure.startDig (js/treasure/treasure.js:186-205)",
+   "rootCause": "Kazı noktaları ada merkezinden (0,25–0,70)·r uzaklığa, arazi sorgusu yapılmadan konuyor (archipelago.js:333); modül geo.js'e bağımlı olamıyor. Atolde d < 0,66 bölgesinde lagün tabanı −3,6…0,9 m (geo.js:74), bataklıkta havuzlar −1,4 m (geo.js:86-91). startDig, oyuncunun bastığı zeminin ≥ 0,2 m olmasını istiyor (treasure.js:195). randomSite (131-137) ve harita satan NPC'ler bu noktaları da dağıtıyor.",
+   "impact": "Node (computeHeight) ölçümü: 123 noktanın 9'u 0,2 m'nin altında. Bunların 6'sının 3,7 m çevresinde hiç kuru zemin yok: mercan_halkasi_kazi_1 (−1,03), ada_merkez_0_kazi_0 (−3,37), ada_merkez_1_kazi_0 (−3,52), ada_merkez_6_kazi_1 (−2,57), ada_tropik_5_kazi_0 (−1,40), ada_tropik_8_kazi_0 (−2,79). Rastgele ya da 150 altına alınan haritaların yaklaşık %5'i hiç kazılamıyor ('Burası kazmak için fazla ıslak'). İpucu nesneleri de su altında kalıyor.",
+   "priority": "orta",
+   "fix": "geo.js yüklendikten sonra, TERRAIN_MODS çözümünün yapıldığı yerde üretilmiş kazı noktalarını computeHeight ile doğrula. 0,3 m'nin altındaki noktayı kimliğini koruyarak en yakın kuru ve erişilebilir noktaya taşı (ipucu nesnesiyle birlikte) ya da randomSite'tan ve satıştan çıkar. tests/fixtures/archipelago_v03.json'u bilinçli olarak güncelle; eski kayıtlardaki haritalar kimlikle eşleşmeye devam etsin.",
+   "repro": "Node: DIG_SITES'i computeHeight ile tara (bu denetimdeki geçici betik /tmp/denetim_alan/kazi_su.mjs). Oyunda: `DK.treasure.giveMap('ada_merkez_1_kazi_0')`, adaya git, X'te kürekle kaz → 'Burası kazmak için fazla ıslak.'",
+   "acceptance": "Node testi: gelgit noktaları dışında her DIG_SITE için computeHeight ≥ 0,3 ve nokta kıyıdan yürünerek erişilebilir. Oyunda önceden ıslak 6 noktada kazı sandık çıkarır. archipelago_sabit kimlik eşitliği korunur.",
+   "presentIn": "v03_ve_v04",
+   "knownAs": "Kayıtlı değil",
+   "confidence": "kesin"
+  },
+  {
+   "id": "G-05",
+   "title": "Martı Batığı sandığı kayda yazılmıyor: kaydet-yükle döngüsüyle sınırsız açılabiliyor",
+   "file": "js/wildlife/seagear.js",
+   "func": "seagear.init/start/openWreck (satır 115-138)",
+   "rootCause": "wreckOpened yalnız bellekte tutuluyor. start() her oturumda, kayıt yüklenirken de, bayrağı false yapıyor (128). seagear'da save()/saveKey yok; durum islands.opened'a da yazılmıyor.",
+   "impact": "Sandık açılıyor (60–140 altın; maske, palet, hava kesesi, zıpkın ve inci olasılığı), oyun kaydediliyor, kayıt yüklenince sandık yeniden açılabiliyor. Döngü tekrarlanabilir kazanç veriyor; içerik v0.4'te eklendi.",
+   "priority": "orta",
+   "fix": "Durumu islands.opened'a ('wreck:marti_batigi') ya da seagear.save() ile kayda yaz. Yalnız yeni oyunda sıfırla. Co-op'ta ev sahibine bağla.",
+   "repro": "Martı Batığı'na (545, 470) dal ve 'Batık sandığını aç'. Kaydet, kaydı yükle, yeniden dal: istem yine çıkıyor, ganimet yine geliyor.",
+   "acceptance": "08_kalicilik benzeri kontrol: açılmış batık sandığı kayıt/yükleme sonrasında istem vermez ve ikinci denemede altın değişmez.",
+   "presentIn": "yalniz_v04",
+   "knownAs": "11 #41 (Açık, düşük)",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "G-06",
+   "title": "Tekrar hissi: 44 yordamsal adacıkta yalnız 3 yapı türü var, tüm dünyada aynı şablonlar kullanılıyor (harabe 22, batık 26, kamp 11, liman 5)",
+   "file": "js/world/archipelago.js",
+   "func": "generate (satır 201-279) + islands._ruin/_wreck/_camp/_port",
+   "rootCause": "Yordamsal özellik kuralı yalnız kamp, harabe ve batık üretiyor (archipelago.js:238-240). Havuz eklemesi (243-262) arazi sorgulayamadığı için dik ya da çukurlu şekillerde hep batığa düşüyor; fener, mezarlık ve maden hiç seçilmiyor. Kurucuların her biri tek düzenli: _ruin her yerde aynı kare avlu + 6 sütun + 1 sandık (islands.js:716-739), _wreck aynı yarım silindir gövde (1001-1022), _camp aynı çadır halkası (676-694), _port aynı 10 binalık halka ve 5 NPC (544-599).",
+   "impact": "Oyuncu farklı bölgelerde aynı yapıyı, aynı ganimet tablosunu ve aynı düşman karışımını görüyor. Yeni adaların 31/67'sinde düşman grubu, 17/67'sinde sabit sandık yok; 21 adacıkta yalnız aynı batık var.",
+   "priority": "orta",
+   "fix": "Şablonlara tohumlu varyantlar ekle (avlu biçimi/boyutu, kırık duvar düzeni, yapı seti); bölgeye özgü kitler ve süsler kullan. Arazi farkında yerleşimle (islands.js'te terrain.heightAt ile aday açı denemesi) fener, mezarlık, maden, gözetleme kulesi ve mağara girişi gibi yeni türleri aç. Her adaya benzersiz bir 'imza' öğe ver; limanlarda bölgeye göre farklı yerleşim ve NPC kadrosu kur.",
+   "repro": "Node envanteri (EXTRA_ISLANDS özellik sayımı): yordamsal adacıklarda beach_wreck 26, ruin 17, camp 6; graveyard, lighthouse ve mine 0.",
+   "acceptance": "Node testi: yordamsal adacıklarda ≥ 6 özellik türü var ve hiçbir tür %30'u aşmıyor. Her kurucuda ≥ 3 düzen varyantı var. Görsel karşılaştırmada aynı türden iki yapı farklı düzende görünüyor.",
+   "presentIn": "v03_ve_v04",
+   "knownAs": "11 #22 (Açık, düşük)",
+   "confidence": "kesin"
+  },
+  {
+   "id": "G-07",
+   "title": "Ada yerleşimi kurulum anındaki arazi LOD'una bağlı: bitki, yapı yönü, NPC adı ve tapınak levye sırası değişebiliyor; co-op'ta iki istemci farklı yerleşim görüyor",
+   "file": "js/world/islands.js",
+   "func": "islands._vegetation (438-482) ve _buildGen (340-365)",
+   "rootCause": "Tek rastgele akış (rng(I.seed*31+7)) önce bitki döngüsünde tüketiliyor. terrain.heightAt/normalAt'a bağlı redler (454-465) LOD'a göre farklı sayıda sayı tüketiyor. Bu yüzden sonraki tüm yapıların sayı dizisi kayıyor: harabe ve hapishane yönü (718, 934), levye sırası (827), NPC adı (530).",
+   "impact": "Aynı ada, gemiyle yaklaşınca ve kayıt yüklendikten sonra farklı kuruluyor. Co-op'ta ev sahibi düşmanları kendi duvar ve çarpıştırıcı düzenine göre yürütürken konuk farklı duvarlar görüyor. Tapınak yazıtındaki sıra, oyuncunun hatırladığı sıradan farklı olabiliyor.",
+   "priority": "orta",
+   "fix": "Her özellik için kimliğinden tohumlanan ayrı bir rng kullan (rng(hash(f.id))). Bitki adaylarında, aday reddedilse bile sabit sayıda sayı çek. Yerleşim kararlarını LOD'dan bağımsız computeHeight ile ver (14 #19).",
+   "repro": "11 #35'teki ölçüm: Kadim Tapınak gemiyle 750 m'den kurulduğunda ve terrain.prepare sonrasında kurulduğunda yazıt sırası farklı ('ay>yıldız>güneş' ↔ 'güneş>ay>yıldız').",
+   "acceptance": "P02 benzeri test: her ada kaba LOD'da ve hazırlanmış LOD'da kurulduğunda örnek dönüşümleri, NPC kimlik ve adları, levye sırası ve çarpıştırıcı listesi birebir aynı.",
+   "presentIn": "v03_ve_v04",
+   "knownAs": "11 #35 (Açık, orta); 14 #19",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "G-08",
+   "title": "Yeni 5 limanın iskelesinde sudan çıkış merdiveni ve liman barınağı yok",
+   "file": "js/world/islands.js",
+   "func": "islands._pier (601-673)",
+   "rootCause": "Taş merdiven ve ocean.setShelter yalnız ana limanda var (port.js:196-217). _pier yalnız iskelenin kara ucunu ve kökteki basamağı kuruyor.",
+   "impact": "Tuz Pazarı, Kuzeyfener, Zümrüt Koy, Kül Limanı ve Kumsaati'nde suya düşen ya da yüzen oyuncu iskeleye çıkamıyor, kıyıya yüzmek zorunda kalıyor; iskele çevresinde dalga sönümlenmiyor.",
+   "priority": "orta",
+   "fix": "port.js'teki merdiven üretecini _pier'e taşı (iskele ucunun kenarına) ve her limana ocean.setShelter ekle.",
+   "repro": "Tuz Pazarı iskele ucunun yanında suya gir (ports.byId('tuz_pazari_port_0').pierEnd) ve iskeleye yüz: güverteye çıkılamıyor.",
+   "acceptance": "07 D03 kontrolünün 5 ada limanı için kopyası: üç gelgit durumunda yüzen oyuncu güverteye çıkıyor ve merdivende dalga genliği ≤ 0,35 m.",
+   "presentIn": "v03_ve_v04",
+   "knownAs": "11 #23 (Açık, orta) ve #24 notu",
+   "confidence": "kesin"
+  },
+  {
+   "id": "G-09",
+   "title": "Kızıl Kaya (ada_col_2) otomatik harabesi ve kazı noktası mesa terasında kalıyor: yürüyerek ulaşılamıyor",
+   "file": "js/world/archipelago.js",
+   "func": "otomatik özellik seçimi (243-262; mesa şeklinde 'ruin' kalıyor) + geo.js mesa profili (64-70)",
+   "rootCause": "Havuz seçimi yalnız volcano, spire ve swamp için batığa geçiyor; mesa'da harabe 11 m'lik terasa düşüyor. Kıyıdan en yumuşak yol bile 58,3° (ny 0,525) tırmanış ve en az 3,24 m dik yükselme gerektiriyor (Node minimax/Dijkstra, yalnız arazi). Oyuncu ny < 0,6'da tırmanamıyor (player.js:566-576), zıplama yaklaşık 1,24 m. D06 yalnız 10 m çevrede ≥ 1 m yükseklik ölçüyor, erişilebilirliği ölçmüyor.",
+   "impact": "Adacığın tek içeriği yürüyerek erişilemiyor: harabe sandığı, iskelet grubu, bulmaca adayı ve ada_col_2_kazi_0 kazı noktası. Bu noktanın haritası kazılamıyor.",
+   "priority": "dusuk",
+   "fix": "Küçük mesa adacıklarında da kıyı özelliği seç ya da yapıyı en alçak terasa koy. Kazı noktaları dahil tüm hedefler için Node erişilebilirlik testi (kıyıdan minimax eğim) ekle.",
+   "repro": "Node: kıyıdan BFS ve minimax hesabı (bu denetimdeki /tmp/denetim_alan/minimax.mjs ve dik_tirmanis.mjs). Oyunda adacığın kumsalına çık ve harabeye yürümeyi dene.",
+   "acceptance": "Node testi: tüm özellik merkezleri ve kazı noktaları kıyıdan ny ≥ 0,6 ile ya da ≤ 1 m dik yükselmeyle erişilebilir. Tarayıcıda otomatik yürüyüş harabe sandığına ulaşıyor.",
+   "presentIn": "yalniz_v04",
+   "knownAs": "Kayıtlı değil (15. belge D06 bu durumu yakalamıyor; kazı noktası v0.3'te de aynı yerdeydi)",
+   "confidence": "orta"
+  },
+  {
+   "id": "G-10",
+   "title": "Zümrüt Takımadaları bölgesine özgü atmosfer yok (RW.tropik hesaplanıyor ama kullanılmıyor)",
+   "file": "js/world/sky.js",
+   "func": "sky.update bölge ağırlıkları (270-284), sis/deniz/parçacık (354-383)",
+   "rootCause": "regionW.tropik hesaplanıyor (183, 270-275), ancak sis rengi ve yoğunluğu, deniz tonları ve parçacıklar yalnız buzul, volkan, col ve hayalet ağırlıklarını kullanıyor.",
+   "impact": "Güneydeki cangıl bölgesi (Kadim Tapınak dahil 13 ada) merkez bölgeyle aynı havaya sahip; bölgeye özgü atmosfer hedefi karşılanmıyor.",
+   "priority": "dusuk",
+   "fix": "RW.tropik için nemli yeşil-gri pus, hafif ek sis yoğunluğu, turkuaz deniz tonu, böcek/yaprak parçacıkları ve orman ses katmanı ekle.",
+   "repro": "Zümrüt Koy (−300, 5300) ile Tuz Pazarı (1900, 950) arasında aynı saat ve havada fog.color/density değerlerini karşılaştır: değerler aynı.",
+   "acceptance": "Bölge geçişinde tropik bölgedeki fog ve ocean uShallow değerleri merkezden farklı; görsel karşılaştırma da farkı gösteriyor.",
+   "presentIn": "v03_ve_v04",
+   "knownAs": "02 B_dunya özeti 'Güney bölge (Zümrüt Takımadaları) atmosferi'",
+   "confidence": "kesin"
+  },
+  {
+   "id": "G-11",
+   "title": "Mercan resifi, yosun, kabuk/istiridye ve kumsal ayrıntıları yalnız 6 çekirdek adada var",
+   "file": "js/world/details.js",
+   "func": "details.init (9, 196-271)",
+   "rootCause": "details.js yalnız CORE_ISLANDS ve CORE_FISH_ZONES'u içe aktarıyor. 67 yeni ada ve onların 'reef' balık bölgeleri (archipelago.js:348) için mercan, yosun, kabuk ve toplanabilir üretilmiyor.",
+   "impact": "Atol ve cangıl adalarında 'resif' olarak işaretli sularda mercan yok; Mercan Halkası boş. Kabuk/istiridye/inci toplama yalnız başlangıç takımadasında yapılabiliyor.",
+   "priority": "dusuk",
+   "fix": "Ada içeriği kurulumuna (islands._buildGen) örneklenmiş mercan, yosun ve kumsal ayrıntısı adımı ekle; ada boşaltılınca kaldırılsın. Toplanabilirleri ada etiketiyle üret.",
+   "repro": "Mercan Halkası (2700, 2600) lagününe dal: hiç mercan örneği yok. details.collectibles yalnız çekirdek adalardan oluşuyor.",
+   "acceptance": "'reef' bölgesi olan her adada kurulumdan sonra mercan örnek sayısı > 0; en az bir yeni adada toplanabilir kabuk var.",
+   "presentIn": "v03_ve_v04",
+   "knownAs": "Kayıtlı değil",
+   "confidence": "kesin"
+  },
+  {
+   "id": "G-12",
+   "title": "Serbest bırakılan tutsağın 0,35 m'lik çarpıştırıcısı ada boşaltılana kadar hücrede kalıyor",
+   "file": "js/game/npcs.js",
+   "func": "npcs.remove (90-95)",
+   "rootCause": "_create, çarpıştırıcıyı ada etiketiyle ekliyor (82); remove yalnız modeli kaldırıyor.",
+   "impact": "Hücrede görünmez bir engel kalıyor.",
+   "priority": "dusuk",
+   "fix": "remove içinde n.col.y0 = n.col.y1 = 9999 ile çarpıştırıcıyı devre dışı bırak ya da tekil çarpıştırıcı silme API'si ekle.",
+   "repro": "Tutsağı serbest bırak ve hücreye gir: 0,35 m'lik görünmez engel var.",
+   "acceptance": "Serbest bırakmadan sonra hücre içinde physics.resolve oyuncuyu itmiyor.",
+   "presentIn": "v03_ve_v04",
+   "knownAs": "02 B15 (açık; 11'de yok)",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "G-13",
+   "title": "Ada yapılarında çarpıştırıcı kutuları görselden küçük (colK 0,6–0,9): oyuncu duvarlara gömülebiliyor",
+   "file": "js/world/islands.js",
+   "func": "islands._place (490-503) ve kurucular (_port 558/567/570/578, _camp 686, _market 905)",
+   "rootCause": "Kutunun yarı boyutu model kutusu × colK: kasaba halkasında 0,78, değirmen ve kulede 0,6, kuyu ve çadırda 0,7.",
+   "impact": "Oyuncu ve kamera bazı yapıların 0,1–1 m içine girebiliyor.",
+   "priority": "dusuk",
+   "fix": "colK değerlerini yapı bazında gözden geçir (kapı ve geçitler dar kalmasın); gerekirse yapı başına birden çok kutu kullan.",
+   "repro": "Tuz Pazarı'nda değirmen ya da kule duvarına doğru yürü.",
+   "acceptance": "Her kasaba yapısında oyuncu kapsülü görsel duvarın en çok 0,15 m içine giriyor.",
+   "presentIn": "v03_ve_v04",
+   "knownAs": "11 #43 (Açık, düşük)",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "G-14",
+   "title": "Büyük adalarda bitki örtüsü 7 000 örnek sınırı nedeniyle seyreliyor (Kadim Tapınak'ta istenen yoğunluğun %26'sı)",
+   "file": "js/world/islands.js",
+   "func": "islands._vegetation (445)",
+   "rootCause": "Örnek sayısı n = min(7000, alan/34·çarpan); büyük adalarda tavan devreye giriyor.",
+   "impact": "'Orman içinde devasa tapınak' adası (r 480) seyrek kalıyor. Node hesabı: Timsah Bataklığı %59, Ateş Dağı %65, Buzdişi ve Korsan Mezarlığı %74, Kızıl Kanyon %81.",
+   "priority": "dusuk",
+   "fix": "Tavanı hücre başına bütçeye çevir (ör. 160 m'lik hücre başına sabit sayı) ya da uzak hücreler için düşük ayrıntılı örnek kullan. Zaman dilimli kurulum kare bütçesini zaten koruyor.",
+   "repro": "Node hesabı: istenen = π·r²·ex·ez/34·çarpan; kadim_tapinak için 26 611 → 7 000.",
+   "acceptance": "Aynı biyomda büyük adaların m² başına örnek yoğunluğu küçük adalarınkiyle ±%20 içinde; 13_donma P01 bütçesi korunuyor.",
+   "presentIn": "v03_ve_v04",
+   "knownAs": "Kayıtlı değil",
+   "confidence": "kesin"
+  },
+  {
+   "id": "G-15",
+   "title": "Ada açıklamaları ve özellik bayrakları oyunda karşılıksız (Mercan Halkası 'batık sandıklarla dolu', Gizli Pazar 'yalnızca geceleri kurulan', Gümüş Madeni 'ocakların derinliği', mini/undead bayrakları)",
+   "file": "js/world/archipelago.js",
+   "func": "UNIQUE tanımları (52, 56-58, 66-68, 146-149) ve POI_ICON (292)",
+   "rootCause": "Açıklamalar tasarım niyetini anlatıyor ama kurucular bunları uygulamıyor. Mercan Halkası'nda batık sandık yok, yalnız harabe var. Pazarın çadırları, fenerleri ve alıcısı her saatte duruyor (islands.js:900-911); yalnız kaçakçı diyaloğu saate bakıyor (quests.js:448-452). Maden girişi kapalı bir cephe (islands.js:876-889). `mini: true` ve `undead: true` bayrakları hiçbir yerde okunmuyor. Fener POI'si 'peak' simgesiyle gösteriliyor.",
+   "impact": "Oyuncunun beklentisi ile içerik uyuşmuyor; harita ve keşif bilgisi güvenilmez hale geliyor.",
+   "priority": "dusuk",
+   "fix": "Ya içeriği ekle (lagün batıkları, gece kurulan pazar, maden içi) ya da açıklamaları gerçeğe göre düzelt. Kullanılmayan bayrakları uygula ya da kaldır; fener için ayrı bir simge kullan.",
+   "repro": "Mercan Halkası'nda dal: batık sandık yok. Gizli Pazar'a öğlen git: çadırlar ve 'Sorgusuz Alıcı' hazır bekliyor.",
+   "acceptance": "Her özel ada açıklamasındaki somut öğe oyunda bulunuyor (kontrol listesi); mini/undead bayrakları kodda kullanılıyor ya da kaldırılmış.",
+   "presentIn": "v03_ve_v04",
+   "knownAs": "Kayıtlı değil",
+   "confidence": "kesin"
+  }
+ ],
+ "userClaims": [
+  {
+   "claim": "Mevcut özel bölgeler: batık şehir, terk edilmiş maden, korsan mezarlığı, kadim tapınak, gizli korsan pazarı, hapishane, deniz feneri, yıkık korsan kasabası (genel iddia)",
+   "v03": "kismen",
+   "v04": "kismen",
+   "evidence": "Sekizi de iki sürümde aynı tanımlarla kodda var (archipelago.js:46-163; tests/node/archipelago_sabit.mjs v0.3 özelliklerinin birebir aynı olduğunu doğruluyor). Gerçek oynanış amacı ise zayıf ya da bozuk: fenerin amacı yok, maden kapalı cephe, tapınak sunağı erişilemez, hapishane ödülü sömürülebilir; pazar, mezarlık, kasaba ve batık şehir genel 'sandık + düşman' şablonu. Hiçbirinin özel bölgeyi sınayan bir testi yok."
+  },
+  {
+   "claim": "Batık şehir kodda var ve gerçek oynanış amacı var",
+   "v03": "kismen",
+   "v04": "kismen",
+   "evidence": "batik_sehir (archipelago.js:113-117, 319-320) ve _sunken (islands.js:1025-1038; v0.3'te aynı): −11 m'de 26 rastgele kalıntı ve 4 sandık (1'i zengin). Amaç yalnız dalış ganimeti; düşman, bulmaca, oda ve geçit yok. v0.3'te sandıklar kayda yazılmıyordu (02 B02), v0.4'te yazılıyor. Test yok."
+  },
+  {
+   "claim": "Terk edilmiş maden kodda var ve gerçek oynanış amacı var",
+   "v03": "kismen",
+   "v04": "kismen",
+   "evidence": "gumus_madeni ve obsidyen (archipelago.js:130-133, 146-149); _mine (islands.js:870-897). Maden dış cephe; giriş siyah düzlem. v0.3'te girişin çarpıştırıcısı yoktu, içinden geçilince ekran kararıyordu; v0.4'te giriş kutuyla kapatıldı (876-889). Dışarıda iskelet ya da haydut grubu, 1 sandık, fıçılar ve kaya tuzağı var (hazards.js:118-129). Ocak içi yok; `undead` bayrağı kullanılmıyor."
+  },
+  {
+   "claim": "Korsan mezarlığı kodda var ve gerçek oynanış amacı var",
+   "v03": "kismen",
+   "v04": "kismen",
+   "evidence": "korsan_mezarligi'nde 2 mezarlık var (archipelago.js:157-163; islands.js:755-785): gündüz iskeletler, gece hayaletler ve Hayalet Kaptan, 2 zengin sandık. Amaç savaş ve ganimet; mahzene girilemiyor, görev ya da hikâye bağı yok, test yok."
+  },
+  {
+   "claim": "Kadim tapınak kodda var ve gerçek oynanış amacı var",
+   "v03": "kismen",
+   "v04": "kismen",
+   "evidence": "kadim_tapinak (archipelago.js:100-107; islands.js:788-867): levye bulmacası, kapı ve Taş Muhafız (bosses.js:1088). v0.3'te bulmaca yeniden kurulumda bozuluyordu (02 T05/B-08); v0.4'te düzeltildi (13_donma P08 GEÇTİ). Sunak sandığı iki sürümde de erişilemez (G-03). Tapınak tek katlı."
+  },
+  {
+   "claim": "Gizli korsan pazarı kodda var ve gerçek oynanış amacı var",
+   "v03": "kismen",
+   "v04": "kismen",
+   "evidence": "gizli_pazar (archipelago.js:55-59; islands.js:900-911): 5 çadır, fenerler, kaçakçı ve 'Sorgusuz Alıcı'. Kaçakçı yalnız 20:00–05:00 arasında satış yapıyor (quests.js:448-452; usta silahlar, harita, gemleri ×1,25 alıyor). Fiziksel pazar ise her saatte duruyor; 'gizli' bir erişim koşulu yok. 13_donma P02 yalnız kurulumu sınıyor."
+  },
+  {
+   "claim": "Hapishane kodda var ve gerçek oynanış amacı var",
+   "v03": "kismen",
+   "v04": "kismen",
+   "evidence": "demirkapi (archipelago.js:140-144; islands.js:932-970): 5 gardiyan ve 3 tutsak (+120 altın, +80 XP). Ödül iki sürümde de E basılı tutularak sınırsız alınabiliyor (G-01). v0.3'te durum kayda da yazılmıyordu (B02). Konukta gardiyan denetimi atlanıyor (G-02). Test yok."
+  },
+  {
+   "claim": "Deniz feneri kodda var ve gerçek oynanış amacı var",
+   "v03": "kismen",
+   "v04": "kismen",
+   "evidence": "fener_kayasi (archipelago.js:60-64; islands.js:973-998) var: dönen hüzme, lamba ışığı ve çarpıştırıcı. Etkileşim, ödül, düşman ya da görev yok; haritada 'peak' simgesiyle görünüyor. Bölge var ama oynanış amacı yok."
+  },
+  {
+   "claim": "Yıkık korsan kasabası kodda var ve gerçek oynanış amacı var",
+   "v03": "kismen",
+   "v04": "kismen",
+   "evidence": "korsan_kasabasi (archipelago.js:46-54): yıkık kasaba (islands.js:914-929, 1 sandık), haydut kampı (4 düşman), kale (3 düşman, kaptan dahil), fıçılar ve kaya tuzağı. Sandık eylemi 16 T08'de sınanıyor. Kalede sandık yok, `mini` bayrağı okunmuyor; hikâye ya da görev yok."
+  }
+ ],
+ "docClaims": [
+  {
+   "doc": "docs/02_DUNYA_HARITASI_PLANI.md §2.1",
+   "claim": "Toplam 73 ada: 6 çekirdek + 67 yeni (23 el ile tasarlanmış özel, 44 yordamsal), sabit tohumla her oyunda aynı",
+   "verdict": "dogru",
+   "evidence": "Node envanteri: TOPLAM 73 (core 6, uniq 23, auto 44); archipelago_sabit.mjs bu denetimde GEÇTİ."
+  },
+  {
+   "doc": "docs/02_DUNYA_HARITASI_PLANI.md §2.1",
+   "claim": "6 liman, 62 ilgi noktası, 123 kazı noktası, 14 batık, 81 balıkçılık bölgesi",
+   "verdict": "kismen",
+   "evidence": "Node: 6 liman, 123 kazı ve 81 balık bölgesi doğru. POI sayısı 84, batık kaydı 28: v0.4 otomatik özellikleri +22 POI ve +14 batık ekledi (archipelago_sabit 'added'). Belge v0.3 değerlerinde kalmış."
+  },
+  {
+   "doc": "docs/02_DUNYA_HARITASI_PLANI.md §2.2",
+   "claim": "Her bölgenin kendi atmosferi vardır (sky.js): sis rengi/yoğunluğu, ışık tonu, buzulda kar, volkanda kül, Hayalet Denizleri'nde yeşil sis",
+   "verdict": "kismen",
+   "evidence": "sky.js:284, 356-383'te buzul, volkan, çöl ve hayalet için atmosfer var. Zümrüt bölgesinin ağırlığı (RW.tropik, 183) hiçbir yerde kullanılmıyor; merkez bölge varsayılan değerlerde."
+  },
+  {
+   "doc": "docs/02_DUNYA_HARITASI_PLANI.md §2.3",
+   "claim": "Ada içeriği yaklaşınca kurulur, uzaklaşınca boşaltılır; karede en fazla bir ada; kurma 750 m, boşaltma 1 150 m",
+   "verdict": "kismen",
+   "evidence": "islands.js:27'de BUILD_D 750 ve DROP_D 1150 doğru. v0.4'te kurulum tek bir arka plan işi olarak kare başına 3 ms'lik dilimlerle yapılıyor (31, 291-304); 'karede en fazla bir ada' anlatımı eski."
+  },
+  {
+   "doc": "docs/03_ADA_VE_BIYOM_TASARIMI.md §3.4",
+   "claim": "23 özel adanın bölge, biçim, yarıçap, yükseklik ve içerik tablosu",
+   "verdict": "dogru",
+   "evidence": "archipelago.js:39-177 ile Node envanteri birebir örtüşüyor."
+  },
+  {
+   "doc": "docs/03_ADA_VE_BIYOM_TASARIMI.md §3.5",
+   "claim": "Yordamsal adalar olasılığa bağlı içerik alır (haydut kampı, harabe/mezarlık, karaya oturmuş gemi), 1–3 kazı noktası ve balık bölgesi",
+   "verdict": "kismen",
+   "evidence": "Node: 44 adacıkta hiç mezarlık yok (yalnız batık 26, harabe 17, kamp 6). 1–3 kazı noktası (archipelago.js:331) ve balık bölgesi (348) doğru."
+  },
+  {
+   "doc": "docs/03_ADA_VE_BIYOM_TASARIMI.md §3.6",
+   "claim": "Özellik sayıları: harabe 14, karaya oturmuş gemi 12, haydut kampı 11, …",
+   "verdict": "yanlis",
+   "evidence": "v0.4 Node sayımı: harabe 22, karaya oturmuş gemi 26, kamp 11. Tablo v0.3 değerlerinde kalmış, Aşama 7'den sonra güncellenmemiş."
+  },
+  {
+   "doc": "docs/03_ADA_VE_BIYOM_TASARIMI.md §3.7",
+   "claim": "Harabelerin yaklaşık %60'ında basınç plakası bulmacası",
+   "verdict": "kismen",
+   "evidence": "hazards.js:130 hash<6 kuralına göre 22 harabenin 14'ü aday (%64). Gerçek yerleşim 10 denemelik düz alan aramasına bağlı (432-448) ve hiçbir v0.4 testi bunu sınamıyor."
+  },
+  {
+   "doc": "docs/03_ADA_VE_BIYOM_TASARIMI.md §3.7",
+   "claim": "Volkan adalarında 3–5 buhar gayzeri; krater lav gölleri yakar",
+   "verdict": "kismen",
+   "evidence": "hazards.js:132-142: volkan biçimli adalarda en çok 5, r>150 olan volkan biyomlu adalarda en çok 3 gayzer. ada_volkan_1 (r 129) ve ada_volkan_4 (r 126) gayzersiz. Lav hasarı islands.js:1111-1121'de var. Test yok."
+  },
+  {
+   "doc": "docs/denetim/15_DUNYA_KESIF_TESTLERI.md §15.1 D02/D02b",
+   "claim": "Kıyı çizgisi süreksizliği giderildi; 1 mm metriği tüm 67 adada 0",
+   "verdict": "dogru",
+   "evidence": "geo.js:44-51, 71-76, 81-91. Bu denetimde D02b'nin computeHeight kopyası 67 yeni ve 6 çekirdek adada 0 süreksizlik verdi."
+  },
+  {
+   "doc": "docs/denetim/15_DUNYA_KESIF_TESTLERI.md D04 ve §15.4",
+   "claim": "Özelliksiz adacık yok; havuzdan 22 adacığa özellik eklendi (14 batık, 8 harabe); ana rastgele akış değişmedi",
+   "verdict": "dogru",
+   "evidence": "Node: 22 otomatik özellik (14 beach_wreck*, 8 ruin*); archipelago_sabit GEÇTİ."
+  },
+  {
+   "doc": "docs/denetim/15_DUNYA_KESIF_TESTLERI.md D06",
+   "claim": "Otomatik özellikler araziye uygun (22/22)",
+   "verdict": "kismen",
+   "evidence": "Metrik (10 m çevrede ≥ 1 m yükseklik) geçiyor, ama erişilebilirliği ölçmüyor. ada_col_2 harabesi kıyıdan 58° ve ≥ 3,24 m'lik dik tırmanış gerektiriyor (Node minimax) → G-09."
+  },
+  {
+   "doc": "docs/denetim/11_BILINEN_SORUNLAR.md #41",
+   "claim": "Martı Batığı sandığı (ve ada sandıkları) oturum başına bir kez açılır; kayda yazılmaz",
+   "verdict": "kismen",
+   "evidence": "Martı Batığı için doğru (seagear.js:115, 128). Ada sandıkları ise v0.4'te kaydediliyor (islands.js:253-269, game.js:176; 08_kalicilik GEÇTİ), madde bu kısmıyla bayat."
+  },
+  {
+   "doc": "docs/denetim/11_BILINEN_SORUNLAR.md #22",
+   "claim": "Otomatik adacık özellikleri yalnız şekle göre seçilir; fener/mezarlık seçilmedi",
+   "verdict": "dogru",
+   "evidence": "archipelago.js:243-262; Node'a göre otomatik özellikler yalnız beach_wreck ve ruin."
+  },
+  {
+   "doc": "docs/denetim/11_BILINEN_SORUNLAR.md #23",
+   "claim": "Yalnız ana limanda denize inen merdiven var",
+   "verdict": "dogru",
+   "evidence": "islands.js:601-673 (_pier) merdiven üretmiyor; merdiven yalnız port.js:197-217'de."
+  },
+  {
+   "doc": "docs/denetim/03_DEGISIKLIK_LISTESI.md satır 73 ve 16_SON_RAPOR.md §16.2 Aşama 6",
+   "claim": "Ada ödülleri, tutsaklar ve tapınak mekanizması kaydedilir ve yüklenir (B02/B-08 giderildi)",
+   "verdict": "kismen",
+   "evidence": "Tek oyunculu ve ev sahibi için doğru (islands.js:253-269; 08_kalicilik ve 13_donma P08 GEÇTİ). Konuğa ne aktarılıyor ne konukta kaydediliyor (net.js:510-522, main.js:193). Tutsak ödülü de oturum içinde sınırsız tekrarlanıyor (G-01, G-02)."
+  },
+  {
+   "doc": "docs/denetim/16_SON_RAPOR.md §16.8 / 02 T05",
+   "claim": "Kadim Tapınak bulmacası ada yeniden kurulunca ve kayıt yüklenince bozuluyordu — DÜZELTİLDİ",
+   "verdict": "dogru",
+   "evidence": "islands.js:33-39 (puzzleState), 830-835, 865; 13_donma P08 GEÇTİ (12. belge: 9/9)."
+  },
+  {
+   "doc": "docs/denetim/03_DEGISIKLIK_LISTESI.md satır 216",
+   "claim": "Ada madeni girişindeki kemer ve siyah düzleme kutu çarpıştırıcısı eklendi",
+   "verdict": "dogru",
+   "evidence": "islands.js:885-889'da kutu var; v0.3'te yoktu (v03 islands.js:690-695). Değişiklik statik, testi yok."
+  },
+  {
+   "doc": "docs/denetim/12_TEST_PLANI_VE_SONUCLAR.md satır 7",
+   "claim": "Mağara, tapınak, bulmaca — KISMİ: mekanizma çözümü ve kaydı sınandı, bulmaca akışı uçtan uca oynanmadı",
+   "verdict": "dogru",
+   "evidence": "P08 yalnız levye ve kayıt durumunu sınıyor. Sunak sandığına hiçbir test ulaşmıyor ve sandık fiziksel olarak erişilemez (G-03). Basınç plakası bulmacasının testi yok."
+  },
+  {
+   "doc": "docs/denetim/12_TEST_PLANI_VE_SONUCLAR.md satır 8",
+   "claim": "Hazine haritası ve kazı — GEÇTİ (v0.3), bu aşamada değişmedi",
+   "verdict": "kismen",
+   "evidence": "tests/scenarios altında startDig/resolveDig çağıran bir v0.4 kontrolü yok (v03 tmap/full/g10b betiklerinde 0 expect var). Kazı noktası verisinde 6 kazılamaz nokta var (G-04)."
+  },
+  {
+   "doc": "js/world/archipelago.js (oyun içi ada açıklamaları)",
+   "claim": "Mercan Halkası 'batık sandıklarla dolu'; Gizli Korsan Pazarı 'yalnızca geceleri kurulan'; Gümüş Madeni 'ocakların derinliğinde iskelet madenciler'",
+   "verdict": "kismen",
+   "evidence": "Mercan Halkası'nda batık sandık yok (yalnız 1 harabe). Pazarda yalnız kaçakçı diyaloğu gece kapısına bağlı (quests.js:448-452); çadırlar ve alıcı her saatte duruyor. Madende iskeletler dışarıda; ocak içi yok (islands.js:876-889)."
+  }
+ ],
+ "requirements": [
+  {
+   "req": "20×20 km dünya korunacak",
+   "status": "karsilaniyor",
+   "evidence": "worldData.js:5 WORLD_SIZE=20000; archipelago.js:7; gemi sınırı ship.js:373-379; 07_dunya_kesif 'D01 Dünya yarı boyutu 10 km' GEÇTİ (12. belge).",
+   "plan": "Korunmalı. Node determinizm testi (archipelago_sabit) her değişiklikte koşulmalı."
+  },
+  {
+   "req": "Altı biyom korunacak",
+   "status": "karsilaniyor",
+   "evidence": "REGIONS archipelago.js:9-16; biyomlar tropik/cangıl/buzul/volkan/çöl/hayalet; geo.js PAL:192-198; islands.js VEG:145-204. Node: tropik 18, cangıl 13, buzul 12, volkan 10, çöl 11, hayalet 9 ada.",
+   "plan": "Korunmalı. Zümrüt bölgesine atmosfer eklenmeli (G-10)."
+  },
+  {
+   "req": "Ada yapısı korunacak (73 ada; konum, şekil ve tohum deterministik)",
+   "status": "karsilaniyor",
+   "evidence": "tests/node/archipelago_sabit.mjs bu denetimde GEÇTİ (67 ada birebir); 12. belge GEÇTİ.",
+   "plan": "Kazı noktası taşıma gibi düzeltmeler kimlikleri korumalı; fixture bilinçli olarak güncellenmeli."
+  },
+  {
+   "req": "Her ada: farklı siluet",
+   "status": "kismen",
+   "evidence": "7 şekil profili var (geo.js:52-95) ve her adanın r/h/hill/coast/seed değerleri farklı. Ancak 44 adacık 7 şablondan türüyor (Node: normal 19, atol 7, spire 7, volkan 5, bataklık 4, glacier 1, mesa 1); ex/ez/rot yalnız Kızıl Kanyon'da kullanılıyor.",
+   "plan": "Tüm adalarda ex/ez/rot ve 'terrace' parametreleri çeşitlendirilmeli; alt profiller eklenmeli (çoklu tepe, kanyon yarığı, doğal kemer, kayalık burun)."
+  },
+  {
+   "req": "Her ada: kıyı yapısı",
+   "status": "kismen",
+   "evidence": "beachW yalnız iki değer alıyor: 0,6 ve 1,5 (geo.js:53-54). coast gürültüsü (archipelago.js:224) ve deniz kayalıkları (islands.js:1058-1079) var. Kıyı sürekliliği D02/D02b GEÇTİ.",
+   "plan": "Kıyı tipi parametresi eklenmeli (uçurum, kayalık, kumsal, mangrov, buz) ve profil ile süs buna göre kurulmalı."
+  },
+  {
+   "req": "Her ada: arazi yüksekliği",
+   "status": "karsilaniyor",
+   "evidence": "Yükseklik 6–165 m (Node); şekle göre profil var (geo.js:58-95).",
+   "plan": "Yüksek arazide erişilebilirlik testi (G-09) ve zirve içeriği eklenmeli."
+  },
+  {
+   "req": "Her ada: bitki örtüsü",
+   "status": "kismen",
+   "evidence": "Biyom başına tek VEG tablosu var (islands.js:145-204), adaya özgü karışım yok. Büyük adalarda 7 000 örnek sınırı uygulanıyor (445; G-14). Mercan ve yosun yalnız çekirdek adalarda (details.js:9; G-11).",
+   "plan": "Ada tohumuna bağlı ağırlık sapması ve alt-biyom kümeleri (palmiye korusu, çam ormanı, kaktüs vadisi) eklenmeli; hücre başına bütçe kullanılmalı; yeni adalara mercan/yosun konmalı."
+  },
+  {
+   "req": "Her ada: düşman grupları",
+   "status": "kismen",
+   "evidence": "39 grup var, ama yalnız haydut, iskelet ve hayalet aileleri (archipelago.js:230-237, 51-176). Yeni adaların 31/67'sinde hiç grup yok (Node).",
+   "plan": "Bölgeye özgü düşman varyantları (buz korsanı, kül tarikatı, kum haydutu), devriye ve pusu grupları eklenmeli; batık adacıklara bekçi konmalı."
+  },
+  {
+   "req": "Her ada: gizli alan",
+   "status": "kismen",
+   "evidence": "Yalnız 14 harabede kafesli gizli sandık adayı (hazards.js:130, 429-506) ve tapınak iç avlusu var. Gizli oda, geçit ya da mağara yok.",
+   "plan": "Her adaya en az bir gizli alan eklenmeli (kırılabilir çatlak duvar, şelale arkası, kum altı kapak, gelgitle açılan mağara) ve bir keşif bayrağı tanımlanmalı."
+  },
+  {
+   "req": "Her ada: özel keşif",
+   "status": "kismen",
+   "evidence": "POI keşfi +25 XP veriyor (quests.js:261-272, progress.js:79); keşif sisi var. Adaya özgü keşif içeriği yok; keşfin testi yok.",
+   "plan": "Her adaya bir 'keşif kartı' (lore yazıtı, manzara noktası, koleksiyon parçası) ve defter girdisi eklenmeli; keşif testi yazılmalı."
+  },
+  {
+   "req": "Her ada: bulmaca/görev",
+   "status": "kismen",
+   "evidence": "14 basınç plakası adayı, 1 tapınak ve 1 gelgit kazısı var; yeni adaların 53/67'sinde hiç bulmaca yok (Node). Ana hikâye 5. aşamada bitiyor ('yitik', quests.js:30); 8 yan görev şablonunun hepsi çekirdek bölgede (quests.js:33-42).",
+   "plan": "Bölge görev zincirleri ve adaya özgü bulmaca türleri (levye, ağırlık, gelgit, ışık yansıtma, şifre) eklenmeli; özel bölgeler hikâyeye bağlanmalı."
+  },
+  {
+   "req": "Her ada: değerli ganimet",
+   "status": "kismen",
+   "evidence": "58 sabit sandık ve 123 kazı noktası var. Yeni adaların 17/67'sinde sabit sandık yok (5 liman, 6 kamp, 2 boss kayalığı, pazar, fener, hapishane, Ateş Dağı). Tapınak sunağı erişilemez (G-03); 6 kazı noktası kazılamaz (G-04).",
+   "plan": "Her adaya erişilebilir en az bir sabit ödül konmalı; erişilebilirlik ve kazılabilirlik için Node testi yazılmalı."
+  },
+  {
+   "req": "Her ada: bölgeye özgü atmosfer",
+   "status": "kismen",
+   "evidence": "sky.js:270-383: buzulda kar/sis/deniz tonu, volkanda kül, çölde toz, hayalette yeşil sis; müzik game.js:405-410. Zümrüt bölgesinde yok (G-10); ada düzeyinde fark yok.",
+   "plan": "Tropik nem ve pus eklenmeli; özel adalara ses ve ışık profili verilmeli (mezarlıkta çan, volkanda gürleme)."
+  },
+  {
+   "req": "Tekrar hissi (aynı yapı/mağara/kamp) azaltılmalı",
+   "status": "yok",
+   "evidence": "22 aynı harabe, 26 aynı batık, 11 aynı kamp, 5 aynı liman (islands.js:716/1001/676/544); 6 tür ipucu nesnesi ve tek cümle kalıbı; tek mağara (G-06, 11 #22).",
+   "plan": "Şablon varyantları, bölgeye özgü kitler, arazi farkında yeni özellik türleri ve limana özgü yerleşimler eklenmeli (G-06)."
+  },
+  {
+   "req": "Özel bölge — batık şehir gerçek oynanış amacına sahip olmalı",
+   "status": "kismen",
+   "evidence": "islands.js:1025-1038: 26 rastgele kalıntı ve 4 sandık (−11 m). Düşman, bulmaca ve oda yok; test yok.",
+   "plan": "Şehir planı (sokak, meydan, tapınak), hava cebi odaları, su altı geçitleri, mühür bulmacası ve bekçiler eklenmeli; dalış senaryo testi yazılmalı."
+  },
+  {
+   "req": "Özel bölge — terk edilmiş maden gerçek oynanış amacına sahip olmalı",
+   "status": "kismen",
+   "evidence": "islands.js:870-897: kapalı cephe (876-889); dışarıda grup, sandık ve hazard var. `undead` bayrağı okunmuyor.",
+   "plan": "Girilebilir galeri (tünel ağı, maden arabası rayı, cevher damarı, gizli oda) yapılmalı; içeride iskelet madenciler ve 'ocak derinliği' görevi olmalı."
+  },
+  {
+   "req": "Özel bölge — korsan mezarlığı gerçek oynanış amacına sahip olmalı",
+   "status": "kismen",
+   "evidence": "islands.js:755-785: gündüz/gece grupları, Hayalet Kaptan ve zengin sandık var. Mahzene girilemiyor, görev yok, test yok.",
+   "plan": "Mahzen içi (çok odalı), gece olayı ya da mini boss ve hikâye bağı eklenmeli; test yazılmalı."
+  },
+  {
+   "req": "Özel bölge — kadim tapınak gerçek oynanış amacına sahip olmalı",
+   "status": "kismen",
+   "evidence": "Levye bulmacası, kapı ve Taş Muhafız var (P08 GEÇTİ); sunak sandığı erişilemez (G-03); tek kat.",
+   "plan": "Sunak basamakları eklenmeli, iç odalar ve kat(lar) yapılmalı; bulmacadan sunağa kadar uçtan uca test yazılmalı."
+  },
+  {
+   "req": "Özel bölge — gizli korsan pazarı gerçek oynanış amacına sahip olmalı",
+   "status": "kismen",
+   "evidence": "islands.js:900-911: çadırlar her saatte duruyor; kaçakçı yalnız gece satıyor (quests.js:448-452). Gizlilik koşulu yok.",
+   "plan": "Pazar gece kurulmalı (görünürlük saate bağlı), erişim parolası ya da haritası olmalı; kaçak mal görevleri eklenmeli."
+  },
+  {
+   "req": "Özel bölge — hapishane gerçek oynanış amacına sahip olmalı",
+   "status": "kismen",
+   "evidence": "islands.js:932-970: tutsak ödülü var ama sınırsız tekrarlanıyor (G-01); konukta gardiyan denetimi yok (G-02).",
+   "plan": "Ödül tek seferlik ve ev sahibi otoriteli olmalı; kurtarılan tutsak tayfaya katılmalı ya da görev vermeli; hücre anahtarı bulmacası eklenmeli."
+  },
+  {
+   "req": "Özel bölge — deniz feneri gerçek oynanış amacına sahip olmalı",
+   "status": "yok",
+   "evidence": "islands.js:973-998: yalnız dekor; etkileşim ve ödül yok.",
+   "plan": "Feneri yakma görevi (yakıt ve mekanizma), gece seyrinde kıyı/kaya uyarısı ve korsan pususu, kule tepesinde sandık ve gözetleme noktası (harita açma) eklenmeli."
+  },
+  {
+   "req": "Özel bölge — yıkık korsan kasabası gerçek oynanış amacına sahip olmalı",
+   "status": "kismen",
+   "evidence": "islands.js:914-929 + kamp + kale: sandık (16 T08 GEÇTİ), düşmanlar ve hazard var. Kalede sandık yok, görev yok.",
+   "plan": "Eski korsan başkenti hikâyesine bağlı görev zinciri, kale kaptanı ödülü ve yıkık hanın içi eklenmeli."
+  },
+  {
+   "req": "Dikey keşif — dağ zirveleri",
+   "status": "kismen",
+   "evidence": "Yüksek arazi var (Ateş Dağı 165 m kraterinde lav ve boss; Buzdişi 105 m; mesa basamakları). Zirvede içerik yok; tırmanma yalnız gemi merdiveninde (player.js:971).",
+   "plan": "Zirve noktaları (gözetleme ve harita açma, sandık) ve tırmanılabilir kaya yolları ya da halat noktaları eklenmeli."
+  },
+  {
+   "req": "Dikey keşif — mağaralar",
+   "status": "kismen",
+   "evidence": "Yalnız Yankı Mağarası var (cave.js; worldData.js:75-83).",
+   "plan": "Genel mağara üreteci (tünel + oda, adaya göre tohumlu) yazılmalı; her bölgeye en az bir mağara konmalı."
+  },
+  {
+   "req": "Dikey keşif — yeraltı gölleri",
+   "status": "yok",
+   "evidence": "Kodda yeraltı su hacmi yok.",
+   "plan": "Mağara üretecine su dolu oda eklenmeli (yüzme ve dalış ile)."
+  },
+  {
+   "req": "Dikey keşif — batık gemi odaları",
+   "status": "yok",
+   "evidence": "Martı Batığı (props.js:446-487) ve 26 karaya oturmuş gemi tek parça gövde.",
+   "plan": "Girilebilir gövde (ambar ve kaptan köşkü), hava cebi ve sandık odası yapılmalı."
+  },
+  {
+   "req": "Dikey keşif — su altı geçitleri",
+   "status": "yok",
+   "evidence": "Su altı içeriği yalnız Batık Şehir saçılması ve Martı Batığı sandığından oluşuyor.",
+   "plan": "Mağara ile deniz arasında ya da batık şehirde nefes yönetimi gerektiren tüneller eklenmeli."
+  },
+  {
+   "req": "Dikey keşif — gizli madenler",
+   "status": "yok",
+   "evidence": "Maden girişleri kapalı cephe (islands.js:876-889).",
+   "plan": "Girilebilir maden galerisi ve gizli damar odası yapılmalı."
+  },
+  {
+   "req": "Dikey keşif — tapınak katları",
+   "status": "yok",
+   "evidence": "Kadim Tapınak tek avlu ve erişilemeyen sunaktan oluşuyor (islands.js:795-825).",
+   "plan": "Tapınak altına bir kat ve sunak üstüne bir tören katı eklenmeli; katlar arası basamak ve platformlar kurulmalı."
+  }
+ ]
+}

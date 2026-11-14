@@ -1,0 +1,647 @@
+{
+ "area": "A — Açılış ve arazi işçisi",
+ "summary": "v0.4'te arazi işçisi hattı gerçekten yeniden yazılmış. terrainGen.js'deki ortak üreteç tile/depth/grid işlerini işçide ve ana iş parçacığında aynı veri sözleşmesiyle üretiyor. Yerel karo sonucu gerçek ağ kuruyor, her işin zaman aşımı ve yeniden denemesi var, prepare() 45 sn üst sınırla her durumda sonuçlanıyor. Bu denetimde tarayıcı testi koşulmadı; Node'da sahte Worker ile hata enjeksiyonu yapıldı (kurucu hatası, 404, hazır sinyali yok, yanıt yok, görev sırasında tek ya da tüm işçilerin çökmesi). Her durumda açılış hazırlığı 0,4–20,4 sn'de 125 karo ağı, derinlik penceresi ve harita ızgarasıyla bitti; aynı koşullarda v0.3 kuyruğu 12–15 sn sonra hâlâ asılı kaldı ve hiç ağ üretmedi. Kullanıcının üç kod iddiası v0.3 için doğru; v0.4'te ilk ikisi yanlış, üçüncüsü yalnız çağrı zinciri olarak doğru (tamamlanmama yok). Açık kalan başlıca riskler: harita ızgarası reddi initMapBase→boot zincirinde yakalanmadığı için oyunun açılmaması, tekrarlanan işçi hatasında işin yerel yedeğe devredilmemesi, modül yükleme hatası için genel hata yakalayıcı olmaması ve hızlı yolculuk işleyicisinin hiç test edilmemiş ve yeniden girişe açık olması. Depoda izlenen kök tek dosya hâlâ v0.3 derlemesi (md5 aynı); güncel derleme yalnız .gitignore'daki dist/ altında. Yedek kipte dilim süresini üreteç parça boyutu belirliyor (sıcak ölçümde ~14–27 ms); açık denizde 300 m dışındaki derin karolar ~3,2 km'ye kadar sahnede kalıyor. Zorunlu test listesinden kurucu hatası, askıda işçi, hızlı yolculuk, LOD yarışı ve karo yaşam döngüsü senaryoları depoda yok.",
+ "systems": [
+  {
+   "name": "Arazi işçi havuzu ve iş kuyruğu (_initWorkers, _pump, _onMsg, _workerFailed)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "js/world/terrain.js:57-149. Testler: 00_acilis.js:9 (workers ≥1), 02_arazi_yedek.js normal/crash/badurl kipleri, 02_arazi_kurtarma.js:10 'Öksüz iş yok'. Geçiş kaydı: 12. belge Aşama 9 (satır 39-41) ve son tur (satır 248-249). Node: /tmp/denetim_alan/sim_fault.mjs C1/C2 sonucu öksüz iş 0, 125 ağ.",
+   "note": "Uç durumlar: MAX_TRIES'ta iş yerele devredilmiyor (A-05), geç iletide hayalet yuva kalıyor (A-09), ölen işçi yeniden başlatılmıyor (A-15)."
+  },
+  {
+   "name": "Ana iş parçacığı yedeği (_localPump/_localSlice, iki şerit, MessageChannel dilimleri)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "js/world/terrain.js:30-35, 150-187. Testler: 02_arazi_yedek ?terrain=noworker/badurl/crash, 02_arazi_kurtarma.js:13 (12. belge). Node /tmp/denetim_alan/sim_noworker.mjs: 125 ağ ve 1024² ızgara üretildi.",
+   "note": "Dilim süresini bütçe değil üreteç parça boyutu belirliyor (A-06); şeritteki iş iptal edilemiyor, 176. satır ölü kod (A-08)."
+  },
+  {
+   "name": "Ortak üretim çekirdeği (terrainGen.js: tileGen/depthGen/gridGen/generate/runAll)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "js/world/terrainGen.js:11-123. İşçi ve yedek aynı kodu çalıştırıyor (terrainWorker.js:3,10; terrain.js:4,172). 02_arazi_yedek adım 6/7/12/17 dört kipte geçti (12. belge Aşama 9). Node: rectMayHaveLand için 14 361 deniz karosunda yanlış negatif 0.",
+   "note": "Ayrı birim/sözleşme testi yok; yield aralıkları kaba (A-06)."
+  },
+  {
+   "name": "İşçi betiği protokolü (terrainWorker.js: ready, error, test-crash)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "js/world/terrainWorker.js:5-16. ?terrain=crash koşusu 12. belgede kayıtlı (Aşama 9, 12/12).",
+   "note": "—"
+  },
+  {
+   "name": "Zaman aşımı, hazır sinyali ve yeniden deneme (JOB_TIMEOUT, READY_TIMEOUT, MAX_TRIES)",
+   "status": "dogrulanmamis",
+   "evidence": "js/world/terrain.js:27-29, 75, 97, 144. Depo testlerinde bu yolların hiçbiri tetiklenmiyor. Node /tmp/denetim_alan/sim_fault2.mjs C10/C11 (8,5 ve 20,4 sn'de yedeğe geçiş) ve sim_fault.mjs C6 (3 denemede red) davranışı doğruladı.",
+   "note": "A-05, A-11."
+  },
+  {
+   "name": "Karo akışı ve LOD (update, _wantSeg, _requestTile, _apply, _drop)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "js/world/terrain.js:258-362. Testler: 00_acilis.js:8, 02_arazi_yedek.js:6,12,16. Node /tmp/denetim_alan/sim_traverse.mjs: 1 612 geometri oluştu, 1 408 dispose edildi, canlı 204 = karo sayısı, sahipsiz ağ 0. Node C7 (LOD yarışı) ve C8 (silinen karo) geçti.",
+   "note": "Derin karolar ~3,2 km'ye kadar sahnede kalıyor, LOD histerezisi yok (A-07)."
+  },
+  {
+   "name": "Bölge hazırlığı ve odak koruması (prepare, focus)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "js/world/terrain.js:286-306, 366-385. Testler: 02_arazi_yedek.js:13-16, 02_arazi_kurtarma.js:8 (12. belge).",
+   "note": "Örtüşen iki prepare'de odak süresi kısalıyor (A-12); zaman aşımı çağırana bildirilmiyor (A-11)."
+  },
+  {
+   "name": "Okyanus derinlik penceresi (requestDepth, _depthSeq, odak bastırma; ocean.setDepth)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "js/world/terrain.js:388-407; js/world/ocean.js:245, 256-273. Testler: 02_arazi_yedek.js:7 ve 14, dört kipte.",
+   "note": "Eski pencere işleri iptal edilmiyor (A-08)."
+  },
+  {
+   "name": "Harita ızgarası ve dünya haritası tabanı (requestGrid önbelleği, initMapBase)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "js/world/terrain.js:410-419; js/ui/mapArt.js:115-150; js/main.js:109. Test: 02_arazi_yedek.js:17.",
+   "note": "Red durumunda açılış düşüyor (A-02); ham ızgara önbelleği gereksiz bellek tutuyor (A-13)."
+  },
+  {
+   "name": "Fizik yükseklik sorgusu (heightAt/normalAt, ağ üçgenlemesiyle tutarlı)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "js/world/terrain.js:422-448 (köşegen b–d, 435-437). Testler: 02_arazi_yedek.js:11 ve 18, 02_tek_dosya.js:9.",
+   "note": "Izgara yalnız hires karoda kullanılıyor; diğer karolarda analitik yükseklik dönüyor (orta mesafede çizilen ağla küçük fark olası)."
+  },
+  {
+   "name": "Tek dosya derlemesi ve işçi adresi dönüşümü (tools/build-single-html.mjs)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "tools/build-single-html.mjs:16-28, 100-103. 02_tek_dosya 4/4 file:// (12. belge satır 59; 16. belge satır 235). dist/ içinde import.meta 0 kez; gömülü işçi 31,6 KB IIFE.",
+   "note": "Depodaki kök dosya bayat v0.3 derlemesi (A-01); 'null' kökenli bağlamlar ve Chromium dışı tarayıcılar sınanmadı (A-16)."
+  },
+  {
+   "name": "Açılış dizisi (index.html + main.js boot)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "index.html:20-28, 82-83; js/main.js:81-154, 388-392. 00_acilis 6/6 (12. belge son tur).",
+   "note": "Genel hata yakalayıcı yok (A-04); harita ızgarası açılışın zorunlu adımı (A-02)."
+  },
+  {
+   "name": "Dünya kurulumu (game.buildWorld)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "js/game/game.js:40-69 (46 ve 66: localBudget 40→10; 51: prepare). Testler: 00_acilis, 02_arazi_yedek.js:4, dört kip.",
+   "note": "localBudget initMapBase'ten önce 10'a dönüyor; yedek kipte dünya ızgarası daha yavaş üretiliyor."
+  },
+  {
+   "name": "Ana menü sahnesi (setupMenuScene, menuUpdate)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "js/game/game.js:72-98. Testler: 00_acilis.js:3-4, 02_arazi_yedek.js:6.",
+   "note": "—"
+  },
+  {
+   "name": "Yeni oyun (handlers.startGame → game.start)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "js/main.js:157-167; js/game/game.js:101-150. Test: 00_acilis.js:5-8.",
+   "note": "prepare beklemesi sırasında durum tutarsızlığı ve geri bildirim eksikliği var (A-10)."
+  },
+  {
+   "name": "Kayıt yükleme (game.start + kayıt verisi)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "js/game/game.js:112-141. Testler: 08_kalicilik 12/12, 12_kayit_dongusu 4/4 (12. belge).",
+   "note": "Uzak adada kayıt, sayfa yenilendikten sonra yükleme ve yedek kipte yükleme sınanmadı."
+  },
+  {
+   "name": "Hızlı yolculuk (G.on('fastTravel'))",
+   "status": "dogrulanmamis",
+   "evidence": "js/main.js:270-301; js/game/quests.js:439. Hiçbir test bu olayı tetiklemiyor (tests/ altında 'fastTravel' geçmiyor).",
+   "note": "Yeniden giriş ve durum denetimi eksik (A-03); E-01 çapa düzeltmesi (289) kodda mevcut."
+  },
+  {
+   "name": "Konuk ışınlanması (net 'teleport')",
+   "status": "dogrulanmamis",
+   "evidence": "js/net/net.js:544-552. tests/ altında 'teleport' geçmiyor.",
+   "note": "Bayat oyuncu nesnesini yakalıyor ve durumu denetlemiyor (A-03)."
+  },
+  {
+   "name": "Yeniden doğma sonrası bölge hazırlığı (handlers.respawn)",
+   "status": "eksik",
+   "evidence": "js/main.js:226-241: terrain.prepare çağrısı yok. 16_kosu_poz_ganimet.js:42 yalnız ev limanında respawn('port') çağırıyor.",
+   "note": "A-14."
+  },
+  {
+   "name": "Arazi test kipleri (?terrain=noworker|crash|badurl, killWorkers, stats)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "js/world/terrain.js:47, 58-63, 189, 248-249, 458-462.",
+   "note": "ctorthrow/noready/hang kipleri yok; badurl kipi file:// altında (data: URL) etkisiz (A-17)."
+  },
+  {
+   "name": "GitHub Pages yayınında tek dosya derleme adımı",
+   "status": "dogrulanmamis",
+   "evidence": ".github/workflows/pages.yml: esbuild@0.24.2 ile node tools/build-single-html.mjs DenizKorsanlari-SonHazine.html; yalnız main/master/claude/hopeful-cray-o1jw6w dallarında çalışıyor. Bu denetimde çalıştırılmadı.",
+   "note": "Canlı sürüm v0.3 (11 #42)."
+  }
+ ],
+ "issues": [
+  {
+   "id": "A-01",
+   "title": "Depoda izlenen kök tek dosya (DenizKorsanlari-SonHazine.html) hâlâ v0.3 derlemesi: arazi yedeği ve v0.4 düzeltmeleri yok",
+   "file": "DenizKorsanlari-SonHazine.html (depo kökü); README.md:15-17; tests/README.md:33-35; tools/build-single-html.mjs",
+   "func": "tek dosya derlemesi (prelude __DK_WORKER_URL) / gömülü v0.3 terrain._localJob",
+   "rootCause": "v0.4 dalında araç ve kod değişti ama depodaki kök dosya yeniden derlenmedi. md5'i (42d9e9bb1387883fb57307ee087d27ab) v0.3 deposundaki dosyayla aynı. İçinde v0.3 yedeği (`local:!0,maxH:Math.max(...s)` = _localJob) ve yalnız log yazan onerror var. Güncel derleme yalnız .gitignore'daki dist/ altında. README ve tests/README bu kök dosyayı gösteriyor.",
+   "impact": "Depodan indirip çevrimdışı oynayan v0.3 davranışını alır. Chromium'da file:// altında klasik blob işçisi çalıştığı için normalde açılır (01 belgesi satır 43 koşusu). İşçinin kurulamadığı ya da yüklenemediği her ortamda ise (blob işçisini reddeden köken, eski tarayıcı) yükleme %53'te sonsuza dek kalır (B-01/B-02). v0.4'ün diğer düzeltmeleri de bu dosyada yok. tests/README'ye göre koşulan tek dosya testi bayat dosyayı sınar. Pages iş akışı yayında dosyayı yeniden derlediği için yalnız depo kopyası etkilenir.",
+   "priority": "orta",
+   "fix": "Kök dosyayı güncel araçla yeniden derleyip işle; ya da depodan kaldırıp README ve tests/README'yi Pages/dist çıktısına yönlendir. Dosyaya derleme kimliği (commit) göm. CI'a bir denetim adımı ekle: derlenen dosyada `local:!0` olmamalı, `location.protocol === 'file:'` dalı bulunmalı. README'deki 'Bu sürüm: 0.3' satırını güncelle.",
+   "repro": "md5sum /home/user/SON-HAZ-NE-w2/DenizKorsanlari-SonHazine.html /home/user/SON-HAZ-NE-v03/DenizKorsanlari-SonHazine.html → aynı. grep -o 'local:!0[^}]*' kök dosya → v0.3 _localJob çıkar. dist/ dosyasında 'hazır sinyali gelmedi' ve uNearFade var, kökte yok. İşçi kurulamayan ortam için Node eşdeğeri: /tmp/denetim_alan/sim_v03.mjs → 15 sn sonra prepare/requestGrid sonuçlanmadı, 125 karonun hiçbirinde ağ yok.",
+   "acceptance": "Kök dosyanın md5'i v0.3'ten farklı; içinde `local:!0` yok, `location.protocol === 'file:'` dalı var. 02_tek_dosya.js kök dosyaya karşı file:// ile 4/4 geçer. Aynı dosya ?terrain=noworker ile yükleme ekranını geçer.",
+   "presentIn": "yalniz_v04",
+   "confidence": "kesin",
+   "knownAs": "11 #42 (yayın v0.3); 04 §4.2c (araç düzeltildi, kök dosya yeniden derlenmedi)"
+  },
+  {
+   "id": "A-02",
+   "title": "Harita ızgarası isteği reddedilirse açılış düşüyor: initMapBase ve boot hatayı yakalamıyor",
+   "file": "js/main.js:109, 388-392; js/ui/mapArt.js:115-122; js/world/terrain.js:410-419",
+   "func": "boot / initMapBase / terrain.requestGrid",
+   "rootCause": "requestGrid hatayı önbellekten silip yeniden fırlatır (terrain.js:415). initMapBase (mapArt.js:117) ve boot (main.js:109) try/catch içermez; boot().catch (388-392) yükleme ekranına 'Oyun başlatılamadı … WebGL…' yazar. Red iki yoldan gelebilir: (1) işçinin {t:'error'} iletisi (terrain.js:108); (2) ızgara işini alan işçilerin üst üste 3 kez ölmesi (MAX_TRIES, terrain.js:97). İkinci yolda yerel yedek o anda devrede olsa bile denenmez.",
+   "impact": "İsteğe bağlı bir özellik (dünya haritası tabanı) tüm oyunun açılmasını engeller; oyuncu yanıltıcı bir WebGL mesajı görür. Bugün bilinen kalıcı bir tetikleyici yok, olasılık düşük. Ancak gridGen/biomeAt'e eklenecek tek bir hata ya da bellek kısıtlı cihazda işçi ölümleri açılışı kilitler.",
+   "priority": "orta",
+   "fix": "initMapBase'i try/catch ile sar: hata olursa geçici parşömenle devam et, arka planda yerel yedekte yeniden dene. MAX_TRIES'ta işi reddetmek yerine yerel şeride devret (A-05). boot().catch mesajını hata türüne göre ayır.",
+   "repro": "Node /tmp/denetim_alan/sim_fault.mjs: C5'te işçi ızgaraya {t:'error'} döner → 'RED: sahte üretim hatası'. C6'da ızgara işini alan her işçi çöker → 3 işçi ölür, fallback=true iken 'Arazi işi grid tekrarlanan işçi hatası' reddi gelir. Tarayıcıda: gridGen başına geçici throw koyup sayfayı aç → 'Oyun başlatılamadı'.",
+   "acceptance": "gridGen hata verdiğinde ya da her işçi ızgara işinde öldüğünde window.__ready=true olur ve menü açılır. Dünya haritası önce geçici parşömenle görünür, yerel üretim bitince dolar.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin"
+  },
+  {
+   "id": "A-03",
+   "title": "Hızlı yolculuk işleyicisi test edilmemiş; yeniden girişe ve bekleme sırasındaki durum değişimine korumasız",
+   "file": "js/main.js:270-301; js/net/net.js:544-552; js/game/quests.js:439",
+   "func": "G.on('fastTravel') / net mesaj işleyicisi case 'teleport'",
+   "rootCause": "Ücret 278. satırda peşin düşülür. 1,2 sn bekleme ve await terrain.prepare(…, {radius: 450}) (en çok 45 sn) boyunca oyun ve girdi sürer; meşgul bayrağı yoktur. Devam kodu G.state, G.player === p, G.ship === s, s.sunk ve p.dead değerlerini yeniden denetlemez. prepare zaman aşımı (terrain.js:380) çağırana bildirilmez. Konuk tarafındaki 'teleport' işleyicisi de bayat p'yi yakalar ve durumu denetlemez.",
+   "impact": "Bekleme sırasında rota kaptanıyla yeniden konuşan oyuncu ikinci kez ücret öder ve art arda iki kez taşınır. Bekleme sırasında menüye dönülürse menü gemisi uzak limana demirlenir, zaman ve günlük değişir; kayıtta altın düşmüş ama oyuncu yerinde kalır. Normal kipte pencere ~1,5 sn, yedek kipte onlarca saniye. Akışın kendisi (taşıma, derinlik, karolar) hiçbir testte sınanmıyor.",
+   "priority": "orta",
+   "fix": "travelBusy bayrağı ekle; bekleme boyunca G.uiOpen ya da girdi kilidi uygula. Ücreti varışta düş ya da iptalde iade et. Devamda oturum belirteci ile G.state, G.player, G.ship, s.sunk ve p.dead denetimi yap. prepare'in 'timeout' sonucunu oyuncuya bildir. Konuk işleyicisine de aynı denetimleri ekle.",
+   "repro": "Kırlangıç Limanı'nda rota kaptanıyla konuş → hedef seç → kararma sürerken E ile yeniden konuş → ikinci hedefi seç: altın iki kez düşer, gemi önce birinci sonra ikinci limana taşınır. ?terrain=noworker ile hedef seç, bekleme sırasında Esc → Ana menüye dön: menü arka planındaki gemi uzak limanda demirli görünür.",
+   "acceptance": "Yeni senaryo 18_hizli_yolculuk.js normal ve noworker kipinde geçer: G.emit('fastTravel') sonrası gemi ve oyuncu hedefte, gemi hızı < 1 m/s, derinlik penceresi hedefte, hedefte ≥ 6 karo ağı. Bekleme sırasında gelen ikinci emit yok sayılır ve altın bir kez düşer. Bekleme sırasında toMenu yapılırsa devam kodu hiçbir şeyi değiştirmez ve ücret iade edilir.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "A-04",
+   "title": "Açılışta genel hata yakalayıcı yok: modül grafiği yüklenemezse yükleme ekranı sonsuza dek 'Rüzgâr bekleniyor…' yazar",
+   "file": "index.html:10-12, 20-28, 82-83; js/main.js:388-392",
+   "func": "index.html betik yükleme / boot().catch",
+   "rootCause": "Tek giriş noktası `<script type=module src=js/main.js>`. Import map desteklemeyen tarayıcıda (Safari < 16.4, Firefox < 108) ya da bir modül 404/sözdizimi hatası verdiğinde boot() hiç çalışmaz, catch de kurulmaz. index.html'de klasik window.onerror/unhandledrejection dinleyicisi ya da __ready zaman aşımı denetimi yok. Ayrıca boot().catch mesajı her hatayı WebGL eksikliğine bağlıyor.",
+   "impact": "Desteklenmeyen ya da eski tarayıcıda, eksik dağıtımda oyuncu nedenini bilmeden sonsuza dek yükleme ekranında kalır.",
+   "priority": "orta",
+   "fix": "head içine küçük klasik bir betik ekle: error/unhandledrejection dinleyicisi #load-text'e açıklayıcı mesaj yazsın. HTMLScriptElement.supports?.('importmap') ile destek denetimi yapıp tek dosya sürümüne yönlendir. 30–60 sn içinde window.__ready gelmezse uyarı göster. boot().catch mesajını hata türüne göre ayır.",
+   "repro": "index.html'den import map'i kaldır (ya da js/core/util.js'i geçici olarak yeniden adlandır) ve sayfayı aç: konsolda modül çözümleme hatası çıkar, ekran sonsuza dek 'Rüzgâr bekleniyor…' gösterir.",
+   "acceptance": "Aynı bozuk koşullarda en geç 5 sn içinde yükleme ekranında anlaşılır bir hata ve çözüm önerisi görünür. Normal açılış etkilenmez (00_acilis 6/6).",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "A-05",
+   "title": "Tekrarlanan işçi hatasında iş yerel yedeğe devredilmiyor; kalıcı hatada geri çekilme yok",
+   "file": "js/world/terrain.js:95-100, 108, 333, 404",
+   "func": "_workerFailed / _onMsg / _requestTile.catch / requestDepth.catch",
+   "rootCause": "MAX_TRIES (3) dolunca iş, yerel şerit denenmeden reddedilir (97). İşçinin {t:'error'} iletisi doğrudan red olur (108). Karo reddi pending'i 0 yapar ve aynı karo 12 karede bir yeniden istenir. Derinlik reddi _depthPending'i null yapar ve ocean.update her karede yeniden ister. Her redde failures dizisi sınırsız büyür ve console.error yazılır.",
+   "impact": "Bir işte işçiyi öldüren ya da hata veren durumda karo kalıcı delik kalır; sürekli yeniden istek ve konsol seli oluşur. Izgarada bu durum A-02 üzerinden açılışı düşürür.",
+   "priority": "dusuk",
+   "fix": "MAX_TRIES'ta işi 'yerel' işaretiyle kuyruğa geri koy ve şeritte üret. Kalıcı hatada karo başına üstel geri çekilme (ör. 1→30 sn) ve bozuk karo işareti uygula. failures dizisini son 50 kayıtla sınırla.",
+   "repro": "Node /tmp/denetim_alan/sim_fault.mjs C6: ızgara işini alan her sahte işçi çöker → workers 0 ve fallback true olur, ama requestGrid 'tekrarlanan işçi hatası' ile reddedilir.",
+   "acceptance": "Aynı denemede ızgara yerel yedekte üretilir. Kalıcı hatalı bir karo için istek sıklığı ≤ 1/30 sn ve failures.length ≤ 50 olur.",
+   "presentIn": "yalniz_v04",
+   "confidence": "kesin"
+  },
+  {
+   "id": "A-06",
+   "title": "Yedek kipte dilim süresini bütçe değil üreteç parça boyutu belirliyor",
+   "file": "js/world/terrainGen.js:25, 47, 93, 108; js/world/terrain.js:160-187",
+   "func": "depthGen / gridGen / tileGen / _localSlice",
+   "rootCause": "Bütçe yalnız yield noktalarında denetlenir (terrain.js:181). depthGen 32 satırda bir yield eder (512×32 = 16 384 yükseklik); gridGen 16 satırda bir yield eder (1024² için 16 384 yükseklik+biyom). Bu yüzden bir dilim = bütçe + en az bir bölünmez parça.",
+   "impact": "İşçi yokken ya da çöktüğünde kamera ~520 m ilerleyip derinlik penceresi yenilenince ve harita ayrıntı karoları üretilirken kare süresi bütçeyi aşar. Node ölçümü (hızlı CPU, sıcak): derinlik parçası en çok ~14 ms (soğukta 38 ms), 1024² ızgara parçası ~27 ms, seg-80 karo parçası ~8 ms; dilim en çok 51 ms (40 ms bütçe) ve ~20 ms (10 ms bütçe). Yavaş cihazda süreler 3–5 kat uzar.",
+   "priority": "dusuk",
+   "fix": "Zaman tabanlı yield kullan (ör. her 1024 noktada performance.now denetimi) ya da satır başına yield et. Derinlik penceresini parça parça kaydır.",
+   "repro": "Node: /tmp/denetim_alan/depth_bench.mjs ve /tmp/denetim_alan/sim_noworker.mjs (Worker yok) yukarıdaki parça ve dilim sürelerini verir.",
+   "acceptance": "Yedek kipte 8 km'lik dolaşımda en uzun yerel dilim ≤ bütçe + 4 ms (Node ve tarayıcı ölçümü).",
+   "presentIn": "yalniz_v04",
+   "confidence": "yuksek",
+   "knownAs": "11 #10 ('dilim 10–20 ms' ifadesi parça süresini hesaba katmıyor)"
+  },
+  {
+   "id": "A-07",
+   "title": "Derin deniz karoları 300 m dışında ~3,2 km'ye kadar sahnede kalıyor; LOD eşiklerinde histerezis yok",
+   "file": "js/world/terrain.js:19-25, 258-265, 285, 315-319",
+   "func": "update / _wantSeg",
+   "rootCause": "Kara içermeyen karo yalnız DEEP_VIEW (300 m) içinde istenir, ama düşürme eşiği genel halka yarıçapıdır (R + 2·TILE ≈ 3 180 m). LOD eşikleri tek değerden oluşur (380/950/1750/2700 × lodScale); giriş ve çıkış eşiği arasında fark yok.",
+   "impact": "Açık denizde seyirde, su yüzeyinin altında görünmeyen onlarca–yüzlerce seg-8 karo ağı ayrı çizim çağrısı olarak sahnede kalır. LOD sınırında gidip gelen kamerada 80↔32 arasında yeniden üretim ve görsel atlama olur.",
+   "priority": "dusuk",
+   "fix": "Derin karolar için ayrı düşürme eşiği kullan (ör. DEEP_VIEW + 200 m). LOD eşiklerine %10–15 histerezis bandı ekle: yükseltme hemen, düşürme gecikmeli.",
+   "repro": "Node /tmp/denetim_alan/sim_traverse.mjs (yedek kip; kamera z=-6200'de x 0→8000, sonra kuzeye): örnek noktalarda 600 m ötesinde 76–142 derin seg-8 karo, toplam karo en çok 239.",
+   "acceptance": "Aynı dolaşımda 600 m ötesinde derin karo sayısı ≤ 10. LOD sınırında ±20 m salınımda yeniden üretim olmaz.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "02 öneri listesi: 'LOD histerezis bandı ve deniz karosu düşürme' (numarasız)"
+  },
+  {
+   "id": "A-08",
+   "title": "İptal yalnız kuyruktaki karo işlerinde çalışıyor; işçideki, şeritteki ve eski derinlik işleri boşa hesaplanıyor",
+   "file": "js/world/terrain.js:95-98, 129-132, 176, 398-404",
+   "func": "_cancel / _localSlice / _workerFailed / requestDepth",
+   "rootCause": "_cancel yalnız _queue'daki işi çözer; işçideki ya da yerel şeritteki iş tamamlanana dek sürer. 176. satırdaki 'iptal edildi' denetimi hiç tetiklenmez, çünkü şeritteki iş _jobs'tan silinmez (ölü kod). Yeni zorunlu derinlik isteği eskisini iptal etmez; _depthSeq yalnız sonucu yok sayar. Ölen işçiden geri kuyruğa alınan işler, karo hâlâ var mı diye bakılmadan yeniden üretilir. Kapanan haritanın ızgara işleri de iptal edilmez.",
+   "impact": "Özellikle yedek kipte ana iş parçacığında boşa üretim olur (ör. ışınlanmada eski 512² derinlik penceresi ~0,1–0,2 sn) ve kuyruk gecikir. İşçi kipinde kapasite israf edilir.",
+   "priority": "dusuk",
+   "fix": "İşlere cancelled bayrağı ekle; _cancel şeritteki işi de sonlandırsın. requestDepth yeni zorunlu istekte eski derinlik işini iptal etsin. _workerFailed işleri geri kuyruklarken karo işlerinde t.req eşleşmesini denetlesin.",
+   "repro": "Node /tmp/denetim_alan/sim_lane.mjs: seg-80 karo işi yerel şeritteyken _drop çağrıldı → iş _jobs'ta kaldı ve sonuna kadar üretildi (441 ms duvar süresi), sonuç atıldı.",
+   "acceptance": "Şeritteki iş, _drop'tan sonraki ilk dilimde sonlanır (_jobs küçülür). Işınlanmada yalnız son derinlik işi hesaplanır (Node sayaç testi).",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin"
+  },
+  {
+   "id": "A-09",
+   "title": "Sonlandırılmış işçinin geç iletisi yeni işçide hayalet iş yuvası bırakabilir",
+   "file": "js/world/terrain.js:103-116",
+   "func": "_onMsg / _finish",
+   "rootCause": "_onMsg işi _jobs'ta bulamazsa rec.jobs.delete yapmadan döner (106). _finish de işi bulunduğu işçinin rec.jobs kümesinden silmez. Ölen işçinin yanıtı terminate'ten sonra teslim edilirse iş ilk yanıtla biter; yeni işçideki kopya yuvayı kalıcı doldurur. Zamanlayıcısı da temizlendiği için durum fark edilmez.",
+   "impact": "Etkilenen işçi kalıcı olarak daha az iş alır ya da hiç almaz (paralellik düşer); bu durum teşhis edilemez.",
+   "priority": "dusuk",
+   "fix": "_onMsg başında koşulsuz rec.jobs.delete(m.id) çağır; _finish içinde job.rec?.jobs.delete(job.id) ekle. Kuyruk değişmezi testi ekle: her işçinin jobs anahtarları _jobs içinde bulunmalı.",
+   "repro": "Node /tmp/denetim_alan/sim_fault.mjs C9 (sahte işçi terminate'ten sonra da ileti teslim eder): işçi 1'de 2 hayalet yuva kalır ve işçi 1 bir daha iş almaz.",
+   "acceptance": "Aynı denemede hayalet yuva 0. Değişmez testi tüm 02 senaryolarında 0 verir.",
+   "presentIn": "yalniz_v04",
+   "confidence": "orta"
+  },
+  {
+   "id": "A-10",
+   "title": "Oyun başlatma ve kayıt yüklemede prepare beklemesi sırasında G.state 'playing' ama oyuncu yok; geri bildirim yok",
+   "file": "js/game/game.js:101-125; js/main.js:121, 157-167",
+   "func": "game.start / handlers.startGame",
+   "rootCause": "G.state='playing' (103), prepare beklemesinden (124) önce atanır; G.player ancak 125. satırda kurulur. Bu sürede game.update erken döner, ekran son menü karesinde donar ve yükleme göstergesi yoktur. Esc ile duraklatma menüsü açılabilir. 'Ana menüye dön' seçilirse start() kaldığı yerden devam eder: oyuncuyu kurar, HUD'u menünün üstünde açar ve işaretçiyi kilitler.",
+   "impact": "Uzak adada kayıt yüklemede ya da yedek kipte saniyelerce (en çok 45 sn) donmuş ekran görülür; nadiren menü ve HUD tutarsız kalır.",
+   "priority": "dusuk",
+   "fix": "prepare süresince yükleme katmanı göster ve G.state='loading' kullan. start()'a oturum belirteci ekle, devamda iptal denetimi yap. Duraklatma menüsü için G.player şartı koy.",
+   "repro": "?terrain=noworker ile uzak bir adada kaydedilmiş oyunu yükle; bekleme sırasında Esc → Ana menüye dön: bir süre sonra HUD menünün üstünde açılır.",
+   "acceptance": "Bekleme süresince yükleme katmanı görünür ve Esc duraklatma açmaz. İptal edilen start hiçbir durumu değiştirmez.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "A-11",
+   "title": "Sessiz ya da askıda işçi açılışı 8–20 sn geciktiriyor; prepare zaman aşımını bildirmiyor",
+   "file": "js/world/terrain.js:27-28, 75, 144, 379-382",
+   "func": "_initWorkers (readyTimer) / _pump (job.timer) / prepare",
+   "rootCause": "Hazır sinyali göndermeyen işçi 8 sn (READY_TIMEOUT), hazır olup yanıt vermeyen işçi ise karo işi için 20 sn sonra devre dışı kalır. İşler hazır olmayan işçilere de gönderilir. prepare'in 'timeout' sonucu atılır, çağıranlar (buildWorld, start, fastTravel) bundan haberdar olmaz ve kullanıcıya bilgi verilmez.",
+   "impact": "Kalıcı takılma yok, ama yükleme ekranı 'Arazi örülüyor…' metninde 8–20 sn hareketsiz kalır.",
+   "priority": "dusuk",
+   "fix": "İlk iş için kısa bir gözetim süresi kullan (3–5 sn). Hazır olmayan işçi varken yerel şeridi paralel başlat. prepare dönüş değerini ('ok'/'timeout') ilet ve yükleme metnine yansıt.",
+   "repro": "Node /tmp/denetim_alan/sim_fault2.mjs: C10'da (hazır sinyali yok) prepare 8 517 ms, C11'de (yanıt yok) 20 434 ms sürdü; ikisi de sonunda 125 ağ üretti.",
+   "acceptance": "Aynı denemelerde açılış hazırlığı ≤ normal süre + 5 sn; yükleme metni gecikmenin nedenini gösterir.",
+   "presentIn": "yalniz_v04",
+   "confidence": "kesin",
+   "knownAs": "11 #3 ile ilişkili"
+  },
+  {
+   "id": "A-12",
+   "title": "Örtüşen iki prepare çağrısında, biten eski çağrı yeni odağın süresini 12 sn'ye kısaltıyor",
+   "file": "js/world/terrain.js:366-385, 393-395",
+   "func": "prepare",
+   "rootCause": "Odak tek bir alanda tutulur (this.focus). Her prepare sonunda `if (this.focus) this.focus.until = now + 12000` çalışır; o anda this.focus başka bir prepare'e ait olabilir.",
+   "impact": "Yedek kipte ya da yavaş cihazda üst üste iki hazırlıkta (konuk 'teleport' + start, art arda iki hızlı yolculuk) ikinci hedefin odağı erken düşer. Kamera uzaktaysa hedef karolar düşürülür ve prepare erken biter. Odak kalkınca kameranın derinlik isteği _depthSeq'i artırır, hedef penceresi uygulanmaz.",
+   "priority": "dusuk",
+   "fix": "const F = this.focus = {...} kullan; sonda yalnız `if (this.focus === F)` ise güncelle (ya da odak listesi tut).",
+   "repro": "Node /tmp/denetim_alan/sim_extra.mjs E1: prepare(A) ve hemen ardından prepare(B, uzak) başlatıldı. A bitince B'nin odağında 90 sn yerine yalnız 12 sn kaldı.",
+   "acceptance": "Aynı denemede B'nin odağı B bitene dek korunur; B'nin hedef karoları ve derinlik penceresi uygulanır.",
+   "presentIn": "yalniz_v04",
+   "confidence": "kesin"
+  },
+  {
+   "id": "A-13",
+   "title": "requestGrid önbelleği çözülmüş ham ızgaraları gereksiz yere tutuyor (~35 MB'a kadar)",
+   "file": "js/world/terrain.js:410-419; js/ui/mapArt.js:115-150",
+   "func": "requestGrid / initMapBase / mapDetail",
+   "rootCause": "Önbellek, çözülmüş sözleri (Float32 yükseklik + Uint8 biyom) 24 kayda kadar saklar. mapArt aynı veriyi boyanmış tuval olarak zaten önbelleğe alıyor (detail ≤ 28, baseCache).",
+   "impact": "512² ayrıntı karosu başına ~1,25 MB, 1024² dünya ızgarası ~5 MB: toplamda en çok ~35 MB gereksiz bellek. Sınırlı; sızıntı değil.",
+   "priority": "dusuk",
+   "fix": "Önbellekte yalnız bekleyen sözleri tut, çözülünce sil; ya da yalnız küçük ızgaraları sakla.",
+   "repro": "Haritada 25'ten fazla ayrıntı karosu gez: DK.terrain._gridCache.size 24 olur ve her kayıt çözülmüş dizileri tutar.",
+   "acceptance": "Aynı gezintiden sonra çözülmüş ızgara tutan önbellek kaydı ≤ 2; JS yığını farkı ≤ 5 MB.",
+   "presentIn": "yalniz_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "A-14",
+   "title": "Yeniden doğmada uzak limana ya da gemiye arazi hazırlığı yapılmıyor",
+   "file": "js/main.js:226-241",
+   "func": "handlers.respawn",
+   "rootCause": "Oyuncu en yakın keşfedilmiş limana (km'lerce uzakta olabilir) ya da uzaktaki gemiye doğrudan konur. terrain.prepare çağrılmaz; yükseklik analitik fonksiyondan alınır.",
+   "impact": "Uyanınca kısa süre karo ağları ve derinlik penceresi eksik ya da kaba görünür. Ada içeriği 250 m içinde eşzamanlı kurulduğu için tek uzun bir kare oluşur.",
+   "priority": "dusuk",
+   "fix": "respawn'ı async yap; kararma altında await terrain.prepare(sx, sz, {radius: 400}) çağır.",
+   "repro": "Uzak bir adada öl, 'Kırlangıç Limanı'nda uyan'ı seç: ilk karelerde çevre karoları ve derinlik yüklenmemiş olur.",
+   "acceptance": "Uzak ölümden sonra uyanışın ilk karesinde oyuncu çevresinde ≥ 6 karo ağı ve hedefte derinlik penceresi bulunur.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "A-15",
+   "title": "Kısmi işçi kurulum hatasında yanlış yedek işareti; ölen işçiler hiç yeniden başlatılmıyor",
+   "file": "js/world/terrain.js:64-83, 85-101",
+   "func": "_initWorkers / _setFallback / _workerFailed",
+   "rootCause": "Döngüde i>0 olan işçinin kurucusu hata verirse önceki işçi canlı kalır, ama fallback=true olur ve 'ana iş parçacığına alındı' uyarısı yazılır. Ölen işçiler oturum boyunca yeniden kurulmaz.",
+   "impact": "İstatistik ve teşhis yanlış olur. Tek bir geçici hata (iş zaman aşımı) oturum boyunca kalıcı kapasite kaybı ya da tam yedek kip (ana iş parçacığında üretim, A-06 takılmaları) demektir.",
+   "priority": "dusuk",
+   "fix": "Kısmi kurulumda fallback yerine yalnız uyarı ver. Ölen işçi için sınırlı sayıda (ör. 2) gecikmeli yeniden başlatma ekle.",
+   "repro": "Node /tmp/denetim_alan/sim_extra.mjs E2: ikinci kurucu hata verdi → workers 1 ama fallback true.",
+   "acceptance": "Aynı denemede fallback=false ve 1 işçi çalışır; geçici hatadan sonra 30 sn içinde işçi sayısı geri gelir.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "02 öneri listesi: 'Kısmi işçi kurulum hatasında temizlik' (v0.3 biçimi)"
+  },
+  {
+   "id": "A-16",
+   "title": "Tek dosyada işçi adresi seçimi yalnız file: protokolüne bakıyor; diğer 'null' kökenli bağlamlar ve Chromium dışı tarayıcılar sınanmadı",
+   "file": "tools/build-single-html.mjs:100-103",
+   "func": "prelude (__DK_WORKER_URL)",
+   "rootCause": "data: URL yalnız location.protocol === 'file:' iken seçilir. Kökeni 'null' olan bağlamlarda (sandbox'lı iframe, ör. oyun portalı gömmeleri; content:// görüntüleyiciler) modül tipli blob: işçisi büyük olasılıkla reddedilir. 02_tek_dosya yalnız Chromium'da koşuldu.",
+   "impact": "Bu ortamlarda oyun açılır, ama tüm arazi ana iş parçacığında üretilir (A-06 takılmaları).",
+   "priority": "dusuk",
+   "fix": "Koşulu `self.origin === 'null' || location.protocol === 'file:'` yap. blob ile kurulum hata verirse data: ile ikinci kez dene. Firefox ve Safari'de file:// tek dosya testi ekle.",
+   "repro": "Tek dosyayı `<iframe sandbox=allow-scripts>` içinde aç; DK.terrain.workers.length ve failures değerlerine bak.",
+   "acceptance": "Sandbox'lı iframe ve Firefox file:// koşullarında 02_tek_dosya 4/4 geçer, en az 1 işçi çalışır.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "orta"
+  },
+  {
+   "id": "A-17",
+   "title": "Faz 1 zorunlu testlerinin bir kısmı depoda yok; badurl kipi file:// altında etkisiz; tests/out raporları eski",
+   "file": "tests/scenarios/02_arazi_yedek.js, 02_arazi_kurtarma.js, 02_tek_dosya.js; js/world/terrain.js:47, 58-63; tests/out/02_*.json; tests/README.md:33-35",
+   "func": "terrain._workerUrl / test kipleri",
+   "rootCause": "Şu durumlar için senaryo yok: kurucu hatası, sessiz işçi (hazır yok), askıda işçi (iş zaman aşımı), MAX_TRIES, LOD yarışı, silinen karonun geç sonucu, karo yaşam döngüsü sayaçları ve hızlı yolculuk. 'badurl' kipi data: URL'ye '#missing' ekler; parça yok sayıldığı için işçi yine yüklenir (Node: URL hash '#missing', gövde bozulmadan okunuyor). tests/out/02_*.json 903abe2 öncesi bir ara sürüme ait (1–4 başarısızlık, eski etiketler). tests/README tek dosya testini bayat kök dosyayla tarif ediyor.",
+   "impact": "Hata yolları gerilemeye karşı korumasız; eski raporlar ve README yanıltıcı.",
+   "priority": "dusuk",
+   "fix": "?terrain=ctorthrow|noready|hang kiplerini ekle. Sahte Worker'lı bir Node kuyruk testini (bu denetimdeki /tmp/denetim_alan/sim_fault*.mjs benzeri) CI'a koy. 18_hizli_yolculuk ve karo yaşam döngüsü senaryolarını yaz. badurl'ü data: URL'de geçersiz içerikle değiştir. tests/out'u temizle ve tests/README'yi dist/'e yönlendir.",
+   "repro": "tests/ altında 'fastTravel', 'teleport', 'ctorthrow', 'noready', 'hang' geçmiyor (grep). 02_tek_dosya'yı ?terrain=badurl ile file:// altında koş: işçiler çalışmaya devam eder.",
+   "acceptance": "Yeni senaryolar ve Node testi tüm kiplerde geçer; badurl kipi file:// altında 0 işçi ile yedek kipe geçer.",
+   "presentIn": "yalniz_v04",
+   "confidence": "yuksek"
+  }
+ ],
+ "userClaims": [
+  {
+   "claim": "terrain.js içindeki _localJob() yalnızca tile görevini işliyor; depth ve grid görevleri için sonuç üretmiyor.",
+   "v03": "dogru",
+   "v04": "yanlis",
+   "evidence": "v0.3: SON-HAZ-NE-v03/js/world/terrain.js:87-98 _localJob → `const cb = this._cb.get(msg.id); this._cb.delete(msg.id); if (msg.t === 'tile') {…}`. depth/grid için geri çağrı silinir, resolve/reject edilmez; _pump (70-77) işçi yoksa her işi buraya yollar. Node /tmp/denetim_alan/sim_v03.mjs (Worker kurucusu hata): 15 sn sonra prepare ve requestGrid sonuçlanmadı, _cb boş, depthPending true, depthWin null. v0.4: _localJob yok. Yerel yol _localPump/_localSlice (SON-HAZ-NE-w2/js/world/terrain.js:153-187) her işi terrainGen.generate ile üretir (terrainGen.js:113-118: tile/depth/grid; bilinmeyen tür hata verir). Node /tmp/denetim_alan/sim_noworker.mjs: 125/125 ağ, derinlik penceresi ve 1024² ızgara (471 ms) üretildi."
+  },
+  {
+   "claim": "Yerel tile sonucu yalnızca yükseklik verisi döndürüyor ve _apply() içindeki if (m.local) return; kontrolü nedeniyle arazi mesh'i oluşturulmuyor.",
+   "v03": "dogru",
+   "v04": "yanlis",
+   "evidence": "v0.3: terrain.js:91-95 yerel sonuç `{t, key, seg, heights, local: true, maxH, minH}` (pos/nor/col/idx yok); _apply 229 `if (m.local) return;` yüzünden ağ kurulmaz. heights hires olmayan karolara da yazılıyor. Node sim_v03: 125 karo, 0 ağ; 110 hires olmayan karoda heights var. v0.4: yerel sonuç tileGen çıktısının kendisi (terrainGen.js:81: pos/nor/col/idx/heights/maxH/minH). _apply (terrain.js:336-355) m.local denetimi içermiyor, yalnız `!m || !m.pos` ise dönüyor. Kayıt: 02_arazi_yedek ?terrain=noworker adım 6 ve 12 (12. belge Aşama 9: 12/12×4). Node: 125/125 ağ sahnede, heights yalnız 15 hires karoda."
+  },
+  {
+   "claim": "game.buildWorld() başlangıçta terrain.prepare() çağırıyor; prepare() requestDepth() sonucunu bekliyor; İşçi bulunamadığında bu istek tamamlanmayabiliyor.",
+   "v03": "dogru",
+   "v04": "kismen",
+   "evidence": "v0.3: game.js:44 `await terrain.prepare(160, 470, {radius: 900})`; terrain.js:261-262 `jobs.push(this.requestDepth(x, z, true)); await Promise.all(jobs);` — zaman aşımı yok. İşçi kurulamazsa _localJob derinliği çözmez; işçi dosyası 404 verirse onerror (48) yalnız log yazar. Her iki durumda yükleme %53'te (0,35+0,3·0,6) sonsuza dek bekler. Node: sim_v03 (kurucu hatası) ve /tmp/denetim_alan/sim_v03_404.mjs (yükleme hatası) 12–15 sn sonra prepare'i hâlâ sonuçlanmamış gösterdi. v0.4: çağrı zinciri aynı (game.js:51; terrain.js:378'de requestDepth bekleniyor), ama tamamlanmama yok. Derinlik yerelde depthGen ile üretilir; requestDepth sözü catch ile her zaman çözülür (terrain.js:404); prepare 45 sn'lik Promise.race ile sınırlı (379-381); sessiz/askıda işçi 8/20 sn'de devre dışı kalır (75, 144). Node sim_fault/sim_fault2: kurucu hatası, 404, hazır sinyali yok ve yanıt yok durumlarında prepare 0,4–20,4 sn'de bitti. Kalan risk: ızgara reddi açılışı düşürür (A-02)."
+  }
+ ],
+ "docClaims": [
+  {
+   "doc": "docs/denetim/04_KOK_NEDENLER.md §4.1",
+   "claim": "Ortak üretici, her iş türü için yerel yol, iş zaman aşımı + yeniden deneme, hazır sinyali, hata iletisi ve tüm işçiler düşünce yedek kip; her söz ya sonuçla ya hatayla biter.",
+   "verdict": "dogru",
+   "evidence": "js/world/terrain.js:27-29, 64-187; terrainGen.js:113-118; terrainWorker.js:13-16. Node sahte Worker denemelerinde (/tmp/denetim_alan/sim_fault.mjs, sim_fault2.mjs) kurucu hatası, 404, hazır yok, yanıt yok ve tek/tüm işçi çökmesi durumlarının hepsinde sözler sonuçlandı, öksüz iş 0. Not: hatayla biten ızgara sözünü initMapBase yakalamıyor (A-02)."
+  },
+  {
+   "doc": "docs/denetim/12_TEST_PLANI_VE_SONUCLAR.md (Aşama 9, satır 39-41)",
+   "claim": "00_acilis 6/6, 02_arazi_kurtarma 7/7, 02_arazi_yedek normal/noworker/badurl/crash 12/12 × 4",
+   "verdict": "dogrulanamadi",
+   "evidence": "Bu denetimde tarayıcı testi çalıştırılmadı (kural). Senaryolardaki beklenti sayıları kayıtla tutarlı (6, 7, 12). Arazi dosyaları 463d01f'ten beri değişmediği için kayıt güncel arazi koduna uygulanır. Sonraki turlarda kip belirtilmeden yalnız '02_arazi_yedek 12/12' yazılı. tests/out/02_*.json (izlenmeyen dosyalar) 903abe2 öncesi bir ara sürüme ait ve 1–4 başarısızlık gösteriyor; son sonuçla çelişmez ama kanıt da değildir. Node eşdeğer denemeleri iddiayı destekliyor."
+  },
+  {
+   "doc": "docs/denetim/04_KOK_NEDENLER.md §4.2",
+   "claim": "update() kamera ve odak isteklerini birleştirir, bekleyen farklı LOD isteğini iptal eder; prepare() merkezi kamerada tutar; odak etkinken uzak kamera derinlik isteği bastırılır.",
+   "verdict": "dogru",
+   "evidence": "js/world/terrain.js:288-313, 323, 371, 393-395, 398-404. Node C7: yavaş gelen seg-32 yanıtı seg-80 geometrisini ezmedi. Not: örtüşen iki prepare'de odak süresi kısalıyor (A-12, Node E1)."
+  },
+  {
+   "doc": "docs/denetim/04_KOK_NEDENLER.md §4.2b",
+   "claim": "İki şeritli yerel pompa, uzun derinlik/ızgara işlerinin karo işlerini bloke etmesini önler; öksüz iş 0, kuyruk 120 → 0 (12 sn).",
+   "verdict": "dogru",
+   "evidence": "js/world/terrain.js:165-182: şeritler dönüşümlü ilerliyor. Node'da yedek kipte 1024² ızgara sürerken karolar da ilerledi; C2'de öksüz iş 0. '120 → 0 (12 sn)' ölçümü tarayıcıda yeniden yapılmadı."
+  },
+  {
+   "doc": "docs/denetim/03_DEGISIKLIK_LISTESI.md Aşama 2; docs/denetim/11_BILINEN_SORUNLAR.md #10",
+   "claim": "Ana iş parçacığı yedeği MessageChannel dilimleriyle 10/20/40 ms bütçeyle çalışır; dilim 10–20 ms.",
+   "verdict": "kismen",
+   "evidence": "Bütçe yalnız üreteç yield noktalarında denetleniyor (terrain.js:181; terrainGen.js:25, 47, 93, 108). Node (/tmp/denetim_alan/sim_noworker.mjs, depth_bench.mjs): dilim en çok 51 ms (40 ms bütçe) ve ~20 ms (10 ms bütçe). Sıcak parça süreleri: derinlik ~14 ms, 1024² ızgara ~27 ms; soğukta derinlik 38 ms. Yavaş cihazda süreler katlanır (A-06)."
+  },
+  {
+   "doc": "docs/denetim/04_KOK_NEDENLER.md §4.2c",
+   "claim": "Tek dosya sürümünde file:// altında işçiler başlamıyordu (blob:null reddi); data: URL ile düzeltildi; v0.3'te bu, yükleme ekranında sonsuz bekleme demekti.",
+   "verdict": "kismen",
+   "evidence": "Düzeltme dist/DenizKorsanlari-SonHazine.html'de mevcut (location.protocol === 'file:' → data: URL; içinde v0.4 kuyruğu) ve 02_tek_dosya 4/4 kaydı var. Ancak 'v0.3'te sonsuz bekleme' ifadesi 01 belgesindeki gerçek koşuyla çelişiyor. v0.3 aracı klasik işçi kuruyordu (v0.3 build-single-html.mjs:16, 27 `new Worker(window.__DK_WORKER_URL)`); 01_ILK_DENETIM_RAPORU.md satır 43'teki koşu (dist, file://) '3 işçi, oyun başladı, 129 arazi karosu' sonucunu kaydediyor. Reddedilen, v0.4'teki modül tipli blob işçi (terrain.js:69 type: 'module'). Tarayıcı bu denetimde çalıştırılmadı."
+  },
+  {
+   "doc": "README.md:15-17",
+   "claim": "Tek dosya (çevrimdışı): depo kökündeki DenizKorsanlari-SonHazine.html; bilgisayara kaydedip çift tıklayınca sunucusuz açılır.",
+   "verdict": "kismen",
+   "evidence": "Kök dosya v0.3 derlemesi: md5 42d9e9bb1387883fb57307ee087d27ab, v0.3 deposundakiyle aynı; içinde v0.3 _localJob'u ve yalnız log yazan onerror var. Chromium'da klasik blob işçisiyle açılıyor (01 belgesi koşusu), ama v0.4 düzeltmelerini ve işçi yedeğini içermiyor; işçinin kurulamadığı ortamda %53'te kalır. README hâlâ 'Bu sürüm: 0.3' diyor (A-01)."
+  },
+  {
+   "doc": "docs/denetim/02_HATA_LISTESI.md B-01 (önem gerekçesi)",
+   "claim": "Tek dosya sürümü işçiyi Blob URL olarak gömdüğü için 'ayrı dosya yokluğu' senaryosu geçerli değil; önem 'yüksek'.",
+   "verdict": "dogru",
+   "evidence": "v0.3 aracı klasik blob işçi kuruyor (v0.3 build-single-html.mjs:16-27) ve 01 belgesindeki file:// koşusunda 3 işçi çalıştı. v0.3'te B-01'in tetikleyicisi ortamsal (404/CSP/opak köken). 04 §4.2c'deki 'v0.3'te sonsuz bekleme' çıkarımı bu kayıtla çelişiyor."
+  },
+  {
+   "doc": "docs/denetim/12_TEST_PLANI_VE_SONUCLAR.md tablo #18",
+   "claim": "Hızlı yolculuk | 03_fizik_duzeltmeler.js (çapa sıfırlama) | GEÇTİ",
+   "verdict": "kismen",
+   "evidence": "03_fizik_duzeltmeler.js:24 yalnız gemiyi 1500 m kaydırıp çapa noktasının sıfırlanmasını sınıyor. G.emit('fastTravel') hiçbir testte yok (yalnız quests.js:439 ve main.js:270'te geçiyor); işleyicinin prepare, taşıma, ücret ve yeniden giriş davranışı sınanmadı (A-03)."
+  },
+  {
+   "doc": "docs/denetim/12_TEST_PLANI_VE_SONUCLAR.md tablo #1",
+   "claim": "Yeni oyun başlatma ve ilk 10 dakika akışı — GEÇTİ (00_acilis.js, v03/*)",
+   "verdict": "kismen",
+   "evidence": "00_acilis.js menüyü, başlatmayı, zemini, karoları ve işçi sayısını denetliyor; benzetim yalnız DK.sim(2) (satır 7). 10 dakikalık akış bu senaryoda yok; not sütunu da 'benzetimli akış' diyor."
+  },
+  {
+   "doc": "docs/denetim/11_BILINEN_SORUNLAR.md #3",
+   "claim": "Yedek kipte uzak bölge hazırlığı ağır CPU yükünde 45 s sınırına ulaşabiliyor; eksik karolar arka planda tamamlanır — Açık (orta).",
+   "verdict": "dogru",
+   "evidence": "js/world/terrain.js:379-384: 45 sn'lik yarıştan sonra prepare biter, odak 12 sn daha korunur, kuyruk sürer. 02_arazi_yedek adım 13 bu durumda da geçer (yalnız sonuçlanmayı denetler); adım 15 süreyi yalnız raporlar. Node'da (hızlı CPU) uzak prepare 0,33 sn sürdü."
+  },
+  {
+   "doc": "docs/denetim/03_DEGISIKLIK_LISTESI.md Aşama 2 (tools)",
+   "claim": "İşçi adresi ifadesi tek dosyada blob/data adresiyle değiştirilir; import.meta derlemede kalmaz.",
+   "verdict": "dogru",
+   "evidence": "tools/build-single-html.mjs:16, 24-28 (split/join ile window.__DK_WORKER_URL). dist dosyasında 'import.meta' hiç geçmiyor; gömülü işçi 31,6 KB IIFE, data: URL ~52 KB; Worker çağrısı new Worker(this._workerUrl(), {type:'module', name: …})."
+  },
+  {
+   "doc": "docs/02_DUNYA_HARITASI_PLANI.md:30",
+   "claim": "Derin deniz karoları 300 m içinde.",
+   "verdict": "kismen",
+   "evidence": "İstek 300 m içinde yapılıyor (terrain.js:25, 262), ama düşürme ~3,18 km'de (285, 315-319). Node dolaşımında 600 m ötesinde 76–142 derin karo sahnede kaldı (A-07)."
+  },
+  {
+   "doc": "docs/denetim/16_SON_RAPOR.md (tablo satır 18)",
+   "claim": "Aşama 2: işçisiz/çöken işçide takılma, hazırlık odağı LOD düşürmesi ve tek dosya sürümünde işçi sorunu giderildi — 02_* 4 kip + kurtarma + file://",
+   "verdict": "kismen",
+   "evidence": "Kod düzeltmeleri gerçek: v0.3'te asılı kalan aynı koşullar v0.4'te 0,4–20,4 sn'de bitiyor (Node). Ancak depodaki kök tek dosya düzeltmeyi içermiyor (A-01), MAX_TRIES/ızgara reddi açılışı düşürebiliyor (A-02, A-05) ve Faz 1 zorunlu testlerinin bir kısmı yok (A-17)."
+  },
+  {
+   "doc": "tests/README.md:33-35",
+   "claim": "Tek dosya sürümü testi: --url file://$PWD/DenizKorsanlari-SonHazine.html",
+   "verdict": "yanlis",
+   "evidence": "Bu yol depo kökündeki bayat v0.3 dosyasını sınıyor. Güncel derleme dist/ altında; 02_tek_dosya.js:1-2 de dist dosyasını tarif ediyor."
+  }
+ ],
+ "requirements": [
+  {
+   "req": "FAZ1-1: Yerel yedek tile, depth ve grid görevlerinin hepsini desteklemeli",
+   "status": "karsilaniyor",
+   "evidence": "terrainGen.js:113-118 generate (tile/depth/grid; bilinmeyen tür hata verir); terrain.js:165-180 iki şerit her türü alır. Test: 02_arazi_yedek ?terrain=noworker adım 6, 7, 17 (12. belge Aşama 9). Node /tmp/denetim_alan/sim_noworker.mjs: 125 ağ, derinlik penceresi, 1024² ızgara.",
+   "plan": "Sahte Worker'lı Node kuyruk testini depoya ekle; noworker kipini her regresyonda ayrı satır olarak koş."
+  },
+  {
+   "req": "FAZ1-2: Yerel tile üretimi işçiyle aynı veri sözleşmesini sağlamalı (pozisyon, normal, renk, indeks, yükseklik, min/max, geometri ve LOD)",
+   "status": "karsilaniyor",
+   "evidence": "İşçi terrainWorker.js:10'da runAll(generate(m)), yerel yol terrain.js:172-179'da aynı generate üretecini kullanıyor. Çıktı terrainGen.js:81: {t, id, key, seg, pos, nor, col, idx, heights (yalnız hires), maxH, minH}; etek 49-75, indeks türü 63; LOD bilgisi seg (terrain.js:19-24, 327).",
+   "plan": "İşçi yolu (runAll) ile dilimli yerel yolun çıktılarını bayt düzeyinde karşılaştıran Node testi ekle."
+  },
+  {
+   "req": "FAZ1-3: Yerel arazi üretildiğinde gerçek mesh oluşmalı",
+   "status": "karsilaniyor",
+   "evidence": "terrain.js:336-355 _apply: m.local denetimi yok; BufferGeometry + Mesh kurar, eski geometriyi dispose eder. Test: 02_arazi_yedek noworker adım 6 ve 12. Node: 125/125 ağ sahne grubunda.",
+   "plan": "02_arazi_kurtarma'da yedek kipte ağ sayısını kesin bir eşikle denetle."
+  },
+  {
+   "req": "FAZ1-4: İşçi başlatılamazsa oyun açılmalı",
+   "status": "karsilaniyor",
+   "evidence": "terrain.js:69-70 kurucu hatası → _setFallback; 73 onerror → _workerFailed; 75 hazır zamanlayıcısı. Test: 02_arazi_yedek noworker/badurl adım 4 'Sayfa hazır' (12. belge). Kurucu hatası yolu depo testinde yok; Node sim_fault.mjs C3: SecurityError → 472 ms'de 125 ağ ve ızgara. Not: depodaki kök tek dosya v0.3 derlemesi (A-01).",
+   "plan": "?terrain=ctorthrow kipi ve senaryosu ekle; kök tek dosyayı yeniden derle; initMapBase reddini yakala (A-02)."
+  },
+  {
+   "req": "FAZ1-5: İşçi görev sırasında çökerse bekleyen işler tespit edilmeli, sayaç düzeltilmeli, sözler sonuçlanmalı, işler yerele aktarılmalı ya da yeniden denenmeli, kuyruk kaybolmamalı",
+   "status": "kismen",
+   "evidence": "terrain.js:85-102 _workerFailed: işçiyi sonlandırır, rec.jobs'u temizler, işleri kuyruğun başına alır, işçi kalmazsa yedeğe geçer. Tetikleyiciler: onerror, onmessageerror, iş zaman aşımı, hazır zaman aşımı (73-75, 144). Test: ?terrain=crash ve 02_arazi_kurtarma 'Öksüz iş yok'. Node C1 ve C2: öksüz iş 0, 125 ağ. Eksik: MAX_TRIES'ta iş yerele devredilmeden reddediliyor (97; Node C6; A-05); geç iletide hayalet yuva kalıyor (A-09); ölen işçi yeniden başlatılmıyor (A-15).",
+   "plan": "MAX_TRIES'ta işi yerel şeride devret; _onMsg/_finish yuva temizliğini ekle; sınırlı yeniden başlatma ekle; tek işçinin çöktüğü senaryoyu yaz."
+  },
+  {
+   "req": "FAZ1-6: Hiçbir istek zaman aşımı olmadan sonsuza dek beklememeli",
+   "status": "kismen",
+   "evidence": "İşçi işlerinde JOB_TIMEOUT (karo 20, derinlik 45, ızgara 60 sn; terrain.js:27, 144), hazır sinyali 8 sn (75), prepare 45 sn'lik yarış (379-381) var. Yerel işlerde zaman aşımı yok ama her dilimde ilerliyorlar. Node C10/C11: prepare 8,5 ve 20,4 sn'de bitti. Açık: initMapBase'in ızgara beklemesinin üst sınırı yok (işçi yolunda 3×60 sn'ye kadar sürer, sonra red ve açılış düşer; A-02); prepare zaman aşımı çağırana bildirilmiyor (A-11); depo testlerinde zaman aşımı senaryosu yok.",
+   "plan": "initMapBase'e süre sınırı ve geçici parşömen; ilk iş için kısa gözetim; ?terrain=noready|hang kipleri ve senaryoları."
+  },
+  {
+   "req": "FAZ1-7: Kuyrukta iptal, öncelik, sınırlama ve hata yönetimi",
+   "status": "kismen",
+   "evidence": "Öncelik: her pompada sıralama (terrain.js:135). Sınırlama: işçi başına 2 iş (139), iki yerel şerit, ızgara önbelleği 24, harita için bekleyen ≤3. İptal yalnız kuyruktaki karo işinde (129-132); şeritteki iş iptal edilmiyor (176 ölü kod; /tmp/denetim_alan/sim_lane.mjs), eski derinlik ve ızgara işleri de iptal edilmiyor (A-08). Hata yönetimi: red sonrası geri çekilme yok, failures sınırsız (A-05).",
+   "plan": "İşe iptal bayrağı ve şerit/işçi iptali; derinlikte eski işi iptal; üstel geri çekilme; failures için halka tampon; kuyruk değişmezi testi."
+  },
+  {
+   "req": "FAZ1-8: Silinmiş karonun geç gelen sonucu bellek sızıntısı yaratmamalı",
+   "status": "karsilaniyor",
+   "evidence": "terrain.js:357-362 _drop: ağı gruptan çıkarır ve dispose eder, t.req=null yapar, karoyu haritadan siler. 330: geç sonuç t.req eşleşmezse yok sayılır; _finish (112-116) işi _jobs'tan siler. Node C8: silinen karonun geç sonucu ağ eklemedi, _jobs 0. Node uzun dolaşım (sim_traverse.mjs): 1 612 geometri oluştu, 1 408 dispose edildi, canlı 204 = karo sayısı. Depo testi yok.",
+   "plan": "Karo yaşam döngüsü senaryosu (geometri sayacı = karo sayısı) ve geç sonuç için kabul testi ekle."
+  },
+  {
+   "req": "FAZ1-9: Aynı karonun eski ve yeni LOD istekleri çakışınca eski istek yeni geometriyi ezmemeli",
+   "status": "karsilaniyor",
+   "evidence": "terrain.js:322-334: her istek kendi myReq belirtecini taşır; 330'da `t.req !== myReq` ise sonuç atılır; 312 ve 323 bekleyen farklı LOD isteğini iptal eder; 333'teki catch yalnız güncel istekte pending'i sıfırlar (B-10 giderildi). Node C7: son seg 80, indeks 40 320 (beklenen değer). Depo testi yok.",
+   "plan": "İşçi gecikmesi enjekte eden bir LOD yarışı senaryosu ekle."
+  },
+  {
+   "req": "Zorunlu test: işçi normal",
+   "status": "karsilaniyor",
+   "evidence": "00_acilis.js:9 (workers ≥1) ve 02_arazi_yedek normal kip; 12. belge son tur: 00_acilis 6/6, 02_arazi_yedek 12/12.",
+   "plan": "Kip bilgisini rapora yaz."
+  },
+  {
+   "req": "Zorunlu test: işçi devre dışı",
+   "status": "karsilaniyor",
+   "evidence": "?terrain=noworker (terrain.js:65) ile 02_arazi_yedek; 12. belge Aşama 9 '12/12 × 4'. Sonraki turlarda kip belirtilmeden yalnız '12/12' yazılı.",
+   "plan": "Her regresyonda dört kipi ayrı satır olarak kaydet."
+  },
+  {
+   "req": "Zorunlu test: işçi kurucusu hata verirken",
+   "status": "yok",
+   "evidence": "Depoda bu kip yok: noworker kurucuyu hiç çağırmaz (65), badurl ise eşzamansız yükleme hatası üretir. Yalnız bu denetimde Node ile sınandı (sim_fault.mjs C3).",
+   "plan": "?terrain=ctorthrow kipi (Worker kurucusunu hata verdiren sarmalayıcı), 02_arazi_yedek koşusu ve Node testi."
+  },
+  {
+   "req": "Zorunlu test: görev sırasında işçi hatası",
+   "status": "kismen",
+   "evidence": "?terrain=crash (terrainWorker.js:8, işçi her işte çöker) 02_arazi_yedek'te koşuluyor. 02_arazi_kurtarma'daki killWorkers yalnız _workerFailed'ı doğrudan çağırıyor, gerçek hata olayı üretmiyor. 'Bir işçi çöker, diğerleri sürer' senaryosu yok (Node C1'de sınandı).",
+   "plan": "Belirli bir işte tek işçiyi çökerten bir kip (ör. crash1) ve kuyruk değişmezi denetimi."
+  },
+  {
+   "req": "Zorunlu test: tile/depth/grid ayrı ayrı yerel üretim",
+   "status": "kismen",
+   "evidence": "noworker kipinde üçü dolaylı sınanıyor (02_arazi_yedek adım 6, 7, 17); ayrı birim ya da sözleşme testi yok. Node gen_bench.mjs ve sim_noworker.mjs üçünü ayrı ayrı üretti.",
+   "plan": "tests/node altında generate(tile|depth|grid) için ayrı sözleşme testleri (alanlar, uzunluklar, değer aralıkları)."
+  },
+  {
+   "req": "Zorunlu test: hızlı yolculuk",
+   "status": "yok",
+   "evidence": "G.emit('fastTravel') hiçbir testte yok; 12. belgedeki #18 yalnız çapa sıfırlama birim testine (03_fizik_duzeltmeler.js:24) dayanıyor.",
+   "plan": "18_hizli_yolculuk.js: normal + noworker kip, yeniden giriş ve menüye dönüş durumları (A-03)."
+  },
+  {
+   "req": "Zorunlu test: uzak adaya ışınlanma",
+   "status": "kismen",
+   "evidence": "02_arazi_yedek adım 13-18: prepare(1900, 950) ve uzak adada yürüme, dört kipte. 13_donma ve v03/* prepare + konum değişimi yapıyor. Gerçek ışınlanma akışları (fastTravel, konuk 'teleport', respawn) test edilmiyor.",
+   "plan": "Gerçek akışı çağıran senaryo; yedek kipte uzak kayıt yükleme."
+  },
+  {
+   "req": "Zorunlu test: karoların oluşturulup kaldırılması",
+   "status": "kismen",
+   "evidence": "Doğrudan test yok; 10_uzun_oturum U02 yalnız renderer geometri sayacının eğimini denetliyor (dolaylı). Node sim_traverse: oluşturma ve dispose dengeli (canlı 204 = karo).",
+   "plan": "Kamera rotası boyunca karo sayısı, ağ sayısı, geometri sayacı ve _jobs eşitliğini denetleyen senaryo."
+  },
+  {
+   "req": "Zorunlu test: uzun arazi dolaşımı",
+   "status": "kismen",
+   "evidence": "10_uzun_oturum: 30 dk benzetim, gemi rotası; DK.sim tek görevde koştuğu için işçi sonuçları yalnız dilim aralarında uygulanıyor. Yedek kipte uzun dolaşım testi yok. Node sim_traverse (~15 km) derin karoların 3,2 km'ye kadar kaldığını gösterdi (A-07).",
+   "plan": "Gerçek zamanlı kısa dolaşım ve yedek kipte dolaşım; derin karo ve çizim çağrısı için eşik."
+  },
+  {
+   "req": "Kabul: işçi yokken oyun yükleme ekranında kalmamalı",
+   "status": "karsilaniyor",
+   "evidence": "02_arazi_yedek adım 4 'Sayfa hazır (yükleme ekranı aşıldı)' noworker/badurl/crash kiplerinde (12. belge Aşama 9). Node: kurucu hatası, 404, hazır yok ve yanıt yok durumlarında hazırlık 0,4–20,4 sn'de bitti. Kalanlar: ızgara reddinde açılış düşer (A-02), modül yükleme hatasında mesaj yok (A-04), depodaki kök tek dosya v0.3 (A-01).",
+   "plan": "A-01, A-02 ve A-04 düzeltmeleri; kurucu hatası kipi."
+  },
+  {
+   "req": "Kabul: arazi görünmeli",
+   "status": "karsilaniyor",
+   "evidence": "02_arazi_yedek adım 6 (menü sahnesinde ağ ≥20) ve 16 (Tuz Pazarı'nda ≥6 ağ) dört kipte; 02_arazi_kurtarma adım 8 (işçisiz ≥6 ağ); Node 125/125.",
+   "plan": "—"
+  },
+  {
+   "req": "Kabul: harita derinliği hazırlanmalı",
+   "status": "karsilaniyor",
+   "evidence": "02_arazi_yedek adım 7 (depthWin), 14 (pencere yeni bölgeye taşındı) ve 17 (harita ızgarası) dört kipte; ocean.js:245, 256-266 setDepth. Node: derinlik penceresi ve 1024² dünya ızgarası yedek kipte üretildi.",
+   "plan": "—"
+  },
+  {
+   "req": "Açılış testi: ana menü",
+   "status": "karsilaniyor",
+   "evidence": "00_acilis.js:3-4 (menü görünür, ≥8 düğme); 12. belge son tur 6/6.",
+   "plan": "—"
+  },
+  {
+   "req": "Açılış testi: yeni oyun",
+   "status": "karsilaniyor",
+   "evidence": "00_acilis.js:5-8: handlers.startGame → playing, oyuncu dünyada, ≥10 karo ağı. Karakter oluşturucu ve yuva seçimi arayüz yolu bu testte atlanıyor.",
+   "plan": "Arayüz tıklamalarıyla yeni oyun senaryosu (menü → oluşturucu → yuva); prepare sırasındaki durumu da sına (A-10)."
+  },
+  {
+   "req": "Açılış testi: kayıt yükleme",
+   "status": "kismen",
+   "evidence": "08_kalicilik 12/12 ve 12_kayit_dongusu 4/4, aynı oturumda ev limanında serialize → startGame(data) yapıyor. Sayfa yenilendikten sonra menüden 'Devam et', uzak adada kaydedilmiş oyun (game.js:124'te uzak prepare) ve yedek kipte yükleme sınanmıyor.",
+   "plan": "Uzak ada kaydı + sayfa yenileme + noworker kipinde yükleme senaryosu."
+  },
+  {
+   "req": "Açılış testi: hızlı yolculuk",
+   "status": "yok",
+   "evidence": "Test yok (bkz. zorunlu test satırı); işleyicide yeniden giriş ve durum denetimi eksik (A-03).",
+   "plan": "18_hizli_yolculuk.js."
+  },
+  {
+   "req": "Açılış testi: dünya değişimi",
+   "status": "kismen",
+   "evidence": "12_kayit_dongusu oyun içinde ardışık 3 kez startGame yapıyor; coop/06c menüye dönüp yeniden katılıyor (son kodda 5/7, bilinen #37). Tek oyunculuda menüye dönüp başka yuvaya ya da online dünyaya geçiş, önceki oturumun odak ve derinlik durumunun temizlenmesi sınanmıyor.",
+   "plan": "Solo senaryo: oyun → menü → farklı yuva (uzak konum) → oyun; ayrıca konuk/ev sahibi geçişi."
+  }
+ ]
+}

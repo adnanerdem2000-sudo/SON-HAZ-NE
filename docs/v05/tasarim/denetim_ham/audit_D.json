@@ -1,0 +1,847 @@
+{
+ "area": "D — Kayıt ve dünya kalıcılığı",
+ "summary": "v0.4'te kayıtlar localStorage'da tutuluyor: 3 tek oyunculu, 3 online ve 1 konuk yuvası var, yazım .tmp → .bak → ana sırasıyla yapılıyor, ayrıca yüzeysel bir şema denetimi (save.valid) eklenmiş. v0.3'e göre ada sandıkları, tutsaklar, tapınak bulmacası, patlamış fıçı/kırık sandık, batık gemi ve gemi bölge hasarı artık kayda geçiyor; bunlar 08_kalicilik, 12_kayit_dongusu ve 13_donma P08 testleriyle doğrulanmış. Buna karşın kayıt sürümü v0.3'teki gibi sabit 'version: 1'. Değer okunmuyor, migrasyon zinciri yok ve gelecekteki bir sürüm (999) sorgusuz yükleniyor. İçe aktarma doğrulama yapmıyor, atomik değil ve onay almadan bütün yuvaları .bak yedekleriyle birlikte ezebiliyor; bunu Node ile yaptığım salt-okur denemelerle doğruladım. Dünya kalıcılığında kaya tuzağı ve Martı Batığı sandığı kayda yazılmıyor. Tutsak eylemi kayıtlı 'freed' durumunu denetlemediği için E tuşu basılı tutuldukça sınırsız altın ve XP veriyor. Düşman kampının 'spawned' bayrağı da kayıttan aynen geri yüklendiği için oyuncu kampın yakınında kaydettiyse yüklemede kamp boş geliyor. Co-op'ta ada ve tehlike durumu sonradan katılan konuğa gönderilmiyor, konuğun ada eylemleri de yalnız kendi tarafında kalıyor; konuk ilerlemesi sadece konuğun tarayıcısında ve periyodik kayıt olmadan tutuluyor. Üstelik konuk kaydı başka dünyalardan taşıdığı hikâye bayraklarını ev sahibine sızdırarak ev sahibinin hikâyesini aşama 2'de kilitleyebiliyor. Rütbe, yetenek, görev, keşif, koleksiyon, başarım, kozmetik ve gemi geliştirmelerinin kayıt/yükleme yolu kodda var ama hiçbiri otomatik testle doğrulanmamış; gerçek bir v0.3 kayıt örneğiyle uyumluluk testi de yok.",
+ "systems": [
+  {
+   "name": "Kayıt yazma katmanı (save.write: .tmp → doğrula → .bak → ana)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "js/core/save.js:15-30 write(); tests/scenarios/08_kalicilik.js 'Bozuk ana kayıt varken .bak yedeği okunur' (satır 43) ve 12_kayit_dongusu.js K01 (her döngüde save.write → save.read); 12. belge son regresyon: 08_kalicilik 12/12, 12_kayit_dongusu 4/4.",
+   "note": "Yazım başarısızsa ana kayıt korunuyor ve false dönüyor (main.js:213 bildirimi). Zayıflıklar: JSON.stringify try dışında (save.js:17; Node denemesinde döngüsel veride TypeError yakalanmadı), .bak tek kuşak ve eski ana kayıt doğrulanmadan kopyalanıyor (21-22), sekmeler arası kilit yok (D-11, D-12)."
+  },
+  {
+   "name": "Kayıt okuma, şema denetimi ve yedeğe düşme (save.read/valid)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "save.js:33-45; 08_kalicilik 'Bozuk kayıt dosyası güvenle reddedilir (null), liste çökmez' (42) ve '.bak yedeği okunur' (43); 12. belge 12/12.",
+   "note": "valid() yalnız player.inv varlığına ve version türüne bakıyor. Alt alan bozulması (ör. quests.fog) geçerli sayılıyor, game.start'ta istisna atıyor ve yedeğe düşülmüyor (D-06). Yedekten kurtarma kullanıcıya bildirilmiyor."
+  },
+  {
+   "name": "Kayıt sürümü ve migrasyon",
+   "status": "eksik",
+   "evidence": "game.js:164 version: 1 (v0.3 game.js:156 ile aynı); save.js:36 yalnız tür denetimi yapıyor; '.version' okuyan tek yer save.js:36. Node denemesi /tmp/denetim_alan/save_probe.mjs: version 999 kayıt okundu.",
+   "note": "Yalnız alan düzeyinde toleranslı okuyucular var: quests.js:98-112 (sis v1→v2), islands.js:35-39 (tapınak sarmalayıcı), progress.js:96-99 (konuk anahtarı), settings.js:30-31. D-05."
+  },
+  {
+   "name": "Kayıtları dışa/içe aktarma",
+   "status": "hatali_kararsiz",
+   "evidence": "save.js:77-87; settingsPanel.js:70-80. Node denemeleri save_probe.mjs ve save_quota.mjs: dize olmayan değer '[object Object]' olarak yazıldı ve true döndü; kota aşımında istisna yakalanmadı, yuvalar yarı yarıya içe aktarıldı. Test yok.",
+   "note": "Onay ve savedAt karşılaştırması yok, .bak anahtarları da eziliyor. Oyun içinden ve ana menüden içe aktarılan kayıt bayat oturum/menü verisiyle eziliyor (D-04, D-10)."
+  },
+  {
+   "name": "Kayıt yuvaları ve menü (3 tek oyunculu + 3 online + 1 konuk; Devam/Dünyalar/Sil)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "save.js:4, 52-68; menu.js:66-86, 128-166; main.js:157-172. Testler yuvaya handlers.startGame ile erişiyor (08/12 yuva 2); 08:42 save.list çökmüyor; menü akışı otomatik sınanmıyor.",
+   "note": "Online 'DEVAM ET' yuvayı taşımıyor (11 #17 / H18, D-18). Menü kartı içe aktarma ya da silme sonrasında yenilenmiyor (D-10)."
+  },
+  {
+   "name": "Otomatik ve olay tetikli kayıt (tek oyunculu/ev sahibi)",
+   "status": "dogrulanmamis",
+   "evidence": "game.js:216-218 (120 sn, yalnız G.isHost); main.js:166, 184, 218, 251, 315, 380, 382-385 (yeni oyun, menüye dönüş, ev sahibi ayrılışı, WebGL bağlam kaybı, beforeunload, visibilitychange); ölü/yaralıyken kayıt yok (208-209). Otomatik kaydın yazıldığını doğrulayan test yok; 10_uzun_oturum yalnız saveNow(true) çağırıyor.",
+   "note": "Kod yolu sade ama doğrulama testi yok."
+  },
+  {
+   "name": "Konuk yerel kaydı (dksh.guest.0 + dksh.progress.guest)",
+   "status": "hatali_kararsiz",
+   "evidence": "main.js:187-206 (envanter, progress, quests); progress.js:58-59, 94-99, 110, 138, 149; save.js:35. Test yok: 09. belge 'Bu yol 2 oyunculu senaryoda doğrudan ölçülmedi', coop/*.cjs dksh.guest okumuyor.",
+   "note": "Periyodik otomatik kayıt ve kaydet düğmesi yok (D-09). İki kaynaktan hangisinin kullanılacağı zaman damgasına bakılmadan seçiliyor. Kayıttaki hikâye bayrakları başka dünyaya taşınıp ev sahibine sızıyor (D-02)."
+  },
+  {
+   "name": "Konuk ilerlemesinin tarayıcı dışında saklanması (ev sahibi/bulut kopyası)",
+   "status": "eksik",
+   "evidence": "net.js:46'daki KNOWN listesinde 'prog' ve 'inter' türleri var ama göndericisi ve işleyicisi yok; _sendWorld (net.js:510-522) ve game.serialize (game.js:161-178) konuk verisi içermiyor; tek yol el ile dışa aktarma (save.js:77-81).",
+   "note": "Seçenekler requirements 7.3 satırında."
+  },
+  {
+   "name": "Oyuncu konumu, canı ve gemide olma",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "game.js:168-175 (yüzerken lastSafe), 122-131; 12_kayit_dongusu K01 'Üç ardışık kayıt/yükleme döngüsünde oyuncu, gemi, ada, tehlike ve düşman grubu durumu korunur' (hpOk, posOk) ve K03; 08_kalicilik 'E-13/A1 … oyuncu güverteye bindirilmez'; 12. belge 4/4, 12/12.",
+   "note": "Kayıkta kaydedilen oyuncu yüklemede suda başlıyor; seyirdeyken kaydedilen gemi yüklemede dümende kimse yokken yol alıyor (D-16)."
+  },
+  {
+   "name": "Envanter ve altın",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "inventory.js:76-82; game.js:129, 169; 12_kayit_dongusu K01 (kılıç); 14_deniz_ekipmani L03 'Kayıt/yüklemede zıpkın, ağ, maske, palet ve hava keseleri korunur'; 12. belge 4/4, 16/16.",
+   "note": "Altın hiçbir testte doğrulanmıyor. 12'de yem sayısı ölçülüyor ama allOk'a katılmıyor. inv.load şema doğrulaması yapmıyor (inventory.js:77-82)."
+  },
+  {
+   "name": "Rütbe, deneyim ve yetenek puanları (progress)",
+   "status": "dogrulanmamis",
+   "evidence": "progress.js:94-109 (level, xp, points, skills, seen), recompute 153-163; game.js:176 saveKey 'progress'. Kayıt/yükleme testi yok."
+  },
+  {
+   "name": "Görev ilerlemesi (hikâye aşaması, bayraklar, yan görevler)",
+   "status": "dogrulanmamis",
+   "evidence": "quests.js:76-94, 121-124, 202-244; test yok.",
+   "note": "Boss tetik bayrakları kalıcı bayraklarda tutuluyor (276-290, D-17). Yan görevler başlıkla tanımlı (214, 234). Konuk bayrak sızıntısı (D-02)."
+  },
+  {
+   "name": "Keşif verisi (discovered + sis haritası v2)",
+   "status": "dogrulanmamis",
+   "evidence": "quests.js:82-84, 98-119, 249-273; eski 64×64 sis biçimi dönüştürülüyor (104-111); test yok.",
+   "note": "Bozuk sis dizesi atob istisnasıyla yüklemeyi yarıda bırakıyor (D-06)."
+  },
+  {
+   "name": "Koleksiyonlar ve başarımlar",
+   "status": "dogrulanmamis",
+   "evidence": "quests.js:85-87 (stats, collection, achievements), 153-170, 220-229; test yok."
+  },
+  {
+   "name": "Harita işaretleri",
+   "status": "dogrulanmamis",
+   "evidence": "quests.js:88, 320-329 (en çok 30); net.js 'marker' (ev sahibinde en çok 60); test yok."
+  },
+  {
+   "name": "Gemi durumu (gövde, bölgesel hasar, direk/top, delik, ambar, batık)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "ship.js:694-703; shipControl.js:22-39 (parts/mastHp/cannonHp/sunk yükleniyor); 08_kalicilik 'E-13/A1 Batık gemi batık yüklenir, parça/direk/top hasarı korunur…' (37); 12 K01 shipOk/pruvaOk; 12. belge 12/12, 4/4."
+  },
+  {
+   "name": "Gemi geliştirmeleri, görünümü, sahip olunan gemiler ve tayfa",
+   "status": "dogrulanmamis",
+   "evidence": "ship.js:696 (typeId, look, upg, hold); shipControl.js:25-30; main.js:75-79 misc (crewHired, ownedShips); test yok."
+  },
+  {
+   "name": "Kozmetik kilitleri (profil)",
+   "status": "dogrulanmamis",
+   "evidence": "shop.js:244-258 (profile.unlocked + profileChanged); main.js:83-86 (dksh.profile); save.js:70-75; creator.js:14-15; test yok.",
+   "note": "Kilitler yuvalardan bağımsız; tüm yuvalarda ve konuk kimliğinde ortak. Profilin yedeği yok. Kilit hemen kalıcı oluyor, altın düşüşü ise ancak sonraki kayıtta (D-15)."
+  },
+  {
+   "name": "Zaman, takvim, hava ve macera günlüğü",
+   "status": "dogrulanmamis",
+   "evidence": "time.js:69-77 (day, log ≤200); game.js:137-141, 146, 173 (saat, hava, rüzgâr, ıslaklık); test yok (12 K01 bu alanları karşılaştırmadan çıkarıyor)."
+  },
+  {
+   "name": "Boss yenilgileri (bosses.defeated)",
+   "status": "dogrulanmamis",
+   "evidence": "bosses.js:1048-1053, 1067, 1082; v0.4 testlerinde kayıt/yükleme denetimi yok."
+  },
+  {
+   "name": "Düşman kampı durumu (enemies.groupState)",
+   "status": "hatali_kararsiz",
+   "evidence": "enemies.js:1319 (kayıttan aynen yükleme), 1545-1569 (_populate), 1662. 08_kalicilik 'A5/F-07 Kamp bekleme süresi yüklemede korunur' ve 12 K01 campOk geçiyor, ancak iki test de grubu spawned:false ile kuruyor (08:23, 12:7).",
+   "note": "spawned:true geri yüklenince yakındaki kamp boş kalıyor (D-07)."
+  },
+  {
+   "name": "Barut fıçısı (hazards.gone)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "hazards.js:80, 86, 164, 202; 08_kalicilik 'Kırılmış sandık ve patlamış fıçı yüklemede yeniden kurulmuyor' (33); 12. belge 12/12.",
+   "note": "Test yalnız çekirdek kamp setini (core_kamp) kullanıyor. Co-op'ta geç katılan konuğa aktarılmıyor (D-03)."
+  },
+  {
+   "name": "Kırılabilir sandık (hazards.gone)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "hazards.js:263, 284; 08_kalicilik (33); 12 K01 her döngüde bir sandık kırıyor (gone ölçülüyor ama allOk'ta yok); 12. belge 12/12, 4/4."
+  },
+  {
+   "name": "Kaya tuzağı (boulder)",
+   "status": "eksik",
+   "evidence": "hazards.js:297-345 her kurulumda state 'set' oluşturuyor, release 347-356, dinlenme 416-425; save() (86) kayayı içermiyor; 11. belge #19 açık; test yok (v03/haz2 yalnız yuvarlanmayı deniyor)."
+  },
+  {
+   "name": "Basınç plakası bulmacası ve kafes (hazards.solved)",
+   "status": "dogrulanmamis",
+   "evidence": "hazards.js:78, 86, 495-503, 508-519, 679; kayıt/yükleme testi yok (12. belge #7 KISMİ)."
+  },
+  {
+   "name": "Bulmaca gizli sandığı (hazards.looted)",
+   "status": "dogrulanmamis",
+   "evidence": "hazards.js:79, 86, 653-659; test yok."
+  },
+  {
+   "name": "Ada sandıkları ve tapınak sunağı (islands.opened)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "islands.js:261, 269, 742-752, 857-862; 08_kalicilik 'B02/B-08 Ada ödülleri, tutsaklar ve tapınak mekanizması yüklemede geri geliyor' (32) ve 12 K01 openedOk; 12. belge 12/12, 4/4.",
+   "note": "Testler kümeye doğrudan yazıyor (08:8, 12:7), sandık eylemini kullanmıyor. Açılmış sandık görsel olarak kapalı kalıyor (D-19). Co-op'ta konuğa aktarılmıyor (D-03)."
+  },
+  {
+   "name": "Tutsaklar (islands.freed)",
+   "status": "hatali_kararsiz",
+   "evidence": "islands.js:262, 269, 956-967; kalıcılık 08_kalicilik (32) ile geçiyor.",
+   "note": "Eylem freed'i denetlemiyor; E basılı tutuldukça +120 altın ve +80 XP tekrarlanıyor (D-01)."
+  },
+  {
+   "name": "Kadim Tapınak bulmacası ve kapısı (islands.templeState)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "islands.js:35-39, 263-265, 830-835, 841-847; 13_donma.js P08 'Tapınak bulmacası: çözüm yeniden kurulumda ve kayıt yüklemede korunur (kapı açık, boss koşulu), levye hata vermez, eski kayıt biçimi onarılır'; 12. belge 13_donma 8/8."
+  },
+  {
+   "name": "Martı Batığı sandığı (seagear.wreckOpened)",
+   "status": "hatali_kararsiz",
+   "evidence": "seagear.js:115, 117-125, 128, 130-136; seagear'da save() yok, game.serialize'a girmiyor. 14_deniz_ekipmani L02 'ikinci kez açılmaz' kontrolünü yalnız aynı oturumda yapıyor; 11. belge #41.",
+   "note": "Kayıt/yükleme ya da menüye dönüşten sonra yeniden açılıyor (D-08)."
+  },
+  {
+   "name": "Dünyadaki hazine sandıkları (yerde, suda, taşınan, kayıktaki)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "treasure.js:105-127; 08_kalicilik 'B04 Taşınan sandık kayıtta; yüklemede oyuncunun yanında yerde' (35); 12. belge 12/12.",
+   "note": "Kayıktaki sandık yüklemede kayığın son konumunda suya bırakılıyor (D-16)."
+  },
+  {
+   "name": "Kazı alanları ve kazı çukurları (treasure.found, holes)",
+   "status": "dogrulanmamis",
+   "evidence": "treasure.js:113-115, 122, 125, 218, 230; test yok.",
+   "note": "found gerçek saat damgası tutuyor; 8 dk sonra yeni haritayla yeniden kazılabiliyor (tasarım). Yalnız son 20 çukur saklanıyor."
+  },
+  {
+   "name": "Ganimet keseleri (pickups)",
+   "status": "eksik",
+   "evidence": "treasure.js:120-127 save() keseleri içermiyor; ömür 179; 11. belge #44.",
+   "note": "D-14."
+  },
+  {
+   "name": "Toplanabilir deniz kabuğu/istiridye",
+   "status": "eksik",
+   "evidence": "details.js:262-268; 368-370 (start() hepsini geri getiriyor); 381 (4 dk yenilenme); 503.",
+   "note": "Tasarım gereği yenilenen kaynak; tek seferlik 'önemli kaynak' türü tanımlı değil."
+  },
+  {
+   "name": "Co-op dünya kalıcılık durumunun eşitlenmesi (geç/yeniden katılan konuk)",
+   "status": "eksik",
+   "evidence": "net.js:510-522 _sendWorld yalnız gemi, sandık, kese, hikâye, zaman ve kayık gönderiyor; islands, hazards ve seagear durumu yok. Ada etkileşimleri konukta yerel çalışıyor (islands.js:746-751, 840-849, 857-862, 958-967); 02: G_icerik-ek-statik-164.",
+   "note": "D-03."
+  },
+  {
+   "name": "Kalıcı nesne kimlik şeması (özellik kimlikleri)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "archipelago.js:296-297 `${I.id}_${f.type}_${i}`; tests/node/archipelago_sabit.mjs bu denetimde de GEÇTİ (67 ada, 22 otomatik özellik, v0.3 özellik kimlikleri birebir aynı); 12. belge 'Node archipelago_sabit.mjs GEÇTİ'.",
+   "note": "Kimlikler sıra dizinine dayalı ve modüllere dağılmış; merkezi bir kayıt defteri yok. Batık sandığının kimliği yok, yan görevler başlıkla tanımlı."
+  }
+ ],
+ "issues": [
+  {
+   "id": "D-01",
+   "title": "Tutsak kurtarma eylemi kalıcı 'freed' durumunu denetlemiyor: E basılı tutuldukça sınırsız altın ve XP",
+   "file": "js/world/islands.js",
+   "func": "islands._prison (hücre etkileşiminin action kapanımı); interact.update (hold dalı, js/game/interact.js:61-65)",
+   "rootCause": "freed kümesi yalnız ada kurulurken okunuyor (islands.js:956 `if (!this.freed?.has(...))`). Eylem (958-967) freed'i denetlemiyor, etkileşim B.inter'den çıkarılmıyor ve 'cond' tanımlı değil. interact.js:61-65'teki hold dalı tuş basılı kaldıkça holdT'yi sıfırlayıp eylemi her 2,5 sn'de yeniden çağırıyor. npcs.remove(nid) tekrarı zararsız geçiyor ama `G.player.inv.gold += 120` ve `G.emit('prisonerFreed')` (progress.js:84, +80 XP) her seferinde çalışıyor.",
+   "impact": "Gardiyanlar yokken (öldürülmüşse ya da D-07 yüzünden kayıt sonrası doğmamışsa) hücre kapısında E'yi basılı tutan oyuncu dakikada yaklaşık 2.880 altın ve 1.920 XP kazanıyor; ekonomi ve rütbe ilerlemesi çöküyor. Durum kaydedildiği hâlde etkileşimde uygulanmadığı için 7.2'deki 'kayıtlı durum uygulanmalı' ilkesi de bozuluyor.",
+   "priority": "kritik",
+   "fix": "Eylemin başına `const key = `${f.id}_${k}`; if (this.freed?.has(key)) return;` eklenmeli; etkileşime `cond: () => !this.freed?.has(key)` verilmeli (ya da serbest bırakınca B.inter'den silinmeli). Ödül ve XP tek seferlik olaya bağlanmalı. Co-op'ta kurtarma ev sahibine niyet iletisiyle gitmeli, freed ev sahibinde tutulmalı.",
+   "repro": "DK.handlers.startGame({kind:'solo',slot:2,data:null}); await DK.terrain.prepare(-6700,2500,{radius:450}); oyuncuyu Demirkapı hücrelerine ışınla; DK.enemies.list.filter(e=>e.group==='demirkapi_prison_0').forEach(e=>e.applyDamage(9999,{})); const it=DK.islands.built.get('demirkapi').inter.find(x=>x.id.startsWith('free:')); const g0=DK.G.player.inv.gold; it.action(); it.action(); it.action(); → altın g0+360 olur, DK.progress.xp her çağrıda artar. Oyun içinde: kapıda E'yi 10 sn basılı tut.",
+   "acceptance": "Aynı hücre için ikinci ve sonraki action çağrıları altını ve XP'yi değiştirmiyor, 'Hücrenin kilidini kır' istemi kayboluyor. 10 sn basılı tutmada toplam +120 altın, +80 XP. Kayıt/yüklemeden sonra istem çıkmıyor (otomatik senaryo).",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "02:G_icerik-ek-statik-159 (Yüksek; 11. belgede yok, kodda açık)"
+  },
+  {
+   "id": "D-02",
+   "title": "Konuk kaydı başka dünyaların hikâye bayraklarını taşıyor; katılımda birleşip ev sahibine sızıyor ve ev sahibinin hikâyesini aşama 2'de kilitleyebiliyor",
+   "file": "js/main.js",
+   "func": "handlers.startOnlineGuest, wire/applyWorld; quests.save/advance/takeJournal (js/game/quests.js); net._hostData case 'story' (js/net/net.js:326-331)",
+   "rootCause": "B06 düzeltmesinin yan etkisi: v0.4'te konuk kaydına quests.save()'in tamamı, stage ve flags dahil, yazılıyor (main.js:203). Katılımda quests.start bu bayrakları yüklüyor (main.js:193), applyWorld da onları ev sahibininkilerle değiştirmek yerine birleştiriyor (main.js:336 `Object.assign(quests.flags || {}, m.quests.flags)`). Konuk advance (quests.js:134) ya da takeJournal (317) çağırdığında netStory bayrak nesnesinin tamamını gönderiyor; ev sahibi true olan her bayrağı aşama ya da beyaz liste denetimi yapmadan kendi bayraklarına yazıyor (net.js:329) ve kaydına geçiriyor.",
+   "impact": "Başka bir dünyada günlüğü almış (flags.gunluk) bir konuk, aşama 0–2'deki bir ev sahibine katılıp herhangi bir hikâye ilerlemesini tetiklerse ev sahibinde gunluk=true oluyor. 'Eski günlüğü al' istemi (quests.js:297 `!this.flags.gunluk`) hiç çıkmıyor; aşama 2→3 yalnız takeJournal ile ilerlediği için (316) ev sahibinin dünyası kalıcı olarak kilitleniyor. ilkHazineBulundu, morvanSpawn gibi bayraklar da yanlış tetiklemelere yol açıyor. Kirlenme ev sahibinin online kaydına yazılıyor.",
+   "priority": "yuksek",
+   "fix": "Konuk kaydında yalnız kişisel alanlar saklanmalı (side, completed, discovered, fog, stats, collection, achievements); stage, flags, markers ve çalışma zamanı bayrakları kaydedilmemeli. applyWorld'de bayraklar `quests.flags = { ...m.quests.flags }` ile değiştirilmeli. Ev sahibi 'story' iletisinde yalnız aşamaya uygun, beyaz listedeki bayrağı kabul etmeli (ör. 2→3 için yalnız gunluk). Göç adımı: online kayıtta stage<3 iken gunluk=true ise bayrak sıfırlanmalı.",
+   "repro": "İki tarayıcı bağlamı kur. Konuk bağlamında localStorage['dksh.guest.0'] = JSON.stringify({inv:{stacks:[],gold:0}, quests:{stage:5, flags:{gunluk:true, ilkHazineBulundu:true}}}) yaz. Ev sahibi yeni bir online dünya (aşama 0) kursun, konuk katılsın. Konuk Yaşlı Kaptan Tuzla ile konuşup 'Martı benim mi?' seçsin → ev sahibinde DK.quests.flags.gunluk === true ve stage 1 olur. Ev sahibi aşama 2'ye geldiğinde mağaradaki etkileşim adaylarında 'journal' yoktur.",
+   "acceptance": "Co-op senaryosunda bu kurulumdan sonra ev sahibinin flags kümesi yalnız kendi ilerlemesini içeriyor, aşama 2'de 'Eski günlüğü al' istemi çıkıyor ve aşama 3'e geçiliyor; konuk kaydında stage ve flags bulunmuyor.",
+   "presentIn": "yalniz_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "D-03",
+   "title": "Co-op'ta dünya kalıcılık durumu eşitlenmiyor: geç ya da yeniden katılan konuk yok edilmiş ve yağmalanmış nesneleri sağlam görüp yeniden yağmalıyor; konuk eylemleri ev sahibi kaydına girmiyor",
+   "file": "js/net/net.js",
+   "func": "net._sendWorld; islands._chest/_temple/_prison eylemleri; hazards.start; seagear.start",
+   "rootCause": "_sendWorld (net.js:510-522) yalnız gemi, sandık, kese, hikâye, zaman ve kayık gönderiyor; islands.opened/freed/templeState, hazards.gone/solved/looted ve seagear.wreckOpened gönderilmiyor. Konuk game.start'ta bu sistemleri boş veriyle başlatıyor (islands.js:260-266, hazards.js:78-80, seagear.js:128). Ada sandığı, sunak, tapınak levyeleri ve tutsak eylemleri konukta yerel çalışıp lootToBag ile ödülü doğrudan konuk çantasına koyuyor (islands.js:746-751, 840-849, 857-862, 958-967; treasure.js:95-100). 'inter' iletisi KNOWN listesinde (net.js:46) ama işleyicisi yok. Tehlike olayları (netHazard) yalnız o an bağlı eşlere gidiyor.",
+   "impact": "Geç katılan konuk patlamış fıçıları ve kırık sandıkları sağlam görüyor, onları kırıp ganimet isteği gönderiyor (ev sahibi lootReq ile keseyi doğuruyor). Her yeniden katılımda ada sandıklarını (40–260 altın + değerli eşya), tapınak sunağını (400–700 altın + taç/elmas), gizli bulmaca sandığını ve tutsakları yeniden yağmalayabiliyor; bu sınırsız kazanç demek. Konuğun çözdüğü tapınak ev sahibinde kapalı kalıyor ve Taş Muhafız tetiklenmiyor (bosses.js:1088). Ev sahibinin kaydı konuğun yaptıklarını içermediği için dünyalar birbirinden ayrışıyor.",
+   "priority": "yuksek",
+   "fix": "World iletisine `persist: { islands: islands.save(), hazards: hazards.save(), wreck: seagear.wreckOpened }` eklenmeli; konuk applyWorld'de bunu uygulayıp kurulu adaları yeniden kurmalı. Ada etkileşimleri ev sahibi otoritesine taşınmalı ('inter' iletisi: konuk niyet gönderir, ev sahibi kalıcı kümeyi günceller, ödülü netGive ile verir, durumu yayınlar). opened/freed/temple değişiklikleri tüm eşlere yayınlanmalı.",
+   "repro": "Ev sahibi çekirdek kampta bir fıçıyı patlatsın (DK.hazards._explode) ve bir ada sandığını açsın; ardından konuk katılsın → konukta DK.hazards.list('keg') patlamış kimliği hâlâ içerir, DK.islands.opened.size===0 olur. Konuk aynı sandığı açar ve çantası dolar; menüye dönüp tekrar katılır ve sandığı yine açar.",
+   "acceptance": "Co-op testinde geç katılan konuğun hazards.gone/solved/looted ve islands.opened/freed/templeState kümeleri ev sahibininkilerle aynı. Konuğun açtığı sandık ev sahibinde ve kayıtta açık görünüyor; yeniden katılımdaki ikinci açılış 'Sandık boş' veriyor ve envanter değişmiyor.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "02:G_icerik-ek-statik-164 (Düşük)"
+  },
+  {
+   "id": "D-04",
+   "title": "İçe aktarma doğrulamasız, atomik değil ve onaysız: eski ya da bozuk bir dosya yuvaları .bak yedekleriyle birlikte sessizce eziyor",
+   "file": "js/core/save.js",
+   "func": "save.importAll; settingsPanel içe aktarma dinleyicisi (js/ui/settingsPanel.js:76-79); save.exportAll",
+   "rootCause": "importAll (save.js:82-87) yalnız JSON.parse sonucuna ve 'dksh.' önekine bakıp değerleri tek tek setItem ile ham yazıyor; değer türü, şema, sürüm ve boyut denetlenmiyor. Önceki durum yedeklenmiyor. Kota istisnası yakalanmıyor (try yok), settingsPanel.js:78'deki async dinleyici de yakalamıyor. 'dksh.' anahtarı içermeyen dosya da true döndürüyor. exportAll (77-81) .bak/.tmp anahtarlarını da dışa aktardığı için içe aktarma yedekleri de değiştiriyor.",
+   "impact": "Kullanıcı eski bir dışa aktarım dosyasını içe aktarırsa bütün yuvalar uyarı olmadan eski hâline dönüyor; .bak'lar da ezildiği için yeni ilerleme kurtarılamıyor. Bozuk ya da elle düzenlenmiş bir dosya yuvayı okunamaz hâle getiriyor ('[object Object]'), yine de 'Kayıtlar içe aktarıldı' bildirimi çıkıyor. Kota dolarsa yarım bir içe aktarma kalıyor ve hiç bildirim görünmüyor.",
+   "priority": "yuksek",
+   "fix": "Sürümlü bir dışa aktarma biçimi ({format:'dksh-export', exportVersion, createdAt, entries}) ve anahtar beyaz listesi kullanılmalı. İçe aktarmada her yuva için parse → validate → migrate uygulanmalı. Boyut sınırları konmalı (dosya ≤2 MB, yuva ≤256 KB). Yuva başına savedAt karşılaştırmalı bir onay kutusu gösterilmeli. Yazmadan önce mevcut dksh.* anahtarlarının anlık görüntüsü alınmalı, hata olursa geri yüklenmeli. try/catch ve doğru bildirim eklenmeli; .bak/.tmp anahtarları dışa aktarılmamalı.",
+   "repro": "Node: node /tmp/denetim_alan/save_probe.mjs /home/user/SON-HAZ-NE-w2/js/core/save.js → importObjectValue.stored '[object Object]', read null, returned true; importNoKeys true. node /tmp/denetim_alan/save_quota.mjs /home/user/SON-HAZ-NE-w2/js/core/save.js → QuotaExceededError yakalanmıyor; yuva 0 içe aktarılan kayıt, yuva 1 eski kayıt (yarım içe aktarma). Tarayıcıda: Ayarlar → Kayıtları dışa aktar, oyna ve kaydet, sonra aynı dosyayı içe aktar → yuva ve .bak eski kayda döner, uyarı çıkmaz.",
+   "acceptance": "Bozuk değer ya da şema içeren dosya reddediliyor ve mevcut anahtarlar bit düzeyinde aynı kalıyor. Kota hatasında bütün anahtarlar içe aktarma öncesi hâline dönüyor ve kullanıcı uyarılıyor. Daha eski savedAt içeren yuva için onay isteniyor. Node birim testi ve tarayıcı senaryosuyla doğrulanıyor.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "02:A14 (içe aktarma doğrulaması kısmı)"
+  },
+  {
+   "id": "D-05",
+   "title": "Kayıt sürümü işlevsiz: v0.3 ve v0.4 aynı 'version: 1' damgasını yazıyor, değer okunmuyor, migrasyon yok; bilinmeyen sürüm sorgusuz yüklenip eski şemayla yeniden yazılıyor",
+   "file": "js/game/game.js",
+   "func": "game.serialize; save.valid (js/core/save.js:33-37); game.start",
+   "rootCause": "game.js:164'te version sabit 1 (v0.3 game.js:156 ile aynı). v0.4'ün eklediği islands, hazards.gone, ship.sunk/parts gibi şema değişiklikleri sürüm artışıyla işaretlenmemiş. save.valid (save.js:36) yalnız türü denetliyor, game.start sürüme göre dallanmıyor ve göç fonksiyonu yok.",
+   "impact": "Aynı kökende (ör. Chromium'da file:// tek HTML ya da geri alınan bir Pages yayını) v0.4 kaydını açan v0.3, bilmediği alanları yok sayıp ilk kayıtta siliyor: ada sandıkları ve tutsaklar yeniden yağmalanabiliyor, patlamış fıçılar ve batık gemi geri geliyor. Faz 4'teki gibi gelecek bir şema değişikliği eski kayıtları ayırt edemeyecek. Yeni bir sandık kademesi ya da gemi tipi içeren kayıt, eski sürümde yüklemeyi çökertiyor (treasure.js:266-268, ship.js:20/59).",
+   "priority": "yuksek",
+   "fix": "SAVE_SCHEMA sabiti (v0.3=1, v0.4=2) ve kayıt üst bilgisi eklenmeli. read() schema>CURRENT ise yuvayı salt-okunur işaretlemeli ve üzerine yazmamalı. schema<CURRENT için sıralı bir migrate zinciri kurulmalı. Bilinmeyen üst düzey alanlar korunup kayda geri yazılmalı. v0.3/v0.4 kayıt örnekleriyle Node ve tarayıcı testi eklenmeli.",
+   "repro": "localStorage['dksh.solo.0'] = JSON.stringify({version:999,name:'x',savedAt:1,player:{inv:{stacks:[],gold:5}},gelecekAlani:{a:1}}) yaz → menüde yuva dolu görünür ve yüklenir; DK.handlers.saveNow(true) sonrası kayıtta version 1 olur, gelecekAlani düşer. Node: save_probe.mjs çıktısında futureVersionRead 999.",
+   "acceptance": "version 999 olan kayıt yüklenmiyor, 'daha yeni sürüm' uyarısı gösteriliyor ve anahtar değişmiyor. v0.3 örnek kaydı yüklenip schema 2 olarak kaydediliyor ve bütün alanları korunuyor.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "02:A14"
+  },
+  {
+   "id": "D-06",
+   "title": "Yükleme sırasında bir sistemin start() istisnası oturumu yarım bırakıyor; otomatik kayıt bu karışık durumu yuvanın üstüne yazıyor",
+   "file": "js/game/game.js",
+   "func": "game.start; handlers.startGame (js/main.js:157-167); quests._loadFog; treasure.start",
+   "rootCause": "game.start önce G.state='playing' yapıyor (game.js:103), sonra sistem start'larını try olmadan sırayla bekliyor (144); handlers.startGame (main.js:162) de hatayı yakalamıyor. save.valid yüzeysel olduğu için alt alanı bozuk kayıt 'geçerli' sayılıyor ve .bak'a düşülmüyor. Örneğin bozuk quests.fog atob'da InvalidCharacterError atıyor (quests.js:101/104; Node'da doğrulandı), bilinmeyen sandık kademesi treasure.js:266-268'de TypeError veriyor. Hatadan sonra başlatılmamış sistemler (progress, events, details…) önceki oturumun değerleriyle kalıyor. game.update çalışmaya devam ettiğinden 120 sn sonra autosave (game.js:218) ya da menüye dönüş/sekme gizlenme kaydı karışık durumu diske yazıyor.",
+   "impact": "Tek bir bozuk alan yuvayı yüklenemez yapıyor. Daha kötüsü, yarım oturum (önceki yuvanın rütbe/XP'si dahil) birkaç dakika içinde önce ana kaydı, ardından .bak'ı eziyor: ilerleme kaybı ve yuvalar arası karışma.",
+   "priority": "orta",
+   "fix": "game.start try/catch ile sarılmalı: hata olursa sistemler stop() edilmeli, menüye dönülmeli, otomatik kayıt kilitlenmeli, sıradaki yedek (.bak/.tmp/eski kuşaklar) denenmeli ve kullanıcıya bildirilmeli. validate() alt alan türlerini (sis dizesi, sandık kademesi, gemi tipi) denetlemeli. Her sistemin start(data)'sı kendi alanı bozuksa güvenli varsayılana düşmeli.",
+   "repro": "Önce herhangi bir yuvayla oyun başlat. Sonra: const d=DK.save.read('solo',2); d.quests.fog='v2:!!!'; DK.save.write('solo',2,d); DK.handlers.startGame({kind:'solo',slot:2,data:DK.save.read('solo',2)}).catch(e=>e.name) → 'InvalidCharacterError'. DK.G.state==='playing' kalır; DK.sim(125) sonrası DK.save.read('solo',2) önceki oturumun progress değerlerini içerir.",
+   "acceptance": "Bozuk alanlı kayıt yüklendiğinde oyun menüde kalıyor ya da yedekle açılıyor; yuva anahtarları değişmiyor ve otomatik kayıt tetiklenmiyor (Node/tarayıcı senaryosu).",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "D-07",
+   "title": "Düşman kampının 'spawned' bayrağı kayıttan geri yükleniyor ama düşmanlar kaydedilmiyor: kampın yakınında kaydedilip yüklenen oyunda kamp boş kalıyor",
+   "file": "js/game/enemies.js",
+   "func": "enemies.start, enemies._populate",
+   "rootCause": "start(data) groupState'i olduğu gibi kopyalıyor (enemies.js:1319); kayıt anında oyuncunun 140 m yakınındaki grup spawned:true durumunda. Yüklemede düşman listesi boş, _populate ise yalnız `!st.spawned` iken düşman doğuruyor (1549). Bayrak ancak bütün oyuncular 220 m uzaklaşınca sıfırlanıyor (1559-1567); killed>0 ise üstüne 420 sn bekleme ekleniyor. v0.3 groupState'i yüklemediği için (start'ta {}) bu durum A5/F-07 düzeltmesiyle geldi. v0.3 kayıtlarındaki spawned bayrakları da v0.4'te aynen uygulanıyor.",
+   "impact": "Kampta ya da çatışma sırasında otomatik kayıt alıp çıkan oyuncu yüklemede kampı boş buluyor. Hapishane muhafızları doğmadığı için tutsaklar savaşmadan kurtarılabiliyor (islands.js:959-960); D-01 ile birleşince sınırsız altın. Kamp ganimeti ve XP döngüsü bozuluyor.",
+   "priority": "orta",
+   "fix": "start(data)'da her grup için spawned=false ve nightDone=false olarak normalize edilmeli (cooldown ve killed korunmalı); aynı adım eski kayıtlar için göç olarak da uygulanmalı.",
+   "repro": "Oyuncuyu çekirdek 'kamp' grubunun (-40,-228) 140 m içine götür, DK.sim(1) → DK.enemies.groupState.kamp.spawned===true. Sonra: const d=DK.game.serialize(); DK.save.write('solo',2,d); await DK.handlers.startGame({kind:'solo',slot:2,data:DK.save.read('solo',2)}); DK.sim(5) → DK.enemies.list.filter(e=>e.group==='kamp').length===0 ve groupState.kamp.spawned===true.",
+   "acceptance": "Yüklemeden sonraki 1 sn içinde yakın kampın düşmanları doğuyor, cooldown ve killed değerleri korunuyor; 08_kalicilik'e spawned:true durumlu bir kontrol ekleniyor.",
+   "presentIn": "yalniz_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "D-08",
+   "title": "Martı Batığı sandığı kalıcı değil: her oturumda ve kayıt yüklemede yeniden açılabiliyor",
+   "file": "js/wildlife/seagear.js",
+   "func": "seagear.start, seagear.openWreck",
+   "rootCause": "wreckOpened yalnız bellekte tutuluyor (seagear.js:115, 133) ve start() her oturumda false yapıyor (128). seagear'da save()/saveKey yok, dolayısıyla game.serialize'a girmiyor.",
+   "impact": "Kaydet → menü → yükle döngüsüyle sandık sınırsız kez açılıyor; her açılış 60–140 altın ve maske/palet/hava kesesi/zıpkın/inci veriyor. Co-op'ta her oyuncu kendi kopyasını açıyor ve yeniden katılarak tekrarlayabiliyor.",
+   "priority": "orta",
+   "fix": "Durum islands.opened'a 'marti_batigi' kimliğiyle ya da seagear.save() { wreckOpened } ile kaydedilmeli ve start(data)'da yüklenmeli. Co-op'ta ev sahibi otoritesine bağlanıp world iletisine eklenmeli.",
+   "repro": "14_deniz_ekipmani L02 adımlarını uygula (dal, 'Batık sandığını aç'). Ardından DK.handlers.saveNow(true) → DK.handlers.toMenu() → DEVAM ET (ya da startGame(read)) → sandığa yeniden dal: istem yine 'Batık sandığını aç', altın yine artar.",
+   "acceptance": "L03 benzeri bir senaryoda kayıt/yüklemeden sonra etkileşim adaylarında 'wreckchest' yok ve altın değişmiyor.",
+   "presentIn": "yalniz_v04",
+   "confidence": "kesin",
+   "knownAs": "11:#41 (Açık, düşük)"
+  },
+  {
+   "id": "D-09",
+   "title": "Konuk ilerlemesi periyodik olarak kaydedilmiyor; iki ayrı konuk kaydı zaman damgasına bakılmadan seçiliyor",
+   "file": "js/game/game.js",
+   "func": "game.update (autosave); handlers.saveNow (js/main.js:199-206); progress.start/_guestSave (js/game/progress.js); menu.pause (js/ui/menu.js:348)",
+   "rootCause": "autosave olayı yalnız G.isHost iken yayınlanıyor (game.js:218); progress'in autosave dinleyicisi (progress.js:91) konukta hiç tetiklenmiyor; konuğun duraklatma menüsünde 'Kaydet' düğmesi yok (menu.js:348). Konuk kaydı yalnız menüye dönüş, ev sahibi ayrılışı, sekme gizlenme/kapanma ve WebGL bağlam kaybında yazılıyor (main.js:218, 315, 380, 382-385). Ayrıca dksh.progress.guest seviye atlama ve yetenek öğrenmede yazılıyor (progress.js:138, 149) ama dksh.guest.0 o anlarda yazılmıyor; start'ta dksh.guest.0.progress varsa daha yeni olan dksh.progress.guest yok sayılıyor (progress.js:95-99).",
+   "impact": "Sekme ya da tarayıcı çökmesi, bellek yetersizliği veya güç kesintisinde konuğun bütün oturumu (envanter, altın, keşif, koleksiyon, son seviye atlamaları) kayboluyor. Ev sahibinin kaybı en çok 2 dk ile sınırlıyken konukta üst sınır yok.",
+   "priority": "orta",
+   "fix": "Konuk için de 120 sn'lik otomatik kayıt eklenmeli (yalnız yerel kişisel kayıt). Duraklatma menüsünde konuğa 'Kişisel ilerlemeyi kaydet' seçeneği verilmeli. Tek bir konuk kaydı (dksh.guest.0) kullanılmalı ve progress yalnız oradan okunup yazılmalı; ya da savedAt karşılaştırılıp en yeni kayıt seçilmeli.",
+   "repro": "Konuk olarak katıl; DK.G.player.inv.gold += 500; DK.progress.gain(5000); DK.sim(150) → JSON.parse(localStorage['dksh.guest.0'] || 'null') değişmemiş (ya da yok). Tarayıcı bağlamını beforeunload çalıştırmadan kapat (page.close({runBeforeUnload:false}) ya da süreci öldür), yeniden katıl → altın eski değerinde.",
+   "acceptance": "Konukta 130 sn benzetimden sonra dksh.guest.0.savedAt güncelleniyor ve altın/progress yeni değerleri içeriyor; seviye atlamanın ardından çökme senaryosunda yeni seviye korunuyor.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "02:A7 (kısmen giderildi: kapanış ve odak kaybında kayıt eklendi, periyodik kayıt yok)"
+  },
+  {
+   "id": "D-10",
+   "title": "İçe aktarma ve yuva silme sonrasında bayat oturum/menü verisi diske geri yazılıyor",
+   "file": "js/ui/settingsPanel.js",
+   "func": "settingsPanel içe aktarma dinleyicisi; menu.render ve handlers.continueLatest (js/main.js:169-172); handlers.saveNow",
+   "rootCause": "Ayarlar paneli duraklatma menüsünden de açılıyor (menu.js:352); içe aktarma oynanmakta olan yuvayı değiştirse de oturum kapanmıyor, bu yüzden sonraki otomatik kayıt ya da menüye dönüş (game.js:218, main.js:218) oturumu aynı yuvaya yazıyor. Ana menüde menu.render yalnız init ve show(true) sırasında çalışıyor (menu.js:57, 62); içe aktarma ya da yuva silme sonrasında 'DEVAM ET' kartı önceden ayrıştırılmış latest.data nesnesini yüklüyor (main.js:169-171).",
+   "impact": "İçe aktarılan kayıt ilk kayıtta .bak'a, ikinci kayıtta tamamen dışarı itiliyor (dosya diskte durduğu için yeniden içe aktarılabilir). Silinen bir yuva 'DEVAM ET' ile açılıp ilk otomatik kayıtta geri diriliyor.",
+   "priority": "orta",
+   "fix": "Oyun sürerken içe aktarma engellenmeli ya da önce oturum kaydetmeden kapatılmalı. İçe aktarma ve silme sonrasında menu.render() çağrılmalı. continueLatest veriyi tıklama anında save.read ile yeniden okumalı.",
+   "repro": "Ana menüde DEVAM ET kartı görünürken Ayarlar → Kayıtları içe aktar (farklı içerikli bir dosya) → paneli kapat → DEVAM ET → DK.sim(125) → DK.save.read(kind,slot) içe aktarılan değil eski veri olur. Oyun içinde: Duraklat → Ayarlar → içe aktar → DK.handlers.saveNow(false) iki kez → içe aktarılan veri kalmaz.",
+   "acceptance": "İçe aktarmadan sonra DEVAM ET içe aktarılan kaydı açıyor; oyun içinde içe aktarma düğmesi devre dışı ya da oturum kapanıyor; silinen yuva DEVAM ET kartında görünmüyor.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "D-11",
+   "title": "Aynı yuvanın iki sekmede açılmasına karşı kilit ya da uyarı yok: son yazan kazanıyor",
+   "file": "js/core/save.js",
+   "func": "save.write; visibilitychange/beforeunload kaydı (js/main.js:382-385)",
+   "rootCause": "Kayıt katmanında sekmeler arası kilit (Web Locks), BroadcastChannel ya da storage olayı dinleyicisi yok (js/ altında arama sonucu 0). write() diskteki kaydın oturumunkinden daha yeni olup olmadığına bakmıyor. Arka plandaki sekme visibilitychange (main.js:385) ve beforeunload (382-384) ile kendi eski durumunu yazıyor.",
+   "impact": "Oyunu yanlışlıkla iki sekmede açıp aynı yuvayı yükleyen oyuncunun bir sekmedeki ilerlemesi, diğer sekmeye geçişte ya da sekme kapanırken sessizce eziliyor; .bak de iki sekmenin durumları arasında karışıyor.",
+   "priority": "orta",
+   "fix": "navigator.locks.request('dksh-slot-<kind>-<n>') ile yuva başına özel kilit alınmalı; kilit alınamazsa yuva salt-okunur açılıp kullanıcı uyarılmalı. BroadcastChannel ile diğer sekme bilgilendirilmeli. write() öncesinde ana kaydın savedAt'i oturumun yüklediğinden yeniyse yazmak yerine kullanıcıya sorulmalı.",
+   "repro": "Aynı tarayıcıda iki sekme aç, ikisinde de Yuva 1'i yükle. B'de DK.G.player.inv.gold=9999; DK.handlers.saveNow(true). A sekmesine geç (A'nın görünürlüğü değişir ve kendi durumunu kaydeder) → DK.save.read('solo',0).player.inv.gold artık B'nin değeri değil.",
+   "acceptance": "İkinci sekme yuvayı açarken uyarı veriyor ya da salt-okunur kipe geçiyor; çok sekmeli Playwright senaryosunda B'nin kaydı A tarafından ezilmiyor.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin"
+  },
+  {
+   "id": "D-12",
+   "title": "Yedekleme tek kuşak ve doğrulamasız; kurtarma sessiz; JSON.stringify hata yakalamanın dışında",
+   "file": "js/core/save.js",
+   "func": "save.write, save.read",
+   "rootCause": "write() önceki ana kaydı geçerli olup olmadığına bakmadan .bak'a kopyalıyor (save.js:21-22) ve yalnız bir kuşak tutuyor; 2 dakikalık otomatik kayıtla .bak en fazla iki kayıt geriye uzanıyor. JSON.stringify try bloğunun dışında (17): döngüsel ya da BigInt içeren veri saveNow'dan olay işleyicisine istisna fırlatıyor (Node denemesinde TypeError yakalanmadı). read() .bak/.tmp'ye düştüğünde (41-44) kullanıcıya bildirim yapılmıyor.",
+   "impact": "Mantıksal olarak bozulmuş ama ayrıştırılabilir bir durum (ör. hatalı bir sistem kaydı ya da D-06) iki otomatik kayıt içinde bütün yedekleri eziyor; geri dönülebilecek eski bir anlık görüntü kalmıyor. Kullanıcı yedekten yüklendiğini bilmiyor.",
+   "priority": "orta",
+   "fix": "N kuşak döner yedek (.bak1..3) ve günlük bir anlık görüntü tutulmalı. Önceki kayıt ancak validate'ten geçerse .bak'a kopyalanmalı. stringify try içine alınmalı. Yedekten yüklemede bildirim ve yuva kartında 'yedekten kurtarıldı' rozeti gösterilmeli; ayarlara 'yedekten geri yükle' listesi eklenmeli.",
+   "repro": "Node: save_probe.mjs çıktısında circularWrite 'YAKALANMADI: TypeError'. Tarayıcı: DK.save.write('solo',2,d1); DK.save.write('solo',2,d2); DK.save.write('solo',2,d3) → yalnız d3 (ana) ve d2 (.bak) okunabilir, d1 kurtarılamaz.",
+   "acceptance": "Üç ardışık kayıttan sonra en az iki eski kuşak okunabiliyor; geçersiz ana kayıt .bak'ı ezmiyor; stringify hatası false döndürüp bildiriliyor.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin"
+  },
+  {
+   "id": "D-13",
+   "title": "Kaya tuzağı durumu kaydedilmiyor: ada yeniden kurulunca ve yüklemede tepede, takozuyla yeniden doğuyor",
+   "file": "js/world/hazards.js",
+   "func": "hazards._boulderSite, hazards.release, hazards.save",
+   "rootCause": "_boulderSite (297-345) her kurulumda state:'set' oluşturuyor; release (347-356) ve dinlenme (416-425) hiçbir kalıcı kümeye yazmıyor; save() (86) kayayı içermiyor.",
+   "impact": "Bir kez kullanılmış tuzak her dönüşte yeniden kuruluyor ve kampa karşı tekrar tekrar kullanılabiliyor; dünya tutarlılığı bozuluyor (kullanıcının 7.2 hedefi).",
+   "priority": "dusuk",
+   "fix": "hazards.used kümesi ve dinlenme konumu kaydı ({id:[x,z]}) eklenmeli; kurulumda tuzak kullanılmışsa kaya dinlenme konumunda, takoz sökülmüş olarak kurulmalı.",
+   "repro": "Bir kampta DK.hazards.release(b,true); DK.sim(10) (state 'rest' olur); DK.islands._drop(adaId); DK.islands._build(I) → DK.hazards.list('boulder').find(h=>h.id===b.id).state==='set'.",
+   "acceptance": "_drop/_build ve kayıt/yükleme sonrasında aynı kimlikli kaya 'rest' durumunda ve son konumunda; 'Takozu sök' istemi çıkmıyor.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "11:#19"
+  },
+  {
+   "id": "D-14",
+   "title": "Ganimet keseleri kaydedilmiyor: çanta dolu diye yere bırakılan eşyalar kayıt/yüklemede kayboluyor",
+   "file": "js/treasure/treasure.js",
+   "func": "treasure.save, treasure.giveItems",
+   "rootCause": "save() (120-127) pickups'ı yazmıyor. Sandık açma ve envanter taşmasında artan eşyalar giveItems ile 'keep' kese olarak doğuyor (643-661) ama yalnız bellekte duruyor.",
+   "impact": "Sandığı açıp çanta dolu olduğu için yanında kalan değerli eşyayı (mücevher, külçe) toplamadan çıkan ya da oyunu yenileyen oyuncu bu eşyaları kaybediyor.",
+   "priority": "dusuk",
+   "fix": "keep=true keseler (en çok 40) {id, pos, items, ship, local} olarak kaydedilmeli. Yüklemede ada kurulmadan düşmemeleri için konum zemine sabitlenmeli ya da adanın kurulması beklenmeli.",
+   "repro": "DK.G.player.inv.capacity = DK.G.player.inv.weight(); bir sandığı aç (taşma kesesi doğar) → DK.game.serialize() → save.write → startGame(read) → DK.treasure.pickups.length===0.",
+   "acceptance": "Taşma kesesi kayıt/yüklemeden sonra aynı içerikle aynı yerde duruyor.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "11:#44"
+  },
+  {
+   "id": "D-15",
+   "title": "Kozmetik kilidi profile anında yazılıyor, altın düşüşü ise ancak sonraki kayıtta kalıcı; kilitler yuvalardan bağımsız",
+   "file": "js/economy/shop.js",
+   "func": "shop.unlockCosmetic",
+   "rootCause": "unlockCosmetic altını oturum envanterinden düşüyor ve profile.unlocked'ı profileChanged ile hemen dksh.profile'a yazıyor (shop.js:250-254, main.js:86); yuva kaydı ise ancak sonraki saveNow'da yazılıyor. Profil yuva kaydının parçası değil ve yedeği yok.",
+   "impact": "Satın aldıktan sonra kayıttan önce çöken ya da çıkan oyuncu altınını geri alıyor ama kozmetik açık kalıyor. Bir yuvada açılan kozmetik bütün yuvalarda ve konuk kimliğinde açık. Profil bozulursa bütün kilitler ve görünüm sıfırlanıyor.",
+   "priority": "dusuk",
+   "fix": "Satın almanın hemen ardından saveNow çağrılmalı; ya da kilitler yuva kaydına taşınmalı (hesap düzeyi isteniyorsa profile .bak ve sürüm eklenmeli). Tasarım kararı belgelenmeli.",
+   "repro": "Terzide bir kozmetik al → kayıttan önce sekmeyi öldür → yeniden yükle: altın eski değerinde, karakter oluşturucuda kilit açık.",
+   "acceptance": "Satın alma sonrası çökme senaryosunda altın ve kilit tutarlı: ya ikisi birden kalıcı ya hiçbiri.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "D-16",
+   "title": "Kayıtta hareket bağlamı kayboluyor: kayıktaki oyuncu suda, kayık gemide başlıyor; seyirdeki gemi dümensiz yol alıyor",
+   "file": "js/game/game.js",
+   "func": "game.serialize, game.start, shipControl.createPlayerShip (js/game/shipControl.js:22-39)",
+   "rootCause": "serialize onShip'i yalnız deck/helm/cannon için yazıyor; 'boat' kipini ve kayık durumunu kaydetmiyor (game.js:170-175). Kayık her yüklemede gemiye bağlı kuruluyor (shipControl.js:37); kayıktaki sandıklar zemin sandığı olarak yazılıyor (treasure.js:124). Dümendeki oyuncu yüklemede güverteye konuyor (game.js:131), ama anchorState 'up' ve sailTarget geri yükleniyor (shipControl.js:32-33).",
+   "impact": "Açık denizde kayıkla kaydeden oyuncu yüklemede gemiden uzakta yüzüyor, kayıktaki sandıklar suya düşüyor. Seyirde kaydedilen gemi yüklemede dümende kimse yokken yol alıp karaya oturabiliyor.",
+   "priority": "dusuk",
+   "fix": "rowboat {state, x, z, yaw, cargo} ve oyuncu kipi (boat/helm) kaydedilmeli; dümende kimse yoksa yüklemede yelkenler indirilmeli ya da çapa atılmalı.",
+   "repro": "Kayığa bin, kıyıdan 300 m açıl → serialize/save/startGame(read) → DK.G.player.mode==='swim', DK.G.rowboat.state==='docked'.",
+   "acceptance": "Yüklemeden sonra oyuncu kayıkta, kayık son konumunda; seyirde kaydedilmiş gemi dümen boşsa sail 0.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "D-17",
+   "title": "Hikâye boss tetik bayrakları (morvanSpawn/kizilSpawn) kalıcı bayraklarda tutuluyor: boss sahnesinde kaydedilip yüklenince boss doğmuyor",
+   "file": "js/game/quests.js",
+   "func": "quests.update, quests.save",
+   "rootCause": "Çalışma zamanı tetik bayrakları flags içinde kaydediliyor (quests.js:276-290, 121-124). Yüklemede boss enemies.list'te yok ama bayrak true; bayrak yalnız oyuncu 200 m uzaklaşınca sıfırlanıyor (282, 290).",
+   "impact": "Morvan ya da Kızıl Hançer arenasında kaydedip yükleyen oyuncu boss'u bulamıyor; 200 m uzaklaşıp dönmesi gerektiğini bilmediği için hikâyede takılmış gibi hissediyor.",
+   "priority": "dusuk",
+   "fix": "Tetik bayrakları kayda yazılmamalı (save'de silinmeli) ya da start'ta boss yoksa false yapılmalı.",
+   "repro": "Aşama 3'te (-520,-440) yakınına git (Morvan doğar) → serialize/save/startGame(read) → DK.quests.flags.morvanSpawn===true ve DK.enemies.list.some(e=>e.type==='iskelet_kaptan')===false; DK.sim(10) sonrasında da doğmaz.",
+   "acceptance": "Yüklemeden sonraki 1 sn içinde arenada boss doğuyor.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "D-18",
+   "title": "Ana menüdeki 'DEVAM ET' online kayıt yuvasını taşımıyor",
+   "file": "js/main.js",
+   "func": "handlers.continueLatest, menu.hostScreen (js/ui/menu.js:180-193)",
+   "rootCause": "continueLatest online kayıt için menu.hostScreen()'i yuva bilgisi olmadan çağırıyor (main.js:170); hostScreen'de f.slot=0 ve seçim kutusunun varsayılanı 0 (menu.js:181, 193).",
+   "impact": "En son online dünyası yuva 2 ya da 3'te olan oyuncu 'DEVAM ET' ile yuva 1'deki farklı bir dünyayı açıyor ya da yeni dünya başlatıyor (veri kaybı yok, karışıklık var).",
+   "priority": "dusuk",
+   "fix": "hostScreen({slot}) parametresi eklenmeli ve seçim varsayılanı f.slot'tan okunmalı.",
+   "repro": "Online yuva 3'te bir kayıt oluştur (en yeni kayıt olsun) → ana menüde DEVAM ET → oda kurma ekranında 'Yuva 1' seçili gelir.",
+   "acceptance": "DEVAM ET'ten sonra oda kurma ekranında en son online yuva seçili.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "11:#17, 02:H18"
+  },
+  {
+   "id": "D-19",
+   "title": "Açılmış ada sandıkları ve sunak görsel olarak kapalı kalıyor; 'Sandığı aç' istemi sürüyor",
+   "file": "js/world/islands.js",
+   "func": "islands._chest, islands._interactables",
+   "rootCause": "Sandık modeli örneklenmiş toplu çizimin parçası (islands.js:744) ve opened durumuna göre değişmiyor. Etkileşimde cond yok; eylem yalnız 'Sandık boş.' bildirimi veriyor (747).",
+   "impact": "Oyuncu yüklemeden sonra sandıkların yeniden dolduğunu sanıyor; dünya durumunun korunduğu görsel olarak anlaşılmıyor.",
+   "priority": "dusuk",
+   "fix": "Açılmış sandıklar için açık kapaklı model ya da soluk görünüm kullanılmalı veya model kaldırılmalı; `cond: () => !this.opened.has(id)` ile istem gizlenmeli.",
+   "repro": "Bir harabe sandığını aç → adadan uzaklaşıp dön ya da kaydet/yükle → model aynı, istem yine 'Sandığı aç'.",
+   "acceptance": "Açılmış sandık açık görünüyor ve istem çıkmıyor.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin"
+  }
+ ],
+ "userClaims": [
+  {
+   "claim": "Kayıt yapısı version: 1; sürüm kontrolü ve migrasyon yok.",
+   "v03": "dogru",
+   "v04": "kismen",
+   "evidence": "v0.3: game.js:156 version: 1 yazıyor, save.js:32-38 read() sürüme hiç bakmıyor (tek istisna quests.js:98-118'de tek bir alan için sis biçimi tanıma). v0.4: game.js:164 hâlâ version: 1, yani v0.3 ile aynı damga. save.js:36'daki valid() yalnız `typeof d.version === 'number'` denetliyor; Node denemesinde (/tmp/denetim_alan/save_probe.mjs) version 999 kabul edildi. Sürüme dayalı migrasyon yok, yalnız alan düzeyinde toleranslı yamalar var: quests.js:98-112 (sis), islands.js:35-39/263-265 (tapınak sarmalayıcı onarımı), progress.js:96-99 (konuk anahtarı taşıma), hazards.js:80 (gone varsayılanı). Yani iddia v0.4 için büyük ölçüde doğru; yalnız 'hiç sürüm denetimi yok' ifadesi tam isabetli değil."
+  },
+  {
+   "claim": "Barut fıçıları ada yeniden kurulunca ya da kayıt yüklenince tekrar doğuyor.",
+   "v03": "dogru",
+   "v04": "yanlis",
+   "evidence": "v0.3: hazards.js:72-81 start/save yalnız solved/looted tutuyor; _keg (157) her kurulumda fıçıyı yeniden oluşturuyor, yani patlamış fıçı adaya dönüldüğünde ve yüklemede geri geliyor. v0.4: hazards.js:80 gone kümesini yüklüyor, :202 patlayan fıçıyı ekliyor, :164 gone kimliğini kurmuyor, :86 kaydediyor. 08_kalicilik 'Kırılmış sandık ve patlamış fıçı yüklemede yeniden kurulmuyor' geçiyor (12. belge 12/12). İstisna: co-op'ta geç ya da yeniden katılan konukta fıçı yeniden görünüyor (D-03)."
+  },
+  {
+   "claim": "Kırılabilir sandıklar ada yeniden kurulunca ya da kayıt yüklenince tekrar doğuyor.",
+   "v03": "dogru",
+   "v04": "yanlis",
+   "evidence": "v0.3: _crate (hazards.js:254) gone denetimi yapmıyor, her kurulumda sandık yeniden oluşuyor. v0.4: hazards.js:263 gone kimliği kurulmuyor, :284 kırılan sandık ekleniyor; 08_kalicilik (33) ve 12_kayit_dongusu K01 geçiyor. Co-op'ta geç katılan konuk istisnası var (D-03)."
+  },
+  {
+   "claim": "Kaya tuzakları ada yeniden kurulunca ya da kayıt yüklenince tekrar doğuyor.",
+   "v03": "dogru",
+   "v04": "dogru",
+   "evidence": "v0.3 _boulderSite (hazards.js:287) ve v0.4 _boulderSite (297-345) her kurulumda state 'set' oluşturuyor. release/dinlenme hiçbir kalıcı kümeye yazılmıyor; save() kayayı içermiyor (v0.3:81, v0.4:86). 11. belge #19 hâlâ açık (D-13)."
+  },
+  {
+   "claim": "Toplanan önemli kaynaklar tekrar doğuyor.",
+   "v03": "dogru",
+   "v04": "dogru",
+   "evidence": "İki sürümde de tek seferlik bir 'önemli kaynak' türü yok. Toplanabilir kabuk/istiridye (v0.3 details.js:266/368/377, v0.4 details.js:267/369/381) 4 dk'da yenileniyor, start() hepsini geri getiriyor ve kayda yazılmıyor; bunlar ada kurulumuna bağlı değil, çekirdek adada. Kazı hazinesi treasure.found ile kayıtlı ama 8 dk sonra yeni haritayla yeniden kazılabiliyor (treasure.js:218, iki sürümde de). Bunlar tasarım gereği yenileniyor."
+  },
+  {
+   "claim": "Açılan geçitler (tapınak kapısı, bulmaca kafesi) tekrar kapanıyor.",
+   "v03": "kismen",
+   "v04": "yanlis",
+   "evidence": "v0.3: tapınak kapısı ve durumu _temple kapanımında yerel değişkenler (islands.js:623 gate, 649 state), bu yüzden ada yeniden kurulunca ve yüklemede kapı kapalı geliyor (02: B-08). Basınç plakası kafesi ise hazards.solved ile kayıtlı (hazards.js:74, 479), açık kalıyor. v0.4: tapınak kapısı templeState.done ile açık kuruluyor (islands.js:835; 13_donma P08 geçti), kafes de solved ile gömülü kuruluyor (hazards.js:495-502)."
+  },
+  {
+   "claim": "Çözülen bulmacalar ada yeniden kurulunca ya da kayıt yüklenince sıfırlanıyor.",
+   "v03": "kismen",
+   "v04": "yanlis",
+   "evidence": "v0.3: tapınak levye bulmacası her kurulumda {seq:[],done:false} ile başlıyor (islands.js:649); bulmaca yeniden çözülüyor ve +250 XP tekrar veriliyor. Basınç plakası kalıcı (hazards.js:74). v0.4: tapınak islands.js:263-265 ve 830-835 ile kalıcı (P08); plaka hazards.js:78 ve 508-519 ile kalıcı (testsiz). Co-op konuğunda ise sıfırdan başlıyor (D-03)."
+  },
+  {
+   "claim": "Gizli hazineler tekrar doğuyor.",
+   "v03": "kismen",
+   "v04": "kismen",
+   "evidence": "v0.3: bulmaca gizli sandığı looted ile kalıcı (hazards.js:75, 638). Ada sandıkları ve sunak için opened yalnız bellekte (islands.js:566, 672); kaydedilmiyor ve start() sıfırlamıyor (224-228). Sonuç: sayfa yenilenince yeniden yağmalanıyor, aynı oturumda başka yuvaya da sızıyor (02: B02). v0.4: ada sandıkları, sunak ve gizli sandık kalıcı (islands.js:261, 269; hazards.js:79, 86). Ancak Martı Batığı sandığı (seagear.js:128) her oturumda yeniden açılıyor (D-08) ve co-op konuğu her katılımda yeniden yağmalayabiliyor (D-03)."
+  },
+  {
+   "claim": "Özel etkileşim nesneleri (tutsaklar, batık sandığı, günlük vb.) tekrar doğuyor.",
+   "v03": "kismen",
+   "v04": "kismen",
+   "evidence": "v0.3: tutsakların freed durumu yalnız bellekte (islands.js:762-767), sayfa yenilenince tutsaklar geri geliyor ve yeniden kurtarılabiliyor. Eski günlük flags.gunluk ile kalıcı. v0.4: tutsaklar freed ile kalıcı (islands.js:262, 956), ama eylem freed'i denetlemediği için aynı oturumda tekrar tetiklenebiliyor (D-01). Martı Batığı sandığı (D-08) ve kaya tuzağı (D-13) kalıcı değil."
+  }
+ ],
+ "docClaims": [
+  {
+   "doc": "docs/denetim/09_KAYIT_TESTLERI.md (#1–#3) ve 03 Aşama 6",
+   "claim": "Ada ödülleri, tutsaklar ve tapınak mekanizması kaydedilip yükleniyor; patlamış fıçı ve kırık sandık yeniden kurulmuyor.",
+   "verdict": "dogru",
+   "evidence": "islands.js:253-269 ve 830-835; hazards.js:76-87, 164, 263; 08_kalicilik (32-33); 13_donma P08. İddianın kapsamı dışında kalan iki sorun var: tutsak eylemi kalıcı durumu denetlemiyor (D-01) ve durum co-op konuğuna aktarılmıyor (D-03)."
+  },
+  {
+   "doc": "docs/denetim/09_KAYIT_TESTLERI.md #6; 03 (enemies start(data))",
+   "claim": "Kamp bekleme süresi yüklemede korunuyor (A5/F-07).",
+   "verdict": "kismen",
+   "evidence": "cooldown ve killed korunuyor (enemies.js:1319; 08:39, 12 K01). Ancak spawned bayrağı da aynen yükleniyor ve yakın kamp boş kalıyor (D-07). Testler grubu spawned:false ile kurduğu için bu durumu yakalamıyor (08:23, 12:7)."
+  },
+  {
+   "doc": "docs/denetim/09_KAYIT_TESTLERI.md #8–#9",
+   "claim": "Bozuk kayıt dosyası güvenle reddediliyor; ana kayıt bozukken .bak okunuyor.",
+   "verdict": "dogru",
+   "evidence": "save.js:33-45; 08:42-43; Node denemesinde de aynı davranış görüldü. Sınırı: yalnız JSON ya da üst düzey bozulmayı yakalıyor; alt alan bozulması geçerli sayılıyor ve yüklemeyi yarıda bırakıyor (D-06)."
+  },
+  {
+   "doc": "docs/denetim/09_KAYIT_TESTLERI.md (konuk kaydı paragrafı)",
+   "claim": "dksh.guest.0 kaydında envanter, rütbe/yetenek ve kişisel görev/keşif/koleksiyon saklanıyor; hikâye aşaması ve bayraklar her katılımda ev sahibinden geliyor.",
+   "verdict": "kismen",
+   "evidence": "Saklanan içerik doğru (main.js:203). Ancak kayıt stage ve flags'i de içeriyor, applyWorld bayrakları değiştirmek yerine birleştiriyor (main.js:336). Böylece yabancı bayraklar kalıyor ve netStory ile ev sahibine sızıyor (net.js:326-329; D-02). Belgenin kendisinin de belirttiği gibi 2 oyunculu testle ölçülmemiş."
+  },
+  {
+   "doc": "docs/denetim/09_KAYIT_TESTLERI.md (Kaydedilmeyenler)",
+   "claim": "Kaydedilmeyenler (bilinçli): yuvarlanan kaya konumu, yüzen olay nesneleri, ganimet keseleri.",
+   "verdict": "kismen",
+   "evidence": "Listelenenler doğru (hazards.js:86, events.js:46-54, treasure.js:120-127). Ancak liste eksik: Martı Batığı sandığı (seagear.js:128), kayık durumu ve oyuncu kipi (game.js:170-175), düşman örnekleri (yalnız grup bayrakları tutuluyor) ve toplanabilir kabuk/istiridye (details.js:368-370) de kaydedilmiyor."
+  },
+  {
+   "doc": "docs/denetim/09 §9.1 ve 12_TEST_PLANI_VE_SONUCLAR.md #2",
+   "claim": "3 ardışık kayıt/yükleme döngüsünde oyuncu, gemi, ada, tehlike ve kamp durumu korunuyor.",
+   "verdict": "kismen",
+   "evidence": "12_kayit_dongusu.js:7'deki allOk can, kılıç, gemi gövdesi/pruva, opened, kamp ve konumu denetliyor. Tehlike (gone) ve yem sayısı ölçülüyor ama allOk'a katılmıyor; altın, progress, görev ve keşif hiç ölçülmüyor. Ada durumu da kümeye doğrudan yazılarak sınanıyor."
+  },
+  {
+   "doc": "docs/denetim/12_TEST_PLANI_VE_SONUCLAR.md #15",
+   "claim": "Ev sahibi kaydedip yeniden açıyor — 08_kalicilik.js GEÇTİ.",
+   "verdict": "kismen",
+   "evidence": "08_kalicilik yalnız tek oyunculu 'solo' yuva 2'yi sınıyor (08:4, 30). startOnlineHost → save.read('online') yolu, konukların yeniden bağlanması ve online yuva kayıtları test edilmiyor."
+  },
+  {
+   "doc": "docs/denetim/11_BILINEN_SORUNLAR.md #41",
+   "claim": "Martı Batığı sandığı (ve ada sandıkları) oturum başına bir kez açılıyor ve kayda yazılmıyor.",
+   "verdict": "kismen",
+   "evidence": "Batık sandığı için doğru (seagear.js:115, 128). Ada sandıkları ise v0.4'te kayda yazılıyor (islands.js:261, 269; 08:32)."
+  },
+  {
+   "doc": "docs/denetim/12_TEST_PLANI_VE_SONUCLAR.md (14_deniz_ekipmani özeti)",
+   "claim": "Martı Batığı sandığı ikinci kez açılmıyor; kayıt/yüklemede ekipman korunuyor.",
+   "verdict": "kismen",
+   "evidence": "L02 ikinci açılışı yalnız aynı oturumda sınıyor. Kayıt/yüklemeden sonra seagear.start() wreckOpened'ı sıfırlıyor (seagear.js:128) ve sandık yeniden açılıyor (D-08). Ekipmanın korunduğu kısmı (L03) doğru."
+  },
+  {
+   "doc": "docs/denetim/11_BILINEN_SORUNLAR.md #19",
+   "claim": "Yuvarlanan kaya durumu kaydedilmiyor.",
+   "verdict": "dogru",
+   "evidence": "hazards.js:86 save() kayayı içermiyor; 297-345 her kurulumda state 'set' oluşturuyor."
+  },
+  {
+   "doc": "docs/denetim/11_BILINEN_SORUNLAR.md #44",
+   "claim": "Ganimet keseleri kayda yazılmıyor.",
+   "verdict": "dogru",
+   "evidence": "treasure.js:120-127 (save'de pickups yok), 179 (ömür sınırı)."
+  },
+  {
+   "doc": "docs/denetim/11 #17 / 02 H18",
+   "claim": "Ana menü 'DEVAM ET' online kayıt yuvasını taşımıyor.",
+   "verdict": "dogru",
+   "evidence": "main.js:170 hostScreen() yuvasız çağrılıyor; menu.js:181 ve 193'te varsayılan 0."
+  },
+  {
+   "doc": "docs/denetim/03_DEGISIKLIK_LISTESI.md (Aşama 6, A grubu)",
+   "claim": "Kayıt şema doğrulaması (save.valid) eklendi (A14 karşılığı).",
+   "verdict": "kismen",
+   "evidence": "save.js:33-37 yalnız player.inv varlığına ve version türüne bakıyor. version değeri okunmuyor, migrasyon yok, importAll (82-87) doğrulama yapmıyor; A14'ün 'sürüm alanı okunmuyor' ve 'içe aktarma doğrulamıyor' kısımları hâlâ açık."
+  },
+  {
+   "doc": "docs/denetim/03 Aşama 6 / 02 A16",
+   "claim": "Konuk ilerleme anahtarı dksh. önekine taşındı, eski anahtar aktarılıyor ve dışa/içe aktarma kapsamına giriyor.",
+   "verdict": "dogru",
+   "evidence": "progress.js:58-59 ve 96-99; save.js:77-81 'dksh.' önekli bütün anahtarları dışa aktarıyor."
+  },
+  {
+   "doc": "docs/denetim/03 Aşama 6 / 02 A7",
+   "claim": "Konuk ilerlemesi sekme kapanışında ve odak kaybında kaydediliyor.",
+   "verdict": "kismen",
+   "evidence": "main.js:199-206'daki konuk dalı progress'i de yazıyor. Ancak periyodik otomatik kayıt hâlâ yalnız ev sahibinde (game.js:218) ve konuğun 'Kaydet' düğmesi yok (menu.js:348) (D-09)."
+  },
+  {
+   "doc": "docs/denetim/09 başlık; 08_COOP_TESTLERI.md son paragraf; 16_SON_RAPOR.md Aşama 6 satırı",
+   "claim": "08_kalicilik.js 13 beklenti içeriyor (13/13).",
+   "verdict": "yanlis",
+   "evidence": "Dosyada 12 expect var (grep -c 'expect:' = 12; git geçmişinde tek sürüm, 7a68983); 12. belge de 12/12 diyor."
+  },
+  {
+   "doc": "docs/denetim/16_SON_RAPOR.md §16.7",
+   "claim": "Yayın öncesinde kayıtlı v0.3 oyunlarıyla yükleme denemesi yapılmalı (henüz yapılmadı).",
+   "verdict": "dogru",
+   "evidence": "tests/fixtures yalnız archipelago_v03.json içeriyor; v0.3 kayıt örneğiyle yükleme senaryosu yok. Kod incelemesine göre v0.3 kayıtları alan varsayılanlarıyla yükleniyor, ama v0.3'ün yazdığı enemies.groups.spawned bayrakları D-07'yi tetikliyor."
+  },
+  {
+   "doc": "docs/denetim/16_SON_RAPOR.md §16.8; 13_donma P08",
+   "claim": "Kadim Tapınak bulmacası yeniden kurulumda ve kayıt yüklemede korunuyor (T05).",
+   "verdict": "dogru",
+   "evidence": "islands.js:35-39, 263-265, 830-835; 13_donma.js P08; 12. belge 13_donma 8/8."
+  },
+  {
+   "doc": "docs/denetim/09 #4; 03 B04",
+   "claim": "Taşınan ve kayıktaki sandıklar kaydediliyor.",
+   "verdict": "dogru",
+   "evidence": "treasure.js:124; 08:35. Not: kayıktaki sandık yüklemede kayığın konumunda suya bırakılıyor (D-16)."
+  },
+  {
+   "doc": "docs/denetim/09 #5; 03 (E-13/A1)",
+   "claim": "Batık gemi batık olarak yükleniyor; parça, direk ve top hasarı korunuyor.",
+   "verdict": "dogru",
+   "evidence": "shipControl.js:30 ve 34; ship.js:701; 08_kalicilik (37)."
+  }
+ ],
+ "requirements": [
+  {
+   "req": "7.1 — Sürüm kontrollü kayıt şeması",
+   "status": "yok",
+   "evidence": "game.js:164 sabit version: 1 (v0.3 game.js:156 ile aynı damga). save.js:33-37 valid() yalnız `typeof d.version === 'number'` denetliyor; '.version' yalnız save.js:36'da okunuyor. Node denemesi /tmp/denetim_alan/save_probe.mjs: version 999 kayıt read() ile döndü. Test yok.",
+   "plan": "save.js'e SAVE_SCHEMA sabiti (v0.3=1, v0.4=2) ve {schema, game:'0.4.x', createdAt, savedAt, checksum} üst bilgisi eklenmeli; game.serialize sürümü bu sabitten yazmalı. read() parse → validate(schema) → migrate → döndür zinciriyle çalışmalı. Yuva kartında şema ve oyun sürümü gösterilmeli."
+  },
+  {
+   "req": "7.1 — Eski kayıtlar için migrasyon",
+   "status": "kismen",
+   "evidence": "Sürüme dayalı göç zinciri yok, yalnız alan düzeyinde toleranslı okuyucular var: quests.js:98-112 (64×64 sis → v2), islands.js:35-39 ve 263-265 (tapınak sarmalayıcısı), progress.js:96-99 (dk_progress_guest → dksh.progress.guest), settings.js:30-31 (tuş taşıma), hazards.js:80 (gone varsayılanı), ship.js:42-44 (parça varsayılanları). v0.3'ün kaydettiği enemies.groups.spawned bayrağı v0.4'te aynen yükleniyor (D-07). tests/fixtures'ta v0.3 kayıt örneği yok.",
+   "plan": "Sıralı, saf migrations fonksiyonları yazılmalı; örneğin 1→2: islands/hazards.gone varsayılanları, enemies.groups[*].spawned=false, ship.sunk=false. Her göç Node birim testiyle sınanmalı. tests/fixtures'a gerçek v0.3 (762f1c7) ve v0.4 kayıt örnekleri eklenip 'yükle → serialize → beklenen alanlar' senaryosu yazılmalı. Göçten önce orijinal kayıt dksh.<yuva>.pre-v<N> anahtarına bir kez yedeklenmeli."
+  },
+  {
+   "req": "7.1 — Bilinmeyen sürümü güvenle ele alma",
+   "status": "yok",
+   "evidence": "save.js:36 her sayısal sürümü kabul ediyor (Node denemesinde 999 okundu). game.start (game.js:101-150) sürüme bakmadan yüklüyor ve sonraki kayıt version: 1 yazarak bilinmeyen alanları düşürüyor. Bilinmeyen sandık kademesi ya da gemi tipi treasure.js:266-268 / ship.js:59'da TypeError veriyor (D-05, D-06).",
+   "plan": "schema > CURRENT olan yuva 'daha yeni sürümde oluşturuldu' etiketiyle salt-okunur gösterilmeli, yüklenmemeli ve asla üzerine yazılmamalı. Bilinmeyen üst düzey alanlar `extra` olarak korunup kayda geri yazılmalı (ileri uyumluluk). Bilinmeyen eşya, kademe ve gemi kimlikleri için güvenli varsayılan ve uyarı eklenmeli."
+  },
+  {
+   "req": "7.1 — Bozuk kayıtta yedekten kurtarma",
+   "status": "kismen",
+   "evidence": "save.js:15-30 .tmp → .bak → ana sırasıyla yazıyor; :38-45 read() geçersiz ana kayıtta .bak/.tmp'ye düşüyor. 08_kalicilik 'Bozuk ana kayıt varken .bak yedeği okunur' (43) ve 'Bozuk kayıt dosyası güvenle reddedilir' (42) geçiyor; 12. belge 12/12. Eksikler: .bak tek kuşak, eski ana kayıt doğrulanmadan kopyalanıyor (21-22), valid() yüzeysel, start() istisnası yakalanmıyor (D-06), kurtarma kullanıcıya bildirilmiyor (D-12).",
+   "plan": "3 kuşak döner yedek ve günlük bir anlık görüntü tutulmalı. prev doğrulanmadan .bak'a kopyalanmamalı. İçerik özeti (CRC32/SHA-256) alanı eklenmeli. game.start try/catch ile sarılmalı; hata olursa oturum geri alınmalı, sıradaki yedek denenmeli ve 'Kayıt bozuk, X tarihli yedek yüklendi' bildirimi gösterilmeli; yükleme başarısızsa yuvaya otomatik kayıt kilitlenmeli."
+  },
+  {
+   "req": "7.1 — İçe aktarılan verinin şema doğrulaması",
+   "status": "yok",
+   "evidence": "save.js:82-87 importAll yalnız JSON.parse sonucuna ve 'dksh.' önekine bakıp değerleri ham yazıyor. Node denemesi: dize olmayan değer '[object Object]' olarak yazıldı ve yuva okunamaz hâle geldi, ama importAll true döndürdü; 'dksh.' anahtarı olmayan dosya için de 'içe aktarıldı' bildirimi çıkıyor (settingsPanel.js:78). Test yok.",
+   "plan": "Dışa aktarma biçimi {format:'dksh-export', exportVersion, createdAt, slots:{solo, online, guest}, profile, settings} olmalı. İçe aktarmada her yuva parse → validate(schema) → migrate adımlarından geçmeli, geçersiz yuvalar listelenip atlanmalı. Anahtarlar beyaz listeyle sınırlanmalı (solo/online 0-2, guest.0, profile, settings, progress.guest)."
+  },
+  {
+   "req": "7.1 — Veri boyutu sınırı",
+   "status": "yok",
+   "evidence": "settingsPanel.js:78 dosyayı boyutuna bakmadan f.files[0].text() ile okuyor; save.js:82-87'de boyut ya da anahtar sayısı sınırı yok. Yazım yalnız tarayıcının QuotaExceededError'ı ile sınırlanıyor (Node denemesinde kota aşımında importAll istisna fırlattı).",
+   "plan": "İçe aktarma dosyası ≤ 2 MB, yuva başına ≤ 256 KB, anahtar sayısı ≤ 16 olmalı. Yazmadan önce navigator.storage.estimate() ile boş alan kontrol edilmeli. Kayıt boyutu (şu an yaklaşık 16 KB, 09. belge §9.1) her kayıtta ölçülmeli ve sınırın %50'sini aşınca uyarı verilmeli. time.log, markers, holes gibi listelerin üst sınırları korunmalı."
+  },
+  {
+   "req": "7.1 — Atomik içe aktarma",
+   "status": "yok",
+   "evidence": "save.js:85 anahtarları tek tek setItem ile yazıyor. Node denemesi save_quota.mjs: kota dolunca QuotaExceededError yakalanmadı; yuva 0 içe aktarılanla ezildi, yuva 1 eski hâlinde kaldı (karışık durum). settingsPanel.js:78'deki async dinleyici istisnayı işlemiyor ve kullanıcıya bildirim gitmiyor.",
+   "plan": "İçe aktarma iki aşamalı olmalı: önce her şey bellekte doğrulanıp hazırlanmalı, sonra mevcut bütün dksh.* anahtarlarının anlık görüntüsü (dksh.import-undo) alınıp yazılmalı. Herhangi bir hatada anlık görüntü geri yüklenmeli ve 'içe aktarma geri alındı' bildirilmeli. Uzun vadede IndexedDB'ye geçilip tek bir readwrite transaction kullanılmalı."
+  },
+  {
+   "req": "7.1 — Başarısız işlemde önceki kayıtların korunması",
+   "status": "kismen",
+   "evidence": "Normal yazım güvenli: save.write başarısızsa ana kayıt değişmiyor ve false dönüyor (save.js:26-29, main.js:213 bildirimi). Korumasız yollar: içe aktarma onay ve savedAt karşılaştırması olmadan yuvaları .bak'larıyla birlikte eziyor (D-04); oyun içinden ve ana menüden içe aktarılan kayıt bayat veriyle eziliyor (D-10); yarım kalan yükleme sonrası otomatik kayıt karışık durumu yazıyor (D-06); JSON.stringify try dışında (save.js:17).",
+   "plan": "İçe aktarma ve yuva silme öncesinde otomatik geri alma kaydı alınmalı ve onay kutusu gösterilmeli (ör. 'Yuva 1: 12.11 22:10 kaydı dosyadaki 01.11 kaydıyla değiştirilecek'). Oyun sürerken içe aktarma engellenmeli. game.start başarısız olursa G.state='menu' yapılmalı ve otomatik kayıt kapatılmalı. stringify try içine alınmalı."
+  },
+  {
+   "req": "7.2 — Barut fıçıları ada yeniden kurulunca tekrar doğmamalı",
+   "status": "karsilaniyor",
+   "evidence": "hazards.js:80 gone kümesi yükleniyor, :86 kaydediliyor, :164 _keg gone kimliğini kurmuyor, :202 patlayınca kümeye ekleniyor. 08_kalicilik 'Kırılmış sandık ve patlamış fıçı yüklemede yeniden kurulmuyor' (33); 12. belge 12/12. İstisna: co-op'ta geç katılan konuğa gone gönderilmiyor (D-03); test yalnız çekirdek kamp setini kullanıyor.",
+   "plan": "_sendWorld'e hazards.save() eklenmeli. Teste bir ada setinin (ör. haydut kampı) _drop → _build sonrasında fıçıyı yeniden kurmadığına dair kontrol eklenmeli."
+  },
+  {
+   "req": "7.2 — Kırılabilir sandıklar tekrar doğmamalı",
+   "status": "karsilaniyor",
+   "evidence": "hazards.js:263 gone kimliği kurulmuyor, :284 kırılan sandık ekleniyor; 08_kalicilik (33) ve 12_kayit_dongusu K01 (her döngüde sandık kırıyor, gone ölçülüyor); 12. belge 12/12 ve 4/4.",
+   "plan": "12_kayit_dongusu K01'in allOk'una gone denetimi eklenmeli; co-op eşitlemesi yapılmalı (D-03)."
+  },
+  {
+   "req": "7.2 — Kaya tuzakları tekrar doğmamalı",
+   "status": "yok",
+   "evidence": "hazards.js:297-345 _boulderSite her kurulumda state 'set' oluşturuyor; release (347-356) ve dinlenme (416-425) kalıcı değil; save() (86) kayayı içermiyor. 11. belge #19 açık; test yok.",
+   "plan": "hazards.used kümesi ve dinlenme konumu kaydı {id:[x,z]} eklenmeli; kurulumda tuzak kullanılmışsa kaya dinlenme konumunda ve takoz sökülmüş olarak kurulmalı (D-13)."
+  },
+  {
+   "req": "7.2 — Toplanan önemli kaynaklar tekrar doğmamalı",
+   "status": "kismen",
+   "evidence": "Tek seferlik bir 'önemli kaynak' türü tanımlı değil. Toplanabilir kabuk/istiridye (details.js:262-268) 4 dk'da yenileniyor (381, 503), start() hepsini geri getiriyor (368-370) ve kayda yazılmıyor; bu tasarım gereği. Kazı noktaları treasure.found zaman damgasıyla kayıtlı (treasure.js:113, 122, 230), ama 8 dk sonra yeni haritayla yeniden kazılabiliyor (218). Test yok.",
+   "plan": "Kaynak düğümleri için kalıcı kimlik ve oyun saatine bağlı yenilenme zamanı kaydı tutulmalı (resources: {id: respawnAtTotalHours}). Tek seferlik (önemli) kaynaklar için bir collected kümesi eklenmeli ve hangi kaynakların yenileneceği tasarım kararı olarak belgelenmeli."
+  },
+  {
+   "req": "7.2 — Açılan geçitler tekrar kapanmamalı",
+   "status": "karsilaniyor",
+   "evidence": "Tapınak kapısı: islands.js:835 templeState.done ise kapı açık kuruluyor; 13_donma P08 '…çözüm yeniden kurulumda ve kayıt yüklemede korunur (kapı açık, boss koşulu)' geçti (12. belge 13_donma 8/8). Basınç plakası kafesi: hazards.js:495-502 solved ise gömülü ve çarpıştırıcısız kuruluyor (testsiz). Co-op'ta konuğa aktarılmıyor (D-03).",
+   "plan": "Basınç plakası kafesi için kayıt/yükleme testi yazılmalı; co-op eşitlemesi yapılmalı."
+  },
+  {
+   "req": "7.2 — Çözülen bulmacalar sıfırlanmamalı",
+   "status": "karsilaniyor",
+   "evidence": "Tapınak: islands.js:263-265, 830-835 ve 841 (P08 testi). Basınç plakası: hazards.js:78, 495-503 ve 508-519 (solved kalıcı, testsiz).",
+   "plan": "Plaka bulmacası için uçtan uca bir test yazılmalı: blok itilerek çözülür → kayıt → yükleme → kafes gömülü kalır, gizli sandık yalnız bir kez açılır."
+  },
+  {
+   "req": "7.2 — Gizli hazineler tekrar doğmamalı",
+   "status": "kismen",
+   "evidence": "Kalıcı olanlar: ada sandıkları ve sunak (islands.js:747-748, 858-859; opened 261/269; 08:32), bulmaca gizli sandığı (hazards.js:654-655; looted 79/86, testsiz). Kalıcı olmayan: Martı Batığı sandığı (seagear.js:115, 128, 132-133) her start()'ta sıfırlanıyor (11. belge #41, D-08). Co-op konuğu her katılımda yeniden yağmalayabiliyor (D-03).",
+   "plan": "seagear.wreckOpened kayda yazılmalı (ya da islands.opened'a 'marti_batigi' kimliğiyle eklenmeli); co-op'ta ganimet sandıkları ev sahibi otoritesine bağlanmalı."
+  },
+  {
+   "req": "7.2 — Özel etkileşim nesneleri tekrar doğmamalı",
+   "status": "kismen",
+   "evidence": "Tutsaklar freed ile kalıcı (islands.js:262, 956), ama eylem (958-967) freed'i denetlemediği için aynı oturumda sınırsız tekrarlanabiliyor (D-01). Eski günlük flags.gunluk ile kalıcı (quests.js:305). Martı Batığı sandığı (D-08) ve kaya tuzağı (D-13) kalıcı değil.",
+   "plan": "Her etkileşim eyleminin başında kalıcı durum denetimi zorunlu olmalı; etkileşim sağlayıcıları 'cond' koşulunu kalıcı durumdan türetmeli."
+  },
+  {
+   "req": "7.2 — Her ada ve etkileşimli nesne için kalıcı kimlik sistemi",
+   "status": "kismen",
+   "evidence": "Özellik kimliği archipelago.js:296-297'de `${I.id}_${f.type}_${i}` biçiminde, sıra dizinine dayalı. Nesne kimlikleri dağınık biçimlerde türetiliyor: sandık f.id, sunak 'altar'+f.id (islands.js:858), tutsak `${f.id}_${k}` (956), fıçı/sandık `${f.id}_keg${i}` ve `_cr${i}` (hazards.js:122, 126), kaya `${f.id}_kaya` (320), bulmaca `${f.id}_bulmaca` (430). Martı Batığı sandığının kimliği yok (seagear.js:115); yan görevler başlıkla tanımlanıyor (quests.js:214, 234). Belirlenimcilik tests/node/archipelago_sabit.mjs ile sınanıyor (bu denetimde de GEÇTİ, 67 ada).",
+   "plan": "Merkezi bir worldState kayıt defteri kurulmalı: kimlik şeması `<ada>/<özellik>/<tür>/<n>`, tür başına durum şeması (opened/gone/solved/used/position). Dünya üretim sürümü kayda yazılmalı. Kimlikler sıra dizini yerine özellik tohumundan türetilmeli; yan görevler id ile tanımlanmalı."
+  },
+  {
+   "req": "7.2 — Ada yüklenince kayıtlı durum uygulanmalı",
+   "status": "kismen",
+   "evidence": "Uygulananlar: islands._prison (956) kurtarılmış tutsağı kurmuyor, _temple (835) kapıyı açıyor, hazards._keg/_crate (164/263) gone nesneleri kurmuyor, _puzzleSite (495-502) çözülmüş kafesi gömüyor; tehlike seti islandBuilt olayıyla kuruluyor (hazards.js:71). Uygulanmayanlar: kaya tuzağı, Martı Batığı sandığı, açılmış sandığın görseli (islands.js:744, D-19). Konuk tarafında bunların hiçbiri uygulanmıyor (D-03).",
+   "plan": "Bütün tür kurucuları worldState'ten okumalı; ada kurulumu tamamlandığında bir 'islandStateApplied' doğrulaması (test kancası) çalışmalı."
+  },
+  {
+   "req": "7.3 — Korsan rütbesi ve deneyim korunmalı",
+   "status": "karsilaniyor",
+   "evidence": "progress.js:109 save (level, xp, points, skills, seen) ve :94-107 start; game.js:176 saveKey 'progress'. Kayıt/yükleme testi yok (08 ve 12 progress'i denetlemiyor).",
+   "plan": "12_kayit_dongusu'na level/xp/points denetimi eklenmeli."
+  },
+  {
+   "req": "7.3 — Yetenekler korunmalı",
+   "status": "karsilaniyor",
+   "evidence": "progress.js:102-104 ve 109 (skills, points), 153-163 (recompute ile G.mods); test yok.",
+   "plan": "Yükleme sonrası skills ve G.mods değerlerini (ör. melee çarpanı) doğrulayan bir test eklenmeli."
+  },
+  {
+   "req": "7.3 — Envanter korunmalı",
+   "status": "karsilaniyor",
+   "evidence": "inventory.js:76-82; game.js:129, 169; 12_kayit_dongusu K01 (kılıç) ve 14_deniz_ekipmani L03 'Kayıt/yüklemede zıpkın, ağ, maske, palet ve hava keseleri korunur' (12. belge 16/16).",
+   "plan": "Yığın sayısı ve veri içeren eşyalar (balık, hazine haritası) için doğrulama eklenmeli; inv.load'a şema denetimi konmalı."
+  },
+  {
+   "req": "7.3 — Para korunmalı",
+   "status": "karsilaniyor",
+   "evidence": "inventory.js:76 (gold toJSON'da), game.js:129; altın hiçbir testte doğrulanmıyor (12 K01 de denetlemiyor).",
+   "plan": "Kayıt döngüsü testine altın kontrolü eklenmeli; kozmetik satın alma ile altın arasındaki atomiklik sağlanmalı (D-15)."
+  },
+  {
+   "req": "7.3 — Gemi geliştirmeleri korunmalı",
+   "status": "karsilaniyor",
+   "evidence": "ship.js:694-703 (upg, look, typeId, hold); shipControl.js:25-30; main.js:75-79 (ownedShips, crewHired); test yok.",
+   "plan": "upg, look, ownedShips ve crewHired için kayıt/yükleme testi yazılmalı."
+  },
+  {
+   "req": "7.3 — Kozmetik kilitleri korunmalı",
+   "status": "karsilaniyor",
+   "evidence": "shop.js:244-258 kilidi profile.unlocked'a yazıyor ve dksh.profile anında kaydediliyor (main.js:86); kilitler yuvalardan bağımsız. Test yok. Kilidin hemen, altın düşüşünün ise sonraki kayıtta kalıcı olması tutarsızlık yaratıyor (D-15); profilin yedeği yok.",
+   "plan": "Satın alma sonrası hemen kayıt yapılmalı; profil için .bak ve sürüm eklenmeli; hesap düzeyi mi yuva düzeyi mi olacağı belgelenmeli."
+  },
+  {
+   "req": "7.3 — Görev ilerlemesi korunmalı",
+   "status": "kismen",
+   "evidence": "quests.js:76-94 ve 121-124 (stage, flags, side, completed, boardSeed); test yok. Boss tetik bayrakları kalıcı (D-17). Co-op'ta konuğun yabancı bayrakları ev sahibinin görev durumunu bozup hikâyeyi kilitleyebiliyor (D-02).",
+   "plan": "Tetik bayrakları kayda yazılmamalı; konuk kaydından stage/flags çıkarılmalı ve ev sahibine bayrak beyaz listesi uygulanmalı; görev ilerlemesi için kayıt/yükleme testi yazılmalı."
+  },
+  {
+   "req": "7.3 — Keşif verileri korunmalı",
+   "status": "karsilaniyor",
+   "evidence": "quests.js:82-84, 98-119 (sis v2 ve eski biçimin dönüştürülmesi), 261-273 (discovered); test yok.",
+   "plan": "discovered ve sis bit sayısı için kayıt/yükleme testi yazılmalı; bozuk sis dizesine karşı korumalı okuma eklenmeli (D-06)."
+  },
+  {
+   "req": "7.3 — Koleksiyonlar korunmalı",
+   "status": "karsilaniyor",
+   "evidence": "quests.js:86 (collection) ve 153-170; test yok.",
+   "plan": "Koleksiyon için kayıt/yükleme testi yazılmalı."
+  },
+  {
+   "req": "7.3 — Başarımlar korunmalı",
+   "status": "karsilaniyor",
+   "evidence": "quests.js:87 (achievements) ve 220-229; test yok.",
+   "plan": "Başarımlar için kayıt/yükleme testi yazılmalı."
+  },
+  {
+   "req": "7.3 — Online konuk ilerlemesi yalnız tarayıcıya bağlı kalmamalı (sunucu gerektiren ve gerektirmeyen seçenekler)",
+   "status": "yok",
+   "evidence": "Konuk verisi yalnız konuğun localStorage'ında duruyor: dksh.guest.0 (main.js:187-206) ve dksh.progress.guest (progress.js:58-59, 110). net.js:46'daki KNOWN listesinde 'prog' ve 'inter' var ama göndericisi ve işleyicisi yok; _sendWorld (net.js:510-522) ve ev sahibi kaydı (game.js:161-178) konuk verisi içermiyor. Tek taşıma yolu el ile dışa aktarma (save.js:77-81). Konuğun periyodik kaydı yok (D-09).",
+   "plan": "Sunucu gerektirmeyen seçenekler: (a) Ev sahibi kaydında konuk defteri tutulmalı. Konuğa kalıcı bir kimlik verilmeli (profilde WebCrypto ECDSA anahtar çifti; açık anahtar parmak izi guestId olur) ve kimlik ev sahibinin imzalı meydan okumasıyla doğrulanmalı. Ev sahibi her otomatik kayıtta konuk özetini (envanter, progress, kişisel quests) online yuvasına yazmalı, katılımda 'world' iletisiyle geri göndermeli; savedAt ya da sürüm vektörüyle en yeni kayıt kazanmalı. (b) Konukta periyodik kayıt yapılmalı, navigator.storage.persist() istenmeli ve IndexedDB kullanılmalı. (c) Cihazlar arası taşıma için sürümlü, sıkıştırılmış ve sağlama toplamlı bir 'karakter kodu' dosyası ya da QR ile dışa/içe aktarma sunulmalı. (d) Masaüstü (Electron) sürümünde kayıt dosyaya yapılmalı. Sunucu gerektiren seçenekler: (e) Hesap ve bulut kayıt API'si: kimlik doğrulama, revizyon numarasıyla çakışma çözümü, sunucu tarafı şema doğrulaması ve yedek geçmişi. (f) Google Drive appDataFolder ya da Dropbox gibi OAuth depoları: kendi sunucunu gerektirmez ama dış hizmete ve istemci kaydına bağımlıdır. (g) Otoriter oyun sunucusu: hile önlemeyi sağlar ama en yüksek maliyetli seçenektir. Tarayıcı deposunun tek başına sağlayamayacakları: cihazlar ve tarayıcılar arası süreklilik; site verisinin temizlenmesine, gizli pencereye, Safari'nin 7 gün kuralına ve depolama baskısında tahliyeye karşı dayanıklılık (persist() yalnız bir istektir, garanti değildir); farklı kökenler (file://, GitHub Pages, özel alan adı) arasında paylaşım; kurcalamaya karşı güven (kullanıcı DevTools ile istediği değeri yazabilir, ev sahibi konuk envanterini doğrulayamaz); kalıcı ve doğrulanabilir kimlik; ev sahibi tarayıcısı kaybolduğunda dünyanın ve konuk özetlerinin kurtarılması; yaklaşık 5 MB kotanın üstünde uzun bir yedek geçmişi."
+  },
+  {
+   "req": "7.3 — Kabul: adaya git, önemli nesneleri yok et/topla, bulmaca çöz, kaydet, çık, yükle, adaya dön — durum korunmalı; eski kayıtlar kaybolmamalı",
+   "status": "kismen",
+   "evidence": "Bu akışı gerçek etkileşimlerle uçtan uca yapan bir test yok. 08_kalicilik ve 12_kayit_dongusu ada durumunu kümeye doğrudan yazarak sınıyor (08:8-10, 12:7); tehlike için yalnız çekirdek kamp kullanılıyor; P08 yalnız tapınağı kapsıyor. Bu akışta kaya tuzağı ve Martı Batığı sandığı başarısız olur (D-13, D-08) ve yakındaki kamp boş gelir (D-07). Eski (v0.3) kayıt örneğiyle yükleme testi yok.",
+   "plan": "Yeni bir senaryo yazılmalı (18_dunya_kaliciligi.js): bir haydut kampı adasına ışınlan, fıçıyı ateşle, sandığı kır, kayayı bırak, plakayı çöz, gizli ve ada sandıklarını aç, tutsağı kurtar, batık sandığını aç → saveNow → toMenu → startGame(read) → adaya dön. Her nesne için beklenen durum, istemin yokluğu ve sabit altın doğrulanmalı; _drop/_build yeniden kurulumu da sınanmalı. Ayrıca v0.3 kayıt örneğini yükleyen bir senaryo eklenmeli."
+  }
+ ]
+}

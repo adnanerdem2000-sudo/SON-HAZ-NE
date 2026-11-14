@@ -1,0 +1,521 @@
+{
+ "area": "F — Ana hikâye ve görevler",
+ "summary": "v0.4'te hikâye içeriği ve tetikleyicileri v0.3 ile aynıdır; quests.js'deki tek fark han aşçısı seçeneğidir. STORY dizisi 6 girdi içerir: 0–4. aşamalar (Tuzla → Martı Adacığı hazinesi → Yankı Mağarası günlüğü → İskelet Kaptan Morvan → Kızıl Hançer) gerçek mekaniklere bağlıdır; 6. girdi 'Yitik Ufuk'a Doğru' ise tetikleyicisi olmayan bir yer tutucudur, bu yüzden hikâye 2/4 harita parçasında ve finalsiz biter. Kaptan Mira Veyl, Son Hazine, Gelgit Pusulası, Yitik Ufuk ve 3–4. parçalar yalnız metinde geçer. Kodda hiç doğmayan 'Mira Veyl'in Sandığı' (legend) kademesi dışında final için bir oyun nesnesi yoktur. Beş efsanevi boss sabit konumlarda yaklaşma koşuluyla doğar ve yenilince kalıcı olarak işaretlenir, ama hikâyeyle hiçbir kod bağı yoktur; Kızıl Hançer'in mektubu Volkanik Dev'i ('Ateşin Bekçisi') ve Derinlik Yılanı'nı ('Buzların Altındaki Kraliçe') işaret etse de bu bosslar yenilince parça vermez. Bu yüzden kullanıcının ikinci iddiası kısmen doğrudur: bosslar hikâyeye bağlı değildir ama rastgele de değildir; Morvan ile Kızıl Hançer ise hikâyeye bağlıdır. Birinci iddia doğrudur: README ve eski yol haritası 6–10. aşamaları eksik olarak yazar; ancak v0.4'ün kendi yol haritası (denetim/14) ve bilinen sorunlar listesi (denetim/11) bu maddeyi hiç anmaz. En ciddi bulgu yalnız v0.4'te olan bir co-op hatasıdır: konuğun başka dünyalardan kalan hikâye bayrakları ev sahibinin kaydına sızar ve 'gunluk' bayrağı 2. aşamayı kalıcı olarak kilitler. Ayrıca hikâye bossunun doğuş bayrağı kayda yazıldığı için, boss alanının yakınında yüklenen oyunda boss 200 m uzaklaşılmadan doğmaz. v0.4'te hikâye akışını sınayan etiketli bir test yoktur; dünya (6 bölge, 23 özel ada, 17 düşman türü, 5 boss, bulmacalar, olaylar) 6–10. aşamalar için zengin bir altyapı sunar, ancak yeni bir ada eklemek deterministik dünya testini bozacağı için Yitik Ufuk ayrı bir mekanizmayla eklenmelidir.",
+ "systems": [
+  {
+   "name": "Ana hikâye aşama makinesi (STORY dizisi, advance, stage/flags kaydı)",
+   "status": "dogrulanmamis",
+   "evidence": "js/game/quests.js:24-31 STORY dizisi 6 girdi içerir (0 basla, 1 ilk_hazine, 2 gunluk, 3 parca1, 4 kizil, 5 yitik). :127-135 advance → bildirim + storyAdvanced (progress.js:81 +150 XP, time.js:63 macera günlüğü) + netStory (:134). :121-124 save kaydeder: {stage, flags, side, completed, discovered, fog, stats, collection, achievements, markers, boardSeed}; :76-94 start. Hikâye bayrakları: ilkHarita, ilkHazineBulundu, ilkSatis, gunluk, morvanSpawn, parca1, kizilSpawn, kizilYenildi. v0.4'te etiketli hikâye testi yok: 12. belgede hikâye senaryosu yok, 08_kalicilik ve 12_kayit_dongusu quests'i denetlemiyor.",
+   "note": "Tek oyunculu kod akışı tutarlı. Aşama sayısal bir indeks olduğundan 6–10 eklenirken kayıt göçü gerekir. Aşama değeri hiçbir sistemi kilitlemiyor (yalnız hud.js:278/453 okuyor): dünya ve bütün bosslar baştan açık."
+  },
+  {
+   "name": "Aşama 0 'basla' — Korsan Hayatına Başlangıç (Yaşlı Kaptan Tuzla)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "Hedef quests.js:25. Tetik: Tuzla diyaloğundaki 'Martı benim mi?' seçeneği → advance(1) (quests.js:350-353). NPC js/world/port.js:323 (rol 'quest', 0–24 saat açık; time.js:33). HUD hedefi hud.js:454 (-32,206); açılış bildirimi quests.js:93. Ödül: anlatısal 'Martı artık senin' (gemi zaten baştan kullanılabilir, shipControl.js aşamaya bakmıyor) + 150 XP. Kayıt alanı: stage. Test: tests/scenarios/v03/g2b.js 2. adım (etiketsiz; TEST_RAPORU.md:11'e göre v0.3'te geçti; v0.4 A/B listesinde yok, 12:106-107).",
+   "note": "Co-op'ta konuk da ilerletebiliyor (net.js:174); F-01'deki bayrak kirlenmesinin giriş noktası bu adım."
+  },
+  {
+   "name": "Aşama 1 'ilk_hazine' — İlk Hazine (Nevra'nın haritası → Martı Adacığı marti_1 → Sedef Hanım'a satış)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "Hedef quests.js:26. Nevra seçeneği quests.js:404 (flags.ilkHarita, treasure.giveMap('marti_1'), G.storySites); start'ta storySites ayarı quests.js:91. Kazı noktası worldData.js:108-115 (küçük sandık, ipucu + 3 palmiye ve heykel); treasure.js:213-239 resolveDig. treasureFound marti_1 → flags.ilkHazineBulundu (quests.js:138-141). chestSold (stage 1 && ilkHazineBulundu) → flags.ilkSatis + advance(2) (quests.js:143-146; olay kaynağı shop.js:150 ve :160). Ödül: sandık değeri 160 altın + 150 XP. HUD hud.js:455. Test: v03/g2b.js (TEST_RAPORU.md:11 ve :82, v0.3).",
+   "note": "Sandığı açan oyuncu yönlendirilmiyor (F-07). Co-op'ta konuğun satışı hikâyeyi ilerletmiyor (F-05). Nevra 08–22 arası açık (time.js:32)."
+  },
+  {
+   "name": "Aşama 2 'gunluk' — Eski Günlük (Yankı Mağarası, Serdümen Halil'in Günlüğü = kayıp günlük)",
+   "status": "dogrulanmamis",
+   "evidence": "Hedef quests.js:27; Tuzla ipucu :355. Mağara worldData.js:75-83 (CAVE), POI :96. Masa ve günlük konumu js/world/cave.js:165-170; kitap örgüsü quests.js:66-71. Etkileşim istemi _provide quests.js:294-302 (koşul: stage≥2 && !flags.gunluk, 2,6 m). takeJournal quests.js:304-318: flags.gunluk, eski_gunluk eşyası (items.js:73), openReader ile lore metni, advance(3). HUD hud.js:456 (212,-30). Ödül: eşya + 150 XP. Test yok.",
+   "note": "2→3 geçişinin tek yolu bu. flags.gunluk önceden true olursa geri dönüşü olmayan bir kilit oluşuyor (F-01)."
+  },
+  {
+   "name": "Aşama 3 'parca1' — İlk Harita Parçası (İskelet Kaptan Morvan, Kemik Adası)",
+   "status": "hatali_kararsiz",
+   "evidence": "Hedef quests.js:28. Tetik quests.js:276-281: stage 3 ve oyuncu (-520,-440)'a 45 m'den yakınsa → enemies.spawnBoss('iskelet_kaptan', -520, -436, {rise}); sıfırlama :282 (boss yok ve oyuncu >200 m uzakta). Öldürme quests.js:175-181: flags.parca1, harita_parcasi 1/4 (items.js:71), advance(4). Morvan enemies.js:138-143 (800 can, %66/%33'te çağırma, %33'te öfke; ganimet 150–250 altın + kafatası + madalyon). Ada worldData.js:20-24, :58, :101; düşman grupları enemies.js:182-184; başarım quests.js:53. Test: 05_dusman_ai.js:47 yalnız dövüş evrelerini sınıyor, tetik test edilmedi.",
+   "note": "F-02 (yüklemeden sonra doğmuyor), F-04 (co-op'ta yerel tetik), F-08 (öldürme XP'si yok)."
+  },
+  {
+   "name": "Aşama 4 'kizil' — Kızıl Hançer (Kırlangıç'ın kuzeyindeki kamp)",
+   "status": "hatali_kararsiz",
+   "evidence": "Hedef quests.js:29. Tetik quests.js:283-289: stage 4 ve oyuncu (-40,-228)'e 50 m'den yakınsa → spawnBoss('kizil_hancer', -40, -232, görünüm); sıfırlama :290. Öldürme quests.js:182-189: flags.kizilYenildi, parça 2/4, spawnChest('large') (1100 altın), advance(5). Kızıl Hançer enemies.js:111-116 (650 can, %55'te çağırma, duman, tabanca; ganimet 400–600 altın + kizil_mektup + 2 külçe). Kamp worldData.js:54 ve :98, grup enemies.js:185, barut fıçıları hazards.js:33-35; başarım quests.js:54. Test: 05_dusman_ai.js:47 (yalnız evreler).",
+   "note": "B09 (ödül sandığının konukta görünmemesi) v0.4'te treasure.js:283 ile giderildi. F-02, F-04, F-08 ve F-09 hâlâ geçerli."
+  },
+  {
+   "name": "Aşama 5 'yitik' — Yitik Ufuk'a Doğru (hikâyenin şu an bittiği yer)",
+   "status": "eksik",
+   "evidence": "quests.js:30: hedef yalnız metin ('Bu bölgeler bir sonraki geliştirme aşamasında açılacak'). update içinde aşama 5 tetikleyicisi yok (quests.js:275-290). Tuzla'nın son diyaloğu :358. hud.storyTarget null döner (hud.js:458). Defter 2/4 parça ve '6-10 sonraki sürümlerde' notunu gösterir (journal.js:114-116). Mektup metni panels.js:98.",
+   "note": "(e) Hikâye tamamlanınca ne oluyor: Kızıl Hançer ölünce parça 2/4, büyük sandık, mektup kesesi, 150 XP ve 'Yeni görev: Yitik Ufuk'a Doğru' bildirimi gelir. Sonrasında hiçbir şey olmaz: final, jenerik, epilog ve kalıcı bir 'tamamlandı' bayrağı yok; HUD yıldızı kaybolur, efsanevi bosslar hikâyeyi etkilemez."
+  },
+  {
+   "name": "Aşama 6–10 ve final (Son Hazine'nin bulunması/açılması)",
+   "status": "eksik",
+   "evidence": "STORY dizisinde girdi yok (Node denemesi: STORY.length=6, STORY[6]=undefined; /tmp/denetim_alan/story_probe.mjs). Yitik Ufuk dünyada bir konum değil (archipelago.js:39-177'deki 23 özel ada arasında yok). CHEST_TIERS.legend 'Mira Veyl'in Sandığı' (items.js:104, treasure.js:22; 3000 altın, iki kişilik) hiçbir kazı noktasında ya da kodda doğmuyor (123 kazı noktası: 79 küçük, 35 orta, 9 büyük). Gelgit Pusulası için eşya ya da mekanik yok.",
+   "note": "README.md:129-131 ve docs/14_YOL_HARITASI.md:13'te eksik olarak yazılı; v0.4 yol haritası (docs/denetim/14) bu maddeyi anmıyor."
+  },
+  {
+   "name": "Hikâye öğesi: Kaptan Mira Veyl",
+   "status": "eksik",
+   "evidence": "Yalnız metinde geçiyor: quests.js:28, :178, :287, :312-314, :352; journal.js:111, :115; menu.js:87; items.js:71, :73, :104 (sandık adı); panels.js:97-98. NPC, model, mezar ya da konum yok.",
+   "note": "Final için kullanılmamış hazır bir kanca var: legend sandığın adı."
+  },
+  {
+   "name": "Hikâye öğesi: Son Hazine ve Gelgit Pusulası",
+   "status": "eksik",
+   "evidence": "Son Hazine yalnız metinde: quests.js:23, :312, :352; journal.js:111; menu.js:87, :320; items.js:71 açıklaması — oyun nesnesi yok. Gelgit Pusulası yalnız metinde: quests.js:314, :352; panels.js:98 — eşya yok. Gelgit mekaniği ayrıca var (time.tide, worldData.js:127-130 gelgit_1, treasure.js:189-194), ama pusulayla bağı yok.",
+   "note": "Pusula, mevcut gelgit sistemine bağlanabilecek hazır bir mekanik adayı."
+  },
+  {
+   "name": "Hikâye öğesi: Dört harita parçası",
+   "status": "eksik",
+   "evidence": "Eşya harita_parcasi (items.js:71; satılamaz, 'gorev' kategorisi). Parça 1 quests.js:177'de (Morvan), parça 2 quests.js:184'te (Kızıl Hançer) veriliyor. Defterdeki sayaç eşyaya değil bayraklara bakıyor (journal.js:114-115). Parça 3–4 yalnız metinde (quests.js:30, :358; panels.js:98). Parçaları birleştirme mekaniği yok.",
+   "note": "Co-op'ta parça yalnız ev sahibinin çantasına gidiyor (F-11)."
+  },
+  {
+   "name": "Hikâye öğesi: Volkanik Adalar",
+   "status": "eksik",
+   "evidence": "Yalnız metinde geçiyor (quests.js:30, :358; panels.js:98). Dünyadaki karşılığı 'Kül Adaları' bölgesi (archipelago.js:13, :118-133): Kül Limanı, Ateş Dağı volkanı + Volkanik Dev 'Ateşin Bekçisi' (bosses.js:29), Obsidyen Adası madeni. Ek olarak volkanik bombardıman olayı (worldEvents.js:253-295), gayzerler ve lav gölleri (hazards.js:24, islands.js:1082-1123) var. Hikâye bağı yok; metindeki ad bölge adıyla uyuşmuyor.",
+   "note": "Bölge ve boss hazır; eksik olan yalnız hikâye bağlantısı."
+  },
+  {
+   "name": "Hikâye öğesi: Buz Krallığı",
+   "status": "eksik",
+   "evidence": "Yalnız metinde geçiyor (quests.js:30; 'buzların altındaki kraliçe' ifadesi :358 ve panels.js:98). Dünyadaki karşılığı 'Buzul Denizi' (archipelago.js:11, :70-93): Kuzeyfener limanı, Buzdişi buzul adası, Kurt Adası, Derin Yarık + Derinlik Yılanı 'Buzların Altındaki Kraliçe' (bosses.js:26). Ek olarak buzdağı olayı (worldEvents.js:120-142) ve kutup ayısı, kar canavarı, kurt (animals.js:300+) var. Krallık yapısı, kraliçe NPC'si ya da hikâye bağı yok.",
+   "note": "Bölge ve boss hazır; krallığı temsil eden bir alan ya da NPC yok."
+  },
+  {
+   "name": "Hikâye bosslarının dövüş davranışı (Morvan ve Kızıl Hançer evreleri)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "enemies.js:111-116, :138-143. tests/scenarios/05_dusman_ai.js:47 etiketi 'Boss evreleri: can eşiklerinde çağırma ve öfke tetiklenir' ve 'F-05 Çağırma hazırlığı hafif vuruşla bozulmaz'. docs/denetim/12'deki Aşama 9 regresyonunda 05_dusman_ai 18/18; docs/denetim/07:25 GEÇTİ.",
+   "note": "Yalnız dövüş sınanıyor; hikâye tetiği ve ödülü bu testlerin dışında."
+  },
+  {
+   "name": "Efsanevi boss tetikleme ve kalıcılık (bosses._check, BOSS_SITES, defeated)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "(d) bosses.js:1102-1108: _check ev sahibinde 0,5 sn'de bir çalışır. Koşullar (:1077-1092): Taş Muhafız → tapınak bulmacası çözülmüş (islands.temples[..].state.done) + 26 m + |Δy|<8; Volkanik Dev → Ateş Dağı merkezine 0,24·r'den (≈130 m) yakın; deniz bossları (Kraken, Derinlik Yılanı, Lanetli Amiral) → 240 m içinde, gemi batmamış ve oyuncu güverte/dümen/top/yüzme kipinde. Aynı anda tek boss. :1094-1099: herkes 650 m'den uzaklaşırsa boss geri çekilir (canı yenilenir). :1066-1075 victory → defeated (kayıt :1048-1053), ganimet, bossDefeated (+600 XP, progress.js:77), günlük kaydı. Konumlar archipelago.js:321-323 (Derin Yarık 1300,-8080; Ateş Dağı 7700,-900; Sis Adası -6000,-8400; Kara Girdap -4520,-5000); Taş Muhafız islands.js:866 (tapınak kurulunca eklenir). Test: v03/boss1–5 A/B koşuları istisnasız geçti (12:106-110), ama _check yolu yalnız boss3'te sınanıyor; 09_performans bossları doğrudan doğuruyor; 11. belge #12'ye göre savaşlar uçtan uca oynanmadı.",
+   "note": "Hikâye koşulu yok. Yenilen boss bir daha doğmadığı için 6–10 tasarımında geriye dönük işleme şart."
+  },
+  {
+   "name": "Boss–hikâye bağı",
+   "status": "eksik",
+   "evidence": "bosses.js quests modülünü içe aktarmıyor (bosses.js:1-18). quests.js'de bossDefeated dinleyicisi yok (137-200); bu olayın tek dinleyicisi progress.js:77. Tek bağ metinsel: BOSS_DEFS unvanları (bosses.js:26, :29) ile mektup (panels.js:98) ve Tuzla'nın diyaloğu (quests.js:358).",
+   "note": "Morvan ve Kızıl Hançer ise hikâyeye bağlı (aşama 3 ve 4)."
+  },
+  {
+   "name": "Co-op hikâye senkronu (netStory/'story', applyWorld, konuğun kişisel quests kaydı)",
+   "status": "hatali_kararsiz",
+   "evidence": "Konuk→ev sahibi yolu: net.js:174 (v0.3'te yoktu, v03 net.js:146 — B05). Ev sahibi işleyicisi net.js:326-332 (yalnız '+1 aşama' kuralı, koşulsuz bayrak birleştirme). Dünya gönderimi net.js:518; konuk tarafındaki 'story' işleyicisi :568. Konuk kaydı main.js:193 ve :203; applyWorld'deki bayrak birleştirmesi main.js:336. Test: coop/*.cjs'de 'story' kontrolü yok; 09_KAYIT_TESTLERI.md:21 'doğrudan ölçülmedi' diyor.",
+   "note": "İlgili hatalar: F-01, F-04, F-05, F-06, F-11."
+  },
+  {
+   "name": "Yan görevler ve görev panosu",
+   "status": "dogrulanmamis",
+   "evidence": "SIDE_TEMPLATES 8 şablon (quests.js:33-42: balık satışı, iskelet/haydut öldürme, sandık satışı, post toplama, resif/batık keşfi, nadir balık). boardQuests :231-235 (boardSeed sabit), acceptSide :236-244 (en çok 4 görev), _side/_sideCheck :202-218 (ödül shop.earn ile; co-op'ta paylaşılır). Defter journal.js:117-122; pano port.js:331. Test: v03/board.js (etiketsiz, v0.4'te koşturulmadı).",
+   "note": "Bkz. F-10."
+  },
+  {
+   "name": "Başarımlar",
+   "status": "dogrulanmamis",
+   "evidence": "ACHIEVEMENTS 13 başarım (quests.js:44-58); hikâyeyle ilgili olanlar 'morvan' :53 ve 'hancer' :54. _checkAch :220-229; defter journal.js:169-175. Test yok.",
+   "note": ""
+  },
+  {
+   "name": "Korsan Defteri hikâye sekmesi, HUD görev takibi ve hedef yıldızı",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "journal.js:110-116: aşama listesi (tamamlanan/şu anki), gelecek aşamaların '???' ile gizlenmesi, parça sayacı, 6–10 notu. hud.js:276-281: görev takibi STORY[min(stage,5)] + yan görevler. Hedef yıldızı pusulada (:255-265) ve mini haritada (:421-422). :452-460 storyTarget: aşama 0–4 için sabit koordinat, ≥5 için null. menu.js:75 ve :138 son macera kartı. Test: 06_arayuz_960.js:13 yalnız quest-tracker yerleşim çakışmasını sınıyor.",
+   "note": "Her aşamada tek koordinatlı tek hedef var; alt adım ya da çoklu hedef yok."
+  },
+  {
+   "name": "Hikâye NPC'leri ve diyalog altyapısı",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "Çekirdek limanda 10 NPC (port.js:322-332); hikâye rolü yalnız Tuzla'da ('quest'). Bölge limanlarında genel tüccar, hazine alıcısı, rota kaptanı, gemi ustası ve zarcı (islands.js:585-593); gizli pazar (909-910); tutsaklar (957). Dinamik NPC API'si npcs.js:89-95. Rol tabanlı diyalog quests.js:332-482 (seçenekli D(text, options), dialogExtra); okuma paneli openReader (panels.js:51). Test: 16_kosu_poz_ganimet.js:65,72 (han aşçısı seçeneği).",
+   "note": "6–10 bölgelerinde hiç hikâye NPC'si yok. Dallanan karar altyapısı yok."
+  },
+  {
+   "name": "Dünya olayları (rastgele ve bağlama duyarlı)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "events.js:100-114 ağırlıklı seçim (varil, şişe, sandık, fırtına, kazazede, düşman gemisi, kuş sürüsü); :116-156 _classic; :251-276 düşman korsan gemisi 'Kızıl Diş'. worldEvents.js:86-108: buzdağı (Buzul), hayalet ışıklar (Hayalet, gece), gök taşı, volkanik bombardıman (Kül), plankton, fırtına enkazı. Co-op senkronu net.js:688. Test: coop/06b (yüzen nesne senkronu).",
+   "note": "Hiçbiri hikâyeye bağlı değil. events.trigger(kind) ve worldEvents.trigger(kind) senaryolu tetik için hazır. Metin tutarsızlığı için bkz. F-09."
+  },
+  {
+   "name": "Kadim Tapınak levye bulmacası ve kalıcılığı",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "islands.js:788-867: 3 levye, ipucu yazıtı, kalıcı templeState, kapı, sunak sandığı ve Taş Muhafız'ın BOSS_SITE kaydı. Testler: tests/scenarios/13_donma.js 'P08 Tapınak bulmacası: çözüm yeniden kurulumda ve kayıt yüklemede korunur...' ve 08_kalicilik.js 'B02/B-08 Ada ödülleri, tutsaklar ve tapınak mekanizması yüklemede geri geliyor'. 12. belgedeki son regresyonda 13_donma 8/8, 08_kalicilik 12/12.",
+   "note": "Levye sırası adanın kurulum LOD'una bağlı (bilinen #35, açık; co-op'ta ev sahibi ve konuk farklı sıra görebilir). 12 #7: bulmaca akışı uçtan uca oynanmadı. Hikâyeye bağlı değil."
+  },
+  {
+   "name": "Diğer çevre bulmacaları ve etkileşimler (basınç plakası, gelgit kazısı, tutsak kurtarma, mağara, batık şehir)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "Basınç plakası hazards.js:23 ve :428-555 (harabelerin yaklaşık %60'ında, :130). Barut fıçısı, kaya tuzağı ve gayzer hazards.js:19-24. Gelgit kazısı worldData.js:127-130 + treasure.js:189-194. Tutsak kurtarma islands.js:932-970 (+120 altın, prisonerFreed ile +80 XP). Yankı Mağarası js/world/cave.js; batık şehir islands.js:1025. Tutsak/ödül kalıcılığı 08_kalicilik'te sınanıyor.",
+   "note": "Hiçbiri hikâyeye bağlı değil; 6–10 bölümlerinde bulmaca olarak yeniden kullanılabilir."
+  },
+  {
+   "name": "Dünya alanları ve biyomlar (6–10 için hazır alanlar)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "(c) archipelago.js:9-16 altı bölge. :39-177'de 23 özel ada: Ticaret Denizi — Tuz Pazarı (liman), Terk Edilmiş Korsan Kasabası (yıkık kasaba + kamp + kale/haydut kaptanı), Gizli Pazar, Fener Kayası, Mercan Halkası. Buzul — Kuzeyfener (liman), Buzdişi (buzul; kamp + harabe), Kurt Adası, Derin Yarık (Derinlik Yılanı). Zümrüt — Zümrüt Koy (liman), Kadim Tapınak (bulmaca + Taş Muhafız), Timsah Bataklığı, Batık Şehir. Kül — Kül Limanı (liman), Ateş Dağı (Volkanik Dev + kamp), Obsidyen (maden). Kızıl Kum — Kumsaati (liman), Demirkapı Hapishanesi (tutsaklar), Gümüş Madeni (lanetli; iskelet madenciler), Kızıl Kanyon. Hayalet — Korsan Mezarlığı (2 mezarlık; gece Hayalet Kaptan), Sis Adası (Lanetli Amiral), Kara Girdap (Kraken). Bunlara 44 yordamsal adacık ve 6 çekirdek ada eklenince toplam 73 ada (Node denemesiyle sayıldı). Test: 07_dunya_kesif.js D01–D08 (12. belge 10/10), tests/node/archipelago_sabit.mjs GEÇTİ.",
+   "note": "Hayalet Denizleri'nde liman yok; 'Yitik Ufuk' diye bir yer yok. Yeni bir ada eklemek archipelago_sabit testini bozar (test ada sayısının ve yordamsal yerleşimin birebir aynı kalmasını ister), bu yüzden hikâye adası ayrı bir listeyle eklenmeli."
+  },
+  {
+   "name": "Düşman ve canlı çeşitliliği (6–10 için)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "17 düşman türü (enemies.js:79-177: haydut, haydut_nisanci, haydut_agir, haydut_avci, haydut_kaptani, kizil_hancer, iskelet, iskelet_nisanci, iskelet_agir, iskelet_altin, iskelet_kaptan, hayalet, hayalet_bogulmus, hayalet_nisanci, hayalet_muhafiz, lanetli_amiral, hayalet_kaptan). Davranış bayrakları: rise, phase, grab, throwKnife, flanker, shield/poise, dash, summon/enrage. Mermi türleri boulder, lava, venom, ghostball (enemies.js:1250-1281). Bölgesel düşman listeleri aynı türleri kullanıyor (archipelago.js:230-237). Hayvanlar: polar, yeti, wolf, giantcrab vb. (animals.js:300+); deniz devleri: balina, orka, hayalet balina (megafauna.js). Test: 05_dusman_ai 18/18.",
+   "note": "Buz, ateş ya da çöl bölgesine özgü düşman yok; Kızıl Kanyon açıklamasındaki akrepler de oyunda yok."
+  },
+  {
+   "name": "Hikâye ödülleri ve kalıcı ilerleme",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "Aşama başına +150 XP (progress.js:81). Eşyalar: eski_gunluk, harita_parcasi, kizil_mektup (items.js:71-74, satılamaz). Kızıl Hançer'in büyük sandığı (quests.js:186). Başarımlar (quests.js:53-54). Efsanevi bosslarda +600 XP ve kalıcı defeated kaydı (progress.js:77, bosses.js:1067). Hikâye bossları öldürme XP'si almıyor (progress.js:75'teki !T.boss koşulu).",
+   "note": "Hikâye ilerlemesi hiçbir şeyin kilidini açmıyor (gemi, bölge ya da yetenek kilidi yok). Bkz. F-08."
+  }
+ ],
+ "issues": [
+  {
+   "id": "F-01",
+   "title": "Co-op: konuğun eski dünyalardan kalan hikâye bayrakları ev sahibinin kaydına sızıyor; 'gunluk' bayrağı 2. aşamayı kalıcı olarak kilitliyor",
+   "file": "js/main.js; js/net/net.js; js/game/quests.js",
+   "func": "startOnlineGuest (main.js:193), applyWorld (main.js:336), _hostData case 'story' (net.js:326-332), quests.start (quests.js:79), quests._provide (quests.js:297)",
+   "rootCause": "Konuğun kişisel kaydı (dksh.guest.0) quests.save() ile bütün hikâye bayraklarını saklıyor (main.js:203); yeni odada quests.start bu bayrakları yüklüyor (quests.js:79). applyWorld aşamayı ev sahibinden alıyor ama bayrakları Object.assign ile birleştiriyor (main.js:336), bu yüzden eski dünyanın gunluk, ilkHazineBulundu, parca1 ve kizilYenildi bayrakları konukta kalıyor. Konuk bir aşama ilerletince (Tuzla ile konuşma ya da eski ilkHazineBulundu bayrağıyla satış) netStory bütün bayraklarını gönderiyor (quests.js:134, net.js:174). Ev sahibi, aşama kontrolünden önce her true bayrağı kendi quests.flags'ine yazıyor (net.js:329). flags.gunluk hiçbir yerde sıfırlanmıyor; 2→3 geçişi yalnız takeJournal'dan geçiyor, o da yalnız !flags.gunluk iken sunuluyor (quests.js:297-301, :316).",
+   "impact": "Daha önce başka bir dünyada 3. aşamaya ulaşmış bir konuk, yeni bir dünyada Tuzla ile konuştuğu anda ev sahibinin kaydına gunluk=true yazılır. Ev sahibi 2. aşamaya gelince mağaradaki günlüğü alamaz: kitap masada görünür ama etkileşim istemi çıkmaz, oyun yeniden yüklenince kitap da kaybolur. Hikâye o dünyada 'Eski Günlük'te kalıcı olarak takılır; Morvan ve Kızıl Hançer hiç doğmaz. Ayrıca ilkHazineBulundu sızarsa Martı hazinesi atlanır ve defter hiç boss yenilmeden 2/4 parça gösterir.",
+   "priority": "kritik",
+   "fix": "applyWorld'de bayrakları birleştirmek yerine ev sahibininkilerle değiştir (quests.flags = {...m.quests.flags}). Konuğun kişisel kaydından hikâye alanlarını (stage/flags) çıkar ya da bunları dünya kimliğiyle anahtarla. 'story' iletisini bayrak listesi yerine niyet iletisine çevir ({t:'storyReq', action:'tuzla'|'journal'|'chestSold'}); ev sahibi koşulu kendi durumunda doğrulasın ve yalnız o aşamaya ait beyaz listedeki bayrakları kabul etsin. Bozulmuş kayıtlar için göçte stage<3 && gunluk durumunu onar.",
+   "repro": "Konuk A ile X'in dünyasında 3. aşamaya gelin; A'nın dksh.guest.0 kaydında flags.gunluk=true olur. A, Y'nin yeni (0. aşamadaki) dünyasına katılıp Tuzla ile konuşsun → Y'de DK.quests.flags.gunluk === true. Y 2. aşamaya gelip Yankı Mağarası'ndaki masaya gitsin: 'Eski günlüğü al' istemi çıkmaz. Mantık kopyası: node /tmp/denetim_alan/flag_chain.mjs (ev sahibi bayrakları sızar; aşama 2'de istem false; defter 2/4).",
+   "acceptance": "Yeni bir 2 oyunculu co-op testi: konuğun dksh.guest.0 kaydına {quests:{stage:5, flags:{gunluk:true, ilkHazineBulundu:true, parca1:true, kizilYenildi:true}}} yazılır; konuk 0. aşamadaki odaya katılıp Tuzla ile konuşur. Beklenen: ev sahibinde stage 1, flags'te yalnız 1. aşamaya ait bayraklar; 2. aşamada günlük istemi görünür; defter 0/4 gösterir; bozuk eski kayıt göçle onarılır.",
+   "presentIn": "yalniz_v04",
+   "confidence": "yuksek",
+   "knownAs": "Belgelenmemiş; 09_KAYIT_TESTLERI.md:21'deki 'bayraklar ev sahibinden gelir' iddiasıyla çelişiyor"
+  },
+  {
+   "id": "F-02",
+   "title": "Hikâye bossunun doğuş bayrağı (morvanSpawn/kizilSpawn) kayda yazılıyor; boss alanının 200 m içinde yüklenen oyunda Morvan ya da Kızıl Hançer doğmuyor",
+   "file": "js/game/quests.js",
+   "func": "update (276-290), save (121-124), start (76-79)",
+   "rootCause": "'Boss bu oturumda doğdu' bilgisi kalıcı flags nesnesinde tutuluyor ve save() ile kayda yazılıyor. Yüklemede enemies.start düşman listesini boşaltıyor (enemies.js:1311-1317) ama bayrak true kalıyor. Bayrağı sıfırlayan tek koşul 'boss yok VE oyuncu 200 m'den uzak' (quests.js:282, :290); tetik yarıçapı ise 45/50 m. Kemik Adası'nın yarıçapı 135 m olduğundan sıfırlama için adayı tamamen terk etmek gerekiyor.",
+   "impact": "Boss dövüşü sırasında otomatik kayıt (2 dakikada bir, game.js:218) ya da sekme kapanışı/menüye dönüş kaydı (main.js:383-385) alınır. Oyuncu ölüp menüden 'Devam Et' derse ya da oyunu kapatıp açarsa harabede/kampta başlar ve boss doğmaz. HUD yıldızı aynı yeri göstermeye devam eder, hiçbir ipucu yoktur; oyuncu ana hikâyenin bozulduğunu düşünür.",
+   "priority": "yuksek",
+   "fix": "Doğuş bayraklarını kalıcı flags'ten çıkarıp oturumluk bir alana taşı (ör. this.spawned, kayda yazılmaz) ya da start()'ta morvanSpawn/kizilSpawn'ı false yap. Daha sağlam çözüm: bayrağa değil, enemies.list'te canlı boss olup olmadığına bak ve yoksa yeniden doğur.",
+   "repro": "3. aşamadaki bir kayıtla Kemik Harabeleri'ne (-520,-440) git; Morvan doğsun. Esc → Kaydet (ya da 2 dk bekle), menüye dön, kaydı yükle. Harabede 10 dk bekle: Morvan doğmaz (DK.quests.flags.morvanSpawn === true, DK.enemies.list'te iskelet_kaptan yok). 210 m uzaklaşıp dönünce doğar. Mantık kopyası: node /tmp/denetim_alan/reload_flag.mjs.",
+   "acceptance": "Etiketli test: flags.morvanSpawn=true olan 3. aşama kaydı harabe merkezinde yüklenince 2 sn içinde iskelet_kaptan doğar; aynı kontrol 4. aşama ve kamp için de geçer; kayıt verisinde doğuş bayrağı bulunmaz.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "Belgelenmemiş (01_ILK_DENETIM_RAPORU.md:227 'uzaklaşınca sıfırlanıp yeniden doğuyor' diyor; yükleme durumu atlanmış)"
+  },
+  {
+   "id": "F-03",
+   "title": "Ana hikâye 5. aşamada çıkmaz sokakta bitiyor: metin kalan parçaları mevcut bosslara işaret ediyor ama aradaki bağ, 6–10. aşamalar ve final yok",
+   "file": "js/game/quests.js; js/game/bosses.js; js/ui/panels.js",
+   "func": "STORY (quests.js:24-31), dialog 'quest' st≥5 (quests.js:358), _wire (quests.js:137-200), bosses.victory (bosses.js:1066-1075)",
+   "rootCause": "STORY'nin 6. girdisinin ('yitik') hedefi yalnız metin; 5. aşama için hiçbir tetikleyici yok (update yalnız 3. ve 4. aşamayı işliyor, 276-290). quests 'bossDefeated' olayını dinlemiyor. hud.storyTarget 5. aşamada ve sonrasında null (hud.js:458).",
+   "impact": "Kızıl Hançer yenildikten sonra oyuncu 'kalan parçalar ateşin bekçisi ve buzların altındaki kraliçede' bilgisini alıyor (panels.js:98, quests.js:358). Bunlar tam olarak Volkanik Dev'in ve Derinlik Yılanı'nın unvanları (bosses.js:26, :29) ve oyuncu bu bossları yenebiliyor — ama hiçbir şey olmuyor. Hedef metni bu bölgelerin 'bir sonraki geliştirme aşamasında açılacağını' söylüyor, oysa bölgeler zaten açık. Hikâye 2/4 parçada ve finalsiz bitiyor; Son Hazine bulunamıyor.",
+   "priority": "yuksek",
+   "fix": "Faz 6'da 6–10. bölümleri veri güdümlü olarak ekle (bkz. requirements planı). Ara çözüm: 5. aşama metnini düzelt ('Kül Adaları'ndaki Ateş Dağı'nı ve Buzul Denizi'ndeki Derin Yarık'ı araştır'), bossDefeated olayını parça 3/4 ve 4/4'e bağla, mevcut kayıtlar için bosses.defeated'tan geriye dönük parça ver.",
+   "repro": "4. aşamada Kızıl Hançer'i yen → 5. aşama. Tuzla ile konuş. DK.bosses.spawn('volkanik_dev') ile bossu doğurup yen → DK.quests.stage 5'te kalır, bayraklar değişmez, defter 2/4 gösterir.",
+   "acceptance": "5. aşamada Volkanik Dev ile Derinlik Yılanı yenilince parça 3/4 ve 4/4 verilir ve aşama ilerler. Önceden yenilmiş bosslar bölüm açıldığında geriye dönük işlenir. Hikâye bir final karşılaşması ve 'tamamlandı' bayrağıyla biter; bunların hepsi etiketli testlerle sınanır.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "docs/13_BILINEN_HATALAR.md #1 (yalnız v0.3 listesi); docs/denetim/11 ve denetim/14'te yok"
+  },
+  {
+   "id": "F-04",
+   "title": "Co-op: hikâye bossu tetikleyicileri yalnız yerel oyuncunun konumuna bakıyor; konukta sahte bir boss doğup anlık görüntüyle siliniyor, ev sahibi yaklaşmadan Morvan/Kızıl Hançer doğmuyor",
+   "file": "js/game/quests.js; js/game/enemies.js",
+   "func": "quests.update (246-291), enemies.spawnBoss (1331-1336), enemies.applySnapshot (1650-1660)",
+   "rootCause": "quests.update her istemcide çalışıyor (game.js:212) ve yalnız G.player'a bakıyor (quests.js:247, :276, :283); ev sahibinde konukların konumu hiç sorgulanmıyor. Konukta enemies.spawnBoss yerel bir düşman yaratıyor; bu düşman ev sahibinin 7,5 Hz'lik düşman anlık görüntüsünde bulunmadığı için en geç ~0,13 sn içinde siliniyor.",
+   "impact": "Ev sahibi gemide ya da limanda kalıp konuklar Kemik Harabeleri'ne veya kampa giderse, konuklar 'Morvan uyandı!' bildirimini, boss sesini ve macera günlüğü kaydını görür ama boss bir an sonra kaybolur. Konuğun morvanSpawn bayrağı true kaldığı için 200 m uzaklaşmadan yeniden denenmez. Boss ancak ev sahibi 45/50 m yaklaşınca doğar.",
+   "priority": "orta",
+   "fix": "Hikâye tetikleyicilerini yalnız ev sahibinde (ya da tek oyunculuda) çalıştır ve bütün oyuncu konumlarını (G.player + G.remotes) değerlendir. Konukta spawnBoss çağrısını engelle; bildirimi ev sahibi yayınlasın.",
+   "repro": "2 oyunculu odada 3. aşama: ev sahibi limanda beklesin, konuk (-520,-440)'a ışınlansın. Konukta bildirim gelir; ≤0,2 sn sonra DK.enemies.list'te iskelet_kaptan yoktur; ev sahibinde de yoktur.",
+   "acceptance": "Co-op testi: yalnız konuk 45 m'ye girdiğinde ev sahibinde iskelet_kaptan doğar ve konuğun anlık görüntüsünde görünür; konukta yerel boss nesnesi oluşmaz.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "Belgelenmemiş"
+  },
+  {
+   "id": "F-05",
+   "title": "Co-op: 1→2 geçişini sağlayan 'chestSold' olayı ağda yok; Martı hazinesi konuk oturumdayken bulunduysa konuğun satışı hikâyeyi ilerletmiyor",
+   "file": "js/game/quests.js; js/economy/shop.js",
+   "func": "_wire chestSold ve treasureFound (quests.js:138-147); shop.sellCarriedChest (137-152), shop.sellHoldChests (156-166)",
+   "rootCause": "chestSold yalnız satışı yapan istemcide yerel olarak yayılıyor (shop.js:150, :160). ilkHazineBulundu bayrağı ev sahibinde treasureFound ile kuruluyor (resolveDig ev sahibinde çalışıyor) ve konuğa yayınlanmıyor; netStory yalnız advance ve takeJournal'da gönderiliyor.",
+   "impact": "HUD herkese 'Sedef Hanım'a sat' diyor. Konuk sandığı taşıyıp satarsa sandık harcanır ama hikâye 1. aşamada kalır; ev sahibinin başka bir sandık satması gerekir ve oyun bunu söylemez.",
+   "priority": "orta",
+   "fix": "Konuğun satışında ev sahibine bir 'storyReq: chestSold' niyeti gönder ya da satışı ev sahibinde doğrula. ilkHazineBulundu kurulduğunda netStory yayınla.",
+   "repro": "Co-op, 1. aşama: konuk Nevra'dan haritayı alsın, Martı Adacığı'nda kazsın (sonucu ev sahibi çözer), sandığı limana taşıyıp Sedef Hanım'a satsın → ev sahibinde de konukta da stage 1 kalır.",
+   "acceptance": "Co-op testi: konuğun satışından sonra hem ev sahibinde hem konukta stage 2 olur.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "Belgelenmemiş"
+  },
+  {
+   "id": "F-06",
+   "title": "Ev sahibi, konuktan gelen 'story' iletisini yalnız '+1 aşama' kuralıyla doğruluyor: ön koşul yok, bayraklar koşulsuz birleşiyor, üst sınır yok (6. aşama ve sonrasında TypeError)",
+   "file": "js/net/net.js; js/game/quests.js",
+   "func": "_hostData case 'story' (net.js:326-332); quests.advance (quests.js:127-135)",
+   "rootCause": "İşleyici num(m.stage, 0, 99) ile 0–99 arasını kabul ediyor ve aşamaya ait koşulu (Morvan öldü mü, günlük alındı mı) denetlemiyor; bayrakları aşama kontrolünden önce birleştiriyor. advance, STORY[to] tanımsızken s.title'ı okuyor (quests.js:130-132).",
+   "impact": "window.DK konsolu açık olduğundan (main.js:134) değiştirilmiş bir konuk (ör. DK.quests.advance ya da DK.net.toHost'u art arda çağırarak) ev sahibinin hikâyesini saniyeler içinde 5. aşamaya taşıyabilir: Morvan ve Kızıl Hançer dövüşleri atlanır, ev sahibi 4×150 XP alır. Aşama 6–99'a da çıkarabilir; bu durumda advance istisna fırlatır ama stage yine de kaydedilir, ileride 6–10 eklendiğinde bu kayıtlar içeriği atlar. Sınırsız kazanç yok (XP 5. aşamada durur).",
+   "priority": "orta",
+   "fix": "'story' iletisini F-01 ile birlikte niyet tabanlı yap; ev sahibi koşulu kendi dünyasında doğrulasın. to ≤ STORY.length-1 sınırı ekle; advance'te STORY[to] yoksa erken dön; bayrakları yalnız beyaz listeden ve koşul sağlandıktan sonra kabul et.",
+   "repro": "Konuk konsolunda ev sahibinin aşamasına göre art arda DK.net.toHost({t:'story', stage: <ev sahibi aşaması+1>, flags:{}}) gönder → ev sahibinde DK.quests.stage 5'i aşar; konsolda \"Cannot read properties of undefined (reading 'title')\". Node: /tmp/denetim_alan/story_probe.mjs çıktısı STORY.length=6, STORY[6]=undefined ve aynı TypeError'ı gösterir.",
+   "acceptance": "06a_ag_guvenligi'ne ek kontroller: önceki aşamanın koşulu sağlanmadan gelen 'story' iletisi reddedilir; stage>5 ya da +2 atlama reddedilir; istisna oluşmaz.",
+   "presentIn": "yalniz_v04",
+   "confidence": "yuksek",
+   "knownAs": "Belgelenmemiş (B05 düzeltmesinin yan etkisi)"
+  },
+  {
+   "id": "F-07",
+   "title": "1. aşamada Martı sandığını açan oyuncu yönlendirilmiyor; 2. aşama yalnız kapalı sandığın satışıyla açılıyor",
+   "file": "js/game/quests.js",
+   "func": "_wire chestSold (143-147) ve treasureFound (138-142)",
+   "rootCause": "advance(2) yalnız chestSold olayına bağlı; chestOpened (treasure.js:491) dinlenmiyor. Bildirim yalnız 'Sedef Hanım'a sat' diyor (quests.js:140). G.storySites boşaltıldığı ve harita harcandığı için Martı yeniden kazılamıyor.",
+   "impact": "Yeni oyuncu sandığı açarsa (E basılı tut) hikâye takılır. İlerlemek için 150 altına rastgele harita alıp başka bir sandık bulmak ve onu satmak gerektiğini oyun hiçbir yerde söylemez; ilk 10 dakikada terk etme riski doğar.",
+   "priority": "orta",
+   "fix": "chestOpened olayını dinle: stage===1 && ilkHazineBulundu ise ya ganimetin Sedef Hanım'a satışını ilk satış say ya da açık bir yönlendirme göster ve Nevra'dan ücretsiz yeni harita ver.",
+   "repro": "Yeni oyun → Tuzla → Nevra → Martı Adacığı'nda kaz → sandığı aç → stage 1'de kalır; HUD hâlâ 'Sedef Hanım'a sat' der.",
+   "acceptance": "Etiketli test: sandık açılınca 3 sn içinde yönlendirme bildirimi gelir ve bir ilerleme yolu vardır (2. aşamaya geçiş ya da ücretsiz harita).",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "02_HATA_LISTESI.md §4 G_icerik önerisi (satır 1658: 'Hikâye 1. aşamada sandığı açan oyuncuya yönlendirme')"
+  },
+  {
+   "id": "F-08",
+   "title": "Hikâye bossları (Morvan, Kızıl Hançer) ve Hayalet Kaptan öldürme XP'si vermiyor; tanımlı xp değerleri ölü veri",
+   "file": "js/game/progress.js; js/game/enemies.js",
+   "func": "progress.init içindeki enemyKilled dinleyicisi (progress.js:75); ENEMY_TYPES (enemies.js:111-116, :138-143, :171-176)",
+   "rootCause": "progress.js:75'teki 'if (T && !T.boss)' koşulu, efsanevi bossların +600 XP'si bossDefeated'dan gelsin diye boss bayraklı bütün düşmanları XP dışında bırakıyor. Hikâye bossları ve Hayalet Kaptan bossDefeated yaymadığı için hiç öldürme XP'si almıyor.",
+   "impact": "800 canlı Morvan toplam yalnız 150 XP veriyor (aşama ödülü); sıradan bir Haydut Kaptanı 120 XP, 1000 canlı Hayalet Kaptan ise 0 XP. Hikâyenin doruk anlarında ödül hissi zayıf kalıyor.",
+   "priority": "dusuk",
+   "fix": "Yalnız efsanevi bossları (bosses.js sınıfları) XP dışında bırak; hikâye bossları ve Hayalet Kaptan için xp·2 ya da sabit bir boss ödülü ver.",
+   "repro": "DK.progress.xp değerini oku → DK.enemies.spawn('iskelet_kaptan', x, z).applyDamage(99999, {}) → xp değişmez (3. aşamada değilsen).",
+   "acceptance": "Etiketli test: Morvan öldürülünce xp, aşama ödülü hariç en az 400 artar; efsanevi bosslarda çift XP oluşmaz.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "Belgelenmemiş (01. belge :207 boss tiplerinin XP'den dışlanmasını doğru kabul ediyor)"
+  },
+  {
+   "id": "F-09",
+   "title": "Hikâye metni ile oyun durumu uyumsuz: Kızıl Hançer yenildikten sonra da düşman gemisi 'Kızıl Hançer'in korsanları'; mektup 'alındı' deniyor ama yerdeki kesede; 4. aşama bildirimi Tuzla'ya yönlendirirken HUD kampı gösteriyor",
+   "file": "js/game/events.js; js/game/quests.js; js/game/enemies.js; js/ui/hud.js",
+   "func": "events.spawnEnemyShip (events.js:273); quests._wire enemyKilled (quests.js:180, :188); ENEMY_TYPES.kizil_hancer.loot (enemies.js:115); hud.storyTarget (hud.js:457)",
+   "rootCause": "Olay metinleri hikâye durumunu okumuyor. Mektup ganimet tablosundan keseye düşüyor ve doğrudan çantaya verilmiyor; kesenin ömrü 10 dakika (treasure.js:179).",
+   "impact": "Anlatı tutarlılığı bozuluyor. Mektup kesesi toplanmazsa 10 dakika sonra kayboluyor ve mektup okunamıyor (ilerlemeyi engellemiyor).",
+   "priority": "dusuk",
+   "fix": "events.js:273'teki metni flags.kizilYenildi'ye göre değiştir; kizil_mektup'u da harita parçası gibi doğrudan çantaya ekle; 4. aşama bildirimini HUD hedefiyle uyumlu yap.",
+   "repro": "5. aşamada DK.events.trigger('enemyShip') → bildirim hâlâ Kızıl Hançer'i anıyor. Kızıl Hançer'i öldür, keseyi alma, 10 dk bekle → mektup yok.",
+   "acceptance": "5. aşamadan sonra düşman gemisi bildirimi farklı bir metin gösterir; Kızıl Hançer ölünce çantada kizil_mektup bulunur.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "Belgelenmemiş"
+  },
+  {
+   "id": "F-10",
+   "title": "Görev panosu sınırlı ve gevşek: 8 sabit şablon tükenince pano kalıcı olarak boşalıyor; konum koşulları sayılmıyor; post görevi postu tüketmiyor; keşif/toplama görevleri kabul anında tamamlanıyor",
+   "file": "js/game/quests.js",
+   "func": "SIDE_TEMPLATES (33-42), boardQuests (231-235), acceptSide (236-244), _wire enemyKilled/itemsGained (173-174, 192-195)",
+   "rootCause": "Şablonlar tek seferlik: 'completed' başlığa göre süzülüyor ve boardSeed hiç değişmiyor. 'kill' sayacı yalnız türün başına bakıyor (e.type.startsWith('iskelet')); ada ya da çete denetimi yok. 'collect' ilerlemesi envanter sayısından okunuyor; teslim ya da tüketim yok.",
+   "impact": "Oyunda en fazla 8 yan görev var; sonra pano sonsuza dek 'Şimdilik yeni ilan yok' diyor. 'Kemik Adası'nda 5 iskelet' görevi herhangi bir yerdeki iskeletlerle (Morvan dâhil) tamamlanıyor. Zaten keşfedilmiş İkiz Resifi görevi kabul anında 110 altın veriyor.",
+   "priority": "dusuk",
+   "fix": "Günlük ve bölgesel olarak yenilenen bir şablon havuzu kur; kill/collect görevlerine konum ve teslim koşulu ekle, teslimde eşyayı al; hikâye bölümlerine bağlı yan görevler ekle.",
+   "repro": "DK.quests.boardQuests() → 4 ilan; 8 görevi bitir → liste boş. İkiz Resifi keşfedilmişken 'Resif Haritası'nı kabul et → anında ödül.",
+   "acceptance": "Pano her oyun gününde yenilenir ve en az 3 bölgesel şablon içerir; konum koşulu etiketli testle sınanır.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "Belgelenmemiş"
+  },
+  {
+   "id": "F-11",
+   "title": "Co-op: hikâye ödül eşyaları (harita parçaları) yalnız ev sahibinin çantasına gidiyor; konuk günlüğü alınca ev sahibinin masasında kitap görünür kalıyor",
+   "file": "js/game/quests.js; js/net/net.js",
+   "func": "_wire enemyKilled (quests.js:177, :184; G.player.inv.add); _hostData case 'story' (net.js:326-332)",
+   "rootCause": "Ödül G.player'a, yani ev sahibine yazılıyor; öldüren oyuncuya ya da bütün tayfaya dağıtılmıyor. Ev sahibi işleyicisi bayrağı birleştiriyor ama journalMesh.visible'ı güncellemiyor (konuk tarafı net.js:568'de güncelliyor).",
+   "impact": "Konuk Morvan'ı yense de parça ev sahibinde kalıyor; parçalar ileride bir birleştirme mekaniğinde kullanılırsa konuklar eksik kalır. Ev sahibi, alınmış günlüğü masada görüyor ama alamıyor.",
+   "priority": "dusuk",
+   "fix": "Hikâye eşyalarını bütün tayfaya netGive ile dağıt (ya da paylaşımlı bir hikâye envanteri kullan); ev sahibi 'story' işleyicisinde journalMesh.visible = !flags.gunluk yap.",
+   "repro": "Co-op, 3. aşama: konuk Morvan'ı öldürsün → DK.G.player.inv.count('harita_parcasi') konukta 0, ev sahibinde 1.",
+   "acceptance": "Co-op testi: her oyuncunun çantasında parça bulunur; günlük alınınca kitap iki tarafta da gizlenir.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "Belgelenmemiş (eşya kısmı v0.3'te de var; kitap görünürlüğü kısmı v0.4'teki B05 düzeltmesiyle ortaya çıktı)"
+  }
+ ],
+ "userClaims": [
+  {
+   "claim": "README ve yol haritasında 6–10. aşamalar eksik olarak belirtilmiş.",
+   "v03": "dogru",
+   "v04": "dogru",
+   "evidence": "v0.3: README.md:104 ('yer almayanlar: ana hikâyenin 6–10. aşamaları'), docs/14_YOL_HARITASI.md:13 ('Hikâye 6–10: Volkanik Adalar, Hayalet Adalar, Buz Krallığı, Çöl Adaları ve Yitik Ufuk aşamaları; bosslar hikâyeye bağlanır'), docs/13_BILINEN_HATALAR.md:8 (#1), oyun içinde journal.js:115. v0.4: README.md:129-131'de aynı metin duruyor (README v0.3'ten beri güncellenmemiş; README.md:8 hâlâ 'Bu sürüm: 0.3' diyor); docs/14_YOL_HARITASI.md:13 ve docs/13:8 v0.3 ile birebir aynı; oyun içinde journal.js:116 ve quests.js:30. Not: v0.4'ün kendi yol haritası (docs/denetim/14_YOL_HARITASI.md), bilinen sorunlar listesi (docs/denetim/11) ve son raporu (16) hikâye 6–10'u hiç anmıyor. Kodda da 6–10 yok: STORY.length=6 ve son girdi bir yer tutucu."
+  },
+  {
+   "claim": "Bosslar ana hikâyeye bağlı değil, rastgele karşılaşmalar.",
+   "v03": "kismen",
+   "v04": "kismen",
+   "evidence": "Doğru kısım: 5 efsanevi boss (bosses.js:24-30) hikâyeden tamamen bağımsız. bosses.js quests modülünü içe aktarmıyor (1-18); _check (1077-1100) aşama koşulu içermiyor; quests.js'de bossDefeated dinleyicisi yok (137-200; tek dinleyici progress.js:77, +600 XP). Hiçbir sistem quests.stage'e bakmadığı için bosslar hikâyeden önce yenilebiliyor. Kızıl Hançer'in mektubundaki 'ateşin bekçisi' ve 'buzların altındaki kraliçe' (panels.js:98, quests.js:358) Volkanik Dev'in ve Derinlik Yılanı'nın unvanları (bosses.js:26, :29), ama bu bosslar yenilince ne parça ne aşama veriyor. Yanlış kısım: bosslar 'rastgele' değil. Sabit konumlarda (BOSS_SITES archipelago.js:321-323; Taş Muhafız islands.js:866) koşullu yaklaşma tetikleriyle doğuyorlar: Taş Muhafız tapınak bulmacası çözülmüş ve 26 m içindeyken, Volkanik Dev kraterde ~130 m içindeyken, deniz bossları gemideyken ya da yüzerken 240 m içinde. Yenilince kalıcı olarak bir daha doğmuyorlar (bosses.js:1067, :1050-1053). Ayrıca hikâye bossları İskelet Kaptan Morvan ve Kızıl Hançer doğrudan hikâyeye bağlı (quests.js:175-189, :276-290). Gerçekten rastgele olan boss benzeri tek karşılaşma, düşman korsan gemisi olayı (events.js:100-114, :251-276). Bu konuda v0.3 ile v0.4 arasında fark yok; bosses.js farkları yalnız hata düzeltmeleri."
+  }
+ ],
+ "docClaims": [
+  {
+   "doc": "README.md:125",
+   "claim": "Hikâye: Son Hazine Efsanesi'nin ilk 5 aşaması (Başlangıç → İlk Hazine → Eski Günlük → İlk Harita Parçası → Kızıl Hançer) + yan görevler, başarımlar, rastgele olaylar",
+   "verdict": "kismen",
+   "evidence": "Tek oyunculu akış kodda eksiksiz (quests.js:24-31, 137-191, 246-291, 304-318). v0.3'te 0→2 g2b ile, 3→5 ise MVP arşivinde sınanmış (TEST_RAPORU.md:11, 162-170). v0.4'te etiketli bir hikâye testi yok (12. belgede hikâye senaryosu yok). Co-op'ta F-01, F-04 ve F-05, yüklemede F-02 hatası var."
+  },
+  {
+   "doc": "README.md:129-131 ve docs/13_BILINEN_HATALAR.md:8",
+   "claim": "Ana hikâyenin 6–10. aşamaları yok; hikâye 5. aşamada biter; bölgeler ve bosslar serbest keşifle oynanır",
+   "verdict": "dogru",
+   "evidence": "STORY 6 girdi içeriyor (quests.js:24-31; Node denemesi: STORY[6]=undefined); 5. aşamadan sonra tetikleyici yok; bosses._check aşama koşulu içermiyor (bosses.js:1077-1100)."
+  },
+  {
+   "doc": "js/game/quests.js:30 (oyun içi hedef metni)",
+   "claim": "Kalan harita parçaları Volkanik Adalar ve Buz Krallığı'nda. (Bu bölgeler bir sonraki geliştirme aşamasında açılacak.)",
+   "verdict": "yanlis",
+   "evidence": "Kül Adaları ve Buzul Denizi v0.3'ten beri dünyada ve erişilebilir (archipelago.js:11, :13, :70-93, :118-133). İlgili bosslar da var (bosses.js:26 'Buzların Altındaki Kraliçe', :29 'Ateşin Bekçisi'). Eksik olan bölgeler değil, hikâye bağlantısı."
+  },
+  {
+   "doc": "docs/14_YOL_HARITASI.md:13",
+   "claim": "Sıradaki 1. iş: Hikâye 6–10 (Volkanik Adalar, Hayalet Adalar, Buz Krallığı, Çöl Adaları, Yitik Ufuk); bosslar hikâyeye bağlanır",
+   "verdict": "dogru",
+   "evidence": "Bir plan olarak doğru, kodda yapılmamış: quests.js'de v0.3→v0.4 farkı yalnız han aşçısı seçeneği (379-398). Ancak v0.4 yol haritası (docs/denetim/14_YOL_HARITASI.md) bu maddeyi düşürmüş."
+  },
+  {
+   "doc": "docs/06_BOSS_TASARIMI.md:40",
+   "claim": "Bosslar bölgelerine yaklaşınca doğar (bosses._check)",
+   "verdict": "dogru",
+   "evidence": "bosses.js:1077-1092 (koşullar: Taş Muhafız için tapınak çözümü + 26 m; Volkanik Dev için 0,24·r; deniz bossları için gemide/yüzerken 240 m) ve :1102-1108 (yalnız ev sahibi, 0,5 sn'de bir)."
+  },
+  {
+   "doc": "docs/06_BOSS_TASARIMI.md:41",
+   "claim": "Beş bossun doğuşu, evre geçişleri ve yenilgi/ödül akışı başsız tarayıcıda doğrulandı",
+   "verdict": "kismen",
+   "evidence": "v0.4'te v03/boss1–5 referans koşuları istisnasız geçti (12:106-110), ama etiketli kontrol yok. Deniz bossları doğrudan DK.bosses.spawn ile doğuruluyor (boss1.js, boss2.js, boss4.js); _check yolu yalnız boss3'te (Taş Muhafız, Volkanik Dev) çalıştırılıyor. 11. belge #12: savaşlar uçtan uca oynanmadı."
+  },
+  {
+   "doc": "docs/06_BOSS_TASARIMI.md:5",
+   "claim": "Yenilince ödül ganimeti düşer, macera günlüğüne yazılır ve +600 XP verilir",
+   "verdict": "dogru",
+   "evidence": "bosses.js:1066-1075 (defeated, deniz bosslarında ganimet, bossDefeated, time.addLog); kara bossları kendi ganimetini düşürüyor (bosses.js:900); progress.js:77 (+600 XP, konuklara netXp). Hikâyeye hiçbir etkisi yok."
+  },
+  {
+   "doc": "docs/denetim/01_ILK_DENETIM_RAPORU.md:227",
+   "claim": "Ana hikâye aşamaları ve boss tetikleyicileri çalışıyor; Morvan/Kızıl Hançer bayrakları oyuncu uzaklaşınca sıfırlanıp boss yeniden doğuyor",
+   "verdict": "kismen",
+   "evidence": "Oturum içinde doğru (quests.js:282, :290). Ancak bayraklar kayda yazılıyor (121-124) ve yükleme düşman listesini boşaltıyor; boss alanının 200 m içinde yüklenen kayıtta boss doğmuyor (F-02; /tmp/denetim_alan/reload_flag.mjs). Co-op'taki yerel tetik sorunu (F-04) bu kayıtta yok."
+  },
+  {
+   "doc": "docs/denetim/09_KAYIT_TESTLERI.md:20-21",
+   "claim": "Konuk kaydı kişisel görev/keşif durumunu saklar; hikâye aşaması ve bayraklar her katılımda ev sahibinden gelir",
+   "verdict": "yanlis",
+   "evidence": "Aşama ev sahibinden geliyor, ama bayraklar konuğun kaydıyla birleştiriliyor: main.js:193 (guest.quests) → quests.js:79 (flags = d.flags) → main.js:336 (Object.assign ile birleşim). Bu bayraklar net.js:329 üzerinden ev sahibine de sızıyor (F-01). Belgenin kendisi de bu yolun 'doğrudan ölçülmediğini' söylüyor."
+  },
+  {
+   "doc": "docs/denetim/02_HATA_LISTESI.md:495 (B05)",
+   "claim": "Co-op hikâye senkronu tek yönlü: konuğun ilerlettiği aşama ve bayraklar ev sahibine ulaşmıyor",
+   "verdict": "yanlis",
+   "evidence": "v0.4 için artık geçerli değil: net.js:174 konuğun 'story' iletisini ev sahibine gönderiyor, net.js:326-332 ev sahibi bunu '+1 aşama' kuralıyla uyguluyor. Düzeltme 03 değişiklik listesinde kayıtlı değil ve co-op testlerinde 'story' kontrolü yok. Üstelik yeni iki sorun açtı: F-01 (bayrak kirlenmesi) ve F-06 (doğrulama eksikliği)."
+  },
+  {
+   "doc": "docs/denetim/03_DEGISIKLIK_LISTESI.md:67 (B09)",
+   "claim": "Ev sahibinde doğan her sandık yayınlanır (Kızıl Hançer ödül sandığı artık konukta da görünür)",
+   "verdict": "dogru",
+   "evidence": "treasure.js:283: spawnChest ev sahibinde netChestSpawn yayıyor; quests.js:186'daki ödül sandığı da bu kapsama giriyor. coop/06b sandık eşitliğini genel olarak sınıyor (bu sandığa özel bir kontrol yok)."
+  },
+  {
+   "doc": "docs/denetim/12_TEST_PLANI_VE_SONUCLAR.md:10",
+   "claim": "Yeni oyun başlatma ve ilk 10 dakika akışı: 00_acilis.js, v03/* — GEÇTİ",
+   "verdict": "kismen",
+   "evidence": "v0.4'te koşturulan v03 senaryoları listesi (12:106-107) hikâye senaryolarını (g2b, g2c, g2d) içermiyor. 00_acilis yalnız menüden oyuna geçişi ve HUD'ı sınıyor. 0→2. aşamaların v0.4'te koşturulduğuna dair bir kayıt yok."
+  },
+  {
+   "doc": "docs/denetim/07_AI_BOSS_TESTLERI.md:25",
+   "claim": "Boss evreleri GEÇTİ (Kızıl Hançer %55'te çağırma; İskelet Kaptan %66/%33'te iki çağırma, %33'te öfke)",
+   "verdict": "dogru",
+   "evidence": "tests/scenarios/05_dusman_ai.js:47 etiketi 'Boss evreleri: can eşiklerinde çağırma ve öfke tetiklenir'; 12. belgedeki Aşama 9 regresyonunda 18/18. Yalnız dövüş evreleri sınanıyor, hikâye tetiği sınanmıyor."
+  },
+  {
+   "doc": "TEST_RAPORU.md:156, 169-170",
+   "claim": "Hikâye aşama 1–5 Tamam; Morvan doğdu ve yenildi → parça 1/4, 4. aşama; Kızıl Hançer → 2/4, büyük sandık, 5. aşama",
+   "verdict": "dogrulanamadi",
+   "evidence": "Bu bir MVP arşiv kaydı; v0.4'te yeniden koşturulmadı. İlgili kod v0.3'ten v0.4'e değişmedi (quests.js 1-378 birebir aynı), ama v0.4 için çalışma kanıtı yok."
+  },
+  {
+   "doc": "js/ui/journal.js:116 (oyun içi metin)",
+   "claim": "10 aşamalı ana hikâyenin ilk 5 aşaması bu sürümde oynanabilir; efsanevi bosslar ve yan içerikler diğer bölgelerdedir; 6–10 (Yitik Ufuk dahil) sonraki sürümlerde eklenecek",
+   "verdict": "dogru",
+   "evidence": "quests.js:24-31 ve bosses.js:24-30 ile tutarlı. Defterde 6. sırada 'Yitik Ufuk'a Doğru' yer tutucusu da bir adım olarak listeleniyor (journal.js:112-113)."
+  }
+ ],
+ "requirements": [
+  {
+   "req": "Mevcut ilk 5 aşama ve karakterler korunacak",
+   "status": "karsilaniyor",
+   "evidence": "Aşamalar quests.js:24-31'de duruyor (0 basla … 4 kizil, artı 5 yitik yer tutucusu). Karakterler: Tuzla, Nevra, Sedef Hanım ve diğerleri (port.js:323-331); Morvan ve Kızıl Hançer (enemies.js:111-116, :138-143); lore'daki Mira ve Halil (quests.js:312-314, :352). Ancak v0.4'te hikâye için etiketli bir regresyon testi yok; co-op ve yükleme hataları açık (F-01, F-02, F-04, F-05).",
+   "plan": "Faz 6'dan önce tests/scenarios/18_hikaye.js yazılmalı: tek oyunculu 0→5 akışı (Tuzla, Nevra, marti_1 kazısı ve satışı, günlük, Morvan tetiği ve ölümü, Kızıl Hançer) + her aşamada kaydet/yükle; ayrıca coop/06e_hikaye.cjs (2 oyuncu). STORY kimlikleri ve bayrak adları korunmalı. F-01, F-02, F-04 ve F-05 önce giderilmeli. Mevcut 5. aşamadaki kayıtlar için yeni 6. bölüme göç yazılmalı."
+  },
+  {
+   "req": "README ve yol haritasında eksik olarak belirtilen 6–10. aşamalar tasarlanacak",
+   "status": "yok",
+   "evidence": "STORY'de yalnız 6 girdi var ve 6. girdi (indeks 5) yalnız metin (quests.js:30); README.md:129-131 ve docs/14_YOL_HARITASI.md:13 eksik diyor; bir tasarım belgesi yok, docs/denetim/14'te madde bile yok.",
+   "plan": "docs/denetim/17_HIKAYE_6_10.md tasarım belgesi + veri güdümlü bölüm tanımı (STORY girdisine steps[] alanı: hedef, tetik, ödül, kayıt bayrakları). Yol haritası sırasına göre öneri: 6 Volkanik Adalar = Kül Adaları (merkez Kül Limanı; Ateş Dağı + Volkanik Dev → parça 3/4). 7 Hayalet Adalar = Hayalet Denizleri (Korsan Mezarlığı, Sis Adası + Lanetli Amiral; Mira'nın akıbeti). 8 Buz Krallığı = Buzul Denizi (Kuzeyfener, Buzdişi'nde buz sarayı harabesi, Derin Yarık + Derinlik Yılanı → parça 4/4). 9 Çöl Adaları = Kızıl Kum Kıyıları (Kumsaati, Demirkapı tutsakları, Gümüş Madeni, Kızıl Kanyon; Gelgit Pusulası'nın kadranı). 10 Yitik Ufuk (yeni hikâye adası + final). İndeks 5'teki 'yitik' yer tutucusu gerçek 6. bölüme dönüştürülmeli ve kayıt göçü yazılmalı."
+  },
+  {
+   "req": "Her bölümde yeni ada/bölge",
+   "status": "kismen",
+   "evidence": "Bölgeler ve özel adalar hazır: archipelago.js:9-16 (6 bölge) ve :39-177 (23 özel ada) + 44 yordamsal adacık; 07_dunya_kesif D01–D08 ve archipelago_sabit testleri geçti. Ancak hiçbiri hikâye konumu olarak kullanılmıyor; 'Yitik Ufuk' dünyada yok; metindeki adlar bölge adlarıyla uyuşmuyor ('Volkanik Adalar' ↔ 'Kül Adaları', 'Buz Krallığı' ↔ 'Buzul Denizi'); Hayalet Denizleri'nde liman yok.",
+   "plan": "Her bölüm için mevcut ada üzerinde bir hikâye alanı kur (ör. Ateş Dağı krater sunağı, Buzdişi buz sarayı harabesi, Demirkapı alt zindanı, Sis Adası batık filosu); bunlar islands._feature'a yeni özellik türü olarak eklenmeli ve ada kimliğine bağlı olmalı. Yitik Ufuk için yeni bir ada gerekiyor, ama archipelago_sabit testi ada sayısının ve yordamsal yerleşimin birebir aynı kalmasını istediği için EXTRA_ISLANDS'a değil ayrı bir STORY_ISLANDS listesine eklenmeli: kendi rng'siyle, açık denizde bilinen boş bir konumda, terrainWorker/geo'ya ayrıca beslenerek; deterministik dünya testi güncellenmeden geçmeli. Metindeki bölge adları dünya adlarıyla eşlenmeli."
+  },
+  {
+   "req": "Her bölümde yeni karakter/NPC",
+   "status": "yok",
+   "evidence": "Hikâye rolü yalnız Tuzla'da ('quest', port.js:323; quests.js:350-358). Bölge limanlarındaki NPC'ler genel rollerde (islands.js:585-593: genel tüccar/hazine/rota/gemi ustası/zarcı; isimler NPC_NAMES 208-216). Dinamik NPC API'si (npcs.js:89-95) ve rol tabanlı diyalog (quests.js:344-481) hazır.",
+   "plan": "Her bölümde en az bir adlandırılmış hikâye NPC'si: ör. Kül Limanı'nda obsidyen ustası, Kuzeyfener'de buz kaşifi, Demirkapı'da Mira'nın eski tayfasından bir tutsak, Korsan Mezarlığı'nda Mira'nın hayaleti, Yitik Ufuk'ta bekçi. Yeni bir 'story' rolü + NPC kimliğine göre diyalog tablosu (aşama ve bayrağa bağlı); ada kurulunca npcs.add ile eklensin; co-op'ta ilerleme kararını ev sahibi versin."
+  },
+  {
+   "req": "Her bölümde özgün görev zinciri",
+   "status": "yok",
+   "evidence": "STORY'de her aşamada tek bir hedef metni var (quests.js:24-31); alt adım yapısı yok, bayraklar elle yönetiliyor. Yan görevler 8 sabit şablondan ibaret (quests.js:33-42).",
+   "plan": "Aşamayı alt adımlara bölen bir veri yapısı (steps: [{id, hedef, tetik türü: konuş/keşfet/kaz/öldür/kullan, konum, ödül}]); her bölümde 3–5 adımlık zincir. HUD hedefi adım bazlı olmalı (hud.js:452-460 genişletilmeli); defter adımları göstermeli; her adım etiketli bir test kontrolüne bağlanmalı."
+  },
+  {
+   "req": "Her bölümde keşif ve çevre bulmacası",
+   "status": "kismen",
+   "evidence": "Mevcut bulmacalar: Kadim Tapınak levye bulmacası (islands.js:788-867; 13_donma P08 ve 08_kalicilik B02/B-08 geçti), basınç plakası (hazards.js:428-555), gelgit kazısı (worldData.js:127-130; treasure.js:189-194), hayalet ışıklar (worldEvents.js:145-190), mağara (cave.js), dalış ve batık şehir (islands.js:1025). Hiçbiri hikâyeye bağlı değil.",
+   "plan": "Her bölüme hikâyeye bağlı bir bulmaca: ör. Gelgit Pusulası ile suyu çekip batık şehir girişini açmak, krater sunağında lav akışını levyelerle yönlendirmek, buz sarayında ışık yansıtma, mezarlıkta gece saatine bağlı mahzen. Çözüm durumu islands.templeState benzeri kalıcı bir alanda tutulmalı ve co-op'ta senkronlanmalı. Levye sırası LOD'dan bağımsız olmalı (bilinen #35)."
+  },
+  {
+   "req": "Her bölümde yeni düşman ya da farklı davranış",
+   "status": "kismen",
+   "evidence": "17 düşman türü ve davranış bayrakları mevcut (enemies.js:79-177: rise, phase, grab, throwKnife, flanker, shield/poise, dash, summon/enrage); mermi türleri boulder/lava/venom/ghostball (enemies.js:1250-1281); bölge hayvanları (animals.js:300+). Bölgeye özgü bir düşman yok; archipelago.js:230-237 aynı türleri kullanıyor.",
+   "plan": "Her bölümde en az bir yeni tür ya da davranış: ör. Kül Adaları'nda lav bombası atan bir haydut (lava mermisi hazır), Buzul'da oyuncuyu yavaşlatan buz iskeleti, Çöl'de kuma gömülüp pusu kuran düşman, Hayalet'te gemiden gemiye atlayan hayalet tayfa. Her biri 05_dusman_ai'de etiketli testle sınanmalı."
+  },
+  {
+   "req": "Her bölümde boss ya da özel karşılaşma",
+   "status": "kismen",
+   "evidence": "5 efsanevi boss (bosses.js:24-30; sınıflar 143-1027) + hikâye bossları Morvan ve Kızıl Hançer + Hayalet Kaptan ve Haydut Kaptanı mini bossları mevcut; konumları BOSS_SITES'ta (archipelago.js:321-323; islands.js:866). Hepsi hikâyeden bağımsız tetikleniyor (bosses.js:1077-1100).",
+   "plan": "Öneri: 6 → Volkanik Dev, 7 → Lanetli Amiral, 8 → Derinlik Yılanı, 9 → Taş Muhafız ya da Demirkapı'da yeni bir insan boss, 10 → yeni çok evreli final karşılaşması (+ Kraken'in Yitik Ufuk rotasını kesmesi). Boss doğuşu bölüm koşuluna bağlanmalı; boss zaten yenilmişse geriye dönük ödül verilmeli; boss savaşları uçtan uca testle sınanmalı (11 #12)."
+  },
+  {
+   "req": "Her bölümde hikâyeyi etkileyen karar",
+   "status": "yok",
+   "evidence": "Diyalog seçenekleri tek yollu (quests.js:350-358; panels.js:47); dallanma bayrağı ya da sonuç sistemi yok. Tutsak kurtarma ikili ama hikâyeye etkisi yok (islands.js:932-970).",
+   "plan": "Her bölümde en az bir karar: ör. Demirkapı tutsaklarını kurtar ya da sat; Kızıl Hançer'in dağılmış tayfasıyla ittifak kur ya da savaş; finalde Gelgit Pusulası'nı Mira'ya geri ver ya da kendin kullan. Kararlar kalıcı bayraklarda tutulmalı (quests.flags.karar_*) ve sonraki bölümlerde NPC tepkisini, ödülü ve final varyantını değiştirmeli. Co-op'ta karar ev sahibi onayıyla alınmalı; testle sınanmalı."
+  },
+  {
+   "req": "Her bölümde ödül ve kalıcı ilerleme",
+   "status": "kismen",
+   "evidence": "Mevcut ödüller: aşama başına +150 XP (progress.js:81), görev eşyaları (items.js:71-74), Kızıl Hançer'in büyük sandığı (quests.js:186), kalıcı bosses.defeated kaydı (bosses.js:1050-1053, :1066-1067), başarımlar (quests.js:53-54). Hikâye hiçbir şeyin kilidini açmıyor; hikâye bossları öldürme XP'si vermiyor (F-08).",
+   "plan": "Her bölüm sonunda benzersiz ödül: harita parçası 3–4, Gelgit Pusulası yetenekleri (gelgiti değiştirme), gemi geliştirmesi ya da unvan, bölüm başarımı. Bunlar kalıcı bayraklarla kayda yazılmalı; kayıt sürümü ve göç Faz 4 ile uyumlu olmalı. Co-op'ta ödül bütün tayfaya dağıtılmalı (F-11)."
+  },
+  {
+   "req": "Bosslar ana hikâyeye bağlanmalı",
+   "status": "kismen",
+   "evidence": "Morvan ve Kızıl Hançer hikâyeye bağlı (quests.js:175-189, 276-290). 5 efsanevi boss bağlı değil: bosses.js:1077-1100'de hikâye koşulu yok, quests.js'de bossDefeated dinleyicisi yok, bosses.defeated geriye dönük ödüle bağlanmamış.",
+   "plan": "quests'e bossDefeated dinleyicisi ekle; BOSS_DEFS'e chapter ve storyPiece alanları ekle. Dünyanın açık yapısını bozmamak için boss bölüm dışında da dövüşülebilmeli; yenilgisi kayda geçmeli ve bölüm açılınca geriye dönük işlenmeli (alternatif: boss bölüm başlayana kadar uyusun). Metindeki kancalar ('Ateşin Bekçisi', 'Buzların Altındaki Kraliçe') bu bağa dönüştürülmeli."
+  },
+  {
+   "req": "Final gerçek tamamlanma hissi vermeli (Son Hazine'nin bulunması/açılması/final karşılaşması)",
+   "status": "yok",
+   "evidence": "5. aşamadan sonra tetik yok (quests.js:30, :358; hud.js:458'de storyTarget null). 'Mira Veyl'in Sandığı' (items.js:104; treasure.js:22, legend kademesi) hiç doğmuyor. Yitik Ufuk diye bir konum yok; final, jenerik ya da epilog yok.",
+   "plan": "Dört parça birleşince yeni bir 'Mira'nın Haritası' eşyası (treasure.giveMap + G.storySites ile Yitik Ufuk kazı noktası). Yitik Ufuk adası (bkz. madde 3). Çok evreli final karşılaşması. İki kişilik taşınabilen legend sandığın açılışı ve Gelgit Pusulası ödülü. Jenerik/epilog ekranı, kalıcı 'hikâye tamamlandı' bayrağı ve sonrasında serbest oyun. Etiketli uçtan uca test."
+  },
+  {
+   "req": "Görev yazısı yetmez: gerçek mekanik ve dünya alanları gerekir",
+   "status": "kismen",
+   "evidence": "0–4. aşamalar gerçek mekaniklere bağlı (kazı ve satış, mağaradaki eşya, boss doğuşu ve ölümü; quests.js:138-191, 276-290, 304-318). 5. aşama yalnız metin (quests.js:30); 6–10 hiç yok.",
+   "plan": "Her adım için üç şey zorunlu olmalı: bir kod tetikleyicisi, bir dünya nesnesi ya da alanı ve etiketli bir test kontrolü. Yalnız metinden oluşan adım kabul edilmemeli. Tetikleyiciler ev sahibi otoriteli olmalı (F-04) ve kayıt/yüklemeye dayanıklı olmalı (F-02)."
+  }
+ ]
+}

@@ -1,0 +1,728 @@
+{
+ "area": "C — Fizik, döngü, çarpışma, görüş hattı",
+ "summary": "v0.4, v0.3'ün tek ve değişken adımlı döngüsünü eşit alt adımlara bölünmüş bir döngüyle değiştirmiş (game.js:185-238; adım en çok 1/60 sn, kare başına en çok 6 alt adım, dt ≤ 0,1). Ancak bu gerçek bir sabit adım değil: biriktirici ve ara değerleme yok, alt adım boyu h = dt/n kare süresine göre değişiyor. Bu yüzden sonuçlar yalnız 60'ın tam bölenlerinde (15/20/30/60 FPS) birebir aynı; 40–59,94 FPS ile 120/144 Hz'de zıplama, geri tepme ve cisim düşüşü farklılaşıyor. Ayrıca 1e-6 eşiği nedeniyle 60 Hz ekranlarda alt adım sayısı 1 ile 2 arasında gidip geliyor; alt adıma taşınan shipControl de top nişanını alt adım sayısıyla çarpıyor (v0.4'e özgü gerileme). lineBlocked'daki 64 hücre erken dönüşü v0.4'te DDA ile gerçekten kaldırılmış (kopya kodla Node'da doğrulandı). v0.3'te bu sınır yalnız çarpıştırıcı denetimini atlıyordu ve hiçbir çağıran o uzunluğa ulaşmıyordu; kanıt olarak gösterilen 03_fizik_duzeltmeler #6 ise eksene paralel 26 hücrelik doğru kullandığı için eski hatayı ayırt etmiyor. Görüş ve mermi kuralları tek sistemde birleşmiş değil. lineBlocked yüksekliği tek noktada sınadığından sonucu yöne bağlı veriyor (yüksekteki düşman bina arkasını görüyor). Gülle statik çarpıştırıcıları hiç sorgulamıyor, zıpkın eski %2 uç payı hatasını yeniden üretiyor; gemi gövdesi ve platform güverteleri yalnız kamera için engel. Kamera çarpışması v0.3'te hiç yoktu; v0.4'te iskele, gemi ve mağara için iyi test edilmiş, fakat test yarıçapsız ve ada yapılarının kutuları görselden küçük, bu yüzden kamera bu yapıların duvarına girebilir. Bilinen açık maddeler sürüyor (gemi/kayık iskeleden geçer #39, güvertede itişme yok D-20); bunlara ek olarak ambar doluyken güverteye bırakılan sandık güvertenin içinden denize düşüyor ve 03_fizik_dt.js hiç beklenti içermiyor. Dar kapı, yüksekten düşme, ani FPS düşüşünde hareket ve gülle–statik engel testleri de yok.",
+ "systems": [
+  {
+   "name": "Ana döngü ve alt adım zamanlaması (engine.start + game.update/_step)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "engine.js:52-71 (rAF, dt ≤ 0,1 satır 62, tek updater); game.js:185-219 STEP=1/60, MAX_SUB=6, n=clamp(ceil(dt/STEP−1e-6),1,6), h=dt/n; _step 222-238. Test: 03_fizik_duzeltmeler 'Alt adım sayısı: 1/15→4, 1/60→1, 0.1 s→6 (üst sınır)' GEÇTİ (05 §5.2 #1; 12 Aşama 9: 14/14); 03_fizik_dt yalnız ölçüm.",
+   "note": "Biriktirici ve ara değerleme yok; adım boyu kare süresine bağlı (C-01), 60 Hz'de 1↔2 salınım (C-02), alt adımdaki top nişanı (C-03)."
+  },
+  {
+   "name": "Girdi kenar tetikleyicilerinin alt adımlarda korunması (input.subframe)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "input.js:43, 106-107 pressed() alt adım 1+ için false; game.js:204-208. Test: 03_fizik_duzeltmeler 'Uzun karede zıplama tuşu tek zıplama üretir' GEÇTİ (05 §5.2 #2).",
+   "note": "lookDelta() (input.js:151-161) tüketilmiyor; alt adımda çağrılınca çarpılıyor (C-03)."
+  },
+  {
+   "name": "Statik çarpışma ızgarası ve daire itme çözücüsü (physics._insert/removeTag/resolve)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "physics.js:5-51 (16 m hücre, etiketle kaldırma), 134-187 (resolve en çok 3 geçiş). Testler: 03_fizik_duzeltmeler 'Yüksek platforma yandan girilmez (yan yüz çarpıştırıcı)'; 15_iskele_kamera 'I02 …güvertenin altına yandan girilmez', 'I05 …direklerin içinden geçmez' GEÇTİ (12: 15_iskele_kamera 14/14).",
+   "note": "Çözücü doğru çalışıyor; veri sorunu: ada yapı kutuları görselin %60–90'ı (islands.js:496, bilinen #43)."
+  },
+  {
+   "name": "Zemin/platform sorgusu (groundAt/floorAt) ve platform yan yüzleri",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "physics.js:71-98, 121-130; port.js:176-214 iskele/merdiven; islands.js:642-664. Testler: 15 'I01 Kasabadan iskeleye zıplamadan yürünür', 'I07 Ada limanı iskelelerine…'; 07_dunya_kesif D03 (sudan iskele merdivenine çıkış) GEÇTİ (12. belge).",
+   "note": "Oyuncuda 0,6 m pencere; düşüşte süpürme yok (C-17)."
+  },
+  {
+   "name": "Görüş hattı lineBlocked (DDA hücre yürüyüşü)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "physics.js:189-252; DDA 207-250, 4096 hücre güvenlik sınırı 213, yükseklik denetimi 243-246. Testler: 03_fizik_duzeltmeler 'lineBlocked 400 m doğruda engeli bulur…', 'Mermi süpürmesi: kutu içinden başlayan parça engellenir'; 05_dusman_ai 'Algı: 1 m kalın duvar arkasındaki oyuncu görülmez', 'F-16 …' GEÇTİ.",
+   "note": "2,5B yükseklik denetimi yöne bağlı hatalı (C-04); #6 eski 64 hücre hatasını ayırt etmez (C-18)."
+  },
+  {
+   "name": "Kamera–platform güvertesi kesişimi (slabBlocked)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "physics.js:102-117; camera.js:112. Test: 15 'C01 İskelede 96 kamera açısında kamera güverte altına inmez' GEÇTİ (12 satır 143: önce 61 açı, sonra 0).",
+   "note": "Yalnız kamera kullanıyor; AI ve mermiler platform güvertesini görmüyor (C-06)."
+  },
+  {
+   "name": "Oyuncu kara hareketi (ivme, zıplama, eğim, basamak, geri tepme)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "player.js:509-655. Testler: 03_fizik_duzeltmeler 'Geri tepme mesafesi 15/60/144 FPS arasında %20 içinde'; 04_karakter 'C10 Sprint bayrağı…', 'C13 3 m/s hızda Walk klibi'; 16 'K03 …iniş duraksaması', 'K05', 'K06' GEÇTİ (12: 04 21/21, 16 16/16).",
+   "note": "144 FPS'te geri tepme %10 az (05 §5.2 #3); 120/144 Hz'de zıplama farkı (C-01)."
+  },
+  {
+   "name": "Yüksekten düşme hasarı ve düşüşte platform yakalama",
+   "status": "dogrulanmamis",
+   "evidence": "player.js:599-615 (7 m üstü (düşüş−7)·7 hasar); 588-596 tek konum örneği. Hasarı ya da yüksek düşüşte platform yakalamayı sınayan test yok; 16 K03 yalnız 1,2/2,5 m iniş eylemine bakıyor.",
+   "note": "≥36 m/s (≈29,5 m) düşüş platformu kaçırır (C-17)."
+  },
+  {
+   "name": "Yüzme/dalış zemini ve yüzme↔yürüme kip geçişi",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "player.js:620-645, 736-818. Testler: 03_fizik_duzeltmeler 'Sığ su bandında (≈1.4 m) mod en çok bir kez değişir'; 16 'K01', 'K02'; 15 'I03', 'I04' GEÇTİ.",
+   "note": ""
+  },
+  {
+   "name": "Güverte hareketi (gemi yerel koordinatı, clampDeck, yalpa kayması, güverte zıplaması)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "player.js:820-903; ship.js:184-196. Testler: 04_karakter 'C09 Güvertede zıplama…', 'C09 Güvertede kaçınma gerçekten yer değiştiriyor' GEÇTİ.",
+   "note": "Oyuncu gemiden bir alt adım geride (C-08), güverte nesneleri engel değil (C-12), güvertede itişme yok (C-11)."
+  },
+  {
+   "name": "Gemi merdiveni tırmanma (betikli)",
+   "status": "dogrulanmamis",
+   "evidence": "player.js:955-983 (1,6 sn doğrusal tırmanış), shipControl.js:145-151. tests/ altında startClimb çağrısı yok.",
+   "note": ""
+  },
+  {
+   "name": "Gemi seyir ve kaldırma fiziği (yelken, dümen, 8 noktalı kaldırma, yalpa)",
+   "status": "dogrulanmamis",
+   "evidence": "ship.js:267-381, 514-563. 03_fizik_dt.js yalnız etiketsiz ölçüm yapıyor (05 §5.1: 80,5–87,0 m, ±%4); bu sistem için beklentili test yok.",
+   "note": "Üstel sönümlü entegrasyon; kare hızına bağlı bir eğilim ölçülmedi."
+  },
+  {
+   "name": "Gemi çapa zinciri ve liman halatı",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "ship.js:273-354, 383-388. Test: 03_fizik_duzeltmeler 'Taşınan demirli gemi eski çapa noktasına fırlamaz' GEÇTİ (05 §5.2 #8: 0,38 m / 3 sn).",
+   "note": ""
+  },
+  {
+   "name": "Gemi çarpışmaları (kara sondaları, deniz kayalığı, gemi–gemi)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "ship.js:391-511. Test: 03_fizik_duzeltmeler 'Kinematik gemiye çarpma: NaN yok, hasar makul' GEÇTİ; kara ve kayalık çarpışması için test yok.",
+   "note": "İskele/bina çarpıştırıcıları yok sayılıyor (C-10, bilinen #39)."
+  },
+  {
+   "name": "Kürek sandalı fiziği",
+   "status": "dogrulanmamis",
+   "evidence": "ship.js:790-844 (yalnız arazi ve kendi gemisi). 16 T05 ile 17 yalnız binip inmeyi kullanıyor; hareket ve çarpışma testi yok.",
+   "note": "İskele, diğer gemiler ve kayalıklar yok sayılıyor (C-10)."
+  },
+  {
+   "name": "Oyuncu–gemi gövdesi itmesi (_shipHullPush)",
+   "status": "dogrulanmamis",
+   "evidence": "player.js:703-718; 591 ve 773'te çağrılıyor. Test yok.",
+   "note": ""
+  },
+  {
+   "name": "Rijit cisimler (bodies: düşme, yüzme, platform, cisim–cisim, itki)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "bodies.js:98-212 (platform penceresi max(prevBottom) 133-136, itki sınırı 62). Testler: 16 'T04 Güverteye düşen kese…', 'T07 Koşarak kesenin üstünden geçince kese tekmelenip kaçmaz' GEÇTİ; 03_fizik_dt cisim düşüşü yalnız ölçüm.",
+   "note": "Gemi güvertesi/gövdesi cisim dünyasında yok (C-09); 120 FPS'te x ekseninde 1,3 m fark (05 §5.1); cisim–cisim denetimi O(n²)."
+  },
+  {
+   "name": "Karakter itişmesi (crowd)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "crowd.js:13-45. Test: 05_dusman_ai 'Yığılma yok: aynı noktada doğan 4 düşman 2 sn içinde ayrılır' GEÇTİ.",
+   "note": "Güvertedeki oyuncu ajan değil (C-11, D-20); itişmeden sonra resolve yeniden çağrılmıyor."
+  },
+  {
+   "name": "Kamera çarpışması (çarpıştırıcı + platform + gemi gövdesi + mağara + zemin/su kıskacı)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "camera.js:55-169 (ikili arama 114-120, kıskaçlar 130-155). Testler: 04 'C07 Kamera duvarın içinden bakmaz…'; 15 C01–C05; 17 K04–K09 GEÇTİ (12. belge; 17 eski kodda 10/11 kalıyordu).",
+   "note": "Yarıçap yok; görselden küçük ada yapı kutuları; kıskaçlardan sonra yeniden sınama yok (C-13)."
+  },
+  {
+   "name": "Gülle balistiği ve isabeti",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "combat.js:300-318 (58 m/s + gemi hızı), effects.js:149-199 (sürükleme/rüzgâr, gemi kutusu 0,5 m süpürme 166-178), combat.js:55-70 (büyük hedef parça–nokta). Test: 03_fizik_duzeltmeler 'Hızlı gülle tek adımda gövdeyi aşsa da isabet eder' GEÇTİ.",
+   "note": "Statik çarpıştırıcılar hiç sorgulanmıyor (C-05)."
+  },
+  {
+   "name": "Tabanca ışını (hitscan)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "combat.js:235-298 (kameradan ışın 244, arazi döngüsü 290-293, lineBlocked 295). Test: 05 'F-16 Tabanca ışını duvar arkasındaki düşmana isabet etmez' GEÇTİ.",
+   "note": "Namlu görüşü yok, kamera ile oyuncu arasındaki hedef vurulabilir (C-06)."
+  },
+  {
+   "name": "Düşman mermileri (kapsül süpürmesi + PROJ_LOS)",
+   "status": "dogrulanmamis",
+   "evidence": "enemies.js:77, 1490-1533. Yalnız lineBlocked seçeneği birim olarak sınanmış (03 #7); merminin duvarda durması ya da oyuncuya isabeti için senaryo yok.",
+   "note": "Oyuncu isabeti engelden önce sınanıyor (C-06)."
+  },
+  {
+   "name": "Zıpkın mermisi",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "seagear.js:249-286 (lineBlocked varsayılan paylarla 280; kare başına, alt adımsız 217). Testler: 14 'G02', 'G04 Zıpkın köpekbalığına hasar verir', 'G05' GEÇTİ.",
+   "note": "Kayadan/duvardan ~%4 geçiş (C-07)."
+  },
+  {
+   "name": "Düşman görüş algısı (_perceive/_los)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "enemies.js:532-574 (lineBlocked 555), 1011-1019. Testler: 05 'Algı: açık görüş hattında düşman 3 sn içinde oyuncuyu fark eder', 'Algı: 1 m kalın duvar arkasındaki oyuncu görülmez' GEÇTİ.",
+   "note": "Yüksekten bakışta bina arkası görünüyor (C-04); gemi gövdesi ve iskele tahtası görüşü kesmiyor (C-06)."
+  },
+  {
+   "name": "Düşman hareketi, çarpışma ve AI seyreltme (LOD)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "enemies.js:1072-1201 (resolve 1123, groundAt 1197), 1599-1606 (LOD). Testler: 05 'F-08 100 m uzaktaki düşman hedefi varsa her adım güncellenir', 'Yığılma yok…' GEÇTİ.",
+   "note": "Hedefsiz uzak düşman 0,25 sn'lik tek adımla güncelleniyor (C-16)."
+  },
+  {
+   "name": "Hayvan hareketi ve zemin",
+   "status": "dogrulanmamis",
+   "evidence": "animals.js:555-568 (_walk yalnız arazi eşiği + resolve), 621-630 (groundAt(y+1): 1,6 m basamak). Fizik testi yok.",
+   "note": "C-15."
+  },
+  {
+   "name": "Ragdoll (kendi 1/60 sabit adım biriktiricisi)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "ragdoll.js:9, 110-121 (acc ≤ 4·STEP, Verlet, 8 yineleme). Test: 04_karakter 'C19 Ragdoll sonrası dirilişte ayağa kalkış eylemi' GEÇTİ (12: 04 21/21).",
+   "note": "Oyunda gerçek biriktiricisi olan tek sistem bu; güvertede dünya uzayında kalıyor (02 önerisi)."
+  },
+  {
+   "name": "Sandık taşıma ve bırakma fiziği",
+   "status": "dogrulanmamis",
+   "evidence": "treasure.js:287-330 (_updateChest), 377-396 (drop), 398-420 (stowInHold). Taşıma ve bırakma testi yok (yalnız co-op 06b stowInHold).",
+   "note": "Ambar doluyken güverteye bırakılan sandığın denize düştüğü statik olarak doğrulandı (C-09)."
+  },
+  {
+   "name": "Güverte ganimet kesesi bağlama",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "treasure.js:513-551 (_deckAt/_attachDeck/_updateDeckLoot). Test: 16 'T04 Güverteye düşen kese gemiye bağlanır… gemi kalkınca kese suya düşüp yüzer' GEÇTİ.",
+   "note": "Kese gemi köküne bağlandığı için C-08'deki gecikmeden etkilenmiyor."
+  }
+ ],
+ "issues": [
+  {
+   "id": "C-01",
+   "title": "Döngü gerçek bir sabit adım değil: alt adım boyu kare süresine bağlı (h = dt/n); biriktirici ve ara değerleme yok",
+   "file": "js/game/game.js",
+   "func": "game.update / game._step",
+   "rootCause": "game.js:201-207 her karede n = ceil(dt/STEP) alt adım atıyor ve h = dt/n alıyor. Adım boyu kare süresiyle değişiyor (1/60, 1/80, 1/90, 1/120, 1/144…); kalan süre biriktirilmiyor, çizimde ara değerleme yok. Yarı örtük Euler (player.js:566-588) ile adıma duyarlı ayrık itkiler (knock: player.js:541-546; bodies sekme ve sürtünmesi: bodies.js:141-151) adım boyuna göre farklı sonuç veriyor. game.js:180-184'teki yorum '30/60/120 FPS aynı sıçrama' diyor ama bu doğru değil.",
+   "impact": "Aynı girdi farklı kare hızında farklı sonuç veriyor. Zıplama tepesi 15/20/30/60 FPS'te 1,183 m; 40/45/50 FPS'te 1,198/1,204/1,208 m; 59,94 Hz ve 120 FPS'te 1,214 m; 144 FPS'te 1,219 m (Node hesabı, 05 §5.1 ile birebir aynı). Geri tepme 144 FPS'te %10 kısa (05 §5.2 #3: 1,597 → 1,439 m), rijit cisim düşüşü 120 FPS'te x ekseninde 1,3 m farklı (05 §5.1). Zıplamayla çıkılabilen yükseklik (~1,78–1,82 m) ekran hızına bağlı; co-op'ta farklı ekranlı oyuncular farklı fizik yaşıyor.",
+   "priority": "orta",
+   "fix": "Biriktiricili sabit adıma geç: acc += dt; k = 0; while (acc >= STEP && k < MAX_SUB) { _step(STEP); acc -= STEP; k++ }; MAX_SUB aşılırsa acc = 0 (zaman yavaşlar). Kalan alpha = acc/STEP ile oyuncu, gemi, düşman, gülle ve kamera odağını önceki ve şimdiki durum arasında ara değerle. pressed() mantığını 'ilk alt adım' yerine 'karede bir kez tüket' modeline çevir; adım atılmayan karelerde girdi kaybolmasın.",
+   "repro": "Konsolda oyuncuyu düz zemine koy, zıpla, 2 sn boyunca her karede DK.game.update(1/144) çağır ve en yüksek p.pos.y farkını ölç (≈1,219 m). Aynısını DK.game.update(1/60) ile yap (1,183 m). Ya da /tmp/denetim_alan/C_fizik/los_test2.mjs çalıştır (ziplamaTepe).",
+   "acceptance": "03_fizik_dt.js beklentili hale gelsin: 15/30/45/59,94/60/90/120/144 FPS'te yürüme, sprint, zıplama tepesi, kaçınma, geri tepme ve sandık düşüşü 60 FPS sonucundan en çok %0,5 sapsın; 8–100 ms arası rastgele kare süresi dizisinde de aynı sonuç çıksın.",
+   "presentIn": "v03_ve_v04",
+   "knownAs": "11 #1 (yalnız 120 FPS zıplama kayıtlı; kapsam daha geniş), 14 yol haritası #10",
+   "confidence": "kesin"
+  },
+  {
+   "id": "C-02",
+   "title": "60 Hz ekranda alt adım sayısı 1 ile 2 arasında gidip geliyor (1e-6 eşiği)",
+   "file": "js/game/game.js",
+   "func": "game.update",
+   "rootCause": "game.js:201 n = clamp(Math.ceil(dt / this.STEP - 1e-6), 1, this.MAX_SUB). Tolerans oran cinsinden 1e-6, yani yaklaşık 0,017 µs. rAF zaman damgası farkı (Timer.update, three.core.js:51836-51846) 16,6667 ms'yi çok az aşsa bile n=2 oluyor. Tarayıcıların 0,1 ms'ye yuvarladığı damgalarda (16,6/16,7 ms) ve 59,94 Hz panellerde (16,68 ms) karelerin yarısı ya da tamamı iki alt adıma (h≈8,3 ms) bölünüyor. Node: 16,6 ms → 1, 16,667/16,7/16,68 ms → 2.",
+   "impact": "Gerçek 60 Hz ekranda benzetim fiilen 120 Hz alt adımla ya da karışık adımla koşuyor. (a) Alt adımdaki sistemlerin CPU maliyeti bu karelerde iki katına çıkıyor; 09_performans 'benzetim ms/kare' ölçümü yalnız n=1 (game.update(1/60)) ile yapıldığı için bu görünmüyor. (b) Belgelerdeki '60 FPS ile birebir' sonuçlar gerçek ekranda geçerli değil: zıplama tepesi 1,183 yerine 1,199–1,214 m. (c) Güverte oyuncusunun gemiden gecikmesi (C-08) kare kare 0,18↔0,09 m değişip titreme yapıyor.",
+   "priority": "orta",
+   "fix": "C-01'deki biriktiricili sabit adım bu sorunu kökten çözer. Geçici çözüm: toleransı büyüt (ceil(dt/STEP − 0,05)) ve dt'yi son birkaç karenin medyanıyla yumuşat.",
+   "repro": "Konsol: for (const ms of [16.6, 16.7, 16.68]) { DK.game.update(ms/1000); DK.input.endFrame(); console.log(DK.game.lastSubsteps); } çıktısı 1, 2, 2. Gerçek tarayıcıda 10 sn boyunca lastSubsteps ortalamasını kaydet; 60 Hz'de 1'den büyük çıkar.",
+   "acceptance": "16,5–16,9 ms titreşimli ve 59,94 Hz kare dizilerinde ortalama alt adım 1,00 ± 0,02 olsun; zıplama tepesi 60 FPS değerinden en çok %0,5 sapsın.",
+   "presentIn": "yalniz_v04",
+   "knownAs": "",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "C-03",
+   "title": "Top nişan hızı alt adım sayısıyla çarpılıyor (kare hızına bağlı nişan)",
+   "file": "js/game/shipControl.js",
+   "func": "shipControl.update (+ input.lookDelta)",
+   "rootCause": "shipControl.update game._step içinde her alt adımda çağrılıyor (game.js:225). Top kipinde input.lookDelta() (input.js:151-161) karede biriken fare farkını tüketmeden döndürüyor; endFrame (163-165) sıfırlaması kare sonunda yapılıyor. shipControl.js:292-294 bu farkı her alt adımda cannonYaw/cannonPitch'e yeniden ekliyor. v0.3'te shipControl.update kare başına bir kez çağrılıyordu (v0.3 game.js:186).",
+   "impact": "Top nişan hızı FPS'e bağlı: 60 FPS'te 1×, 30 FPS'te 2×, 15 FPS'te 4×, 10 FPS'te 6×. 60 Hz'de C-02 nedeniyle bazı karelerde 2× olduğu için nişan sıçrıyor; deniz savaşında isabet zorlaşıyor. Gamepad sağ çubuk da aynı biçimde çarpılıyor.",
+   "priority": "orta",
+   "fix": "Top nişan girişini kare başına işle: fare/çubuk bölümünü game.update'te tpCamera.rotate'in yanına taşı, ya da shipControl.update içinde yalnız !input.subframe iken uygula. Uzun vadede girdi tüketimini tek yerde topla.",
+   "repro": "Oyuncuyu bir topa geçir (DK.shipControl.takeCannon(p, s, 0)). DK.input.mouseDX = 100; DK.game.update(1/15); DK.input.endFrame() sonrası cannonYaw değişimi, aynı işlemi DK.game.update(1/60) ile yaptığındakinin 4 katı çıkar.",
+   "acceptance": "mouseDX=100, 1/10, 1/15, 1/30, 1/60, 1/144 sn'lik karelerde aynı cannonYaw/cannonPitch değişimini ±%1 içinde üretsin; bu kontrol 03_fizik_duzeltmeler'e eklensin.",
+   "presentIn": "yalniz_v04",
+   "knownAs": "",
+   "confidence": "kesin"
+  },
+  {
+   "id": "C-04",
+   "title": "lineBlocked yüksekliği tek noktada sınıyor (2,5B): eğik görüş hattında sonuç yöne bağlı ve hatalı",
+   "file": "js/world/physics.js",
+   "func": "physics.lineBlocked",
+   "rootCause": "physics.js:221-246 kutu için yalnız giriş parametresi t0'daki, çember için yalnız en yakın yaklaşma noktasındaki y değerinin c.y0–c.y1 aralığında olup olmadığına bakıyor. Doğru engelin izdüşümüne üst yüzün üstünden girip izdüşüm içinde y1'in altına inerse engel sayılmıyor. v0.3'te de aynı kural vardı (physics.js:167-191).",
+   "impact": "Node denemesi (kopya physics.js, v0.3 ve v0.4 aynı sonuç): 6 m yüksek, 8×8 m bir bina. 12 m yükseklikten binanın arkasındaki hedefe doğru 'açık' (false), ters yönde 'engelli' (true). Sonuç olarak tepe, sur ya da yüksek kayadaki düşman binanın veya kalın engelin arkasındaki oyuncuyu görüyor ve vuruyor (_los da aynı işlevi kullanıyor). Oyuncu yüksek kameradan kalın engel arkasındaki düşmanı vurabiliyor. Algı asimetrik.",
+   "priority": "orta",
+   "fix": "Kutu için [t0,t1] kiriş aralığında doğrunun y değerinin en küçüğünü ve en büyüğünü al; [ymin, ymax] ile [y0, y1] kesişiyorsa engel say. Çember için kiriş giriş–çıkış t'leriyle aynı yöntemi uygula. tMin/tMax kırpmasını bu aralığa uygula.",
+   "repro": "P=DK.physics; P.addBox(0,0,4,4,0,0,6,'t'); P.lineBlocked(-10,12,0, 6,0.5,0) → false; P.lineBlocked(6,0.5,0, -10,12,0) → true; P.removeTag('t'). Alternatif: /tmp/denetim_alan/C_fizik/los_height.mjs.",
+   "acceptance": "Birim testi: rastgele 50 eğik doğru × kutu/çember için lineBlocked(a,b) === lineBlocked(b,a) olsun ve sonuç 0,05 m adımlı nokta örneklemesiyle bulunan gerçek kesişimle uyuşsun. 05_dusman_ai'ye 'yüksekteki düşman bina arkasındaki oyuncuyu görmez' senaryosu eklensin.",
+   "presentIn": "v03_ve_v04",
+   "knownAs": "",
+   "confidence": "kesin"
+  },
+  {
+   "id": "C-05",
+   "title": "Gülle statik çarpıştırıcıları (bina, deniz kayalığı, fener, iskele, duvar, ağaç) yok sayıyor",
+   "file": "js/game/effects.js",
+   "func": "effects.update (gülle döngüsü)",
+   "rootCause": "effects.js:166-195 gülleyi yalnız gemi kutularına (0,5 m süpürme), araziye ve 'big' savaş hedeflerine (projectileTest, combat.js:55-69) karşı sınıyor; physics hücre ızgarası ve lineBlocked hiç çağrılmıyor. Deniz kayalıkları gemi engeli (Ship.obstacles) ve physics çemberi olarak ekleniyor (details.js:302-303, islands.js:1074-1076), ama gülle ikisini de görmüyor.",
+   "impact": "Gülle kaya sütunlarının, liman binalarının, fenerin, iskelenin ve kale duvarlarının içinden geçip arkasındaki gemiyi veya hedefi vuruyor. Kayalığı siper olarak kullanmak işe yaramıyor; düşman gemisi limandaki oyuncuyu binaların arkasından vurabiliyor. Patlama yalnız arazide oluşuyor.",
+   "priority": "orta",
+   "fix": "Her alt adımda prev→pos parçası için physics.lineBlocked(…, {tMin:0, tMax:1, rScale:1}) çağır, ya da en yakın isabet t'sini döndüren bir süpürme işlevi kullan. Gemi, arazi ve statik isabetlerden en erkenini seç; statik isabette patlama ve toz efekti üret. Güllenin sahibi olan geminin kendi gövdesini muaf tut.",
+   "repro": "Bir deniz kayalığı bul (DK.physics.all.filter(c=>c.tag==='seastack')). Bir gemiyi kayanın arkasına yerleştir ve kayanın öbür yanından DK.effects.cannonball(muzzle, yön*58, sahte_sahip, 1) ile gemiye doğru ateşle: gülle kayayı geçip gemiye isabet ediyor.",
+   "acceptance": "Statik engelin (kutu ya da çember) arkasındaki gemiye atılan 20 gülleden hiçbiri isabet etmesin; engelsiz yoldaki isabet oranı değişmesin. 03_fizik_duzeltmeler'e 'gülle kayalıktan/binadan geçmez' kontrolü eklensin.",
+   "presentIn": "v03_ve_v04",
+   "knownAs": "",
+   "confidence": "kesin"
+  },
+  {
+   "id": "C-06",
+   "title": "Görüş ve mermi kuralları tek sistemde değil: gemi gövdesi ve platform güvertesi yalnız kamera için engel, tabanca ışını kameradan çıkıyor, düşman mermisinde oyuncu isabeti engelden önce sınanıyor",
+   "file": "js/game/combat.js",
+   "func": "combat.shoot / combat.raycast; Enemy._perceive/_los; enemies._updateShots",
+   "rootCause": "physics.js:100-101'deki yoruma göre lineBlocked platformları kasıtlı olarak içermiyor; slabBlocked yalnız camera.js:112'de, gemi gövdesi testi (hullSolid, camera.js:15-29) yalnız kamerada kullanılıyor. Tabanca ışını kameradan çıkıyor (combat.js:243-254) ve namlu–hedef görüşü denetlenmiyor. raycast'te proj ≥ 0 şartı (281) kamera ile oyuncu arasındaki hedefi de kabul ediyor. Düşman mermisinde oyuncu kapsül isabeti (enemies.js:1496-1513) engel süpürmesinden (1531) önce sınanıyor.",
+   "impact": "Mermiler ve düşman görüşü iskele tahtasının ve gemi gövdesi/küpeştenin içinden geçiyor: güvertede küpeşte arkasına eğilmek siper olmuyor, iskele altındaki düşman üstteki oyuncuyu görüyor. Oyuncu omuz kamerasıyla namlunun görmediği köşe arkasını ya da kendi arkasındaki (kamera tarafındaki) düşmanı vurabiliyor. Duvar ile oyuncu aynı alt adım parçasındaysa (≤1,6 m) mermi duvarın arkasındaki oyuncuya isabet ediyor.",
+   "priority": "orta",
+   "fix": "Tek bir los/sweep API'si kur: statik + platform düzlemi + gemi gövdesi (yerel uzayda) + isteğe bağlı mağara katmanları; her çağıran maskeyle seçsin (AI, mermi, kamera). Tabanca için hedef noktasını kameradan bul, isabeti namludan o noktaya lineBlocked ile doğrula ve proj > kamera–oyuncu mesafesi şartını ekle. Düşman mermisinde engel kesişim t'si ile oyuncu kesişim t'sini karşılaştır; küçük olan kazansın.",
+   "repro": "(1) Bordalama sırasında güvertede küpeşteye çömel; karşı gemideki nişancının mermisi yine isabet ediyor. (2) Kamera ile oyuncu arasına bir düşman koy, nişangâh üstündeyken DK.combat.raycast(kamera, yön, 80, p) o düşmanı döndürüyor. (3) Oyuncunun 0,5 m önüne bir duvar koy; prev duvarın önünde, pos oyuncunun içinde olacak şekilde 95 m/s mermi oluştur: isabet oyuncuya yazılıyor.",
+   "acceptance": "05_dusman_ai'ye eklensin ve geçsin: küpeşte/iskele tahtası arkasındaki hedef görülmez ve vurulmaz; namlu–hedef doğrusu duvarla kesilen atış isabet etmez; kamera ile oyuncu arasındaki düşman vurulmaz; duvar ve oyuncu aynı parçadayken isabet duvarda kalır.",
+   "presentIn": "v03_ve_v04",
+   "knownAs": "F-16 (tabancanın çarpıştırıcıları yok sayması v0.4'te giderildi; kalan kısımlar kayıtlı değil)",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "C-07",
+   "title": "Zıpkın süpürmesi görüş hattı uç paylarıyla yapılıyor: yaklaşık %4 olasılıkla kaya, duvar ya da ağaçtan geçiyor",
+   "file": "js/wildlife/seagear.js",
+   "func": "seagear._flySpear",
+   "rootCause": "seagear.js:280 physics.lineBlocked(h.prev…, h.pos…) çağrısını varsayılan tMin=0,02 / tMax=0,98 / rScale=0,8 ile yapıyor. Bu, D-04'te düşman mermisi için PROJ_LOS ile düzeltilen hatanın aynısı: parçanın ilk/son %2'sine düşen giriş görülmüyor, sonraki parça engelin içinden başladığı için (t0=0 < tMin) engel bütünüyle deliniyor. Ayrıca seagear alt adım sistemi değil; zıpkın kare başına dt ile uçuyor (seagear.js:217).",
+   "impact": "Node denemesi (kopya physics.js): 0,4 m'lik ardışık parçalarla 400 engel konumunda hem çemberde hem ince kutuda 16/400 (%4) kaçırma; PROJ_LOS ile 0/400. Zıpkın ara sıra kayadan, iskele direğinden ya da duvardan geçip arkadaki balığı veya köpekbalığını vuruyor.",
+   "priority": "dusuk",
+   "fix": "lineBlocked'ı {tMin:0, tMax:1, rScale:1} (PROJ_LOS) ile çağır. Zıpkın uçuşunu alt adıma taşı ('seagear' sistemini SUBSTEP'e al ya da yalnız _flySpear'i alt adımlı çağır).",
+   "repro": "node /tmp/denetim_alan/C_fizik/los_test.mjs (zipkin_varsayilan: 16/400, zipkin_PROJ_LOS: 0/400). Oyunda: zıpkın yoluna 0,3 m yarıçaplı bir çember çarpıştırıcı ekleyip 24 m/s ile defalarca at.",
+   "acceptance": "400 ofsetli ardışık parça denemesinde kaçırma 0 olsun; 14_deniz_ekipmani'ne 'zıpkın duvardan geçmez' kontrolü (20 atış, 0 geçiş) eklensin.",
+   "presentIn": "yalniz_v04",
+   "knownAs": "D-04 (aynı sınıf; düzeltme zıpkına uygulanmamış)",
+   "confidence": "kesin"
+  },
+  {
+   "id": "C-08",
+   "title": "Güverte, dümen, top ve kayık kiplerinde oyuncu gemiden bir alt adım geride konumlanıyor",
+   "file": "js/game/game.js",
+   "func": "game._step; Player._updateDeck/_updateHelm/_updateCannon/_updateBoat",
+   "rootCause": "game.js:225-235 sırası şöyle: p.update (oyuncunun dünya konumu ve IK el hedefleri gemi matrisinden hesaplanıyor: player.js:889, 915-921, 934-939, 949), sonra gemiler güncelleniyor (ship.update → updateTransform matrisi yeniliyor, ship.js:380, 558-561), sonra kayık. Çizimde gemi yeni konumunda, oyuncu eski matrisle çiziliyor. Güverte düşmanları alt adım sistemlerinde gemiden sonra güncellendiği için (game.js:237, enemies.js:1162-1166) yeni matrisi kullanıyor.",
+   "impact": "11 m/s seyirde oyuncu gemiye göre yaklaşık 0,18 m (60 Hz) geride çiziliyor ve dümendeyken eller çarktan ayrı duruyor. C-02 nedeniyle adım boyu değiştikçe bu kayma 0,18↔0,09 m arasında titriyor. Güverte düşmanlarıyla menzil ve vuruş açısı 0,1–0,2 m kayıyor. v0.3'te kayma v·dt kadardı (30 FPS'te 0,37 m).",
+   "priority": "dusuk",
+   "fix": "Gemiler ve kayık güncellendikten sonra gemi kipindeki oyuncunun dünya konumunu ve IK hedeflerini yeniden türet (_step sonunda bir p.syncToShip() çağrısı). Alternatif: gemileri oyuncudan önce güncelle.",
+   "repro": "Gemiyi 11 m/s'de seyrettir. Dümendeyken her game.update'ten sonra p.char.ik.handL ile çark tutamağının o anki dünya konumu arasındaki farkı ölç (≈0,18 m). Güvertede p.pos ile s.localToWorld(local + deckAt) farkını ölç.",
+   "acceptance": "11 m/s seyirde ve fırtına yalpasında her karede oyuncu konumu ile güverte noktası farkı 0,01 m'den küçük olsun; dümende el–tutamak mesafesi 0,03 m'den küçük olsun; 1/45, 1/60 ve 1/144 sn'lik karelerde sonuç aynı çıksın.",
+   "presentIn": "v03_ve_v04",
+   "knownAs": "",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "C-09",
+   "title": "Ambar doluyken güverteye bırakılan sandık güvertenin içinden denize düşüyor (rijit cisim dünyasında gemi yok)",
+   "file": "js/treasure/treasure.js",
+   "func": "treasure.drop / stowInHold / _updateChest; bodies._step",
+   "rootCause": "treasure.js:388-391 güvertede bırakılan sandığı stowInHold(p.ship, c, true) ile ambara koymaya çalışıyor. Ambar doluysa 406'da yalnız c.state='ground' yapılıp çıkılıyor. Ardından _updateChest (302) sandığa bir bodies cismi ekliyor. bodies._step zemini yalnız physics.groundAt'ten (arazi + statik platform; bodies.js:136) alıyor; gemi güvertesi ve gövdesi rijit cisim dünyasında tanımlı değil. Ayrıca p.ship bordalanan düşman gemisi olabildiğinden sandık o geminin ambarına konuyor.",
+   "impact": "'Ambar dolu' uyarısından sonra hazine sandığı gövdenin içinden suya düşüp yüzüyor; gemi ilerledikçe geride kalıyor. Taşınan sandık kayda da yazılmadığı için (B04) kalıcı kayıp riski var. Co-op'ta diğer eşlerde sandık 'taşınıyor' hayaleti olarak kalıyor (H_coop_ui-ek-statik-194). Bordalamada düşman gemisine bırakılan sandık o gemiyle birlikte yok oluyor.",
+   "priority": "orta",
+   "fix": "Ambar doluysa sandığı ganimet kesesi gibi gemi köküne bağlanan bir 'güverte sandığı' yap (_attachDeck mantığı, 16 T04) ya da bırakmayı reddedip taşımayı sürdür. stowInHold'u yalnız G.ship için çağır. bodies'e gemi güvertesi zemini ekle (yerel uzayda deckAt).",
+   "repro": "G.ship.hold.chests'i T.holdSlots kadar doldur, bir sandık taşı, güvertede bırakma tuşuna bas: c.state 'ground' oluyor, birkaç saniye sonra 'water' oluyor ve sandık gövdenin altında ya da yanında yüzüyor.",
+   "acceptance": "Ambar doluyken güverteye bırakılan sandık güvertede kalsın ve gemiyle hareket etsin (11 m/s'de 30 sn sonra güverte yerelinde kayma 0,1 m'den az) ya da bırakma reddedilsin. Düşman gemisinde bırakılan sandık kaybolmasın; bu kontrol 16_kosu_poz_ganimet'e eklensin.",
+   "presentIn": "v03_ve_v04",
+   "knownAs": "H_coop_ui-ek-statik-194 (yalnız ağ yönü kayıtlı), B04 (kayıt yönü)",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "C-10",
+   "title": "Gemi ve kayık iskele, direk ve bina çarpıştırıcılarını yok sayıyor",
+   "file": "js/ship/ship.js",
+   "func": "Ship.update/_grounding/_obstacles; Rowboat.update",
+   "rootCause": "Ship.update yalnız _grounding (arazi, 9 sonda) ve _obstacles (Ship.obstacles daireleri) kullanıyor (ship.js:370-372, 417-459); physics hücre ızgarasındaki iskele yan kutuları, direkler ve binalar sorgulanmıyor. Rowboat.update yalnız araziye ve kendi gemisine bakıyor (ship.js:805-827); diğer gemiler ve kayalıklar da hesaba katılmıyor.",
+   "impact": "Gemi iskelenin ve rıhtımın içinden geçiyor, limana yanaşırken iskeleyi deliyor. Kayık iskele ayaklarının, diğer gemilerin ve deniz kayalıklarının içinden geçiyor.",
+   "priority": "orta",
+   "fix": "Gemi kapsülünü (baş–kıç doğru parçası, yarıçap B·0,45) physics.cells içindeki su hattını kesen kutu ve çemberlere karşı sına, tepkiyi _collide ile ver. Demir/dock bölgesinde geminin sıkışıp titrememesi için halat kuvvetini sınırla. Kayık için physics.resolve (r≈1,0), Ship.obstacles ve diğer gemi gövdeleri eklensin.",
+   "repro": "Limanda çapayı kaldır, gemiyi iskeleye dik doğrult, yelkenleri tam aç: gemi iskelenin içinden geçiyor.",
+   "acceptance": "Gemi iskeleye/rıhtıma 5 m/s'de çarptığında kutunun 0,3 m'den fazla içine girmesin ve 'crash' olayı üretsin. Kayık iskele ayağı ve diğer gemiyle çakışmasın. Demirli gemi iskeleye sıkışıp titremesin.",
+   "presentIn": "v03_ve_v04",
+   "knownAs": "11 #39",
+   "confidence": "kesin"
+  },
+  {
+   "id": "C-11",
+   "title": "Güvertede karakter itişmesi yok: bordalayan düşmanlar oyuncunun içinden geçiyor",
+   "file": "js/game/crowd.js",
+   "func": "crowd.update",
+   "rootCause": "crowd.js:17 oyuncuyu yalnız 'ground' ve 'swim' kiplerinde ajan sayıyor. Güverte düşmanlarının e.pos'u her _place'te gemi yerelinden yeniden türetildiği için (enemies.js:1162-1166, 1182) crowd'un yaptığı düzeltme bir sonraki adımda siliniyor.",
+   "impact": "Güverte savaşında düşman ile oyuncu üst üste biniyor; vuruş açısı ve menzil tutarsızlaşıyor; oyuncu düşmanın içinden geçerek kaçabiliyor.",
+   "priority": "dusuk",
+   "fix": "Her gemi için yerel bir ajan listesi tut (oyuncu.local ve e.local), aynı itme hesabını yerel koordinatta uygula, ardından clampDeck çağır.",
+   "repro": "Bordalama sırasında düşmana doğru yürü: |p.local − e.local| uzun süre 0,3 m'nin altında kalıyor.",
+   "acceptance": "Güverte savaşında oyuncu–düşman yerel mesafesi her karede (r1 + r2) − 0,05 m'den büyük ya da eşit olsun.",
+   "presentIn": "v03_ve_v04",
+   "knownAs": "D-20 / 11 #5",
+   "confidence": "kesin"
+  },
+  {
+   "id": "C-12",
+   "title": "Güvertede yalnız direkler engel: toplar, dümen ve ambar kapağı gibi güverte nesnelerinin içinden yürünüyor",
+   "file": "js/ship/ship.js",
+   "func": "Ship.clampDeck",
+   "rootCause": "ship.js:184-196 clampDeck yalnız gövde sınırını ve 0,45 m'lik direk dairesini uyguluyor. model.cannons ve stations (helm, hold, bucket) için itme yok; düşmanlar da aynı işlevi kullanıyor (enemies.js:1118).",
+   "impact": "Oyuncu ve güverte düşmanları topların ve dümen çarkının içinde durabiliyor; görsel iç içe geçme oluşuyor.",
+   "priority": "dusuk",
+   "fix": "clampDeck'e top (r≈0,7), dümen (r≈0,6) ve ambar kapağı (kutu) itmeleri ekle. Etkileşim noktaları dairelerin dışında kalacak şekilde konumlandırılsın.",
+   "repro": "Güvertede cn.local konumuna doğru yürü: p.local top merkezine 0,3 m'den fazla yaklaşabiliyor.",
+   "acceptance": "Güverte nesnelerinin merkezine nesne yarıçapından daha fazla yaklaşılamasın; bu kontrol 04_karakter'e eklensin.",
+   "presentIn": "v03_ve_v04",
+   "knownAs": "02 D_fizik iyileştirme önerisi 'Güverte çarpıştırıcıları: toplar, dümen, ambar kapağı'",
+   "confidence": "kesin"
+  },
+  {
+   "id": "C-13",
+   "title": "Kamera çarpışması yarıçapsız doğru testi; görselden küçük ada yapı kutularında kamera duvarın içine giriyor",
+   "file": "js/player/camera.js",
+   "func": "tpCamera.update",
+   "rootCause": "camera.js:112-120 yalnız baş→kamera doğrusunu sınıyor; kamera için yarıçap ya da küre süpürmesi yok (yakın düzlem 0,1 m, köşe ≈0,14 m). Engel bulunca kamera doğru boyunca yalnız 0,1 m geri çekiliyor (119), bu yüzden sıyırarak yaklaşılan duvarda dik uzaklık birkaç cm'ye inebiliyor. Ada yapılarının çarpışma kutuları görselin %60–90'ı (islands.js:496, colK 0,6–0,9), ve bu yapılar yakın-kamera silinmesine bilerek dahil edilmemiş: nearfade.js:114 'zemin/yapı: kamera çarpışması korur' diyor. Çarpışma aramasından sonra yapılan dikey kıskaçlar (zemin 136, güverte 141-144, su 150-152) yeniden sınanmıyor.",
+   "impact": "Ada kasabası, kule, değirmen, kale ve maden yapılarının yanında kamera dönerken görsel duvarın 0,3–1,2 m içine girebiliyor; ekranı yapının iç yüzü ya da boşluk kaplıyor ('kamera duvar içinden geçiyor'). Başlangıç limanında kutular 0,2 m büyük tutulduğu için orada sorun yok.",
+   "priority": "orta",
+   "fix": "Kamera için 0,25 m yarıçaplı süpürme ekle (lineBlocked'a 'pad' seçeneği: çember r+pad, kutu hw/hd+pad). Ada yapı kutularını görsel sınırlara getir (colK ≥ 1 ya da yalnız kamera için ayrı pay). Kıskaçlardan sonraki son konumu bir kez daha blocked() ile sına.",
+   "repro": "Bir adada kasaba halkasındaki bir yapının (colK 0,78) ya da değirmenin (0,6) duvarına sırtını daya, kamerayı 360° döndür; kamera konumunun yapının görsel sınır kutusu (Box3.setFromObject) içinde kaldığı kareleri say.",
+   "acceptance": "6 ada yapısı × 2 eğim × 48 açıda kamera konumu hiçbir yapının görsel sınır kutusunun içinde olmasın ve yakın düzlemin 4 köşesi de dışarıda kalsın; bu kontrol 17_kamera_kararma'ya K13 olarak eklensin.",
+   "presentIn": "v03_ve_v04",
+   "knownAs": "11 #43 (oyuncunun duvara gömülmesi kayıtlı; kamera yönü kayıtlı değil)",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "C-14",
+   "title": "Görsel güncellemeler alt adımda koşuyor: düşük FPS'te maliyet alt adım sayısıyla katlanıyor",
+   "file": "js/game/game.js",
+   "func": "game._step; Ship.updateTransform/_animate; Player.update; enemies.update; effects.update",
+   "rootCause": "Ship.update → updateTransform → _animate (yelken köşe noktası animasyonu; ship.js:380, 562, 584+), Player.update sonundaki c.update(dt) (karakter karıştırıcısı ve IK; player.js:416), enemies.update içindeki e.char.update(edt) (enemies.js:1606) ve effects parçacık tamponu (effects.js:121-147) hep alt adım sistemlerinin içinde.",
+   "impact": "10–30 FPS'te bu işler kare başına 2–6 kez yapılıyor; zaten yavaş olan cihazda kare süresi daha da uzuyor. MAX_SUB=6 sınırı sarmalı durdursa da oyun zamanı yavaşlıyor. 09_performans yalnız n=1 ölçtüğü için bu maliyet görünmüyor; C-02 nedeniyle 60 Hz'de de 2× oluyor.",
+   "priority": "dusuk",
+   "fix": "Alt adımda yalnız durum entegrasyonu kalsın. Animasyon karıştırıcısı, yelken köşe animasyonu, parçacık tamponu yazımı ve root.position kopyası kare başına bir kez (C-01'deki ara değerlemeyle) yapılsın.",
+   "repro": "09_performans'taki ölçüm işlevini (window._M) game.update(1/15) ile çalıştır: kare başına ms, game.update(1/60)'a göre yaklaşık 4 kat çıkıyor.",
+   "acceptance": "game.update(1/15)'in kare başına maliyeti game.update(1/60)'ın en çok 1,5 katı olsun (yalnız fizik alt adımlansın).",
+   "presentIn": "yalniz_v04",
+   "knownAs": "",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "C-15",
+   "title": "Hayvanlar 1,6 m'lik basamakla platformlara ışınlanıyor; yerçekimleri yok",
+   "file": "js/wildlife/animals.js",
+   "func": "Animal._pose / Animal._walk",
+   "rootCause": "animals.js:625 physics.groundAt(x, z, pos.y + 1) kullanıyor; bu 1,6 m'lik basamak penceresi demek (oyuncuda 0,6, düşmanda 0,65; D-14 yalnız düşmanda düzeltildi). _walk (555-568) yalnız arazi yüksekliği eşiğine bakıyor (h > 0,35); pos.y = gy anında atanıyor, düşüş yok.",
+   "impact": "Domuz, maymun ve yengeç iskeleye, sunağa ve yük yığınına anında tırmanıyor, kenardan anında iniyor. Oyuncu platforma çıkarak saldırgan hayvandan kaçamıyor; hayvanlar beklenmedik yerlerde beliriyor.",
+   "priority": "dusuk",
+   "fix": "groundAt(x, z, pos.y + 0.05) kullan. Hareketten önce basamak denetimi yap: yeni zemin pos.y + 0,65'ten yüksekse yön değiştir. Basit yerçekimli düşüş ekle.",
+   "repro": "İskele kenarındaki kumda bir domuzu iskelenin altına doğru yürüt: tek adımda iskele üstüne çıkıyor.",
+   "acceptance": "Hayvanın ardışık iki alt adım arasındaki yukarı yönlü sıçraması 0,7 m'yi geçmesin; 0,65 m'den yüksek bir platforma yandan çıkamasın.",
+   "presentIn": "v03_ve_v04",
+   "knownAs": "D-14 (düşmanda düzeltildi, hayvanda düzeltilmedi)",
+   "confidence": "kesin"
+  },
+  {
+   "id": "C-16",
+   "title": "Hedefsiz uzak düşmanlar 0,066 ya da 0,25 sn'lik tek adımla güncelleniyor; alt adım korumasını boşa çıkarıp ince engelden geçebiliyor",
+   "file": "js/game/enemies.js",
+   "func": "enemies.update (AI seyreltme)",
+   "rootCause": "enemies.js:1599-1606: hedefi olmayan düşman 45–90 m'de 0,066 sn, 90 m'nin ötesinde 0,25 sn biriktirdiği edt ile e.update(edt) çağrısı alıyor. _move tek physics.resolve yapıyor (1123): 4,3 m/s × 0,25 sn = 1,07 m'lik adımda resolve 'en yakın kenar' kuralıyla düşmanı duvarın öbür yanına çıkarabiliyor (02 F-08 koşusu).",
+   "impact": "Kampına dönen, kaçan ya da araştıran düşman ince duvar, çit veya mezar levhasının arkasına geçebiliyor; oyuncu yaklaştığında düşman yapının içinde ya da duvarın yanlış tarafında bulunuyor.",
+   "priority": "dusuk",
+   "fix": "edt'yi ≤ 1/30 sn'lik parçalara bölüp e.update'i parçalı çağır, ya da yalnız algı ve karar katmanını seyrelt, hareketi her alt adımda yap. 'return', 'flee' ve 'investigate' durumlarını seyreltmeden muaf tut.",
+   "repro": "Oyuncudan 100 m uzakta, hedefsiz bir haydudu 'return' durumunda (eve koşarken) 0,3 m kalın bir duvara doğru gönder; 60 kez enemies.update(1/60) çağır (0,25 sn birikir): düşman duvarı geçiyor.",
+   "acceptance": "Seyreltilen düşmanın tek adımdaki yer değiştirmesi kendi yarıçapını (≈0,4 m) geçmesin; 0,3 m'lik duvar 20 denemede hiç delinmesin.",
+   "presentIn": "v03_ve_v04",
+   "knownAs": "F-08 (kısmen düzeltildi: hedefli düşman artık muaf)",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "C-17",
+   "title": "Oyuncu düşüşünde son hız sınırı ve platform süpürmesi yok: 36 m/s'yi aşan düşüş platformu kaçırıyor",
+   "file": "js/player/player.js",
+   "func": "Player._updateGround",
+   "rootCause": "player.js:588 pos.y += vel.y*dt yapıyor, ardından 596'da groundAt(x, z, pos.y) çağırıyor (pencere 0,6 m). bodies'teki max(prevBottom) düzeltmesi (bodies.js:133-136) oyuncuya uygulanmamış; GRAV −22 ile son hız sınırı da yok. h=1/60'ta düşüş hızı 36 m/s'yi (≈29,5 m düşüş) aşarsa iskele, sunak ya da T başlık güvertesi kaçırılıyor.",
+   "impact": "Çok yüksekten (uçurum, fener) su üstündeki iskeleye düşen oyuncu iskeleden geçip suya düşüyor ve ölümcül düşüşten kurtuluyor. Yüksek bir platformun (top > 3) içine düşerse yan kutu onu yana fırlatıyor. v0.3'te eşik FPS'e bağlıydı: 10 FPS'te 0,8 m, 30 FPS'te 7,4 m düşüş yetiyordu.",
+   "priority": "dusuk",
+   "fix": "groundAt'i max(önceki ayak y, yeni y) ile sorgula (bodies gibi) ya da prev→new dikey parça platform düzlemini kesiyorsa oyuncuyu platforma yerleştir; 45 m/s civarında bir son hız sınırı ekle.",
+   "repro": "Oyuncuyu iskelenin (top 2,25) 40 m üstüne koy (p.pos.y = 42, vel = 0, onGround = false) ve DK.sim(4, 1/60) çalıştır: sonunda pos.y pierTop'un altında.",
+   "acceptance": "5–80 m yüksekten iskele, sunak ve T başlık üzerine yapılan düşüşlerde oyuncu her kare hızında (1/10–1/144) platformun üstünde dursun ve düşme hasarı alsın.",
+   "presentIn": "v03_ve_v04",
+   "knownAs": "D-07 (cisimler için düzeltildi; oyuncu için düzeltilmedi)",
+   "confidence": "kesin"
+  },
+  {
+   "id": "C-18",
+   "title": "Fizik testlerinin kanıt gücü zayıf: 03_fizik_dt beklenti içermiyor, #6 eski 64 hücre hatasını ayırt etmiyor, istenen test türleri eksik",
+   "file": "tests/scenarios/03_fizik_dt.js",
+   "func": "senaryo adımları (03_fizik_dt.js ve 03_fizik_duzeltmeler.js #6)",
+   "rootCause": "03_fizik_dt.js yalnız sayı döndürüyor ve hiç expect içermiyor (grep: 0); 12. belgedeki 'GEÇTİ' sonuçları elle okunmuş. Ölçülen 15/30/60 FPS değerlerinin hepsi 60'ın tam böleni (45/50/59,94/144 yok). 03_fizik_duzeltmeler #6 eksene paralel 400 m'lik bir doğru kullanıyor (AABB'de 26 hücre); v0.3 kodu da bu doğruda true döndürüyor (Node: eksenParalel400m=true), oysa v0.3'ün atladığı çapraz doğru (≥ 9×9 hücre) sınanmıyor. Ani FPS düşüşünde hareket, dar kapı, gülle–statik engel, yüksekten düşme hasarı, sandık–güverte, kamera yarıçapı ve gemi merdiveni senaryoları hiç yok.",
+   "impact": "v0.4'teki iddiaların bir kısmı (FPS bağımsızlığı, 64 hücre düzeltmesi) testle kanıtlanmış görünüyor ama bu testler regresyonu yakalamıyor. C-01–C-05, C-09 ve C-17 testlerden kaçmış durumda.",
+   "priority": "orta",
+   "fix": "03_fizik_dt'ye beklenti ekle (60 FPS'e göre ≤ %1) ve 45/59,94/90/144 FPS'i dahil et. #6'ya 204 m'lik çapraz doğru ekle (v0.3'te false dönüyor). Requirements tablosundaki eksik senaryoları yaz ve 12. belgeye işle.",
+   "repro": "03_fizik_duzeltmeler #6'yı v0.3'ün physics.js'iyle çalıştır: yine geçiyor. Doğrulama için /tmp/denetim_alan/C_fizik/los_test.mjs ve los_test2.mjs kullanılabilir.",
+   "acceptance": "#6'nın çapraz sürümü v0.3 kodunda KALSIN, v0.4'te GEÇSİN. 03_fizik_dt beklentili olarak 7 kare hızında koşsun. Eksik senaryolar eklenip 12. belgede kayıt altına alınsın.",
+   "presentIn": "yalniz_v04",
+   "knownAs": "",
+   "confidence": "kesin"
+  }
+ ],
+ "userClaims": [
+  {
+   "claim": "physics.js içindeki lineBlocked() 64 hücreden büyük alanlarda çarpışma kontrolünü tamamen atlıyor.",
+   "v03": "kismen",
+   "v04": "yanlis",
+   "evidence": "v0.3 physics.js:157-159: if ((i1 - i0 + 1) * (j1 - j0 + 1) > 64) return false. Ancak arazi örneklemesi (150-153) bu satırdan önce çalışıyor, yani atlanan yalnız çarpıştırıcı (kaya, ağaç, duvar, bina) denetimi; 'tamamen' ifadesi tam doğru değil. 64, doğrunun sınır kutusundaki 16 m'lik hücre sayısı: çapraz doğruda yaklaşık 158 m'den, eksene paralel doğruda yaklaşık 1 km'den sonra devreye giriyor. Node (v0.3 physics.js'in kopyası, arazi düz): ortaya kutu konmuş 204 m çapraz (81 hücre) ve 158,7 m (9×9) doğrularda false, 400 m eksene paralel (26 hücre) doğruda true. v0.3'te bu sınıra ulaşan çağıran yoktu: en geniş düşman görüşü 40 m (meşaleyle ×1,15 = 46 m) en çok 4×4 = 16 hücre ediyor, mermi parçaları ise kısa (02 D_fizik notu da 'şu an tetiklenmiyor' diyor). v0.4 physics.js:189-252 DDA hücre yürüyüşü kullanıyor (207-250); hücre sınırı yok, yalnız 4096 hücrelik bir güvenlik sınırı var (dünyanın köşegeni ≈2 440 hücre). Aynı Node durumlarında sonuç true. 03_fizik_duzeltmeler #6 geçiyor ama v0.3'te de geçecek bir doğru kullanıyor."
+  },
+  {
+   "claim": "Fizik değişken FPS ile farklı sonuç üretebiliyor (sabit adım yok).",
+   "v03": "dogru",
+   "v04": "kismen",
+   "evidence": "v0.3: engine.js:60-61 (dt ≤ 0,1) ve game.js:172-205'te tek, değişken adım var (shipControl.update 186, p.update 187, sistemler 198). Zıplama tepesi 15/30/60/120 FPS'te 1,000/1,122/1,183/1,214 m (05 §5.1; Node ile birebir doğrulandı). v0.4: game.js:185-238 kareyi n = ceil(dt/STEP) eşit alt adıma bölüyor (h = dt/n ≤ 1/60, n ≤ 6), ama biriktirici ve ara değerleme yok. Sonuç 15/20/30/60 FPS'te aynı (1,183 m); 40/45/50 FPS'te 1,198/1,204/1,208 m, 59,94 Hz ve 120 FPS'te 1,214 m, 144 FPS'te 1,219 m. Geri tepme 144 FPS'te %10 kısa, cisim düşüşü 120 FPS'te 1,3 m farklı (05). 60 Hz'de 1e-6 eşiği yüzünden n 1↔2 salınıyor (C-02). KAPSAMA (alt adımda, game.js:222-238 ve SUBSTEP 187): oyuncu (226); gemiler (s.update/clientUpdate, tickCannons, Ship.collideAll; 228-234); kayık (235); etkileşim (236); shipControl (225; top nişanını çarpıyor, C-03); rijit cisimler (bodies; iç 2 adım bölmesi bodies.js:101 artık hiç tetiklenmiyor); gülleler ve parçacıklar (effects); yakın dövüş ve tabanca (combat); düşmanlar ve düşman mermileri (enemies, _updateShots 1611); hayvanlar; megafauna; tehlikeler; bosslar; karakter itişmesi (crowd); olaylar (events). KAPSAM DIŞI (kare başına değişken dt): kamera (game._camera → tpCamera.update; damp kullandığı için kare hızından bağımsız yumuşatma, tasarım gereği); ortam (_env: gök, deniz, arazi akışı); zıpkın ve ağ (seagear, zıpkın uçuşu seagear.js:217); olta (fishing); balık sürüleri (fish); sandık taşıma ve konukta sandık düşüşü (treasure); NPC'ler; ada akışı; dünya olayları; hava efektleri; HUD; ağ (uzak oyuncu ara değerlemesi). İSTİSNALAR: 45 m'den uzak hedefsiz düşmanlar 0,066/0,25 sn'lik LOD adımıyla (enemies.js:1599-1606); ragdoll kendi 1/60 biriktiricisiyle (ragdoll.js:110-115). Gemi gövdeleri (Ship) kapsamda; tabanca anlık ışın olduğundan adım konusu değil."
+  },
+  {
+   "claim": "Düşman görüşü, tabanca görüşü ve çevresel engel kontrolleri tek sistemden geçmiyor.",
+   "v03": "dogru",
+   "v04": "kismen",
+   "evidence": "v0.3: düşman algısı, _los ve düşman mermisi physics.lineBlocked kullanıyor (enemies.js:544, 1004, 1502); tabanca combat.raycast yalnız arazi örneklemesi yapıyor (combat.js:280-286; lineBlocked yok, F-16); kamera yalnız arazi ve su kıskacı kullanıyor (camera.js:37-44); gülle yalnız gemi kutusu ve araziye bakıyor. v0.4'te ortak çekirdek lineBlocked: düşman algısı (enemies.js:555, varsayılan uç payları), _los (1015), düşman mermisi (PROJ_LOS 77, 1531), tabanca (combat.js:295, tMin 0,05/rScale 1; ayrıca kendi arazi döngüsü 290-293 var ve ışın kameradan çıkıyor, 244), zıpkın (seagear.js:280, varsayılan paylar → C-07), kamera (camera.js:112 CAM_LOS, buna slabBlocked, gemi gövdesi hullSolid ve mağara ekleniyor). Hâlâ ortak olmayanlar: gülle lineBlocked'ı hiç çağırmıyor (effects.js:166-195, C-05); platform güvertesi ve gemi gövdesi yalnız kamera için engel (C-06); seçenekler çağrıdan çağrıya değişiyor; yükseklik denetimi bütün çağıranlarda yöne bağlı hatalı (C-04)."
+  }
+ ],
+ "docClaims": [
+  {
+   "doc": "docs/denetim/05_FIZIK_GEMI_TESTLERI.md §5.1 (Yorum)",
+   "claim": "60 FPS'in altındaki tüm kare hızları artık 60 FPS ile birebir aynı sonucu verir (alt adım ≤ 1/60 sn).",
+   "verdict": "kismen",
+   "evidence": "Yalnız 60'ın tam bölenlerinde (15/20/30/60 FPS) doğru. 40/45/50 FPS'te h = 1/80, 1/90, 1/100 olduğu için zıplama tepesi 1,198/1,204/1,208 m; 59,94 Hz'de n=2 olduğu için 1,214 m (Node; game.js:201-202). Test yalnız 15/30/60 FPS'i ölçtü (03_fizik_dt.js:11)."
+  },
+  {
+   "doc": "docs/denetim/05_FIZIK_GEMI_TESTLERI.md §5.2 #6 ve 04_KOK_NEDENLER.md §4.5 (Doğrulama)",
+   "claim": "lineBlocked 400 m doğruda engel bulunur; önce 64 hücre üstünde her zaman false dönüyordu.",
+   "verdict": "yanlis",
+   "evidence": "Testteki doğru (1300,−3000)→(1700,−3000) eksene paralel; sınır kutusu 26 hücre (64'ün altında). v0.3 kodu bu doğruda da true döndürüyor (Node, kopya v0.3 physics.js: eksenParalel400m=true). Test eski hatayı ayırt etmiyor; v0.3 ancak 9×9 hücreyi aşan çapraz doğrularda false dönüyordu."
+  },
+  {
+   "doc": "docs/denetim/04_KOK_NEDENLER.md §4.5 (Belirti) ve 03_DEGISIKLIK_LISTESI.md satır 30",
+   "claim": "Uzun görüş hattı her zaman 'açık'tı; 40 m görüşlü düşman kalın duvarın arkasındaki oyuncuyu görüyordu (64 hücre nedeniyle).",
+   "verdict": "yanlis",
+   "evidence": "40–46 m'lik bir doğru en çok 4×4 = 16 hücre ediyor; v0.3 physics.js:159'daki sınıra ulaşmıyor. 02 D_fizik bölümü de '64 hücre erken dönüşü şu an tetiklenmiyor (≤16 hücre)' diyor. DDA düzeltmesi ileriye dönük olarak yine de doğru."
+  },
+  {
+   "doc": "docs/denetim/12_TEST_PLANI_VE_SONUCLAR.md satır 25 (senaryo 16)",
+   "claim": "Düşük FPS'te oyun kararlılığı: 03_fizik_dt.js (15 FPS adımı), 03_fizik_duzeltmeler.js (alt adım sınırı) — GEÇTİ.",
+   "verdict": "kismen",
+   "evidence": "03_fizik_dt.js hiç expect içermiyor (grep: 0); GEÇTİ sonucu elle okunmuş. Gerçek bir test olarak yalnız 03_fizik_duzeltmeler 'Alt adım sayısı…' ve 'Uzun karede zıplama tuşu tek zıplama üretir' var."
+  },
+  {
+   "doc": "docs/denetim/16_SON_RAPOR.md tablo satır 3",
+   "claim": "Fizik: sabit alt adım, DDA görüş hattı, 3 geçişli çözüm, gülle süpürmesi.",
+   "verdict": "kismen",
+   "evidence": "DDA (physics.js:207-250), 3 geçişli resolve (134-141) ve gülle–gemi süpürmesi (effects.js:166-178) var. Ancak alt adım 'sabit' değil: h = dt/n (game.js:201-202). Gülle statik çarpıştırıcılara karşı süpürülmüyor (C-05)."
+  },
+  {
+   "doc": "docs/denetim/16_SON_RAPOR.md satır 65",
+   "claim": "#7 Gemi gövdesi kamera çarpışmasına dahil değil — Açık (düşük).",
+   "verdict": "yanlis",
+   "evidence": "Bu ifade güncel değil: camera.js:15-29 (hullSolid) ve 71-99 gövdeyi kamera için katı yapıyor; 11. belge #7 'Kapalı' diyor; 17_kamera_kararma K04–K06 geçiyor."
+  },
+  {
+   "doc": "docs/08_FIZIK_RAPORU.md §8.6",
+   "claim": "Fizik kare hızına bağlı adımlarla çalışır; çok düşük FPS'te cisimler 2 alt adımla kararlı tutulur.",
+   "verdict": "yanlis",
+   "evidence": "v0.4 için eskimiş: döngü genelinde alt adım var (game.js:185-238). bodies.js:101'deki iç bölme (dt > 0,034) artık h ≤ 1/60 olduğundan hiç tetiklenmiyor."
+  },
+  {
+   "doc": "js/game/game.js:180-184 (kod yorumu)",
+   "claim": "Sabit zaman adımı: sonuçlar kare hızından bağımsızdır (30/60/120 FPS aynı sıçrama, aynı geri tepme, aynı tünelleme sınırı).",
+   "verdict": "yanlis",
+   "evidence": "120 FPS'te zıplama tepesi 1,214 m, 60 FPS'te 1,183 m (05 §5.1 ve Node); geri tepme 144 FPS'te %10 kısa (05 §5.2 #3); adım boyu 1/120 olduğundan tünelleme sınırı da farklı."
+  },
+  {
+   "doc": "docs/denetim/05_FIZIK_GEMI_TESTLERI.md §5.1 (rijit cisim)",
+   "claim": "Bodies oyun döngüsünde artık ≤ 1/60 adımla çağrıldığı için 60 FPS ve altında tutarlıdır.",
+   "verdict": "kismen",
+   "evidence": "59,94 Hz ile 40–50 FPS'te h 1/80 ile 1/120 arasında; 120 FPS'te ölçülen 1,3 m'lik x farkının sınıfına giriyor (game.js:201-202, C-01/C-02)."
+  },
+  {
+   "doc": "docs/09_DENIZ_VE_GEMI_FIZIGI.md §9.2",
+   "claim": "Gemi çarpışması: kara (9 örnek nokta), deniz kayalıkları/buzdağları (daire engeller), gemi–gemi.",
+   "verdict": "dogru",
+   "evidence": "ship.js:417-439 (9 sonda), 442-459 (Ship.obstacles), 462-511 (collideAll). İskele ve bina çarpışması olmadığı da bununla tutarlı (11 #39, C-10)."
+  },
+  {
+   "doc": "docs/09_DENIZ_VE_GEMI_FIZIGI.md §9.4",
+   "claim": "Toplar: 58 m/s namlu hızı, hava direnci ve rüzgâr sapması, gemi hızının eklenmesi.",
+   "verdict": "dogru",
+   "evidence": "combat.js:306 (dir·58 + gemi vx/vz), effects.js:152-159 (sürükleme ve rüzgâr)."
+  },
+  {
+   "doc": "docs/denetim/03_DEGISIKLIK_LISTESI.md satır 31-32",
+   "claim": "Gülle için önceki→yeni konum süpürmesi (gemi gövdesi, zemin, büyük hedefler); bodies: itki 14 m/s sınırı, force(), platforma düşen hızlı cisim için önceki taban yüksekliği, itilen uyuyan cisim uyanır.",
+   "verdict": "dogru",
+   "evidence": "effects.js:166-179, combat.js:55-69, bodies.js:62, 72-80, 133-136, 202; 03 #11 GEÇTİ. Statik çarpıştırıcılar bu süpürmenin kapsamında değil (C-05)."
+  },
+  {
+   "doc": "docs/denetim/11_BILINEN_SORUNLAR.md #1",
+   "claim": "120 FPS'te zıplama tepe noktası ≤%3 farklı — Açık (düşük).",
+   "verdict": "kismen",
+   "evidence": "Doğru ama eksik: 40–59,94 FPS ve 144 Hz'de de fark var; 144 FPS'te geri tepme %10, cisim düşüşü 1,3 m farklı; 60 Hz'de alt adım salınımı da var (C-01, C-02)."
+  },
+  {
+   "doc": "docs/denetim/11_BILINEN_SORUNLAR.md #40",
+   "claim": "Kamera ince engellerin içinden geçebilir — Kapalı.",
+   "verdict": "kismen",
+   "evidence": "Kamera hâlâ noCam ve ince engellerin içinden geçiyor (physics.js:220 kamera seçeneği bunları atlıyor). Kapatılan şey belirtinin görsel tarafı: nearfade titreşimli silinmesi (17 K02, K03). Yapılar silinmeye dahil değil (nearfade.js:114)."
+  },
+  {
+   "doc": "docs/denetim/11_BILINEN_SORUNLAR.md #39 ve #5",
+   "claim": "Gemi/kayık iskele çarpıştırıcılarını dikkate almaz; güvertedeki oyuncu itişmede ajan değil — Açık.",
+   "verdict": "dogru",
+   "evidence": "ship.js:370-372, 805-827 ve crowd.js:17 değişmemiş; iki madde de hâlâ açık (C-10, C-11)."
+  },
+  {
+   "doc": "docs/denetim/03_DEGISIKLIK_LISTESI.md satır 45 ve 04_karakter C07",
+   "claim": "Kamera duvarın içinden bakmaz: baş→kamera doğrusu çarpıştırıcıya giriyorsa mesafe ikili aramayla kısaltılır.",
+   "verdict": "kismen",
+   "evidence": "camera.js:114-120 ve 04 C07'deki 0,6 m kalın test duvarı için doğru. Görselden küçük ada yapı kutularında (islands.js:496 colK 0,6–0,9) ve yarıçap olmadığı için kamera görsel duvara girebilir (C-13; çalıştırarak doğrulanmadı)."
+  },
+  {
+   "doc": "js/world/physics.js:189-192 (kod yorumu)",
+   "claim": "Hücreler DDA ile yalnız doğrunun geçtiği sırayla gezilir; uzunluk sınırı yok (eski 64 hücre erken dönüşü kaldırıldı).",
+   "verdict": "dogru",
+   "evidence": "physics.js:207-250; Node'da 204 m çapraz doğruda v0.4 true, v0.3 false."
+  }
+ ],
+ "requirements": [
+  {
+   "req": "(1) Sabit zaman adımlı fizik",
+   "status": "kismen",
+   "evidence": "game.js:185-207: STEP=1/60, MAX_SUB=6, n=clamp(ceil(dt/STEP−1e-6),1,6), h=dt/n; adım boyu sabit değil (1/60…1/144). Test: 03_fizik_duzeltmeler 'Alt adım sayısı…' GEÇTİ. v0.3'te tek, değişken adım vardı.",
+   "plan": "game.update'i biriktiricili sabit 1/60 adıma çevir ve 1e-6 eşiğini kaldır. pressed() için 'karede bir kez tüket' modeline geç. Top nişanını ve diğer kare başı girdileri alt adımdan çıkar (C-01, C-02, C-03)."
+  },
+  {
+   "req": "(2) Render ile simülasyon ayrımı",
+   "status": "kismen",
+   "evidence": "Kamera, ortam ve akış kare başına (game.js:211-215), benzetim alt adımda (222-238), çizim engine.js:68'de. Ancak yelken animasyonu (ship.js:562, 584), karakter karıştırıcısı (player.js:416, enemies.js:1606) ve parçacık tamponu (effects.js:121-147) alt adımda çalışıyor; ara değerleme yok.",
+   "plan": "Alt adımda yalnız durum tut. Görsel güncellemeleri (animasyon, yelken, parçacık, root.position) kare başına bir kez, önceki ve şimdiki durum arasında ara değerleyerek yap (C-14)."
+  },
+  {
+   "req": "(3) Kontrollü accumulator",
+   "status": "yok",
+   "evidence": "game.update biriktirici tutmuyor (game.js:201-207, dt her karede tamamen tüketiliyor). Yalnız ragdoll'un kendi 1/60 biriktiricisi var (ragdoll.js:110-115). 14. belge #10 bunu yol haritasına koymuş.",
+   "plan": "acc += dt; while (acc ≥ STEP && k < MAX_SUB); taşmada fazlayı at; alpha = acc/STEP ile ara değerleme yap; zaman yavaşlamasını HUD'daki FPS bilgisiyle ölç."
+  },
+  {
+   "req": "(4) Maksimum alt adım ve zaman sıçraması sınırları",
+   "status": "karsilaniyor",
+   "evidence": "engine.js:61-62 dt ≤ 0,1 sn; game.js:186 ve 201 en çok 6 alt adım. Test: 03_fizik_duzeltmeler 'Alt adım sayısı: 1/15→4, 1/60→1, 0.1 s→6 (üst sınır)' GEÇTİ (05 §5.2 #1; 12 Aşama 9). İstisnalar: uzak düşmanın 0,25 sn'lik LOD adımı (enemies.js:1601) ve kare başına zıpkın.",
+   "plan": "Seyreltilen düşmanlarda edt'yi ≤ 1/30 parçalara böl (C-16). Sekme dönüşü için THREE.Timer.connect(document) ekle. Ani 0,1 sn'lik kare sırasında hareket senaryosu yaz."
+  },
+  {
+   "req": "(5) Hızlı nesnelerde sürekli/süpürmeli çarpışma",
+   "status": "kismen",
+   "evidence": "Var olanlar: gülle–gemi 0,5 m süpürme ve arazi (effects.js:166-178), büyük hedefe parça–nokta (combat.js:59-65), düşman mermisi kapsül süpürmesi (enemies.js:1499) + PROJ_LOS (1531), cisimlerde max(prevBottom) (bodies.js:133-136); 03 #11 GEÇTİ. Eksikler: gülle–statik (C-05), zıpkın uç payı (C-07), oyuncu düşüşünde platform süpürmesi (C-17).",
+   "plan": "En yakın isabet t'sini döndüren ortak bir sweep(a, b, mask) işlevi yaz; gülle, zıpkın, oyuncu düşüşü ve seyreltilen düşman bunu kullansın."
+  },
+  {
+   "req": "(6) FPS düşüşünde zemine gömülme olmamalı",
+   "status": "karsilaniyor",
+   "evidence": "Arazi kıskacı her kare hızında çalışıyor (player.js:599-613). Platform penceresi h ≤ 1/60 ile sınırlı (game.js:201-202); oyuncu ancak 36 m/s'yi (≈29,5 m düşüş) aşınca platformu kaçırıyor (Node; v0.3'te 10 FPS'te 0,8 m'den düşüş yetiyordu). Cisimlerde max(prevBottom) var; düşman ve hayvan anında zemine oturuyor. Bu duruma özel bir test yok.",
+   "plan": "1/10 sn ve tek bir 0,1 sn'lik kareyle iskeleye/sunağa zıplama ve düşme, cisim ve sandık düşüşü senaryosu ekle. C-17 süpürmesini uygula."
+  },
+  {
+   "req": "(7) Karakterler birbirine/engellere girmemeli, takılmamalı",
+   "status": "kismen",
+   "evidence": "resolve 3 geçiş yapıyor (physics.js:134-141); çarpışmada hız izdüşümü alınıyor (player.js:592-595); crowd itişmesi var (05 'Yığılma yok' GEÇTİ); yan yüzler var (03 #10, 15 I02/I05 GEÇTİ). Açık kalanlar: güvertede itişme yok (C-11), güverte nesneleri engel değil (C-12), ada yapı kutuları küçük (11 #43), itişmeden sonra resolve yok, uzak düşman LOD'u (C-16).",
+   "plan": "Güverte yerel itişmesi ve güverte engelleri ekle, colK'yi düzelt, crowd'dan sonra resolve çağır. Dar kapı, iç köşe ve ormanda sıkışma testleri yaz."
+  },
+  {
+   "req": "(8) Platform, iskele, bina, kaya, güverte çarpışmaları",
+   "status": "kismen",
+   "evidence": "İskele, merdiven ve rıhtım platform + yan kutu olarak kurulu (port.js:176-214, islands.js:642-664); 15 I01–I07 ve 07 D03 GEÇTİ. Liman binaları +0,2 m kutu (port.js:342); kaya ve ağaç daire (props.js:238-249). Eksikler: ada yapıları küçük kutu (11 #43), güvertede yalnız direk (C-12), gemi ve kayık iskeleyi yok sayıyor (C-10), cisimler gemi güvertesini bilmiyor (C-09).",
+   "plan": "colK'yi görsele eşitle, güverte engellerini ekle, gemi–iskele çarpışması ve cisimler için gemi zemini ekle. Her yapı türü için 'içinden yürünmez' testi yaz."
+  },
+  {
+   "req": "(9) Kamera duvar ve güverte içinden geçmemeli",
+   "status": "kismen",
+   "evidence": "camera.js:66-155: lineBlocked(CAM_LOS) + slabBlocked + gemi gövdesi + mağara, ikili arama, ardından zemin/güverte/su kıskaçları. 04 C07, 15 C01–C05, 17 K04–K09 GEÇTİ. Eksikler: kamera yarıçapı yok, görselden küçük ada yapı kutuları silinmeye de dahil değil (nearfade.js:114), kıskaçlardan sonra yeniden sınama yok (C-13). noCam engeller tasarım gereği geçiliyor.",
+   "plan": "0,25 m'lik kamera süpürmesi ekle, yapı kutularını görsele eşitle, son konumu yeniden sına; 17'ye ada yapıları için K13 ekle."
+  },
+  {
+   "req": "(10) Çarpışma katmanları ve etkileşim kuralları net",
+   "status": "yok",
+   "evidence": "Çarpıştırıcılar yalnız {t, x, z, r|hw, hd, y0, y1, tag, noCam} taşıyor (physics.js:53-78); katman ya da maske yok. Kurallar modüllere dağılmış ve tutarsız: player.js:590 ve 703-718, crowd.js, bodies.js:160, ship.js:417-459, effects.js:166-195, enemies.js:1531, camera.js:112. Bunları anlatan belge yok.",
+   "plan": "physics.js'e katman sabitleri (ARAZI, STATIK, PLATFORM, GEMI_GOVDE, KARAKTER, CISIM, MERMI, KAMERA) ve bir etkileşim matrisi ekle; addCircle/addBox'a mask parametresi ver; 08. belgeye tablo olarak yaz."
+  },
+  {
+   "req": "Görüş hattı: lineBlocked() 64 hücreden büyük alanlarda kontrolü atlamamalı",
+   "status": "karsilaniyor",
+   "evidence": "physics.js:189-252 DDA kullanıyor, 64 hücre erken dönüşü yok (v0.3 physics.js:159'da vardı). Yalnız 4096 hücrelik güvenlik sınırı var. Node'da 204 m çapraz doğruda v0.3 false, v0.4 true. Test 03 #6 GEÇTİ ama eski hatayı ayırt etmiyor (C-18).",
+   "plan": "#6'yı ≥ 9×9 hücrelik çapraz bir doğruyla güncelle; ters yön simetri testi ekle (C-04)."
+  },
+  {
+   "req": "Görüş hattı: verimli ızgara geçişi (DDA)",
+   "status": "karsilaniyor",
+   "evidence": "physics.js:207-250 Amanatides–Woo tipi yürüyüş (tMaxX/tMaxZ/tDx/tDz); yalnız doğrunun geçtiği hücreler geziliyor; seen kümesi yeniden kullanılıyor (204-205). Arazi ayrıca 1,5 m adımla örnekleniyor (198-202).",
+   "plan": "Mermiler için en yakın isabet t'sini döndüren bir sürüm ekle; 2,5B yükseklik düzeltmesini yap (C-04)."
+  },
+  {
+   "req": "Görüş hattı: düşman görüşü, tabanca görüşü ve çevresel engel kontrolleri aynı sistem üzerinden",
+   "status": "kismen",
+   "evidence": "Ortak çekirdek lineBlocked: enemies.js:555, 1015, 1531; combat.js:295; seagear.js:280; camera.js:112. Ortak olmayanlar: gülle (effects.js:166-195), platform güvertesi ve gemi gövdesi yalnız kamerada, tabancada ek arazi döngüsü ve kameradan çıkış; seçenekler farklı (C-05, C-06, C-07).",
+   "plan": "Maskeli tek bir losQuery/sweep API'si kur, bütün çağıranları buna taşı ve ortak birim testi yaz."
+  },
+  {
+   "req": "Test: 15/30/60/120 FPS",
+   "status": "kismen",
+   "evidence": "03_fizik_dt.js 15/30/60/120 FPS'te yürüme, sprint, zıplama, kaçınma, gemi ve cisim ölçüyor ama hiç expect yok (05 §5.1'de elle okunmuş). 03_fizik_duzeltmeler geri tepme 15/60/144 FPS (±%20) GEÇTİ.",
+   "plan": "15/30/45/59,94/60/90/120/144 FPS için beklentili test yaz (≤ %1 tolerans); gemi ve cisim de dahil."
+  },
+  {
+   "req": "Test: ani FPS düşüşü",
+   "status": "kismen",
+   "evidence": "03_fizik_duzeltmeler #1 (0,1 sn → 6 alt adım) ve #2 (uzun karede tek zıplama) var. Hareket ya da çarpışma sırasında tek bir 0,1–0,5 sn'lik kare senaryosu yok.",
+   "plan": "8–250 ms arası rastgele kare dizisiyle koşu, zıplama, iskele kenarı ve ince duvar senaryosu yaz; sonucu 60 FPS ile karşılaştır."
+  },
+  {
+   "req": "Test: çok hızlı hareket",
+   "status": "kismen",
+   "evidence": "03 #11 (120 m/s gülle–gövde) GEÇTİ. Kaçınma ya da geri tepme ile ince duvar, 36 m/s'yi aşan düşüş ve hızlı cisim–platform testleri yok.",
+   "plan": "Kaçınma + geri tepme ile 0,2 m'lik duvar, 40 m düşüş ve 40 m/s cisim–iskele senaryoları yaz."
+  },
+  {
+   "req": "Test: dar kapılar",
+   "status": "yok",
+   "evidence": "tests/ altında kapı ya da geçit senaryosu yok (grep 'kapı|gate' yalnız 13_donma'daki tapınak durumunu buluyor).",
+   "plan": "Tapınak kapısı (islands.js:810) ve iki kutu arasında 0,8–1,0 m'lik geçit için oyuncu ve düşman geçiş/sıkışma testi yaz."
+  },
+  {
+   "req": "Test: ağaç ve kayalar",
+   "status": "kismen",
+   "evidence": "16 K04 ormanda sprint ölçümü yalnız bilgi amaçlı (beklenti yok); 17 K08 orman kamera parlaklığı GEÇTİ. Ağaç ve kayanın içine girmemeyi sınayan beklenti yok.",
+   "plan": "Ormanda 8 yönde koşuda çember içine girme sayısı 0 ve takılma süresi ölçümü yaz."
+  },
+  {
+   "req": "Test: merdivenler",
+   "status": "kismen",
+   "evidence": "07 D03 (sudan iskele merdivenine çıkış) ve 15 I01 (kök basamağı) GEÇTİ. Gemi merdiveni tırmanışı (player.js:955-983) ve ada iskelelerine sudan çıkış (11 #23) test edilmedi.",
+   "plan": "Dalgada gemi merdiveni, ada limanı merdivenleri ve basamakta zıplama testleri yaz."
+  },
+  {
+   "req": "Test: iskeleler",
+   "status": "karsilaniyor",
+   "evidence": "15_iskele_kamera I01–I07 ve C01–C02 (12. belge: düzeltmeden önce 12 kontrolün 9'u kalıyordu, sonra 14/14); 07 D03.",
+   "plan": "Gemi ve kayığın iskeleye çarpması (C-10) senaryosu eklensin."
+  },
+  {
+   "req": "Test: gemi güvertesi",
+   "status": "kismen",
+   "evidence": "04 C09 (güvertede zıplama/kaçınma) ve 17 K04–K06 (kamera–gövde) GEÇTİ. Güverte nesneleri, güvertede itişme ve seyirde oyuncu–güverte gecikmesi (C-08) test edilmedi.",
+   "plan": "11 m/s seyirde oyuncu–güverte farkı, top ve dümenin içinden geçmeme, bordalamada itişme testleri yaz."
+  },
+  {
+   "req": "Test: düşen ve taşınan sandıklar",
+   "status": "kismen",
+   "evidence": "03_fizik_dt cisim düşüşü (beklentisiz), 16 T04 ve T07 GEÇTİ. Sandık taşıma ve bırakma (güverte, dolu ambar, su, platform) testi yok (C-09).",
+   "plan": "Sandığı kumsalda, iskelede, güvertede (ambar dolu/boş) ve suda bırakma testi yaz; 1/15–1/144 FPS'te koş."
+  },
+  {
+   "req": "Test: yüksekten düşme",
+   "status": "yok",
+   "evidence": "Düşme hasarı (player.js:600-605) için beklenti yok; 16 K03 yalnız 1,2/2,5 m'lik iniş eylemine bakıyor.",
+   "plan": "7/10/20 m düşüşte hasar değeri, 30/40 m'den iskeleye düşüş (C-17) ve suya düşüşte hasar almama testlerini farklı FPS'lerde yaz."
+  },
+  {
+   "req": "Test: hızlı gülle ve fiziksel nesneler",
+   "status": "kismen",
+   "evidence": "03 #11 (gülle–gövde süpürmesi) GEÇTİ. Gülle–statik (C-05), patlama itkisinin 14 m/s sınırı ve enkaz–platform için test yok.",
+   "plan": "Kayalık ya da binanın arkasındaki gemiye gülle (0 isabet), patlamada cisim hız sınırı ve enkazın iskeleyi delmemesi testlerini yaz."
+  },
+  {
+   "req": "Test: aynı girdi farklı FPS'te benzer sonuç",
+   "status": "kismen",
+   "evidence": "v0.4'te 15/20/30/60 FPS aynı (zıplama 1,183 m); 40–50 FPS'te 1,198–1,208 m, 59,94 Hz ve 120 FPS'te 1,214 m, 144 FPS'te 1,219 m (Node; 05 ile tutarlı). Geri tepme 144 FPS'te −%10, cisim 120 FPS'te 1,3 m farklı; top nişanı n kat (C-03).",
+   "plan": "Biriktiricili sabit adım + ara değerleme uygula; beklentili çok-FPS testi yaz."
+  }
+ ]
+}
