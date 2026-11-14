@@ -1,0 +1,223 @@
+{
+ "verdicts": [
+  {
+   "ref": "B-01",
+   "verdict": "dogrulandi",
+   "evidence": "Kod: net.js:358 'shipFull' koşulsuz _shipFull'a gidiyor, ham ileti diğer konuklara yayılıyor. _shipFull (:610-619) kimlik eşleşmezse G.ship'e düşüyor (:612); :615 name/upg/hp/holes/water/hold/cannonballs/planks doğrulamasız atanıyor; :616 `s.upg.hull` istisnası atamalardan sonra geldiği için bozuk durum kalıyor (yayın da atlanıyor). Ship.update (ship.js:267) gemi batık değilse (:269) :284 `this.upg.sails` ile her alt adımda TypeError; game._step (game.js:222-238) korumasız; main.js:117-122 tek güncelleyicide hud.update, net.update, input.endFrame atlanıyor; engine.js:64-67 yalnız günlüğe yazıyor. Ping/pong _hostData'da döngüden bağımsız (net.js:269) ve konuk _lastHostMsg'i her iletide tazeliyor (:527) → 25 sn uyarısı (:706) gelmiyor. replace:true → main.js:348-351 replaceShip + Object.assign(upg, hold konuktan); brigantine fiyatı shipModel.js:16 (9000). Geçersiz typeId: shipControl.js:47-48 eski gemiyi dispose edip G.ships'ten çıkarıyor, new Ship → shipModel.js:241 `T.id` TypeError, G.emit try/catch (ctx.js:24-27) yutuyor → gemi dünyadan kalkıyor. sim2.mjs D'yi yeniden koşturdum: 'Cannot read properties of undefined (reading hull)', upg undefined, hp/gülle 1e9. v0.3 net.js:254 ve _shipFull birebir aynı.",
+   "correction": "Etki eksik yazılmış (daha ağır): otomatik kayıt durur ama sayfa yenileme/kapama (main.js:382-383 beforeunload) ve sekme değiştirme (main.js:385 visibilitychange) saveNow çağırır; game.serialize → ship.serialize (ship.js:694-703) upg/hold/hp undefined yazar, yüklemede shipControl.js:25-30 varsayılanlara döner → gemi geliştirmeleri ve ambar içeriği KALICI kaybolur. Ayrıca upg geçerli verilirse çökme olmadan tüm alanlar ve gemi adı yazılır; gemi adı hud.js:302 innerHTML'e girdiği için kalıcı XSS doğar (missed listesinde ayrı madde)."
+  },
+  {
+   "ref": "B-02",
+   "verdict": "dogrulandi",
+   "evidence": "Kod: net.js:361 → _shipCmd (:620-633) yalnız gemi kimliğini arıyor; düşman/tüccar gemileri de G.ships'te. :624 `s.sailTarget = m.v` ham → damp/lerp (util.js:4, :10) 'abc' ile NaN, 1e9 ile fizik dışı hız; :623 anchor ve :625 bail her yerden; :626 repairHole (ship.js:225-233, +12 hp) tahtadan bağımsız; :627-628 addBalls/addPlanks ödemesiz (≤999); :630-631 `cannonHp[m.i]`/`mastHp[m.i]` ham indeks, i=4294967294 → uzunluk 4 294 967 295. netState (ship.js:707) `.map(Math.round)` ve hud.js:310 `.some/.filter` bütün indeksleri dolaşıyor; kendi Node ölçümüm (/tmp/denetim_alan/karsit_dogrulama/sparse.mjs): 3·10^7 uzunlukta map 1,04 sn → 2^32'de ≈150 sn/çağrı (denetçinin ≈190 sn tahminiyle aynı mertebe). mastFix her iletide rebuild: _build (ship.js:57-64) eski kökü yalnız sahneden çıkarıyor, disposeTree yok (dispose() ship.js:739-744 geometri/malzemenin gemiye özel olduğunu söylüyor); rebuild :69 reload'u sıfırlıyor → combat.js:301 canFire geçiliyor. sim.mjs 6a–6e'yi yeniden koşturdum (abc, 1e9, 999, repair çağrıldı/planks 0, length 4294967295). v0.3 _shipCmd aynı (addBalls/addPlanks yok; repair tahta düşmüyor bile).",
+   "correction": "Küçük düzeltmeler ve ağırlaştırıcı: (a) 'ileti oranı denetlenmiyor' değil; genel 120/sn (net.js:241-247) shipCmd'ye de uygulanıyor, eksik olan komut başına sınır. (b) cannonFix yolunda kayıt bozulmuyor, JSON.stringify (save.js:17, try dışında) hata verdiği için yazılamıyor. (c) Asıl kalıcı bozulma sails yolunda: sailTarget kayda giriyor (ship.js:697), yüklemede shipControl.js:33 `ship.sailTarget = ship.sail = 'abc'` → lerp dize birleştiriyor, gemi her yüklemede NaN hızla kayboluyor ve co-op'ta netState'te `this.sail.toFixed` TypeError ile anlık görüntü duruyor."
+  },
+  {
+   "ref": "B-03",
+   "verdict": "dogrulandi",
+   "evidence": "Kod: net.js:364 → _boatCmd (:634-641) `b.driver = m.who` doğrulamasız; :365 boatSt yalnız `b.driver === pid` koşuluyla x/z/yaw/speed/rowPhase'i ham atıyor; dock (:638) koşulsuz. Rowboat.control yalnız yerel sürücüde çağrılıyor (player.js:948); Rowboat.update rowPhase'e dokunmuyor. _hostSnapshot :740 `+b.x.toFixed(2) … +b.rowPhase.toFixed(2)` alan eksik/dize ise TypeError; net.update içinde `this.sendT = 1/15` atamasından sonra (:714-716) olduğundan her anlık görüntüde (~15/sn) yineleniyor, snap hiç gitmiyor. sim.mjs 8: 'Cannot read properties of undefined (reading toFixed)'. Pong (:269, :527) sürdüğü için konukta hostLeft yok. v0.3 net.js:260-261 ve aynı anlık görüntü satırı.",
+   "correction": "Ek: rp dize ise ev sahibi kürek çekse bile düzelmez (control'daki `rowPhase += dt*4.5` dize birleştirir); _dropPeer (:400) sürücüyü sıfırlar ama rowPhase'i sıfırlamaz → sayfa yenilenene dek kalıcı."
+  },
+  {
+   "ref": "B-04",
+   "verdict": "kismen",
+   "evidence": "(1)-(3) doğru: 'st' :241'de oran/boyut dışı; :276 → _remoteState (:643-647) ham hedef; RemotePlayer.update (:96-100) 8 m üstünde k=1 ile ışınlıyor; x:'a' ile pos NaN olur ve NaN>8 yanlış olduğundan kalıcı kalır. `d > eşik` biçimli denetimler NaN'da açık: hurtEnemy :283-284, lootReq :305, holdTake :319, hold :350, floatReq events.js:234 (`> 6`); hurtAnimal/hurtMarine/stunEnemy/chestState `<` biçiminde, NaN'da kapalı. hurtEnemy'de applyDamage (enemies.js:390-394) `hypot(NaN)||1` → kb NaN, :1187-1190 kb hiç sönmüyor → düşman konumu kalıcı NaN. eq nesne → Character.hold (character.js:646-653) `type.startsWith` TypeError, net.update :709'da düşüyor; anlık görüntü (:737) ham hedefi diğer konuklara taşıyor. v0.3'te hiç mesafe denetimi yok.",
+   "correction": "(4) yanlış mekanizma: PeerJS 1.5.5 JSON kanalı (vendor/peerjs/peerjs.min.js, Json `_send`: kodlanmış boyut ≥ chunkedMTU=16300 → `emitError('message-too-big')`) 16 300 bayt ve üstünü göndermiyor; konuk standart toHost ile 64 KB'lık 'st' yollayamaz, ev sahibi de büyük 'snap'i iletemez. Gerçek etki daha ağır: ~15 KB'lık 'st' ev sahibinin sonraki 'snap'ini eşiğin üstüne itiyor, her konuğa gönderim 'error' üretiyor ve net.js:233 `conn.on('error', () => this._dropPeer(conn.peer))` bütün konukları düşürüyor (missed maddesi). Ayrıca sayı türündeki eq yalnız değer değiştiğinde istisna atar (heldType character.js:650'de istisnadan önce atanıyor); 'her yeni st'de' etkisi nesne eq için geçerli."
+  },
+  {
+   "ref": "B-05",
+   "verdict": "dogrulandi",
+   "evidence": "Kod: hold :345-357 — :351 her anahtar (<40 karakter) 0–999, ITEMS denetimi ve anahtar sayısı sınırı yok; :352 chests slice(0,40) ham. lootReq :301-314 — :306 ≤10 satır, adet ≤999, row[3] her nesne, exact konuktan; treasure.js:498-509 rollTable exact → [id, b, data]. Zincir: shop.js:156-166 sellHoldChests 40 × CHEST_TIERS.legend.value (3000) = 120 000; sandık açılınca inventory.js:25 currency → gold += 1e9; balıkta items.js:117-125 ağırlık/değer veriden, shop.js:60 satış (1e12×1,0×1,4). sim2.mjs B/C'yi yeniden koşturdum (40 legend sandık, 999'luk eşyalar, 1e12/-1e9 balık). Ambar ship.serialize (ship.js:697) ile kayda giriyor. v0.3 net.js:253 `s.hold = m.hold` daha ham; lootReq v0.3'te yok.",
+   "correction": "Küçük: lootReq keseleri kayda yazılmıyor (treasure.js:120-126; 11 #44), kalıcılık ancak alınınca. Ek ağırlaştırıcı: ~16 KB'lık sahte ambar 'world' iletisini PeerJS'in 16 300 bayt eşiğinin üstüne itip dünyayı kalıcı olarak katılınamaz yapıyor (missed)."
+  },
+  {
+   "ref": "B-06",
+   "verdict": "dogrulandi",
+   "evidence": "Zincir kodda doğru: net.js:306 row[3] her nesneyi geçiriyor; spawnLoot → netPickupSpawn (:168) eşya verisini tüm konuklara yayıyor; :352 ambar sandık içerikleri ham. items.js:134 `body.replace(/#5aa8d0/g, color)` (icons.js:206-209 fill=#5aa8d0) → panels.js:33 `html: iconSVG(s, color)` → util.js:130 innerHTML; svg içindeki <img> yabancı içerikten çıkıp HTML img oluyor, onerror çalışır. itemTip (panels.js:21-27) ad/len/weight/zone/value kaçışsız → ui.js:82 showTip innerHTML; ayrıca panels.js:114 (`html: itemTip(s)`) ve :197 (`html: iconSVG(s, s.data?.color)`). index.html'de CSP yok. v0.3 items.js:103-112 ve panels.js:19-31 aynı sinkler; v0.3'te veri 'hold'/'chestState' ham yolundan geliyor. Tarayıcıda çalıştırmadım.",
+   "correction": "Sink listesi eksik: gemi adı hud.js:302/:311 innerHTML'e kaçışsız giriyor ve 'shipFull' ile konuktan yazılabiliyor (kayıtta kalıcı) — missed listesine ayrı kritik madde olarak eklendi. Hazine haritası data.island da itemTip'te (panels.js:24) kaçışsız."
+  },
+  {
+   "ref": "B-07",
+   "verdict": "dogrulandi",
+   "evidence": "Kod: net.js:278-291 yalnız üst sınır (DMG_MAX :45) ve beyan konuma göre mesafe; sıklık yalnız genel 120/sn. hurtBoss :288 → bosses.js:1041-1046 mesafe yok, kind/pos/ten iletiden; Kraken damageMul (bosses.js:210-216) 'tentacle' için derinlikte de 1; _hurtTentacle (:217-233) dokunaç kopunca 260×(1+0,5n). applyDamage (enemies.js:376-397) blok/kaçınma/rise/phased'i atlıyor; stunned ×1,25, tired ×1,4, backMult beyan konuma göre; ctr → stun 1,6 sn (:402). stunEnemy :289 0,2–3 sn, 8 m (beyan). quests.js:171-190 hikâye düşmanı ölümünde aşama/parça/sandık. F-04 açık: enemies.js:1302 hear() konukta da çalışıyor, blok/kaçınma konukta (:343-357); F-04 03/11/08/16'da yok. sim.mjs 4/5'i yeniden koşturdum (19 200; 9 km'den 220'lik tentacle iletisi). v0.3 net.js:237-241 ham. Öncelik tartışmalı (kazanç saldırgana değil ev sahibi/tayfaya düşüyor) ama ölçütteki 'sınırsız kazanç' tanımına uyuyor."
+  },
+  {
+   "ref": "B-08",
+   "verdict": "dogrulandi",
+   "evidence": "Kod: net.js:373-383 — num(0,5000), ≤0 red, _gold sabit 60 sn penceresi (:379) 20 000; :382 `G.player.inv.gold += amount` ve kırpılmış değerin yayını. Satış ve pay konukta hesaplanıyor (shop.js:120-128 earn); işlem kimliği, tüccar, fiyat denetimi yok. sim.mjs 2a/2b'yi yeniden koşturdum: 20 000/dk, 1 200 000/sa. B16 11 #16'da açık. v0.3 net.js:263 ham.",
+   "correction": "Ek: sabit pencere (:379) sınır anında ~1 sn içinde 40 000'e izin veriyor. Aynı kırpma/bütçe dürüst büyük satış paylarını sessizce yok ediyor (missed)."
+  },
+  {
+   "ref": "B-09",
+   "verdict": "kismen",
+   "evidence": "Kök neden doğru: main.js:117-122 tek güncelleyici (game.update → hud.update → net.update → input.endFrame); engine.js:64-67 try/catch yalnız güncelleyici düzeyinde; game._step (game.js:222-238) varlık başına korumasız; input.endFrame (input.js:163-168) pressedSet ve fare deltasını temizliyor, atlanınca game.update başındaki _globalKeys eski tuşları her karede yeniden tetikliyor. B-01, B-03 ve B-04 (eq) için etki doğru.",
+   "correction": "B-02 için yanlış: cannonFix/mastFix kilitlenmesi istisna değil, 2^32 uzunluklu seyrek dizinin netState (ship.js:707) ve hud.js:310'da dolaşılmasından gelen CPU kilidi; sails NaN da istisna üretmiyor. Hata yalıtımı B-02'yi önlemez, girdi doğrulaması gerekir. B-03'te input.endFrame her karede değil yalnız anlık görüntü karelerinde (~15/sn) atlanıyor."
+  },
+  {
+   "ref": "B-10",
+   "verdict": "dogrulandi",
+   "evidence": "Kod: chestReq :293-299 ve _grant (treasure.js:351-367), _openChest (:476-493) mesafe denetimsiz; pickupReq :300 → _collect (:632-641) denetimsiz; dig :292 konum denetimsiz, resolveDig (:213-235) yalnız alana <2,8 m ve 8 dk 'recent'; maps :384 ham → activeSites (:146-154). DIG_SITES'ı Node ile saydım: 12 çekirdek, toplam 123. chestState/chestGone :334-344 `carriers.includes(pid) || <8 m` (beyan konum); _applyChestState (:593-601) carriers/state/pos ham, ev sahibinin taşıması :600'de düşüyor; kayıt 'gone'u dışlıyor (treasure.js:124). carriers sayı olursa _dropPeer :398 `includes` TypeError ile kilit/kayık temizliğini atlıyor. sim2.mjs E/F yeniden koşturuldu. v0.3'te hiçbir denetim yok."
+  },
+  {
+   "ref": "B-11",
+   "verdict": "dogrulandi",
+   "evidence": "Kod: net.js:360 → hazards.netApply (hazards.js:672-680) yalnız kimlik varlığına bakıyor; ignite (:192-198) fitili iletiden; _explode (:200-245) ev sahibine 15+70k (:225), gemilere 30×(…) (:241), hedeflere by: G.myId (:236); 'block' x/z ham; 'solve' → solve (:508-520) this.solved; save (:86) solved/gone kalıcı. sim2.mjs G yeniden koşturuldu. v0.3 aynı.",
+   "correction": "Küçük: f=0 'anında' değil — netApply `m.f || 1.2` ile 1,2 sn fitile döner; anında patlama için negatif ya da çok küçük pozitif f gerekir."
+  },
+  {
+   "ref": "B-12",
+   "verdict": "dogrulandi",
+   "evidence": "Kod: net.js:326-333 — :328 to ≤99, :329 her anahtar (<40, true) birleşiyor, :330 yalnız `to === stage+1`; ardışık iletiler kuralı aşıyor. quests.js:127 advance: :129 stage atanıyor, :130 STORY[to], :132 `s.title`; STORY 6 öğe (quests.js:24-31) olduğundan to=6'da TypeError ama stage 6 kalıyor. progress.js:81 storyAdvanced → +150 XP. sim.mjs 9: stage 5, keyfî bayraklar. v0.3'te ev sahibinde 'story' işleyicisi yok ve relay yalnız ev sahibinden yayın (v0.3 net.js:146) → yalnız v0.4."
+  },
+  {
+   "ref": "B-13",
+   "verdict": "dogrulandi",
+   "evidence": "Kod: net.js:366-372 kilit yalnız `!interact.locks.has(id)` ile alınıyor, id herhangi dize (≤64); helm :362 ve fire :363 yalnız kilit sahipliğine bakıyor, gemi herhangi G.ships üyesi (düşman/tüccar dahil). interact.js:16-19 isLocked → :35 ev sahibinin adayı '(kullanımda)' ve devre dışı. mastFix reload sıfırlaması (ship.js:69) + combat.js:301 canFire. sim.mjs 7: kilit g1, rudder 1, sail 1. v0.3 net.js:262 daha ham (who ve başkasının kilidini kaldırma serbest)."
+  },
+  {
+   "ref": "B-14",
+   "verdict": "dogrulandi",
+   "evidence": "Kod: net.js:386 hedef ev sahibiyse koşulsuz G.player.revive(), değilse toPeer (:491-495) ile ham iletiliyor; konukta :576 aynı. player.js:236-245 revive: dead/downed=false, hp=45 (canı yüksekse düşürüyor), cancelBusy, startAction('getup'); player.js:470 getup hızı ×0,1. downed, yakınlık ve 2,5 sn tutma denetimi yok (:727 sağlayıcı yalnız yerel arayüz). sim2.mjs H yeniden koşturuldu. v0.3 net.js:266 aynı."
+  },
+  {
+   "ref": "UC1",
+   "verdict": "dogrulandi",
+   "evidence": "v0.3 net.js:263 `case 'gold': this.broadcast(m, pid); G.player.inv.gold += m.amount;` — tür/aralık yok (negatif siler, dize gönderilirse altın dizeye dönüşür), ham yayın. v0.4 net.js:373-383: num(0,5000), ≤0 red, konuk başına 60 sn'de 20 000, kırpılmış yayın; ekleme hâlâ konuğun beyanına göre (:382). Hükümler (v03 dogru, v04 kismen) doğru. Not: 08 §8.1 #6'daki +12 000 bütçeden değil oran sınırından (120×100) geliyor (bkz. SYS1)."
+  },
+  {
+   "ref": "UC2",
+   "verdict": "dogrulandi",
+   "evidence": "v0.3 net.js:237-241 ham dmg, mesafesiz, stun süresi ham. v0.4 net.js:278-291 kırpma ve mesafeler doğru aktarılmış; hurtBoss'ta mesafe yok (:288, bosses.js:1041-1046); applyDamage blok/kaçınmayı atlıyor; sim.mjs 4/5 sonuçlarını yeniden ürettim. Hükümler (v03 dogru, v04 kismen) doğru.",
+   "correction": "Kanıttaki iki ayrıntı yanlış: (a) 'Bu mesafeler NaN'da açık kalıyor' yalnız hurtEnemy için geçerli (:284 `d > eşik → break`); hurtAnimal (:290), hurtMarine (:291) ve stunEnemy (:289) `< eşik` biçiminde, NaN'da reddediyor. (b) Infinity JSON ile iletilemez (null olur, hasar 0); v0.3'te aynı etkiyi 1e308 ve negatif değer (düşmanı iyileştirir) verir."
+  },
+  {
+   "ref": "SYS1",
+   "verdict": "kismen",
+   "evidence": "Mekanizma (net.js:44, :373-383) kod okuması ve denetçinin Node saplamasıyla doğru (sim.mjs 2a/2b'yi yeniden koşturdum: 20 000/dk, 1 200 000/sa). Ama proje testi bütçeyi sınamıyor: 06a_ag_guvenligi.cjs:39 300×100 iletiyi aynı anda gönderiyor; ilk 120'si oran sınırıyla (:243-247) kabul edilip +12 000 oluyor (08 §8.1 #6 ölçümü tam 120×100) ve 20 000'lik bütçeye hiç ulaşılmıyor; 5000/ileti kırpması da (amount 100) sınanmıyor. Kontrol (:42) `≤20000` olduğu için GOLD_PER_MIN kaldırılsa da geçer.",
+   "correction": "Durum 'calisiyor_test_edilmis' değil 'calisiyor_gelistirilmeli' (proje testinde sınanmamış; sabit 60 sn pencere sınır anında ~1 sn'de 40 000'e izin veriyor; aynı kırpma dürüst büyük satış paylarını yok ediyor — missed)."
+  },
+  {
+   "ref": "SYS2",
+   "verdict": "kismen",
+   "evidence": "hello yolu gerçekten sınanıyor: 06a H02 kontrolleri, 08 §8.1 #1/#4, 12 #19 ('sahte ad'). Ancak net.js:274 'app' adı temizlemeden c.info.name'e yazıp roster ile yayıyor (sim2.mjs A: 3028 karakter, <img…> korunuyor) ve bu yol hiçbir testte yok. Konuklar :530'da yeniden temizlediği ve ad sinkleri metin düğümü/esc/canvas olduğu için XSS yok; ev sahibinin roster'ı, bildirimleri ve sohbet 'from' alanı ham adı taşıyor.",
+   "correction": "Sistem bütünüyle 'calisiyor_gelistirilmeli': temizlik bir yolda (hello) test edilmiş, ikinci yolda (app) yok."
+  },
+  {
+   "ref": "SYS3",
+   "verdict": "kismen",
+   "evidence": "H04 (06a; 08 §8.1 #2) ev sahibi kaydının korunmasını gerçekten sınıyor. D4-06 (06c) ise eşleşme dalını sınamıyor: menüye dönen konuğun kaydı kopmada _dropPeer (:394) ile zaten siliniyor, yeniden katılım yeni kayıt olarak ekleniyor. :255 eşleşmesi `!this.conns.has(r.id)` koşuluna bağlı; _dropPeer conns ile roster'ı birlikte sildiğinden ev sahibi dışında bu koşulu sağlayan kayıt oluşmuyor → dal fiilen ölü. Ev sahibi kopmayı algılamadan (≤15 sn) yeniden bağlanan konuk ikinci kayıt alıyor, oda doluysa 'Oda dolu' ile reddediliyor; aynı pid'den tekrarlanan hello roster'ı şişiriyor (sim.mjs 1: HOST,g1,g1,g1). 08 §8.4 oturum ortası yeniden bağlanmanın yazılmadığını söylüyor.",
+   "correction": "'calisiyor_gelistirilmeli': aynı adlı konuk test edilmiş; yeniden katılım eşleşmesi test edilmemiş ve amaçladığı hızlı yeniden bağlanma durumunda çalışmıyor."
+  },
+  {
+   "ref": "SYS4",
+   "verdict": "kismen",
+   "evidence": "Ev sahibi tarafı (15 sn, net.js:704) ve kilit/sandık/kayık temizliğinin yayılması (:398-400) 06a2 H13 ve 06c D4-07 ile sınanmış, 08 §8.1 #10, §8.3 ve 12 #13/#14'te kayıtlı. Konuk tarafındaki 25 sn denetimi (:705-707) hiçbir testte yok ve tasarım gereği etkisiz kalabiliyor: _lastHostMsg pong dahil her iletide tazeleniyor (:527), pong oyun döngüsünden bağımsız yanıtlanıyor (:269); ev sahibinin döngüsü kilitlense (B-01), anlık görüntü dursa (B-03) ya da konuk 'error' ile roster'dan silinse (PeerJS 16 300 bayt maddesi) konuk hiçbir zaman uyarı almıyor. carriers türü bozulursa :398 TypeError ile temizlik yarıda kalıyor (B-10).",
+   "correction": "'calisiyor_gelistirilmeli': ev sahibi yarısı test edilmiş; konuk yarısı test edilmemiş ve pong yüzünden snap kesintisini algılamıyor."
+  },
+  {
+   "ref": "SYS5",
+   "verdict": "kismen",
+   "evidence": "İletim ve metin düğümüyle gösterim (main.js:363-370) D4-04 ve 06a/06a2'deki 'normal mesaj' ile sınanmış. Ancak '200 KB sohbet düşürülür' kontrolü (06a:62-65, 06a2:23-26) ev sahibinin 64 KB sınırını (net.js:248) hiç çalıştırmıyor: PeerJS 1.5.5 JSON kanalı gönderici tarafta 16 300 bayt ve üstünü göndermiyor (peerjs.min.js Json `_send` → `emitError('message-too-big')`); konuğun hostConn'unda 'error' dinleyicisi yok, olay sessizce yutuluyor. Ev sahibine yalnız 'normal mesaj' ulaşıyor; MAX_MSG_BYTES kaldırılsa da test geçer. 240 karakter kırpması (:275) hiçbir testte yok; tür başına oran sınırı yok (B-21).",
+   "correction": "'calisiyor_gelistirilmeli': iletim test edilmiş, güvenlik sınırları (boyut, 240 karakter) test edilmemiş."
+  },
+  {
+   "ref": "REQ1",
+   "verdict": "dogrulandi",
+   "evidence": "Hasar yollarında kimlik bağlantıdan: hurtEnemy (:285 by: pid), hurtBoss (:288 `{...m, by: pid}` iletideki by'ı ezer), hurtAnimal (:290), hurtMarine (:291), fire (:363 combat.fireCannon(s, i, pid)); iletideki by hiçbir hasar yolunda kullanılmıyor. 06d C06 (06d_ganimet_canta.cjs:85) dürüst yolda öldürenin konuk olduğunu doğruluyor; 12 ve 16'da 06d 9/9 kayıtlı. Notlar: test sahteciliği (iletiye by koyma) denemiyor, dayanıklılık kanıtı kod okuması; hurtBoss'ta by bosses.js:1041-1046'da hiç kullanılmıyor (boss XP'si herkese eşit, progress.js:77, sorun değil); konuğun 'hazard' ile tutuşturduğu fıçının öldürdükleri ev sahibine yazılıyor (hazards.js:236 by: G.myId) — sahtecilik değil, yanlış atıf."
+  },
+  {
+   "ref": "DOC1",
+   "verdict": "dogrulandi",
+   "evidence": "13:10-11'deki 15 Hz anlık görüntü kısmı doğru (net.js:714, :734-743). 'Konuklar istek/komut gönderir' ve 'tüm dünya otoritesi ev sahibindedir' yanlış: konuklar sonuç/durum gönderiyor, ev sahibi uyguluyor — hasar (relay :145-147, :151-152 → :278-291), tehlike (:148 → :360), sandık durumu (:166-167 → :334-344), ambar (:171 → :345-357), gemi tam durumu (:172 → :358, _shipFull :610-619), hikâye (:174 → :326-333), altın payı (:175 → :373-383), kayık konumu (:720 → :365), ganimet tablosu (:156 → :301-314), oyuncu konumu (:718 → :276). Denetçinin satır göndermeleri doğru."
+  },
+  {
+   "ref": "DOC2",
+   "verdict": "dogrulandi",
+   "evidence": "F-04 ele alınmamış: ev sahibi hâlâ applyDamage çağırıyor (net.js:285), blok/kaçınma konukta (enemies.js:343-357), hear() konukta da çalışıyor (enemies.js:1302). F-04 03, 08, 11 ve 16'da hiç geçmiyor. Belge iddiası (listenin tamamı Aşama 6'da ele alınır) bu nedenle yanlış. Nüans: listenin çoğu ele alınmış (03'te F-01, F-02, F-06 kısmen, F-11, F-12, F-13, F-15); ek-108 11 #14'te açık izleniyor."
+  },
+  {
+   "ref": "DOC3",
+   "verdict": "dogrulandi",
+   "evidence": "net.js:37-38 yorumuna karşın alan/aralık denetimi olmayan işleyiciler: ready :273 (m.v ham), app :274, st :276, act :277 (ham yayın; broadcast'ın 3. argümanı :489'da yok sayılıyor), dig :292, chestState içeriği (:338 → _applyChestState :593-601), hold chests (:352), lootReq row[3] (:306), shipFull :358, hazard :360, shipCmd (:620-633; yalnız addBalls/addPlanks n kırpılıyor), boat :364, boatSt :365, maps :384, revive :386."
+  }
+ ],
+ "missed": [
+  {
+   "title": "PeerJS 1.5.5 JSON kanalının 16 300 baytlık gönderim sınırı ve koşulsuz 'error' → _dropPeer: tek ~15 KB'lık 'st' ya da 'app' iletisi bütün konukları sessizce düşürüyor; şişirilmiş ambar dünyayı kalıcı olarak katılınamaz yapıyor",
+   "file": "js/net/net.js",
+   "func": "_onConn (:231-233 `conn.on('error', () => this._dropPeer(conn.peer))`); join (:418 serialization:'json'); _hostData 'st' muafiyeti (:241, :276), 'app' (:274) → _broadcastRoster (:405-408), 'hold' yayını (:356); _hostSnapshot (:734-743, :737 `players[id] = r.target`); broadcast (:489); _sendWorld (:510-522); vendor/peerjs/peerjs.min.js Json `_send` (`byteLength>=chunkedMTU` → `emitError('message-too-big')`, chunkedMTU=16300)",
+   "rootCause": "PeerJS 1.5.5'in JSON serileştirmesi iletiyi parçalamıyor; UTF-8 kodlanmış boyut ≥16 300 bayt ise göndermiyor ve DataConnection'da 'error' olayı yayıyor. Ev sahibi her 'error'da hata türüne bakmadan konuğu conns ve roster'dan siliyor. Konuktan gelen 'st' boyut sınırından muaf ve ham hâliyle anlık görüntüye konuyor; 'app' görünüm nesnesi ve ambar içeriği de ham saklanıp roster/ambar/world iletileriyle yayılıyor. Ev sahibinin 64 KB alım sınırı (:42, :248) bu eşiğin çok üstünde; ev sahibi→konuk yönünde boyut denetimi yok. 02 ve 11'de yok; docs/v05/tasarim/FAZ2_AG_GUVENLIGI_TASARIM.md'de 'Y-1' olarak geçiyor.",
+   "impact": "Konuk standart DK.net.toHost ile ~15 KB'lık bir 'st' gönderince (kendi PeerJS sınırının altında, oran sınırından muaf) ev sahibinin sonraki 'snap'i 16 300 baytı aşıyor; her konuğa gönderimde 'message-too-big' oluşuyor ve _dropPeer saldırgan dahil bütün konukları siliyor. Ev sahibi herkes için 'oyundan ayrıldı' görüyor; konuklar pong almaya devam ettiğinden (:269, :527) 'hostLeft' görmüyor, dünyaları donuk kalıyor. ~15 KB'lık 'app' roster yayınında aynı sonucu veriyor. ~16 KB'lık sahte ambar diğer konukları düşürüyor ve ambar kayda yazıldığından (ship.js:697) 'world' iletisi her yüklemede eşiği aşıyor: dünyaya artık kimse katılamıyor. Dürüst oyunda da uzun oturumda (çok sandık, kese, işaret, dolu ambar) 'world' eşiği aşarsa geç katılan konuk düşer (ölçülmedi). Tarayıcıda çalıştırılmadı; PeerJS küçültülmüş kaynağı ve net.js okunarak doğrulandı.",
+   "priority": "kritik",
+   "fix": "conn.on('error') işleyicisinde err.type === 'message-too-big' için düşürme yapma, yalnız günlüğe yaz ve say; ev sahibi→konuk iletilerini gönderimden önce ölç, ~15 000 baytı aşan 'snap'te büyük alanları kırp, 'world'/'hold' gibi büyük iletileri parçala (raw/binary serileştirme + kendi parçalama); 'st' için ≤1 KB şema ve anlık görüntüye ham hedef yerine ev sahibinin süzdüğü oyuncu durumu; 'app' için ≤1 KB beyaz liste; ambarda anahtar ve içerik sınırı. Konuk tarafında snap gelmeyen süreyi pong'dan bağımsız izle; ev sahibi düşürdüğü konuğa 'kick' göndersin.",
+   "repro": "Konuk konsolunda: `DK.net.toHost({t:'st', s:{...DK.G.player.netState(), pad:'x'.repeat(15000)}})`. Ev sahibinde sonraki anlık görüntüde PeerJS 'Message too big for JSON channel' hatası, her konuk için 'oyundan ayrıldı' bildirimi ve `DK.net.conns.size === 0`; konuklarda `DK.G.ping` güncellenirken snap gelmez. Ambar türevi: items alanı ~15 KB olacak kadar anahtar içeren bir 'hold' iletisi → ev sahibi kaydedip odayı yeniden kurunca yeni konuk 'world' gönderiminde düşer.",
+   "acceptance": "15 KB'lık 'st', 'app' ve 'hold' gönderildikten sonra 10 sn boyunca tüm konuklarda snap sayacı artar, ev sahibinde conns.size değişmez; 'message-too-big' hiçbir konuğu düşürmez; 300 kese, 60 işaret ve dolu ambarlı kayıtla kurulan odaya geç katılan konuk dünyayı alır."
+  },
+  {
+   "title": "Konuğun 'shipFull' ile yazdığı gemi adı gemi panelinde kaçışsız innerHTML'e giriyor: ev sahibinde, tüm konuklarda ve kayıtta kalıcı (stored) XSS",
+   "file": "js/ui/hud.js",
+   "func": "hud.update gemi paneli (hud.js:302 `<div class=sp-title>${s.name} …`, :311 `sp.innerHTML = spHtml`); net.js _hostData 'shipFull' (:358) → _shipFull (:615 `s.name = d.name`) + ham yayın; _sendWorld (:515 ship.serialize) → main.js netWorld (:330 `sh.name = m.ship.name`); ship.js serialize (:696)",
+   "rootCause": "Gemi adı ağdan doğrulamasız alınıyor ve HUD gemi panelinde şablon dizesiyle innerHTML'e basılıyor; ad kayda yazılıyor ve 'world' iletisiyle geç katılanlara gidiyor. B-06'daki sink listesi bu paneli kapsamıyor (docs/v05 FAZ2 tasarımı da 'XSS sink listesi gemi panelini kaçırıyor' diyor).",
+   "impact": "Konuk upg/hold/holes alanları geçerli tek bir 'shipFull' iletisiyle (B-01'deki çökme olmadan) adı `<img src=x onerror=…>` yapabiliyor. Ev sahibi ve tüm konuklar güverteye/dümene/topa geçtiği anda betik çalışıyor; panel içerik değiştikçe yeniden yazıldığı için tekrar tekrar çalışıyor. Ad kayda yazıldığından ev sahibi oyunu her yükleyip gemiye bindiğinde yeniden çalışıyor; geç katılanlara 'world' ile geçiyor. Betik localStorage kayıtlarını okuyup silebilir, ev sahibi adına tüm konuklara ileti gönderebilir; CSP yok. v0.3'te de aynı (v0.3 hud.js:281, _shipFull). Kod okumasıyla doğrulandı, tarayıcıda çalıştırılmadı.",
+   "priority": "kritik",
+   "fix": "hud.js:302'de adı esc() ile kaçışla ya da başlığı el()/textContent ile kur; konuktan 'shipFull' kabul etme (B-01); ad değişikliği gerekiyorsa renameReq{name} niyetiyle ≤24 karakter ve cleanName benzeri süzgeç; kayıttan yüklemede ve 'world'/'snap' alımında adı süz; CSP ekle.",
+   "repro": "Konuk konsolunda: `DK.net.toHost({t:'shipFull', ship:{...DK.G.ship.serialize(), name:'<img src=x onerror=document.title=1>'}})`. Ev sahibi gemiye bindiğinde sekme başlığı '1' olur; kaydedip yükleyince ve yeniden bindiğinde tekrar olur.",
+   "acceptance": "Aynı iletiden sonra ev sahibinin ve konukların gemi panelinde img/onerror düğümü oluşmaz, ad metin olarak görünür; konuktan gelen ileti gemi adını değiştirmez; kayıttan yüklenen bozuk ad süzülür."
+  },
+  {
+   "title": "lootReq ile sınırsız kese ve fizik cismi: O(n²) çarpışma döngüsü ev sahibini dakikalar içinde kilitliyor, konuklarda çizim yükü patlıyor",
+   "file": "js/net/net.js",
+   "func": "_hostData 'lootReq' (:301-314) → treasure.spawnLoot (treasure.js:550-578, bodies.add) → netPickupSpawn yayını (:168); world/bodies.js update (:98-112) → _collidePairs (:187-201); game.js SUBSTEP (:187, 'bodies' alt adımda)",
+   "rootCause": "Konuk başına yalnız genel 120 ileti/sn sınırı var; her lootReq ev sahibinde bir kese ve bir fizik cismi, her konukta birden çok ağ (mesh) doğuruyor; kese/cisim sayısında üst sınır yok, keep bayrağı konuktan geldiği için ömür 30 dk. bodies._collidePairs tüm çiftleri dolaşıyor (O(n²)) ve alt adımda karede 6 kata kadar çağrılıyor. B-05 yalnız ekonomik kötüye kullanımı ele alıyor; B-17 genel ihlal puanından söz ediyor.",
+   "impact": "Bir konuk 1 dakikada ~7 200 kese/cisim üretebiliyor. Aynı çift döngüsü Node'da 2 000 cisimde 7,8 ms, 7 200 cisimde 98 ms/çağrı (/tmp/denetim_alan/karsit_dogrulama/pairs.mjs); 6 alt adımla ev sahibi saniyede birkaç kareye iner, oyun ve ağ yayını fiilen durur. Konuklarda binlerce kese çizim çağrısını patlatır. 'world' iletisi keseleri içerdiğinden geç katılan konuk PeerJS 16 300 bayt sınırına takılıp düşer.",
+   "priority": "yuksek",
+   "fix": "lootReq'i niyet modeline çevir (B-05) ya da konuk başına ve dünya başına etkin kese/cisim üst sınırı koy (ör. konuk başına ≤20, toplam ≤200; aşılınca en eski düşer); keep/still bayraklarını konuktan alma; tür başına oran sınırı (lootReq ≤2/sn); bodies._collidePairs'i uzaysal ızgarayla doğrusal maliyete indir.",
+   "repro": "Konukta: `setInterval(() => DK.net.toHost({t:'lootReq', pos: DK.G.player.pos.toArray(), keep: true, table: [['ekmek', 1, 1]]}), 9)`; 60 sn sonra ev sahibinde `DK.treasure.pickups.length` ve `DK.bodies.list.length` binlerce, `DK.engine.fps` tek haneli.",
+   "acceptance": "Aynı betik 5 dk çalıştıktan sonra ev sahibinde etkin kese sayısı sınırı aşmaz, kare süresi taban değerin %20'sinden fazla artmaz, konuklarda çizim çağrısı sınır içinde kalır."
+  },
+  {
+   "title": "Altın paylaşım sınırı dürüst büyük satışlarda tayfa payını sessizce kırpıyor ya da düşürüyor: kırpılan altın yok oluyor (v0.4 gerilemesi)",
+   "file": "js/net/net.js",
+   "func": "_hostData 'gold' (:373-383); economy/shop.js earn (:120-128), sell (:89-102), sellAll (:104-117), sellHoldChests (:156-166)",
+   "rootCause": "Satıcı konuk payları kendi altınından düşüp (earn: `p.inv.gold += gold - share * remotes`) tek 'gold' iletisiyle gönderiyor; ev sahibi iletiyi 5000'e kırpıyor ve 60 sn penceresinde 20 000'i aşan iletiyi tamamen atıyor. Kırpılan/atılan kısım satıcıya dönmüyor, kimseye geçmiyor; uyarı yok. v0.3'te sınır yoktu.",
+   "impact": "İki oyunculu oturumda konuk satış bedeli 10 000'i aşan bir ambar satışı yaptığında (ör. 4 efsanevi sandık = 12 000) pay 6000 olur; ev sahibine 5000 geçer, 1000 altın kaybolur. 'Tümünü sat' her yığın için ayrı pay iletisi gönderdiğinden bir dakikada payların toplamı 20 000'i aşınca kalan paylar tamamen düşer; ev sahibi ve diğer konuklar alamaz. Geç oyunda düzenli, fark edilmeyen altın kaybı.",
+   "priority": "orta",
+   "fix": "Satışı ev sahibinde niyetle çöz (sellReq; B-08) ve payları ev sahibi dağıtsın. Geçişte kabul edilmeyen tutarı satıcıya iade iletisiyle geri ver ya da satıcı payı ev sahibinin onayından sonra düşsün; bütçe satış işlemi başına uygulansın; sabit pencere yerine kayan pencere.",
+   "repro": "2 oyuncu; konuk 10 000'den büyük bedelli bir satış yapar (ör. ambardaki 4 'legend' sandığı limanda satar): konuk +6000, ev sahibi +5000 (beklenen 6000). Node: net.js kopyasında {t:'gold', amount:6000} → işlenen 5000.",
+   "acceptance": "Her dürüst satışta satıcının ve tayfanın aldığı toplam satış bedeline eşittir (yuvarlama hariç); 1 dakikada 50 000'lik dürüst satış da eksiksiz paylaşılır."
+  },
+  {
+   "title": "v0.4 ambar doğrulaması ambardaki balıkları (hold.fish) siliyor: konuğun ambara koyduğu balık ev sahibine ulaşmıyor, sonra konukta da kayboluyor",
+   "file": "js/net/net.js",
+   "func": "_hostData 'hold' (:345-357, :351-352 `s.hold = { items, chests }`); ui/panels.js 'Ambara koy' (:101) ve ambardan balık alma (:150-151); wildlife/fishing.js store (:245-250); _clientData 'hold' (:563)",
+   "rootCause": "Ev sahibi konuktan gelen ambarı yeniden kurarken yalnız items ve chests alanlarını alıyor, fish alanını atıyor. fishing.store (çanta doluyken güvertede balığı ambara koyma) ve ambardan balık alma hiç ağ iletisi göndermiyor.",
+   "impact": "Konuk balığı 'Ambara koy' ile ambara koyduğunda ev sahibinde ve diğer konuklarda balık görünmüyor, ev sahibinin kaydına girmiyor; ev sahibinin sonraki ambar yayını konuğun yerel kopyasını eziyor ve balık kalıcı kayboluyor. v0.3'te (s.hold = m.hold) korunuyordu: gerileme. 11'de yok; alan E ham denetiminde de geçiyor.",
+   "priority": "orta",
+   "fix": "Ambar balıkları için niyet iletileri (holdPutFish{data} → ev sahibi balığı tür anahtarından şemayla yeniden kurar; holdTakeFish{idx}); geçişte 'hold' doğrulamasında fish dizisini şemayla (key balık tablosunda, sayılar sonlu, uzunluk sınırlı) koru; fishing.store ve panels.js:151 için ağ iletisi ekle.",
+   "repro": "Konuk güvertede envanterdeki bir balığı 'Ambara koy' ile koyar → ev sahibinde `DK.G.ship.hold.fish` undefined; ev sahibi ambara herhangi bir eşya koyunca konukta da balık listesi boşalır.",
+   "acceptance": "Konuğun ambara koyduğu balık ev sahibinde ve diğer konuklarda görünür, ev sahibi kaydedip yükleyince yerinde durur; ambardan alınan balık her yerden kalkar."
+  },
+  {
+   "title": "'hello'/'app' görünüm nesnesi doğrulanmıyor: bozuk görünüm, sonradan katılan konuğun _applySnap'ını her anlık görüntüde istisnayla kesiyor (dünyası donuyor)",
+   "file": "js/net/net.js",
+   "func": "_hostData 'hello' (:259 `app: m.app`), 'app' (:274); _applySnap (:658-663) → _remoteState (:643-647) → RemotePlayer (:63 `new Character(info.app)`) → player/character.js build (:429-437) → baseOf (:347-350) → core/kk.js clone (:144-147)",
+   "rootCause": "Görünüm nesnesi şemasız saklanıp roster ile yayılıyor. baseOf düz nesnede `BODY_BASES[app.body]` arıyor; 'toString'/'constructor' gibi miras anahtarlar fonksiyon döndürüyor ve kk.clone bilinmeyen kimlikte istisna atıyor. _applySnap'ın oyuncu döngüsünde koruma yok; istisna gemi, düşman, hayvan, zaman ve sandık uygulamasını atlatıyor.",
+   "impact": "Konuk ev sahibinde uzak oyuncusu kurulduktan sonra `{t:'app', app:{body:'toString'}}` gönderirse ev sahibi ve mevcut konuklar etkilenmiyor (uzak oyuncu yeniden kurulmuyor), fakat sonradan katılan ya da menüye dönüp yeniden katılan her konukta _applySnap her 'snap'te bu oyuncuyu kurmaya çalışıp istisna atıyor; gemiler, düşmanlar, zaman ve sandıklar hiç uygulanmıyor. Kod okumasıyla doğrulandı.",
+   "priority": "orta",
+   "fix": "Görünümü ev sahibinde beyaz listeyle yeniden kur (base ve body için Object.hasOwn, renkler #rrggbb, bilinen aksesuar anahtarları, ≤1 KB); baseOf'ta Object.hasOwn kullan; _applySnap ve _remoteState'te oyuncu başına try/catch, hatalı oyuncuyu varsayılan görünümle kur.",
+   "repro": "g1 oyundayken: `DK.net.toHost({t:'app', app:{body:'toString'}, name:'x'})`. Ardından g2 odaya katılır: g2 konsolunda her snap'te 'KayKit karakteri yok' istisnası; g2'de gemi ve düşman konumları güncellenmez.",
+   "acceptance": "Bozuk görünüm iletisinden sonra katılan konuk 10 sn içinde ev sahibinin gemisini ve düşmanları doğru konumda görür; bozuk görünüm varsayılan karaktere çevrilir."
+  },
+  {
+   "title": "06a/06a2 güvenlik testlerinin iki kontrolü iddia ettiği mekanizmayı sınamıyor: altın bütçesi oran sınırına, '200 KB sohbet' PeerJS'in gönderici sınırına takılıyor; 08 ve 12 bunları geçti sayıyor",
+   "file": "tests/scenarios/coop/06a_ag_guvenligi.cjs",
+   "func": "'H07 Altın paylaşım bütçesi: 30000 istenen, ≤20000 işlenir' (06a:38-42) ve 'H07/H22 200 KB sohbet düşürülür, normal sohbet işlenir' (06a:61-65; 06a2_mesaj_kopma.cjs:22-26)",
+   "rootCause": "300 × 100 altın aynı anda gönderiliyor; ilk 120'si oran sınırıyla (net.js:243-247) kabul edilip +12 000 oluyor, GOLD_PER_MIN (20 000) hiç devreye girmiyor, 5000/ileti kırpması da sınanmıyor. 200 KB sohbet konuğun PeerJS 1.5.5 JSON kanalında 16 300 bayt eşiğini aştığı için hiç gönderilmiyor; ev sahibinin 64 KB denetimi (net.js:248) çalışmıyor. 240 karakter kırpması hiçbir testte yok.",
+   "impact": "08 §8.1 #6/#9 ve 12 #19 'oran/boyut/altın' güvencesini olduğundan geniş gösteriyor; GOLD_PER_MIN, 5000 kırpması ya da MAX_MSG_BYTES kaldırılsa bile testler geçer, bu sınırlarda gerileme fark edilmez.",
+   "priority": "orta",
+   "fix": "Bütçe testi: 5 × 5000 iletiyi 300 ms arayla gönder, +20 000 bekle; 6000'lik ileti 5000'e kırpılmalı; 61. saniyede pencere yeniden açılmalı. Boyut testi: konukta `DK.net.hostConn.dataChannel.send(new TextEncoder().encode(JSON.stringify({t:'chat', text:'A'.repeat(70000)})))` ile 70 KB (düşmeli) ve 20 KB (kabul, 240'a kırpılmalı) iletiler; 300 karakterlik sohbetin 240'a kırpıldığını doğrula.",
+   "repro": "Kod okuması: 08 §8.1 #6 ölçümü tam 120 × 100 = 12 000; PeerJS Json `_send` ≥16 300 baytı göndermiyor (vendor/peerjs/peerjs.min.js). Doğrulama (Faz 0'da koşulmadı): net.js:44'te GOLD_PER_MIN 1e9 yapılıp :248 kaldırılırsa 06a'daki iki kontrol yine geçer.",
+   "acceptance": "GOLD_PER_MIN, 5000 kırpması ya da MAX_MSG_BYTES geri alındığında ilgili 06a kontrolleri KALIR; düzeltilmiş kodda geçer."
+  }
+ ]
+}

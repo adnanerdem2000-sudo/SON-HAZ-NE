@@ -1,0 +1,1098 @@
+{
+ "area": "K — Yayın, tek HTML, test altyapısı ve belgeler",
+ "summary": "Yayın hattı v0.4'te yalnız kısmen sağlamlaştırılmış. v0.4 dalının pages.yml'si push tetiklemesini canlı dala daraltıyor (d6e716f). Buna karşılık canlı/varsayılan dal hâlâ v0.3'ün 'claude/**' kuralını taşıyor, workflow_dispatch her daldan yayın yapabiliyor, canlı dal korumasız (GitHub API: protected=false) ve hiçbir CI/PR test kapısı yok. Actions geçmişine göre 31 Ekim'de aynı commit'ler için iş akışı yayınının yanında GitHub'ın dal tabanlı Jekyll yayını da çalıştı ve her seferinde sonra bitti; yani canlı site fiilen dalın ham içeriğinden sunuluyor (kökteki commit'li tek HTML ile docs/ ve tests/ dahil). Kökteki DenizKorsanlari-SonHazine.html, v0.4 dalında bayt bayt v0.3 derlemesi: v0.3 kaynağı yeniden derlendiğinde sha256 f0ac8cb0… eşleşti. Güncel v0.4 derlemesi yalnız git dışındaki dist/'te duruyor (sha256 75587dd9…, kaynakla bayt bayt aynı) ve 02_tek_dosya ile file:// altında 4/4 geçiyor. window.DK, DK.sim/tap/press/snap ve ?peerhost/?terrain test parametreleri v0.3'te de v0.4'te de üretimde koşulsuz açık; ?peerhost, davet bağlantısıyla konuğun sinyal sunucusunu saldırgana yönlendirmeye izin veriyor. Tek HTML'in fetch yaması, dosya adı 'assets' ile biten bir klasördeyken oyunu hiç açtırmıyor (Node benzetimiyle doğrulandı); IIFE derlemesi katı kipi (strict) de düşürüyor ve lisans notlarını siliyor. Test altyapısı tabanda 25 koşunun 23'ünü geçiriyor. Ancak konsol hataları ve 404'ler başarısızlık sayılmıyor, coop.cjs istisnaları yutuyor, 03_fizik_dt ve 99 v03 betiği hiç onay içermediği hâlde belgelerde 'GEÇTİ' görünüyor. 62 testin 22'si karşılanıyor, 30'u kısmen, 10'u hiç yok. README ve eski belgeler v0.4 dalında bayat (sürüm 0.3, dost ateşi seçeneği, yüzen nesne sınırı).",
+ "systems": [
+  {
+   "name": "GitHub Pages yayın iş akışı (.github/workflows/pages.yml)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "v0.4 pages.yml:6-9 (push: main, master, claude/hopeful-cray-o1jw6w; workflow_dispatch), 21-31 check işi, 33-52 deploy işi (44-47 esbuild@0.24.2 ile tek HTML, 48-50 upload path '.', 51-52 deploy-pages). Actions API: 14 iş akışı koşusu; 12-14 numaralı koşularda deploy başarılı (ör. run 41221950903, 16:55:14-16:55:21); 2-11 numaralı koşularda Pages kapalı olduğundan deploy 'skipped'.",
+   "note": "Çalışıyor, ama test kapısı, ref koruması, dar artifact ve yayın sonrası duman testi yok (K-03, K-04, K-06, K-18)."
+  },
+  {
+   "name": "Pages yayın kaynağı (iş akışı ile dal tabanlı Jekyll yayını)",
+   "status": "hatali_kararsiz",
+   "evidence": "'pages build and deployment' (event dynamic, ghcr.io/actions/jekyll-build-pages:v1.0.13): run 41221473027 (ba85510) ve 41221950864 (762f1c7). Deployments 7461476840 ve 7461546853, iş akışı yayınlarından (7461472615, 7461542552) sonra 'success' oldu (762f1c7 için 16:55:36 > 16:55:24).",
+   "note": "Aynı commit için iki yayıncı var ve kazanan dal derlemesi. Güncel Pages ayarı /pages API'si 403 döndüğü için okunamadı (K-05)."
+  },
+  {
+   "name": "Yayın dalı koruması ve PR kapısı",
+   "status": "eksik",
+   "evidence": "mcp list_branches: claude/hopeful-cray-o1jw6w protected=false (varsayılan dal; gh api default_branch). pages.yml'de pull_request tetikleyicisi ve test adımı yok; .github/workflows altında yalnız pages.yml var.",
+   "note": "K-04"
+  },
+  {
+   "name": "Feature dalları için CI test iş akışı",
+   "status": "eksik",
+   "evidence": ".github/workflows/ altında tek dosya (pages.yml); depoda package.json ve npm test yok; testler yalnız elle koşuluyor (docs/v05/taban_kosusu_44d548c/run_baseline.sh).",
+   "note": "K-04"
+  },
+  {
+   "name": "Tek HTML derleme aracı (tools/build-single-html.mjs)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "Bu denetimde esbuild 0.24.2 ile yeniden derlendi: v0.4 kaynağı sha256 75587dd9… (= dist/), v0.3 kaynağı f0ac8cb0… (= kök dosya); çıktı belirlenimci. swap() eksik işaretçide hata atıyor (110-113), işçi ifadesi yoksa hata veriyor (26), main().catch çıkış kodu 1 döndürüyor (131). Kayıt: 12. belge satır 59, 85, 163, 210 ('Tek dosya derleme (21,0 MB)').",
+   "note": "Uyarılar ölümcül değil (K-16), lisans notları siliniyor (K-19), katı kip düşüyor (K-20), key() klasör hatası var (K-09)."
+  },
+  {
+   "name": "Kökteki commit'li tek HTML (DenizKorsanlari-SonHazine.html)",
+   "status": "hatali_kararsiz",
+   "evidence": "git rev-parse HEAD:DenizKorsanlari-SonHazine.html = 762f1c7:… = 3a912c30; v0.3 kaynağının yeniden derlemesiyle bayt bayt aynı; v0.4 derlemesinden (75587dd9…) farklı; git log --follow çıktısında yalnız 762f1c7 var.",
+   "note": "v0.4 dalında v0.3 sürümü; README.md:15-17 ve tests/README.md:35 kullanıcıyı bu dosyaya yönlendiriyor (K-01, K-14)."
+  },
+  {
+   "name": "Tek HTML file:// açılışı (v0.4 derlemesi, dist/)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "tests/scenarios/02_tek_dosya.js kontrolleri: 'Tek dosya: sayfa hazır', 'Tek dosya (file://): arazi işçileri çalışıyor', 'Tek dosya: oyun başladı', 'Tek dosya: oyuncu zemine basıyor'. 12. belge satır 59, 85, 163, 210 ve 16. belge §16.10-16.11'de 4/4. Taban raporu docs/v05/taban_kosusu_44d548c/02_tek_dosya.json: fails 0, errors 0, workers 3.",
+   "note": "Yalnız Chromium (SwiftShader) üzerinde ve yalnız 4 kontrolle; dist git'te yok."
+  },
+  {
+   "name": "Tek HTML arazi işçisi: data: URL (file://)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "build-single-html.mjs:100-103; 02_tek_dosya taban raporunda proto 'file:', workers 3, fallback false, url 'data:text/javascript;charset=utf-8,…'; 12. belge satır 59 ('3 işçi data: URL ile çalışıyor')."
+  },
+  {
+   "name": "Tek HTML arazi işçisi: blob: URL (http/https, Pages)",
+   "status": "dogrulanmamis",
+   "evidence": "build-single-html.mjs:103 http(s) dalı. Tek HTML'i http üzerinden açan bir senaryo yok; 02_tek_dosya yalnız file:// ile koşuyor.",
+   "note": "Canlı sitede indirilmeden açılan tek dosya bu yolu kullanır."
+  },
+  {
+   "name": "Gömülü varlıklar ve fetch yönlendirmesi (prelude)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "/tmp/denetim_alan/K/analiz_tek.mjs sonuçları: __DK_FILES içinde 87 dosya, CSS'te 10 woff2 data: URL, kalan göreli CSS url 0, importmap/modül betiği/dış betik 0; koddaki sabit assets/ başvurularının hepsi gömülü. Taban 02_tek_dosya errors=0, yani model yükleme hatası görülmedi.",
+   "note": "Bunu açıkça doğrulayan bir test yok. Ses kullanıcı hareketi gerektirdiği için testte hiç yüklenmiyor. 'assets' klasör hatası (K-09)."
+  },
+  {
+   "name": "Davet bağlantısı (tek HTML, file://)",
+   "status": "hatali_kararsiz",
+   "evidence": "menu.js:266 ve 353 bağlantıyı `${location.origin}${location.pathname}?join=` ile kuruyor; file:// altında bu, yerel dosya yolu üretir.",
+   "note": "K-10 (bilinen öneri: 02 §4)."
+  },
+  {
+   "name": "Test kancaları API'si (window.DK, DK.sim/tap/press/snap/snapFrom, window.__ready)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "main.js:134-153; tüm tek sayfa ve co-op senaryoları bu kancaları kullanıyor; taban koşusunda 25 koşunun 23'ü tümüyle geçti (docs/v05/00_BASLANGIC_KAYDI.md §4).",
+   "note": "Test altyapısı olarak çalışıyor; üretimde açık olması ayrı bir sorun (K-07)."
+  },
+  {
+   "name": "Üretimde test kancası ve URL test parametresi kısıtı",
+   "status": "eksik",
+   "evidence": "main.js:134-153 koşulsuz (v0.3: 133-152). Ayrıca üretimde etkin: net.js:49-55 ?peerhost/peerport/peerpath/peersecure; terrain.js:249 ?terrain ve window.__DK_TERRAIN_MODE; terrainWorker.js:8 'test-crash'; player.js:143 G.godMode (DK.G üzerinden). Tek HTML çözümlemesi: kök ve dist derlemelerinin ikisinde de window.DK ve DK.sim var.",
+   "note": "K-07, K-08"
+  },
+  {
+   "name": "Tek sayfa test koşucusu (tests/harness/run.cjs)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "Taban koşusunda 20 tek sayfa senaryosu koşuldu. js adımı istisnası artık başarısızlık sayılıyor (run.cjs:68, 02 T09). Ancak console.error, 404 ve başarısız istekler çıkış koduna yansımıyor (40, 44, 96).",
+   "note": "K-11"
+  },
+  {
+   "name": "Co-op test koşucusu (tests/harness/coop.cjs) ve yerel PeerJS sunucusu (tests/peer-server.cjs)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "Taban sonuçları: 06b 18/18, 06d 9/9, 06a 10/10, 06a2 3/3, 06c 2/7. ev() istisnayı yutuyor (coop.cjs:53). 'peer' paketi sürüm sabitlenmeden kuruluyor.",
+   "note": "K-12, K-15"
+  },
+  {
+   "name": "Senaryo envanteri",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "tests/scenarios/*.js: 21; coop/*.cjs: 6 (1'i v03 referansı, check() çağrısı yok); tests/node: 1; tests/scenarios/v03: 99 (hiçbirinde expect yok); kamera_tarama: 6. 03_fizik_dt.js expect içermiyor.",
+   "note": "Şifreli oda, host ayrılması, tekrarlanan ödül, içe/dışa aktarma, otomatik kayıt, gemi dalga hareketi ve Pages dağıtımı için senaryo yok."
+  },
+  {
+   "name": "Node determinizm testi (tests/node/archipelago_sabit.mjs)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "Bu denetimde koşuldu: 'GEÇTİ {islands:67, autoFeatures:22, added:{wrecks:14,pois:22,mods:8}, fails:[]}', rc=0. 12. belge satır 54, 90 ve 162'de GEÇTİ kaydı var."
+  },
+  {
+   "name": "Test sonuç kayıtları (docs/denetim/12, 16; docs/v05/taban_kosusu_44d548c)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "JSON raporlar commit'li; .log dosyaları .gitignore'daki '*.log' kuralı yüzünden depoda yok. 12. belge, onaysız ölçüm betiklerini 'GEÇTİ' sayıyor (satır 12, 17, 25) ve açığı kabul eden 06a H07'yi geçmiş gösteriyor (satır 28).",
+   "note": "K-13"
+  },
+  {
+   "name": "Proje belgeleri (README.md, TEST_RAPORU.md, docs/01-14)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "README.md:8 'Bu sürüm: 0.3'; README.md:126 'dost ateşi' (menu.js:195'te kaldırıldı); docs/11:30 ve docs/13:9 v0.4'te giderilmiş bir sınırı hâlâ açık gösteriyor; TEST_RAPORU'nu destekleyen betikler v0.3 deposunda yok (762f1c7'de tests/ altında 0 dosya).",
+   "note": "K-17"
+  },
+  {
+   "name": "dist/ (v0.4 tek HTML çıktısı) sürüm yönetimi",
+   "status": "eksik",
+   "evidence": ".gitignore:2 'dist/'. /home/user/SON-HAZ-NE/dist ve /home/user/SON-HAZ-NE-w2/dist yalnız yerel (ikisi de sha256 75587dd9…); dosyada sürüm ya da commit damgası yok.",
+   "note": "K-01"
+  },
+  {
+   "name": "Çevrimdışı (ağ kapalı) tek HTML açılışı",
+   "status": "dogrulanmamis",
+   "evidence": "02_tek_dosya ağ açıkken koşuyor; harness requestfailed olaylarını başarısızlık saymıyor. Statik inceleme: bundle'da yalnız PeerJS bulut adresleri var (0.peerjs.com, turn:eu-0/us-0.turn.peerjs.com, stun.l.google.com)."
+  },
+  {
+   "name": "Tek HTML'in Firefox/Safari uyumu",
+   "status": "dogrulanmamis",
+   "evidence": "Tüm koşular Playwright Chromium ile yapıldı; data: URL'li modül işçisi diğer tarayıcı motorlarında sınanmadı (Faz 0 A-16)."
+  },
+  {
+   "name": "Yayın sonrası duman testi ve sürüm damgası",
+   "status": "eksik",
+   "evidence": "pages.yml'de deploy sonrasında adım yok; sayfada derleme commit'ini gösteren bir damga yok."
+  },
+  {
+   "name": "Bağımlılık sabitleme (package.json/kilit dosyası)",
+   "status": "eksik",
+   "evidence": "Depoda package.json yok. README.md:18'deki 'npm i esbuild' sürümsüz; tests/README.md:10-12'de peer ve playwright sürümsüz; yalnız pages.yml:46 esbuild@0.24.2 sürümünü sabitliyor.",
+   "note": "K-15"
+  },
+  {
+   "name": "Tek HTML ile modüler sürümün eşdeğerlik doğrulaması",
+   "status": "eksik",
+   "evidence": "02_tek_dosya yalnız 4 kontrol yapıyor. 14_deniz_ekipmani, 15_iskele_kamera, 16_kosu_poz_ganimet, 17_kamera_kararma ve coop/06d import('./js/…') kullandığından tek dosyada koşamıyor. IIFE derlemesinde üst düzey 'use strict' yok (K-20)."
+  }
+ ],
+ "issues": [
+  {
+   "id": "K-01",
+   "title": "v0.4 dalındaki kök tek HTML bayt bayt v0.3 derlemesi; güncel derleme yalnız git dışındaki dist/'te",
+   "file": "DenizKorsanlari-SonHazine.html (kök); tools/build-single-html.mjs:15; .gitignore:2; README.md:15-18; tests/README.md:33-36",
+   "func": "build-single-html.mjs main() → OUT (varsayılan dist/); tek dosya yayın süreci",
+   "rootCause": "Derleme çıktısı varsayılan olarak .gitignore'daki dist/ klasörüne yazılıyor (build-single-html.mjs:15, .gitignore:2). Kök dosya yalnız 762f1c7'de elle işlendi ve v0.4 boyunca yeniden üretilmedi. Kanıt: git rev-parse HEAD:DenizKorsanlari-SonHazine.html = 762f1c7:… = 3a912c30. v0.3 kaynağı v0.3 aracıyla yeniden derlendiğinde sha256 f0ac8cb0… çıkıyor, yani kök dosyanın aynısı. v0.4 kaynağı (44d548c ile aynı kod) esbuild 0.24.2 ile derlendiğinde sha256 75587dd9… çıkıyor; bu da yalnız yerel dist/ klasörlerindeki dosyaya eşit. Derlemeye commit ya da sürüm damgası gömülmüyor.",
+   "impact": "README.md:15-17 oyuncuyu kök dosyaya yönlendiriyor; indirilen çevrimdışı sürüm v0.3 olduğu için v0.4 düzeltmelerinin hiçbirini (arazi işçisi yedeği ve kurtarma, file:// data: işçisi, kamera, iskele ve ganimet düzeltmeleri) içermiyor. Pages dal tabanlı yayınla sunuluyorsa (K-05) bu bayat dosya sitede de yayınlanır; v0.4 canlıya birleştirildiğinde web sürümü v0.4, tek dosya v0.3 olur. dist/ yalnız oturumun çalışma ağacında duruyor ve dosyanın hangi commit'ten üretildiği içinden anlaşılamıyor.",
+   "priority": "yuksek",
+   "fix": "Kök dosyayı depodan kaldırıp yalnız CI'da üretin ve yayın artifact'ine koyun; ya da yayın dalında her sürümde CI tarafından yeniden üretilip işlensin. Derlemeye <meta name='dk-build' content='<commit>'> ve sürüm bilgisi gömün. README ve tests/README'yi CI çıktısına ya da Pages adresine yönlendirin. CI'a, servis edilen tek HTML'in sha256'sının aynı commit'in kaynak derlemesine eşit olduğunu denetleyen bir adım ekleyin.",
+   "repro": "git -C /home/user/SON-HAZ-NE-w2 rev-parse HEAD:DenizKorsanlari-SonHazine.html 762f1c7:DenizKorsanlari-SonHazine.html → ikisi de 3a912c30. SON-HAZ-NE-w2'de NODE_PATH=<esbuild@0.24.2 node_modules> node tools/build-single-html.mjs /tmp/denetim_alan/K/w2_build.html → sha256 75587dd9… (dist ile aynı, kök dosyadan farklı). Aynı komut SON-HAZ-NE-v03'te → f0ac8cb0… (kök dosyayla aynı).",
+   "acceptance": "Yayın dalında servis edilen ve README'nin gösterdiği tek HTML'in damgası HEAD commit'ine eşit, sha256'sı da o commit'in kaynak derlemesiyle aynı. 02_tek_dosya bu dosyaya karşı 4/4 geçiyor. Depoda v0.3 derlemesi kalmıyor.",
+   "presentIn": "yalniz_v04",
+   "confidence": "kesin",
+   "knownAs": "denetim/11 #42; denetim/16 §16.7 (dist kökteki dosyanın yerine konmalı); Faz 0 A-01 ile örtüşür"
+  },
+  {
+   "id": "K-02",
+   "title": "Canlı (varsayılan) dalın pages.yml'si 'claude/**' dallarına yapılan push'larda hâlâ üretim yayın iş akışını tetikliyor",
+   "file": ".github/workflows/pages.yml:8 ve 33-52 (claude/hopeful-cray-o1jw6w @ 762f1c7, deponun varsayılan dalı)",
+   "func": "on.push.branches; jobs.deploy (dal koşulu yok)",
+   "rootCause": "v0.3'teki kural branches: [main, master, 'claude/**']. deploy işinde github.ref koşulu yok; iş yalnız Pages'in açık olup olmadığına bakıyor. Düzeltme (d6e716f) yalnız v0.4 dalında yapıldı, canlı dala birleştirilmedi. Push olaylarında itilen commit'teki iş akışı dosyası kullanıldığından, varsayılan daldan açılan her yeni claude/* dalı eski kuralı devralıyor.",
+   "impact": "Varsayılan daldan açılıp itilen her claude/* dalı (Claude oturumlarının olağan dal adı) incelenmemiş kodu deploy-pages ile canlıya gönderebilir. 31 Ekim koşuları, deploy-pages'in dal tabanlı yayın açıkken de başarılı olduğunu gösteriyor. Bu içerik canlı dala bir sonraki push'a kadar sitede kalır. Tek olası engel github-pages ortamının dal politikası; bu depo ayarı /environments API'si 403 döndüğü için okunamadı. Şimdiye kadar yaşanmadı: 16 koşunun hepsi canlı dalda.",
+   "priority": "yuksek",
+   "fix": "Kullanıcı onayıyla canlı dala yalnız pages.yml düzeltmesini uygulayın: push dal listesinde yalnız yayın dalı kalsın ve deploy işine if: github.ref == 'refs/heads/claude/hopeful-cray-o1jw6w' koşulu eklensin. Settings → Environments → github-pages → Deployment branches ayarında yalnız yayın dalına izin verin. Yayın dalını korumaya alın.",
+   "repro": "git show 762f1c7:.github/workflows/pages.yml | sed -n 6,9p → 'claude/**' görünür. Deneme yalnız onaylı bir test deposunda yapılmalı: varsayılan daldan claude/deneme dalı açıp boş bir commit itin; Actions'ta 'GitHub Pages' koşusu başlar, check işinin ardından deploy işi çalışır.",
+   "acceptance": "Canlı dalın pages.yml'sinde yalnız yayın dalı ve deploy işinde ref koşulu var. Yeni bir claude/* dalına push yapıldığında deploy işi çalışmıyor (koşu oluşmuyor ya da iş 'skipped'). github-pages ortam kuralı yalnız yayın dalına izin veriyor.",
+   "presentIn": "yalniz_v03",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "K-03",
+   "title": "workflow_dispatch dal kısıtı olmadan çalışıyor ve deploy işinde ref koruması yok: herhangi bir daldan elle üretime yayın yapılabiliyor",
+   "file": ".github/workflows/pages.yml:9, 16-18, 33-52 (v0.3 ve v0.4)",
+   "func": "on.workflow_dispatch; jobs.deploy; concurrency",
+   "rootCause": "workflow_dispatch dal filtresi almıyor. deploy işi yalnız needs.check.outputs.enabled == 'true' koşuluna bakıyor. concurrency grubu 'pages' ve cancel-in-progress: true.",
+   "impact": "Yazma yetkisi olan biri ya da Actions tetikleme aracına sahip bir ajan oturumu 'Run workflow' ile claude/v0.5-saglamlastirma gibi bir geliştirme dalını üretime yayınlayabilir; süren bir canlı yayını da iptal edebilir. v0.4'teki push kısıtı bu yolu kapatmıyor.",
+   "priority": "orta",
+   "fix": "deploy işine if: github.ref == 'refs/heads/<yayın dalı>' koşulunu ekleyin (isteğe bağlı olarak event_name de denetlenebilir). github-pages ortamına dal politikası ve zorunlu onaylayıcı tanımlayın. concurrency grubunu ref'e göre ayırın ya da cancel-in-progress: false yapın.",
+   "repro": "Actions → GitHub Pages → Run workflow → Branch: claude/v0.5-saglamlastirma seçildiğinde check ve deploy işleri çalışır; ortam kuralı yoksa yayın gerçekleşir. Statik kanıt: pages.yml:9 ve 33-36.",
+   "acceptance": "Yayın dalı dışında dispatch edilen bir koşuda deploy işi 'skipped' oluyor; ortam ayarında yalnız yayın dalı listeleniyor.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "K-04",
+   "title": "Üretim yayınından önce test ve PR kapısı yok; canlı dal korumasız",
+   "file": ".github/workflows/pages.yml:41-52 (depodaki tek iş akışı); depo dal ayarları",
+   "func": "jobs.deploy (checkout → derle → yükle → yayınla)",
+   "rootCause": "Depoda CI iş akışı yok; .github/workflows altında yalnız pages.yml var. pull_request tetikleyicisi yok ve deploy işi derlemenin hemen ardından yayınlıyor. GitHub API list_branches: claude/hopeful-cray-o1jw6w protected=false.",
+   "impact": "Canlı dala yapılan her push (ör. v0.4 ya da v0.5 birleştirmesi) hiçbir test koşmadan oyunculara ulaşır. Tabanda kalan 09_performans sızıntı kontrolü, 06c'deki 4 oyunculu katılma hatası ya da bozuk bir derleme fark edilmeden yayına gider.",
+   "priority": "yuksek",
+   "fix": "Bir ci.yml ekleyin: push (claude/**) ve pull_request olaylarında node tests/node/*.mjs, tek HTML derlemesi ve statik denetim (gömülü dosya sayısı, import.meta kalmaması, işçi ifadesinin değişmiş olması), ardından Playwright duman seti (00_acilis, 02_arazi_yedek dört kipte, 02_tek_dosya test derlemesiyle, 08_kalicilik, 12_kayit_dongusu) koşsun. Yayın dalına branch protection koyun: PR zorunlu, ci gerekli durum kontrolü, doğrudan push kapalı. pages.yml'deki deploy'u CI başarısına bağlayın.",
+   "repro": "mcp__github__list_branches → claude/hopeful-cray-o1jw6w protected:false; ls .github/workflows → yalnız pages.yml; pages.yml'de test adımı yok.",
+   "acceptance": "Yayın dalına doğrudan push reddediliyor; PR'da CI zorunlu ve yeşil olmadan birleştirme yapılamıyor; CI kırmızıyken deploy işi çalışmıyor.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin"
+  },
+  {
+   "id": "K-05",
+   "title": "Aynı commit için iki yayıncı var: dal tabanlı Jekyll yayını iş akışı yayınını eziyor",
+   "file": "Depo Pages ayarı; .github/workflows/pages.yml (tümü); README.md:13-14",
+   "func": "'pages build and deployment' (dinamik) ve 'GitHub Pages' iş akışının deploy işi",
+   "rootCause": "31 Ekim'de ba85510 ve 762f1c7 için hem iş akışı yayın yaptı (deployments 7461472615, 7461542552) hem de dal derlemesi (jekyll-build-pages v1.0.13; run 41221473027 ve 41221950864, deployments 7461476840 ve 7461546853). Dal derlemesi her iki seferde de sonra bitti; 762f1c7 için iş akışı 16:55:24'te, dal derlemesi 16:55:36'da 'success' oldu. Bu durum Pages kaynağının 'Deploy from a branch' olduğunu gösteriyor; 762f1c7'nin commit mesajı da 'hangi kaynaktan yapılırsa yapılsın' diyerek bunu varsayıyor. README ise 'Source: GitHub Actions' diyor.",
+   "impact": "Canlı sitede iş akışının derlediği artifact değil, dalın ham Jekyll çıktısı yayında: kökteki commit'li tek HTML (K-01), docs/ ve tests/ dahil. İş akışındaki dal filtresi, derleme adımı ve eklenecek test kapıları canlıyı korumuyor. Hangi yayının kazanacağı bitiş sırasına bağlı, yani sonuç belirlenimsiz. v0.4 birleştirilince web v0.4 ile tek dosya v0.3 karışık biçimde yayınlanabilir.",
+   "priority": "yuksek",
+   "fix": "Settings → Pages → Source ayarını 'GitHub Actions' yaparak tek yayıncıya inin. .nojekyll ekleyin. CI ve duman testinde Pages build_type değerini ve sitedeki derleme damgasını denetleyin. Kökteki tek HTML'i kaldırın (K-01).",
+   "repro": "Actions API list_workflow_runs → 'pages build and deployment' run 41221473027 ve 41221950864 (event dynamic). list_workflow_jobs 41221950864 → build (jekyll-build-pages) ve 16:55:27-16:55:34 arasında deploy; aynı sha için iş akışı deploy'u 16:55:14-16:55:21. gh api …/deployments → 762f1c7 için iki kayıt, statüleri 16:55:24 ve 16:55:36'da success.",
+   "acceptance": "Yayın dalına push sonrasında yalnız 'GitHub Pages' iş akışı koşuyor, 'pages build and deployment' koşmuyor. deployments listesinde commit başına tek kayıt var. Sitedeki derleme damgası iş akışının commit'ine eşit.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "K-06",
+   "title": "Pages artifact'i tüm depoyu yüklüyor (path: .)",
+   "file": ".github/workflows/pages.yml:48-50",
+   "func": "actions/upload-pages-artifact@v3 (path: .)",
+   "rootCause": "Yayın klasörü ayrı hazırlanmıyor; yalnız .git ve .github dışarıda kalıyor.",
+   "impact": "docs/ (83 dosya, 2,7 MB: iç denetim raporları ve ağ güvenliği tasarımı), tests/ (140 dosya, 0,48 MB), tools/ ve TEST_RAPORU.md sitede yayımlanıyor. Bu, gereksiz boyut ekliyor ve test kancalarının kullanım kılavuzunu (tests/README.md) da yayına koyuyor. Depo herkese açık olduğundan gizlilik etkisi sınırlı.",
+   "priority": "dusuk",
+   "fix": "Bir _site/ klasörü hazırlayın: index.html, css/, js/, vendor/, assets/ (lisans .txt dosyaları dahil), CREDITS.md, CI'da üretilen tek HTML ve .nojekyll. Yalnız _site'ı yükleyin.",
+   "repro": "git ls-files | awk -F/ '{print $1}' | sort | uniq -c → docs 83, tests 140; artifact yolu '.' olduğu için hepsi yükleniyor.",
+   "acceptance": "Artifact içerik listesinde docs/, tests/ ve tools/ yok; duman testinde oyun ve tek HTML açılıyor.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin"
+  },
+  {
+   "id": "K-07",
+   "title": "window.DK ve test yardımcıları (DK.sim/tap/press/snap/snapFrom, G.godMode erişimi) üretimde koşulsuz açık",
+   "file": "js/main.js:134-153 (v0.3: 133-152); tek HTML derlemeleri (kök ve dist)",
+   "func": "boot()",
+   "rootCause": "Test kancaları boot()'un sonunda koşulsuz atanıyor; geliştirme ve test kipi ayrımı yok. DK nesnesi G, save, net, progress, quests ve treasure dahil tüm sistemleri, terrain.killWorkers'ı (terrain.js:189), G.godMode'u (player.js:143) ve islands/hazards/megafauna test yardımcılarını dışarı açıyor. Oyun kodunun kendisi window.DK'yi kullanmıyor (grep yalnız main.js'i buluyor), dolayısıyla kısıtlama oyunu bozmaz.",
+   "impact": "Herkes konsoldan tek satırla altın, envanter, hikâye ya da kayıt değiştirebilir (DK.G.player.inv.gold=1e9) ve DK.sim ile zamanı ileri sarabilir. Co-op'ta konuk DK.net.toHost ile sahte ileti üretebilir (06a testi tam olarak bunu yapıyor); bu, B-08 türü açıkları sömürmeyi kolaylaştırır. İstemci tarafında gizleme bir güvenlik sınırı değildir, ama bu kolay erişimi ortadan kaldırır.",
+   "priority": "orta",
+   "fix": "main.js'te bir bayrak tanımlayın: const DK_TEST = window.__DK_TEST === true || new URLSearchParams(location.search).has('dktest'). window.DK ve yardımcılar yalnız DK_TEST doğruyken atansın; window.__ready kalabilir. run.cjs ve coop.cjs'te page.addInitScript(() => { window.__DK_TEST = true; }) çağrılsın (ya da URL'ye ?dktest=1 eklensin). Tek HTML'de esbuild define ile kancalar üretim derlemesinden çıkarılsın; 02_tek_dosya için ayrı bir test derlemesi (--test bayrağı) üretilsin.",
+   "repro": "Canlı ya da yerel sayfada konsola şunları yazın: typeof DK → 'object'; DK.G.player.inv.gold = 1e9; DK.sim(600). Statik kanıt: grep -n 'window.DK' js/main.js; /tmp/denetim_alan/K/analiz_tek.mjs → kök ve dist derlemelerinde windowDK=1, dkSim=true.",
+   "acceptance": "Bayraksız açılan üretim sayfasında ve üretim tek HTML'inde typeof window.DK === 'undefined' ve 'DK.sim' dizgesi yok. Bayrakla açılan sayfada 21 tek sayfa ve 5 co-op senaryosu taban sonuçlarıyla (23/25) aynı geçiyor. 02_tek_dosya test derlemesiyle 4/4.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin"
+  },
+  {
+   "id": "K-08",
+   "title": "Üretimde URL test parametreleri açık: ?peerhost ile sinyal sunucusu yönlendirilebiliyor, ?terrain ile oyun bozuk kipte açılabiliyor",
+   "file": "js/net/net.js:49-55 (peerOpts); js/world/terrain.js:248-249; js/world/terrainWorker.js:8",
+   "func": "peerOpts(), terrain.init()",
+   "rootCause": "Yerel test için eklenen parametreler köken ya da kip denetlenmeden okunuyor: q.get('peerhost') değeri doğrudan o.host/port/path/secure'a yazılıyor; terrain.mode = window.__DK_TERRAIN_MODE || ?terrain.",
+   "impact": "Saldırgan kurbana '…/?join=KOD&peerhost=saldirgan.example&peerport=443&peersecure=1' bağlantısını gönderebilir. Kurban 'Katıl'a bastığında PeerJS sinyali saldırgana gider ve kurban gerçek oda yerine saldırgana bağlanır: oturum ele geçirilir, saldırgan gerçek odaya aktarma yaparak araya girebilir (ortadaki adam) ve kurbanın IP adresi açığa çıkar. Konuk ev sahibi iletilerini doğrulamadığından (Faz 0 B-18) kayıt bozma ve açılır metin üzerinden betik çalıştırma yolu da açılır. '?terrain=crash|noworker' içeren bir bağlantı ise oyunu ana iş parçacığı yedeğinde, takılmalı açtırır.",
+   "priority": "orta",
+   "fix": "Bu parametreleri yalnız test bayrağı açıkken (K-07) ya da yalnız localhost/127.0.0.1 kökeninde kabul edin. peerhost için izinli konak listesi kullanın. ?terrain kiplerini ve 'test-crash' dalını üretim derlemesinden çıkarın. coop.cjs test bayrağını açsın.",
+   "repro": "Statik kanıt: net.js:53 'if (q.get('peerhost')) { o.host = q.get('peerhost'); …'. Yerel deneme: bir sekmeyi '?peerhost=127.0.0.1&peerport=9000' ile (tests/peer-server.cjs) açın, diğerini parametresiz açın; aynı oda koduna katılamazlar, çünkü farklı sinyal sunucularına bağlanırlar. Bu, parametrenin üretim kodunda etkili olduğunu gösterir.",
+   "acceptance": "Test bayrağı yokken '?peerhost=…&join=…' varsayılan PeerJS sunucusunu kullanıyor ve '?terrain=crash' yok sayılıyor (test sayfasında DK.terrain.mode === '' ile denetlenebilir). Co-op senaryoları bayrakla açıldığında taban sonuçlarını veriyor.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "K-09",
+   "title": "Tek HTML, adı 'assets' ile biten bir klasörde açılırsa hiç açılmıyor (fetch anahtarı URL'deki ilk 'assets/' geçişini alıyor)",
+   "file": "tools/build-single-html.mjs:79-85 (prelude key()); js/core/kk.js:70-71",
+   "func": "prelude key(u) ve window.fetch yaması; kk.load içindeki get()",
+   "rootCause": "key() fonksiyonu s.indexOf('assets/') ile URL'deki İLK geçişi alıyor. three'nin FileLoader'ı isteği new Request(url) ile mutlak URL'ye çeviriyor (vendor/three/three.core.js:45612). Dosya '…/assets/' ya da '…/oyun-assets/' gibi bir klasördeyse anahtar 'assets/assets/models/…' olur ve gömülü dosya bulunamaz; ardından yapılan gerçek fetch file:// için başarısız olur. kk.js:71 kritik karakter dosyası yüklenemeyince hata fırlatır ve boot() düşer.",
+   "impact": "Dosyayı 'assets', 'game-assets' ya da 'oyun_assets' gibi bir klasöre kaydeden oyuncu 'Oyun başlatılamadı: Karakter dosyası yüklenemedi' iletisini görür. v0.3'te yer tutucu model de olmadığından oyun yine açılmaz. Ses dosyaları göreli URL kullandığı için etkilenmez.",
+   "priority": "orta",
+   "fix": "URL'yi new URL(u, document.baseURI) ile çözüp sayfanın dizinine göre göreli yolu kullanın: href.startsWith(baseDir) ise href.slice(baseDir.length). Alternatif olarak lastIndexOf('assets/') kullanıp F anahtarlarında sondan eşleşme arayın. 02_tek_dosya'yı 'assets' adlı bir klasörden de koşun.",
+   "repro": "node /tmp/denetim_alan/K/key_sim.mjs (key()'in birebir kopyası): '/home/u/assets', '/home/u/game-assets' ve '/C:/Users/u/Desktop/oyun_assets' için anahtar null; '/home/u/Downloads' ve '/home/u/Masaüstü' için doğru. Tarayıcıda: dist dosyasını /tmp/x/assets/ altına kopyalayıp file:// ile açın.",
+   "acceptance": "02_tek_dosya, dosya /tmp/x/assets/ ve /tmp/x/game-assets/ altındayken 4/4 geçiyor; DK.assets.missing boş ve kk.ready true.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "02 §4 Geliştirme önerileri (A_motor): 'Tek dosya: anahtar çözümleme ve davet bağlantısı' (açık)"
+  },
+  {
+   "id": "K-10",
+   "title": "Tek HTML'de (file://) davet bağlantısı yerel dosya yolunu paylaşıyor",
+   "file": "js/ui/menu.js:266, 353",
+   "func": "menu.lobby(); duraklatma menüsündeki 'Oda kodu (kopyala)' düğmesi",
+   "rootCause": "Bağlantı ${location.origin}${location.pathname}?join= ile kuruluyor. file:// altında bu 'file:///…/DenizKorsanlari-SonHazine.html?join=…' olur; tarayıcıya göre 'null/…' de olabilir.",
+   "impact": "Arkadaşa gönderilen bağlantı açılmaz ve kullanıcı adı içerebilecek yerel klasör yolu paylaşılmış olur. İşe yarayan tek bilgi oda kodudur.",
+   "priority": "dusuk",
+   "fix": "window.__DK_SINGLE_FILE doğruyken ya da location.protocol === 'file:' iken bağlantı yerine oda kodunu ve canlı Pages adresi + ?join= bağlantısını gösterin.",
+   "repro": "dist dosyasını file:// ile açın → Online → Oda kur; lobideki bağlantı 'file:///…?join=…' olarak görünür.",
+   "acceptance": "file:// altında lobi ve kopyalama düğmesi yalnız oda kodunu ve Pages bağlantısını veriyor; http(s)'de davranış değişmiyor.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "02 §4 Geliştirme önerileri (A_motor): 'Tek dosya: anahtar çözümleme ve davet bağlantısı'"
+  },
+  {
+   "id": "K-11",
+   "title": "Test koşucusu konsol hatalarını, 404'leri ve başarısız istekleri başarısızlık saymıyor; tek dosya testinde varlık ve ses denetimi yok",
+   "file": "tests/harness/run.cjs:40, 44, 96; js/core/assets.js:49-55; tests/scenarios/02_tek_dosya.js:4-9",
+   "func": "page.on('console'), page.on('requestfailed'), finish(); assets.loadAll",
+   "rootCause": "'404' içeren konsol hataları tümüyle atılıyor; report.errors çıkış koduna girmiyor (yalnız fails ve pageErrors giriyor). assets.js eksik bir modeli pembe kutuyla değiştirip yalnız console.error yazıyor. Ses yalnız kullanıcı hareketiyle başlatıldığından (main.js:128-130) testte hiç yüklenmiyor. 02_tek_dosya yalnız 4 kontrol yapıyor.",
+   "impact": "Tek HTML'de bir model ya da ses gömülmezse veya yolu bozulursa testler yine geçer; görsel ya da ses eksikliği yayına gider. Taban koşusunda errors=0 olduğundan şu an gizli bir hata görünmüyor; risk gelecekteki değişiklikler için.",
+   "priority": "orta",
+   "fix": "run.cjs'te errors>0 olduğunda çıkış kodu 1 olsun (beklenen kipler için bir izin listesiyle); 404 süzgeci yalnız ?terrain=badurl kipiyle sınırlansın. 02_tek_dosya'ya şu kontroller eklensin: DK.assets.missing.length===0, gömülü anahtar sayısı 87, await DK.audio.init() sonrasında 17 efekt tamponu ve fetch('assets/audio/music/battle_theme_a.mp3') başarısı.",
+   "repro": "Kod okuması: run.cjs:40 'if (m.type() === 'error' && !/404/.test(t))'; :96 finish(report.fails || report.pageErrors.length ? 1 : 0). Önerilen deneme: dist kopyasında __DK_FILES'tan 'assets/models/chest.glb' silinirse 02_tek_dosya yine 4/4 geçer; 'Model yüklenemedi' yalnız errors listesine düşer.",
+   "acceptance": "Aynı bozuk kopyayla 02_tek_dosya kalıyor (çıkış 1); sağlam derlemede ve taban senaryolarında yanlış alarm oluşmuyor.",
+   "presentIn": "yalniz_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "K-12",
+   "title": "coop.cjs adım istisnalarını yutuyor; konsol uyarıları kaydedilmiyor",
+   "file": "tests/harness/coop.cjs:34, 53, 61",
+   "func": "ev(), finish()",
+   "rootCause": "ev() hata alınca 'EVALERR' yazıp undefined döndürüyor ve hatayı fails'e eklemiyor; run.cjs'teki 02 T09 düzeltmesi co-op koşucusuna uygulanmadı. Konsolda yalnız 'error' türü kaydediliyor; 'warning' türü (ör. ev sahibinin konuğu düşürme nedeni) kaydedilmiyor.",
+   "impact": "Bir adım istisna atınca kontrol undefined ile yanlış dala gidebilir ya da hiç yapılmayabilir. Taban günlüklerinde 06a'da 19, 06a2'de 18, 06c'de 5 EVALERR var (hepsi kasıtlı kapatılan sekme); bunlar gerçek hatalardan ayırt edilmeden geçti. 06c'deki kararsızlığın nedeni de günlükten okunamıyor.",
+   "priority": "dusuk",
+   "fix": "ev(p, js, label, {allowClosed}) biçimine geçin: kasıtlı kapatılan sekme dışındaki istisnalar report.evalErrors ve fails'e yazılsın. console.warn iletileri de rapora eklensin (14. belge #20).",
+   "repro": "docs/v05/taban_kosusu_44d548c/coop_06a.log → 19 satır 'EVALERR Tayfa page.evaluate: Target page, context or browser has been closed'; coop.cjs:53.",
+   "acceptance": "Kasıtlı kapatma dışındaki bir EVALERR koşuyu kaldırıyor; 06a, 06a2, 06b ve 06d taban sonuçlarıyla geçiyor; raporda uyarılar listeleniyor.",
+   "presentIn": "yalniz_v04",
+   "confidence": "kesin",
+   "knownAs": "02 T09 (yalnız run.cjs için düzeltildi); denetim/14 #20; denetim/11 #37"
+  },
+  {
+   "id": "K-13",
+   "title": "Onaysız ölçüm betikleri ve açığı kabul eden kontroller belgelerde 'GEÇTİ' olarak görünüyor",
+   "file": "tests/scenarios/03_fizik_dt.js (expect yok); tests/scenarios/v03/*.js (99 dosya, 0 expect); tests/scenarios/coop/06a_ag_guvenligi.cjs:38-42; docs/denetim/12_TEST_PLANI_VE_SONUCLAR.md:12, 17, 25, 28",
+   "func": "senaryo tasarımı ve sonuç raporlama",
+   "rootCause": "run.cjs yalnız expect adımlarını ve istisnaları sayıyor; expect'siz bir betik her durumda rc=0 veriyor. 06a'daki H07 kontrolü, sahte 'gold' iletisinin dakikada 20 000'e kadar işlenmesini başarı ölçütü yapıyor.",
+   "impact": "Taban koşusunda 03_fizik_dt, 120 FPS'te gemiyi %5,7 eksik götürdüğü hâlde (87,5 m yerine 82,64 m) 'rc=0 PASS=0 FAIL=0' ile geçti. Hikâye ve hazine (v03) regresyonu gerçekte doğrulanmıyor. Güvenlik testi de Faz 0 B-08 açığını olağan kabul ediyor. Sonuçta belgeler yanlış bir güven duygusu veriyor.",
+   "priority": "orta",
+   "fix": "03_fizik_dt'ye eşikli expect ekleyin (15/30/60 FPS sonuçları ±%1, 120 FPS ±%2). v03/g2b'den onaylı yeni bir hikâye senaryosu türetin (aşama 0→5). 06a H07'yi Faz 2 ile birlikte 'sahte gold iletisi işlenmez' olarak değiştirin. 12. belgede 'ölçüm' ile 'test'i ayırın. Her senaryoda en az bir expect zorunlu olsun: expect sayısı 0 ise run.cjs uyarı versin ya da koşuyu başarısız saysın.",
+   "repro": "grep -c expect tests/scenarios/03_fizik_dt.js → 0; grep -l expect tests/scenarios/v03/*.js | wc -l → 0 (99 dosya); docs/v05/taban_kosusu_44d548c/summary.txt satırı: '03_fizik_dt rc=0 PASS=0 FAIL=0'.",
+   "acceptance": "Expect'siz bir senaryo koşucuda başarısız sayılıyor; 03_fizik_dt eşik dışı bir 120 FPS sonucunda kalıyor; 12. belge 'GEÇTİ'yi yalnız onaylı senaryolar için kullanıyor.",
+   "presentIn": "yalniz_v04",
+   "confidence": "kesin",
+   "knownAs": "denetim/11 #1 (120 FPS farkı); 02 T07 (sahte geçiş örneği)"
+  },
+  {
+   "id": "K-14",
+   "title": "tests/README'deki tek dosya komutu kökteki bayat (v0.3) dosyayı sınatıyor",
+   "file": "tests/README.md:33-36; tests/scenarios/02_tek_dosya.js:1-2",
+   "func": "test yönergesi",
+   "rootCause": "tests/README '--url file://$PWD/DenizKorsanlari-SonHazine.html' diyor; senaryonun başlığı ve taban koşusu ise dist/ altındaki dosyayı kullanıyor.",
+   "impact": "Yönergeye uyan kişi v0.3 derlemesini sınamış olur: test geçerse yanlış güven, kalırsa yanlış alarm doğar.",
+   "priority": "dusuk",
+   "fix": "Komutu her koşuda taze derleme yapacak biçime çevirin: node tools/build-single-html.mjs /tmp/dk.html && node tests/harness/run.cjs tests/scenarios/02_tek_dosya.js --url file:///tmp/dk.html",
+   "repro": "sed -n 33,36p tests/README.md; sed -n 1,2p tests/scenarios/02_tek_dosya.js",
+   "acceptance": "İki yönerge de aynı, taze derlenmiş dosyayı gösteriyor.",
+   "presentIn": "yalniz_v04",
+   "confidence": "kesin"
+  },
+  {
+   "id": "K-15",
+   "title": "Derleme ve test bağımlılıklarının sürümleri sabitlenmemiş (package.json ve kilit dosyası yok)",
+   "file": "README.md:18; tests/README.md:10-12; .github/workflows/pages.yml:46",
+   "func": "derleme ve test ortamı",
+   "rootCause": "Depoda package.json yok. README 'npm i esbuild' diyor (sürümsüz); tests/README'de 'npm i peer' ve Playwright da sürümsüz. Yalnız pages.yml esbuild@0.24.2'yi sabitliyor.",
+   "impact": "Yerel derleme, CI'dan farklı bir esbuild sürümüyle farklı çıktı üretebilir; bayt eşitliği yalnız 0.24.2 ile doğrulandı. Playwright ya da Chromium sürümü değişince SwiftShader ölçümleri ve kararsız testler de değişir; ortam yeniden üretilemez.",
+   "priority": "dusuk",
+   "fix": "Kesin sürümlerle bir package.json (devDependencies: esbuild 0.24.2, playwright, peer) ve package-lock.json ekleyin. build:single, test:smoke ve test:coop npm betiklerini tanımlayın. CI'da npm ci kullanın.",
+   "repro": "git ls-files | grep -c package.json → 0",
+   "acceptance": "npm ci && npm run build:single iki ayrı makinede aynı sha256'yı veriyor; CI aynı kilitli sürümleri kullanıyor.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin"
+  },
+  {
+   "id": "K-16",
+   "title": "esbuild uyarıları derlemeyi durdurmuyor: IIFE çıktısında import.meta sessizce boşaltılıyor",
+   "file": "tools/build-single-html.mjs:32-38",
+   "func": "bundle()",
+   "rootCause": "logLevel 'warning' ve logOverride tanımlı değil. IIFE biçiminde import.meta {} olur. Özel denetim yalnız terrain.js'teki ifade için var (satır 26).",
+   "impact": "İleride eklenecek ikinci bir new URL(…, import.meta.url) ifadesi (yeni bir işçi, ses işleci ya da wasm) tek dosyada çalışma anında 'Invalid URL' hatasıyla çöker; derleme ve yayın ise yine başarılı görünür.",
+   "priority": "dusuk",
+   "fix": "esbuild.build'e logOverride: { 'empty-import-meta': 'error' } ekleyin ya da r.warnings.length > 0 olduğunda process.exit(1) çağırın. Derleme sonrasında çıktıyı import.meta ve new URL('./ kalıntıları için tarayın.",
+   "repro": "/tmp/denetim_alan/K/esb_meta: aynı ayarlarla new URL('./x.js', import.meta.url) derlendiğinde [WARNING] empty-import-meta çıkıyor, derleme başarılı sayılıyor ve çıktıda (()=>{var t={},o=String(new URL('./x.js',t.url))…})() oluşuyor.",
+   "acceptance": "Aynı girdiyle derleme betiği 1 koduyla çıkıyor; mevcut kaynak uyarısız derleniyor.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin"
+  },
+  {
+   "id": "K-17",
+   "title": "README ve eski belgeler v0.4 dalında bayat ve kodla çelişiyor",
+   "file": "README.md:8, 101-102, 126, 153; docs/11_ONLINE_TEST_RAPORU.md:4, 19, 30; docs/13_BILINEN_HATALAR.md:9; .github/workflows/pages.yml:1",
+   "func": "belgeler",
+   "rootCause": "v0.4 değişiklikleri yalnız docs/denetim altına yazıldı; README ile docs/01-14 güncellenmedi (yalnız docs/13 #7 değişti).",
+   "impact": "Okuyan kişi şunları görür: 'Bu sürüm: 0.3'; artık olmayan 'dost ateşi' seçeneği (menu.js:195'te kaldırıldı); v0.4'te giderilmiş 'yüzen nesneler yalnız ev sahibinde' sınırı (06b B08/H08 artık geçiyor); depoda bulunmayan coop3.cjs testi; '14 belge' ifadesi. pages.yml'nin ilk satırındaki yorum 'derleme adımı yok' diyor, oysa bir derleme adımı var.",
+   "priority": "dusuk",
+   "fix": "README'yi v0.4/v0.5'e göre güncelleyin: sürüm, co-op seçenekleri, belge listesi ve tek dosya bağlantısı. docs/11 ile docs/13'e 'v0.4'te giderildi' notları ekleyin. pages.yml yorumunu düzeltin. Belgelerdeki her 'tamam' iddiasını bir senaryoya ve kontrol etiketine bağlayın.",
+   "repro": "grep -n 'Bu sürüm' README.md; sed -n 195p js/ui/menu.js satırını README.md:126 ile karşılaştırın; grep -n 'Yüzen olay' docs/11_ONLINE_TEST_RAPORU.md docs/13_BILINEN_HATALAR.md",
+   "acceptance": "README'deki sürüm ve özellik listesi koddaki menü ve sürümle tutarlı; docs/11 ve docs/13'teki açık maddeler denetim/11 ile çelişmiyor.",
+   "presentIn": "yalniz_v04",
+   "confidence": "kesin",
+   "knownAs": "denetim/11 #20 (dost ateşi kaldırıldı, README güncellenmedi)"
+  },
+  {
+   "id": "K-18",
+   "title": "Pages 'check' işi 200 dışındaki her yanıtta yayını sessizce atlıyor ve koşu yeşil kalıyor",
+   "file": ".github/workflows/pages.yml:21-35",
+   "func": "jobs.check (curl /repos/{repo}/pages)",
+   "rootCause": "Yalnız HTTP kodunun 200 olup olmadığına bakılıyor; 401, 403, 5xx ya da oran sınırı yanıtları da enabled=false sayılıyor. Sonuçta deploy 'skipped', koşu ise 'success' oluyor. Ayrıca pages: write ve id-token: write izinleri iş akışı düzeyinde verildiği için check işine de gidiyor.",
+   "impact": "Geçici bir API hatasında yayın yapılmaz ama Actions yeşil görünür ve yayımlandığı sanılır. Örnek: run 41205990018'de check success, deploy skipped, koşu success.",
+   "priority": "dusuk",
+   "fix": "404 yanıtında bir notice ile atlayın, diğer kodlarda exit 1 ile çıkın. İzinleri iş düzeyine indirin. Yayından sonra duman testi ekleyin (sitedeki derleme damgası == github.sha).",
+   "repro": "mcp__github__actions_list list_workflow_jobs 41205990018 → check success, deploy skipped.",
+   "acceptance": "Pages API 5xx döndüğünde koşu kırmızı oluyor; 404'te bilinçli atlama notu düşülüyor; yayın sonrası damga denetimi geçiyor.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "K-19",
+   "title": "Tek HTML derlemesi üçüncü taraf lisans notlarını siliyor",
+   "file": "tools/build-single-html.mjs:35 (legalComments: 'none'), 63 (.txt dosyaları dışlanıyor)",
+   "func": "bundle(); varlık yürüyüşü",
+   "rootCause": "legalComments: 'none' ayarı three.js'in '@license Copyright 2010-2026 Three.js Authors / MIT' başlığını siliyor. assets/fonts/OFL-*.txt ve assets/CC0-1.0.txt dosyaları da gömülmüyor.",
+   "impact": "Dağıtılan tek dosyada three.js'in MIT bildirimi ve OFL yazı tipi lisans metni bulunmuyor; Krediler ekranı (menu.js:328-329) yalnız adları ve lisans adlarını sayıyor. MIT ve OFL'nin 'bildirim tüm kopyalarda bulunmalı' koşulu açısından uyumsuzluk riski var.",
+   "priority": "dusuk",
+   "fix": "legalComments ayarını 'eof' (ya da 'inline') yapın. OFL ve MIT metinlerini tek dosyaya, bir <script type='text/plain' id='lisanslar'> bloğu olarak ya da Krediler panelinde tam metin olarak gömün.",
+   "repro": "grep -c 'Three.js Authors' /tmp/denetim_alan/K/w2_build.html → 0; grep -c 'SIL Open Font License, Version' → 0; aynı başlık vendor/three/three.module.js:1-5'te mevcut.",
+   "acceptance": "Tek HTML'de three.js ve PeerJS'in MIT bildirimleri ile OFL metni bulunuyor; Krediler ekranı bunlara bağlanıyor.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "orta"
+  },
+  {
+   "id": "K-20",
+   "title": "Tek HTML katı kipi (strict mode) düşürüyor; dil anlamı modüler sürümden farklı",
+   "file": "tools/build-single-html.mjs:32-38, 118-123",
+   "func": "bundle() (format: 'iife') ve <script> yerleştirme",
+   "rootCause": "ES modülleri doğal olarak katı kipte çalışır. esbuild IIFE çıktısına 'use strict' eklemiyor ve oyun betiği klasik bir <script> olarak yerleştiriliyor. Deneme: undeclaredVar=5 içeren bir modül IIFE olarak hatasız derlendi ve çıktıda 'use strict' yoktu. dist'teki oyun betiği '(()=>{var T_=Object.defineProperty…' ile başlıyor, üst düzeyde 'use strict' yok.",
+   "impact": "Bildirilmemiş değişkene atama ya da salt okunur bir özelliğe yazma gibi hatalar modüler sürümde istisna atarken tek dosyada sessizce geçer; tersi de olabilir ('this', undefined yerine window olur). Aynı kaynaktan çıkan iki sürüm farklı davranabilir ve testler yalnız modüler sürümde koşulduğu için bu fark yakalanmaz. Somut bir örnek bulunmadı.",
+   "priority": "dusuk",
+   "fix": "esbuild seçeneklerine banner: { js: \"'use strict';\" } ekleyin ya da format: 'esm' ile <script type='module'> kullanın. Test kipinde bir katı kip yoklaması (window.__DK_STRICT = (function(){ return this === undefined; })()) ekleyip 02_tek_dosya'da denetleyin.",
+   "repro": "/tmp/denetim_alan/K/esb_meta/strict.js → çıktı '(()=>{function e(){return undeclaredVar=5,typeof this}console.log(e());})();'; 'use strict' yok.",
+   "acceptance": "Tek HTML'deki oyun betiği katı kipte çalışıyor (window.__DK_STRICT === true); 02_tek_dosya 4/4 geçmeye devam ediyor.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek"
+  }
+ ],
+ "userClaims": [
+  {
+   "claim": "Mevcut workflow, claude/** dallarındaki güncellemelerde de GitHub Pages yayınını tetikleyebiliyor.",
+   "v03": "dogru",
+   "v04": "kismen",
+   "evidence": "v0.3: .github/workflows/pages.yml:8 'branches: [main, master, 'claude/**']'; deploy işinde (33-52) dal koşulu yok. Canlı ve varsayılan dal (GitHub API default_branch = claude/hopeful-cray-o1jw6w @ 762f1c7) bu dosyayı hâlâ taşıyor. 31 Ekim koşularında deploy-pages, dal tabanlı yayın açıkken de başarılı oldu (run 41221950903). Bu yüzden varsayılan daldan açılan her claude/* dalına yapılan push yayın iş akışını tetikler; yayının engellenmesi yalnız github-pages ortam kuralına bağlı, o da API 403 nedeniyle okunamadı. Bu şimdiye kadar yaşanmadı: 16 koşunun hepsi claude/hopeful-cray-o1jw6w üzerinde. v0.4: pages.yml:8 push'u main/master/claude/hopeful-cray-o1jw6w ile sınırlıyor (d6e716f); Actions'ta claude/denetim-v0.4 ve claude/v0.5-saglamlastirma için hiç koşu yok. Ancak workflow_dispatch (satır 9) her dalda elle çalıştırılabiliyor ve deploy işi ref denetlemiyor (K-03). Düzeltme canlı dala birleştirilmediği için varsayılan daldan açılan yeni dallar v0.3 kuralını devralmaya devam ediyor (K-02)."
+  },
+  {
+   "claim": "window.DK, DK.sim, DK.tap ve DK.press production ortamında açık.",
+   "v03": "dogru",
+   "v04": "dogru",
+   "evidence": "v0.3 js/main.js:133-152 (window.DK, snap, snapFrom, sim, tap, press, __ready) koşulsuz atanıyor; v0.4 js/main.js:134-153 aynı. Kodda test kipi ayrımı yok ve oyunun kendisi window.DK'yi kullanmıyor (grep). Tek HTML çözümlemesine (/tmp/denetim_alan/K/analiz_tek.mjs) göre hem kökteki (v0.3) hem dist'teki (v0.4) derlemede window.DK ataması ve DK.sim var. Canlı site 762f1c7'den yayınlandığı için (deployment 7461546853) üretimde açık. v0.4 ayrıca ?terrain=noworker|crash|badurl ve window.__DK_TERRAIN_MODE kancalarını (terrain.js:249) üretime taşıyor; ?peerhost ise iki sürümde de var (v0.3 net.js:39-40, v0.4 net.js:53)."
+  },
+  {
+   "claim": "Kökteki tek HTML dosyası güncel kaynaktan üretilmiyor / modüler sürümle aynı değil (v0.4 dalında kökteki dosya hangi sürüm?)",
+   "v03": "yanlis",
+   "v04": "dogru",
+   "evidence": "v0.3 (762f1c7): kök dosya, v0.3 kaynağının v0.3 aracıyla ve esbuild 0.24.2 ile yeniden derlemesiyle bayt bayt aynı (sha256 f0ac8cb02920…, 21 981 073 bayt); yani güncel kaynaktan üretilmiş ve kod modüler sürümle aynı. Farklar yalnız derleme dönüşümlerinden geliyor: işçinin blob adresi, fetch yaması, katı kipin düşmesi (K-20) ve 'assets' klasör hatası (K-09). v0.4 dalı: git rev-parse HEAD:DenizKorsanlari-SonHazine.html = 762f1c7:… = 3a912c30, yani dosya değişmemiş. v0.4 kaynağının derlemesi sha256 75587dd915dc… (22 071 696 bayt) ve yalnız yerel, .gitignore'daki dist/ klasöründe. Sonuç olarak v0.4 dalındaki kök dosya v0.3'tür ve v0.4 düzeltmelerini (arazi yedeği, file:// data: işçisi, kamera, iskele ve ganimet) içermez."
+  }
+ ],
+ "docClaims": [
+  {
+   "doc": "README.md:8",
+   "claim": "'Bu sürüm: 0.3 — 20 × 20 km dünya, altı bölge, beş efsanevi boss…'",
+   "verdict": "yanlis",
+   "evidence": "v0.4 dalındaki kod 44d548c (v0.4) ve 16. belge v0.3→v0.4 çalışmasını anlatıyor; README güncellenmemiş. İfade yalnız v0.3 dalı için doğru."
+  },
+  {
+   "doc": "README.md:13-14",
+   "claim": "Pages, 'Settings → Pages → Source: GitHub Actions' seçilince pages.yml iş akışıyla açılır.",
+   "verdict": "kismen",
+   "evidence": "İş akışı var ve 47976be, ba85510 ile 762f1c7'de yayın yaptı. Ancak 31 Ekim'de aynı commit'ler için dal tabanlı Jekyll yayını da çalıştı ve sonra bitti (deployments 7461476840, 7461546853); yani kaynak fiilen 'Deploy from a branch'. Güncel ayar okunamadı (API 403)."
+  },
+  {
+   "doc": "README.md:15-17",
+   "claim": "Tek dosya (çevrimdışı) depo kökünde; çift tıklayınca sunucusuz açılır; kod, modeller, sesler ve yazı tipleri dosyanın içindedir.",
+   "verdict": "kismen",
+   "evidence": "Gömme iddiası doğru: 87 dosya __DK_FILES içinde, 10 woff2 CSS'te data: URL olarak, dış betik yok (analiz_tek.mjs). Ama v0.4 dalında kök dosya v0.3 derlemesi (K-01) ve 'assets' adlı bir klasörde açılmıyor (K-09). file:// açılışı yalnız Chromium'da ve yalnız dist/ (v0.4) için 02_tek_dosya ile sınandı."
+  },
+  {
+   "doc": "README.md:18",
+   "claim": "Yeniden üretmek için: npm i esbuild && node tools/build-single-html.mjs DenizKorsanlari-SonHazine.html",
+   "verdict": "kismen",
+   "evidence": "Komut çalışıyor: esbuild 0.24.2 ile v0.4 kaynağından dist/ ile bayt bayt aynı çıktı alındı (sha256 75587dd9…). Ancak 'npm i esbuild' sürüm sabitlemiyor (K-15), package.json yok ve bu adım v0.4 boyunca kök dosya için hiç uygulanmamış."
+  },
+  {
+   "doc": "README.md:125",
+   "claim": "Hikâye: Son Hazine Efsanesi'nin ilk 5 aşaması",
+   "verdict": "dogru",
+   "evidence": "quests.js:24-31'deki STORY dizisinde 5 aşama ve 6. aşama için yalnız 'Yitik Ufuk'a Doğru' yer tutucusu var ('bir sonraki geliştirme aşamasında açılacak')."
+  },
+  {
+   "doc": "README.md:126",
+   "claim": "Oda kurarken özel/herkese açık, kapasite, şifre, kayıt seçimi, zorluk ve dost ateşi ayarlanabilir.",
+   "verdict": "kismen",
+   "evidence": "Gizlilik, kapasite, şifre, yuva ve zorluk ayarları menu.js:180-205 ile net.js:200 ve 252'de var. 'Dost ateşi' v0.4'te kaldırıldı (menu.js:195 yorumu); v0.3'te seçenek vardı ama oyuncular arası hasar yolu yoktu (denetim/11 #20). Şifreyi sınayan test yok, çünkü tüm co-op senaryoları pw:'' kullanıyor."
+  },
+  {
+   "doc": "README.md:126",
+   "claim": "Odaya oda koduyla, davet bağlantısıyla ya da açık oda listesinden katılınabilir.",
+   "verdict": "kismen",
+   "evidence": "http(s) üzerinde davet bağlantısı çalışıyor (menu.js:266, main.js:132-133). Tek dosyada (file://) bağlantı yerel bir yol üretiyor (K-10). Açık oda listesi için test yok."
+  },
+  {
+   "doc": "README.md:127",
+   "claim": "Kayıt: 3 + 3 yuva, 2 dakikada bir otomatik kayıt, geçici yazma ve yedek, dışa/içe aktarma",
+   "verdict": "dogru",
+   "evidence": "Kodda karşılığı var: save.js:4 (SLOT_COUNT 3), 15-30 (.tmp → doğrula → .bak), 38-45 (.bak ve .tmp'den okuma), 77-87 (exportAll/importAll); game.js:217-218 (120 sn, yalnız ev sahibi); settingsPanel.js:73-78 (arayüz). Ancak otomatik kayıt ve içe/dışa aktarma için test yok (T40, T48)."
+  },
+  {
+   "doc": "README.md:129-132",
+   "claim": "Henüz olmayanlar: ana hikâyenin 6–10. aşamaları, …, oda sahibi aktarımı, masaüstü (exe) paketi.",
+   "verdict": "dogru",
+   "evidence": "quests.js:30 yalnız yer tutucu. net.js'te oda sahibi devri yok (denetim/13 yalnız tasarım); main.js:313-318'deki hostLeft işleyicisi oturumu kapatıyor. Depoda Electron/Tauri yok."
+  },
+  {
+   "doc": "TEST_RAPORU.md:3-6",
+   "claim": "Testler oyunun kodunu window.DK kancalarıyla ileri sararak çalışır; tüm koşularda konsol hatası 0.",
+   "verdict": "dogrulanamadi",
+   "evidence": "DK kısmı doğru (v0.3 main.js:133). Ancak v0.3 deposunda (762f1c7) hiç test dosyası ya da koşu kaydı yok (git ls-tree → tests/ altında 0 dosya). Betikler v0.4'te 52637e3 ile eklendi ve v03 referans betiklerinin hiçbiri expect içermiyor."
+  },
+  {
+   "doc": "TEST_RAPORU.md:11",
+   "claim": "A1 Mevcut sistemler bozulmadı — g2b: her adımda aynı sonuç (310 altın, aşama 2) ✔",
+   "verdict": "kismen",
+   "evidence": "g2b yalnız v0.4'te tests/scenarios/v03/g2b.js olarak var, expect içermiyor ve yalnız 0→2 aşamalarını yürütüyor. 3–5. aşamalar için onaylı bir test yok (T49)."
+  },
+  {
+   "doc": "TEST_RAPORU.md:25",
+   "claim": "A15 Boss: Volkanik Dev doğuşu, evre 2 ve 3, yenilgi ve ödül ✔ (diğer dört boss önceki adımlarda)",
+   "verdict": "kismen",
+   "evidence": "05_dusman_ai'deki 'Boss evreleri: can eşiklerinde çağırma ve öfke tetiklenir' kontrolü birim düzeyinde. denetim/11 #12'ye göre boss savaşları uçtan uca oynanmadı; v03/boss1-5 betikleri expect içermiyor."
+  },
+  {
+   "doc": "TEST_RAPORU.md:27",
+   "claim": "A17 Performans: oyun mantığı 1,3–3,1 ms/kare (60 FPS bütçesinin %8–19'u) ✔",
+   "verdict": "kismen",
+   "evidence": "Yalnız oyun mantığı ölçülmüş. denetim/16.8'e göre limanda çizimin ana iş parçacığı maliyeti ~10,9 ms ve gerçek FPS bu ortamda ölçülemiyor. v0.3'te ada içeriği tek karede kuruluyordu: gemiyle yaklaşırken 55–58 ms, ışınlanmada 142 ms (02 T01)."
+  },
+  {
+   "doc": "TEST_RAPORU.md:157",
+   "claim": "Online co-op (oda kur/katıl/açık oda listesi/şifre/lobi/sohbet/senkron) | Tamam",
+   "verdict": "kismen",
+   "evidence": "2 oyunculu 06b 18/18, 06d 9/9 geçiyor; 4 oyunculu 06c tabanda 2/7. Şifreli oda, host ayrılması ve tekrarlanan ödül denemesi için senaryo yok. denetim/11 #13-#16 açık ve Faz 0 B-08 (sahte altın) kritik."
+  },
+  {
+   "doc": "TEST_RAPORU.md:158",
+   "claim": "Kayıt sistemi (3+3 yuva, otomatik kayıt, yedekli yazma, dışa/içe aktarma) | Tamam",
+   "verdict": "kismen",
+   "evidence": "Kod mevcut (README.md:127 iddiasına bakınız). Ancak v0.3'te gemi direk/top hasarı ve kamp durumu kaydediliyor ama yüklenmiyordu (denetim/01:14); v0.4'te 08_kalicilik 'E-13/A1…' ve 'A5/F-07…' kontrolleriyle düzeltildi. Otomatik kayıt ve içe/dışa aktarma hiç sınanmadı."
+  },
+  {
+   "doc": "TEST_RAPORU.md:175",
+   "claim": "Online: şifreli oda (yanlış şifre reddedildi), doğru şifreyle katılım",
+   "verdict": "kismen",
+   "evidence": "Kodda net.js:252 ev sahibi tarafında yanlış şifreyi 'Oda şifresi yanlış' iletisiyle reddediyor. Bunu sınayan bir senaryo depoda yok; 06a, 06a2, 06b, 06c ve 06d'nin hepsi pw:'' kullanıyor."
+  },
+  {
+   "doc": "TEST_RAPORU.md:198",
+   "claim": "GitHub Pages iş akışı, depo ayarlarında Pages açılana kadar yayın yapmaz.",
+   "verdict": "dogru",
+   "evidence": "pages.yml:21-35. run 41205990018'de check success, deploy skipped. deployments listesinde 01:25'ten sonraki ilk kayıt 16:25'te (workflow_dispatch)."
+  },
+  {
+   "doc": "TEST_RAPORU.md:199-200",
+   "claim": "TURN sunucusu olmadığı için bazı ağlarda eşler arası bağlantı kurulamayabilir.",
+   "verdict": "kismen",
+   "evidence": "Projenin kendi TURN sunucusu yok. Ancak net.js'teki peerOpts (49-55) config vermediği için vendor/peerjs/peerjs.min.js'in varsayılanları (stun:stun.l.google.com, turn:eu-0/us-0.turn.peerjs.com) kullanılıyor. Bu genel TURN sunucularının işleyişi sınanmadı."
+  },
+  {
+   "doc": "TEST_RAPORU.md:200",
+   "claim": "Oda sahibi ayrılırsa oturum kapanır (host aktarımı yok).",
+   "verdict": "dogru",
+   "evidence": "net.js:441'de 'close' olayı hostLeft'i tetikliyor; 577'de 'kick', 706'da 25 sn sessizlik aynı yola gidiyor; main.js:313-318 oturumu kapatıyor. Bunun testi yok (T36)."
+  },
+  {
+   "doc": "docs/01_PROJE_ANALIZ_RAPORU.md:3-4",
+   "claim": "Ölçümler oyunun kendi hata ayıklama kancalarıyla (window.DK) alındı.",
+   "verdict": "dogru",
+   "evidence": "main.js:134-153 (v0.3: 133-152); kancalar üretim koduna gömülü (K-07)."
+  },
+  {
+   "doc": "docs/01_PROJE_ANALIZ_RAPORU.md:31",
+   "claim": "Tamamlanmış ve sorunsuz: … kayıt yuvaları, … online oda kur/katıl, son işleme",
+   "verdict": "kismen",
+   "evidence": "Bu bir v0.2 ölçümü. v0.3 için denetim/01-02 kayıt asimetrileri (gemi, kamp), ağ doğrulama eksikleri ve B-01/B-02 işçi takılması buldu; bunların çoğu v0.4'te düzeltildi."
+  },
+  {
+   "doc": "docs/11_ONLINE_TEST_RAPORU.md:4, 19-27",
+   "claim": "v0.3 test sonuçları (coop3.cjs, 0 hata): oda kur/katıl, fıçı, XP payı, orka… ✔",
+   "verdict": "kismen",
+   "evidence": "coop3 v0.3 deposunda yok. v0.4'te tests/scenarios/coop/v03_coop3_referans.cjs olarak duruyor ve hiç check() çağrısı içermiyor, yalnız günlük yazıyor; dolayısıyla sonuçlar onaylanmış test değil."
+  },
+  {
+   "doc": "docs/11_ONLINE_TEST_RAPORU.md:30; docs/13_BILINEN_HATALAR.md:9",
+   "claim": "Yüzen olay nesneleri (varil, şişe, kazazede, gök taşı) yalnızca ev sahibinde görünür ve toplanabilir.",
+   "verdict": "yanlis",
+   "evidence": "v0.4'te giderildi: events.js ağ senkronu eklendi (denetim/03:68) ve 06b'deki 'B08/H08 Yüzen şişe konukta görünür (ağ kopyası)' ile 'H08 Konuk şişeyi alır…' kontrolleri tabanda geçti (18/18). İfade v0.3 için doğruydu; belge güncellenmemiş."
+  },
+  {
+   "doc": "docs/13_BILINEN_HATALAR.md:28",
+   "claim": "Ada içerik kurulumu 26 sn sürüyordu → 25–100 ms (düzeltildi)",
+   "verdict": "kismen",
+   "evidence": "Kurulum hâlâ tek karede yapılıyordu: 02 T01'e göre gemiyle yaklaşırken 55–58 ms, ışınlanmada 142 ms süren kareler vardı. v0.4'te iş karelere bölündü (13_donma P01 ≤ 35 ms)."
+  },
+  {
+   "doc": "docs/14_YOL_HARITASI.md:3-10",
+   "claim": "Tamamlanan (v0.3): … beş efsanevi boss, gemi bölgesel hasarı, … co-op senkron genişletmeleri, 14 belge",
+   "verdict": "kismen",
+   "evidence": "Kod var, ancak boss savaşları uçtan uca sınanmadı (denetim/11 #12). v0.3'te co-op'ta yüzen nesne ve konuk ilerlemesi eksikti (docs/13 #2-#3); ağ doğrulaması ancak v0.4'te eklendi."
+  },
+  {
+   "doc": "docs/denetim/16_SON_RAPOR.md:6",
+   "claim": "Canlı GitHub Pages sürümü, ana dal ve kökteki tek HTML dosyası değiştirilmedi.",
+   "verdict": "dogru",
+   "evidence": "Kök blob 3a912c30, v0.3'tekiyle aynı. Canlı dalın ucu 762f1c7 (list_branches). Son yayın kaydı 31 Ekim 16:55 (deployments)."
+  },
+  {
+   "doc": "docs/denetim/11_BILINEN_SORUNLAR.md:46 (#42)",
+   "claim": "Geliştirme dalı claude/denetim-v0.4 ve dist/ tek dosyası güncel.",
+   "verdict": "kismen",
+   "evidence": "dist/ gerçekten 44d548c kaynağının derlemesi (yeniden derlemeyle sha256 75587dd9… eşleşti). Ancak .gitignore:2 nedeniyle dalda yer almıyor ve dalın kökündeki dosya v0.3 (K-01)."
+  },
+  {
+   "doc": "docs/denetim/12_TEST_PLANI_VE_SONUCLAR.md:59, 85, 163, 210",
+   "claim": "Tek dosya derleme (21,0 MB) + 02_tek_dosya.js (file://) 4/4",
+   "verdict": "dogru",
+   "evidence": "Taban 02_tek_dosya.json: fails 0, errors 0, workers 3, data: URL. Bu denetimde yeniden derlenen dosya 21,0 MB ve sha256'sı dist ile aynı. Sınırlar: yalnız 4 kontrol ve yalnız Chromium."
+  },
+  {
+   "doc": "docs/denetim/12_TEST_PLANI_VE_SONUCLAR.md:12, 17, 25",
+   "claim": "#3 … 03_fizik_dt GEÇTİ; #8 Hazine haritası ve kazı — v0.3 referans senaryoları GEÇTİ (v0.3); #16 15/30/60 FPS aynı sonuç, GEÇTİ",
+   "verdict": "kismen",
+   "evidence": "03_fizik_dt'de ve 99 v03 betiğinde expect yok (K-13). Tabandaki 03_fizik_dt ölçümünde 15/30/60 FPS yürüme mesafesi 12,596 m ile eşit, ama 120 FPS'te gemi %5,7 eksik gidiyor. Buradaki 'GEÇTİ' yalnız istisna oluşmadığını gösteriyor."
+  },
+  {
+   "doc": "docs/denetim/12_TEST_PLANI_VE_SONUCLAR.md:28",
+   "claim": "#19 Yanlış girdi/spam/hile girişimi | coop/06a | GEÇTİ",
+   "verdict": "kismen",
+   "evidence": "06a 10/10 geçiyor. Ancak H07 kontrolü, sahte 'gold' iletisiyle dakikada 20 000 altının işlenmesini başarı sayıyor (06a_ag_guvenligi.cjs:38-42); bu, Faz 0'da kritik bulunan B-08 açığı. Tekrar ya da yeniden oynatma denemesi de yok."
+  },
+  {
+   "doc": "docs/denetim/04_KOK_NEDENLER.md:21-25 ve 03_DEGISIKLIK_LISTESI.md:21 karşısında 01_ILK_DENETIM_RAPORU.md:43",
+   "claim": "04 ve 03'e göre v0.3 tek dosya file:// altında işçi başlatamaz ve yükleme takılır; 01'e göre tek dosya derlemesi sorunsuz ve test edilmiş, file:// altında 3 işçiyle oyun başladı.",
+   "verdict": "dogrulanamadi",
+   "evidence": "Belgeler birbiriyle çelişiyor. v0.3 kök dosyası tipsiz bir klasik işçi kuruyor (derlemede new Worker(window.__DK_WORKER_URL)) ve 01'deki koşu bu sürümle 3 işçi gözledi. Ret ise 903abe2'de işçinin blob'dan { type: 'module' } ile kurulmaya başlamasından sonra gözlendi; 463d01f'de data: URL'ye geçildi. Bu denetimde tarayıcı koşulmadığı için hangisinin doğru olduğu doğrulanamadı."
+  },
+  {
+   "doc": "docs/v05/00_BASLANGIC_KAYDI.md:16-18",
+   "claim": "v0.4 pages.yml yalnız main/master/claude/hopeful-cray-o1jw6w push'larında yayın yapar; claude/v0.5-saglamlastirma gönderimleri canlıyı değiştirmez.",
+   "verdict": "kismen",
+   "evidence": "Push için doğru: Actions'ta bu dallar için hiç koşu yok. Ancak workflow_dispatch kısıtsız (K-03), Pages fiilen dal tabanlı yayınla da besleniyor (K-05) ve varsayılan daldaki 'claude/**' kuralı yeni açılan dallar için geçerliliğini koruyor (K-02)."
+  },
+  {
+   "doc": "tests/README.md:33-36",
+   "claim": "Tek dosya sürümü: node tests/harness/run.cjs … --url file://$PWD/DenizKorsanlari-SonHazine.html",
+   "verdict": "yanlis",
+   "evidence": "Bu yol kökteki v0.3 derlemesini gösteriyor; 02_tek_dosya.js'in başlığı ve taban koşusu ise dist/ altındaki dosyayı kullanıyor (K-14)."
+  }
+ ],
+ "requirements": [
+  {
+   "req": "Aşama 12 — Production Pages yayını yalnız main ya da tanımlı yayın dalından yapılmalı (depoda main yok; yayın dalı claude/hopeful-cray-o1jw6w)",
+   "status": "kismen",
+   "evidence": "v0.4 pages.yml:8 push'u [main, master, claude/hopeful-cray-o1jw6w] ile sınırlıyor. Ancak :9'daki workflow_dispatch kısıtsız ve deploy işi (33-52) ref denetlemiyor (K-03). Canlı daldaki v0.3 pages.yml:8 'claude/**' kuralını taşıyor (K-02). Pages ayrıca fiilen dal tabanlı Jekyll yayınıyla da besleniyor (K-05).",
+   "plan": "Kullanıcı onayıyla canlı dala yalnız pages.yml düzeltmesini birleştirin. deploy işine if: github.ref == 'refs/heads/claude/hopeful-cray-o1jw6w' koşulunu ekleyin. Pages kaynağını 'GitHub Actions' yapın ve github-pages ortamına dal politikası tanımlayın. Yayın dalını tek bir değişkende tanımlayıp main/master satırlarını kaldırın."
+  },
+  {
+   "req": "Aşama 12 — Feature dalları canlıyı değiştirmemeli",
+   "status": "kismen",
+   "evidence": "v0.4'te push tetiklemesi kapalı; Actions'ta claude/denetim-v0.4 ve claude/v0.5-saglamlastirma için 0 koşu var. Ama elle dispatch ve varsayılan daldan açılan dallar (v0.3 kuralı) hâlâ açık bir yol; ortamın dal politikası okunamadı.",
+   "plan": "Önceki satırdaki adımları uygulayın. CI'da, yayın dalı dışındaki bir koşuda deploy işinin 'skipped' olduğunu doğrulayan bir kontrol ekleyin (T62)."
+  },
+  {
+   "req": "Aşama 12 — Feature dallarında CI testleri koşmalı",
+   "status": "yok",
+   "evidence": ".github/workflows altında yalnız pages.yml var; package.json ve npm test yok; testler yalnız elle koşuluyor (run_baseline.sh).",
+   "plan": "Bir ci.yml ekleyin: push (claude/**) ve pull_request olaylarında npm ci, node tests/node/*.mjs, tek HTML derlemesi ve statik denetim, ardından Playwright duman seti (00_acilis, 02_arazi_yedek dört kipte, 02_tek_dosya, 08_kalicilik, 12_kayit_dongusu, 13_donma) koşsun. Co-op ve uzun senaryolar gecelik ya da elle tetiklenen bir iş olarak çalışsın."
+  },
+  {
+   "req": "Aşama 12 — PR kontrolü olmadan production yayını olmamalı",
+   "status": "yok",
+   "evidence": "list_branches: claude/hopeful-cray-o1jw6w protected=false; pages.yml'de pull_request tetikleyicisi yok; canlı dala yapılan her push doğrudan yayına gidiyor (K-04).",
+   "plan": "Yayın dalına branch protection koyun: PR zorunlu, ci gerekli durum kontrolü, doğrudan push ve force push kapalı. Deploy'u yalnız birleştirme sonrası push'a ve CI başarısına bağlayın."
+  },
+  {
+   "req": "Aşama 12 — Tek HTML güncel kaynaktan yeniden üretilmeli",
+   "status": "kismen",
+   "evidence": "pages.yml:44-47 iş akışı yayınında dosyayı yeniden derliyor. Ancak kök dosya v0.3 (blob 3a912c30, sha256 f0ac8cb0…); v0.4 derlemesi yalnız git dışındaki dist/'te (75587dd9…) ve dal tabanlı yayın kök dosyayı servis ediyor (K-01, K-05).",
+   "plan": "Kök dosyayı kaldırın ve derlemeyi CI'a bırakın; derlemeye commit damgası gömün. Yayından sonra damganın github.sha'ya eşit olduğunu denetleyin."
+  },
+  {
+   "req": "Aşama 12 — Tek HTML ile modüler sürümün aynı özellikleri taşıdığı doğrulanmalı",
+   "status": "kismen",
+   "evidence": "02_tek_dosya yalnız 4 kontrol yapıyor (sayfa hazır, işçi, oyun başladı, zemin). 12. belgede geçen 'tek dosyada deniz ekipmanı / K01, K09, K10, K11 doğrulandı' koşuları depoda senaryo olarak yok. 14, 15, 16, 17 ve coop/06d import('./js/…') kullandığından tek dosyada koşamıyor. IIFE derlemesi katı kipi düşürüyor (K-20).",
+   "plan": "import kullanmayan senaryo alt kümesini (00, 02_arazi_yedek, 03_fizik_duzeltmeler, 05, 08, 12, 13) CI'da file:// ile tek dosyaya karşı koşun. import gerektiren kontrolleri DK üzerinden erişime çevirin ve 'use strict' ekleyin. Tek dosya ile modüler koşunun sonuçlarını karşılaştıran bir rapor üretin."
+  },
+  {
+   "req": "Aşama 12 — İşçi blob dönüşümü test edilmeli",
+   "status": "kismen",
+   "evidence": "02_tek_dosya'daki 'Tek dosya (file://): arazi işçileri çalışıyor' kontrolü geçiyor (taban: workers 3, url data:…). http(s) üzerindeki blob yolu (build-single-html.mjs:103) hiç sınanmıyor. Derleme, işçi ifadesi bulunamazsa hata veriyor (:26).",
+   "plan": "02_tek_dosya'yı ayrıca http://localhost:8080/dist/… adresiyle de koşun (blob yolu) ve DK.terrain.workers ≥ 1, failures 0 bekleyin. Firefox ve WebKit için Playwright projeleri ekleyin."
+  },
+  {
+   "req": "Aşama 12 — Asset gömme ve fetch yönlendirmesi doğrulanmalı",
+   "status": "kismen",
+   "evidence": "Statik çözümlemeye göre 87 dosya gömülü, eksik sabit başvuru yok ve CSS'te göreli url kalmamış. Ancak hiçbir test bunu denetlemiyor: eksik model yer tutucuyla gizleniyor ve harness console.error ile 404'leri saymıyor (K-11). Ses testte hiç yüklenmiyor; 'assets' klasör hatası var (K-09).",
+   "plan": "Derleme sonrasında CI'da bir Node denetimi koşun (analiz_tek.mjs benzeri). 02_tek_dosya'ya eksik model, ses ve gömülü anahtar sayısı kontrollerini ekleyin. 'assets' adlı bir klasörden açılış testi ekleyin."
+  },
+  {
+   "req": "Aşama 12 — Derleme başarısızsa yayın olmamalı",
+   "status": "kismen",
+   "evidence": "Derleme adımı hata verirse (swap() hata fırlatır, main().catch çıkış kodu 1 döndürür) deploy işi duruyor. Ancak esbuild uyarıları ölümcül değil (K-16), çıktı doğrulanmıyor, test yok ve dal tabanlı yayın derleme adımını hiç kullanmıyor (K-05). check işi API hatasında sessizce atlıyor (K-18).",
+   "plan": "logOverride ile uyarıları hataya çevirin. Deploy'dan önce derleme sonrası statik denetim ve duman testi koşun. Pages kaynağını Actions yapın ve adımlarda set -euo pipefail kullanın."
+  },
+  {
+   "req": "Aşama 12 — Pages artifact'i yalnız gerekli yayın dosyalarını içermeli",
+   "status": "yok",
+   "evidence": "pages.yml:48-50'de path: '.'; bu yüzden docs/ (83 dosya, 2,7 MB), tests/ (140 dosya), tools/ ve TEST_RAPORU.md yayına çıkıyor (K-06).",
+   "plan": "Bir _site/ hazırlama adımı ekleyin (index.html, css, js, vendor, assets, CREDITS.md, tek HTML, .nojekyll) ve yalnız onu yükleyin. Artifact içerik listesini denetleyin."
+  },
+  {
+   "req": "Aşama 12 — window.DK, DK.sim, DK.tap, DK.press ve diğer test kancaları üretimde kapalı olmalı (geliştirme/test kipine sınırlı), mevcut testler bozulmadan",
+   "status": "yok",
+   "evidence": "main.js:134-153 koşulsuz. Üretimde ayrıca net.js:53 ?peerhost, terrain.js:249 ?terrain ve __DK_TERRAIN_MODE, terrainWorker.js:8 ve player.js:143 godMode erişilebilir. Tek HTML'lerde DK mevcut (K-07, K-08).",
+   "plan": "Bir test bayrağı ekleyin (window.__DK_TEST ile addInitScript ya da ?dktest=1); run.cjs ve coop.cjs bayrağı açsın. peerhost ve terrain parametreleri yalnız bayrakla çalışsın. Tek HTML için üretim ve test derlemelerini ayırın. Kabul ölçütü: 21 tek sayfa ve 5 co-op senaryosu taban sonuçlarıyla aynı, üretimde typeof DK === 'undefined'."
+  },
+  {
+   "req": "T1 Normal Worker açılışı",
+   "status": "karsilaniyor",
+   "evidence": "00_acilis.js 'Arazi işçileri çalışıyor' (workers ≥ 1) ve 02_arazi_yedek.js normal kipte 12/12. Kayıt: 12. belge satır 39, 41, 249; taban 00_acilis 6/6, 02_arazi_yedek 12/12.",
+   "plan": "CI duman setine alın."
+  },
+  {
+   "req": "T2 Worker bulunamadığında açılış",
+   "status": "karsilaniyor",
+   "evidence": "02_arazi_yedek.js ?terrain=badurl ve ?terrain=noworker kiplerinde koşuyor ('Sayfa hazır (yükleme ekranı aşıldı)', 'Oyuncu zemine basıyor', 'Uzak bölge prepare() sonuçlanıyor (askıda kalmıyor)'); 12. belge satır 41: '12/12 × 4'. Faz 0 taban koşusu yalnız normal kipi koştu.",
+   "plan": "Dört kipi CI'da ayrı adımlar olarak koşun; tek HTML'de de badurl kipini ekleyin."
+  },
+  {
+   "req": "T3 Worker çöktüğünde açılış",
+   "status": "karsilaniyor",
+   "evidence": "02_arazi_yedek.js ?terrain=crash (12. belge satır 41) ve 02_arazi_kurtarma.js kontrolleri 'Tüm işçiler düşünce yedek kipi açıldı', 'Öksüz iş yok…', 'Kuyruk ana iş parçacığında ilerliyor (12 sn)'; taban 7/7.",
+   "plan": "crash kipini CI'a alın."
+  },
+  {
+   "req": "T4 Arazi mesh oluşturulması",
+   "status": "karsilaniyor",
+   "evidence": "00_acilis 'Arazi karoları yüklendi' (meshes ≥ 10); 02_arazi_yedek 'Menü sahnesinde karo ağları üretildi', 'Yüksek çözünürlüklü karolar (yükseklik ızgarası + ağ)', 'Tuz Pazarı çevresinde karo ağları var'; taban koşusunda geçti.",
+   "plan": "Mevcut senaryoları CI'a alın."
+  },
+  {
+   "req": "T5 Harita derinliği hazırlanması",
+   "status": "karsilaniyor",
+   "evidence": "02_arazi_yedek 'Okyanus derinlik penceresi hazır', 'Derinlik penceresi yeni bölgeye taşındı', 'Harita ızgarası isteği sonuçlanıyor'; taban 12/12.",
+   "plan": "İşçisiz kiplerde de CI'da koşun."
+  },
+  {
+   "req": "T6 Ana menü",
+   "status": "kismen",
+   "evidence": "00_acilis yalnız 'Ana menü görünür' ve 'Menü düğmeleri' (≥ 8 düğme) kontrollerini yapıyor; 06_arayuz_960 H05 yalnız Oda Kur düğmesinin görünürlüğünü denetliyor. Devam Et, Dünyalar, Korsanım, Defter, Ayarlar, Krediler ve Çıkış düğmeleri tıklanmıyor.",
+   "plan": "Bir 18_ana_menu.js ekleyin: her düğmeye tıklayıp panelin açılıp kapandığını, 'Devam Et'in son kaydı yüklediğini denetlesin."
+  },
+  {
+   "req": "T7 Yeni oyun",
+   "status": "karsilaniyor",
+   "evidence": "00_acilis 'Oyun başladı' ve 'Oyuncu dünyada' kontrolleri DK.handlers.startGame({kind:'solo', slot:2, data:null}) ile geçiyor; taban 6/6. Yeni Macera → oluşturucu → yuva arayüz akışı tıklanmıyor.",
+   "plan": "Arayüz akışını tıklayan bir adım ekleyin."
+  },
+  {
+   "req": "T8 Kayıt yükleme",
+   "status": "karsilaniyor",
+   "evidence": "08_kalicilik 'Kayıt yüklendi, oyun başladı' ve diğer 11 kontrol; 12_kayit_dongusu K01–K03 (3 ardışık döngü); taban 12/12 ve 4/4.",
+   "plan": "CI duman setine alın."
+  },
+  {
+   "req": "T9 Hızlı yolculuk",
+   "status": "kismen",
+   "evidence": "Yalnız 03_fizik_duzeltmeler 'Taşınan demirli gemi eski çapa noktasına fırlamaz' var; testte gemi elle 1500 m taşınıyor ve anchorPt test içinde sıfırlanıyor. main.js:270-300'deki fastTravel olayı (ücret, terrain.prepare, ışınlanma, saat, co-op 'teleport') hiçbir testte tetiklenmiyor.",
+   "plan": "G.emit('fastTravel', …) ile uçtan uca bir senaryo yazın: altın düşüyor, oyuncu ve gemi varış limanında, karolar hazır, gemi 3 sn'de 1 m'den az hareket ediyor, co-op'ta konuk ışınlanıyor."
+  },
+  {
+   "req": "T10 Dünya değişimi",
+   "status": "kismen",
+   "evidence": "Oturum içinde başka bir dünyaya ya da kayda geçiş olarak yorumlandı. 12_kayit_dongusu aynı sayfada 3 kez startGame çağırıyor; 13_donma P04 'yeni oturum başlangıcı yarım ada işini temizler' kontrolünü yapıyor; 06c D4-06 (menüye dönüp geri gelme) tabanda kaldı. Farklı yuvalar arasında (A→B) ya da solo↔online geçişinde durum sızıntısı sınanmıyor.",
+   "plan": "A yuvasında durum oluşturup menüye dönün ve B yuvasını yükleyin: altın, envanter, ada, düşman ve gemi B'ye ait olmalı, sahnedeki nesne sayısı sabit kalmalı."
+  },
+  {
+   "req": "T11 15 FPS hareket",
+   "status": "kismen",
+   "evidence": "03_fizik_dt.js 1/15 adımla yürüme, sprint, zıplama, kaçınma ve gemiyi ölçüyor ama expect içermiyor (taban: yürüme 12,596 m, diğer kare hızlarıyla eşit). 03_fizik_duzeltmeler'de 'Alt adım sayısı: 1/15→4…' ve 'Geri tepme mesafesi 15/60/144 FPS arasında %20 içinde' kontrolleri onaylı.",
+   "plan": "03_fizik_dt'ye eşikli expect ekleyin (K-13)."
+  },
+  {
+   "req": "T12 30 FPS hareket",
+   "status": "kismen",
+   "evidence": "03_fizik_dt 1/30 adımla yalnız ölçüm yapıyor, expect yok; referans değerler yalnız taban günlüğünde.",
+   "plan": "Eşikli expect ekleyin (15/30/60 FPS sonuçları ±%1)."
+  },
+  {
+   "req": "T13 60 FPS hareket",
+   "status": "kismen",
+   "evidence": "03_fizik_dt yalnız ölçüm yapıyor; 03_fizik_duzeltmeler'deki 1/60→1 alt adım kontrolü onaylı.",
+   "plan": "Eşikli expect ekleyin."
+  },
+  {
+   "req": "T14 120 FPS hareket",
+   "status": "kismen",
+   "evidence": "03_fizik_dt ölçümüne göre 120 FPS'te zıplama tepesi 1,214 m (+%2,6) ve gemi 12 sn'de 82,64 m (−%5,7). Onay olmadığı için koşu geçti; bilinen sorun #1.",
+   "plan": "Faz 3'teki sabit adım düzeltmesinden sonra ±%2 eşikli expect ekleyin."
+  },
+  {
+   "req": "T15 Karakter çarpışmaları",
+   "status": "karsilaniyor",
+   "evidence": "03_fizik_duzeltmeler 'Yüksek platforma yandan girilmez (yan yüz çarpıştırıcı)'; 15_iskele_kamera I02 ve I05 (direk çarpıştırıcısı); 05_dusman_ai 'Yığılma yok…'. Taban sonuçları 14/14, 14/14 ve 18/18.",
+   "plan": "CI'a alın."
+  },
+  {
+   "req": "T16 Kamera çarpışması",
+   "status": "karsilaniyor",
+   "evidence": "04_karakter C07; 15_iskele_kamera C01–C05; 17_kamera_kararma K04–K08. Taban sonuçları 21/21, 14/14, 13/13; 12. belgede önce/sonra tabloları var.",
+   "plan": "CI'a alın; gerçek GPU'da elle de kontrol edin."
+  },
+  {
+   "req": "T17 Gemi dalga hareketi",
+   "status": "yok",
+   "evidence": "v0.4 senaryolarında gemi yalpası, baş-kıç vurması ya da kaldırma kuvveti için onay yok (roll/heave araması sonuç vermedi). 03_fizik_dt yalnız mesafe ve dönüş ölçüyor; v03/full*.js betikleri expect içermiyor.",
+   "plan": "Durgun ve fırtınalı denizde (waveScale 0 ve 1,6) 20 sn'lik bir senaryo yazın: yalpa ve vurma genliği belirli aralıkta, NaN yok, gemi batmıyor, 30/60/120 FPS arasındaki genlik farkı %5'in altında."
+  },
+  {
+   "req": "T18 Gemi çarpışmaları",
+   "status": "kismen",
+   "evidence": "03_fizik_duzeltmeler 'Kinematik gemiye çarpma: NaN yok, hasar makul' gemi–gemi çarpışmasını sınıyor. Gemi–kara (karaya oturma) ve gemi–iskele çarpışmaları (denetim/11 #39, açık) onaylanmıyor.",
+   "plan": "Kaya sütunu, kara ve iskele çarpışma senaryoları ekleyin."
+  },
+  {
+   "req": "T19 Sandık fiziği",
+   "status": "kismen",
+   "evidence": "03_fizik_dt rijit cisim düşüşünü 4 kare hızında ölçüyor ama expect yok. 16_kosu T07 (kese tekmelenmez) ve T04 (güverte kesesi gemiye bağlı) konuyu dolaylı olarak sınıyor.",
+   "plan": "bodies için onaylı bir senaryo yazın: düşme, oturma ve uyuma, suda yüzme, patlama itkisi ve kare hızından bağımsızlık."
+  },
+  {
+   "req": "T20 Top güllelerinin hareketi",
+   "status": "kismen",
+   "evidence": "03_fizik_duzeltmeler 'Hızlı gülle tek adımda gövdeyi aşsa da isabet eder (süpürme, tünelleme yok)' ve 'Mermi süpürmesi…' kontrolleri onaylı. Balistik yay, hava direnci, rüzgâr sapması ve kare hızından bağımsızlık onaylanmıyor.",
+   "plan": "Sabit bir başlangıç koşuluyla 30/60/120 FPS'te menzil ve iniş noktasının ±%2 içinde kaldığını denetleyin."
+  },
+  {
+   "req": "T21 Oda kurma",
+   "status": "karsilaniyor",
+   "evidence": "Tüm co-op senaryoları odayı DK.net.host(…) ile kurup '2 oyuncu oyunda' ya da 'D4-01 Lobide 4 kayıt' ile doğruluyor; taban 06b 18/18. Arayüz yolu yalnız 06_arayuz_960 H05 ile (düğme görünürlüğü) sınanıyor.",
+   "plan": "Oda Kur panelinden tıklayarak kurulum yapan bir adım ekleyin."
+  },
+  {
+   "req": "T22 Odaya katılma",
+   "status": "karsilaniyor",
+   "evidence": "DK.net.join(kod, '') kullanılıyor; 06d 'Konuk odaya bağlandı' ve 06b tabanda geçti.",
+   "plan": "Arayüzdeki Katıl yolunu da sınayın."
+  },
+  {
+   "req": "T23 Şifreli oda",
+   "status": "yok",
+   "evidence": "Kodda net.js:252 yanlış şifreyi reddediyor, ama tüm co-op senaryoları pw:'' kullanıyor.",
+   "plan": "pw:'gizli' ile bir senaryo yazın: yanlış şifreye 'Oda şifresi yanlış' reddi, doğru şifreyle katılım, info iletisinde şifrenin sızmadığı (yalnız pw:true)."
+  },
+  {
+   "req": "T24 İki oyuncu",
+   "status": "karsilaniyor",
+   "evidence": "coop/06b_esitlik_senkron 18/18 ve coop/06d_ganimet_canta 9/9 (taban koşusu ve 12. belge).",
+   "plan": "Gecelik CI'a alın."
+  },
+  {
+   "req": "T25 Dört oyuncu",
+   "status": "kismen",
+   "evidence": "coop/06c_dort_oyuncu D4-01…D4-07: tabanda 2/7 ('Tayfa' katılamadı); 12. belgeye göre son kod 7 koşunun 5'inde geçmiş. Bilinen sorun #37.",
+   "plan": "Katılma isteğine yeniden deneme ekleyin, 'kick' nedenini kaydedin, konukları sırayla başlatın; 10 ardışık koşuda 10/10 hedefleyin."
+  },
+  {
+   "req": "T26 Oyuncu hareket senkronizasyonu",
+   "status": "kismen",
+   "evidence": "06b 'F-12 Zıplayan konuk ev sahibinde havada görünür' geçiyor; 06c 'D4-05 Konuğun hareketi diğer konukta görünür' tabanda kaldı. Gecikme ve paket kaybı altında sınanmadı.",
+   "plan": "Yürüyüş, koşu ve yüzme konum farkını ≤ 0,5 m eşikle denetleyin; gecikme benzetimi ekleyin."
+  },
+  {
+   "req": "T27 Gemi kontrolü",
+   "status": "kismen",
+   "evidence": "06a ve 06a2'deki 'H13 Kopan konuğun dümen kilidi…' kontrolü yalnız kilidi sınıyor. Konuğun dümen, yelken ve çapa komutlarının (shipCmd/helm) ev sahibinin gemisini gerçekten hareket ettirdiği onaylanmıyor.",
+   "plan": "Konuk dümene geçip yelken açsın; 10 sn sonra ev sahibindeki gemi konumu değişmiş ve iki taraf ≤ 1 m tutarlı olsun."
+  },
+  {
+   "req": "T28 Ganimet toplama",
+   "status": "karsilaniyor",
+   "evidence": "06b 'H01 Konuk keseyi alır…', 06d C01–C04 ve 16_kosu_poz_ganimet T01–T10 tabanda geçti.",
+   "plan": "CI'a alın."
+  },
+  {
+   "req": "T29 Altın paylaşımı",
+   "status": "kismen",
+   "evidence": "Yalnız 06a 'H07 Altın paylaşım bütçesi: 30000 istenen, ≤20000 işlenir' var. Bu kontrol sahte iletinin sınırını ölçüyor ve dakikada 20 000 altının işlenmesini başarı sayıyor (Faz 0 B-08). Meşru satış gelirinin paylaşımı sınanmıyor.",
+   "plan": "Satış sonrasındaki payın tayfaya doğru dağıldığını denetleyin; Faz 2'den sonra sahte 'gold' iletisinin hiç işlenmediğini doğrulayın."
+  },
+  {
+   "req": "T30 Saldırı ve hasar",
+   "status": "karsilaniyor",
+   "evidence": "05_dusman_ai 18/18; 06a 'H07 Uzaktan sahte hasar ev sahibinde işlenmez' ve 'H07 Yakından sahte 99999 hasar üst sınıra kırpılır'; 06b F-11 ve F-15.",
+   "plan": "CI'a alın."
+  },
+  {
+   "req": "T31 Boss savaşı",
+   "status": "kismen",
+   "evidence": "05_dusman_ai 'Boss evreleri: can eşiklerinde çağırma ve öfke tetiklenir' birim düzeyinde; 09_performans bossları oluşturup kaldırıyor. Uçtan uca bir savaş testi yok (bilinen sorun #12).",
+   "plan": "Her boss için doğuş → evreler → zayıf nokta → yenilgi → ödül akışını sınayan bir senaryo yazın (ölümsüzlük açık)."
+  },
+  {
+   "req": "T32 Yüzen olay nesneleri",
+   "status": "karsilaniyor",
+   "evidence": "06b 'B08/H08 Yüzen şişe konukta görünür (ağ kopyası)' ve 'H08 Konuk şişeyi alır…'; 16 T05 ve T10; taban koşusunda geçti.",
+   "plan": "CI'a alın."
+  },
+  {
+   "req": "T33 Guest rütbesi",
+   "status": "kismen",
+   "evidence": "06d 'C06 … öldüren olarak konuğu taşır (XP konuğa)' yalnız öldürenin kimliğini denetliyor. Konuğun XP ve seviye artışı ile oturumlar arası kalıcılığı onaylanmıyor; v03_coop3_referans XP'yi günlüğe yazıyor ama check içermiyor.",
+   "plan": "Konuk XP'si kazanımdan sonra artıyor, ayrılıp yeniden katılınca korunuyor ve ev sahibinin XP'si değişmiyor olmalı; bunu denetleyin."
+  },
+  {
+   "req": "T34 Bağlantı kopması",
+   "status": "karsilaniyor",
+   "evidence": "06a2 'H13 Kopan konuğun dümen kilidi ev sahibinde ve diğer konukta kalkar' tabanda 3/3. Ayrıca 06c 'D4-07 Sekmesi kapanan konuk herkeste kalkar (≤ 25 sn)'.",
+   "plan": "CI'a alın."
+  },
+  {
+   "req": "T35 Yeniden bağlanma",
+   "status": "kismen",
+   "evidence": "06c 'D4-06 Menüye dönen konuk aynı adla geri gelir…' tabanda kaldı; 06a 'H04 …' dolaylı bir kanıt.",
+   "plan": "Konuğun sekmesini kapatıp yeniden açtıktan sonra envanterinin ve adının eşleştiğini ve çift kayıt oluşmadığını denetleyin."
+  },
+  {
+   "req": "T36 Host ayrılması",
+   "status": "yok",
+   "evidence": "hostLeft yolu (net.js:441, 577, 706; main.js:313-318) hiçbir senaryoda tetiklenmiyor.",
+   "plan": "Ev sahibi sekmesini kapatın: konuk menüye dönmeli, 'Oturum sona erdi' iletisini görmeli ve konuk kaydı yazılmış olmalı."
+  },
+  {
+   "req": "T37 Hatalı mesaj / hile denemeleri",
+   "status": "kismen",
+   "evidence": "06a 10/10 geçiyor: ad arındırma (H02), sahte hasar (H07), 200 KB sohbet (H22) ve altın bütçesi. Ancak KNOWN listesindeki 39 ileti türünün (net.js:47) çoğu (lootReq, holdTake, prog, story, hold…) için kötü niyetli ileti testi yok ve H07 altın açığını kabul ediyor.",
+   "plan": "Her ileti türü için sahte ve uç değerli ileti testleri yazın (Faz 2 tasarımıyla birlikte)."
+  },
+  {
+   "req": "T38 Tekrarlanan mesaj ve ödül denemeleri",
+   "status": "yok",
+   "evidence": "Aynı pickupReq, chestReq, lootReq ya da gold iletisini tekrar gönderen bir senaryo yok.",
+   "plan": "Her ödül iletisini 2–10 kez gönderin ve ödülün yalnız bir kez verildiğini denetleyin."
+  },
+  {
+   "req": "T39 Yeni kayıt",
+   "status": "kismen",
+   "evidence": "startGame(data:null) sonrasında handlers.saveNow(false) çağrılıyor (main.js:166), ama yuvaya kaydın yazıldığını onaylayan bir kontrol yok; 08 ve 12 save.write'ı doğrudan çağırıyor.",
+   "plan": "Yeni oyun başlatılınca save.list('solo')'da ilgili yuvanın dolu ve geçerli olduğunu denetleyin."
+  },
+  {
+   "req": "T40 Otomatik kayıt",
+   "status": "yok",
+   "evidence": "game.js:217-218'deki otomatik kayıt (120 sn, autosave olayı) hiçbir senaryoda onaylanmıyor.",
+   "plan": "DK.sim(125) sonrasında kaydın savedAt değerinin değiştiğini ve konuk tarafında yazma olmadığını denetleyin."
+  },
+  {
+   "req": "T41 Manuel kayıt",
+   "status": "kismen",
+   "evidence": "10_uzun_oturum 18. dilimde DK.handlers.saveNow(true) çağırıyor ama sonucu onaylamıyor; duraklatma menüsünden kaydetme tıklanmıyor.",
+   "plan": "Duraklatma menüsünden kaydedin; kayıt içeriği game.serialize() ile eşleşmeli ve .bak dosyası oluşmalı."
+  },
+  {
+   "req": "T42 Yedekten kurtarma",
+   "status": "karsilaniyor",
+   "evidence": "08_kalicilik 'Bozuk ana kayıt varken .bak yedeği okunur'; taban 12/12.",
+   "plan": "CI'a alın."
+  },
+  {
+   "req": "T43 Bozuk kayıt",
+   "status": "karsilaniyor",
+   "evidence": "08_kalicilik 'Bozuk kayıt dosyası güvenle reddedilir (null), liste çökmez'; taban 12/12.",
+   "plan": "Şema doğrulaması genişledikçe (Faz 4) yeni durumlar ekleyin."
+  },
+  {
+   "req": "T44 Eski sürüm kaydını yeni sürümde açma",
+   "status": "kismen",
+   "evidence": "Yalnız 13_donma P08 '…eski kayıt biçimi onarılır' var (tapınak durumu). Gerçek bir v0.3 kayıt örneğiyle (fixture) yükleme testi yok; denetim/16.7'deki 'kayıtlı v0.3 oyunlarıyla yükleme denemesi' yayın öncesi bir öneri olarak açık duruyor.",
+   "plan": "tests/fixtures'a v0.3 kayıt örnekleri (solo, online, konuk) ekleyin ve v0.4'te yükleyip alanların eşlendiğini denetleyin."
+  },
+  {
+   "req": "T45 Ada durumunun korunması",
+   "status": "karsilaniyor",
+   "evidence": "08 'B02/B-08 Ada ödülleri, tutsaklar ve tapınak mekanizması yüklemede geri geliyor' ve 12_kayit_dongusu K01.",
+   "plan": "CI'a alın."
+  },
+  {
+   "req": "T46 Bulmaca durumunun korunması",
+   "status": "kismen",
+   "evidence": "13_donma P08 tapınak bulmacasını sınıyor (çözüm yeniden kurulumda ve yüklemede korunuyor). Basınç plakası/blok bulmacası çözümünün kalıcılığı onaylanmıyor; v03/haz2 expect içermiyor.",
+   "plan": "Plaka bulmacasını çözüp kaydedin ve yükleyin: kafes gömülü, gizli sandık açık kalmalı."
+  },
+  {
+   "req": "T47 Envanter ve gemi durumunun korunması",
+   "status": "karsilaniyor",
+   "evidence": "08 'E-13/A1 Batık gemi … parça/direk/top hasarı korunur…', 14_deniz_ekipmani L03 ve 12_kayit_dongusu K01.",
+   "plan": "CI'a alın."
+  },
+  {
+   "req": "T48 İçe/dışa aktarma",
+   "status": "yok",
+   "evidence": "save.exportAll/importAll (save.js:77-87) ve Ayarlar'daki arayüz (settingsPanel.js:73-78) için senaryo yok.",
+   "plan": "exportAll → localStorage temizle → importAll → yuvaların aynı olduğunu denetleyin; bozuk JSON ve yabancı anahtarların reddedildiğini sınayın."
+  },
+  {
+   "req": "T49 İlk beş aşamanın regresyonu",
+   "status": "kismen",
+   "evidence": "Yalnız tests/scenarios/v03/g2b.js (expect yok) aşama 0→2'yi yürütüyor. 3 (günlük), 4 (Morvan) ve 5 (Kızıl Hançer) için onaylı senaryo yok.",
+   "plan": "Expect içeren 18_hikaye_1_5.js yazın: her aşama geçişini, bayrakları ve kayıt/yükleme sonrası aşamanın korunduğunu denetlesin."
+  },
+  {
+   "req": "T50 Hikâyenin altıncı aşamaya geçişi",
+   "status": "yok",
+   "evidence": "quests.js:30'da 6. aşama yalnız yer tutucu ('bir sonraki geliştirme aşamasında açılacak'); özellik henüz yok.",
+   "plan": "Faz 6'da özellik yazıldıktan sonra test edin."
+  },
+  {
+   "req": "T51 Yeni bölgelerin açılması",
+   "status": "yok",
+   "evidence": "Bölgeler oyunun başından açık; hikâyeye bağlı açılma mekanizması da testi de yok.",
+   "plan": "Faz 6 tasarımıyla birlikte ele alın."
+  },
+  {
+   "req": "T52 Görev nesnelerinin doğru yerde bulunması",
+   "status": "kismen",
+   "evidence": "tests/node/archipelago_sabit.mjs kazı noktaları, boss alanları, batıklar ve POI'lerin v0.3 sabitiyle aynı olduğunu doğruluyor (bu denetimde GEÇTİ). Hikâye nesneleri (günlük, Morvan alanı, Kızıl Hançer kampı) için onay yok.",
+   "plan": "Hikâye nesnelerinin konumlarını ve erişilebilirliklerini (arazi üstünde, çarpıştırıcı dışında) denetleyen bir test ekleyin."
+  },
+  {
+   "req": "T53 Boss karşılaşmalarının doğru tetiklenmesi",
+   "status": "kismen",
+   "evidence": "13_donma P08 tapınak çözüldükten sonraki Taş Muhafız koşulunu sınıyor. Morvan ve Kızıl Hançer (quests.js:276-290) ile deniz bossları için tetik testi yok.",
+   "plan": "Her boss için tetik koşulunu ve geri çekilme kuralını (650 m) sınayan bir senaryo yazın."
+  },
+  {
+   "req": "T54 Son görev ve hikâye finali",
+   "status": "yok",
+   "evidence": "Özellik yok (README.md:129-132).",
+   "plan": "Faz 6'dan sonra test edin."
+  },
+  {
+   "req": "T55 Kaynak modüllerin açılması",
+   "status": "karsilaniyor",
+   "evidence": "00_acilis (http://localhost:8080/index.html) 6/6; tüm senaryolar modüler sürümle koşuyor.",
+   "plan": "CI duman setine alın."
+  },
+  {
+   "req": "T56 Single HTML derlemesi",
+   "status": "kismen",
+   "evidence": "Derleme elle koşuluyor (12. belgede 21,0 MB kayıtları var); bu denetimdeki yeniden derleme dist ile bayt bayt aynı çıktı. pages.yml derliyor ama çıktıyı doğrulamıyor ve CI'da derleme testi yok.",
+   "plan": "CI'da derleme yapın; ardından statik denetim (anahtar sayısı, import.meta, işçi ifadesi, lisans notları) ve belirlenimcilik (iki derlemenin sha256'sı eşit) kontrolü ekleyin."
+  },
+  {
+   "req": "T57 Single HTML açılışı",
+   "status": "karsilaniyor",
+   "evidence": "02_tek_dosya.js (file://, dist v0.4) 4/4: 12. belge satır 59, 85, 163 ve 210; taban 02_tek_dosya.json. Kökteki commit'li (v0.3) dosya sınanmıyor.",
+   "plan": "Yayınlanacak dosyayı (CI çıktısı) sınayın."
+  },
+  {
+   "req": "T58 Çevrimdışı açılış",
+   "status": "kismen",
+   "evidence": "02_tek_dosya file:// ile koşuyor ama ağ açık; harness requestfailed olaylarını başarısızlık saymıyor; ağ kapalı (context.setOffline) bir koşu yok.",
+   "plan": "context.setOffline(true) ile tek dosyayı açın: yükleme tamamlanmalı, tek oyunculu oyun başlamalı, hiçbir istek başarısız olmamalı."
+  },
+  {
+   "req": "T59 Gömülü asset kontrolü",
+   "status": "kismen",
+   "evidence": "Testte açık bir kontrol yok; yalnız dolaylı kanıt var, çünkü açılış kk modellerini gerektiriyor. Bu denetimin statik çözümlemesi 87 dosyanın gömülü olduğunu gösterdi. Ses yüklenmiyor ve eksik model yer tutucuyla gizleniyor.",
+   "plan": "02_tek_dosya'ya DK.assets.missing boş, 87 anahtar ve 17 ses tamponu kontrollerini, CI'a da Node çözümlemesini ekleyin."
+  },
+  {
+   "req": "T60 Worker blob kontrolü",
+   "status": "kismen",
+   "evidence": "file:// altındaki data: URL yolu 02_tek_dosya ile doğrulanıyor; http(s) altındaki blob: yolu sınanmıyor.",
+   "plan": "Tek dosyayı http üzerinden açarak blob yolunu sınayın; Firefox ve WebKit'te de koşun."
+  },
+  {
+   "req": "T61 GitHub Pages deploy kontrolü",
+   "status": "yok",
+   "evidence": "Yayından sonra duman testi ya da damga denetimi yok; elde yalnız Actions koşusunun sonucu var.",
+   "plan": "Deploy'dan sonra sitenin index.html'ini ve tek HTML'ini getirip derleme damgasının github.sha'ya eşit olduğunu ve sayfanın açıldığını denetleyen bir Playwright işi ekleyin."
+  },
+  {
+   "req": "T62 Feature branch'in production yayınına çıkmadığının doğrulanması",
+   "status": "kismen",
+   "evidence": "Yapılandırma (v0.4 pages.yml:8) ve Actions geçmişi (feature dallarında 0 koşu) var, ama otomatik bir doğrulama yok. Dispatch yolu ve varsayılan daldaki kural hâlâ açık (K-02, K-03).",
+   "plan": "Deploy işine ref koşulu ekleyin. CI'da, feature dalı koşusunda deploy işinin 'skipped' olduğunu ve deployments listesinde o sha'nın bulunmadığını denetleyen bir adım ekleyin."
+  }
+ ]
+}

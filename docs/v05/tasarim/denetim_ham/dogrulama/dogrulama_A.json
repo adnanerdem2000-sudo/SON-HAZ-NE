@@ -1,0 +1,173 @@
+{
+ "verdicts": [
+  {
+   "ref": "UC1",
+   "verdict": "dogrulandi",
+   "evidence": "v0.3 js/world/terrain.js:87-98 _localJob: geri çağrıyı _cb'den siliyor, yalnız `msg.t === 'tile'` dalında resolve ediyor; depth/grid ne çözülüyor ne reddediliyor. _pump 72-76 işçi yoksa (kurucu hatası 45 → workers=[]) her işi buraya yolluyor. Karşıt koşu (sim_v03.mjs, DK_ROOT=v03, yeniden çalıştırıldı): 15 sn sonra prepareSettled=false, gridSettled=false, depthPending=true, depthWin=null, 125 karo / 0 ağ. v0.4'te _localJob yok; _localPump/_localSlice (terrain.js:154-187) her işi generate() ile üretiyor (terrainGen.js:113-118). Karşıt Node /tmp/denetim_alan/karsit_A/v04_yedek_ve_ucgen.mjs (Worker tanımsız → terrain.js:70 _setFallback): prepare 350 ms'de bitti, 125/125 ağ, depthWin (res 512), 1024² ızgara 296 ms."
+  },
+  {
+   "ref": "UC2",
+   "verdict": "dogrulandi",
+   "evidence": "v0.3 terrain.js:95 yerel sonuç {t,key,seg,heights,local:true,maxH,minH}; pos/nor/col/idx yok. _apply 229'daki `if (m.local) return;` yüzünden ağ kurulmuyor. Karşıt koşu sim_v03: 125 karo, 0 ağ, 125'inde heights var (110'u hires değil). v0.4 terrain.js:337 yalnız `!m || !m.pos` denetimi yapıyor; yerel sonuç tileGen çıktısının kendisi (terrainGen.js:81). Karşıt Node: yedek kipte 125/125 ağ, heights yalnız 15 hires karoda. 12. belge satır 41: 02_arazi_yedek noworker kipi 12/12."
+  },
+  {
+   "ref": "UC3",
+   "verdict": "dogrulandi",
+   "evidence": "v0.3: terrain.js:261-262 zaman aşımsız Promise.all; 404'te onerror (48) yalnız log yazıyor. Karşıt koşu sim_v03_404 (v0.3): 12 sn sonra prepareSettled=false, 125 karo pending, 127 geri çağrı bekliyor. Yükleme %53'te kalıyor (main.js:105: 0,35+0,3·0,6). v0.4: zincir aynı (game.js:51 → terrain.js:378). requestDepth .catch (404) ile her zaman çözülüyor, prepare 45 sn'lik yarışla sınırlı (379-381). Karşıt koşu sim_fault2 (v0.4): 404 → 365 ms, hazır sinyali yok → 8,3 sn, yanıt yok → 20,4 sn; üçünde de 125 ağ, depthWin ve ızgara üretildi. v0.4 için 'kismen' hükmü yerinde.",
+   "correction": "Küçük satır düzeltmesi: v0.3'te prepare çağrısı game.js:45'te; 44. satır onProgress('Arazi örülüyor…')."
+  },
+  {
+   "ref": "SYS1",
+   "verdict": "dogrulandi",
+   "evidence": "terrain.js:64-149 (_initWorkers, _workerFailed, _onMsg, _finish, _enqueue, _pump). Testler bu yolları gerçekten sınıyor: 00_acilis.js:9 'Arazi işçileri çalışıyor'; 02_arazi_yedek badurl kipi (404 → onerror 73 → _workerFailed) ve crash kipi (işçi her işte fırlatır → onerror → yeniden kuyruk → yedek); 02_arazi_kurtarma.js:6 killWorkers ve :10 'Öksüz iş yok'. Kayıt: 12. belge 39-41 (Aşama 9, dört kip) ve 248-249 (son tur, kip yazılmamış). Faz 0 taban günlüğü 02_arazi_kurtarma: işçiler 3→0, fallback true, öksüz iş 0.",
+   "correction": "Nota eklenmeli: hazır sinyali gelmemesi (75), iş zaman aşımı (144) ve MAX_TRIES (97) dalları hiçbir depo testinde yok; bunlar yalnız Node'da sahte işçiyle sınandı."
+  },
+  {
+   "ref": "SYS2",
+   "verdict": "dogrulandi",
+   "evidence": "terrainGen.js:11-123. İşçi terrainWorker.js:3 ve 10'da runAll(generate(m)), yedek terrain.js:4 ve 172'de aynı generate'i gen.next() ile çalıştırıyor. 02_arazi_yedek :6 (karo), :7 (derinlik), :12 (hires) ve :17 (ızgara) adımları normal kipte işçide, noworker/badurl/crash kiplerinde ana iş parçacığında üretimi sınıyor (12. belge satır 41). Karşıt Node /tmp/denetim_alan/karsit_A/kara_yanlis_negatif.mjs: rectMayHaveLand=false olan 14 361 karoda 17×17 örneklemde en yüksek nokta −4,68 m; 0 m üstünde yanlış negatif 0."
+  },
+  {
+   "ref": "SYS3",
+   "verdict": "kismen",
+   "evidence": "terrainWorker.js:5-16. 'ready' (16) normal kipte her koşuda dolaylı işliyor: hazır sinyali gelmese işçiler 8 sn'de düşerdi, oysa Faz 0 günlüğünde ~50 sn sonra bile workers 3, fallback false. 'test-crash' (8) ?terrain=crash kipiyle sınanıyor (12. belge satır 41). Ancak crash kipi try bloğundan ÖNCE fırlatıyor, yani yalnız onerror yolunu sınıyor. Üretim istisnasında gönderilen {t:'error'} iletisi (terrainWorker.js:12-14) ve ana taraftaki karşılığı (terrain.js:108 → _finish reddi) hiçbir depo testinde tetiklenmiyor (tests/ altında grep sonuçsuz); bu yolu yalnız denetçinin Node sahte işçisi (C5) sınamış.",
+   "correction": "'ready' ve 'test-crash' için calisiyor_test_edilmis doğru; 'error' iletisi yolu için durum dogrulanmamis (depo testi yok)."
+  },
+  {
+   "ref": "SYS4",
+   "verdict": "kismen",
+   "evidence": "terrain.js:286-306 ve 366-385. prepare'in sonuçlanması test edilmiş: 02_arazi_yedek.js:13 (dört kip) ve 02_arazi_kurtarma.js:8. Odak koruması ise ayrıca sınanmıyor. :13'te hedef Tuz Pazarı (1900,950), kameradan ~2,0 km uzakta (oyuncu limanda, yaklaşık (2,220)); bu mesafe düşürme eşiğinin (R+2·TILE ≈ 3 180 m) içinde. Odak olmasa da oradaki kara karoları uzak LOD'da (seg 8) üretilir; :16 ise LOD düzeyine bakmadan yalnız 'ağ sayısı ≥6' denetliyor. Kurtarma:8'de kamera oyuncuyla birlikte hedefe geçtiğinden odağa gerek kalmıyor. 45 sn zaman aşımı dalı (380) da sınanmıyor: :13 zaman aşımında da true döner, :15'teki prepUnder45s yalnız yazdırılıyor.",
+   "correction": "prepare'in sonlanması: calisiyor_test_edilmis. Odak koruması (uzak kamerada karoların korunması, odakta LOD yükseltme) ve zaman aşımı dalı: dogrulanmamis."
+  },
+  {
+   "ref": "SYS5",
+   "verdict": "kismen",
+   "evidence": "terrain.js:388-407; ocean.js:245, 256-266 ve 273. Pencerenin üretilmesi (02_arazi_yedek :7) ve hazırlıkta yeni bölgeye taşınması (:14) dört kipte geçmiş (12. belge satır 41). _depthSeq (400: eski yanıtın yeniyi ezmemesi) ve odak etkinken uzak kamera isteğinin bastırılması (394-395) için ayrı bir test yok. :14 prepare biter bitmez okunuyor; bastırma olmasa bile kameranın yeni isteği pencereyi ancak bir iş süresi sonra geri taşıyacağından büyük olasılıkla yine geçer. ocean.setDepth'in dokuyu (uHeight/uHMin) gerçekten değiştirdiği de denetlenmiyor.",
+   "correction": "Temel pencere üretimi ve taşıma: calisiyor_test_edilmis. _depthSeq ve odak bastırması: dogrulanmamis."
+  },
+  {
+   "ref": "SYS6",
+   "verdict": "kismen",
+   "evidence": "terrain.js:422-448. heightAt'ın 436-437. satırları ağın (a,d,b)/(b,d,e) üçgenlemesiyle (terrainGen.js:65-69) aynı. Karşıt Node /tmp/denetim_alan/karsit_A/v04_yedek_ve_ucgen.mjs: 15 hires karoda 6 000 rastgele noktada heightAt ile çizilen üçgen düzlemi arasındaki en büyük fark 1,2e-12 m, yani kod doğru. Ancak atıf yapılan testler (02_arazi_yedek.js:11 ve :18, 02_tek_dosya.js:9) yalnız |oyuncu.y − heightAt| < 0,6 ölçüyor. Oyuncu zemini zaten physics.groundAt → terrain.heightAt'tan geldiği için bu ölçüm kendini doğruluyor. Ağla tutarlılığı ölçen bir depo testi yok; 07_dunya_kesif D02 yalnız heightAt örnekleri arasındaki sıçramaya bakıyor.",
+   "correction": "heightAt'ın çalışması test edilmiş, ama 'ağ üçgenlemesiyle tutarlı' özelliği depo testiyle korunmuyor (B-04 gerilemeye açık). Bu özellik için durum dogrulanmamis (yalnız Node'da doğrulandı)."
+  },
+  {
+   "ref": "SYS7",
+   "verdict": "dogrulandi",
+   "evidence": "game.js:40-69 (46 ve 66: localBudget; 51: prepare). Boot'un window.__ready'ye ulaşması için buildWorld'ün bitmesi gerekiyor. 00_acilis 6/6 ve 02_arazi_yedek :4 dört kipte geçmiş (12. belge 39-41, 248-249); Faz 0 taban koşusunda 00_acilis 6/6 (hazır olma süresi 8,8 sn).",
+   "correction": "Nottaki 'yedek kipte dünya ızgarası daha yavaş üretiliyor' etkisi ölçülemeyecek kadar küçük. Karşıt Node /tmp/denetim_alan/karsit_A/butce_izgara.mjs: 1024² ızgara bütçe 10 ms iken 290–321 ms, 40 ms iken 278–317 ms sürdü. Dilim süresini zaten üreteç parçası belirliyor (bütçe 10 ms'de en uzun dilim 15–17 ms; A-06)."
+  },
+  {
+   "ref": "SYS8",
+   "verdict": "kismen",
+   "evidence": "game.js:72-98. 00_acilis.js:3-4 yalnız menü arayüzünü ölçüyor (#menu.active ve ≥8 düğme; menu.js). 02_arazi_yedek.js:6 ise buildWorld/prepare'in ürettiği karoları sayıyor. setupMenuScene (gemi 160,470'te, gök 18.2'de kilitli, G.state='menu') ve menuUpdate (rota, 87. satırdaki kara/900 m kaçınması, kamera yörüngesi) için hiçbir doğrulama yok; tek kanıt sayfa hatasının 0 olması (duman testi). Menüye dönüş (game.stop → setupMenuScene) yalnız coop/06c_dort_oyuncu.cjs:38'de G.state olarak okunuyor.",
+   "correction": "Menü ekranının açılması test edilmiş; 3B menü sahnesi mantığı dogrulanmamis (yalnız dolaylı duman testi var)."
+  },
+  {
+   "ref": "SYS9",
+   "verdict": "dogrulandi",
+   "evidence": "main.js:157-167 → game.js:101-150. 00_acilis.js:5-8: :7 oyuncunun kurulduğunu doğruluyor; G.player ancak prepare'den sonra game.js:125'te kurulduğu için bu, start'ın bittiğini gösteriyor. :8'de 129 ağ (Faz 0 günlüğü). Kayıt: 12. belge satır 248 (6/6). :6'daki G.state==='playing' denetimi tek başına anlamsız (game.js:103'te prepare'den önce atanıyor). Oluşturucu/yuva arayüz yolu atlanıyor; denetçinin notu doğru."
+  },
+  {
+   "ref": "SYS10",
+   "verdict": "dogrulandi",
+   "evidence": "game.js:112-141. 08_kalicilik.js:30'da save.write + startGame({data: save.read}), ardından :31-40'ta ada/tehlike/gemi/kamp denetimleri; 12_kayit_dongusu.js:7'de art arda üç `await startGame(data)` döngüsü (hp, gemi, konum, kamp). Kayıt: 12. belge satır 250 (08 için 12/12, 12 için 4/4); Faz 0 taban koşusunda da 12/12 ve 4/4. Tüm kayıtlar liman yakınında (x −60…−51, z 120). Uzak adada kayıt (uzak noktada prepare) ve yedek kipte yükleme sınanmıyor; denetçinin notu doğru."
+  },
+  {
+   "ref": "REQ1",
+   "verdict": "dogrulandi",
+   "evidence": "terrainGen.js:113-118; terrain.js:165-180'de şerit 0 karoları, şerit 1 derinlik ve ızgara işlerini alıyor. 02_arazi_yedek noworker kipinde :6, :7 ve :17 adımları geçmiş (12. belge satır 41). Boot, initMapBase'in 1024² ızgarasını bekliyor (main.js:109), bu yüzden :4 'Sayfa hazır' adımı da ızgaranın üretildiğini gösteriyor. Karşıt Node: işçisiz 125 ağ, depthWin ve 1024² ızgara üretildi."
+  },
+  {
+   "ref": "REQ2",
+   "verdict": "dogrulandi",
+   "evidence": "Üretici tek: işçide terrainWorker.js:10 runAll(generate(m)) → postMessage(out), yedekte terrain.js:172-179 aynı generate'in r.value.out değeri. Çıktı terrainGen.js:81: {t,id,key,seg,pos,nor,col,idx,heights,maxH,minH}; etek 49-75, Uint16/Uint32 seçimi 63, LOD bilgisi seg (terrain.js:327). Tek fark aktarım biçimi (işçide transfer listesi, yerelde aynı nesne); tüketiciye etkisi yok. Bayt düzeyinde karşılaştıran test yok; denetçinin planı yerinde."
+  },
+  {
+   "ref": "REQ3",
+   "verdict": "dogrulandi",
+   "evidence": "terrain.js:336-355'te m.local denetimi yok; BufferGeometry ve Mesh kurulup group'a ekleniyor, eski geometri dispose ediliyor. 02_arazi_yedek noworker :6 (≥20 ağ) geçmiş (12. belge satır 41). Karşıt Node'da 125/125 ağ sahne grubunda."
+  },
+  {
+   "ref": "REQ4",
+   "verdict": "dogrulandi",
+   "evidence": "terrain.js:69-70 (kurucu hatası → _setFallback, işçi listesi boş), 73 (yükleme hatası → _workerFailed), 75 (8 sn içinde hazır sinyali yoksa devre dışı). Kurucu hatası yolu işlevsel olarak noworker kipiyle aynı sonuca varıyor (65: _setFallback, işçi yok). Karşıt Node'da Worker tanımsızken açılış hazırlığı 350 ms'de bitti. Tarayıcı kaydı: noworker, badurl ve crash kiplerinde 'Sayfa hazır' (12. belge satır 41).",
+   "correction": "Kaynak kod ve dist derlemesi için doğru. Ancak README'nin gösterdiği depo kökündeki tek dosya v0.3 (md5 42d9e9bb…, A-01) ve bu gereksinimi karşılamıyor; kurucu hatası kipinin depo testi de yok."
+  },
+  {
+   "ref": "REQ5",
+   "verdict": "dogrulandi",
+   "evidence": "terrain.js:357-362 _drop: ağı gruptan çıkarıp dispose ediyor, kuyruktaki işi iptal ediyor, t.req=null yapıp karoyu haritadan siliyor. 330'da geç sonuç t.req/tiles denetimiyle atılıyor; _finish (112-116) işi _jobs'tan siliyor. İşçideki ya da şeritteki iş bitince sonucu çöpe gidiyor. Karşıt koşu (sim_traverse.mjs yeniden çalıştırıldı): 1 612 geometri oluştu, 1 408'i dispose edildi, canlı 204 = karo sayısı, gruptaki öksüz ağ 0. Depo testi yok; denetçinin notu doğru."
+  },
+  {
+   "ref": "REQ6",
+   "verdict": "dogrulandi",
+   "evidence": "terrain.js:322-334: her istek kendi myReq belirtecini taşıyor ve 330'da `t.req !== myReq` ise sonuç atılıyor. 312 ve 323 kuyrukta bekleyen farklı LOD isteğini iptal ediyor. 333'teki catch pending'i yalnız güncel istekte sıfırlıyor (02 B-10: v0.3'te `.catch(() => { t.pending = 0; })` idi). İşçideki ya da şeritteki eski istek iptal edilmiyor ama sonucu uygulanmıyor (A-08). Depo testi yok."
+  },
+  {
+   "ref": "REQ7",
+   "verdict": "dogrulandi",
+   "evidence": "00_acilis.js:9 ve 02_arazi_yedek normal kip. Kayıt: 12. belge 248-249 (6/6 ve 12/12). Faz 0 taban günlüğünde workers 3, fallback false (02_arazi_yedek.log)."
+  },
+  {
+   "ref": "REQ8",
+   "verdict": "dogrulandi",
+   "evidence": "terrain.js:65 noworker kipi; 02_arazi_yedek '12/12 × 4' (12. belge satır 41, Aşama 9 = 3bfb7b8). Arazi dosyaları son kez 463d01f'de değişti (3bfb7b8'den önce), yani kayıt bugünkü arazi koduna ait. Ancak bu koşu 44d548c'de ve Faz 0 taban koşusunda (yalnız normal kip) yinelenmedi; denetçinin notu doğru."
+  },
+  {
+   "ref": "REQ9",
+   "verdict": "dogrulandi",
+   "evidence": "02_arazi_yedek :4 noworker, badurl ve crash kiplerinde geçmiş (12. belge satır 41). Harness window.__ready'yi 240 sn bekliyor (run.cjs:56), yani yükleme ekranı aşılmış. Karşıt Node: kurucu hatasında 350 ms, 404'te 365 ms, hazır sinyali yokken 8,3 sn, yanıt yokken 20,4 sn.",
+   "correction": "Kalan riskler listesindeki A-02 bu senaryoya bağlı değil: işçi yokken ızgara yerelde üretiliyor, red ancak gridGen istisnasıyla mümkün. Bu gereksinime bağlı gerçek kalan risk A-01 (kök tek dosya). İşçiden bağımsız ayrı bir açılış engeli de var: site verisi engelliyken boot save.profile()'da düşüyor (missed listesine eklendi)."
+  },
+  {
+   "ref": "REQ10",
+   "verdict": "dogrulandi",
+   "evidence": "02_arazi_yedek :6 (≥20 ağ) ve :16 (≥6 ağ) dört kipte, 02_arazi_kurtarma :8'de işçisiz 13 ağ (Faz 0 günlüğü). Karşıt Node'da 125/125 ağ sahne grubunda. Görünürlük piksel olarak değil ağ sayısıyla ölçülüyor; kabul için yeterli bir vekil."
+  },
+  {
+   "ref": "REQ11",
+   "verdict": "dogrulandi",
+   "evidence": "02_arazi_yedek :7, :14 ve :17 dört kipte geçmiş. ocean.js:245'te onDepth → setDepth (256-266). initMapBase (main.js:109, mapArt.js:115-122) boot sırasında bekleniyor. Karşıt Node: işçisiz derinlik penceresi (512²) ve 1024² ızgara üretildi."
+  },
+  {
+   "ref": "REQ12",
+   "verdict": "dogrulandi",
+   "evidence": "00_acilis.js:3-4; 12. belge satır 248 (6/6). Faz 0 günlüğü: 'Ana menü görünür → true', 'Menü düğmeleri → 8'."
+  },
+  {
+   "ref": "REQ13",
+   "verdict": "dogrulandi",
+   "evidence": "00_acilis.js:5-8: :7 start'ın bittiğini (oyuncu kuruldu) doğruluyor, :8'de 129 ağ (Faz 0 günlüğü). :6'daki G.state denetimi zayıf (game.js:103'te prepare'den önce atanıyor). Arayüz yolu (menu.js:95 slotScreen → oluşturucu → startGame) sınanmıyor; denetçinin notu doğru."
+  },
+  {
+   "ref": "DOC1",
+   "verdict": "dogrulandi",
+   "evidence": "tests/README.md:33-35 depo kökündeki dosyayı gösteriyor. Kökteki DenizKorsanlari-SonHazine.html'in md5'i (42d9e9bb1387883fb57307ee087d27ab) v0.3 deposundaki dosyayla aynı. Güncel derleme dist/ altında (md5 56b2d1af…) ve dist/ .gitignore'da. 02_tek_dosya.js:1-2 ile Faz 0 taban koşusu (run_baseline.sh) dist dosyasını kullanıyor. README.md:15-17 de aynı bayat kök dosyayı öneriyor."
+  }
+ ],
+ "missed": [
+  {
+   "title": "Site verisi (localStorage) engelliyken oyun hiç açılmıyor: boot, save.profile() ve menu.render'da SecurityError ile düşüyor; 'kayıtsız oyna' yedeği ölü kod (v0.3 ve v0.4)",
+   "file": "js/main.js:82-93, 114, 388-392; js/core/save.js:38-45, 61-72; js/ui/menu.js:57, 66",
+   "func": "boot / save.profile / save.read / save.latest / menu.init → menu.render",
+   "rootCause": "save.js'deki safeParse yalnız JSON.parse'ı sarıyor; localStorage özelliğine erişim ve getItem çağrısı try dışında kalıyor (save.js:40, 43, 71). Tarayıcı site verisini engellediğinde window.localStorage erişimi SecurityError atar. boot, try içindeki settings.load()'dan hemen sonra main.js:83'te save.profile()'ı çağırıyor; istisna boot()'tan dışarı çıkıyor. main.js:93'teki save.available() denetimi try'lı ve 'kayıt yapılamayacak' uyarısıyla devam etmeyi amaçlıyor, ama akış oraya hiç ulaşmıyor. profile() düzeltilse bile menu.init (main.js:114) → render → save.latest → save.read (menu.js:66, save.js:40) aynı istisnayı atar. startOnlineHost/Guest'teki save.read çağrıları (main.js:178, 191) ve her menu.show(true) de korumasız.",
+   "impact": "Çerezleri ya da site verisini engelleyen oyuncuda (Chrome'da 'siteler veri kaydedemez', Firefox/Safari'de 'tüm çerezleri engelle'), allow-same-origin içermeyen sandbox iframe'de veya kısıtlı bir gömme ortamında oyun tamamen açılmaz. Yükleme ekranında 'Oyun başlatılamadı: Failed to read the 'localStorage' property… WebGL destekli güncel bir tarayıcı gerekiyor' yazar; mesaj yanıltıcıdır. Kayıtsız tek oyunculu oynamak mümkünken engelleniyor. Etkilenen oyuncu için tam engel, ama yapılandırma nadir; bu yüzden orta. Sürüm: v0.3 ve v0.4'te aynı (save.js profile 63-65 / 70-72). Bilinen kimlik yok (02, 11 ve denetim_ham'da geçmiyor).",
+   "priority": "orta",
+   "fix": "save.js'e tek bir güvenli erişimci ekle: `const LS = () => { try { return window.localStorage; } catch { return null; } }`. read/list/latest/profile/write/remove/exportAll/importAll içindeki bütün getItem/setItem/removeItem/key/length çağrılarını try içine al; depo yoksa null ya da boş liste dönsün. boot'ta save.available() en başa alınsın ve G.noStorage işaretlensin; menüde ve kayıt denemesinde 'Tarayıcı kayda izin vermiyor' bildirimi gösterilsin. boot().catch mesajı hata türüne göre ayrılsın (A-04 ile birlikte).",
+   "repro": "Node: `DK_ROOT=/home/user/SON-HAZ-NE-w2 node --import /tmp/denetim_alan/register.mjs /tmp/denetim_alan/karsit_A/depolama_engelli.mjs` → settings.load tamam, save.profile 'ATTI: SecurityError', save.available false, save.latest ve save.list 'ATTI: SecurityError'. DK_ROOT=v03 ile de aynı sonuç. Tarayıcıda: Chrome → Site ayarları → localhost:8080 için 'Çerezler ve site verileri'ni engelle → index.html'i aç → ekran hata metninde kalır, window.__ready gelmez.",
+   "acceptance": "Playwright'ta context.addInitScript ile `Object.defineProperty(window,'localStorage',{get(){throw new DOMException('Access is denied','SecurityError')}})` kurulup index.html açıldığında: window.__ready=true olur, ana menü görünür, DK.handlers.startGame({kind:'solo',slot:0}) ile oyun başlar, kayıt denemesi 'kayıt yapılamıyor' bildirimi verir; sayfa hatası 0 ve SecurityError konsol hatası 0. Normal açılış, 00_acilis ve 08_kalicilik değişmeden geçer."
+  },
+  {
+   "title": "Arazi LOD ölçeği açılış sırası yüzünden yanlış: kayıtlı 'Görüş mesafesi' açılışta araziye uygulanmıyor, oyun içinde herhangi bir ayar değişince düşük/orta kalitenin LOD indirimi kayboluyor (yalnız v0.4)",
+   "file": "js/core/settings.js:63-65; js/main.js:97, 106; js/game/game.js:45; js/world/terrain.js:247, 263, 285; js/ui/settingsPanel.js:12",
+   "func": "settings.apply / boot / game.buildWorld → terrain.init / terrain._wantSeg / terrain.update",
+   "rootCause": "boot, settings.apply()'ı (main.js:97) terrain.init'ten önce çağırıyor (main.js:106 → game.js:45). apply'ın ilk çağrısındaki `terrain.baseLod = terrain.lodScale || 1`, lodScale henüz tanımsız olduğu için baseLod'u kalite ölçeği yerine kalıcı olarak 1 yapıyor. Ardından terrain.init (terrain.js:247) lodScale'i yalnız kaliteye göre (0,7 / 0,85 / 1) yeniden yazıyor ve görüş mesafesi çarpanını siliyor. Sonraki her apply (settingsPanel.js:12, yani herhangi bir ayar değişimi) lodScale = 1 × (0,7 + 0,3·görüş) yazıyor; kalite çarpanı kayboluyor. Bu kod 8616d08'de (02 A11 düzeltmesi) eklendi; 03. belge satır 72 'görüş mesafesi ayarı etkin', 10. belge satır 189 'görüş mesafesi anında uygulanır' diyor.",
+   "impact": "(1) Kayıtlı görüş mesafesi açılışta arazi akış ve LOD yarıçaplarına (terrain.js:263, 285) hiç uygulanmıyor; yalnız camera.far değişiyor, yani 02 A11 açılışta hâlâ açık. (2) Düşük kalitedeki oyuncu oyun içinde ses gibi herhangi bir ayarı değiştirince lodScale 0,7'den 0,79–1,0'a çıkıyor: hires halkası 266 → 380 m, en dış halka 1 890 → 2 700 m. Karo alanı yaklaşık iki katına çıkıyor, üçgen ve işçi yükü artıyor; en zayıf cihazda FPS düşüyor. Görüşü %30'a indirmek bile ölçeği 0,7'den 0,79'a yükseltiyor. Orta kalitede 0,85 → 0,79–1,0. Durum sayfa yenilenene kadar sürüyor. 10. belgedeki 'Düşük' ölçümleri görüş %30'un arazi etkisini içermiyor. Aynı sıra sorunu gölge haritasında da var (kod okumasıyla): apply'ın 55-60. satırları güneş ışığı henüz kurulmadan çalışıyor, sky.js:137-139 kaliteye göre 2048 seçiyor, bu yüzden 'Gölgeler: orta' açılışta uygulanmıyor. Sürüm: yalnız v0.4 (v0.3'te apply yalnız camera.far yazıyordu). Bilinen kimlik: 02 A11'in eksik düzeltmesi.",
+   "priority": "orta",
+   "fix": "baseLod'u terrain.init yazsın (kalite ölçeği) ve init'te de lodScale = baseLod × (0,7 + 0,3·settings.v.viewDistance) hesaplansın. settings.apply'daki `baseLod === undefined` dalı kaldırılsın (init'ten önce lodScale'e dokunmasın) ya da boot'ta buildWorld'den sonra settings.apply() bir kez daha çağrılsın. sky.build gölge haritası boyutunu settings.v.shadows'tan alsın.",
+   "repro": "Node: `DK_ROOT=/home/user/SON-HAZ-NE-w2 node --import /tmp/denetim_alan/register.mjs /tmp/denetim_alan/karsit_A/lod_ayar_sirasi.mjs` (kalite 'low' ve görüş 0,3 kayıtlı; boot sırası taklit ediliyor) → apply sonrası baseLod 1, lodScale 0,79; terrain.init sonrası lodScale 0,7 (beklenen 0,553); ardından görüş 1 ile apply → lodScale 1 (beklenen 0,7). Tarayıcıda: Ayarlar'da Grafik kalitesi Düşük, Görüş %30 → sayfayı yenile → DK.terrain.lodScale 0,7; Ayarlar'da ses kaydırıcısını oynat → 0,79; görüşü %100 yap → 1.",
+   "acceptance": "Kalite düşük ve görüş %30 iken açılışta DK.terrain.lodScale ≈ 0,553 olur ve DK.terrain.stats().tiles görüş %100'e göre belirgin biçimde azdır. Oyun içinde sesi değiştirmek lodScale'i değiştirmez; görüş %100'e çekilince 0,7 olur; yüksek kalite + %100 → 1. Gölgeler 'orta' iken açılışta DK.sky.sun.shadow.mapSize.x === 1024. Yeni bir senaryo (ör. 18_ayar_lod.js) bu değerleri hem açılışta hem sayfa yenilendikten sonra denetler."
+  }
+ ]
+}

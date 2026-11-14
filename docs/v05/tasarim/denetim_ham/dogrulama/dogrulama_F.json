@@ -1,0 +1,107 @@
+{
+ "verdicts": [
+  {
+   "ref": "F-01",
+   "verdict": "dogrulandi",
+   "evidence": "Zincir kodda birebir doğrulandı. Konuk kaydı quests.save() içeriyor (main.js:203). Katılımda guest.quests yükleniyor (main.js:193) ve quests.start flags=d.flags yapıyor (quests.js:79). applyWorld aşamayı ev sahibinden alıyor ama bayrakları Object.assign ile birleştiriyor (main.js:336). Konuk advance() yapınca netStory tüm bayrakları taşıyor (quests.js:134) ve ileti ev sahibine gidiyor (net.js:174). Ev sahibi her true bayrağı aşama denetiminden ÖNCE yazıyor (net.js:329, denetim :330), bu yüzden reddedilen iletiler de bayrak sızdırıyor. gunluk hiçbir yerde false yapılmıyor (yalnız quests.js:90/297/305, net.js:568, main.js:336). 2→3 geçişi yalnız takeJournal'da (quests.js:316), o da yalnız _provide'dan (297-301) çağrılıyor; panels.js:97 'Günlüğü oku' takeJournal'ı çağırmıyor, yalnız varlığını sınıyor. Ev sahibinin 'story' işleyicisi journalMesh'i güncellemiyor (net.js:326-332; güncelleyenler yalnız istemci işleyicisi net.js:568 ve applyWorld) → kitap görünür kalıyor, yeniden yüklemede quests.js:90 gizliyor. Parça sayacı bayraklardan hesaplanıyor (journal.js:114) → 2/4. chestSold satan konukta yayılıyor (shop.js:150, :160), bu yüzden eski ilkHazineBulundu bayrağıyla advance(2) de mümkün. v0.3'te konuk kaydı yalnız envanter (v0.3 main.js:191, :201) ve konuğun netStory'si yutuluyor (v0.3 net.js:146) → hata yalnız v0.4'te. 'kritik' öncelik savunulabilir: kayda yazılan, oyun içinden geri alınamayan kalıcı bir hikâye kilidi.",
+   "correction": "Ek bilgi: Sızan ilkHarita bayrağı ev sahibinde Nevra'nın ilk harita seçeneğini de gizliyor (quests.js:404). Ancak bu kilit kalıcı değil: yeniden yüklemede quests.js:91 storySites=['marti_1'] kurduğu için Martı haritasız da kazılabiliyor. Bu ayrıntı önceliği değiştirmiyor."
+  },
+  {
+   "ref": "F-02",
+   "verdict": "kismen",
+   "evidence": "Mekanizma doğru. morvanSpawn ve kizilSpawn kalıcı flags nesnesinde tutuluyor (quests.js:277, :284) ve save() ile kayda yazılıyor (quests.js:123). Yüklemede bayrak geri geliyor (quests.js:79), ama enemies.start düşman listesini boşaltıyor (enemies.js:1311-1322; v0.3'te enemies.js:1290-1298 aynı). Bayrağı sıfırlayan tek koşul 'boss yok ve oyuncu 200 m'den uzak' (quests.js:282, :290). Kemik Adası yarıçapı 135 m ve merkezi harabeyle aynı nokta (-520,-440) (worldData.js:21-23); kamp (-40,-228). Kayıt yolları: 120 sn'de bir otomatik kayıt (game.js:218), menüye dönüş (main.js:218), beforeunload ve visibilitychange (main.js:382-385). saveNow savaş durumuna bakmıyor (main.js:199-214). v0.3 quests.js aynı kodu taşıyor.",
+   "correction": "(1) 'Oyuncu ölüp menüden Devam Et derse' yolu yanlış. Ölüm ekranı yalnız 'Gemide uyan' ve 'Kırlangıç Limanı'nda uyan' seçeneklerini sunuyor (menu.js:360-366); oyun yeniden yüklenmiyor. Grubu olmayan boss enemies.list'te canlı kalıyor ve oyuncu dönünce yerinde duruyor. Hata yalnız bayrak true iken boss alanının 200 m içinde alınmış bir kayıt yeniden yüklenince çıkar: savaş sırasındaki otomatik kayıttan sonra menüye çıkış ya da sekmenin kapanması, veya adaya yakın gemide uyanıp oyundan çıkma. (2) Öncelik 'orta' olmalı: ilerleme kaybı yok; oyuncu 200 m uzaklaşınca (örneğin limana dönünce) bayrak kendiliğinden sıfırlanıyor. Bu geçici ve ipucusuz bir yumuşak kilit. Kök neden ve önerilen çözüm doğru."
+  },
+  {
+   "ref": "F-03",
+   "verdict": "dogrulandi",
+   "evidence": "STORY dizisi 6 girdiden oluşuyor (quests.js:24-31) ve 'yitik' aşamasının tetikleyicisi yok; update yalnız 3. ve 4. aşamayı işliyor (quests.js:276-290). quests 'bossDefeated' olayını dinlemiyor; tek dinleyici progress.js:77. storyTarget st≥5 için null döndürüyor (hud.js:452-459; return satır 459'da, 458'de değil). Mektup ve Tuzla metni (panels.js:98, quests.js:358) Volkanik Dev ile Derinlik Yılanı'nın unvanlarıyla eşleşiyor (bosses.js:26, :29). Bölgeler açık (archipelago.js:11, :13); Node çıktısında BOSS_SITES volkanik_dev (7700,-900) ve derinlik_yilani (1300,-8080) olarak var. Final için oyun nesnesi yok: 'legend' kademesi yalnız items.js:104 ve treasure.js:22'de tanımlı, hiçbir spawnChest çağrısı bu kademeyi kullanmıyor. journal.js:116 oyuncuya 6–10. aşamaların sonraki sürümde geleceğini zaten söylüyor. v0.3'te aynı; quests.js'deki tek fark aşçı seçeneği. 'yuksek' öncelik ve 'eksik' niteliği uygun."
+  },
+  {
+   "ref": "UC1",
+   "verdict": "dogrulandi",
+   "evidence": "v0.3: README.md:104, docs/14_YOL_HARITASI.md:13, docs/13_BILINEN_HATALAR.md:8 (#1), journal.js:115. v0.4: README.md:130, docs/14 dosyası v0.3 ile birebir aynı (diff boş), docs/13:8 aynı (dosyada yalnız #7 satırı değişmiş), journal.js:116. v0.4'ün kendi denetim belgeleri (denetim/14, 11 ve 16) hikâye, görev ve 6–10 aşamalarını hiç anmıyor (grep boş). İki sürüm için de 'dogru' hükmü yerinde.",
+   "correction": "Küçük düzeltme: 'README v0.3'ten beri güncellenmemiş' ifadesi doğru değil. v0.4 README'sinde kontroller (C ve N tuşları) güncellenmiş, 'Dalış, balıkçılık ve deniz ekipmanı' ile 'Avcılık ve toplama' bölümleri eklenmiş (diff, README.md:33-79). Güncellenmeyen yalnız sürüm satırı (README.md:8 'Bu sürüm: 0.3') ve 'Henüz olmayanlar' paragrafı (README.md:130). Hükümler değişmez."
+  },
+  {
+   "ref": "UC2",
+   "verdict": "dogrulandi",
+   "evidence": "bosses.js quests modülünü içe aktarmıyor (1-18). _check aşama koşulu içermiyor (bosses.js:1077-1100); legendary bosslar sabit alanlarda doğuyor: BOSS_SITES archipelago.js:321-322'de kuruluyor (Node çıktısı: derinlik_yilani, volkanik_dev, lanetli_amiral, kraken), Taş Muhafız islands.js:866'da ekleniyor. Tetik koşulları: Taş Muhafız için tapınak çözülmüş olmalı ve oyuncu 26 m içinde olmalı (bosses.js:1088); Volkanik Dev için I.r×0,24 = 540×0,24 ≈ 130 m; deniz bossları için 240 m ve oyuncu gemide ya da yüzüyor olmalı. Yenilen boss işaretleniyor (bosses.js:1067) ve yüklemede tekrar doğmuyor (1050). Hikâye bossları hikâyeye bağlı (quests.js:175-189, :276-290). Gerçekten rastgele olan tek boss benzeri karşılaşma düşman korsan gemisi olayı (events.js:100-114, :251-276). v0.3→v0.4 bosses.js farkında hikâyeyle ilgili satır yok. 'kismen' / 'kismen' hükmü doğru."
+  },
+  {
+   "ref": "SYS1",
+   "verdict": "kismen",
+   "evidence": "05_dusman_ai.js:47 Kızıl Hançer'i ve Morvan'ı doğrudan doğurup hasarla evre eşiklerini sınıyor: Kızıl %50 hasarda summoned=1 ve 'summon' durumuna geçiyor; Morvan %66'da ve %33'te iki kez çağırıyor ve %33'te öfkeleniyor. Kayıtlar: denetim/07:25 #16 GEÇTİ; denetim/12'de 05_dusman_ai 18/18 (satır 45, 249). Kod enemies.js:111-116 ve :138-143 ile uyumlu.",
+   "correction": "Sınanan yalnız evre eşikleri. 'F-05 Çağırma hazırlığı hafif vuruşla bozulmaz' kontrolü (05_dusman_ai.js:24) bir haydutla yapılıyor (window._e1, satır 8'de 'haydut'), bossa özgü değil. Dövüşün geri kalanı hiç sınanmamış: Morvan'ın 'rise' doğuşu, dönen saldırısı, Kızıl'ın tabancası ve duman bombası, oyuncuya karşı tam savaş. denetim/12 #10 'Boss savaşı' KISMİ (satır 19), denetim/11 #12 Açık (satır 16). Doğru durum: evre eşikleri için calisiyor_test_edilmis, 'dövüş davranışı'nın bütünü için dogrulanmamis."
+  },
+  {
+   "ref": "SYS2",
+   "verdict": "kismen",
+   "evidence": "P08 (13_donma.js:59-72) levyeleri gerçek inter eylemleriyle 6 permütasyonda çeviriyor ve şunları denetliyor: kapının açılması, boss koşulu (state.done), yeniden kurulum, kayıt/yükleme ve eski kayıt biçiminin onarımı. 08_kalicilik.js:10 ve :32 tapınak durumunun kayda girip geri geldiğini yapay bir durumla sınıyor. denetim/12'de 08_kalicilik 12/12 (satır 250); 13_donma son koşuda 9/9 (satır 254; 8/8 daha önceki bir koşu, satır 84). Kod islands.js:788-867 ile uyumlu; yanlış sırada seq sıfırlanıyor (846).",
+   "correction": "Tek oyunculu mekanizma ve kalıcılık test edilmiş, ama sistemin bütünü için doğru durum 'calisiyor_gelistirilmeli'. (1) Co-op'ta tapınak durumu hiç eşlenmiyor. 'inter' türü net.js:46'daki KNOWN listesinde var ama _hostData'da işleyicisi yok; levye eylemleri yalnız yerelde çalışıyor (islands.js:841-847) ve ada durumu için bir ağ iletisi yok. Ev sahibinin _check'i kendi islands.temples durumuna bakıyor (bosses.js:1088): yalnız konuk çözerse Taş Muhafız doğmaz; ev sahibi çözerse konuğun yerel kapı çarpıştırıcısı (islands.js:810) kapalı kalır ve konuk avluya giremez. (2) denetim/11 #35 açık (satır 39). (3) denetim/12 #7 hâlâ KISMİ (satır 16): yazıttaki ipucunun doğruluğu, sunak ödülü ve Taş Muhafız'ın doğuşu uçtan uca sınanmadı."
+  },
+  {
+   "ref": "SYS3",
+   "verdict": "kismen",
+   "evidence": "Node ile sayıldı (salt-okur kopya: /tmp/denetim_alan/karsit_hikaye/js). EXTRA_ISLANDS 67 (23 özel + 44 yordamsal), 6 çekirdekle birlikte toplam 73 ada. Bölge dağılımı: merkez 13, buzul 12, tropik 13, volkan 10, col 11, hayalet 8. EXTRA_POIS'te 5 liman var (tuz_pazari, kuzeyfener, zumrut_koy, kul_limani, kumsaati); Hayalet Denizleri'nde liman yok. Özel ada listesi archipelago.js:39-177 ile birebir. archipelago_sabit.mjs ada sayısının (satır 15) ve BOSS_SITES'ın (satır 26-31) birebir aynı kalmasını istiyor; bu yüzden yeni bir ada ya da boss alanı eklemek testi bozar. denetim/12'de 07_dunya_kesif 10/10, archipelago_sabit GEÇTİ.",
+   "correction": "Testler dünyanın verisini ve geometrisini sınıyor. 07_dunya_kesif etiketleri dünya boyutu, kıyı dikişi, iskeleye sudan çıkış, adacık özellikleri ve liman barınağını kapsıyor; archipelago_sabit v0.3 sabitiyle birebirliği denetliyor. Bölgelerin oynanabilir içeriği test edilmiyor: efsanevi boss karşılaşmaları denetim/11 #12'de 'Açık (test)', denetim/12 #10'da KISMİ; Taş Muhafız co-op'ta eşlenmiyor. '6–10 için hazır' ifadesine dayanak olacak bir test kaydı yok. Doğru durum: veri ve geometri için calisiyor_test_edilmis, bölge içerikleri ve boss karşılaşmaları için dogrulanmamis."
+  },
+  {
+   "ref": "REQ1",
+   "verdict": "kismen",
+   "evidence": "İçerik korunuyor: quests.js'de v0.3→v0.4 farkı yalnız aşçı seçeneği (379-398); NPC'ler port.js:321-332'de, hikâye bossları enemies.js:111-116 ve :138-143'te.",
+   "correction": "Durum 'kismen' olmalı. v0.4'teki F-01 gerilemesi co-op'ta 2→3 geçişini kalıcı olarak kilitleyebildiği için ilk 5 aşama v0.4'te işlevsel olarak tam korunmuyor. Bunu koruyan etiketli bir test de yok: tests/scenarios/v03/g2b.js, g2c.js ve g2d.js 0–2. aşamaları yürüyor ama hiç 'expect' içermiyor (0 beklenti); 16_kosu_poz_ganimet.js:65-72 yalnız aşçı seçeneğini sınıyor."
+  },
+  {
+   "ref": "DOC1",
+   "verdict": "dogrulandi",
+   "evidence": "Kül Adaları ve Buzul Denizi bölgeleri tanımlı (archipelago.js:11, :13) ve özel adaları var: Buzul'da archipelago.js:70-93 (Kuzeyfener, Buzdişi, Kurt Adası, Derin Yarık), Kül'de 118-133 (Kül Limanı, Ateş Dağı, Obsidyen). Bunlar v0.3 sabitiyle aynı (archipelago_sabit). Aynı derlemede journal.js:116 'Buzul, Cangıl, Kül Adaları, Kızıl Kum Kıyıları ve Hayalet Denizleri keşfedilebilir' diyerek quests.js:30 ile doğrudan çelişiyor. Ayrıca metindeki 'Volkanik Adalar' ve 'Buz Krallığı' adları, bölgelerin oyundaki adlarıyla ('Kül Adaları', 'Buzul Denizi') uyuşmuyor."
+  },
+  {
+   "ref": "DOC2",
+   "verdict": "dogrulandi",
+   "evidence": "denetim/09:20-22 'hikâye aşaması ve bayraklar her katılımda ev sahibinden gelir' diyor. Aşama ev sahibinden geliyor (main.js:336), ama bayraklar konuk kaydıyla birleştiriliyor: main.js:193 → quests.js:79 → main.js:336 (Object.assign). Bu bayraklar net.js:329 üzerinden ev sahibine de sızıyor. İfade iki parçalı ve bayrak kısmı yanlış olduğu için bütün olarak 'yanlis' hükmü doğru. Belgenin kendisi de bu yolun ölçülmediğini yazıyor."
+  },
+  {
+   "ref": "DOC3",
+   "verdict": "kismen",
+   "evidence": "B05 v0.3 kodunu anlatıyor: v0.3 net.js:146'da relay yalnız ev sahibinden yayın yapıyor. v0.4'te konuğun advance iletisi ev sahibine gidiyor (net.js:174) ve ev sahibi '+1 aşama' kuralıyla uyguluyor (net.js:326-332). Değişiklik denetim/03'te kayıtlı değil (story, hikâye, B05 ve netStory için grep boş) ve co-op senaryolarında 'story' kontrolü yok.",
+   "correction": "B05'in ana iddiası (aşama ve bayrakların advance ile ev sahibine ulaşmaması) v0.4'te giderilmiş, ama iki alt iddia v0.4'te hâlâ geçerli. (1) advance() dışındaki konuk bayrak değişimleri ev sahibine gitmiyor; örneğin Nevra'dan alınan ilk harita bayrağı flags.ilkHarita (quests.js:404). netStory yalnız quests.js:134 ve :317'de yayılıyor. (2) Konuk günlüğü alınca ev sahibinde kitap görünür kalıyor, çünkü ev sahibinin 'story' işleyicisi journalMesh'i güncellemiyor (net.js:326-332; güncelleyen yalnız net.js:568 ve main.js:336). B05'in 'ikinci kez alınabilir' kısmı ise artık geçersiz, çünkü gunluk bayrağı birleşiyor. Doğru hüküm: 'kismen gecerli'."
+  }
+ ],
+ "missed": [
+  {
+   "title": "Co-op: konuğun 'öldür' türü yan görevleri (Kemiklerin Huzuru, Kızıl Tehdit) hiç ilerlemiyor; v0.4'te kalıcı konuk kaydı bu görevlerle 4 görev yuvasını kilitliyor",
+   "file": "js/game/quests.js; js/game/enemies.js; js/net/net.js; js/main.js",
+   "func": "quests._wire 'enemyKilled' (quests.js:171-191) ve 'treasureFound' (138-142), quests.acceptSide (236-244), Enemy.hurt konuk dalı (enemies.js:358-361), Enemy.die (enemies.js:458-484), enemies.update (1604-1605), handlers.saveNow konuk dalı (main.js:203), startOnlineGuest (main.js:193)",
+   "rootCause": "enemyKilled yalnız die() çalışan istemcide, yani ev sahibinde yayılıyor (enemies.js:483). Konukta hurt() hasarı netHurtEnemy ile ev sahibine gönderip çıkıyor (enemies.js:358-361); konuk düşmanları yalnız _interp ile izliyor (enemies.js:1604-1605). Ev sahibinden konuğa öldürme bilgisi taşıyan bir ileti yok; net.js'de yalnız XP iletiliyor (netXp, satır 149). Bu yüzden konukta quests._side('kill', …) ve stats.kills hiç işlenmiyor. treasureFound da yalnız ev sahibinde çözülüyor (treasure.js:207-211, 237). acceptSide görev türüne bakmıyor, görevi bırakma seçeneği yok ve en çok 4 yan görev alınabiliyor (quests.js:237). v0.4 konuk kaydı yan görevleri saklıyor (main.js:193, :203).",
+   "impact": "Konuk panodan 'Kemiklerin Huzuru'nu (5 iskelet) ya da 'Kızıl Tehdit'i (4 haydut) alırsa, son vuruşu kendisi yapsa bile ilerleme 0'da kalır ve ödül hiç gelmez. v0.4'te görev konuk kaydında kalıcı olduğu için her yeni oturumda yuvayı işgal etmeye devam eder; bırakma seçeneği olmadığından yuvalar dolar. Konuğun 'Kemik Kıran', 'Morvan'ın Sonu', 'Hançeri Kıran' ve 'İlk Kürek' başarımları da hiç açılmaz. Hata v0.3'te de var (orada oturumla sıfırlanıyordu); v0.4'te kalıcılıkla ağırlaştı. denetim/02 ve 11'de kaydı bulunamadı.",
+   "priority": "orta",
+   "fix": "Ev sahibi die() sonrasında öldürme bilgisini yaysın: {t:'kill', type, by} iletisi öldürene, tercihen tüm tayfaya gitsin; konuk bunu alınca stats.kills ve _side('kill') işlesin. Kazı yapan konuğa {t:'found', site, tier} gönderilsin. Korsan Defteri'ne 'görevi bırak' seçeneği eklensin ve kalıcı kayıttaki tamamlanamayan görevler bir göçle temizlensin.",
+   "repro": "2 oyunculu co-op kurun. Konuk limandaki panodan 'Kemiklerin Huzuru'nu alsın ve Kemik Adası'nda 5 iskeleti son vuruşu kendisi yaparak öldürsün. Konukta DK.quests.side.find(q=>q.id==='iskelet_av').progress === 0 kalır; ev sahibinde DK.quests.stats.kills.iskelet ≥ 5 olur. Konuk çıkıp yeniden katılınca görev hâlâ listededir (dksh.guest.0 → quests.side).",
+   "acceptance": "Yeni co-op senaryosu (örn. coop/06e): konuk öldür türü görevi alır ve son vuruşu kendisi yapar → görev 5/5 tamamlanır, ödül bir kez verilir. Konuk kazı yapınca konukta stats.treasures artar. Görev defterden bırakılabilir ve kayıt/yükleme sonrasında listede görünmez."
+  },
+  {
+   "title": "Co-op: hikâye bossu tetikleyicisi yalnız ev sahibinin konumuna bakıyor; harabeye ya da kampa yalnız giden konukta sahte bir Morvan/Kızıl Hançer doğup anında siliniyor",
+   "file": "js/game/quests.js; js/game/enemies.js",
+   "func": "quests.update hikâye tetikleyicileri (quests.js:246-247, 275-290), enemies.spawnBoss (enemies.js:1331-1336), enemies.applySnapshot (enemies.js:1650-1660)",
+   "rootCause": "quests.update her istemcide çalışıyor ve yalnız yerel G.player konumuna bakıyor (quests.js:247, 276, 283). Ev sahibi konukların konumunu hiç denetlemiyor; oysa efsanevi bossların _check'i G.remotes'u da tarıyor (bosses.js:1080). enemies.spawnBoss'ta ev sahibi denetimi yok, bu yüzden konukta yerel kimlikli bir boss yaratılıyor. Bu boss ev sahibinin listesinde olmadığı için bir sonraki düşman anlık görüntüsünde (net.js:741, iki anlık görüntüde bir) applySnapshot tarafından siliniyor.",
+   "impact": "Konuk tek başına Kemik Harabeleri'ne (4. aşamada kampa) giderse 'Yer sarsılıyor… İskelet Kaptan Morvan uyandı!' bildirimi ve boss sesi çıkar, macera günlüğüne 'karşılaşıldı' yazılır (time.js:56), boss bir an görünüp kaybolur. Konuğun yerel morvanSpawn bayrağı 200 m uzaklaşana kadar true kalır. Gerçek boss ancak ev sahibi 45/50 m içine gelince doğar; yani 3. ve 4. aşamalar konuk tarafından ilerletilemez ve oyuncu hikâyenin bozulduğunu düşünür. v0.3'te ve v0.4'te aynı.",
+   "priority": "orta",
+   "fix": "Hikâye tetikleyicilerini yalnız ev sahibinde çalıştırın (if (G.online && !G.isHost) return) ve [G.player, ...G.remotes.values()] konumlarından herhangi biri yarıçap içindeyse bossu doğurun. enemies.spawnBoss konukta hiçbir şey yaratmasın; bildirim ev sahibinin 'bossSpawn' yayınıyla herkese gitsin. Not: denetçinin orta düzey F-04/F-05 maddelerinden biri bunu kapsıyorsa birleştirilmeli.",
+   "repro": "2 oyunculu co-op kurun; ev sahibinde DK.quests.advance(3) çalıştırın (yayınla konuk da 3. aşamaya geçer). Ev sahibi limanda kalsın, konuk (-520,-440)'a ışınlansın. Konukta bildirim çıkar, DK.enemies.list kısa süre iskelet_kaptan içerir ve yaklaşık 0,2 sn sonra boşalır. Ev sahibinin DK.enemies.list'inde iskelet_kaptan yoktur ve DK.quests.flags.morvanSpawn false kalır.",
+   "acceptance": "Co-op testi: ev sahibi uzaktayken konuk 45 m içine girer → 2 sn içinde ev sahibinde iskelet_kaptan doğar ve konuk aynı kimliği görür; konukta hiçbir yerel boss kimliği oluşmaz. Aynı kontrol 4. aşama ve Kızıl Hançer için de geçer."
+  },
+  {
+   "title": "Co-op 1. aşama: Martı sandığını konuk satarsa hikâye ilerlemiyor ('ilkHazineBulundu' yalnız ev sahibinde, 'chestSold' yalnız satan istemcide)",
+   "file": "js/game/quests.js; js/treasure/treasure.js; js/economy/shop.js; js/net/net.js",
+   "func": "quests._wire 'treasureFound' (quests.js:138-142) ve 'chestSold' (143-147), treasure.finishDig/resolveDig (treasure.js:207-239), shop.sellCarriedChest (shop.js:138-153), shop.sellHoldChests (156-167), net _hostData 'chestGone'/'hold' (net.js:340-357) ve _chestGone (602-609)",
+   "rootCause": "1→2 geçişinin koşulu (stage===1 && flags.ilkHazineBulundu) satışı yapan istemcide değerlendiriliyor. ilkHazineBulundu yalnız treasureFound olayıyla kuruluyor; konuğun kazısı ev sahibinde çözüldüğü için (treasure.js:209) bu olay yalnız ev sahibinde yayılıyor. Ev sahibi bayrak değişimlerini advance() dışında yaymıyor; netStory yalnız quests.js:134 ve :317'de gönderiliyor. Konuk satınca chestSold konukta tetikleniyor ama konukta bu bayrak yok. Ev sahibine yalnız netChestGone ya da netHold gidiyor, ev sahibinde chestSold oluşmuyor. Aynı biçimde konuğun Nevra'dan aldığı ilk harita bayrağı (ilkHarita, quests.js:404) da ev sahibine ulaşmıyor.",
+   "impact": "Co-op'ta ilk hazineyi konuk taşıyıp satarsa (ya da ambar satışını konuk yaparsa) hikâye 'İlk Hazine'de kalır. HUD Sedef Hanım'ı (ilk haritayı konuk aldıysa Nevra'yı) göstermeye devam eder ve Nevra ev sahibine ikinci bir Martı haritası verir. Hikâye ancak ev sahibi başka bir sandık satınca ilerler; oyuncular ana hikâyenin bozulduğunu düşünür. Hata v0.3'te ve v0.4'te var; v0.4'te F-01'deki eski bayraklı konuk ise tersine, satışla aşamayı atlatır. Mantık kopyası: node /tmp/denetim_alan/karsit_hikaye/coop_marti_satis.mjs → konuk 1. aşamada, ev sahibi 1. aşamada, ev sahibinin bayrakları {ilkHazineBulundu:true}.",
+   "priority": "orta",
+   "fix": "Hikâye koşullarını ev sahibinde değerlendirin. Konuk sandık satınca ev sahibine bir niyet iletisi gitsin ({t:'storyReq', action:'chestSold', tier}); ev sahibi koşulu kendi bayraklarıyla doğrulayıp advance(2) çalıştırsın. ilkHazineBulundu ve ilkHarita gibi aşama içi bayraklar değiştiğinde ev sahibi 'story' yayınlasın. Not: denetçinin orta düzey F-04/F-05 maddelerinden biri bunu kapsıyorsa birleştirilmeli.",
+   "repro": "2 oyunculu co-op, 1. aşama: konuk Nevra'dan haritayı alsın ve Martı Adacığı'nda (478,352) kazsın. Sandık ev sahibinde doğar ve ev sahibinde DK.quests.flags.ilkHazineBulundu === true olur. Konuk sandığı taşıyıp Sedef Hanım'a satsın. Beklenen 2. aşama; gerçekleşen: iki tarafta da DK.quests.stage === 1.",
+   "acceptance": "İki varyantlı co-op testi: (a) ev sahibi satar, (b) konuk satar (hem taşıyarak hem ambardan). Her iki varyantta iki istemci de 1 sn içinde 2. aşamaya geçer ve 'Yeni görev' bildirimi herkeste görünür. İlk haritayı kim alırsa alsın Nevra ikinci bir harita önermez."
+  }
+ ]
+}

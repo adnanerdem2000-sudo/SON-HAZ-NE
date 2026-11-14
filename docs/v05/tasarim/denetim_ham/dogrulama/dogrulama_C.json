@@ -1,0 +1,203 @@
+{
+ "verdicts": [
+  {
+   "ref": "UC1",
+   "verdict": "dogrulandi",
+   "evidence": "v0.3 physics.js:146-196: arazi örneklemesi 149-153'te, sınır kutusu sınırı 157-159'da (`if ((i1 - i0 + 1) * (j1 - j0 + 1) > 64) return false`). Atlanan yalnız çarpıştırıcı döngüsü (161-194). v0.3'te üç çağıran var: enemies.js:544 (_perceive; görüş en çok 40×1,15 = 46 m, yani en çok 4×4 = 16 hücre), :1004 (_los; kullanıldığı mesafe d ≤ keep[1]+6 ≈ 24 m, :817/:830) ve :1502 (kare başına mermi parçası). Hiçbiri sınıra ulaşmıyor; 01_ILK_DENETIM_RAPORU.md:113/120 ve 02:1607 de aynı şeyi söylüyor. v0.4 physics.js:207-250 DDA kullanıyor; tek sınır 4096 adım (213). 9 750 m sınırlı dünyada köşegen ≈2 434 adım tutuyor. Bağımsız Node kopyası (/tmp/denetim_alan/karsit_C/los1.mjs, los2.mjs, los3.mjs; düz arazi): 03 #6'nın doğrusu (1300→1700, z = −3000; 26×1 hücre) v0.3'te de true dönüyor. 204 m çapraz (100 hücre), 158,7 m hizalı (81), 170 m (81) ve 147,6 m (9×8 = 72) doğrularda v0.3 false, v0.4 true. 46 m'lik doğruda (16 hücre) ikisi de true. v0.4 dünya köşegenindeki kutuyu da buluyor.",
+   "correction": "Hükümler (v03 kismen, v04 yanlis) doğru; yalnız sayılar küçük düzeltme istiyor. Sınırın tetiklendiği en kısa çapraz doğru ≈147,6 m (9×8 = 72 hücre, 45°'den sapan doğru); '≈158 m' yalnız tam 45° için geçerli. Eksene paralel bir doğru 16 m'lik hücre sınırının üstünden geçiyorsa (2 sıra) sınır ≈513 m'de tetikleniyor (530 m'lik örnekte v0.3 false). Kod düzeyinde v0.3'te çarpıştırıcı denetimi gerçekten tamamen atlanıyor. 'kismen' hükmünün dayanağı, arazi örneklemesinin sürmesi ve pratikte hiçbir çağıranın sınıra ulaşmaması."
+  },
+  {
+   "ref": "UC2",
+   "verdict": "dogrulandi",
+   "evidence": "v0.3'te engine.js:60-61 ve game.js:172-205 tek değişken adım kullanıyor (shipControl 186, p.update 187, sistemler 198). v0.4 game.js:185-207: n = clamp(ceil(dt/STEP − 1e-6), 1, 6), h = dt/n; biriktirici ve ara değerleme yok. Node benzetimi (dt1.mjs; player.js:557-566 zıplama 7,4 m/s, GRAV −22; geri tepme 541-546) şunu verdi. v0.4 zıplama tepesi: 15/20/30/60 FPS'te 1,183; 40'ta 1,198; 45'te 1,204; 50'de 1,208; 59,94 Hz ve 120'de 1,214; 144'te 1,219 m. v0.3: 15/30/60/120 FPS'te 1,000/1,122/1,183/1,214 m. Geri tepme v0.4'te 15 ve 60 FPS'te 1,597, 144'te 1,439 m (05 §5.2 #3 ile birebir), 59,94 Hz'de 1,461 m. Kapsam ve kapsam dışı listesi doğru: SUBSTEP game.js:187 ve _step 222-238. Kare başına çalışan sistemler main.js:103'te (misc, time, treasure, fish, fishing, seagear, npcs, islands, quests, progress, worldEvents, weatherfx, details); HUD ve ağ main.js:119-120'de. LOD enemies.js:1599-1606'da, ragdoll ragdoll.js:110-115'te; bodies.js:101'deki bölme oyun döngüsünde tetiklenmiyor.",
+   "correction": "'15/20/30/60 FPS'te birebir aynı' sonucu yalnız testlerdeki tam dt değerleri için geçerli. Gerçek tarayıcıda rAF zaman damgaları kabalaştırılıyor (Chrome ≈0,1 ms, Firefox 1 ms), bu yüzden kare süreleri 16,6/16,7 ms gibi geliyor. Node modelinde (jitter.mjs, jitter2.mjs) 60 Hz'de karelerin 2/3'ünde n = 2 (saniyede 100 alt adım); 30 FPS'te n 2↔3, 15 FPS'te 4↔5 arasında gidip geliyor (saniyede 70 alt adım). Zıplama tepesi 60 Hz'de 1,203–1,205 m, 30 ve 15 FPS'te ≈1,19 m çıkıyor; geri tepme 60 Hz'de 1,50–1,53 m (testte 1,597). Yani C-02 yalnız 60 Hz'e özgü değil; v0.4 hükmü 'kismen' kalmalı, iyileşme pratikte daha zayıf (zaman damgası modeline dayanıyor, orta güven)."
+  },
+  {
+   "ref": "UC3",
+   "verdict": "dogrulandi",
+   "evidence": "v0.3: enemies.js:544, 1004 ve 1502 lineBlocked kullanıyor. Tabanca (combat.js:280-286) yalnız araziye bakıyor, lineBlocked çağırmıyor (02 F-16). Kamera (camera.js:37-44) yalnız arazi ve su kıskacı uyguluyor. Gülle yalnız gemi kutusuna (effects.js:169), büyük hedeflere (projectileTest) ve araziye bakıyor. v0.4: enemies.js:555 (varsayılan 0,02/0,98/0,8), 1015 ve 1531 (PROJ_LOS, 77: 0/1/1). combat.js:295 (0,05/0,98/1), ayrıca kendi arazi döngüsü 290-293'te; ışının kökeni kamera (244). seagear.js:280 varsayılan payları kullanıyor. camera.js:112'de CAM_LOS, slabBlocked, hullBlocked (84-99) ve mağara denetimi var. slabBlocked ve hullSolid yalnız camera.js'te geçiyor (grep). Gülle (effects.js:166-195) lineBlocked çağırmıyor. Node (los_h.mjs): 13,6 m yükseklikten bina arkasındaki oyuncuya giden doğru false, ters yön true; PROJ_LOS ile de false (C-04 doğrulandı).",
+   "correction": "Ek tutarsızlıklar: algı ve _los varsayılan tMax = 0,98 kullandığı için hedefin dibindeki ince engel uzaktan yok sayılıyor. Node'da 0,2 m'lik çite yaslanan oyuncu 27 m ve üstünden görünüyor; 0,4 m'lik duvarda bu eşik ≈36,5 m. Tabanca ışını ise kameradan çıktığı için kamera ile oyuncu arasındaki hedefi de seçebiliyor (missed: tabanca maddesi)."
+  },
+  {
+   "ref": "SYS1",
+   "verdict": "kismen",
+   "evidence": "Mekanizma doğru: input.js:43 ve 106-107 (`if (this.subframe) return false`), game.js:203-208. Ancak kanıt olarak gösterilen test ayırt edici değil. 03_fizik_duzeltmeler.js:9 zıplama sayısını ölçüyor. İlk alt adımda zıplayınca onGround = false oluyor (player.js:557-559); sonraki alt adımlarda 557'deki `this.onGround` koşulu sağlanamıyor. Üstelik test vel.y'yi kare sonunda örneklediği için aynı karedeki çoklu tetiklemeyi göremez; bu yüzden kapı hiç olmasa da test 1 zıplamayla geçer. Kapının gerçekten önemli olduğu geçişler için senaryo yok: player.js:512 'egil' çömelme aç/kapa (n = 2'de çift tetiklenip etkisiz kalır), 912 dümende 'zipla' → toggleSails, 489 'kacin'. Testlerde KeyC yalnız dalış için isDown ile kullanılıyor (grep).",
+   "correction": "Durum 'dogrulanmamis' olmalı (kod incelemesiyle doğru, testle kanıtlanmamış). Ayırt edici test: 1/15 sn'lik karede C bir kez basılınca crouch tam bir kez değişmeli; dümende Boşluk tek bir toggleSails üretmeli."
+  },
+  {
+   "ref": "SYS2",
+   "verdict": "dogrulandi",
+   "evidence": "physics.js:20-51 (_insert ve etiketle removeTag) ile 134-187 (resolve, en çok 3 geçiş) kodla uyumlu. Testler gerçek davranışı sınıyor: 03_fizik_duzeltmeler.js:30 (#10; addPlatform yan kutusu, oyuncu 5 m'lik sunağın içinde kalmıyor), 15_iskele_kamera.js:18 (I02; 6 yaklaşmada gövde güverte izdüşümüne girmiyor), :27 (I05; ≥30 direk, en yakın ≥0,52 m). removeTag 03 #6/#7/#10'da 'kaldırılınca bulunmaz' kontrolüyle sınanıyor. Kayıt: 12. belge satır 138 ve 141 (önce KALDI, sonra GEÇTİ), 249-251 (03 14/14, 15 14/14).",
+   "correction": "Not: 3 geçişli köşe ve dar aralık davranışı (dar kapı) için ayrı test yok. Ada yapı kutularının görselden küçük olması (colK 0,6–0,9; islands.js:495-500, bilinen #43) veri sorunu olarak doğru tespit edilmiş."
+  },
+  {
+   "ref": "SYS3",
+   "verdict": "dogrulandi",
+   "evidence": "Kod ile uyumlu: physics.js:87-98 groundAt (0,6 m basamak, lastPlatform), 121-130 floorAt, 71-78 addPlatform yan yüzü; port.js:176-214, islands.js:642-664. Testler: 15_iskele_kamera.js:15 (I01; üç şerit, maxVy < 3), :42 (I07; dört liman, kara ucu ve yandan giriş), 07_dunya_kesif D03. Kayıt: 12. belge satır 15, 47 (07 10/10), 137, 170, 251.",
+   "correction": "Not: düşüşte süpürme yok. Oyuncunun penceresi v·h ≤ 0,6 m, yani en çok 36 m/s (C-17); hızlı düşüşü sınayan test yok."
+  },
+  {
+   "ref": "SYS4",
+   "verdict": "dogrulandi",
+   "evidence": "physics.js:102-117 slabBlocked yalnız camera.js:112'de çağrılıyor. Test 15_iskele_kamera.js:46 (C01): 4 eğim × 24 açıda kamera güverte izdüşümünde top+0,3'ün altına inmiyor; −0,9 eğimde 8 açıda parlaklık > 20. Kayıt: 12. belge satır 143 (önce 61 açı, sonra 0).",
+   "correction": "Not: C01'deki 'under' sayacını floorAt kıskacı (camera.js:132-136, floorMax game.js:357) da tek başına sağlıyor; slabBlocked'ı asıl sınayan parlaklık kısmı. Mermi ve yapay zekâ için güverte engeli olmadığı tespiti (C-06) doğru."
+  },
+  {
+   "ref": "SYS5",
+   "verdict": "kismen",
+   "evidence": "Kod (player.js:509-655) çalışıyor ve gösterilen testler kayıtlı (03 #3; 04 C10/C13; 16 K03/K05/K06; 12. belge 178-186, 249-251). Ancak zıplama yüksekliği ve eğim/tırmanma sınırı (player.js:569-587) hiçbir testte iddia edilmiyor: 03_fizik_dt.js yalnız ölçüm yapıyor, hiç expect içermiyor. Geri tepme testi (03_fizik_duzeltmeler.js:11) %20 tolerans verdiği için 144 Hz'deki %10'luk farkı geçiriyor. C-01/C-02 yüzünden sonuçlar ekran hızına bağlı: Node'da gerçek 60 Hz dizisinde geri tepme 1,50–1,53 m, testte 1,597 m.",
+   "correction": "Durum 'calisiyor_gelistirilmeli' olmalı: temel hareket test edilmiş, ama zıplama ve eğim için beklenti yok ve kare hızı bağımlılığı açık."
+  },
+  {
+   "ref": "SYS6",
+   "verdict": "dogrulandi",
+   "evidence": "Kod ile uyumlu: player.js:624-645 (giriş kararı, alçak geçiren su düzeyi, 1,2 sn kip kilidi) ve 736-818 (yüzme zemini groundAt 770, resolve 772, çıkış 797-799). Testler: 03 'Sığ su bandı' (03_fizik_duzeltmeler.js:14), 16 K01/K02, 15 I03/I04, 07 D03/D08. Kayıt: 12. belge 138-140, 178-179 (K01 önce KALDI, sonra GEÇTİ), 249-251. Not: 03'teki 'sığ su bandı' kontrolü #33 düzeltilmeden önce 30 dalga anının 7'sinde kalıyordu (12. belge 95-100); K01 bunu 36 durumla kapatıyor."
+  },
+  {
+   "ref": "SYS7",
+   "verdict": "kismen",
+   "evidence": "Test 03_fizik_duzeltmeler.js:24 (#8) gemiyi 1500 m taşıyor; bu yalnız 'd > chain·3 + 40 ise yeniden demirle' dalını (ship.js:342-344) sınıyor (3 sn'de 0,38 m). Sınırlı zincir çekişi (345-349) ve liman halatı (ship.js:324-333, Ship.dock) için hiçbir senaryoda iddia yok. tests/scenarios içinde Ship.dock yalnız v03/full*.js referans senaryolarında geçiyor.",
+   "correction": "Çapa sıfırlaması için 'calisiyor_test_edilmis' doğru; liman halatı ve çekiş sınırı 'dogrulanmamis'."
+  },
+  {
+   "ref": "SYS8",
+   "verdict": "kismen",
+   "evidence": "ragdoll.js:110-115 gerçek bir biriktirici (acc ≤ 4·STEP, 1/60 adım) ve kod tabanındaki tek biriktirici (grep). Ancak gösterilen C19 (04_karakter.js:47) yalnız revive sonrasında action === 'getup' olduğunu denetliyor. C06 (:45) ragdoll'u 3,5 sn boyunca 1/60 ile çalıştırıyor ama ragdoll fiziği hakkında iddia yok. Kararlılık, zemine gömülmeme ya da 15/60/144 FPS eşitliği sınanmıyor.",
+   "correction": "Biriktirici ve kararlılık iddiası için durum 'dogrulanmamis' olmalı (kod incelemesine göre doğru); C19 yalnız kalkış eylemini kanıtlıyor."
+  },
+  {
+   "ref": "SYS9",
+   "verdict": "dogrulandi",
+   "evidence": "treasure.js:509-551 (_deckAt, _attachDeck, _updateDeckLoot). T04 (16_kosu_poz_ganimet.js:100-106) şunları iddia ediyor: kese gemiye bağlanıyor, gemiyle 4 m gidiyor (follow < 0,05), güvertede E ile alınıyor (got = 2), düşman gemisi kaldırılınca kese rijit cisim olarak suda yüzüyor. Kayıt: 12. belge satır 191 (önce KALDI, sonra GEÇTİ) ve 199 (23/23)."
+  },
+  {
+   "ref": "REQ1",
+   "verdict": "kismen",
+   "evidence": "Ana döngüde sınırlar var: engine.js:61-62 dt ≤ 0,1; game.js:186 ve 201 n ≤ 6, h ≤ 1/60. Test 03_fizik_duzeltmeler.js:7 (#1) ve 12. belgede kaydı var. Ancak üç eksik var. (1) Test yalnız tam dt (1/15, 1/60, 0,1) kullanıyor; gerçek zaman damgalı dizideki n salınımı (C-02) görünmüyor. (2) Uzak ve hedefsiz düşmanlar enemies.js:1599-1606'da 0,25 sn + h'lik tek adımla ilerliyor; bu küresel 0,1 sn sınırından bile büyük. (3) Kare başına çalışan sistemler (seagear.js:217 zıpkın uçuşu, treasure.js:315-321 konuk tarafında sandık düşüşü, fishing) 0,1 sn'ye kadar tek adım alıyor.",
+   "correction": "Gereksinim 'kismen karşılanıyor': ana benzetimde üst sınır var, ama LOD'daki 0,25 sn'lik sıçrama ve kare başına çalışan fizikler sınırın dışında kalıyor; tutarlı adım boyu (sabit adım) da yok."
+  },
+  {
+   "ref": "REQ2",
+   "verdict": "dogrulandi",
+   "evidence": "Oyuncu: player.js:596-613 her alt adımda groundAt çağırıyor (0,6 m pencere) ve arazi her zaman hesaba katılıyor. Pencere koşulu v·h ≤ 0,6: h = 1/60'ta 36 m/s (≈29,5 m serbest düşüş); v0.3'te 10 FPS'te 6 m/s (≈0,82 m). Formülle doğrulandı. Cisimler bodies.js:133-137'de max(prevBottom) kullanıyor. Düşman (enemies.js:1197) ve hayvan (animals.js:625) anında zemine oturuyor. Konuk tarafındaki sandık (treasure.js:315-321) hareket öncesi yükseklikle groundAt çağırıyor; ragdoll'un acc değeri sınırlı. Gömülme yolu bulamadım.",
+   "correction": "Gereksinim kodda karşılanıyor ama hiçbir senaryo sınamıyor (denetçi de belirtmiş); kanıt düzeyi 'dogrulanmamis'. 0,1 sn'lik tek kare ile iskeleye düşüş senaryosu eklenmeli."
+  },
+  {
+   "ref": "REQ3",
+   "verdict": "dogrulandi",
+   "evidence": "physics.js:189-252'de 64 hücre erken dönüşü yok; DDA 207-250'de. Tek güvenlik sınırı 4096 adım (213); dünya köşegeni ≈2 434 adım olduğundan aşılamıyor. Node: 147,6, 158,7, 170 ve 204 m'lik çapraz doğrularda v0.3 false, v0.4 true. 03 #6 bu farkı ayırt etmiyor (C-18); denetçinin notu doğru."
+  },
+  {
+   "ref": "REQ4",
+   "verdict": "dogrulandi",
+   "evidence": "physics.js:207-250 Amanatides–Woo tipi yürüyüş (tMaxX/tMaxZ/tDx/tDz, ci/cj adımı, bitiş 248). seen kümesi 204-205'te yeniden kullanılıyor, arazi 198-202'de 1,5 m adımla örnekleniyor. Dünya köşegeni ≈2 434 hücre adımı tutuyor. Not: kutu başına _local (80-84) iki dizi, 234'teki dizi değişmezleri de her çağrıda yeni dizi ayırıyor. Uzun doğruda maliyeti arazi örneklemesi belirliyor (400 m → 266 heightAt çağrısı). İşlevsel gereksinim karşılanıyor."
+  },
+  {
+   "ref": "REQ5",
+   "verdict": "kismen",
+   "evidence": "Oyuncu ve kamera tarafı iyi sınanıyor: 15_iskele_kamera.js I01–I07 ve C01–C05 (12. belge 135-148: önce 12 kontrolün 9'u KALDI; 170: I07 kök basamağı; 251: 14/14), ayrıca 07 D03/D07/D08. Sınanmayanlar: gemi ve kayığın iskeleye çarpması (Ship.obstacles iskeleyi içermiyor, ship.js:442-459; bilinen #39 açık), ana liman dışındaki iskelelerde sudan çıkış (bilinen #23 açık; I07 yalnız kara ucunu sınıyor) ve iskele üstündeki düşman, cisim ve keseler.",
+   "correction": "Gereksinim 'kismen karşılanıyor': oyuncu ve kamera için evet; gemi/kayık (#39) ve diğer limanlarda sudan çıkış (#23) için test yok ve hata açık."
+  },
+  {
+   "ref": "DOC1",
+   "verdict": "dogrulandi",
+   "evidence": "03_fizik_duzeltmeler.js:20'deki doğru (1300,5,−3000)→(1700,5,−3000): i 81..106 = 26 hücre, j −188 = 1 hücre. v0.3 kopyası bu doğruda true dönüyor (los1.mjs: eksenParalel400 = true, bos400 = false, kaldirilinca = false). Yani test v0.3'te de geçer; 05 §5.2 #6'daki 'önce: 64 hücre üstü her zaman false' notu bu test için yanlış.",
+   "correction": "İnce ayrım: 'v0.3 64 hücre üstünde çarpıştırıcıları atlıyordu' cümlesi eski kod için doğru (physics.js:159). Ama 'her zaman false' değil, çünkü arazi 149-153'te daha önce örnekleniyor; test de bu farkı göstermiyor. 04 §4.5'teki 'Doğrulama' kanıt değeri taşımıyor."
+  },
+  {
+   "ref": "DOC2",
+   "verdict": "dogrulandi",
+   "evidence": "46 m'lik bir doğrunun sınır kutusu eksen başına en çok ⌈46/16⌉+1 = 4 hücre, toplam ≤16 hücre eder; v0.3 physics.js:159 tetiklenmez (los1.mjs: 46 m çapraz, 16 hücre, v0.3 true). 01_ILK_DENETIM_RAPORU.md:113 ve :120 ('ASLA tetiklenmiyor'), 02:1607 ('şu an tetiklenmiyor') ve 07_AI_BOSS_TESTLERI.md:11 aynı şeyi söylüyor. 04 §4.5 'Belirti' ve 03:30'daki nedensellik yanlış.",
+   "correction": "Duvar arkasından görme belirtisi gerçekse nedeni 64 hücre değil. Aday nedenler: tek noktada sınanan yükseklik (C-04), %2 uç payları (hedefin dibindeki ince engel) ve görselden küçük kutular (colK, #43)."
+  },
+  {
+   "ref": "DOC3",
+   "verdict": "dogrulandi",
+   "evidence": "16_SON_RAPOR.md:65 '#7 … Açık (düşük)' diyor; 11_BILINEN_SORUNLAR.md:11 ise '#7 Kapalı (kamera kararması turu)'. Kodda camera.js:15-29 hullSolid, 70-99 gövde kesişimi ve 112-113 blocked var. 12. belge 227-229'da K04/K05/K06 önce KALDI, sonra GEÇTİ; 253'te '17' 13/13. 16. belgenin 16.5 özeti (58-77) 11. belgeyle eşitlenmemiş."
+  },
+  {
+   "ref": "DOC4",
+   "verdict": "kismen",
+   "evidence": "docs/08_FIZIK_RAPORU.md:44 v0.3 sürümünden (47976be) beri değişmemiş. 'çok düşük FPS'te cisimler 2 alt adımla kararlı tutulur' kısmı v0.4 için eskimiş: artık döngü genelinde ≤6 alt adım var (game.js:201-207) ve bodies.js:101'deki bölme (dt > 0,034) oyunda tetiklenmiyor (h ≤ 1/60). Ama 'fizik kare hızına bağlı adımlarla çalışır' kısmı v0.4'te de doğru: h = dt/n kare süresine bağlı (game.js:202); bu, denetçinin kendi C-01/C-02 bulgusu. Ayrıca bodies.js:101'deki bölme 03_fizik_dt.js:47'deki doğrudan çağrıda (dt = 1/15) hâlâ tetikleniyor.",
+   "correction": "Belge 'kısmen eskimiş': ilk cümle doğru kalıyor; '2 alt adım' mekanizması yerini döngü genelindeki ≤6 eşit alt adıma bıraktı. 'Hiç tetiklenmiyor' ifadesi yalnız oyun döngüsü için doğru."
+  },
+  {
+   "ref": "DOC5",
+   "verdict": "dogrulandi",
+   "evidence": "game.js:180-184 yorumu. Node (dt1.mjs): zıplama tepesi 60 FPS'te 1,183, 120 FPS'te 1,214 m. Geri tepme 60 FPS'te 1,597, 144 FPS'te 1,439 m (05 §5.2 #3 ile aynı). Platform penceresi v·h ≤ 0,6 olduğundan sınır h = 1/60'ta 36 m/s, h = 1/120'de 72 m/s; yani 'aynı tünelleme sınırı' ifadesi de yanlış. Gerçek zaman damgalarıyla 30 ve 60 FPS de birbirinden farklı (jitter2.mjs)."
+  },
+  {
+   "ref": "C-02",
+   "verdict": "kismen",
+   "evidence": "game.js:201'deki `ceil(dt/STEP − 1e-6)` yüzünden 16,66668 ms'yi aşan her karede n = 2. Node modeli (jitter.mjs): 0,1 ms ve 1 ms yuvarlamada 600 karenin 400'ünde n = 2 (saniyede 100 alt adım); 30 FPS'te n 2↔3, 15 FPS'te 4↔5 (jitter2.mjs). Testler hep tam dt (DK.sim, game.update(1/60)) kullandığı için görünmüyor; 09_performans.js:6 maliyeti de n = 1 ile ölçüyor.",
+   "correction": "Bulgu doğru ama kapsamı dar. Salınım yalnız 60 Hz'de değil, 30 ve 15 FPS'te de var. Etkileri fizik farkının ötesine geçiyor: top nişanı (C-03), yapay zekâ olasılık hızları, güvertedeki oyuncunun titremesi ve ≈1,67 kat CPU (missed maddeleri). Öncelik 'orta' uygun; düzeltme basit (ör. ceil(dt/STEP − 0,01) ya da biriktirici)."
+  },
+  {
+   "ref": "C-03",
+   "verdict": "kismen",
+   "evidence": "shipControl.update _step içinde çalışıyor (game.js:225). input.lookDelta (input.js:151-161) değeri tüketmiyor; mouseDX ancak endFrame'de (163-165) sıfırlanıyor. shipControl.js:292-295 bu yüzden her alt adımda aynı deltayı ekliyor. v0.3'te (game.js:183-186) kare başına bir kez çalışıyordu. Node (jitter.mjs): gerçek 60 Hz dizisinde 60 karede 0,60 rad yerine 1,01 rad dönüş (×1,67), kare deseni ×2, ×2, ×1 (sarsıntı); ortalama 30 FPS'te ×2,33, 15 FPS'te ×4,67. Hiçbir test top nişanını sınamıyor (04 C08 yalnız el IK'sini denetliyor).",
+   "correction": "Kök neden ve 'v0.4'e özgü gerileme' tespiti doğru, ama öncelik en az 'yuksek' olmalı. Top nişanı deniz savaşının ana girdisi; sıradan 60 Hz ekranda her top kullanımında duyarlılık 1,67 kat ve kareden kareye değişken. Kritik/yüksek listesinin boş bırakılması bu madde için yanlış."
+  },
+  {
+   "ref": "C-04",
+   "verdict": "dogrulandi",
+   "evidence": "physics.js:243-245 yüksekliği yalnız giriş noktasında sınıyor (kutuda t0, dairede en yakın nokta). Node (los_h.mjs; 8 m genişliğinde, 4 m yüksekliğinde bina, x 16–24): (0, 13,6, 0)→(30, 1,4, 0) false, ters yön true, PROJ_LOS ile de false. Algı (enemies.js:555), _los (1015), mermi (1531), tabanca (combat.js:295), zıpkın ve kamera aynı fonksiyonu kullanıyor."
+  },
+  {
+   "ref": "C-05",
+   "verdict": "dogrulandi",
+   "evidence": "effects.js:149-198 yalnız şunlara bakıyor: gemi kutusu süpürmesi (170-176), arazi (177, 184), su (190) ve projectileTest (179; combat.js:55-70, yalnız büyük hedefler). physics.lineBlocked ya da resolve çağrısı yok; bu yüzden kaya, bina, kale duvarı ve iskele direği gülleyi durdurmuyor. v0.3 effects.js:149-172 aynı (nokta testiyle)."
+  },
+  {
+   "ref": "C-07",
+   "verdict": "dogrulandi",
+   "evidence": "seagear.js:280 lineBlocked'ı varsayılan tMin 0,02 / tMax 0,98 / rScale 0,8 ile, kare başına alınan parça için çağırıyor (seagear.js:217). Kutunun giriş noktası t0 parçanın son %2'sine düşerse yok sayılıyor; sonraki parça kutunun içinden başladığı için t0 = 0 < tMin oluyor ve yine yok sayılıyor (physics.js:231-241, 243). Sonuçta zıpkın duvardan geçebiliyor (geçiş başına ≈%4 olasılık). Etkisi düşük, çünkü zıpkın çoğunlukla su altında kullanılıyor."
+  }
+ ],
+ "missed": [
+  {
+   "title": "Düşman yapay zekâsındaki çağrı başına (dt'siz) olasılıklar alt adım hızıyla ölçekleniyor; saldırganlık ekran tazeleme hızına bağlı",
+   "file": "js/game/enemies.js",
+   "func": "Enemy._act (828, 848), Enemy._meleeOrStrafe (879, 897)",
+   "rootCause": "`Math.random() < p` her güncellemede dt'siz sınanıyor: 828 ikincil menzilli saldırı ve bıçak p = 0,02; 848 yan adım yön değişimi p = 0,004; 879 alay p = 0,01; 897 kuşatmacı fırsat saldırısı p = 0,05. enemies sistemi alt adımda çalıştığı için (game.js:187, 237) saniyedeki deneme sayısı saniyedeki alt adım sayısına eşit: testlerin tam dt'sinde 60, gerçek 60 Hz'de (zaman damgası yuvarlaması + 1e-6 eşiği, C-02) ≈100, 120/144 Hz'de 120/144. v0.3: var; aynı satırlar (817, 837, 868, 886) kare başına çalışıyordu ve FPS'e bağlıydı. v0.4: var; biçimi değişti ve test ortamında görünmüyor. 02 ve 11'de kaydı yok.",
+   "impact": "Bıçak veya ikincil tabanca için bekleme ortalaması saniyede 60 denemede 0,83 sn, gerçek 60 Hz'de 0,50 sn, 144 Hz'de 0,35 sn. Kuşatmacı fırsat saldırısında 0,33 → 0,20 → 0,14 sn; yön değiştirmede 4,2 → 2,5 → 1,7 sn. Aynı zorluk ayarında düşmanlar 144 Hz'de ve (C-02 yüzünden) sıradan 60 Hz ekranda testlerdekinden daha saldırgan ve hareketli. Dengeleme testleri tam 1/60 dt kullandığından bunu göremiyor.",
+   "priority": "orta",
+   "fix": "Olasılıkları orana çevir: `Math.random() < 1 - Math.exp(-λ·dt)`, λ = −ln(1−p)·60 (ör. p = 0,02 → λ ≈ 1,21/sn). Alternatif olarak kararları sabit 10–20 Hz'lik bir yapay zekâ tıkına taşı. C-01/C-02 için gerçek sabit adım + biriktirici kurulursa bu sorun da kendiliğinden düzelir.",
+   "repro": "Node: p = 0,02 için 1/60, gerçek 60 Hz dizisi (16,7/16,7/16,6 ms) ve 1/144 adımlarında ilk başarıya kadar geçen süreyi 10 000 denemede ölç; ortalamalar 0,83 / 0,50 / 0,35 sn çıkar. Sayfada: Avcı düşmanını 8 m'ye koy, görüş açık, rangedCd = 0; game.update'i 1/60 ve 1/144 ile ilerletip _startRanged'e kadar geçen süreyi say.",
+   "acceptance": "Aynı durumda karar gecikmesi ortalaması 1/60, 1/144 ve 16,7/16,7/16,6 ms dizisinde ±%5 içinde kalır. Bunu doğrulayan bir kontrol 05_dusman_ai.js'e eklenir."
+  },
+  {
+   "title": "Tabanca ışını kameradan çıkıyor; kamera ile oyuncu arasındaki (oyuncunun arkasındaki) düşman vuruluyor",
+   "file": "js/game/combat.js",
+   "func": "combat.shoot (243-254), combat.raycast (271-298)",
+   "rootCause": "Işının kökeni engine.camera.position (244). raycast hedefleri yalnız `proj < 0 || proj > maxD` koşuluyla eliyor (281) ve en küçük proj değerini seçiyor (283). Oyuncunun kendisi `ignore` ile dışarıda, ama kamera ile oyuncu arasındaki hedefler dışarıda değil. Engel denetimi de kameradan yapılıyor (295, tMin 0,05). v0.3: var (combat.js:236, 263-287). v0.4: var. 02 ve 11'de kaydı yok (F-16 yalnız çarpıştırıcıları kapsıyor).",
+   "impact": "Kalça atışında (kamera 4,6 m geride, omuz 0) oyuncunun 1–2 m arkasında kamera ekseninde duran düşman ya da hayvan, öndeki nişan alınan hedefin yerine vuruluyor. Nişanlıyken (2,3 m, omuz 0,65) sağ-arkada 1,2 m'deki düşman vuruluyor. Node kopyası (/tmp/denetim_alan/karsit_C/pistol.mjs): arkadaki 1,0/1,5/2,0 m'lik düşman d = 3,6/3,1/2,6 m'de isabet alıyor. Kuşatma halkası (enemies.js:891, 3,2–4,3 m) ve arkadan saldıran kuşatmacılar yüzünden yakın dövüşte sık görülür. Tek mermi (2 sn dolum) boşa gidiyor ya da oyuncu kendi bedeninin içinden arkaya ateş edebiliyor.",
+   "priority": "orta",
+   "fix": "İki aşamalı ışın kullan. Önce kamera ışınıyla nişan noktasını bul: kamera–baş uzaklığı + 0,3 m'den yakın hedefleri at, oyuncunun önündeki ilk engel ya da hedefi al. Sonra namludan (249) bu noktaya ikinci bir ışın at; isabeti ve lineBlocked denetimini bu ışınla yap.",
+   "repro": "Sayfada: düz zeminde oyuncu, kameranın yaw/pitch'i öne dönük. Bir düşmanı oyuncunun 1,5 m arkasına, kamera eksenine; ikinci düşmanı nişangâhın altında 10 m öne koy. p.equipped = 'pistol', p.loaded = true; DK.combat.shoot(p) çağır: arkadaki düşmanın canı düşer, öndekinin düşmez.",
+   "acceptance": "Oyuncunun 0,3–4 m arkasındaki hiçbir hedef, kamera hangi kipte olursa olsun, ateşle hasar almaz; öndeki hedef isabet alır. Kontrol 05_dusman_ai.js'e eklenir."
+  },
+  {
+   "title": "Güverte, dümen ve top kipindeki oyuncu gemi güncellemesinden önce konumlanıyor; bir alt adım geride çiziliyor ve alt adım boyu değiştikçe gemiye göre titriyor",
+   "file": "js/game/game.js",
+   "func": "game._step (225-233); Player._updateDeck (player.js:889), _updateHelm (915, 920-921), _updateCannon (934), _updateClimb (962)",
+   "rootCause": "_step'te önce p.update çalışıyor (226). Güverte kiplerinde dünya konumu s.localToWorld ile (ship.js:170, root.matrixWorld) hesaplanıyor ve karakter kökü bu konuma yerleştiriliyor (player.js:394). Gemi ise sonra ilerliyor (228-230) ve matrisi updateTransform'da yenileniyor (ship.js:561). Adımdan sonra yeniden eşitleme yok; bu yüzden oyuncu ve dümen IK hedefleri gemiden v·h kadar geride kalıyor. C-02 yüzünden 60 Hz'de h 1/60 ile 1/120 arasında değiştiğinden bu gecikme kareden kareye değişiyor. v0.3: var (game.js:186-191'de aynı sıra), ama sabit FPS'te sabit ofset olarak, titreşim yok. v0.4: var ve titreşiyor. 02 ve 11'de kaydı yok.",
+   "impact": "Sloop tam hızda (11 m/s, shipModel.js:10) ofset 18,3 cm ile 9,2 cm arasında değişiyor (60 Hz'de 2,2,1 deseni). Güvertede yürüyen, dümende ya da topta duran karakter gemiye göre ~9 cm sarsılıyor; eller dümenin parmaklıklarının arkasında kalıyor. Güverte kipinde kamera gecikmiş başı izlediği için gemi de ekranda titriyor. Seyir oyunun ana etkinliği olduğundan sık görülür; görsel bir sorun, ilerlemeyi etkilemiyor (kod analizi, orta güven).",
+   "priority": "orta",
+   "fix": "Gemiler güncellendikten sonra (_step sonunda ya da tüm alt adımlardan sonra bir kez) güverte, dümen, top ve tırmanış kipindeki oyuncunun dünya konumunu ve karakter kökünü yerel koordinattan yeniden hesapla. Alternatif olarak karakteri gemi köküne bağla. Uzun vadede sabit adım + ara değerleme.",
+   "repro": "Sayfada: gemi tam yelkenle 11 m/s, oyuncu dümende. game.update'i 0,0167/0,0167/0,0166 dizisiyle 30 kare ilerlet; her kare sonunda |p.pos − s.localToWorld(dümenin yerel noktası)| değerini ölç. Değer 0,092/0,092/0,183 m arasında dönüşümlü gider.",
+   "acceptance": "Her kare sonunda oyuncunun dünya konumu ile gemi yerel konumunun dünyaya çevrilmiş hali arasındaki fark dt dizisinden bağımsız olarak < 1 cm. 04'teki C08 dümen IK testi gemi 11 m/s'de giderken de geçer."
+  },
+  {
+   "title": "Alt adım döngüsü görsel ve arayüz işlerini de n kez yapıyor; gerçek 60 Hz'de benzetim maliyeti ölçülenin ≈1,67 katı, düşük FPS'te 2–6 katı",
+   "file": "js/game/game.js",
+   "func": "game.update/_step (201-207, 222-238); Character.update (character.js:845-853, player.js:416); enemies.update e.char.update (enemies.js:1606); animals anim.update (animals.js:636); bosses anim.update (bosses.js:625, 686, 805); effects.update parçacık döngüsü (effects.js:121-146); interact.update aday taraması ve 'prompt' olayı (interact.js:21-71); shipControl yangın parçacıkları (shipControl.js:282-283)",
+   "rootCause": "Animasyon karıştırıcısı ve IK, parçacık tamponunun doldurulması, etkileşim adayı taraması ve istem olayı, alt adımda çalışan sistemlerin içinde. Oysa game.js:183'teki yorum görsel sistemlerin kare başına çalıştığını söylüyor. C-02 yüzünden 60 Hz'de karelerin 2/3'ünde n = 2. 10. belgedeki 'benzetim ≤ 2 ms/kare' ölçümü 09_performans.js:6'da `DK.game.update(1/60)` ile, yani n = 1 ile alındığı için bu artış hiç ölçülmedi. v0.3: yok (tek geçiş). v0.4: var. 02 ve 11'de kaydı yok.",
+   "impact": "Gerçek 60 Hz'de alt adım sistemlerinin CPU maliyeti ortalama ≈1,67 kat; 30 FPS'te 2–3 kat, 10 FPS'te 6 kat. Maliyet tam da kare bütçesi zaten aşılmışken artıyor (6 alt adımla sınırlı bir 'ölüm sarmalı'); zayıf dizüstülerde FPS düşüşünü derinleştirir. Top güllesi izi, yangın ve lav parçacıklarının yoğunluğu da alt adım sayısıyla artıyor (orta güven; büyüklük zaman damgası modeline dayanıyor).",
+   "priority": "orta",
+   "fix": "Karakter animasyonunu, IK'yi, parçacık tamponunu, etkileşim adayını ve istem olayını tüm alt adımlardan sonra bir kez, toplam dt ile çalıştır; alt adımda yalnız durum bütünleştirmesi kalsın. C-02 eşiğini zaman damgası yuvarlamasını yutacak biçimde düzelt (ör. ceil(dt/STEP − 0,01)) ya da biriktiriciye geç. Performans testine gerçekçi bir dt dizisi (16,7/16,7/16,6 ms) ekle.",
+   "repro": "Sayfada, limanda: 300 kareyi önce dt = 1/60 ile, sonra 0,0167/0,0167/0,0166 dizisiyle game.update'le koş. performance.now ile süreyi, sayaçla Character.update çağrı sayısını ölç; ikinci dizide maliyet ≈1,67 kat çıkar.",
+   "acceptance": "Kare başına Character.update/mixer, parçacık doldurma ve 'prompt' olayı n'den bağımsız olarak bir kez çalışır. Gerçekçi 60 Hz dizisinde benzetim maliyeti tam 1/60 ölçümünün ≤1,1 katıdır. 10. belge yeni ölçümle güncellenir."
+  }
+ ]
+}

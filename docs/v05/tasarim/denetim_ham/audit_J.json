@@ -1,0 +1,978 @@
+{
+ "area": "J — Performans ve bellek",
+ "summary": "v0.4 (44d548c) performans/bellek alanında sızıntı denetimi ve donma önlemede v0.3'ün ilerisinde: ada/hayvan/düşman GPU kaynak bırakma 09_performans döngüleriyle, karelere bölünmüş ada kurulumu 13_donma ile (taban 9/9) sınanıyor; ancak çizim yükü fiilen azaltılmadı. Kullanıcının andığı 1 045 çağrı v0.3 raporundan (docs/12_PERFORMANS_RAPORU.md:10) geliyor; v0.4 son kodun taban ölçümü 1 035 çağrı / 1,25 M üçgen / 95 program, 10. belgedeki 999 değeri son kodda korunmamış. Statik okuma ve Node sayımlarına göre limandaki en büyük kaynaklar: görüş konisi ayıklaması kapalı karakter örgüleri (frustumCulled=false, her karede ana + gölge geçişi), tüm çekirdek adaları kapsayan tek parça bitki örtüsü (her karede ~200 K ana + ~175 K gölge üçgeni), 80 örgüsünün tamamı gölge atan oyuncu gemisi, parça başına örgülü hayvanlar (7 domuz = 140 çağrı) ve bina başına benzersiz malzemeler yüzünden 84 örgüde kalan liman birleştirmesi. Gölgelendirici ön derlemesi son işleme açıkken yanlış program varyantını derliyor (yüksek/orta 89, düşük 40 program), meşale ışık sayısını değiştirip tüm malzemeleri yeniden derletiyor ve sahnede her pikselde hesaplanan 7 kalıcı nokta ışığı var. Kalite ayarlarında yükleme sırası hataları (gölge çözünürlüğü yeniden açılışta uygulanmıyor, herhangi bir ayar değişince arazi LOD ön ayarı sıfırlanıyor), oyun içi gölge kapatmanın programları yenilememesi (bilinen A_motor-ek-statik-19) ve 75/100/144 Hz ekranlarda FPS sınırının hedefin çok altında kalması bulundu. Ölçüm altyapısı yalnız SwiftShader'da, tek karede ve 5 sahnede ölçüyor; kalabalık kasaba, mağara, açık deniz, deniz savaşı, gerçek boss savaşı, 4 oyunculu co-op ve gerçek GPU ayrımı yok, taban koşusunda Volkanik Dev sızıntı kontrolü kararsız. Kritik bulgu yok; 3 yüksek, 15 orta ve 12 düşük öncelikli madde Faz 8 için sıralı iş listesi oluşturuyor.",
+ "systems": [
+  {
+   "name": "Çizim/kaynak ölçüm altyapısı (09_performans `_M` yardımcısı)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "tests/scenarios/09_performans.js:6 (_M: info.autoReset=false + DK.post.render(); calls/tris/geos/texs/programs + 60×game.update(1/60)); sahneler :7-18 (menü, liman, orman_adasi, firtina, boss_kraken); tek bütçe kontrolü :10 (liman ≤1100 çağrı, sim <40 ms). Taban docs/v05/taban_kosusu_44d548c/09_performans.json: 8/9 (liman 1 035 çağrı / 1 253 702 üçgen / 753 geometri / 200 doku / 95 program); 12. belge Aşama 9: 9/9.",
+   "note": "Tek kare ve tek kamera açısı; yalnız SwiftShader (tests/harness/run.cjs:36); kasaba, mağara, açık deniz, deniz savaşı, gerçek boss savaşı, 4 oyunculu co-op yok; GPU süresi yok (J-15)."
+  },
+  {
+   "name": "GPU kaynak bırakma: ada içeriği, hayvan bölgesi, düşman",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "js/player/character.js:492-500 (_disposeModel), js/wildlife/animals.js:736-745 (Animal.dispose), js/world/islands.js:427-436 (_release); 09_performans.js:22 (ada 3 kur/sök), :25 (boar/croc/snake/bat), :30 (düşman 3×4) — taban JSON adım 13/14/16 ok, dG=dT=0; 12. belge 9/9.",
+   "note": "Isınma sonrası sayaçlar sabit; kit geometrisi ve atlas bilerek paylaşımlı."
+  },
+  {
+   "name": "GPU kaynak bırakma: ganimet kesesi, gemi, bosslar",
+   "status": "hatali_kararsiz",
+   "evidence": "js/game/bosses.js:126-134 (BossBase.dispose), js/ship/ship.js:739-743 (disposeTree); 09_performans.js:33-38; taban JSON adım 18-19: loot/ship/kraken/tas_muhafiz dG=0, volkanik_dev dG=5 → kontrol başarısız (docs/v05/00_BASLANGIC_KAYDI.md:58).",
+   "note": "Kök neden doğrulanmadı (J-16); dG=5, demon.glb'nin 5 primitive'i ile çakışıyor; dev ilk 4 sn kraterden yükseldiği için (bosses.js:811) testte lav atışı olmuyor."
+  },
+  {
+   "name": "GPU kaynak bırakma: deniz olayı yüzen nesneleri (şişe, gök taşı, kazazede)",
+   "status": "hatali_kararsiz",
+   "evidence": "js/game/events.js:158-197 (spawnFloating her olayda yeni geometri + MeshStandardMaterial); :79 ve :47 yalnız scene.remove, dispose yok; 09 döngüleri bu türü kapsamıyor.",
+   "note": "Olay başına 1–3 geometri + malzeme sızar (J-21)."
+  },
+  {
+   "name": "Uzun oturum bellek/kaynak denetimi (10_uzun_oturum)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "tests/scenarios/10_uzun_oturum.js (U01–U04; U02: son 10 dilimde artış medyanı ≤1 ve toplam ≤300); 12. belge #17 ve Aşama 9 tablosu 5/5 (214 sn); 10. belge §10.7: RSS tepe 959 MB, geometri 1 143–1 152, doku 236 sabit.",
+   "note": "Son kodda koşulmadı (docs/v05/00: taban koşusuna alınmadı); DK.sim + gc() ile hızlandırılmış; eşikler gevşek; program sayısı izlenmiyor."
+  },
+  {
+   "name": "Arayüz dinleyici/rAF/WebGL temizliği (11_arayuz_sizinti)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "tests/scenarios/11_arayuz_sizinti.js; taban 6/6 (docs/v05/00 tablosu), 12. belge 6/6; 10. belge §10.4 (oluşturucu onClose, harita çift açılış)."
+  },
+  {
+   "name": "Ada içeriğinin karelere bölünmüş kurulumu (donma önleme)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "js/world/islands.js:31 (STEP_MS=3, NEAR_D=250), :271-312 (update), :340-366 (_buildGen), :368-394 (_runJob); 13_donma P01–P08 taban 9/9 (P01: 16 karede kurulum, en uzun ada karesi 10,5 ms, toplam iş 70,3 ms); 12. belge 9/9.",
+   "note": "Bölünemeyen adım 10–12 ms (J-29)."
+  },
+  {
+   "name": "Arazi karo akışı, Web Worker üretimi ve LOD halkaları",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "js/world/terrain.js:18-23 (LODS 380/950/1750/2700 m; 80/32/16/8 segment), :258-265 (_wantSeg), :279-320 (update), :354 (yalnız seg≥32 ve karalı karo gölge atar); işçi/yedek yolu 02_arazi_yedek 12/12, 02_arazi_kurtarma 7/7 (taban). Limanda 48 çağrı / 312 K üçgen (10. belge §10.5).",
+   "note": "LOD geçişi/yükü ayrıca sınanmıyor; sise bağlı kesme yok (J-13); lodScale ayar hatası (J-10)."
+  },
+  {
+   "name": "Ek adalarda hücreli örnekleme ve hücre LOD'u (islands.js Batch/_cellLod)",
+   "status": "dogrulanmamis",
+   "evidence": "js/world/islands.js:79-140 (160 m VCELL; model×renk×hücre başına InstancedMesh), :404-415 (_cellLod: görünür <850 m, küçükler <240 m, gölge <220 m; 15 karede bir).",
+   "note": "Görünürlük/gölge geçişini doğrulayan test yok (13_donma P06 yalnız grup/NPC sayısına bakar)."
+  },
+  {
+   "name": "Çekirdek ada bitki örtüsü örneklemesi (props.js)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "js/world/props.js:17-48 (instanced: tür/parça başına tek InstancedMesh, computeBoundingSphere), :164-285 (build), :254-266 (orman ağacı), :307-319 (_inst); Node sayımı /tmp/denetim_alan/J_perf/props_count.mjs: yüksek ayarda 1 598 örnek (palmiye 293, orman ağacı 264, ot 424, eğrelti 240, çalı 159, kaya 95…).",
+   "note": "Görüş/mesafe ayıklaması ve hücre bölümü yok; tüm örnekler her karede ana ve gölge geçişinde (J-02)."
+  },
+  {
+   "name": "Liman statik birleştirme (batch.js mergeStatic)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "js/core/batch.js:4-56 (malzeme uuid'ine göre birleştirme), tek kullanım js/world/port.js:317; Node kurulumu /tmp/denetim_alan/J_perf/portcount.mjs: 'port-batched' 84 örgü / 84 farklı malzeme (51 dokulu, 26 düz, 7 fener ampulü), 63 gölge atan; deniz feneri ayrı 5 örgü.",
+   "note": "Bina başına benzersiz doku/malzeme birleştirmeyi sınırlıyor (J-06); 10. belge §10.5: 106 çağrı."
+  },
+  {
+   "name": "Karakter çizimi (KayKit Character / glb Animated)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "js/player/character.js:458-460 (kit örgülerinde castShadow + frustumCulled=false + örgü başına malzeme klonu), js/core/kk.js:93, js/player/character.js:967 (Animated); KayKit gövdesi 6 iskeletli örgü (kk_*.glb, /tmp/denetim_alan/J_perf/kkprims.mjs) + prosedürel aksesuarlar; 10. belge §10.5: 13–32 çağrı/karakter, limanda ≈200.",
+   "note": "Görüş ve gölge kutusu dışında da çiziliyor (J-01); animasyon mesafe LOD'u yok (J-30)."
+  },
+  {
+   "name": "Prosedürel hayvan modelleri",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "js/wildlife/animals.js:21-298; /tmp/denetim_alan/J_perf/animal_meshes.mjs: domuz 20 örgü/20 geometri/6 malzeme/844 üçgen, maymun 12/12/4, timsah 34/34/12, papağan 9/9/9, yılan 22/22/22, kutup ayısı 33/33/3; 10. belgedeki '7 adsız grup × 20 örgü (844 üçgen)' = 7 domuz.",
+   "note": "Birey başına yeni geometri/malzeme; birleştirme yok (J-05)."
+  },
+  {
+   "name": "Düşman AI LOD'u",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "js/game/enemies.js:1599-1605 (hedefsiz düşman >45 m 0,066 sn, >90 m 0,25 sn; hedefli her adım), :1539-1569 (<140 m doğar, >220 m kalkar); 05_dusman_ai.js:38 F-08 — taban adım 24 ok; 12. belge 18/18.",
+   "note": "Kazanç ölçülmedi; animasyon da aynı seyrek adımla güncelleniyor."
+  },
+  {
+   "name": "Hayvan benzetim LOD'u (250 m, bölge denetimi 4 Hz)",
+   "status": "dogrulanmamis",
+   "evidence": "js/wildlife/animals.js:793-807 (bölge r+150 m'de doğar, r+230 m'de silinir, 0,25 sn'de bir denetim), :810 (yalnız 250 m içi; '|| G.online' ile co-op'ta hepsi).",
+   "note": "LOD'u sınayan test yok; 250 m içinde seyreltme yok (J-30)."
+  },
+  {
+   "name": "Balık sürüsü benzetimi (ayırma azaltma)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "js/wildlife/fish.js:346-385 (_populate: 16 sürü, 260 m), :387+ (update), :326-328 (tür başına InstancedMesh, frustumCulled=false); 13_donma P07 taban ok (16 sürü, 313 örnek, NaN yok); 10. belge §10.8.4 (çağrı başı ayırma 97,5→35,1 KB).",
+   "note": "Oyuncu karada ya da uzakta olsa da 16 sürü tam benzetiliyor; mesafe LOD'u yok."
+  },
+  {
+   "name": "Parçacık sistemi (tek Points havuzu, 900)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "js/game/effects.js:9 (MAX 900), :24-35 (tek Points, frustumCulled=false), :45-48 (parçacık başına nesne, dolunca shift), :121-146 (splice, tam tampon yükleme, setDrawRange(0, MAX)); js/game/game.js:187 'effects' alt adım kümesinde.",
+   "note": "Test yok; verimsizlikler J-20."
+  },
+  {
+   "name": "Gölge sistemi (tek yönlü ışık, 110 m kutu)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "js/world/sky.js:136-145 (2048/1024 harita, ±55 m ortografik kutu, far 300), :338-341 (odağa kayan hedef, texel hizalama yok); 10. belge §10.5: limanda gölge geçişi 258 çağrı / 369 803 üçgen.",
+   "note": "frustumCulled=false karakterler ve dev sınırlı bitki örtüsü kutudan bağımsız gölgeye çiziliyor (J-01, J-02); mağara/su altı/gecede de çiziliyor (J-25)."
+  },
+  {
+   "name": "Dinamik ışık yönetimi (ada fener havuzu, meşale, mağara ve yıldırım ışıkları)",
+   "status": "hatali_kararsiz",
+   "evidence": "js/world/islands.js:236-243 (4 ışıklı havuz, y=-500, yoğunluk 0), js/world/weatherfx.js:115-116 (boltLight), js/world/cave.js:117-123 (2 kalıcı ışık), js/player/character.js:336 + js/player/player.js:127-138 (meşale görünürlüğü açılıp kapanıyor); vendor/three/three.module.js:7429 (numPointLights program anahtarında), :18279 (lightsStateVersion → yeni program).",
+   "note": "Sürekli 7 nokta ışığı; meşale 8'e çıkarıp yeniden derletiyor (J-07, J-08)."
+  },
+  {
+   "name": "Gölgelendirici ön derlemesi (compileAsync)",
+   "status": "hatali_kararsiz",
+   "evidence": "js/main.js:112 compileAsync(engine.scene, engine.camera) bağlı çizim hedefi yokken; js/core/post.js:69-92 sahne EffectComposer hedefine çiziliyor; three.module.js:7257-7263 ve :7295 (ton eşleme/çıkış renk uzayı hedefe göre); 10. belge §10.9.1: program sayısı yüksek/orta 89, düşük 40.",
+   "note": "Son işleme açıkken derlenen varyant kullanılmıyor (J-03)."
+  },
+  {
+   "name": "Grafik kalite ayarları ve uygulanması (settings.apply, settingsPanel)",
+   "status": "hatali_kararsiz",
+   "evidence": "js/ui/settingsPanel.js:33-42 (çözünürlük ölçeği, grafik kalitesi*, FPS sınırı, görüş mesafesi, gölge, su*, efekt, FOV, FPS göster; *yeniden başlatma); js/core/settings.js:46-67; js/main.js:97 (dünya kurulmadan uygulanır); 10. belge §10.9.1: düşük ayar limanda −%26 çağrı.",
+   "note": "Gölge çözünürlüğü açılışta uygulanmıyor (J-09), arazi LOD ön ayarı sıfırlanıyor (J-10), oyun içi gölge kapatma (J-11), FPS sınırı (J-12); otomatik donanım algılama ve dinamik çözünürlük yok."
+  },
+  {
+   "name": "Son işleme zinciri (bloom, renk, FXAA/MSAA, yazılımsal algılama)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "js/core/post.js:48-58 (isSoftware), :60-93 (yüksek: 4× MSAA HalfFloat hedef, orta: FXAA; bloom yarım çözünürlük), :80-86 (NaN arındırma; 17_kamera_kararma taban 13/13); js/core/engine.js:20-21 (antialias:true, DPR ≤2).",
+   "note": "Son işleme açıkken tuval MSAA'sı boşa (J-14)."
+  },
+  {
+   "name": "Doku önbellekleri (textures.js, kk.texture)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "js/core/textures.js:5 (anahtarlı önbellek); js/world/port.js:15-20 (texMat dokuyu klonlar, Source paylaşılır), :34-59 (bina tohumuna göre ayrı tuval dokuları); js/core/kk.js:207-247 (renk atlası, FIFO 96; :244 eski dokuyu dispose eder).",
+   "note": "FIFO kullanımdaki dokuyu bırakabilir (J-22); bina başına dokular birleştirmeyi engeller (J-06)."
+  },
+  {
+   "name": "Geometri/malzeme paylaşımı",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "Paylaşılan: js/world/islands.js:44-77 (PARTS), js/wildlife/megafauna.js:135-210 (GEO), js/game/enemies.js:1251-1261 (PROJ_GEO), js/world/details.js:138-159 (Wake.material), js/core/assets.js:117-125 (prop klonu). Paylaşılmayan: js/wildlife/animals.js:21-298, js/world/details.js:262 (46 toplanabilir), js/world/port.js:399-402 (fenerler), js/world/props.js:356-372 (mezarlar), js/player/character.js:459 (örgü başına malzeme klonu).",
+   "note": "J-05, J-06, J-23."
+  },
+  {
+   "name": "Bulut katmanı ve hava efektleri",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "js/world/weatherfx.js:15-42 (bulut: 7–11 IcosahedronGeometry(detay 2) puf = 1 440–1 980 üçgen), :64-77 (3 InstancedMesh × 30, frustumCulled=false), :80-89 (28 sis sprite'ı, her biri ayrı malzeme), :171-216 (yıldırım başına yeni Tube geometri + malzeme, 0,45 sn sonra dispose); /tmp/denetim_alan/J_perf/clouds.mjs: tam kapalı gök 151 200 üçgen.",
+   "note": "09'da fırtına (697 K) ile orman adası (552 K) arasındaki +145 K üçgenin çoğu bulut (J-24)."
+  },
+  {
+   "name": "Okyanus yüzeyi",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "js/world/ocean.js:64-89 (300² ızgara ≈178 800 üçgen, yüksek), :118-238 (saydam, çift yüzlü, ağır parça gölgelendirici), :241 (frustumCulled=false), :270-280 (kameraya 4 m adımla kayar).",
+   "note": "Su kalitesi yalnız ızgarayı değiştirir (yeniden başlatma), parça gölgelendiricisi sadeleşmez; gerçek GPU'da ölçülmedi."
+  },
+  {
+   "name": "Deniz devleri: geometri paylaşımı ve 700 m görünürlük kesmesi",
+   "status": "dogrulanmamis",
+   "evidence": "js/wildlife/megafauna.js:135-210 (tür başına GEO önbelleği), :243-245 (frustumCulled=true), :405 (dd < 700 görünür).",
+   "note": "Test yok; kod okuması belgeyle uyumlu."
+  },
+  {
+   "name": "Gereksiz çizimi önleme (duraklatma/menü/tam ekran panel)",
+   "status": "eksik",
+   "evidence": "js/core/engine.js:52-71 her rAF'ta post.render(); js/game/game.js:192 G.paused yalnız benzetimi durdurur; css/style.css:101 #modal backdrop-filter: blur(2px) canlı tuval üstünde.",
+   "note": "J-19."
+  },
+  {
+   "name": "Örtme (occlusion) / bölge ayıklaması",
+   "status": "eksik",
+   "evidence": "Yalnız three.js görüş konisi ayıklaması var; karakterlerde o da kapalı (js/player/character.js:458). Mağaradayken dış dünya, dışarıdayken mağara içi çiziliyor (js/world/cave.js; js/game/game.js:345-347 yalnız kamera sınırlaması).",
+   "note": "En yüksek getiri mağara sahnesinde bölge ayıklaması."
+  },
+  {
+   "name": "Örgü LOD'u / uzak nesne vekilleri (impostor)",
+   "status": "eksik",
+   "evidence": "Yalnız arazi halkaları (js/world/terrain.js:18-23) ve mesafe gizleme (js/world/islands.js:404-415, js/wildlife/megafauna.js:405) var; hiçbir modelin basitleştirilmiş sürümü ya da billboard'u yok (props.js, details.js, character.js, shipModel.js)."
+  },
+  {
+   "name": "Gerçek GPU ölçüm yolu (GPU zamanlayıcı, donanım etiketi)",
+   "status": "eksik",
+   "evidence": "tests/harness/run.cjs:36 ve coop.cjs:27 SwiftShader'ı zorlar; js/ui/hud.js:282 yalnız FPS sayısı; EXT_disjoint_timer_query kullanımı yok; post.isSoftware() (js/core/post.js:48-58) sonuçları etiketlemek için kullanılmıyor.",
+   "note": "11 #32 (ortam); J-15."
+  },
+  {
+   "name": "Kare başı bellek ayırma (GC baskısı)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "Düzeltilen: js/wildlife/fish.js (10. belge §10.8.4; 13_donma P07). Kalan: js/world/sky.js:297-298, :344-345 (her kare new Color / C()), js/world/weatherfx.js:246-247, js/world/details.js:175,178 (Wake dizi değişmezleri), js/game/crowd.js:16-22, js/wildlife/animals.js:791, js/game/enemies.js:1543, js/game/effects.js:45-48,160, js/ship/ship.js:604,624,635 (yelken normalleri).",
+   "note": "11 #30 açık (J-27)."
+  }
+ ],
+ "issues": [
+  {
+   "id": "J-01",
+   "title": "Karakter örgülerinde görüş konisi ayıklaması kapalı: her NPC/düşman/uzak oyuncu/balıkçı her karede ana ve gölge geçişinde çiziliyor",
+   "file": "js/player/character.js",
+   "func": "Character.build (458-460), Animated constructor (967); kk._prepChar (js/core/kk.js:93)",
+   "rootCause": "Kit örgülerine (iskeletli gövde parçaları, kit şapka/pelerin) ve glb Animated örgülerine frustumCulled=false atanıyor; three.js r187 ayıklaması kapalı nesneyi hem ana listede (three.module.js:17726/17750) hem gölge haritasında (three.module.js:9373 '! object.frustumCulled || intersectsFrustum') koşulsuz çizer. Kök düzeyinde mesafe gizlemesi de yok.",
+   "impact": "KayKit gövdesi 6 iskeletli örgü olduğundan her karakter kameranın arkasında, 1 km uzakta ya da 110 m gölge kutusunun dışında olsa da en az 6 ana + 6 gölge çağrısı ve ~6 K + 6 K üçgen harcar. Limanda 9 NPC + 2 balıkçı + oyuncu ≈144 koşulsuz çağrı ve ≈144 K üçgen; liman NPC'leri açık denizde de çizilir (10. belge §10.9.1'deki açık deniz 203 çağrısıyla tutarlı); kurulu ada kasabalarının 5 NPC'si 1 150 m'ye kadar aynı yükü taşır; deniz savaşında tayfa eklenir.",
+   "priority": "yuksek",
+   "fix": "frustumCulled=true'ya dön: her SkinnedMesh için bağlama pozunda computeBoundingSphere() ve yarıçapı ~1,5× büyüt (animasyon payı) ya da kök Group için elle küre testi (kök konumu, r≈1,6 m) yapıp root.visible'ı yönet; NPC/balıkçı/ada NPC'lerine mesafe gizlemesi (>150–200 m) ve gizliyken animasyon güncellemesini atla; ikinci adımda 6 gövde parçasını aynı iskelet ve atlasla tek SkinnedMesh'e birleştir (14 #12).",
+   "repro": "Limanda konsolda: r=DK.engine.renderer; r.info.autoReset=false; r.info.reset(); DK.post.render(); a=r.info.render.calls; DK.npcs.list.forEach(n=>n.root&&(n.root.visible=false)); DK.details.boats.forEach(b=>b.fisher.root.visible=false); r.info.reset(); DK.post.render(); a-r.info.render.calls → kamera NPC'lere sırtını dönmüşken de >0 (≈100+). Gemiyle limandan 1,5 km uzaktayken de >0.",
+   "acceptance": "Kamera NPC'lere sırtını dönmüşken ve liman 1 km uzaktayken gizleme farkı 0 çağrı; 09 liman ölçümünde karakter kaynaklı çağrı ≤ görünen karakter × (gövde+aksesuar) × 2; kamera taramasında (kamera_tarama b4 kasaba NPC konumları) karakter kaybolması/titremesi yok.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "11 #28 ve 14 #12 ile ilişkili (birleştirme önerisi var; frustumCulled=false kök nedeni belgelenmemiş)"
+  },
+  {
+   "id": "J-02",
+   "title": "Çekirdek adaların bitki örtüsü tür başına tek dev InstancedMesh: ayıklama yok, tüm örnekler her karede ana ve gölge geçişinde",
+   "file": "js/world/props.js",
+   "func": "instanced (17-48), props.build (164-285; orman ağacı 254-266), _inst (307-319)",
+   "rootCause": "6 çekirdek adanın (Kırlangıç r=270 dahil) tüm örnekleri tek InstancedMesh'e yazılıyor; sınır küresi tüm takımadayı kapsadığı için görüş konisi ve 110 m gölge kutusu onunla hep kesişiyor, ayıklama işlemiyor. Ek adalardaki 160 m hücre + mesafe/gölge LOD'u (islands.js:79-140, 404-415) çekirdek adalara uygulanmamış; castShadow palmiye/ağaç/çalı/kaya/kütük/kuru ağaçta açık (props.js:41, 265, 390).",
+   "impact": "Node sayımı (/tmp/denetim_alan/J_perf/props_count.mjs): yüksek ayarda 1 598 örnek; GLB ve prosedürel üçgenlerle (glbtris.mjs, clouds.mjs: orman ağacı 376 üçgen) ≈202 K ana + ≈175 K gölge üçgeni — limandaki 1,25 M üçgenin ~%30'u, kamera nereye bakarsa baksın; gölge geçişindeki 370 K üçgenin yaklaşık yarısı. Zayıf GPU'da köşe işleme ve gölge haritası maliyeti.",
+   "priority": "yuksek",
+   "fix": "Çekirdek ada bitki örtüsünü islands.js Batch'iyle (160 m hücre) üret ya da props.instanced'ı hücreli yap; _cellLod benzeri mesafe gizleme (850/240 m) ve gölgeyi yalnız oyuncunun ≤80–120 m çevresindeki hücrelere ver; gerekirse r187 BatchedMesh (nesne başına ayıklama). Rastgele sayı sırası ve dönüşüm listeleri değişmemeli (yalnız hücrelere bölünür).",
+   "repro": "Limanda: DK.engine.scene.children.filter(o=>o.isInstancedMesh&&o.count>50).map(o=>[o.count, Math.round(o.boundingSphere.radius)]) → yarıçaplar ~1 000 m; bu örgülerde castShadow=false yapılıp r.info ile gölge geçişi üçgen farkı ≈175 K.",
+   "acceptance": "Limanda toplam üçgen ≥ %20, gölge geçişi üçgeni ≥ %40 azalır; örnek dönüşümleri eskisiyle birebir aynı (Node karşılaştırması); kamera taramasında bitki eksikliği/pop-in yok.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "14 #12 'gölge atan nesne budaması' (bu kök neden belgelenmemiş)"
+  },
+  {
+   "id": "J-03",
+   "title": "Yükleme ekranındaki gölgelendirici ön derlemesi son işleme açıkken yanlış program varyantını derliyor",
+   "file": "js/main.js",
+   "func": "boot (97, 112); post.setQuality (js/core/post.js:60-93)",
+   "rootCause": "compileAsync(engine.scene, engine.camera) bağlı çizim hedefi yokken çağrılıyor; three.js programı tuval için (ACES ton eşleme + sRGB çıkış) üretiyor (three.module.js:7257-7263, 7295). Efekt kalitesi orta/yüksekken (varsayılan) sahne EffectComposer'ın RenderPass hedefine çizildiği için gerçekte ton eşlemesiz + doğrusal çıkış varyantı gerekiyor; bunlar ilk karede eşzamanlı derleniyor.",
+   "impact": "Yükleme ekranı 8 sn'ye kadar kullanılmayacak programları derliyor; menünün ilk karesinde ve ilk görülen içerikte tüm sahne programları yeniden derleniyor → gerçek GPU'da (özellikle Windows/ANGLE) yüzlerce ms–saniyeler süren donma. Kanıt: 10. belge §10.9.1 program sayısı yüksek/orta 89, düşük 40; fark son işleme (~10) ve gölge derinlik programlarıyla açıklanamayacak kadar büyük (~35–40 ikiz varyant).",
+   "priority": "yuksek",
+   "fix": "Ön derlemeyi composer hedefi bağlıyken yap: renderer.setRenderTarget(post.composer.readBuffer); await compileAsync(...); renderer.setRenderTarget(null). Ya da yükleme ekranında görünmez 1×1 pencerede bir kez post.render() ile ısıt (gölge derinlik malzemeleri de derlenir); efekt kalitesi değişince aynı ısıtmayı tekrarla.",
+   "repro": "Yükleme bittiği anda ilk kare çizilmeden: n0=DK.engine.renderer.info.programs.length; DK.post.render(); n1=DK.engine.renderer.info.programs.length → efekt yüksek/orta iken n1−n0 ≈ 35–45, 'low' iken ≈0; Chrome Performance kaydında ilk karede uzun compileShader/linkProgram.",
+   "acceptance": "Efekt yüksek/orta iken yükleme sonrası ilk karede yeni program ≤ 3; liman 'progs' değeri düşük ayardaki sayı + son işleme programları (≈50) düzeyine iner; gerçek GPU'da ilk kare < 50 ms.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "11 #31 / 02 T04 / 14 #16 ile ilişkili (yanlış varyant kök nedeni belgelenmemiş)"
+  },
+  {
+   "id": "J-04",
+   "title": "Gemi modeli 80 (sloop) / 118 (brigantin) ayrı örgüden oluşuyor ve hepsi gölge atıyor",
+   "file": "js/ship/shipModel.js",
+   "func": "buildShipModel (239-534; 524'te tüm örgülere castShadow=true)",
+   "rootCause": "Tekerlek parmakları, merdiven basamakları, top parçaları, harita, kova gibi küçük parçalar ayrı örgü ve 19–27 malzemeyle kuruluyor; birleştirme yok; son traverse castShadow=false olanları da gölge atar yapıyor.",
+   "impact": "Node kurulumu (/tmp/denetim_alan/J_perf/shipcount.mjs): sloop 80 örgü / 80 gölge atan / 19 malzeme / 6 264 üçgen, brigantin 118/118/27. Limanda demirli oyuncu gemisi görünürken ≈160 çağrı (toplamın ~%15'i); ticaret gemisi limandayken +≈236; deniz savaşında düşman gemisi + tayfa ile 400+ çağrı.",
+   "priority": "orta",
+   "fix": "Hareketsiz parçaları (gövde donanımı, küpeşte, merdiven, ambar kapağı, masa, kova, mataforalar) gemi başına malzemeye göre mergeStatic ile birleştir; dönen/oynayan parçaları (yelkenler, dümen tekerleği, toplar, çapa, bayrak) ayrı tut; topları InstancedMesh yap; yarıçapı <0,15 m parçalarda castShadow=false; hasar/kırık direk görsellerini koru.",
+   "repro": "let n=0,c=0; DK.G.ship.root.traverse(o=>{if(o.isMesh){n++; if(o.castShadow)c++;}}); [n,c] → [80,80].",
+   "acceptance": "Sloop ≤ 20 örgü ve ≤ 10 gölge atan, brigantin ≤ 30 örgü; gemi görünümü snapFrom karşılaştırmasında aynı; top nişanı, yelken animasyonu ve hasar görselleri çalışır; 03/04 gemi testleri geçer.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "11 #28 ile ilişkili (gemi kaynağı belgelenmemiş)"
+  },
+  {
+   "id": "J-05",
+   "title": "Prosedürel hayvanlar parça başına ayrı örgü, geometri ve malzeme kullanıyor; bireyler arası paylaşım yok",
+   "file": "js/wildlife/animals.js",
+   "func": "boarModel (21-68), monkeyModel (69-105), crocModel (106-163), parrotModel (164-193), snakeModel (194-217), polarModel (249-298)",
+   "rootCause": "Her birey için her parça new Geometry + std() malzemesiyle kuruluyor (yılanda her segment ayrı malzeme); katı alt gruplar birleştirilmiyor; tür başına geometri önbelleği yok.",
+   "impact": "/tmp/denetim_alan/J_perf/animal_meshes.mjs: domuz 20 örgü, timsah 34, yılan 22 (22 malzeme), kutup ayısı 33. Limanda etkin bölgeler (zones.mjs: domuz 7, maymun 6, papağan 9, yılan 6, yengeç 5 = 33 hayvan); 10. belgedeki '7 adsız grup × 20 örgü = 140 çağrı' 7 domuzdur. Her doğuşta 20–34 geometri yükleme maliyeti.",
+   "priority": "orta",
+   "fix": "Tür başına geometri önbelleği (renk farkı köşe rengi ya da malzeme varyantı); pivot grubu başına (gövde, baş grubu, her bacak) parçaları tek geometride birleştir → domuz 20→6 örgü; uzun vadede basit iskelet + tek SkinnedMesh; küçük parçalarda gölgeyi kapat.",
+   "repro": "Limanda: DK.animals.list.filter(a=>a.kind==='boar').map(a=>{let n=0;a.root.traverse(o=>{if(o.isMesh)n++});return n}) → [20,20,…]; 09 'liman' çağrısını önce/sonra karşılaştır.",
+   "acceptance": "Domuz ≤ 6, timsah ≤ 8, yılan ≤ 4 örgü; 7 domuzluk bölge ≤ 50 çağrı; 09 hayvan sızıntı döngüsü dG=dT=0 kalır; bacak salınımı ve yılan dalgası görsel olarak aynı.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "14 #12 (prosedürel hayvan parçalarının birleştirilmesi)"
+  },
+  {
+   "id": "J-06",
+   "title": "Başlangıç limanında bina/aksesuar başına benzersiz doku ve malzeme: birleştirme 84 örgüde kalıyor",
+   "file": "js/world/port.js",
+   "func": "texMat (15-20), makeBuilding (29-125), _lantern (397-409), _board (378-395), port.build (151-334)",
+   "rootCause": "texMat her çağrıda dokuyu klonlayıp yeni MeshStandardMaterial üretiyor; temel/duvar/çatı dokuları bina tohumuna göre ayrı tuvallerden geliyor (stone(seed), woodPlanks(.., seed), roofTiles(.., seed)); mergeStatic malzeme uuid'ine göre grupladığı için her bina 3–4 ayrı örgü bırakıyor. 7 fener 2'şer benzersiz malzeme kullanıyor ama port.update (455-457) hepsine aynı parlaklığı veriyor; babalar ve pano da ayrı malzeme.",
+   "impact": "/tmp/denetim_alan/J_perf/portcount.mjs: 'port-batched' 84 örgü / 84 malzeme (51 dokulu, 26 düz, 7 fener ampulü), 63 gölge atan; deniz feneri ayrı 5 örgü. 10. belge §10.5: 106 çağrı; ayrıca ~39 adet 256² tuval dokusu.",
+   "priority": "orta",
+   "fix": "Duvar/çatı/temel türü başına tek malzeme + doku atlası; tekrar (repeat) değerlerini birleştirmeden önce UV'ye pişir; bina renk farkını köşe rengine taşı; tek fener ampulü ve tek direk malzemesi; tabelaları tek atlasa topla; deniz fenerinin hareketsiz parçalarını birleşik gruba al.",
+   "repro": "const g=DK.engine.scene.children.find(o=>/port-batched/.test(o.name)); [g.children.length, new Set(g.children.map(m=>m.material)).size] → [84, 84].",
+   "acceptance": "port-batched ≤ 25 örgü; liman çağrısı ≥ 60 azalır; doku ölçeği, renkler ve tabelalar önce/sonra ekran görüntüsünde eşdeğer; gece fener/pencere ışımaları korunur.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "11 #28; docs/12 §12.4 'çekirdek ada yapılarının birleştirilmesi' (yapılmadı)"
+  },
+  {
+   "id": "J-07",
+   "title": "Sahnede sürekli 7 nokta ışığı var; her aydınlatılmış pikselde hepsi hesaplanıyor",
+   "file": "js/world/islands.js",
+   "func": "islands.init (236-243); weatherfx.init (js/world/weatherfx.js:115-116); cave.build (js/world/cave.js:117-123)",
+   "rootCause": "Ada fener havuzunun 4 ışığı (yoğunluk 0, y=-500), yıldırım ışığı (yoğunluk 0) ve mağaranın 2 ışığı (mağaradan km'lerce uzaktayken de) kalıcı olarak sahnede; three.js görünür her ışığı NUM_POINT_LIGHTS'e katar ve lights_fragment döngüsü yoğunluk/mesafeden bağımsız her ışık için BRDF hesaplar.",
+   "impact": "Her MeshStandardMaterial pikselinde 7 ek ışık değerlendirmesi → zayıf/tümleşik GPU'da 1080p ve aşırı çizimle birkaç ms; docs/12 §12.2'deki 'sabit 4 ışıklı havuz' gerçek sayıyı yansıtmıyor.",
+   "priority": "orta",
+   "fix": "Toplam nokta ışığını sabit ve küçük tut (2–3): mağara ışıklarını ve meşaleyi aynı havuzdan yakınlığa göre ata, yıldırımı yarımküre/yönlü ışık artışıyla ver; düşük kalitede havuzu 0–1'e indir (oturum boyunca sabit, yeniden derleme olmasın).",
+   "repro": "let n=0; DK.engine.scene.traverse(o=>{if(o.isPointLight&&o.visible)n++}); n → limanda 7 (meşale yanınca 8).",
+   "acceptance": "Görünür nokta ışığı sayısı oturum boyunca sabit ve ≤ 3; mağara ve gece fener aydınlatması görsel olarak korunur; gerçek GPU'da limanda kare süresi önce/sonra ölçülür.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "Belgelenmemiş (docs/12 §12.2 iddiasıyla çelişiyor)"
+  },
+  {
+   "id": "J-08",
+   "title": "Meşale yakılıp söndürülünce ışık sayısı değişiyor; tüm aydınlatılmış malzemeler yeniden derleniyor",
+   "file": "js/player/player.js",
+   "func": "Player.toggleTorch / _syncTorch (122-138); makeTorch (js/player/character.js:328-341)",
+   "rootCause": "Meşalenin PointLight'ı _torchObj.visible ile açılıp kapanıyor; numPointLights program anahtarında (three.module.js:7429) ve lightsStateVersion değişince setProgram yeni program istiyor (:18279). İlk kullanımda görünür her malzeme için yeni varyant derleniyor.",
+   "impact": "Oyuncu F'ye ilk bastığında (gece/mağara) eşzamanlı derleme → gerçek GPU'da belirgin donma; toplam nokta ışığı 8'e çıkıyor.",
+   "priority": "orta",
+   "fix": "Meşale ışığını oyuncu karakterinde sürekli sahnede tut (visible=true), kapalıyken intensity=0; ya da J-07'deki sabit havuza dahil et.",
+   "repro": "n0=DK.engine.renderer.info.programs.length; DK.G.player.inv.add('fener',1); DK.G.player.toggleTorch(); DK.post.render(); DK.engine.renderer.info.programs.length-n0 → >0 (ilk açışta).",
+   "acceptance": "Meşale aç/kapa programs.length'i değiştirmez; ilk açışta kare süresi normal karenin 2 katını aşmaz.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "Belgelenmemiş"
+  },
+  {
+   "id": "J-09",
+   "title": "'Gölge kalitesi' seçimi yeniden açılışta uygulanmıyor; harita boyutu grafik kalitesinden geliyor",
+   "file": "js/core/settings.js",
+   "func": "settings.apply (46-67, özellikle 53-60); js/main.js boot (97 → 106); sky.build (js/world/sky.js:137-139)",
+   "rootCause": "settings.apply açılışta dünya kurulmadan çağrılıyor (main.js:97); güneş ışığı sonra sky.build'de (js/game/game.js:52) yaratılıp mapSize'ı grafik kalitesine göre (yüksek 2048, diğer 1024) alıyor; apply bir daha çağrılmadığı için seçilen gölge kalitesi ancak oyun içinde bir ayar değişince uygulanıyor. Grafik kalitesi 'düşük'te castShadow=false olduğundan gölge seçeneği tümden etkisiz.",
+   "impact": "Performans için 'Orta (1024)' seçen kullanıcı her açılışta 2048 haritayla (4× gölge doldurma) oynar ya da tersi; panel ile gerçek durum tutarsız.",
+   "priority": "orta",
+   "fix": "Dünya kurulduktan sonra settings.apply()'ı bir kez daha çağır ya da sky.build gölge boyutunu settings.v.shadows'tan alsın; quality 'low' ile shadows seçimini tek kurala bağla.",
+   "repro": "Ayarlar: Grafik kalitesi Yüksek, Gölge Orta (1024) → sayfayı yenile → DK.sky.sun.shadow.mapSize.x → 2048.",
+   "acceptance": "Yenilemeden sonra mapSize ayarla aynı (1024/2048); quality 'low' + shadows 'high' birleşimi panelde engellenir ya da tutarlı uygulanır.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "02 A4 (03. belgede A1–A4 kapsamında giderildi sayılıyor; yalnız oyun içi değişiklikte giderilmiş)"
+  },
+  {
+   "id": "J-10",
+   "title": "Herhangi bir ayar değişince arazi LOD ön ayarı sıfırlanıyor; görüş mesafesi açılışta araziye uygulanmıyor",
+   "file": "js/core/settings.js",
+   "func": "settings.apply (63-65); terrain.init (js/world/terrain.js:247)",
+   "rootCause": "Açılışta apply, terrain.init'ten önce çalıştığı için terrain.lodScale tanımsız → baseLod=1 sabitleniyor; terrain.init sonra lodScale'ı kaliteye göre (0,7/0,85/1) yazıyor ve görüş mesafesini yok sayıyor. Oyun içinde herhangi bir ayar (ses kaydırıcısı dahil; settingsPanel.js:12 commit) apply'ı tekrar çalıştırınca lodScale = 1 × (0,7 + 0,3·görüş) oluyor, kalite ön ayarı kayboluyor; ayrıca her commit setRenderScale ile tuvali/hedefleri yeniden boyutluyor.",
+   "impact": "Düşük kalite kullanıcısında ses ayarı bile arazi LOD yarıçapını 0,7→1,0'a (~2× karo) çıkarır; görüş mesafesini %30 yapan kullanıcı yeniden açılışta tam mesafeyle başlar.",
+   "priority": "orta",
+   "fix": "terrain.baseLod'u terrain.init'te kaliteye göre ata; apply'da lodScale = baseLod × (0,7 + 0,3·vd); dünya kurulunca apply'ı bir kez daha çağır; görüntü dışı ayarlarda render hedeflerini yeniden boyutlama.",
+   "repro": "Kalite 'Düşük' kaydet, yenile → DK.terrain.lodScale 0.7; Ayarlar → Ses → Ana ses kaydırıcısını oynat → DK.terrain.lodScale 1.0 ve DK.terrain.stats().tiles artar.",
+   "acceptance": "lodScale her zaman kaliteTabanı × (0,7 + 0,3·vd); ses/kontrol ayarı değişince değişmez; yenileme sonrası ve oyun içi değerler aynı.",
+   "presentIn": "yalniz_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "J-11",
+   "title": "Oyun içinde 'Gölge: Kapalı' seçilince malzeme programları yenilenmiyor (gölgeler donuyor, piksel maliyeti sürüyor)",
+   "file": "js/core/settings.js",
+   "func": "settings.apply (52-60)",
+   "rootCause": "Yalnız renderer.shadowMap.enabled değişiyor; three.js shadowMapEnabled'ı yalnız program kurulurken okuyor (three.module.js:7450), setProgram'ın değişim koşullarında yok (:18279-18340); gölge geçişi atlanıyor (:8939) ama derlenmiş malzemeler USE_SHADOWMAP ile son haritayı/matrisi örneklemeye devam ediyor. Yüksek→Kapalı'da harita boyutu değiştiği için harita bırakılıyor (56-59).",
+   "impact": "Orta→Kapalı'da gölgeler eski yerinde donar; her durumda gölge örnekleme maliyeti sürer, düşük donanımda beklenen kazanç gelmez; 02 kaydına göre Kapalı→Açık'ta gölgeler yeniden başlatmaya dek gelmeyebilir.",
+   "priority": "orta",
+   "fix": "Gölge ayarı değişince sahnedeki tüm malzemelere needsUpdate=true (tek seferlik derleme, bekleme göstergesiyle) ya da ayarı 'yeniden başlatınca' sınıfına al; Kapalı'da sun.castShadow=false + needsUpdate.",
+   "repro": "Limanda gölge 'Orta' → 'Kapalı', oyuncuyu 10 m yürüt: gölgesi eski yerde kalır; programların önbellek anahtarında shadowMapEnabled hâlâ true.",
+   "acceptance": "Kapalı'da hiçbir program USE_SHADOWMAP içermez ve görüntü 'Kapalı' ile açılmış oturumla eşdeğer; Kapalı→Açık'ta gölgeler aynı karede döner.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "02 A_motor-ek-statik-19 (açık; 11. belgede listelenmemiş)"
+  },
+  {
+   "id": "J-12",
+   "title": "FPS sınırı yüksek tazeleme hızlı ekranlarda hedefin çok altında kalıyor",
+   "file": "js/core/engine.js",
+   "func": "engine.start döngüsü (52-71; sınır 55-59)",
+   "rootCause": "Kare atlama kararı 'now − _last < 1000/limit − 1' ile veriliyor ve çizimden sonra _last=now atanıyor (faz birikmiyor); rAF yalnız ekran tazeleme aralıklarında geldiğinden hedef aralığın biraz altındaki kareler atlanıyor.",
+   "impact": "/tmp/denetim_alan/J_perf/fpslimit.mjs: 60 FPS sınırı 75 Hz ekranda 37,4, 100 Hz'de 50, 144 Hz'de 47,9, 165 Hz'de 55 FPS; 30 sınırı 75/100 Hz'de 25. Güç tasarrufu için sınır koyan dizüstü kullanıcıları gereksiz takılma yaşar.",
+   "priority": "orta",
+   "fix": "Biriktirmeli zamanlama: if (now − _last < minDt − tolerans) return; _last += minDt; (now − _last > minDt ise _last = now ile yakalama); ya da sınırı en yakın tazeleme bölenine yuvarla.",
+   "repro": "Node: /tmp/denetim_alan/J_perf/fpslimit.mjs; tarayıcıda 144 Hz ekranda Ayarlar → FPS sınırı 60 + 'FPS göster' → ~48.",
+   "acceptance": "60 sınırında 75/100/144/165 Hz ekranlarda 57–60 FPS; 30 sınırında 29–30 FPS (benzetim ve gerçek ekran).",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin"
+  },
+  {
+   "id": "J-13",
+   "title": "Sis ve hava koşullarından bağımsız çizim mesafesi: tamamen sis rengindeki uzak içerik çiziliyor",
+   "file": "js/core/settings.js",
+   "func": "settings.apply (61, camera.far); sky.update (js/world/sky.js:359 sis yoğunluğu); terrain.update/_wantSeg (js/world/terrain.js:258-320); islands._cellLod (js/world/islands.js:404-415)",
+   "rootCause": "camera.far = 1500 + 3500·görüş (varsayılan 5 000 m), arazi halkaları 2 700 m'ye, ada hücreleri 850 m'ye kadar; FogExp2 yoğunluğu açık havada 0,0011 (≥%99 sis ≈1,95 km), fırtınada ≈0,0076 (≈280 m), sisli havada ≈0,0101 (≈210 m). Kesme mesafeleri sise bağlı değil.",
+   "impact": "Sisli/fırtınalı havada ve açık havada ~2 km ötesinde görünmeyen arazi, ada içeriği, bulut ve karakterler için çağrı/üçgen harcanıyor; fırtına zaten en ağır sahnelerden.",
+   "priority": "orta",
+   "fix": "Etkin görüş d99 = √(−ln 0,01)/yoğunluk hesapla; camera.far = min(ayar, 1,1·d99); terrain.lodScale ve islands hücre mesafelerini d99'a göre kırp (yumuşak geçişle).",
+   "repro": "Limanda DK.sky.setWeather('sisli', true); DK.sim(3); r.info ile çağrı/üçgen ölç → açık havadakine yakın kalıyor.",
+   "acceptance": "Sisli/fırtınada aynı konumda çağrı ve üçgen ≥ %30 azalır; d99 sınırında görünür pop-in yok (kamera taraması).",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "J-14",
+   "title": "Son işleme açıkken tuval yine 4× MSAA ile oluşturuluyor; varsayılan piksel oranı 2'ye kadar",
+   "file": "js/core/engine.js",
+   "func": "engine.init (20-21), setRenderScale (38-42)",
+   "rootCause": "WebGLRenderer antialias:true ile kuruluyor; efekt orta/yüksekken sahne composer hedefine çizilip tuvale yalnız tam ekran dörtgen düşüyor, tuvalin çok örnekli arabelleği boşa çözümleniyor. Piksel oranı min(devicePixelRatio, 2) × ölçek (varsayılan 1) → HiDPI dizüstünde 4× piksel.",
+   "impact": "Yüksek efektte 4× MSAA HalfFloat hedef + 4× MSAA tuval: yüksek çözünürlüklü ekranlarda yüzlerce MB GPU belleği ve bant genişliği; tümleşik GPU'larda FPS kaybı.",
+   "priority": "orta",
+   "fix": "Bağlamı antialias:false ile kur (efekt 'low' ise FXAA ya da tek MSAA hedef kullan); varsayılan DPR üst sınırını 1,5 yap ya da ilk açılışta GPU/çözünürlüğe göre ölçek öner; isteğe bağlı dinamik çözünürlük.",
+   "repro": "DK.engine.renderer.getContext().getContextAttributes().antialias → true; retina ekranda DK.engine.renderer.getPixelRatio() → 2.",
+   "acceptance": "Efekt orta/yüksekte tuval antialias=false; varsayılan DPR ≤ 1,5; kenar yumuşatma önce/sonra ekran görüntüsünde eşdeğer.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "J-15",
+   "title": "Performans ölçüm altyapısı: tek kare, 5 sahne, yalnız SwiftShader, tek gevşek bütçe",
+   "file": "tests/scenarios/09_performans.js",
+   "func": "_M (6), sahne adımları (7-18), liman bütçesi (10); tests/harness/run.cjs:36",
+   "rootCause": "Ölçüm tek kare ve tek kamera açısı; sahneler menü, liman, Kadim Tapınak kıyısı, aynı noktada fırtına ve aynı noktada doğurulan kraken; koşucu SwiftShader'ı zorluyor; yalnız limanda ≤1100 çağrı / <40 ms bütçesi var; v0.3 perf1.js'deki kasaba, düşman kampı ve açık deniz sahneleri v0.4 ölçümüne taşınmamış.",
+   "impact": "Kalabalık kasaba, mağara, açık deniz, deniz savaşı, gerçek boss savaşı, 4 oyunculu co-op, gece/meşale ölçülmüyor; 999→1 035 gibi çağrı artışları yakalanmıyor; gerçek GPU sonuçları ayrıştırılamıyor.",
+   "priority": "orta",
+   "fix": "09'u sahne matrisine genişlet (bkz. requirements): sahne başına 360° kamera taraması (kamera_tarama konumları), 60–120 karede medyan/p95 çağrı-üçgen, ilk karede yeni program sayısı, varsa GPU zamanı (EXT_disjoint_timer_query_webgl2), renderer adı/DPR/ön ayar JSON'a; sahne başına bütçe; SwiftShader bayraksız '--gpu' kipi ve gerçek makinede aynı senaryo.",
+   "repro": "docs/v05/taban_kosusu_44d548c/09_performans.json yalnız menu/liman/orman_adasi/firtina/boss_kraken içerir; 09_performans.js:10 tek bütçe.",
+   "acceptance": "Senaryo ≥ 10 sahne ölçer, her sahnede bütçe kontrolü vardır, sonuçlarda renderer adı ve kip yazılıdır; aynı kodda iki koşu arası medyan çağrı farkı ≤ %3.",
+   "presentIn": "yalniz_v04",
+   "confidence": "kesin",
+   "knownAs": "11 #32 (ortam: gerçek FPS ölçülemez)"
+  },
+  {
+   "id": "J-16",
+   "title": "09_performans'ta Volkanik Dev oluştur/kaldır döngüsü geometri +5 ile kalıyor (kararsız ya da sızıntı)",
+   "file": "tests/scenarios/09_performans.js",
+   "func": "nesne sızıntı döngüsü (33-38); VolcanicGiant (js/game/bosses.js:768-907), BossBase.dispose (126-134)",
+   "rootCause": "Doğrulanmadı. Gözlem: dG=5 ve demon.glb'nin primitive sayısı 5 (/tmp/denetim_alan/J_perf/glbtris.mjs); dev ilk 4 sn kraterden yükseldiği için (bosses.js:811) testin 0,5 sn'lik benzetiminde lav atışı olmuyor, uçuştaki işaret halkası hipotezi zayıf. Paylaşımlı demon geometrisinin ölçüm anlarında farklı yüklenme durumu ya da başka bir geç yüklenen kaynak olası.",
+   "impact": "Bilinen tek başarısız performans kontrolü; gerçek sızıntıysa her Volkanik Dev karşılaşmasında 5 geometri birikir; kararsızsa regresyon sinyalini maskeler.",
+   "priority": "orta",
+   "fix": "Döngüye önce/sonra geometri kimlik kümesi farkını yazan tanı ekle (renderer.info yerine nesne kümesi); ısınma için bir döngü daha koş; gerçek sızıntı çıkarsa ilgili kaynağı BossBase/VolcanicGiant dispose'a ekle.",
+   "repro": "node tests/harness/run.cjs tests/scenarios/09_performans.js --size 640x360 → adım 19 volkanik_dev dG (taban: 5); 5 ardışık koşuda dağılımı kaydet.",
+   "acceptance": "5 ardışık koşuda volkanik_dev dG=0, dT=0; tanı çıktısında fark kümesi boş.",
+   "presentIn": "yalniz_v04",
+   "confidence": "orta",
+   "knownAs": "docs/v05/00_BASLANGIC_KAYDI.md:58 (taban 09_performans 8/9, Faz 8'de incelenecek)"
+  },
+  {
+   "id": "J-17",
+   "title": "Sonradan görünen içerik (ada, düşman, boss, hayvan, efekt) ilk görüldüğünde gölgelendirici derlemesi",
+   "file": "js/world/islands.js",
+   "func": "_buildGen sonu rimAll (364), _runJob sahneye ekleme (388); enemies.spawn, bosses.spawn, animals._spawnZone",
+   "rootCause": "Yalnız yükleme anındaki sahne ön derleniyor (o da yanlış varyantla, J-03); ada grubu, düşman/boss/hayvan malzemeleri ve paylaşımlı malzemelere ilk adada eklenen kenar ışığı kancası (js/core/rim.js applyRim → needsUpdate) ilk çizimde derleniyor.",
+   "impact": "Her yeni içerik türünde oturumda bir kez takılma (10. belge §10.8.5: turda 5+1 yeni program, yazılımsal GPU'da 38–81 ms kareler); gerçek GPU'da ölçülmedi.",
+   "priority": "orta",
+   "fix": "Ada grubunu sahneye eklemeden önce composer hedefi bağlıyken compileAsync(group, camera, scene); düşman/boss/hayvan/efekt malzeme çeşitlerini yükleme ekranında görünmez örneklerle ısıt; rim kancasını paylaşımlı malzemelere yüklemede uygula.",
+   "repro": "Yeni oturumda programs.length kaydet; gemiyle yeni bir biyom adasına yaklaş; ada kurulduğu karede programs.length artışı > 0.",
+   "acceptance": "Oturumdaki ilk ada/düşman/boss karşılaşmasında programs.length artışı 0; P01 benzeri yaklaşmada en uzun kare ≤ 2× ortalama.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "11 #31; 02 T04; 14 #16"
+  },
+  {
+   "id": "J-18",
+   "title": "Harita ayrıntı karosu boyanırken tuvalden geri okuma (getImageData) ana iş parçacığını kilitliyor",
+   "file": "js/ui/mapArt.js",
+   "func": "paint (99-114; getImageData 102)",
+   "rootCause": "Parşömen zemini tuvalden piksel olarak eşzamanlı geri okunup işleniyor.",
+   "impact": "Yazılımsal GPU'da karo başına 100–650 ms; koşarken/seyrederken yeni karoya girişte bir kez takılma (gerçek GPU'da ölçülmedi).",
+   "priority": "orta",
+   "fix": "Boyamayı arazi işçisine taşı (ham piksel dizisi / OffscreenCanvas) ve sonucu ImageBitmap olarak aktar; bellek etkisini 04_karakter tepe değeriyle ölç.",
+   "repro": "11. belge #45: harita ayrıntı karosu sınırını geçerken Performance kaydında getImageData uzun görevi.",
+   "acceptance": "Karo geçişinde ana iş parçacığında > 16 ms görev yok; 04_karakter bellek tepesi ≤ 1,2 GB.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "11 #45"
+  },
+  {
+   "id": "J-19",
+   "title": "Duraklatma menüsü, ana menü ve tam ekran paneller açıkken tam sahne çizimi sürüyor",
+   "file": "js/core/engine.js",
+   "func": "engine.start döngüsü (52-71); game.update (js/game/game.js:192)",
+   "rootCause": "Döngü her rAF'ta post.render() çağırıyor; G.paused yalnız benzetimi durduruyor; #modal arka planı canlı tuval üstünde backdrop-filter blur uyguluyor (css/style.css:101); ana menü dünyayı sınırsız FPS'le çiziyor (menü 422 çağrı).",
+   "impact": "Menüde/duraklatmada GPU boşuna tam yükte (pil, ısı, fan); düşük donanımda menü takılır.",
+   "priority": "dusuk",
+   "fix": "Duraklatma/tam ekran panelde son kareyi tut, çizimi durdur ya da 5–10 FPS'e indir; ana menüde 30 FPS sınırı; bulanıklığı tek kez yakalanan görüntüye uygula.",
+   "repro": "Oyunda Esc → DK.engine.renderer.info.render.frame 1 sn arayla iki kez okunur → ~60 artar.",
+   "acceptance": "Duraklatmada render.frame artışı ≤ 10/sn; menüye dönüş ve devam görsel olarak kesintisiz.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "J-20",
+   "title": "Parçacık sistemi: parçacık başına nesne ayırma, O(n) kaydırma/silme, her güncellemede 900'lük tamponun tamamı yükleniyor ve çiziliyor",
+   "file": "js/game/effects.js",
+   "func": "effects.spawn (45-48), effects.update (121-146)",
+   "rootCause": "Her spawn yeni JS nesnesi; dolunca shift(), ölüler splice ile siliniyor; dört öznitelik her çağrıda needsUpdate ve setDrawRange(0, MAX) → ölü (alfa 0) parçacıklar da işleniyor; 'effects' alt adım kümesinde (js/game/game.js:187) olduğundan düşük FPS'te kare başına 2–6 kez yükleniyor.",
+   "impact": "Çöp toplama baskısı ve gereksiz GPU yükü (fırtınada kare başına 6 yağmur sıçraması, deniz savaşında duman); düşük FPS'te artan maliyet.",
+   "priority": "dusuk",
+   "fix": "Tipli dizilerle halka tampon (SoA), canlı sayısı n ile setDrawRange(0, n) ve addUpdateRange ile yalnız n öğe yükleme; GPU güncellemesini kare başına bir kez yap.",
+   "repro": "Ayırma örnekleyicisiyle fırtınada 30 sn: effects.spawn/update ayırmaları; parçacık yokken de her karede 4×900 öğe bufferSubData.",
+   "acceptance": "Parçacık yokken tampon yüklemesi 0; fırtınada effects kaynaklı ayırma ~0; görsel eşdeğer.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "J-21",
+   "title": "Deniz olayı yüzen nesneleri (şişe, gök taşı, kazazede salı) kaldırılınca geometri/malzeme bırakılmıyor",
+   "file": "js/game/events.js",
+   "func": "spawnFloating (158-197), events.update (79), events.start (47)",
+   "rootCause": "Şişe, gök taşı ve kazazede her doğuşta yeni geometri + MeshStandardMaterial yaratıyor; toplanınca, süresi dolunca ya da oturum başında yalnız scene.remove yapılıyor.",
+   "impact": "Olay başına 1–3 geometri ve malzeme GPU'da kalır; uzun oturumda yavaş ama sınırsız büyüme; 09 ve 10_uzun_oturum bu türü kapsamıyor.",
+   "priority": "dusuk",
+   "fix": "Modül düzeyinde paylaşımlı geometri/malzeme kullan ya da kaldırırken disposeTree(f.mesh) (varil/sandık gibi assets.prop klonlarındaki paylaşımlı kaynakları atlayarak).",
+   "repro": "4 kez: f=DK.events.spawnFloating('bottle', DK.G.player.pos.clone().add(new DK.THREE.Vector3(3,0,3))); DK.post.render(); f.gone=true; DK.events.update(0.016) → renderer.info.memory.geometries döngü başına +2.",
+   "acceptance": "09'a eklenecek şişe/gök taşı/kazazede döngüsünde ısınma sonrası dG=dT=0.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "J-22",
+   "title": "Karakter renk atlası önbelleği (FIFO 96) kullanılan dokuyu da bırakabiliyor",
+   "file": "js/core/kk.js",
+   "func": "kk.texture (207-247; tahliye 244); Character._disposeModel (js/player/character.js:492-500)",
+   "rootCause": "Önbellek 96'yı aşınca en eski anahtarın dokusu kullanımda olup olmadığına bakılmadan dispose ediliyor; three.js onu bir sonraki çizimde yeniden yüklüyor ama doku artık önbellekte değil ve karakter dispose'u dokuları bırakmıyor.",
+   "impact": "Rastgele görünümlü çok düşman/NPC görülen uzun oturumlarda en eski dokular (ör. liman NPC'leri) yeniden yüklenir (küçük takılma); sahipsiz dokular GPU'da çöp toplanana dek kalır, sayaç kayar.",
+   "priority": "dusuk",
+   "fix": "Anahtar başına başvuru sayacı (Character.build artırır, _disposeModel azaltır); yalnız sayacı 0 olanları tahliye et.",
+   "repro": "150 farklı rastgele görünümlü düşmanı 4'lü dalgalarla doğur/kaldır; info.memory.textures başlangıç + 96'yı aşar, liman NPC'sinin atlası önbellekte değildir.",
+   "acceptance": "Aynı döngü sonrası info.memory.textures ≤ başlangıç + 96; kullanımdaki hiçbir doku tahliye edilmez.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "orta",
+   "knownAs": "10. belge §10.4 notu ('sızıntı değil' denmiş)"
+  },
+  {
+   "id": "J-23",
+   "title": "Kalıcı sahnede birleştirilmemiş/örneklenmemiş küçük nesneler (toplanabilir kabuklar, mezarlar, harabeler, sarkıtlar, deniz kayalıkları)",
+   "file": "js/world/details.js",
+   "func": "details.init (toplanabilirler 252-271, deniz kayalıkları 282-307); props._grave/_statue/_kemikRuins/_camp (js/world/props.js:332-444); cave.build sarkıtlar (js/world/cave.js:93-101)",
+   "rootCause": "46 kabuk/istiridye her biri kendi geometri+malzemesiyle; deniz kayalıkları kayalık başına klon malzeme; 16 mezar × 3 örgü ve mezar başına 2 yeni malzeme; 26 sarkıt ayrı geometri; Kemik harabesi/kamp props'ları ayrı klonlar; hiçbiri mergeStatic/InstancedMesh kullanmıyor.",
+   "impact": "Görünür olduklarında onlarca ek çağrı (Kemik adası, mağara, kıyılar) ve ~100 ek geometri/malzeme; mağara sahnesinde belirgin.",
+   "priority": "dusuk",
+   "fix": "Toplanabilirler için tür başına InstancedMesh (alınanı ölçek 0 ile gizle); mezar/harabe/kamp ve mağara süslerini mergeStatic ile birleştir; deniz kayalıklarında tek kararmış malzeme.",
+   "repro": "Kemik mezarlığına ve mağara odasına bakarken r.info çağrı sayısı; DK.details.collectibles.length=46 ayrı örgü.",
+   "acceptance": "Mağara odası ve Kemik mezarlığı görünümlerinde çağrı ≥ %30 azalır; toplama/yeniden belirme davranışı aynı.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "J-24",
+   "title": "Bulut katmanı ayıklamasız ve yüksek ayrıntılı (tam kapalı gökte ~151 K üçgen); sis sprite'ları ayrı malzemeli",
+   "file": "js/world/weatherfx.js",
+   "func": "cloudGeometry (15-42), weatherfx.init (64-89)",
+   "rootCause": "Puflar IcosahedronGeometry(detay 2) = 180 üçgen, bulut başına 7–11 puf; 3 InstancedMesh × 30 örnek frustumCulled=false (kameranın arkası da çiziliyor); 28 sis sprite'ı her biri ayrı SpriteMaterial (28 çağrı).",
+   "impact": "/tmp/denetim_alan/J_perf/clouds.mjs: tam kapalı gökte 151 200 üçgen (09 fırtına ölçümündeki +145 K ile uyumlu); sisli havada +28 çağrı.",
+   "priority": "dusuk",
+   "fix": "Puf ayrıntısını 1'e indir (80 üçgen) ya da uzaktakileri billboard yap; bulutları kamera çevresinde sektörlere bölüp ayıklamayı aç; sis sprite'larını tek Points/InstancedMesh'e topla.",
+   "repro": "DK.sky.setWeather('firtina', true); DK.sim(3); bulut InstancedMesh'lerinde count × geometri üçgeni topla.",
+   "acceptance": "Fırtınada bulut üçgeni ≤ 60 K, sis efekti ≤ 2 çağrı; gökyüzü görünümü önce/sonra eşdeğer.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "J-25",
+   "title": "Gölge haritası mağarada, su altında ve derin gecede de her kare çiziliyor; texel hizalama ve kaskad yok",
+   "file": "js/world/sky.js",
+   "func": "sky.update ışık bölümü (333-341)",
+   "rootCause": "Mağarada güneş yoğunluğu ×0,03'e iniyor, su altında ve gece etkisi çok az ama shadowMap.autoUpdate her kare açık; gölge kamerası odağa sürekli kayıyor (texel hizalama yok); tek 110 m kutu.",
+   "impact": "Mağara/dalış/gece sahnelerinde gereksiz gölge geçişi (limanda 258 çağrı düzeyinde yük); yürürken gölge kenarı titremesi.",
+   "priority": "dusuk",
+   "fix": "inCave > 0,8, su altı ya da güneş yoğunluğu eşik altındayken renderer.shadowMap.autoUpdate=false (castShadow'a dokunmadan, yeniden derleme olmasın); gölge kamerasını texel boyutuna yuvarla; yüksek ayarda 2 kaskad değerlendir.",
+   "repro": "Mağara odasında r.info ile shadowMap.autoUpdate true/false çağrı farkı > 0.",
+   "acceptance": "Mağara/su altında gölge geçişi 0 çağrı; dışarı çıkınca aynı karede gölge döner; yürürken titreme gözle yok.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "J-26",
+   "title": "Sabit adım alt döngüsünde animasyon, parçacık yüklemesi ve O(n²) itişme her alt adımda tekrarlanıyor",
+   "file": "js/game/game.js",
+   "func": "game.update/_step (185-238; SUBSTEP 187); enemies.update (js/game/enemies.js:1592-1622), Animal.update (js/wildlife/animals.js:465-, anim.update 636), crowd.update (js/game/crowd.js:13-45)",
+   "rootCause": "effects, enemies, animals, bosses, crowd alt adım kümesinde; içlerindeki animasyon karıştırıcıları (char.update, anim.update), parçacık tampon yüklemesi ve crowd'un her alt adımda yeni ajan dizisi + O(n²) taraması 30 FPS'te 2×, 10–20 FPS'te 3–6× çalışıyor.",
+   "impact": "Düşük FPS'te CPU maliyeti katlanıyor (MAX_SUB=6 ile sınırlı kendini besleyen yavaşlama); limanda 33 hayvan + NPC ile crowd taraması kare başına yüzlerce–binlerce çift.",
+   "priority": "dusuk",
+   "fix": "Animasyon karıştırıcısı ve görsel tampon güncellemelerini kare başına bir kez (son alt adımdan sonra) yap; crowd'u kare başına ya da uzamsal ızgarayla çalıştır, ajan dizisini yeniden kullan.",
+   "repro": "fpsLimit=20 iken profilde char.update/anim.update/crowd.update kare başına 3 kez.",
+   "acceptance": "Alt adım sayısından bağımsız animasyon güncellemesi kare başına 1; 20 FPS'te game.update süresi 60 FPS'tekinin ≤ 1,6 katı; 03_fizik_dt sonuçları değişmez.",
+   "presentIn": "yalniz_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "J-27",
+   "title": "Kare başına çöp üreten ayırmalar (gökyüzü, hava efektleri, dümen suyu, yelken normalleri, odak listeleri)",
+   "file": "js/world/sky.js",
+   "func": "sky.update (297-298, 344-345); weatherfx.update (js/world/weatherfx.js:246-247); Wake.update (js/world/details.js:175,178); Ship._animate (js/ship/ship.js:604,624,635); animals.update (js/wildlife/animals.js:791); enemies._populate (js/game/enemies.js:1543)",
+   "rootCause": "Her karede yeni Color/Vector3, dizi değişmezleri, spread ile kurulan odak listeleri ve yelken normallerinin baştan hesabı.",
+   "impact": "Büyük çöp toplama ~5–10 sn'de bir, bu ortamda tek karede 7–12 ms (4–22 ms) → periyodik takılma (10. belge §10.8.3).",
+   "priority": "dusuk",
+   "fix": "Geçici nesneleri modül düzeyinde yeniden kullan; Wake'te diziye doğrudan indeksle yaz; yelken normallerini yalnız biçim değişince ya da birkaç karede bir hesapla; odak listelerini yeniden kullan.",
+   "repro": "Chrome ayırma örnekleyicisiyle 40 sn seyir: sky.update, weatherfx.update, Wake.update, _animate ayırmaları.",
+   "acceptance": "40 sn seyirde toplam ayırma ≥ %40 azalır; büyük toplama aralığı ≥ 2× uzar.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "11 #30; 02 T03; 14 #15"
+  },
+  {
+   "id": "J-28",
+   "title": "Yakın-kamera silinmesi tüm bitki/karakter/aksesuar malzemelerine discard ekliyor; erken derinlik testi kapanıyor",
+   "file": "js/core/nearfade.js",
+   "func": "nearFade (64-92), addShaderHook (39-51)",
+   "rootCause": "Kanca parça gölgelendiricisine koşullu discard ekliyor (88); discard içeren programlarda GPU'lar erken-Z'yi kapatır; 'veg' kategorisinde görüş çizgisi silindiri hesabı da her pikselde yapılıyor.",
+   "impact": "Yoğun ormanda ve kalabalık karakterli sahnelerde aşırı çizim maliyeti artabilir; gerçek GPU'da ölçülmedi.",
+   "priority": "dusuk",
+   "fix": "Silinmeyi yalnız kameraya yakın nesnelere uygula (nesne mesafesine göre malzeme varyantı) ya da alpha-to-coverage; gerçek GPU'da ormanda önce/sonra GPU zamanı ölç.",
+   "repro": "Gerçek GPU'da yoğun ormanda NEAR_FADE aralıklarını 0'a çekip GPU kare süresini karşılaştır.",
+   "acceptance": "Ormanda GPU kare süresi farkı ölçülüp belgelenir; fark > %10 ise discard yalnız yakın nesne varyantında kalır.",
+   "presentIn": "yalniz_v04",
+   "confidence": "orta",
+   "knownAs": "11 #54"
+  },
+  {
+   "id": "J-29",
+   "title": "Ada kurulumunda bölünemeyen tek adım 10–12 ms sürüyor (3 ms bütçenin 3–4 katı)",
+   "file": "js/world/islands.js",
+   "func": "_runJob (368-394), _npc (528-543), _port (544-600), Batch.steps (96-140)",
+   "rootCause": "NPC karakter modeli kurulumu (Character, 1–10 ms) ve ilk liman kurulumunda soğuk kit parçası önbelleği tek adımda çalışıyor.",
+   "impact": "Taban 13_donma P01: en uzun ada karesi 10,5 ms; ağır sahnede 60 FPS bütçesini aşan tekil kareler.",
+   "priority": "dusuk",
+   "fix": "Kit parçalarını ve karakter şablonlarını yükleme ekranında ısıt; NPC kurulumunu alt adımlara böl (klon / atlas boyama / aksesuar) ya da sonraki kareye ertele.",
+   "repro": "13_donma P01 çıktısı enUzunAdaKaresiMs (taban 10,5).",
+   "acceptance": "P01'de en uzun ada karesi ≤ 5 ms.",
+   "presentIn": "yalniz_v04",
+   "confidence": "yuksek",
+   "knownAs": "14 #17"
+  },
+  {
+   "id": "J-30",
+   "title": "NPC, balıkçı ve yakın hayvanlarda mesafeye bağlı animasyon/güncelleme seyreltmesi yok",
+   "file": "js/game/npcs.js",
+   "func": "npcs.update (147-166); details.update balıkçılar (js/world/details.js:543-551); animals.update (js/wildlife/animals.js:810)",
+   "rootCause": "Tüm NPC animasyonları her karede güncelleniyor (oyuncu açık denizdeyken liman NPC'leri dahil); balıkçı karakterleri mesafeden bağımsız; hayvanlar 250 m içinde her alt adımda tam güncelleniyor; co-op ev sahibinde '|| G.online' ile tüm hayvanlar.",
+   "impact": "Gereksiz CPU (iskelet karıştırma, kemik matrisleri) ve kemik dokusu yüklemesi; kalabalık kasaba ve 4 oyunculu co-op'ta artar.",
+   "priority": "dusuk",
+   "fix": "Mesafe/görünürlük katmanları: <40 m tam, 40–120 m 15 Hz, >120 m ya da görünmezken dondur; co-op'ta en yakın oyuncu mesafesine göre.",
+   "repro": "Gemiyle limandan 1 km uzaklaş; npcs.update içinde anim.update kare başına 9+ kez çağrılıyor.",
+   "acceptance": "Görünmeyen/uzak NPC'lerde animasyon güncellemesi ≤ 1 Hz; yakındaki NPC davranışı değişmez.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek"
+  }
+ ],
+ "userClaims": [
+  {
+   "claim": "Başlangıç limanında yaklaşık 1.045 draw call raporlanmış",
+   "v03": "dogru",
+   "v04": "kismen",
+   "evidence": "Kaynak: docs/12_PERFORMANS_RAPORU.md:10 (v0.3 deposunda ve v0.4'te değişmeden duruyor): 'Kırlangıç Limanı (başlangıç) | 2,0 | 1 045 | 1,25 M | 0 / 27 / 0'; ayrıca docs/01_PROJE_ANALIZ_RAPORU.md:79 '380–1 045'. Ölçüm yöntemi: tests/scenarios/v03/perf1.js measure() — info.autoReset=false + DK.post.render() (gölge ve son işleme geçişleri dahil), 960×540, SwiftShader, DK.sim. v0.4 ölçümleri: 10. belge §10.2 önce 1 032 → sonra 999; §10.5 1 036; §10.9.1 1 000 (1280×720 yüksek); §10.9.2 1 022. v0.4'te kaydedilmiş son ölçüm: docs/v05/taban_kosusu_44d548c/09_performans.json adım 5 (docs/v05/00_BASLANGIC_KAYDI.md:58) → 1 035 çağrı, 1 253 702 üçgen, 753 geometri, 200 doku, 95 program, benzetim 2,67 ms/kare (640×360). 'Yaklaşık 1 045' v0.3 için tam doğru; v0.4'te değer ~1 035 ve 10. belgedeki 999'a iniş son kodda yok."
+  }
+ ],
+ "docClaims": [
+  {
+   "doc": "docs/12_PERFORMANS_RAPORU.md §12.1 (v0.3)",
+   "claim": "Kırlangıç Limanı (başlangıç): 2,0 ms, 1 045 çizim çağrısı, 1,25 M üçgen",
+   "verdict": "dogru",
+   "evidence": "v0.3 ölçümü tests/scenarios/v03/perf1.js measure(); v0.4 son kod taban koşusu 1 035 / 1,25 M (09_performans.json adım 5) aynı düzeyde."
+  },
+  {
+   "doc": "docs/12_PERFORMANS_RAPORU.md §12.2",
+   "claim": "Ada içeriği 160 m hücreli InstancedMesh, hücre başına görünürlük ve gölge LOD'u (gölge yalnız 220 m içinde, küçük nesneler 240 m'de gizlenir)",
+   "verdict": "kismen",
+   "evidence": "Yalnız ek adalar: js/world/islands.js:79-140, 404-415. Limanın bulunduğu çekirdek adalar js/world/props.js:17-48 ile tek parça örnekleniyor; hücre/mesafe/gölge LOD'u yok (J-02); test yok."
+  },
+  {
+   "doc": "docs/12_PERFORMANS_RAPORU.md §12.2",
+   "claim": "Işıklar: sabit 4 noktasal ışıktan oluşan havuz (gölgelendiriciler yeniden derlenmez)",
+   "verdict": "kismen",
+   "evidence": "Havuz var (js/world/islands.js:236-243) ama sahnede kalıcı 7 nokta ışığı var (js/world/weatherfx.js:115, js/world/cave.js:117-123) ve meşale (js/player/player.js:127-138) ışık sayısını değiştirip yeniden derletiyor (three.module.js:7429, 18279)."
+  },
+  {
+   "doc": "docs/12_PERFORMANS_RAPORU.md §12.2",
+   "claim": "AI LOD: uzak düşmanlar seyrek güncellenir; hayvanlar 250 m dışında güncellenmez; bölge kontrolleri saniyede 4 kez",
+   "verdict": "dogru",
+   "evidence": "js/game/enemies.js:1599-1605 (05_dusman_ai F-08 geçti); js/wildlife/animals.js:793-797 ve 810 — co-op'ta '|| G.online' ile tüm hayvanlar güncelleniyor."
+  },
+  {
+   "doc": "docs/12_PERFORMANS_RAPORU.md §12.2",
+   "claim": "Deniz devleri: geometri tür başına bir kez üretilir ve paylaşılır; 700 m dışında gizlenir",
+   "verdict": "dogru",
+   "evidence": "js/wildlife/megafauna.js:135-210, 405 (test yok)."
+  },
+  {
+   "doc": "docs/12_PERFORMANS_RAPORU.md §12.2",
+   "claim": "Parçacıklar: tek Points nesnesinde en çok 900 parçacık",
+   "verdict": "dogru",
+   "evidence": "js/game/effects.js:9, 24-35; CPU tarafında parçacık başına nesne ve tam tampon yüklemesi var (J-20)."
+  },
+  {
+   "doc": "docs/12_PERFORMANS_RAPORU.md §12.3",
+   "claim": "Görüntü ölçeği, kalite, FPS sınırı, dikey eşitleme, görüş mesafesi, gölge/su/efekt kalitesi, görüş açısı ayarlanabilir",
+   "verdict": "kismen",
+   "evidence": "v0.4 panelinde V-Sync yok (js/ui/settingsPanel.js:33-42; v0.3'te işlevsizdi, 02 A12); kalite ve su yeniden başlatma ister; gölge kalitesi açılışta uygulanmıyor (J-09); görüş mesafesi açılışta araziye uygulanmıyor (J-10); FPS sınırı yüksek Hz ekranlarda hedef altı (J-12)."
+  },
+  {
+   "doc": "docs/denetim/10_PERFORMANS_KARSILASTIRMA.md §10.2",
+   "claim": "Aşama 8 sonrası başlangıç limanı 999 çizim çağrısı (−37)",
+   "verdict": "yanlis",
+   "evidence": "Son kod taban koşusu 1 035 (docs/v05/taban_kosusu_44d548c/09_performans.json adım 5; docs/v05/00_BASLANGIC_KAYDI.md:58); azalma sonraki turlarda kaybolmuş ya da ±10'luk gürültü; nedeni belirlenmedi."
+  },
+  {
+   "doc": "docs/denetim/10_PERFORMANS_KARSILASTIRMA.md §10.5",
+   "claim": "7 adsız grup × 20 örgü (844 üçgen) — kimlik tespiti aşağıda",
+   "verdict": "kismen",
+   "evidence": "Belgede tespit yok; /tmp/denetim_alan/J_perf/animal_meshes.mjs ile boarModel 20 örgü/844 üçgen, limanda 7 bireylik etkin domuz bölgesi (js/world/worldData.js SPAWN_ZONES.boar[0]; zones.mjs) → 7 yaban domuzu."
+  },
+  {
+   "doc": "docs/denetim/10_PERFORMANS_KARSILASTIRMA.md §10.8.5; 11 #31",
+   "claim": "Yükleme ekranında başlangıç sahnesinin gölgelendiricileri önceden derleniyor (renderer.compileAsync, main.js)",
+   "verdict": "kismen",
+   "evidence": "js/main.js:112 derliyor ama son işleme açıkken (varsayılan) yanlış varyantı: three.module.js:7257-7263 ve 7295; 10.9.1 program sayısı 89 (yüksek/orta) vs 40 (düşük) (J-03)."
+  },
+  {
+   "doc": "docs/denetim/10_PERFORMANS_KARSILASTIRMA.md §10.6",
+   "claim": "Sızıntılar: ada/tehlike/hayvan/düşman döngülerinde sayaçlar ısınma sonrası sabit",
+   "verdict": "kismen",
+   "evidence": "Ada/hayvan/düşman döngüleri taban koşusunda 0/0; aynı testin boss döngüsünde Volkanik Dev dG=5 (taban 8/9, J-16); yüzen olay nesneleri test dışı ve dispose edilmiyor (js/game/events.js:79, J-21)."
+  },
+  {
+   "doc": "docs/denetim/10_PERFORMANS_KARSILASTIRMA.md §10.9.1",
+   "claim": "Gölge, efekt ve görüş mesafesi anında uygulanır",
+   "verdict": "kismen",
+   "evidence": "Gölge kapatma programları yenilemiyor (js/core/settings.js:52; 02 A_motor-ek-statik-19; J-11); görüş mesafesi araziye uygulanıyor ama kalite ön ayarını sıfırlıyor (settings.js:63-65; J-10)."
+  },
+  {
+   "doc": "docs/denetim/10_PERFORMANS_KARSILASTIRMA.md §10.9.1",
+   "claim": "Düşük ayar limanda çağrıyı %26, üçgeni %53 azaltır; orta ayar çağrı sayısını değiştirmez",
+   "verdict": "dogrulanamadi",
+   "evidence": "Ölçüm sayfa yenilenerek el ile alınmış; depoda bunu üreten senaryo yok. Kod okuması yönle uyumlu (js/world/sky.js:137 castShadow quality!=='low'; js/core/post.js:61 'off')."
+  },
+  {
+   "doc": "docs/denetim/12_TEST_PLANI_VE_SONUCLAR.md #17 ve Aşama 9 tablosu",
+   "claim": "Uzun oturum (30+ dakika) GEÇTİ (5/5)",
+   "verdict": "kismen",
+   "evidence": "Aşama 9 kodunda geçti; sonraki turlardan (donma, kamera kararması, koşu/poz/ganimet) sonra son kodda koşulmadı (docs/v05/00: '10_uzun_oturum taban koşusuna alınmadı')."
+  },
+  {
+   "doc": "docs/denetim/12_TEST_PLANI_VE_SONUCLAR.md ve 16_SON_RAPOR.md (son regresyon)",
+   "claim": "09_performans 9/9",
+   "verdict": "kismen",
+   "evidence": "Son kod taban koşusu 8/9 (volkanik_dev dG 5; docs/v05/taban_kosusu_44d548c/09_performans.json adım 18-19)."
+  },
+  {
+   "doc": "docs/denetim/16_SON_RAPOR.md §16.8",
+   "claim": "Çizimin ana iş parçacığı maliyeti limanda ~10,9 ms; en ağır sahnede toplam ~12,5 ms < 16,7 ms",
+   "verdict": "kismen",
+   "evidence": "Yalnız CPU tarafı; GPU süresi, derleme takılmaları (J-03, J-08, J-17) ve 7–12 ms GC duraklamaları dahil değil; koşulsuz çizilen karakter ve bitki örtüsü (J-01, J-02) zayıf GPU'da belirleyici olabilir."
+  },
+  {
+   "doc": "docs/denetim/10_PERFORMANS_KARSILASTIRMA.md §10.4 notu",
+   "claim": "kk.texture renk atlası önbelleği 96 girişle sınırlı (FIFO, eski doku bırakılır) — sızıntı değil",
+   "verdict": "kismen",
+   "evidence": "js/core/kk.js:244 kullanımdaki dokuyu da bırakabiliyor; yeniden yükleme ve sahipsiz doku (J-22)."
+  },
+  {
+   "doc": "TEST_RAPORU.md:122",
+   "claim": "Mercan, yosun, kabuk, martı ve bulutlar InstancedMesh",
+   "verdict": "kismen",
+   "evidence": "js/world/details.js:225-250 ve 324, js/world/weatherfx.js:69 doğru; toplanabilir 46 kabuk/istiridye ayrı örgü (js/world/details.js:262)."
+  },
+  {
+   "doc": "docs/denetim/03_DEGISIKLIK_LISTESI.md:72 (A grubu)",
+   "claim": "Su/gölge/görüş mesafesi/FPS sınırı ayarları etkin (A1–A4 giderildi)",
+   "verdict": "kismen",
+   "evidence": "Gölge boyutu yalnız oyun içi değişiklikte uygulanıyor (J-09); FPS sınırı yüksek Hz'de hedef altı (J-12); görüş mesafesi açılışta araziye uygulanmıyor (J-10); oyun içi gölge kapatma (J-11)."
+  },
+  {
+   "doc": "docs/denetim/11_BILINEN_SORUNLAR.md #28",
+   "claim": "Kalabalık sahnelerde ~1 000 çizim çağrısı; gerçek GPU'da beklenmez (test ortamı)",
+   "verdict": "kismen",
+   "evidence": "Saniyelik kareler ortama özgü ama çağrı/üçgen yükü ortamdan bağımsız (1 035); kök nedenler J-01, J-02, J-04, J-05, J-06 kodda duruyor."
+  }
+ ],
+ "requirements": [
+  {
+   "req": "Mevcut performans raporu başlangıçtır; ölçümler yeniden yapılacak",
+   "status": "kismen",
+   "evidence": "Eski rapor docs/12 (v0.3, 960×540) ve v0.4 10. belge; son kodda yalnız 09_performans taban koşusu var (docs/v05/taban_kosusu_44d548c/09_performans.json: liman 1 035/1,25 M); 10_uzun_oturum son kodda koşulmadı.",
+   "plan": "Faz 8 başında genişletilmiş 09 (J-15) ve 10_uzun_oturum'u son kodda koş; SwiftShader ve gerçek GPU sonuçlarını ayrı tablolarla yeni rapora yaz; her optimizasyondan sonra aynı matrisi tekrarla."
+  },
+  {
+   "req": "(a) ~1.045 sayısının kaynağı ve v0.4'te kaydedilmiş son ölçüm",
+   "status": "karsilaniyor",
+   "evidence": "Kaynak docs/12_PERFORMANS_RAPORU.md:10 (v0.3, tests/scenarios/v03/perf1.js measure()); v0.4 son ölçüm docs/v05/taban_kosusu_44d548c/09_performans.json adım 5: 1 035 çağrı, 1 253 702 üçgen, 753 geometri, 200 doku, 95 program, 2,67 ms/kare (ayrıntı userClaims).",
+   "plan": "Raporda tek tablo: v0.3 1 045 (960×540), v0.4 ara değerler (1 032/999/1 036/1 000/1 022) ve son 1 035; ölçüm koşulları (çözünürlük, ayar, hava, saat) sabitlenerek yeniden ölçülecek."
+  },
+  {
+   "req": "(b) Başlangıç limanında çizim çağrısına en çok katkı veren nesne grupları",
+   "status": "kismen",
+   "evidence": "Ölçülen (10. belge §10.5, toplam 1 036): gölge geçişi 258/370 K üçgen; karakterler ≈200 (10 × 13–32); 7 adsız grup 140 = 7 yaban domuzu (animal_meshes.mjs: 20 örgü/844 üçgen); liman 106 (portcount.mjs: 84 örgü/84 malzeme, 63 gölge atan + deniz feneri 5); arazi 48/312 K; diğer ≈280. Statik okuma ile 'diğer': oyuncu sloop'u 80 örgü, hepsi gölge atar (js/ship/shipModel.js:524; ≈160 çağrı), kayık 8 örgü, 2 balıkçı teknesi + Character (js/world/details.js:338-353), okyanus (≈179 K üçgen), gökyüzü, 3 bulut seti, martılar, parçacıklar, dümen suları, ~15 son işleme geçişi. Örneklenmemiş/birleştirilmemiş: karakter kit örgüleri (character.js:458-459), prosedürel hayvanlar, gemi, fener/baba/pano malzemeleri, 46 toplanabilir (details.js:262). Gölgeyi katlayanlar: frustumCulled=false karakterler (kutudan bağımsız), tüm çekirdek bitki örtüsü (props.js:41; ≈175 K gölge üçgeni), gemi parçalarının tamamı, 63 liman örgüsü. Malzeme/ışık: limanda ~500+ malzeme nesnesi, 95 program; 1 yönlü (gölgeli) + 1 yarımküre + 7 kalıcı nokta ışığı (islands.js:238-243, weatherfx.js:115, cave.js:117-123). Üçgen dökümü (tahmin): arazi 312 K + çekirdek bitki ≈377 K + okyanus ≈179 K + karakter ≈144 K + hayvan ≈45 K + liman/gemi ≈60 K + bulut ≈15 K ≈ 1,13–1,2 M (ölçülen 1,25 M).",
+   "plan": "10. belgedeki 'üst düzey çocukları tek tek gizle' yöntemini 09'a kalıcı adım olarak ekle (kategori başına çağrı/üçgen, gölge ayrı); J-01, J-02, J-04, J-05, J-06 sonrası dökümü güncelle."
+  },
+  {
+   "req": "Başlangıç limanındaki ~1.045 çizim çağrısının iyileştirilmesi",
+   "status": "yok",
+   "evidence": "v0.3 1 045 (docs/12:10) → v0.4 son 1 035 (taban); 10. belgedeki 999 korunmamış; 09 bütçesi ≤1100 (09_performans.js:10).",
+   "plan": "Sırayla J-01 (karakter ayıklaması + 6→1 birleştirme), J-04 (gemi), J-05 (hayvan), J-06 (liman malzemeleri), J-02 (bitki hücreleri), J-23; hedef yüksek ayarda ≤500, düşükte ≤350 çağrı; 09 bütçesini kademeli düşür (1100→700→500)."
+  },
+  {
+   "req": "Statik geometri birleştirme",
+   "status": "kismen",
+   "evidence": "js/core/batch.js:4-56 mergeStatic yalnız js/world/port.js:317'de; sonuç 84 örgü çünkü bina başına benzersiz malzeme (port.js:15-20, 34-59). Mağara (cave.js:93-101), Kemik harabeleri/mezarlar/kamp (props.js:332-444), gemi (80 örgü) ve hayvanlar birleştirilmiyor.",
+   "plan": "Malzemeleri ortaklaştır (atlas + köşe rengi) → liman ≤25 örgü; mergeStatic'i mağara, harabe/kamp ve geminin hareketsiz parçalarına uygula; karakter gövde parçalarını tek SkinnedMesh'e birleştir (J-01, J-04, J-06, J-23)."
+  },
+  {
+   "req": "InstancedMesh kullanımı",
+   "status": "kismen",
+   "evidence": "Var: props.js:17-48 (çekirdek bitki), islands.js:79-140 (ek ada hücreleri), details.js:24-37/225-250/324 (mercan, yosun, kabuk, martı), weatherfx.js:69 (bulut), fish.js:326 (balık), props.js:430 (kamp kazıkları). Yok: 46 toplanabilir (details.js:262), sarkıtlar (cave.js:97), mezarlar (props.js:356-372), fenerler (port.js:397-409), toplar (shipModel.js cannonMesh).",
+   "plan": "Eksik tekrarlı nesneleri örnekle; çekirdek bitki örneklerini hücrelere böl (J-02); farklı geometrili statik kümeler için r187 BatchedMesh'i değerlendir."
+  },
+  {
+   "req": "LOD (ayrıntı düzeyi)",
+   "status": "kismen",
+   "evidence": "Arazi 4 halka (terrain.js:18-23), ek ada hücre görünürlüğü/gölgesi (islands.js:404-415), deniz devi 700 m (megafauna.js:405), düşman AI adımı (enemies.js:1599-1605). Karakter, hayvan, gemi, çekirdek bitki ve süslerde mesafe LOD'u ya da basitleştirilmiş model yok.",
+   "plan": "Mesafe katmanları: karakter/hayvan görünürlük + animasyon hızı (J-01, J-30), çekirdek bitki hücre LOD'u (J-02), uzak ağaçlarda düşük ayrıntılı geometri ve isteğe bağlı billboard, uzakta gemi için tek birleşik örgü."
+  },
+  {
+   "req": "Occlusion culling (örtme ayıklaması)",
+   "status": "yok",
+   "evidence": "Yalnız three.js görüş konisi ayıklaması; karakterlerde o da kapalı (character.js:458). Mağaradayken dış dünya, dışarıdayken mağara içi çiziliyor (cave.js; game.js:345-347 yalnız kamera sınırlaması).",
+   "plan": "Önce ucuz bölge ayıklaması: p.inCave > 0,5 iken okyanus/bulut/uzak arazi/ada içeriğini gizle, dışarıdayken mağara iç grubunu gizle; ölçülen getiriye göre limanda büyük örtücüler için WebGL2 occlusion query."
+  },
+  {
+   "req": "Gölge mesafesi",
+   "status": "kismen",
+   "evidence": "Tek ortografik kutu ±55 m, 2048/1024 (sky.js:136-145), hücre gölgesi <220 m (islands.js:413), arazi seg≥32 (terrain.js:354); ancak frustumCulled=false karakterler ve dev sınırlı çekirdek bitki kutudan bağımsız gölgeye çiziliyor, gemi parçalarının tümü gölge atıyor (shipModel.js:524); limanda gölge geçişi 258 çağrı/370 K üçgen.",
+   "plan": "J-01/J-02/J-04 ile gölge atanları buda; küçük nesnelerde castShadow=false; gölge mesafesini ön ayara bağla (orta 60 m, yüksek 110 m), texel hizalama, mağara/su altı/gecede autoUpdate=false (J-25); yüksek ayarda 2 kaskad değerlendir."
+  },
+  {
+   "req": "Uzak nesne ayrıntısı",
+   "status": "kismen",
+   "evidence": "camera.far = 1500+3500·görüş (settings.js:61) = 5 km; sis açıkta ~1,95 km, fırtınada ~280 m, sisli ~210 m'de %99 (sky.js:359); arazi halkaları 2,7 km; çekirdek süsler mesafeden bağımsız.",
+   "plan": "Sise bağlı etkin görüş mesafesiyle far/arazi/hücre kesmesi (J-13); uzak nesnelerde düşük ayrıntı; görüş mesafesinin açılışta uygulanması (J-10)."
+  },
+  {
+   "req": "Bitki örtüsü",
+   "status": "kismen",
+   "evidence": "Çekirdek: 1 598 örnek tek parça (props.js; props_count.mjs), ≈377 K üçgen/kare; ek adalar hücreli ve mesafeli; yoğunluk kaliteye bağlı (props.js:166, islands.js:442) ama yalnız açılışta; tüm bitki malzemelerinde nearFade discard (nearfade.js:64-92).",
+   "plan": "Hücreli çekirdek bitki + gölge yalnız yakın hücrelerde (J-02); ot/eğreltiye 60–80 m mesafe kesmesi; discard maliyetini gerçek GPU'da ölç (J-28); yoğunluğu çalışma anında ayarlanabilir yap."
+  },
+  {
+   "req": "Hayvan simülasyon LOD'u",
+   "status": "kismen",
+   "evidence": "Bölge doğurma r+150 m / silme r+230 m ve 4 Hz denetim (animals.js:793-807), 250 m dışında güncelleme yok (:810) ama co-op'ta '|| G.online' ile hepsi; 250 m içinde animasyon/AI seyreltmesi yok; LOD testi yok.",
+   "plan": "Katmanlı güncelleme (tam <60 m, 10 Hz <150 m, 4 Hz <250 m), co-op'ta en yakın oyuncuya göre; görünmezken animasyonu atla; 09'a etkin hayvan sayısı ve animals.update ms ölçümü ekle."
+  },
+  {
+   "req": "Düşman AI LOD'u",
+   "status": "karsilaniyor",
+   "evidence": "js/game/enemies.js:1599-1605 (>45 m 0,066 sn, >90 m 0,25 sn; hedefli düşman seyreltilmez), gruplar <140 m doğar / >220 m kalkar (:1539-1569); 05_dusman_ai F-08 geçti (taban adım 24; 12. belge 18/18).",
+   "plan": "Kazancı düşman kampı sahnesinde ölç; animasyonu kare başına bir kez çalıştır (J-26); görünmeyen düşmanlarda animasyonu seyrelt."
+  },
+  {
+   "req": "Parçacık havuzları",
+   "status": "kismen",
+   "evidence": "Tek Points havuzu 900 (effects.js:9, 24-35); CPU tarafında parçacık başına nesne, shift/splice ve her güncellemede tam tampon yüklemesi (effects.js:45-48, 121-146), alt adımda tekrar (game.js:187).",
+   "plan": "SoA halka tampon, drawRange n, kısmi yükleme, kare başına tek yükleme (J-20); fırtına/deniz savaşında parçacık bütçesi."
+  },
+  {
+   "req": "Doku önbelleği",
+   "status": "kismen",
+   "evidence": "textures.js:5 anahtarlı önbellek; texMat klonları aynı Source'u paylaşır (port.js:15-20); bina tohumuna göre ~39 ayrı 256² doku (port.js:34-59); kk.texture FIFO 96 (kk.js:244) kullanımdaki dokuyu bırakabilir.",
+   "plan": "Doku çeşitlerini tür başına 3–4'e indir ve atlasla; kk önbelleğine başvuru sayacı (J-22); 09'a doku sayısı bütçesi."
+  },
+  {
+   "req": "Geometri ve malzeme paylaşımı",
+   "status": "kismen",
+   "evidence": "Paylaşılan: islands PARTS (islands.js:44-77), megafauna GEO (megafauna.js:135-210), PROJ_GEO (enemies.js:1251-1261), Wake malzemesi (details.js:138-159). Paylaşılmayan: hayvan bireyleri (domuz 20 geometri/6 malzeme, yılan 22/22), toplanabilirler, fenerler, mezarlar, karakterde örgü başına malzeme klonu (character.js:459).",
+   "plan": "Tür başına geometri önbelleği ve renk varyantı başına malzeme (J-05, J-23); karakterlerde görünüm anahtarı başına malzeme paylaşımı."
+  },
+  {
+   "req": "Bellek temizliği",
+   "status": "kismen",
+   "evidence": "js/core/dispose.js:5-22, character.js:492-500, animals.js:736-745, islands.js:427-436, bosses.js:126-134, ship.js:739-743; 09 döngüleri taban 8/9 (volkanik_dev dG 5); 10_uzun_oturum Aşama 9'da 5/5, son kodda koşulmadı; events.js:79 yüzen nesneler dispose edilmiyor; kk FIFO riski.",
+   "plan": "J-16, J-21, J-22'yi kapat; 09'a yüzen olay nesneleri, yıldırım, hortum, deniz ekipmanı ve dünya olayları döngülerini ekle; 10_uzun_oturum'u son kodda ve 30–60 dk gerçek zamanlı koş; program sayısını da izle."
+  },
+  {
+   "req": "Gereksiz render",
+   "status": "yok",
+   "evidence": "js/core/engine.js:52-71 her rAF'ta tam çizim; G.paused yalnız benzetimi durdurur (game.js:192); menü dünyayı sınırsız FPS'le çizer (422 çağrı); #modal backdrop-filter (css/style.css:101).",
+   "plan": "Duraklatma/tam ekran panelde çizimi dondur, menüde 30 FPS; değişmeyen karelerde çizimi atla (J-19)."
+  },
+  {
+   "req": "Gereksiz shader derlemeleri",
+   "status": "kismen",
+   "evidence": "main.js:112 compileAsync var ama son işleme açıkken yanlış varyant (J-03); meşale ışık sayısını değiştirir (J-08); sonradan görünen içerik ilk görüşte derlenir (11 #31, J-17); efekt kalitesi değişimi tüm sahneyi yeniden derletir (post.js:60-93 + three.module.js:7257-7263).",
+   "plan": "Composer hedefi bağlıyken ön derleme + gölge derinlik ısıtması; sabit ışık sayısı; içerik türleri için yükleme ekranında ısıtma; 09'a 'ilk karede yeni program sayısı' ve oturum boyunca program sayısı kararlılığı kontrolü."
+  },
+  {
+   "req": "(d) 09_performans'ın ölçtüğü ve eksik bıraktığı sahneler",
+   "status": "kismen",
+   "evidence": "Ölçülen (09_performans.js:6-18): menü, liman (oyun başı + 2 sn), orman_adasi (Kadim Tapınak kıyısı), firtina (aynı nokta), boss_kraken (aynı noktada doğurulur, savaş yok) + sızıntı döngüleri (ada, hayvan, düşman, kese/gemi/bosslar); her sahnede tek kare renderer.info + 60×game.update. Eksik: kalabalık kasaba, yoğun orman içi, mağara, açık deniz, denizde fırtına, deniz savaşı, gerçek boss savaşı, 4 oyunculu co-op, gece/meşale, sis; çok kareli tarama, GPU zamanı, ön ayar matrisi, ilk kare derleme ölçümü.",
+   "plan": "J-15 kapsamında sahne matrisini ve bütçeleri ekle; kamera_tarama konumlarını (26 konum) performans konum listesi olarak yeniden kullan."
+  },
+  {
+   "req": "Test sahnesi: başlangıç limanı",
+   "status": "karsilaniyor",
+   "evidence": "09_performans.js:9-10 ('liman', ≤1100 çağrı ve <40 ms); taban 1 035/1,25 M/95 program.",
+   "plan": "Tek kare yerine 360° tarama + medyan/p95; bütçeyi kademeli düşür; kategori dökümü ekle."
+  },
+  {
+   "req": "Test sahnesi: kalabalık kasaba",
+   "status": "yok",
+   "evidence": "09'da yok; v0.3 geliştirme senaryosu tests/scenarios/v03/perf1.js 'Ada liman kasabası (Tuz Pazarı)' ölçüyordu; 13_donma P01 Tuz Pazarı'nı kurar ama çizim ölçmez.",
+   "plan": "09'a Tuz Pazarı (5 NPC, pazar) ve gece fenerli kasaba sahnesi; NPC sayısı ve çağrı bütçesi."
+  },
+  {
+   "req": "Test sahnesi: yoğun orman",
+   "status": "kismen",
+   "evidence": "09_performans.js:12-13 Kadim Tapınak adası; oyuncu yüksekliği >2 m olan son noktaya (kıyıya yakın) konuyor; orman içinden ölçüm yok.",
+   "plan": "En yoğun bitki hücresinin merkezinde (kamera_tarama b4 orman konumları) ve Kırlangıç iç ormanında 360° ölçüm."
+  },
+  {
+   "req": "Test sahnesi: mağara",
+   "status": "yok",
+   "evidence": "09'da yok; tests/scenarios/kamera_tarama/batch_b5_island_cave.js yalnız parlaklık tarar.",
+   "plan": "Mağara odası (CAVE.chamber) sahnesi: çağrı/üçgen, bölge ayıklaması öncesi/sonrası."
+  },
+  {
+   "req": "Test sahnesi: açık deniz",
+   "status": "yok",
+   "evidence": "09'da yok (10. belge §10.9.1 el ile: 203 çağrı/490 K); v0.3 perf1.js 'Açık deniz, Buzul' vardı.",
+   "plan": "Dümende, limandan >1,5 km açık denizde ve buzul bölgesinde (deniz devleriyle) sahne."
+  },
+  {
+   "req": "Test sahnesi: fırtına",
+   "status": "kismen",
+   "evidence": "09_performans.js:15 'firtina' ölçümü adada (697 K üçgen); denizde hortum, yıldırım, yağmur sıçraması ve büyük dalgayla ölçüm yok.",
+   "plan": "Açık denizde fırtına + hortum + yıldırım sahnesi; bulut ve parçacık bütçesi (J-24, J-20)."
+  },
+  {
+   "req": "Test sahnesi: deniz savaşı",
+   "status": "yok",
+   "evidence": "09'da yok; düşman brigantin (118 örgü, shipcount.mjs) + tayfa + gülle/duman ölçülmüyor.",
+   "plan": "events.spawnEnemyShip ile 1–2 düşman gemisi, top atışı ve bordalama anında 360° ölçüm; J-04 öncesi/sonrası."
+  },
+  {
+   "req": "Test sahnesi: boss savaşı",
+   "status": "kismen",
+   "evidence": "09_performans.js:18 kraken adada doğurulup tek kare ölçülüyor (savaş yok); Taş Muhafız/Volkanik Dev yalnız sızıntı döngüsünde (:33-38); 11 #12 bosslar uçtan uca oynanmadı.",
+   "plan": "Her boss için saldırı evrelerinin oynatıldığı 30 sn'lik ölçüm (lav yağmuru, dokunaçlar, mermiler, işaretler)."
+  },
+  {
+   "req": "Test sahnesi: dört oyunculu co-op",
+   "status": "yok",
+   "evidence": "coop/06c_dort_oyuncu.cjs yalnız işlevsel (taban 2/7); co-op performans ölçümü yok; ev sahibi tüm hayvanları günceller (animals.js:810).",
+   "plan": "coop.cjs'ye ev sahibi ve bir konukta _M benzeri ölçüm (çağrı, sim ms, ağ ileti boyutu/sn); 3 uzak karakter ve farklı adalardaki oyuncularla."
+  },
+  {
+   "req": "Gerçek GPU ve SwiftShader ölçümlerinin ayrılması",
+   "status": "yok",
+   "evidence": "tests/harness/run.cjs:36 ve coop.cjs:27 SwiftShader'ı zorlar; sonuçlarda renderer adı yok; post.isSoftware() (post.js:48-58) yalnız MSAA kararında; GPU zamanlayıcı yok; HUD yalnız FPS (hud.js:282).",
+   "plan": "Koşucuya '--gpu' kipi (SwiftShader bayrakları olmadan gerçek makinede), sonuçlara UNMASKED_RENDERER ve kip; oyuna gizli performans katmanı (çağrı, üçgen, program, GPU ms); raporda iki ayrı tablo."
+  },
+  {
+   "req": "Sürdürülebilir 60 FPS",
+   "status": "kismen",
+   "evidence": "Yalnız CPU kanıtı: benzetim 1,3–2,7 ms/kare (taban 09), çizimin ana iş parçacığı payı limanda ~10,9 ms (10. belge §10.9.2, 2,3 GHz sanal Xeon); GC duraklamaları 7–12 ms (11 #30); derleme takılmaları (J-03, J-08, J-17); GPU süresi ölçülmedi (11 #32).",
+   "plan": "J-01/02/04/05/06 ile çağrıyı yarıya indir, derleme takılmalarını kaldır; tümleşik ve orta sınıf GPU'da sahne matrisini ölç; hedef: orta ayarda tümleşik GPU 1080p p95 kare ≤ 16,7 ms."
+  },
+  {
+   "req": "Düşük donanım için kalite ayarları",
+   "status": "kismen",
+   "evidence": "Panel: çözünürlük ölçeği, grafik kalitesi*, FPS sınırı, görüş mesafesi, gölge, su*, efekt (settingsPanel.js:33-42; *yeniden başlatma); düşük ön ayar limanda −%26 çağrı (10. belge §10.9.1). Sorunlar: J-09, J-10, J-11, J-12; varsayılanlar en yüksek (settings.js:12) + antialias + DPR 2 (J-14); otomatik algılama ve dinamik çözünürlük yok; su kalitesi parça gölgelendiricisini sadeleştirmiyor (ocean.js:156-238).",
+   "plan": "Ayar hatalarını düzelt; ilk açılışta GPU adı/çözünürlüğe göre ön ayar önerisi; dinamik çözünürlük (kare süresine göre 0,6–1,0); düşük su kalitesinde basit parça gölgelendiricisi; düşükte nokta ışığı 0–1, bulut/parçacık yarı."
+  },
+  {
+   "req": "Uzun oturumda kararlı bellek",
+   "status": "kismen",
+   "evidence": "10_uzun_oturum Aşama 9: 5/5 (RSS tepe 959 MB, doku 236 sabit; 10. belge §10.7); son kodda koşulmadı; açık sızıntı adayları J-16, J-21, J-22; GC baskısı 11 #30.",
+   "plan": "Son kodda 10_uzun_oturum + 60 dk gerçek zamanlı koşu (gerçek GPU'da da); program/doku/geometri/DOM eğilimleri; eşikleri sıkılaştır (son 10 dilim toplam ≤ 50)."
+  },
+  {
+   "req": "Kontrol altında çizim çağrısı ve üçgen sayısı",
+   "status": "kismen",
+   "evidence": "Yalnız liman için ≤1100 çağrı kontrolü (09_performans.js:10); diğer sahnelerde bütçe yok; 999→1 035 artışı yakalanmadı.",
+   "plan": "Sahne başına çağrı/üçgen/program bütçesi ve %5 regresyon eşiği; kategori dökümü raporu."
+  },
+  {
+   "req": "Görünür kaliteyi düşürmeden",
+   "status": "kismen",
+   "evidence": "Görsel karşılaştırma altyapısı var (DK.snapFrom js/main.js:138-143, kamera_tarama 26 konum, 17_kamera_kararma) ama optimizasyonlar için otomatik görüntü farkı testi yok.",
+   "plan": "Her optimizasyonda sabit kamera konumlarında önce/sonra görüntü farkı (piksel farkı/SSIM eşiği) + kamera taraması; LOD/ayıklama geçişlerinde pop-in kontrolü."
+  }
+ ]
+}

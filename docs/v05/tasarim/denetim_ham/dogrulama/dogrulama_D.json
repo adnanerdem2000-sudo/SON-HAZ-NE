@@ -1,0 +1,229 @@
+{
+ "verdicts": [
+  {
+   "ref": "D-01",
+   "verdict": "dogrulandi",
+   "evidence": "v0.4 islands.js:956 freed'i yalnız kurulumda okuyor. Eylem (958-967) yalnız gardiyan sayıyor, freed ve cond denetimi yok. _interactables (1149-1156) 'once' alanını taşımıyor ve süzgeç uygulamıyor. interact.js:61-65 hold dalı holdT'yi sıfırlayıp tuş basılıyken her 2,5 sn'de action çağırıyor. npcs.remove (npcs.js:90-95) tekrar çağrılınca erken dönüyor. Buna karşın +120 altın (963) ve prisonerFreed → progress.js:84 (+80 XP) her çağrıda çalışıyor. 60/2,5 = 24 çağrı/dk, yani 2.880 altın ve 1.920 XP; hesap doğru. v0.3'te kod aynı: islands.js:762-773, interact.js:61-65, progress.js:80. 02_HATA_LISTESI.md:1340'ta G_icerik-ek-statik-159 (Yüksek) olarak kayıtlı; 03 ve 11'de düzeltme ya da açık kaydı yok. Etkide anılan D-07 de doğru: enemies.js:1319 groupState'i spawned dahil aynen yüklüyor, 1549'daki '!st.spawned' koşulu yüzünden kampa yakın yüklemede gardiyan doğmuyor. Ağırlaştırıcı bir durum daha var: konukta gardiyan sayımı her zaman 0. enemies.applySnapshot (1650-1656) düşmanı yalnız {id} ile doğuruyor, group taşınmıyor (Enemy.group = opts.group, 219), _populate de yalnız ev sahibinde çalışıyor (1593). Bu yüzden co-op konuğu gardiyanlar yaşarken bile E'yi basılı tutarak aynı kazancı alıyor (başka alan denetiminde G-02 olarak kayıtlı). Verilen ölçeğe göre 'kritik' önceliği doğru.",
+   "correction": "Etki tanımına konuk durumu eklenmeli: konukta gardiyan koşulu hiç işlemiyor, sınırsız kazanç savaşmadan elde ediliyor. Kabul testi bir co-op senaryosu da içermeli."
+  },
+  {
+   "ref": "D-02",
+   "verdict": "dogrulandi",
+   "evidence": "main.js:203 konuk kaydına quests.save()'in tamamını (stage, flags, markers) yazıyor. main.js:193 ve quests.js:79 bu bayrakları yüklüyor. main.js:336 Object.assign ile ev sahibinin bayraklarıyla birleştiriyor, değiştirmiyor. quests.js:134 (advance) ve 317 (takeJournal) netStory ile bayrak nesnesinin tamamını gönderiyor. net.js:174'te konuk bunu toHost ile iletiyor. net.js:329'da ev sahibi true olan her bayrağı beyaz liste ya da aşama denetimi olmadan kendi bayraklarına yazıyor; 330 yalnız aşamayı denetliyor. quests.js:297 gunluk=true iken günlük istemini göstermiyor ve 2→3 geçişinin tek yolu takeJournal (316; grep'te başka advance(3) yok). Bayrak quests.save ile ev sahibinin online kaydına giriyor. v0.3'te konuk kaydı yalnız envanterden oluşuyordu (v0.3 main.js:191, 201) ve konuk netStory'yi ev sahibine göndermiyordu (v0.3 net.js:146). 'yalniz_v04' hükmü doğru. Olasılığı artıran bir etken daha var: konuk katıldığı her dünyanın bayraklarını birleştirip kaydına yazdığı için sızıntı yalnız kendi dünyası ilerlemiş konuklarla sınırlı değil. Ayrıca 09_KAYIT_TESTLERI.md'deki 'hikâye aşaması ve bayraklar her katılımda ev sahibinden gelir' ifadesi kodla çelişiyor.",
+   "correction": "Küçük düzeltme: morvanSpawn/kizilSpawn sızıntısı kalıcı değil. Oyuncu 200 m uzaklaşınca bu bayraklar sıfırlanıyor (quests.js:282, 290). ilkHazineBulundu, herhangi bir sandık satışıyla aşama 1'in atlanmasına yol açıyor (quests.js:145). ilkHarita ilk harita seçeneğini gizliyor (404); yeniden yüklemede storySites ile aşılabiliyor. Kalıcı kilidi yaratan gunluk. 'Yüksek' öncelik kabul edilebilir; ana hikâyeyi kalıcı kilitlediği için 'kritik' de savunulabilir."
+  },
+  {
+   "ref": "D-03",
+   "verdict": "kismen",
+   "evidence": "Kök neden doğru. net.js:510-522'deki _sendWorld ada, tehlike ve seagear durumunu göndermiyor. Konukta islands.start (260-266), hazards.start (78-80) ve seagear.start (128) boş veriyle başlıyor. 'inter' iletisi KNOWN listesinde (46) ama _hostData'da bir case karşılığı yok. treasure.js:95-100'deki lootToBag konukta yerel çalışıyor. Konuk hayalet sandığı kırınca 'loot' → netLootReq (treasure.js:84-90) ile ev sahibine gidiyor ve ev sahibi lootReq'te (net.js:301-313) keseyi doğuruyor. 'break' olayı ise ev sahibinde byId bulunmadığı için yok sayılıyor (hazards.js:672-674). Taş Muhafız tetiği yalnız ev sahibinin templeState'ine bakıyor (bosses.js:1088). Yeniden katılımda opened/looted/freed boş geldiği için orta ve zengin sandık (40–260), sunak (400–700), gizli sandık (140–320) ve tutsak ödülü (+120) her katılımda yeniden alınabiliyor.",
+   "correction": "(1) Öncelik: yeniden katılımla tekrarlanan ödül D-01 ile aynı sınıfta, yani sınırsız kazanç. Verilen ölçeğe göre 'kritik' olmalı; tutarlılık için ya bu kritik yapılmalı ya da D-01 de yüksek. 02'deki 164 numaralı kaydın 'Düşük' önceliği de hafife alınmış. (2) Etkide eksik var: ev sahibi adaları yalnız kendi oyuncusunun konumuna göre kuruyor (islands.js:273). Konuk uzak bir adadayken onun fıçı, sandık ve bulmaca olayları ev sahibinde byId olmadığı için yok sayılıyor (hazards.js:672-674) ve hiçbir kayda girmiyor. Konukta gardiyan sayımı da her zaman 0 (enemies.js:1655). (3) Ayrıntı düzeltmesi: tutsak ödülü lootToBag ile değil doğrudan altın olarak veriliyor (islands.js:963). Levyeler eşya vermiyor, yalnız +250 XP veriyor (templeOpened, progress.js:86)."
+  },
+  {
+   "ref": "D-04",
+   "verdict": "dogrulandi",
+   "evidence": "save.js:82-87'deki importAll'da try yok; yalnız JSON.parse sonucu ve 'dksh.' öneki denetleniyor. settingsPanel.js:78'deki async dinleyici istisnayı yakalamıyor ve onay istemiyor. Kendi Node denemem (/tmp/denetim_alan/karsit_kayit/import_probe.mjs) şunu gösterdi: eski bir dışa aktarım içe aktarılınca ana kayıt ve .bak eski hâline döndü, yeni kayıt hiçbir anahtarda kalmadı (C.yeniKurtarilabilir=false). Dışa aktarım .bak anahtarlarını da içeriyor (B_exportKeys). '[]', '5' ve '\"abc\"' girdileri true döndürüyor. Denetçinin save_quota.mjs dosyasını yeniden koştum: QuotaExceededError yukarıya yayıldı, yuva 0 içe aktarılmış, yuva 1 eski hâlinde kaldı (yarım içe aktarma). v0.3'te save.js:75-80 ve settingsPanel.js:81 aynı kodu içeriyor.",
+   "correction": "Etki ayrıntısı: '[object Object]' yazılan yuva .bak varsa okunamaz hâle gelmiyor. read() sessizce bir önceki kayda düşüyor; denememde 'ikinci' yerine 'ilk' döndü. Yine de son ilerleme kayboluyor. 'Bütün yuvalar' ifadesi de abartılı: yalnız dosyada bulunan yuvalar eziliyor. Ek ve daha ağır bir etki var: dksh.profile ilkel bir değerle (ör. \"5\") içe aktarılırsa oyun bir daha açılmıyor; bunu missed listesine ayrı yazdım."
+  },
+  {
+   "ref": "D-05",
+   "verdict": "kismen",
+   "evidence": "game.js:164'te version: 1 yazılıyor; v0.3 game.js:156 ile aynı. grep'e göre .version yalnız save.js:36'da tür denetimi için okunuyor. Node denememde version 999 olan kayıt okundu ve listelendi. serialize (game.js:161-177) yeni bir nesne kurduğu için bilinmeyen alanlar ilk kayıtta düşüyor. Kök neden ve 'sorgusuz yükleme' iddiası doğru.",
+   "correction": "(1) Öncelik 'orta' daha uygun. 02'de A14 'Düşük' olarak kayıtlı. Bugünkü somut risk yalnız aynı kökende sürüm geri dönüşü ya da file:// paylaşımı. v0.3 ve v0.4'te sandık kademeleri (small/medium/large/legend) ve gemi tipleri (sloop/brigantine) aynı, dolayısıyla treasure.js:266-268 ve ship.js:20/59 çökmesi yalnız gelecekteki bir sürüm için varsayımsal. (2) parts/mastHp/cannonHp v0.3 kaydında da vardı (v0.3 ship.js:692'de yazılıyor, yalnız yüklenmiyordu); gemideki tek yeni alan sunk. v0.4'ün asıl yeni alanları islands, hazards.gone, ship.sunk ve konuk kaydındaki progress/quests."
+  },
+  {
+   "ref": "UC1",
+   "verdict": "kismen",
+   "evidence": "v0.3 hükmü doğru. v0.4'te valid() (save.js:36) yalnız typeof version === 'number' denetliyor ve 999'u kabul ediyor; bu bir sürüm denetimi sayılmaz. Sis biçimini tanıyan dönüştürme (quests.js:98-112) v0.3'te de aynen var (v0.3 quests.js:98-118). v0.4 yalnız birkaç alana yönelik yama eklemiş (islands.js:35-39, progress.js:96-99, hazards.js:80); bunlar sürüme dayalı bir migrasyon değil.",
+   "correction": "v04 hükmü 'kismen' değil 'dogru' olmalı (v03 ile aynı). Denetçi aynı ölçütü v0.3'e 'dogru', v0.4'e 'kismen' olarak uygulayıp tutarsız davranmış."
+  },
+  {
+   "ref": "UC2",
+   "verdict": "kismen",
+   "evidence": "v0.3 için doğru: v0.3 hazards.js:72-81 gone tutmuyor ve _keg (157) her kurulumda fıçıyı yeniden yapıyor. v0.4'te tek oyunculu ve ev sahibi tarafında fıçı geri gelmiyor: hazards.js:80, 164, 202 ve 08_kalicilik testi.",
+   "correction": "v04 hükmü 'yanlis' değil 'kismen' olmalı. Geç ya da yeniden katılan konukta hazards.start boş gone ile başlıyor ve patlamış fıçı yeniden kuruluyor. Ayrıca ev sahibi o adayı kurmamışsa konuğun patlattığı fıçı hiçbir kayda girmiyor (hazards.js:672-674, islands.js:273), bu yüzden sonraki oturumda ev sahibinde de geri geliyor."
+  },
+  {
+   "ref": "UC3",
+   "verdict": "kismen",
+   "evidence": "v0.3 için doğru: _crate (v0.3 hazards.js:254) gone denetlemiyor. v0.4'te tek oyunculu/ev sahibi için kırık sandık geri gelmiyor: hazards.js:263, 284, 08_kalicilik ve 12 K01.",
+   "correction": "v04 hükmü 'kismen' olmalı. Konukta kırık sandık yeniden kuruluyor ve konuk onu kırınca lootReq ile ev sahibinden gerçek ganimet alıyor (treasure.js:84-90, net.js:301-313). Ev sahibinin kurmadığı adada konuğun kırdığı sandık kayda geçmiyor."
+  },
+  {
+   "ref": "UC4",
+   "verdict": "dogrulandi",
+   "evidence": "v0.3 _boulderSite (hazards.js:287) ve v0.4 _boulderSite (297-345) her kurulumda state 'set' ile kaya oluşturuyor. release (347-356) kalıcı bir kümeye yazmıyor; save() kayayı içermiyor (v0.3:81, v0.4:86). 11_BILINEN_SORUNLAR #19 hâlâ açık ve 09'da 'bilinçli' olarak not edilmiş."
+  },
+  {
+   "ref": "UC5",
+   "verdict": "dogrulandi",
+   "evidence": "Tek seferlik bir 'önemli kaynak' türü yok. Kabuk ve istiridye 4 dakikada yenileniyor: details.js:381 taken=240, 369'da start hepsini geri getiriyor, 503'te sayaç işliyor; kayda yazılmıyor. Kazı hazinesi 8 dakika kuralıyla yeniden kazılabiliyor: v0.4 treasure.js:218, v0.3 treasure.js:163 (denetçi iki sürüm için de 218 demiş; v0.3'te satır 163). Bunlar tasarım gereği yenileniyor, yani iddia olgu olarak doğru ama bir hata değil."
+  },
+  {
+   "ref": "UC6",
+   "verdict": "kismen",
+   "evidence": "v0.3 için 'kismen' doğru: kapı ve durum yerel değişkenlerde tutuluyor (v0.3 islands.js:623, 649), kafes ise solved kümesiyle kalıcı (v0.3 hazards.js:74, 479). v0.4 tek oyunculu/ev sahibinde kapı templeState.done ile açık kuruluyor (islands.js:835) ve kafes gömülü kuruluyor (hazards.js:495-502).",
+   "correction": "v04 hükmü 'yanlis' değil 'kismen' olmalı. Geç ya da yeniden katılan konukta templeState ve solved boş geliyor: tapınak kapısı kapalı ve çarpıştırıcısı yerinde (islands.js:810), kafes çarpıştırıcısı da kuruluyor (hazards.js:501). Yani konuk için geçit yeniden kapanıyor."
+  },
+  {
+   "ref": "UC7",
+   "verdict": "kismen",
+   "evidence": "v0.3 için doğru: v0.3 islands.js:649 her kurulumda {seq:[],done:false} ile başlıyor ve templeOpened +250 XP'yi yeniden veriyor (v0.3 progress.js:82). v0.4'te tek oyunculu için kalıcı: P08 ve hazards.js:78, 508-519.",
+   "correction": "v04 hükmü 'kismen' olmalı; denetçinin kendi kanıtı da bunu söylüyor. Konukta tapınak ve plaka bulmacası yeniden çözülüyor, +250 XP ve gizli sandık (hazards.js:652-658) her katılımda yeniden alınıyor."
+  },
+  {
+   "ref": "UC8",
+   "verdict": "dogrulandi",
+   "evidence": "v0.3'te gizli sandık looted kümesiyle kalıcı (hazards.js:75, 638). Ada sandığı ve sunak için opened yalnız bellekte tutuluyor (islands.js:566, 672) ve start (224-228) bu kümeleri sıfırlamıyor. v0.4'te islands.js:261/269 ve hazards.js:79/86 kalıcılığı sağlıyor. Martı Batığı sandığı ise seagear.js:128'de her oturumda sıfırlanıyor ve kaydedilmiyor (bu sandık v0.3'te hiç yok). Co-op konuğu her katılımda yeniden yağmalayabiliyor."
+  },
+  {
+   "ref": "UC9",
+   "verdict": "dogrulandi",
+   "evidence": "v0.3'te freed yalnız bellekte (islands.js:762-767); flags.gunluk kalıcı. v0.4'te freed kalıcı (islands.js:262, 956), ama eylem freed'i denetlemediği için aynı oturumda tekrar tetiklenebiliyor (D-01). wreckOpened (seagear.js:128) ve kaya (hazards.js:297-345) kalıcı değil."
+  },
+  {
+   "ref": "SYS1",
+   "verdict": "kismen",
+   "evidence": "12 K01 hpOk ve posOk denetimleri ile K03 üç döngüde geçiyor (taban koşusu 4/4). Ancak oyuncu bu testte 'ground' kipinde ve hiç becerisi yok.",
+   "correction": "onShip=true → boardShip(lx, lz) yolunu (game.js:131) olumlu sınayan bir test yok; 08 yalnız batık gemide oyuncunun güverteye bindirilmediğini denetliyor. Yüzerken lastSafe kullanımı (game.js:175) testsiz. Ayrıca 'Demir Bilek' becerisi olan oyuncunun canı yüklemede şişiyor: game.js:130 canı maxHp=100 iken (player.js:42) atıyor, progress.recompute (progress.js:159-161) oranı bu değerle hesaplıyor. Azami canı 145 olan oyuncuda art arda yüklemelerde 50 → 73 → 106 → 145 (/tmp/denetim_alan/karsit_kayit/hp_mast_probe.mjs). Durum 'calisiyor_gelistirilmeli' olmalı."
+  },
+  {
+   "ref": "SYS2",
+   "verdict": "kismen",
+   "evidence": "Envanter K01 (kılıç) ve L03 (deniz ekipmanı) ile sınanıyor; taban koşusunda 4/4 ve 16/16.",
+   "correction": "Altın 08, 12 ve 14 senaryolarının hiçbirinde yükleme sonrası ölçülmüyor (grep 'gold' yalnız L02'de, yükleme öncesinde). 'Envanter ve altın' bütün olarak test edilmiş sayılamaz; altın için durum 'dogrulanmamis' olmalı. inv.load şema denetimi de yok (inventory.js:77-82)."
+  },
+  {
+   "ref": "SYS3",
+   "verdict": "kismen",
+   "evidence": "08'de hp, parts.pruva, mastHp[0], cannonHp[0] ve sunk sınanıyor; K01'de gövde ve pruva üç döngü boyunca sınanıyor.",
+   "correction": "Delik (holes) ve ambar (hold) hiçbir testte yok. Testler yalnız sloop kullanıyor. v0.4'te gemi tipi değişince mastHp/cannonHp eski uzunluklarıyla taşınıp kayda yazılıyor (missed listesindeki Brigantine maddesi). Durum 'calisiyor_gelistirilmeli' olmalı."
+  },
+  {
+   "ref": "SYS4",
+   "verdict": "dogrulandi",
+   "evidence": "hazards.js:80, 86, 164, 202 doğru. core_kamp her start'ta kuruluyor (hazards.js:81), bu yüzden 08'deki 'yeniden kurulmuyor' denetimi anlamlı. Ada setleri aynı _keg fonksiyonunu kullanıyor ve kimlikler deterministik. Taban koşusunda 12/12. Not: co-op ve ev sahibinin adayı kurmadığı durum açıkta (D-03)."
+  },
+  {
+   "ref": "SYS5",
+   "verdict": "dogrulandi",
+   "evidence": "hazards.js:263, 284 doğru; 08:33 kırık sandığın yeniden kurulmadığını denetliyor. K01'de gone ölçülüyor ama allOk koşuluna katılmıyor; denetçinin bu notu doğru."
+  },
+  {
+   "ref": "SYS6",
+   "verdict": "kismen",
+   "evidence": "08:8 ve 12:7 'opened' kümesine sahte kimlik yazıyor ve kümenin kayıt/yüklemede korunduğunu ölçüyor (taban koşusunda 12/12, 4/4).",
+   "correction": "Sandık ve sunak eylemleri (islands.js:746-751, 857-862) testlerde hiç çağrılmıyor; gerçek anahtarlarla (f.id ve 'altar'+f.id) uçtan uca davranış sınanmıyor. Çanta doluyken taşan ödül kesesi kaydedilmediği için (treasure.js:99, D-14) tek seferlik sandığın taşan kısmı yüklemede kalıcı olarak kayboluyor. Durum 'calisiyor_gelistirilmeli' olmalı."
+  },
+  {
+   "ref": "SYS7",
+   "verdict": "dogrulandi",
+   "evidence": "13_donma P08 testi çözümü, yeniden kurulumu, islands.save()→start() JSON döngüsünü, kapının açık kalmasını, boss koşulunu ve eski biçimin onarılmasını sınıyor. 12. belgede 8/8 ve sonra 9/9, taban koşusunda 9/9. Not: test modül düzeyinde (game.serialize ya da localStorage kullanılmıyor); co-op konuğu açığı (D-03) ve levye sırasının ayrıntı düzeyine bağlı olması (11 #35) testin kapsamı dışında."
+  },
+  {
+   "ref": "SYS8",
+   "verdict": "kismen",
+   "evidence": "08 B04 yalnız 'carried' durumunu sınıyor (taban koşusunda 12/12).",
+   "correction": "Yerdeki, sudaki ve kayıktaki sandık için kayıt/yükleme testi yok, oysa treasure.js:119-126'daki filtre dört durumu da kapsıyor. Kayıktaki sandığın suya bırakılması (D-16) da testsiz."
+  },
+  {
+   "ref": "REQ1",
+   "verdict": "kismen",
+   "evidence": "Tek oyunculu ve ev sahibi için karşılanıyor: hazards.js:80/86/164/202 ve 08.",
+   "correction": "Tam karşılanmıyor. Co-op konuğunda patlamış fıçı yeniden kuruluyor (gone konuğa gönderilmiyor, net.js:510-522). Ev sahibi adayı kurmamışsa konuğun patlattığı fıçı kayda girmiyor (hazards.js:672-674)."
+  },
+  {
+   "ref": "REQ2",
+   "verdict": "kismen",
+   "evidence": "Tek oyunculu ve ev sahibi için karşılanıyor: hazards.js:263/284, 08 ve 12 K01.",
+   "correction": "Konukta kırık sandık yeniden kuruluyor ve kırılınca lootReq ile ev sahibinde yeni ganimet doğuyor (treasure.js:84-90, net.js:301-313)."
+  },
+  {
+   "ref": "REQ3",
+   "verdict": "kismen",
+   "evidence": "Tapınak kapısı için P08 geçti (islands.js:835). Kafes için hazards.js:495-502 doğru ama testi yok.",
+   "correction": "Geç ya da yeniden katılan konukta tapınak kapısı ve kafes yeniden kapalı geliyor, çarpıştırıcıları da kuruluyor (islands.js:810, hazards.js:501)."
+  },
+  {
+   "ref": "REQ4",
+   "verdict": "kismen",
+   "evidence": "Tapınak için P08 geçti. Plaka bulmacası hazards.js:78 ve 508-519 ile kalıcı ama testi yok.",
+   "correction": "Konukta iki bulmaca da sıfırdan başlıyor ve yeniden çözülebiliyor; +250 XP ve gizli sandık ödülü (hazards.js:652-658) her katılımda yeniden alınabiliyor."
+  },
+  {
+   "ref": "REQ5",
+   "verdict": "dogrulandi",
+   "evidence": "Kod düzeyinde karşılanıyor: progress.js:109'daki save level, xp, points, skills ve seen alanlarını kaydediyor, 94-107'deki start bunları geri yüklüyor. Otomatik test yok; denetçi bunu zaten belirtmiş. Konuk tarafındaki iki kaynak sorunu D-09'da kayıtlı."
+  },
+  {
+   "ref": "REQ6",
+   "verdict": "dogrulandi",
+   "evidence": "Kod düzeyinde karşılanıyor: skills ve points kaydediliyor, start'ta recompute ile G.mods yeniden kuruluyor (progress.js:102-106, 153-156). Test yok. Yan etki olarak recompute yüklemede canı şişiriyor (bkz. SYS1)."
+  },
+  {
+   "ref": "REQ7",
+   "verdict": "dogrulandi",
+   "evidence": "inventory.js:76-82 ve game.js:129/169 doğru; K01 ve L03 geçti (taban koşusunda 4/4 ve 16/16). Not: konuk envanteri periyodik olarak kaydedilmiyor (D-09)."
+  },
+  {
+   "ref": "REQ8",
+   "verdict": "dogrulandi",
+   "evidence": "Altın inv.toJSON içinde yer alıyor (inventory.js:76) ve game.js:129'da yükleniyor; kod yolu doğru. Test yok ve D-15'teki atomiklik sorunu geçerli."
+  },
+  {
+   "ref": "REQ9",
+   "verdict": "kismen",
+   "evidence": "upg, look, typeId ve hold ship.serialize (ship.js:694-703) ile, ownedShips ve crewHired misc (main.js:75-79) ile kaydediliyor ve yükleniyor.",
+   "correction": "Gemi tipi değişince (buyShip → replaceShip, shipControl.js:41-53) eski geminin mastHp/cannonHp dizileri yeni tipe taşınıyor ve bu bozuk durum kayda yazılıp yeniden yükleniyor (ship.js:43-44). Brigantine'in 2. direği devrik görünüyor, 4–7 numaralı toplar hasar almıyor. Ayrıntı missed listesinde. Test yok."
+  },
+  {
+   "ref": "REQ10",
+   "verdict": "dogrulandi",
+   "evidence": "shop.js:244-258 profile.unlocked'ı güncelliyor; main.js:86'daki profileChanged olayı dksh.profile'ı hemen yazıyor. Kilitler korunuyor. Test yok; D-15 (atomiklik) ve profilin yedeğinin olmaması geçerli."
+  },
+  {
+   "ref": "REQ11",
+   "verdict": "dogrulandi",
+   "evidence": "Kod düzeyinde karşılanıyor: quests.js:82-84, 98-119 (sis v2 ve eski biçim) ve 121-124'teki save. Test yok. Bozuk sis dizesi atob çağrısında istisna atıyor (D-06)."
+  },
+  {
+   "ref": "REQ12",
+   "verdict": "dogrulandi",
+   "evidence": "quests.js:86 ve 123 collection'ı kaydedip yüklüyor. Kod yolu doğru, test yok."
+  },
+  {
+   "ref": "REQ13",
+   "verdict": "dogrulandi",
+   "evidence": "quests.js:87 ve 123 achievements'ı kaydedip yüklüyor; _checkAch tekrar açmıyor (222). Test yok."
+  },
+  {
+   "ref": "DOC1",
+   "verdict": "dogrulandi",
+   "evidence": "08_kalicilik.js'de grep -c 'expect:' sonucu 12. Git geçmişinde dosyanın tek sürümü var (7a68983) ve o sürüm de 12 expect içeriyor. 12. belge 12/12 diyor; taban koşusunda da (docs/v05/taban_kosusu_44d548c/08_kalicilik.json) 12/12. 13 diyen yerler: 09 başlığı (satır 3), 08_COOP §8.6 (satır 91) ve 16 Aşama 6 satırı (satır 22).",
+   "correction": "08_COOP'taki iddia 'son paragraf' değil, §8.6'da (satır 91). Aynı satırdaki 07_ekonomi 2/2 (dosyada 3 expect) ve 06_arayuz_960 2/2 (dosyada 4 expect) sayıları da tutmuyor."
+  }
+ ],
+ "missed": [
+  {
+   "title": "v0.4 gerilemesi: gemi satın alınınca eski geminin direk ve top can dizileri yeni tipe taşınıyor; Brigantine'in ikinci direği teslimde devrik, 4 topu ve 2. direği hasar almıyor, bozuk dizi kayda yazılıyor",
+   "file": "js/game/shipControl.js",
+   "func": "shipControl.replaceShip (41-53) / createPlayerShip (22-39); Ship kurucusu (js/ship/ship.js:43-44, 54); Ship._applyDamageVisuals (119-134); shop.buyShip (js/economy/shop.js:208-223)",
+   "rootCause": "A1 düzeltmesinden sonra createPlayerShip kayıttaki parts/mastHp/cannonHp değerlerini Ship'e geçiriyor (shipControl.js:30). replaceShip eski geminin serialize çıktısını kullanıyor ve yalnız hp, holes, water ve upg alanlarını sıfırlıyor (44-46). Böylece sloop'un mastHp (1 eleman) ve cannonHp (4 eleman) dizileri, 2 direkli ve 8 toplu Brigantine'e aynen geçiyor. Ship kurucusu dizi uzunluğunu tipe göre normalleştirmiyor (ship.js:43-44). Kurucudaki _applyDamageVisuals(true) çağrısı (54) mastHp[1] undefined olduğu için 'mastHp[i] > 0' koşulunu (124) geçemiyor ve ikinci direği anında devriyor (t=1, ~77°). cannonHp[4..7] undefined olduğu için bu toplar hasar almıyor (ship.js:96) ama canFire '?? 100' sayesinde ateş edebiliyor (681). İlk isabette mastHp[1] NaN oluyor (88-90), JSON'da null'a dönüyor ve yüklemede sailFactor bu direği kırık sayıyor (115). repairShip diziyi aynı uzunlukta eşlediği için (shop.js:187) isabet olmadan düzeltmiyor; repairCost da yalnız 1 direği hesaplıyor (175). v0.3'te createPlayerShip bu dizileri geçirmediğinden (v0.3 shipControl.js:25-30) yeni gemi doğru uzunlukta dizilerle kuruluyordu.",
+   "impact": "v0.4'te Brigantine satın alan (9.000 altın) her oyuncu ikinci direği ve yelkeni yan yatmış bir gemi teslim alıyor. Bu görünüm kayıt/yükleme ve tamirden sonra da sürüyor; ancak '4 tahtayla acil direk dik' etkileşimi ve ardından liman tamiri (shipControl.js:114-121) düzeltiyor. 4 top ve 2. direk hasar almıyor, bu da dengesizlik yaratıyor. Bir isabet ve kayıt/yükleme sonrası yelken çarpanı 0,5'e düşüyor. Bozuk dizi kayda ve netState ile konuklara gidiyor. Gemi satın almayı sınayan bir test yok. Hesap /tmp/denetim_alan/karsit_kayit/hp_mast_probe.mjs ile doğrulandı: devrik direk [1], hasar alabilen toplar yalnız 0–3, kayıt sonrası dizi [100,null] ve yelken çarpanı 1 → 0,5.",
+   "priority": "yuksek",
+   "fix": "replaceShip'te parts, mastHp ve cannonHp sıfırlanmalı (undefined bırakılıp yeni tipe göre kurulmalı). Ship kurucusunda yüklenen diziler tipe göre normalleştirilmeli: uzunluk type.masts.length ve model.cannons.length olmalı, sayı olmayan değerler 100 sayılmalı. Faz 4 yükleme göçü mevcut kayıtlardaki uzunluk uyuşmazlığını onarmalı. repairShip dizileri tip uzunluğunda yeniden kurmalı.",
+   "repro": "Tarayıcıda: DK.handlers.startGame({kind:'solo',slot:2,data:null}); yüklendikten sonra DK.G.player.inv.gold=20000; const {shop}=await import('./js/economy/shop.js'); shop.buyShip('brigantine', DK.shipControl, DK.engine.scene); ({m:DK.G.ship.mastHp.length, c:DK.G.ship.cannonHp.length, devrik:!!DK.G.ship._fallen?.[1]}) çağrısı {m:1, c:4, devrik:true} döndürür. Ardından const d=DK.game.serialize(); DK.save.write('solo',2,d); DK.handlers.startGame({kind:'solo',slot:2,data:DK.save.read('solo',2)}) ile yükleyince aynı sonuç alınır. Oyun içinde: Usta Bora'dan Brigantine satın al, ikinci direk yan yatmış görünür.",
+   "acceptance": "Satın almadan hemen sonra mastHp.length === 2, cannonHp.length === 8 ve _fallen boş. 5 numaralı topa isabet onun canını düşürüyor. Kayıt/yükleme sonrasında da aynı. Uzunluğu bozuk eski bir kayıt yüklenince diziler onarılmış geliyor. Bunlar gemi satın alma ve kayıt döngüsünü içeren otomatik bir senaryoyla sınanıyor."
+  },
+  {
+   "title": "İçe aktarılan profil ilkel bir değer içeriyorsa oyun bir daha açılmıyor (boot'ta TypeError, oyun içinden kurtarma yok)",
+   "file": "js/main.js",
+   "func": "boot (83-85); save.profile (js/core/save.js:70-72); save.importAll (js/core/save.js:82-87)",
+   "rootCause": "importAll 'dksh.profile' değerini doğrulamadan yazıyor. save.profile() JSON ilkel bir değer (5, true, \"x\") döndürebiliyor. boot() 'G.profile = prof || {...}' ile bu ilkel değeri kabul ediyor, ardından 'G.profile.appearance = …' ataması ES modülünün katı kipinde TypeError atıyor. Hata boot().catch'e düşüyor ve her sayfa açılışında tekrarlanıyor. İçe aktarma Ayarlar'da olduğu ve Ayarlar'a ancak boot tamamlanınca ulaşılabildiği için oyun içinden geri dönüş yolu yok. writeProfile her zaman nesne yazdığından bu durumu yalnız içe aktarma ya da elle düzenleme tetikliyor. Kod v0.3'te de aynı (v0.3 main.js:81-85).",
+   "impact": "Bozuk, elle düzenlenmiş ya da kötü niyetle paylaşılmış bir kayıt dosyası içe aktarılınca yükleme ekranında 'Oyun başlatılamadı: Cannot create property 'appearance' on number…' görünüyor ve oyun hiç açılmıyor. Kullanıcı ancak tarayıcıdaki site verisini, yani bütün kayıtlarını silerek kurtulabiliyor. Etki ölçekte 'oyun açılmıyor' (kritik) sınıfında; tetiklenmesi bozuk bir dosyanın içe aktarılmasını gerektirdiği için 'yüksek' önerildi. D-04'te bu etki yok, başka alan denetimlerinde de bulunmadı.",
+   "priority": "yuksek",
+   "fix": "save.profile() yalnız düz nesne döndürmeli (dizi ya da ilkel değer için null). boot'ta profil alanları türlerine göre doğrulanmalı: appearance nesne, unlocked ve recentRooms dizi olmalı. importAll anahtar beyaz listesi ve değer şeması doğrulaması uygulamalı (D-04 ile birlikte). boot hatasında 'güvenli kip' seçeneği (profili ve ayarları varsayılana döndür) sunulmalı.",
+   "repro": "Node: node /tmp/denetim_alan/karsit_kayit/import_probe.mjs /home/user/SON-HAZ-NE-w2/js/core/save.js → E_profilePrimitive.boot = \"TypeError: Cannot create property 'appearance' on number '5'\". Tarayıcıda: içeriği {\"dksh.profile\":\"5\"} olan dosyayı Ayarlar → Kayıtları içe aktar ile yükle (ya da konsolda localStorage.setItem('dksh.profile','5')), sonra sayfayı yenile; oyun yükleme ekranında takılır.",
+   "acceptance": "Aynı dosya içe aktarmada reddediliyor ya da profil varsayılana düşüyor ve sayfa yenilenince oyun açılıyor. İlkel, dizi ve eksik alanlı profil değerleriyle boot yolunu sınayan bir birim testi geçiyor."
+  }
+ ]
+}

@@ -1,0 +1,782 @@
+{
+ "area": "I — Karakter, animasyon ve kamera",
+ "summary": "v0.4'te (44d548c) hareket mantığı büyük ölçüde test kapsamında: yürü/koş/sprint geçiş histerezisi, sprint tükenmesi, iniş eşikleri, güverte zıplama/kaçınma, yüzme kaldırması, dalış ve kamera senaryoları taban koşusunda tam geçiyor (04_karakter 21/21, 15_iskele_kamera 14/14, 16_kosu_poz_ganimet 23/23, 17_kamera_kararma 13/13). ANIM_MAP'in 89 girişinin tamamı kk_anims.glb'de var; çömelme ve ragdoll sonrası poz düzeltmelerini Node'da yeniden ölçtüm, çalışıyorlar. Asıl sorun animasyonun fiziksel hareketle uyumu. Aynı GLB ve kk.js hattıyla Node'da yaptığım ileri kinematik ölçüme göre kliplerin doğal hızı Walking_A için ≈0,7–0,9 m/sn, Running_A/C için ≈3,6–3,9 m/sn; kod ise 1,9/5,2/6,6 m/sn referans alıyor. Bu yüzden her harekette sürekli ayak kayması var. 02 C13 düzeltmesi 3 m/sn'deki kaymayı ~%14'ten ~%55'e çıkarmış. Dümen ve top IK hedefleri 0,47 m'lik kolun ulaşamayacağı uzaklıkta: eller çarka 0,39–0,53 m, kundağa 0,34–0,37 m kala havada kalıyor. C08 testi bilek kemiğini değil yalnız hedef vektörünü ölçtüğü için bunu yakalamıyor. Sandık taşırken eller sandığın içinde kalıyor. Zıplama klibi fiziksel kalkıştan 0,19 sn geç kalkıyor. Kaçınma kliplerindeki 0,27–0,67 m kök hareketi gövdeyi fiziksel konumdan koparıyor. Yüzme pozu gövde eğimini hesaba katmıyor. Kamera v0.3'e göre çok ilerledi: duvar, iskele güvertesi, gemi gövdesi, mağara ve su yüzeyi testlerle doğrulanmış; ağaçlar bilinçli olarak çarpıştırılmıyor, titreşimle siliniyor. Ancak nişan alırken omuz kaydırması daraltılmadığından kamera sağdaki duvarın içine giriyor. Tabanca ışını da kameradan çıktığı için duvar arkasına görüş ve atış mümkün; bunu gerçek camera.js ve physics.js ile Node'da ürettim. Limanda doğuşta kip geçişi tamamlanmıyor: silah ve meşale görünmez kalıyor, dümende ölünce kollar eski çark noktasına kilitli kalıyor. Saldırı, parry, tabanca doldurma, merdiven ve ani durma için otomatik test yok.",
+ "systems": [
+  {
+   "name": "Yürüme (Walk = Walking_A)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "player.js:697 Player._locomotion `_wantAnim('Walk', clamp(hs / 1.9, 0.5, 1.9))`, eşikler player.js:692–696; kk.js:24 Walk→Walking_A (1,067 sn, GLB'de var). Test: 04_karakter C13 (3 m/sn'de klip adı 'Walk', taban koşusunda geçti), 03_fizik_dt (3 sn yürüme 12,596 m). Node FK (/tmp/denetim_alan/fk4.mjs): destek evresinde doğal ayak hızı ≈0,7–0,9 m/sn.",
+   "note": "Klip var ve döngülü, kesilme riski düşük. Fiziksel bağ zayıf: oynatma hızı hs/1,9 olduğundan ayak gövde hızının yalnız ~%35–50'si kadar ilerliyor, gerisi kayma (I-01). Yürüme klibi çömelme (1,7 m/sn), nişan/savunmada ileri-geri yürüme (2,0), sandık taşıma (1,1–3,7), yavaşlama ve kısmi kol girişi durumlarında kullanılıyor. Ayak kaymasını ölçen test yok."
+  },
+  {
+   "name": "Koşma (Run = Running_A)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "player.js:699 `clamp(hs / 5.2, 0.55, 1.5)`, varsayılan hız 4,4 m/sn (player.js:445 Player._speedFor). 16_kosu_poz_ganimet K06 (4×90° dönüşte klip titremesi yok, seq=[]) ve K05 geçti. Node FK: doğal hız ≈3,6–3,9 m/sn.",
+   "note": "4,4 m/sn'de klip 0,85× oynuyor; ayak ≈3,1 m/sn hızda ilerliyor, kayma ~%25–30 (I-01). Histerezis (Yürü→Koş 3,7, Koş→Yürü 3,1) titremeyi önlüyor."
+  },
+  {
+   "name": "Sprint (Running_C)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "player.js:698 `clamp(hs / 6.6, 0.75, 1.4)`; player.js:450–461 Player._speedFor (7,0 m/sn, tükenme kilidi). 04 C10 (2 geçiş) ve 16 K05 (3 geçiş, kare başına en büyük hız düşüşü 0,15 m/sn) geçti. Node FK: Running_C doğal hızı ≈3,7–3,9 m/sn.",
+   "note": "Sprint mantığı ve geçişleri test edilmiş. Ancak 7 m/sn'de klip 1,06× oynuyor, ayak ≈4,0 m/sn hızda kalıyor, kayma ~%42. Running_C'nin doğal hızı Running_A ile hemen hemen aynı olduğundan sprint görsel olarak koşudan zor ayırt ediliyor (I-01)."
+  },
+  {
+   "name": "Ani durma",
+   "status": "dogrulanmamis",
+   "evidence": "player.js:537 Player._updateGround (yavaşlama sönümü 13/sn: 4,4→0,25 m/sn ≈0,22 sn), player.js:671–678 (_locomotion: hs<0,25 → Idle, geçiş 0,3 sn). Durma/fren klibi yok (KayKit'te de yok). tests/ altında bu durumu sınayan kontrol yok.",
+   "note": "Gövde ~0,2 sn'de dururken Run→Walk (0,2 sn)→Idle (0,3 sn) geçişi gövdeden daha uzun sürüyor. Bacaklar gövde durduktan sonra da kısa süre adım atıyor, buna Walk/Run kayması ekleniyor."
+  },
+  {
+   "name": "Yön değiştirme",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "player.js:532 `_faceTowards(wish, dt, this.sprinting ? 7 : 12)`, 537 (ivme 9/13), 688–696 (histerezis ve 0,3 sn A→B→A bastırma). 16 K06 (koşarken 4×90° dönüş, Walk yok) geçti.",
+   "note": "Dönüş/pivot klibi yok. 180° tersine dönüş test edilmiyor: hız sıfırdan geçerken bir kare Idle'a düşüp _gait sıfırlanabilir ve Run baştan başlar. Kayma I-01 ile aynı."
+  },
+  {
+   "name": "Zıplama (Jump_Start → Jump_Idle)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "player.js:557–565 (vel.y=7,4, JumpStart 1,5×), 663–669 (_locomotion: airT>0,25 → Jump_Idle); güverte player.js:867–871. 03_fizik_dt (tepe 1,183 m), 03_fizik_duzeltmeler 'Uzun karede zıplama tuşu tek zıplama üretir', 04 C09 (güvertede JumpStart, vy 6,13) ve 16 K03 geçti. Node FK (/tmp/denetim_alan/char4.mjs): Jump_Start'ta ayaklar klibin 0,29. sn'sinde (oyunda 0,19 sn) yerden kesiliyor.",
+   "note": "Fizik anında kalkıyor, klip ise 0,19 sn hazırlık çömelmesi oynatıyor; gövde ~1 m havadayken çömelme pozunda görünüyor (I-05). Küçük sandıkla zıplamada JumpStart hiç oynatılmıyor (player.js:563)."
+  },
+  {
+   "name": "İniş (Jump_Land)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "player.js:599–613 Player._updateGround (iniş yalnız ≥1,8 m düşüş, hs<3,2, taşıma yokken; eylem 0,3/0,5 sn), player.js:271 (Jump_Land 1,4×). 16 K03: yerinde zıplamada ve 1,2 m inişte duraksama yok, 2,5 m'de var (taban koşusu: zipla false, d12 false, d25 true).",
+   "note": "Tetikleme eşikleri testle doğrulanmış. Geliştirilecek noktalar: 1,8–3 m inişte 0,48 sn'lik klibin %63'ü oynatılıp kesiliyor; hs≥3,2 iken ve taşırken iniş klibi yok (Jump_Idle'dan doğrudan Run'a 0,2 sn geçiş)."
+  },
+  {
+   "name": "Yüzme (prosedürel IK + Idle taban)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "player.js:736–802 Player._updateSwim (eğim 1,2 rad, overlay.lift 1,0, swimPhase 4,2 rad/sn), character.js:891–905 Character.update (kol/bacak IK hedefleri kök uzayında). 04 C01 (lift 1, modelY 1,01), 16 K01/K02/P01 ve 14 D03 geçti. Node (/tmp/denetim_alan/char1.mjs, char2.mjs): eller omzun 0,16–0,66 m gerisinde, gövde–bacak açısı 129°.",
+   "note": "Ayrı yüzme klibi yok, poz prosedürel. Kip ve hız testli; ancak poz gövde eğimini hesaba katmıyor: kollar baştan öne uzanmıyor, bacaklar aşağı sarkıyor (I-08)."
+  },
+  {
+   "name": "Dalış",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "player.js:745 (C: vy −2,4 × palet), 788 (eğim 1,35 + dikey hıza bağlı); game.js:330–341 Game._camera (dalış kamerası). 14 D01/D02, 15 C05 (96 açıda 0) ve 17 K09 geçti. Node: dalışta gövde–bacak açısı 122°.",
+   "note": "Mekanik, nefes ve kamera test edilmiş. Poz yüzmeyle aynı sorunu taşıyor (I-08)."
+  },
+  {
+   "name": "Merdiven (gemi ip merdiveni tırmanma)",
+   "status": "dogrulanmamis",
+   "evidence": "player.js:955–983 Player._updateClimb/startClimb (1,6 sn'lik betikli doğrusal tırmanış, climbPhase 7 rad/sn); character.js:906–911 (kol hedefi 1,85 m yükseklikte, 0,47 m kolla ulaşılamaz); shipModel.js:536 basamak aralığı 0,4 m. Test yok: 04 C12 yalnız binişte silahın ele dönmesini ölçüyor; 06. belge §6.3 'Tırmanma animasyon zamanlaması ölçülmedi'.",
+   "note": "Klip yok, salınım prosedürel. El ve ayaklar basamaklara bağlı değil, tırmanış girdiye bağlı değil (otomatik). Tırmanırken ölünce _updateClimb sürüyor ve ceset güverteye taşınıyor (player.js:366, 966–969)."
+  },
+  {
+   "name": "Sandık taşıma",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "character.js:879–881 (eller sabit (±0,30; 1,02; 0,42) noktalarına IK); treasure.js:287–295 treasure._updateChest (sandık 0,55 m önde, taban +0,75−(ölçek−1)·0,3), treasure.js:366–375 _applyCarry. Node: chest.glb 1,18×0,90×0,82 m. Test: 04 C26 yalnız 'equip' olayını ölçüyor.",
+   "note": "Taşıma işlevsel olarak çalışıyor. Eller sandık hacminin içinde kalıyor (sandık yarı genişliği 0,47–0,86 m); büyük ve efsane sandığın üstü 1,83/1,92 m, yani baş üstünde. Taşıma hızlarında Walk klibi 1,4–1,9× oynuyor ve kayıyor. Kaldırma/bırakma animasyonu yok (I-04, bilinen 11 #8)."
+  },
+  {
+   "name": "Kazı (kürek)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "treasure.js:186–205 treasure.startDig (startBusy 2,6 sn, efekt için setInterval 380 ms); player.js:273 ('Heavy2H' = 2H_Melee_Attack_Chop, 0,85× döngü), player.js:279–289 startBusy/cancelBusy. 04 C06 (ölümde busy iptali) ve C25 (loop=1) geçti. Node (/tmp/denetim_alan/char7.mjs): kürek ucu en az 0,30 m yüksekte, sol bilek sapa 0,13–0,38 m.",
+   "note": "Kürek yere hiç değmiyor; toprak efekti klibe değil gerçek zamanlı zamanlayıcıya bağlı ve oyun duraklatılınca da sürüyor; cancelOnMove hiç okunmuyor (I-17). Kazı akışını uçtan uca sınayan test yok."
+  },
+  {
+   "name": "Saldırı (kılıç kombo/ağır/karşı, yumruk)",
+   "status": "dogrulanmamis",
+   "evidence": "combat.js:18–29 (SWORD_MOVES/FIST_MOVES), 125–166 combat._meleeInput/_attack; player.js:250–256 Player.startAction pick() (hız >1,6 m/sn ise üst katman), 518–525 (atılım). tests/ altında oyuncunun yakın dövüşünü sınayan kontrol yok (v03/fight*.js iddia içermiyor). Node (/tmp/denetim_alan/char5.mjs): Atk2'de vuruş el hızı tepesinden 0,11 sn sonra, Counter'da 0,14 sn önce işleniyor; Punch/Punch2 kliplerinin %67–70'i oynatılıyor.",
+   "note": "Klipler var. Duran oyuncu saldırırken W'ye basarsa tam gövde klibinde 2,2 m/sn kayıyor, atılım ayakları kaydırıyor (I-09, I-10). 12. belge #9 'GEÇTİ' diyor ama kılıç kombosu hiç sınanmıyor."
+  },
+  {
+   "name": "Parry",
+   "status": "dogrulanmamis",
+   "evidence": "player.js:149–151 ve 192–203 Player.hurt/_parry (blockT<0,24; 'Parry'→Block klibi 1,9× üst katman; karşı saldırı penceresi 1,3 sn); combat.js:147. Oyuncunun parry'sini sınayan test yok: 05 F-03 yalnız düşmanın stun(…,'parry') API'sini doğrudan çağırıyor.",
+   "note": "Klip var (Block, üst katman). Parry penceresi, sersemletme ve karşı saldırı zinciri otomatik testle doğrulanmamış."
+  },
+  {
+   "name": "Blok (savunma)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "player.js:476–487 Player._commonCombatInput (histerezis, 0,25 sn yeniden başlama gecikmesi), 662 (_wantUpper('Block')), 681–686 (yan adım/geri yürüme), 463 (2,0 m/sn). 03_fizik_duzeltmeler 'Düşük dayanıklılıkta savunma bayrağı kare kare titreşmez' geçti.",
+   "note": "Savunma bayrağı test edilmiş. Savunurken ileri/geri yürüyüş Walk/WalkBack (referans 1,9) ile ~%55 kayıyor; yan adımın 3,6 referansı ise klibe uyuyor. Blok animasyon katmanı hiçbir testte ölçülmüyor."
+  },
+  {
+   "name": "Kaçınma (Dodge_F/B/L/R)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "player.js:489–501 (_commonCombatInput), 518–521 (itki 2,5+7,5k² m/sn, 0,46 sn), 265 (klip hızı 0,4/0,46: süre eşleşik). 03_fizik_dt (kare hızından bağımsız mesafe) ve 04 C09 (güvertede 2,97 m) geçti. Node FK: kalça kök hareketi Dodge_F 0,27 m, Dodge_B 0,67 m, Dodge_L/R 0,56 m; klip sonunda başlangıca dönmüyor.",
+   "note": "Klip süresi eyleme eşit. Ancak klipteki kök hareketi fiziksel yer değiştirmeye ekleniyor: kaçınma sonunda gövde 0,3–0,7 m önde kalıyor, sonraki geçişte geri sıçrıyor (I-06)."
+  },
+  {
+   "name": "Tabanca doldurma (Reload)",
+   "status": "dogrulanmamis",
+   "evidence": "combat.js:104–111 combat.update (reloadT 2,0/1,3 sn; eylem süresi reloadT×0,9), player.js:260 (üst katman; hız 1,17/süre ile klip eyleme eşit), 343 (dolum bitişi). Test yok.",
+   "note": "Klip süresi eyleme eşit. Dolum sırasında kip değişirse üst katman duruyor ama eylem sürüyor ve kalan süre boyunca taban klibi donuyor (I-11). Silah değiştirilince dolum animasyonu başka silahla devam ediyor."
+  },
+  {
+   "name": "Dümen (helm)",
+   "status": "hatali_kararsiz",
+   "evidence": "player.js:905–924 Player._updateHelm (IK hedefleri çark halkasında, yarıçap 0,5 m); shipModel.js:440 (çark istasyondan 0,9 m önde, 1,2 m yukarıda), 529. 04 C08 hedef vektörünü ölçüyor (dl/dr 0,5, geçti), bilek konumunu ölçmüyor. Node (/tmp/denetim_alan/char3.mjs): bilek ile hedef arası 0,39–0,53 m (4 gövde × boy 0,94/1,0/1,06).",
+   "note": "Dümen kontrolü çalışıyor (04 C23). El hizası hatalı: kol (üst+alt) 0,47 m, omuz–hedef uzaklığı ~0,90 m (I-03). Dümendeyken 1–7 tuşu silahı yeniden ele veriyor."
+  },
+  {
+   "name": "Top kullanma",
+   "status": "hatali_kararsiz",
+   "evidence": "player.js:926–942 Player._updateCannon (hedefler kundak yerelinde (±0,28; 0,62; −0,5), oyuncu topun 1,2 m gerisinde). 04 C08b hedef–top uzaklığını ölçüyor (0,85 m, eller 0,56 m ayrı, geçti), bileği ölçmüyor. Node: bilek ile hedef arası 0,34–0,37 m.",
+   "note": "Nişan alma ve ateş çalışıyor. Eller tutamaklara ulaşmıyor (I-03)."
+  },
+  {
+   "name": "Animasyon klip altyapısı (kk.js: ANIM_MAP, oran düzeltme, klip yarıları)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "kk.js:23–49 (89 giriş), 87–142 kk._prepChar/_prepClips, 151–162 kk.clipPart. Node GLB kontrolü (/tmp/denetim_alan/animmap.mjs): 89 girişin hepsi kk_anims.glb'deki 81 klip arasında. Klip oynatımını sınayan testler: 04 C09 (JumpStart), C19 (LieUp), C25 (Heavy2H) geçti.",
+   "note": "Eksik klip yok. Adım hızı referansları ayrı bir sorun (I-01)."
+  },
+  {
+   "name": "Katmanlı animasyon (üst/alt gövde, _swapBase, tek seferlik üst katmanın kapanması)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "character.js:707–778 Character.play/playUpper/stopUpper/_swapBase, 852 (tek seferlik üst katman otomatik kapanma); player.js:247–256, 309–313. Doğrudan test yok.",
+   "note": "Kip geçişinde üst katman durduruluyor ama eylem sürüyor ve taban klibi donuyor (I-11). pick() kararı eylem başında verildiğinden sonradan yürüyünce tam gövde klibi kayıyor (I-09)."
+  },
+  {
+   "name": "Yürüyüş biçimi histerezisi (Walk/Run/Sprint titremesinin bastırılması)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "player.js:688–696 Player._locomotion. 16 K06 (seq=[]), K05 (16 sn'de 6 klip değişimi, 3 sprint geçişi), 04 C10 geçti; 12. belgede kayıtlı.",
+   "note": "Titreme giderilmiş. Hız eşleşmesi ayrı sorun (I-01)."
+  },
+  {
+   "name": "Çömelme pozu (bacak IK, omurga eğimi)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "character.js:847–856 (önceki karenin prosedürel düzenlemelerini geri alma), 870–878. 12. belge tablosu ölçümü 0,82–0,84 m; kalıcı test yok. Node ölçümü (/tmp/denetim_alan/char1.mjs): 3 sn çömelmede baş 0,837 m, kalkınca 1,154 m.",
+   "note": "'Başını yere gömme' düzeltmesi çalışıyor ama regresyon testi yok. Çömelerek yürürken Walk 0,89× oynuyor, kayma ~%55."
+  },
+  {
+   "name": "Ragdoll ölüm ve ayağa kalkış",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "ragdoll.js (Verlet, 8 yinelem), character.js:783–809 Character.startRagdoll/stopRagdoll, player.js:206–245 Player.die/_ragdoll/revive. 04 C06 (rag:true) ve C19 (getup/LieUp) geçti. Node (/tmp/denetim_alan/char6.mjs): ragdoll sonrası yürüyüşte en düşük baş 1,115 m (ölüm öncesiyle aynı); kalkışın ilk karesinde baş 1,134 m (ayakta), kalça 1,22 m geri sıçrıyor.",
+   "note": "Bağlama pozu bozulması giderilmiş. Kalkışta ayakta poz parlıyor (I-16); güvertedeki ragdoll dünya uzayında simüle ediliyor (I-19)."
+  },
+  {
+   "name": "Ayak IK (eğimli zemin ve basamak)",
+   "status": "eksik",
+   "evidence": "character.js:920–935 Character.update: kod var ama this.ik.ground hiçbir dosyada atanmıyor (grep: yalnız okuma, v0.3'te de aynı). Belge 07 §7.1 'ayak yerleştirme IK' diyor.",
+   "note": "Yamaçta, iskele basamağında ve yalpalayan güvertede ayaklar havada ya da zeminin içinde kalıyor (I-12). Basamak yumuşatma (player.js:397–402) yalnız gövde yüksekliğini düzeltiyor."
+  },
+  {
+   "name": "El eşyası bağlama (kılıç, tabanca, kürek, olta, zıpkın, meşale)",
+   "status": "dogrulanmamis",
+   "evidence": "character.js:646–694 Character.hold (sabit ofsetler, 1/modelScale ölçek), player.js:127–139 Player._syncTorch (sol el meşale). 06. belge §6.3: 'tüm silah/animasyon kombinasyonları için kare kare inceleme yapılmadı'. Node: nişan pozunda tabanca namlusu (−0,19; 1,30; 0,61), namlu alevi ise sabit (0; 1,45; 0,6).",
+   "note": "Tek elle tutulan eşyalar el yuvasına bağlı olduğundan elle birlikte hareket ediyor, ama görsel hiza doğrulanmamış. Kazıda sol el sapta değil (I-17), namlu alevi ~0,24 m kayık (I-20)."
+  },
+  {
+   "name": "Güvertede yürüyüş",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "player.js:820–903 Player._updateDeck (ws = sp; vel ve _locomotion girişe göre); ship.js:184–196 Ship.clampDeck. 04 C09 (zıplama ve kaçınma) geçti.",
+   "note": "Animasyon hızı gerçek yer değiştirmeden değil girişten alınıyor; küpeşteye ya da direğe doğru yürüyen oyuncu yerinde koşuyor (I-21)."
+  },
+  {
+   "name": "Basamak yumuşatma (görsel _visDY)",
+   "status": "dogrulanmamis",
+   "evidence": "player.js:395–402 Player.update. Test yok; 16.10'da 'gerçek GPU'da gözle doğrulanmalı' listesinde.",
+   "note": "Yalnız gövde kökünü 0,1–0,7 m'lik basamaklarda yumuşatıyor; ayak IK yok."
+  },
+  {
+   "name": "Kamera takip ve nesne çarpışması (duvar, kaya, bina)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "camera.js:66–129 tpCamera.update (lineBlocked+slabBlocked ile ikili arama, 0,3 sn bekletme), physics.js:194–245 physics.lineBlocked. 04 C07 (5,07→2,77→5,07 m), 15 C01 (96 açıda güverte altı 0), C02 ve C03 geçti.",
+   "note": "Nişan omzu daraltılmadığı için kamera sağdaki duvara giriyor ve atış ışını o duvarı saymıyor (I-02). 0,4 m alt sınır, yarıçapsız (nokta) kamera ve ada yapılarının küçük çarpıştırıcıları da sorunlu (I-13)."
+  },
+  {
+   "name": "Kamera: gemi gövdesi ve kıçtaki kayık",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "camera.js:15–31 hullSolid/boatSolid, 69–99; game.js:349–352 Game._camera (hulls, skipHull, dockedBoat). 17 K04 (4 nokta × 48: ihlal 0), K05 (karanlık kare 0), K06 (ihlal 0) geçti.",
+   "note": "Dümende kendi gövdesi bilinçli olarak atlanıyor (uzak takip kamerası)."
+  },
+  {
+   "name": "Kamera: güverte yapıları (direk, küpeşte, yelken, top, ambar kapağı, çapa, fener)",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "shipModel.js:281, 294, 306, 409 (küpeşte/direk 'rail', yelken/bayrak 'sail' silinmesi); shipModel.js:177–203 cannonMesh ve ambar kapağı/çapa/fener malzemelerinde nearFade yok; camera.js:138–145 güverte düzlemi sınırı. 17 K02 (gemide 'rail' ve 'sail' kancaları) geçti.",
+   "note": "Direk, küpeşte ve yelken içinden geçen kamerada siliniyor. Toplar ve diğer donanım ne siliniyor ne de çarpışıyor (I-14)."
+  },
+  {
+   "name": "Kamera: ağaç ve ince engeller (noCam + yakın-kamera silinmesi + görüş çizgisi silindiri)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "physics.js:220 (noCam ve r<0,2 m çember atlanır), props.js:238–249 ve islands.js:478 (ağaçlar noCam), nearfade.js:16–23 NEAR_FADE, 79–99 nearFade. 15 C02 (kamera–baş 4,6 m), 17 K02/K03/K08/K12 geçti.",
+   "note": "Kamera tasarım gereği ağacın içinden geçiyor, kameraya yakın parçalar titreşimle siliniyor. Gerçek GPU'da görsel his doğrulanmadı (11 #54)."
+  },
+  {
+   "name": "Kamera: mağara kesiti ve tavan",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "camera.js:100–110 ve 128 (cave.camClamp); game.js:346–347. 17 K07 (4 konum × 72 açı: kesit dışı 0, medyan ≥0,97 m) geçti.",
+   "note": ""
+  },
+  {
+   "name": "Kamera: su yüzeyi, dalış ve su altı histerezisi",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "camera.js:146–152; game.js:330–341 (_camDive), 384–387 Game._env (histerezis). 15 C04 (144 açıda 0), C05 (96 açıda 0), 17 K09 ([F,F,T,T,F]) geçti.",
+   "note": ""
+  },
+  {
+   "name": "Yakın kamerada oyuncu modelini gizleme (setCamHidden)",
+   "status": "calisiyor_test_edilmis",
+   "evidence": "character.js:416–427 Character.setCamHidden/_camHide; game.js:371–375 (0,8/1,0 m histerezis). 15 C03 (kamera–baş 0,4 m, hidden true, meşale yanıyor, dümende görünür, stale 0) geçti.",
+   "note": ""
+  },
+  {
+   "name": "Uzak oyuncu animasyon eşitlemesi",
+   "status": "calisiyor_gelistirilmeli",
+   "evidence": "net.js:87–124 RemotePlayer.update (anim, up ve loop uygulanıyor; oynatma hızı yok); player.js:986–993 Player.netState. 04 C25 (döngülü klip loop=1) geçti.",
+   "note": "Klip hızı, çömelme/su içinde durma/tırmanma/olta/havada bayrakları ve dümen IK'sı gönderilmiyor; aynı adlı tek seferlik klip yeniden başlatılmıyor (I-15)."
+  },
+  {
+   "name": "Etkileşim animasyonları (sandık açma, onarım, söndürme, ganimet toplama)",
+   "status": "eksik",
+   "evidence": "interact.js:47–70 interact.update (basılı tutma sırasında hiçbir eylem/klip başlatılmıyor); oyuncuda 'Interact' klibi yalnız hiç çağrılmayan startBusy yolunda (player.js:283); 'pickup' yalnız deniz kabuğu toplamada (details.js:387).",
+   "note": "I-18."
+  },
+  {
+   "name": "Ölüm sonrası doğuşta karakter durumu",
+   "status": "hatali_kararsiz",
+   "evidence": "main.js:226–241 handlers.respawn (liman dalında doğrudan p.mode='ground', satır 233); player.js:236–245 Player.revive, 720–734 Player.enterWater (hold(null)); shipControl.js:174–193. 16 P01 yalnız poz ve kaldırmayı ölçüyor.",
+   "note": "I-07."
+  },
+  {
+   "name": "Karakter görünümü ve gövde tipleri (appearance.js, boy/yapı)",
+   "status": "dogrulanmamis",
+   "evidence": "appearance.js:37–104 defaultAppearance/randomAppearance; character.js:346–350 baseOf, 629–643 Character._bodyShape. Node'da 4 gövde × 3 boy (0,94/1,0/1,06) hatasız kuruldu (/tmp/denetim_alan/char3.mjs). Görünüm seçeneklerini doğrulayan test yok.",
+   "note": "Boy adım uzunluğunu ölçekliyor ama klip referans hızları sabit kalıyor."
+  }
+ ],
+ "issues": [
+  {
+   "id": "I-01",
+   "title": "Yürüme/koşma/sprint klip hızları kliplerin doğal adım hızıyla eşleşmiyor: sürekli ayak kayması",
+   "file": "js/player/player.js",
+   "func": "Player._locomotion (satır 681–699)",
+   "rootCause": "Klip oynatma hızı hs/1,9 (Walk ve WalkBack), hs/5,2 (Run) ve hs/6,6 (Sprint) ile hesaplanıyor (player.js:685, 697–699). Bu referanslar KayKit kliplerinin oran düzeltmesi (kk.js:11 bacak ×1,4) ve 1,8 m ölçekleme sonrasındaki doğal hızlarına göre seçilmemiş. Aynı GLB ve kk.js hattıyla Node'da yapılan ileri kinematik ölçümde, destek evresindeki ayak hızı 4 gövde tipinde de aynı çıktı: Walking_A ≈0,7–0,9, Walking_Backwards ≈0,6–0,9, Running_A ≈3,6–3,9, Running_C ≈3,7–3,9 m/sn. Yalnız yan adım (≈3,5–3,9) için kullanılan 3,6 referansı doğru. Bacağı 0,43 m, kolu 0,47 m olan kısa uzuvlu rig için 1,9/5,2/6,6 değerleri fazla yüksek. 02 C13 sorunu 'Run 0,7 kıskacı' diye ele alıp eşiği 3,7'ye taşıdı; 'normal koşu ve eğilme tam eşleşiyor' varsayımı yanlış olduğundan 3 m/sn'deki kayma ~%14'ten ~%55'e çıktı.",
+   "impact": "Her harekette ayaklar yerde kayıyor. Yürüme klibinde ayak gövde hızının ~%35–50'si kadar ilerliyor (1–2 m/sn kayma); 4,4 m/sn koşuda ~%70–75'i (~1,2 m/sn kayma); 7 m/sn sprintte ~%57–60'ı (~3 m/sn kayma). Sandık taşıma, çömelme ve nişan/savunmada ileri-geri yürüyüş de yürüme klibini kullandığı için 'buz pateni' görüntüsü sık. Koşu ve sprint kliplerinin doğal hızı aynı olduğundan sprint görsel olarak koşudan zor ayırt ediliyor.",
+   "priority": "yuksek",
+   "fix": "1) Klip doğal hızlarını yüklemede ölç (kk._prepClips sonrasında footl/footr destek evresi hızı) ya da şu değerlerle sabitle: Walk≈0,85, WalkBack≈0,8, Run≈3,7, Sprint≈3,8 m/sn. 2) _locomotion'da timeScale = hs/doğalHız olsun; Walk→Run eşiğini histerezisle birlikte ~1,6–1,9 m/sn'ye çek, kıskaçları genişlet (Run 0,45–1,6; Sprint 1,4–2,0). 3) Eşik çevresinde iki klibi ağırlıkla karıştır (02 önerisi). 4) Oynatma hızını uzak oyunculara da gönder (I-15).",
+   "repro": "Tarayıcıda oyuncu karadayken DK.input.down.add('KeyW') ile 2 sn boyunca DK.sim(1/60) adımları at. Her adımda yere 2 cm'den yakın ayağın (p.char.bones.footl/footr) dünya yatay hızını ölç: ≈1,3 m/sn çıkar, olması gereken ≈0. Node: /tmp/denetim_alan/fk4.mjs (kk_anims.glb + kk.js kopyası) doğal hızları verir.",
+   "acceptance": "Yeni test (ör. 18_animasyon_senkron.js): 1,5 / 2,7 / 4,4 / 7,0 m/sn sabit hızda ve nişan/savunmada geri yürürken destek ayağının dünya yatay hızının medyanı < 0,25 m/sn (ya da gövde hızının %10'u). 16 K05, K06 ve 04 C10 geçmeye devam etmeli.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "02 C13 (yanlış varsayımla kapatıldı; 06. belgede 'Düzeltildi'); 02 C_oyuncu önerisi 'Yürüme/koşma arasında hız tabanlı karıştırma'"
+  },
+  {
+   "id": "I-02",
+   "title": "Nişan alırken omuz kamerası sağdaki duvarın içine yerleşiyor; kameradan çıkan tabanca ışını duvar arkasına isabet ediyor",
+   "file": "js/player/camera.js",
+   "func": "tpCamera.update (at() 68, blocked 112–113, ikili arama 114–127); combat.shoot/raycast (js/game/combat.js:244, 295)",
+   "rootCause": "Aday kamera noktası at(d) = odak − dir·d + right·shoulder ile hesaplanıyor. İkili arama yalnız d'yi (0,4–2,3 m) kısaltıyor, 0,65 m'lik omuz kaydırmasını hiç küçültmüyor. Oyuncunun sağında 0,65 m içinde bir duvar varsa her d engelli çıkıyor ve kamera hit=max(0,4, lo−0,1)=0,4 m'ye, yani omuz kaydırmasıyla duvar kutusunun içine konuyor. combat.shoot ışını kamera konumundan başlatıyor (combat.js:244). physics.lineBlocked kutunun içinden başlayan doğruda t0=0 buluyor; bu değer tMin=0,05'in altında kaldığı için o kutu engel sayılmıyor (physics.js:231–243).",
+   "impact": "Sağ omzu duvara dönük siper alıp nişan alan oyuncu duvarın içini/arkasını görebiliyor ve duvar arkasındaki düşmanı tabancayla vurabiliyor (görüş ve atış hilesi). Bu, kameranın duvar içinden geçmemesi hedefine de aykırı. Node'da gerçek camera.js ve physics.js ile: duvar 0,4 m sağdayken kamera duvar kutusunun 0,25 m içinde; içeriden çıkan ışında lineBlocked=false, dışarıdan çıkanda true.",
+   "priority": "yuksek",
+   "fix": "camera.js'de önce odaktan omuz noktasına (f + right·shoulder) giden doğruyu dene; engelliyse omuz kaydırmasını ikili aramayla küçült, sonra mesafeyi ara. Alternatif: ~0,2 m yarıçaplı küre süpürme. combat.shoot'ta ışını gözden ya da namludan kamera yönüne at; ya da kamera→baş doğrusu engelliyse atışı baştan başlat. lineBlocked'a 'başlangıç kutu içindeyse engelli say' seçeneği ekle.",
+   "repro": "Liman binasının yanında (15 C03'teki bina) oyuncuyu sağ tarafı duvara 0,4 m uzaklıkta durdur, tabanca kuşan, Mouse2'yi basılı tut, DK.sim(1). DK.engine.camera.position, physics.all içindeki 'building' etiketli kutunun içinde kalır. Duvarın arkasına bir düşman koyup DK.combat.shoot(p) çağırınca isabet olur. Node: /tmp/denetim_alan/camtest/run.mjs ve run2.mjs.",
+   "acceptance": "Yeni test: duvar sağda 0,2 / 0,4 / 0,6 m uzaktayken nişan kamerası hiçbir çarpıştırıcı kutusunun içinde olmamalı ve baş→kamera doğrusu engelsiz olmalı. Duvar arkasındaki hedefe nişanlı atış isabet etmemeli (05 F-16'nın omuz kaydırmalı biçimi).",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "I-03",
+   "title": "Dümen ve top IK hedefleri kol boyunun dışında: eller çarka 0,39–0,53 m, kundağa 0,34–0,37 m kala havada",
+   "file": "js/player/player.js",
+   "func": "Player._updateHelm (905–924), Player._updateCannon (926–942); Character.update/twoBoneIK (js/player/character.js:384–400, 917–918)",
+   "rootCause": "Hedefler doğru yerde (çark halkası, kundak tutamakları), ama oyuncu istasyonu çarkın 0,9 m gerisinde (shipModel.js:440'ta çark helmZ+0,15, 529'da istasyon helmZ−0,75) ve topun 1,2 m gerisinde (player.js:932). Rig'in kolu (üst+alt) 0,47 m; omuz ile hedef arası dümende ≈0,90 m, topta ≈0,82 m. twoBoneIK mesafeyi l1+l2'ye kıskaçladığından kol hedefe doğru gerilir ama ulaşamaz. 04 C08 yalnız ik.handL vektörünün çark merkezine 0,5 m olduğunu ölçüyor, bilek kemiğini ölçmüyor. Ayrıca dümende ve topta equip() (player.js:111–112) silahı yeniden ele veriyor.",
+   "impact": "Dümende ve topta eller nesneye değmeden havaya uzanıyor; 06. belgedeki 'eller çark halkasında' iddiası gerçekleşmiyor. Node ölçümü (4 gövde × boy 0,94/1,0/1,06): dümende bilek ile hedef arası 0,39–0,53 m, topta 0,34–0,37 m.",
+   "priority": "orta",
+   "fix": "İstasyonları kol erimine getir: dümen istasyonunu çarka ~0,35–0,4 m yaklaştır (ya da kavrama noktalarını 1,0–1,05 m yüksekliğe ve 0,35 m yarıçapa indir) ve gövdeyi hafifçe öne eğ. Topta oyuncuyu kundağın ~0,6 m gerisine al ya da tutamak hedefini oyuncuya göre ölç. Test bilek kemiklerini ölçsün. Dümende ve topta equip()'i engelle ya da silahı gizli tut.",
+   "repro": "04 C08 adımlarından sonra p.char.bones.wristl.getWorldPosition(v).distanceTo(p.char.ik.handL) ≈0,45 m döner. Node: /tmp/denetim_alan/char3.mjs.",
+   "acceptance": "04 C08/C08b'ye ek kontrol: dümende ve topta iki bilek de hedefe < 0,08 m; dümen tam sola/sağa kırılmışken de < 0,1 m; 4 gövde tipi ve 0,94–1,06 boy için geçerli.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "02 C08 (06. belgede 'Düzeltildi' olarak kapatılmış)"
+  },
+  {
+   "id": "I-04",
+   "title": "Sandık taşırken eller sandığın içine gömülü; büyük sandık baş üstüne çıkıyor; kaldırma/bırakma animasyonu yok",
+   "file": "js/player/character.js",
+   "func": "Character.update (o.carry 879–881); treasure._updateChest (js/treasure/treasure.js:289–294), treasure._applyCarry (366–375)",
+   "rootCause": "Kollar sabit kök noktalarına (±0,30; 1,02; 0,42) IK ile çekiliyor. Sandık ise kademeye göre ölçeklenen chest.glb (1,18×0,90×0,82 m; ölçek 0,8–1,45), 0,55 m önde ve ayak +0,75−(ölçek−1)·0,3 tabanla konumlanıyor. Hedefler sandığın yan yüzlerine göre (yarı genişlik 0,47–0,86 m) hesaplanmadığından eller sandık hacminin içinde kalıyor; büyük ve efsane sandığın üstü 1,83/1,92 m. Suda küçük sandık taşırken yüzme IK'sı taşıma pozunu eziyor; sandık dik kalıp gövdeden kopuyor. Taşırken zıplamada JumpStart oynatılmıyor (player.js:563).",
+   "impact": "Taşıma sırasında eller sandığın içinden geçiyor, büyük sandıklar karakterin başını kapatıyor. Sandık eldeyken yürüme klibi 1,4–1,9× oynuyor ve ~%55 kayıyor (I-01).",
+   "priority": "orta",
+   "fix": "Sandık kademesinin boyutlarından iki tutamak noktası hesapla (yan yüzlerin ortası ya da alt kenar) ve ik.handL/R'ye ver. Sandığı göğüs hizasına indir (taban ≈0,7–0,8 m, üst kenar ≤ omuz); büyük kademelerde iki kişilik taşıma ofsetini kollara göre ayarla. pickUp/drop'ta 0,4–0,6 sn PickUp klibi oynat ve sandığı gecikmeli bağla (02 önerisi). Suda taşıma pozunu yüzme pozuyla birleştir.",
+   "repro": "Küçük, orta ve büyük sandık doğur (DK.treasure.spawnChest), DK.treasure._grant ile al, DK.sim(0.5). bones.wristl konumunu sandık mesh'inin Box3'üne göre denetle: bilek kutunun içinde.",
+   "acceptance": "Yeni test: dört kademenin hepsinde iki bilek sandık kutusunun dışında ve yan yüzlere < 0,08 m; sandık üstü ≤ baş kemiği yüksekliği; taşırken yürüyüşte ayak kayması < 0,25 m/sn.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "11 #8 (Açık, düşük); 02 C08 (sandık); 02 C_oyuncu önerisi 'Sandık kaldırma/bırakma animasyonu'"
+  },
+  {
+   "id": "I-05",
+   "title": "Zıplama klibi fiziksel kalkıştan ~0,19 sn geç: gövde ~1 m havadayken hazırlık çömelmesi oynuyor",
+   "file": "js/player/player.js",
+   "func": "Player._updateGround (zıplama 557–565), Player._updateDeck (867–871), Player._locomotion (663–669)",
+   "rootCause": "Zıplama tuşunda vel.y=7,4 m/sn anında veriliyor ve aynı anda Jump_Start (0,6 sn) 1,5× başlatılıyor. Node FK'ye göre Jump_Start'ta ayaklar klibin 0,29. sn'sinde, yani oyunda 0,19 sn sonra yerden kesiliyor. O ana kadar fizik gövdeyi y(t)=7,4t−11t² ile ≈1,0 m kaldırmış oluyor (tepe 1,24 m, 0,34. sn). airT>0,25 olunca Jump_Idle'a geçildiğinden klibin kalkış kısmı yalnız ~0,06 sn görünüyor.",
+   "impact": "Her zıplamada karakter havaya çömelmiş, hazırlanır pozda yükseliyor; kalkış animasyonu fiziksel hareketten kopuk ve 'süzülüyor' gibi görünüyor. Güvertede de aynı.",
+   "priority": "orta",
+   "fix": "Jump_Start'ı kalkış karesinden başlat (action.time ≈0,25–0,28 sn) ya da hazırlık evresini 0,05–0,08 sn'ye sıkıştır. Alternatif: giriş gecikmesi kabul edilirse fizik itkisini 0,1 sn ertele. Kalkış anını yüklemede ölçüp sakla.",
+   "repro": "DK.press('Space'), ardından her 1/60 adımda p.pos.y − zemin ve bones.footl yüksekliğini kaydet: 0,19. sn'de gövde ≈1 m yükseklikte, klipte ayaklar hâlâ yere basık pozda. Node: /tmp/denetim_alan/char4.mjs ('ayaklar yerden kesilme anı 0,29 sn').",
+   "acceptance": "Klipteki ayak kalkışı ile fiziksel kalkış arasındaki fark ≤ 0,05 sn. 03_fizik_dt tepe yüksekliği ±%3 içinde kalmalı, 16 K03 ve 04 C09 geçmeye devam etmeli.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "I-06",
+   "title": "Kaçınma (ve bazı eylem) kliplerindeki kök hareketi fiziksel yer değiştirmeye ekleniyor; kaçınma sonunda gövde 0,3–0,7 m geri sıçrıyor",
+   "file": "js/core/kk.js",
+   "func": "kk._prepClips (130–142); Player.startAction 'dodge' (js/player/player.js:265), Player._updateGround kaçınma itkisi (518–521)",
+   "rootCause": "KayKit Dodge kliplerinin hips.position izinde yatay öteleme var ve klip sonunda başlangıca dönmüyor. Node FK: Dodge_F 0,27 m, Dodge_B 0,67 m, Dodge_L/R 0,56 m. AtkHeavy 0,48 m ileri gidip dönüyor, Death_A 0,37 m geride kalıyor. Oyun ayrıca karakteri fiziksel olarak ~2,3 m taşıyor (2,5+7,5k² m/sn, 0,46 sn), dolayısıyla görsel gövde fiziksel konumun önüne geçiyor. Eylem bitince Idle/Run'a 0,2–0,3 sn'lik geçişte kalça geri çekiliyor. Kök hareketi kliplerden ayıklanmıyor; _prepClips yalnız oran farkını ekliyor.",
+   "impact": "Kaçınma sonunda karakter kısa bir geri 'lastik' sıçraması yapıyor; en belirgin hâli yan ve geri kaçınmada (0,56–0,67 m). Çarpışma ve vuruş fiziksel konumdan hesaplandığından görünen gövde ile isabet bölgesi 0,7 m'ye kadar ayrışıyor.",
+   "priority": "orta",
+   "fix": "_prepClips'te hips.position izinin yatay (x,z) bileşenini ilk kareye sabitle (yerinde klip), ya da kök hareketini klipten çıkarıp fiziksel itkiye dönüştür (kaçınma mesafesini klibin kök hareketinden türet). AtkHeavy ve Death gibi kliplerde de yatay kök hareketini sıfırla ya da eylem itkisiyle birleştir.",
+   "repro": "Duran oyuncuda V+S (Dodge_B) yap ve her karede bones.hips dünya konumu ile p.pos farkını ölç: eylem sonunda ≈0,6 m, ardından 0,3 sn içinde 0'a dönüyor. Node: /tmp/denetim_alan/char4.mjs.",
+   "acceptance": "Dört yönde de kaçınma boyunca |kalça(xz) − p.pos(xz) − bağlama pozu ofseti| < 0,1 m, eylem bitişinde sıçrama yok. 03_fizik_dt kaçınma mesafesi ve 04 C09 geçmeli.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "I-07",
+   "title": "Limanda doğuşta kip geçişi tamamlanmıyor: silah/meşale görünmez, dümende ölünce kollar eski çark noktasına kilitli",
+   "file": "js/main.js",
+   "func": "handlers.respawn (226–241); Player.revive (js/player/player.js:236–245)",
+   "rootCause": "respawn('port') oyuncuyu exitWater/leaveStation/exitBoat üzerinden değil, doğrudan p.mode='ground' ile karaya alıyor (main.js:233). Suda ölmüşse (enterWater hold(null), player.js:729–730), dümende/topta (shipControl.js:176/185 hold(null)) ya da kayıkta ölüp limanda doğulduğunda: equipped dolu ama char.heldType null kalıyor (silah görünmüyor, saldırı boş elle yapılıyor); meşale gizli kalıyor (_syncTorch çağrılmıyor); underwater bayrağı true kalıyor (dürbün açılmıyor, game.js:261). Dümende/topta ölünce char.ik.handL/R modül düzeyindeki _ikL/_ikR vektörlerine bağlı kalıyor ve Character.update kolları her karede o eski dünya noktasına çekiyor (character.js:917–918); dümen/top kilidi (interact.locks) de bırakılmıyor. 'Gemide uyan' seçeneği boardShip→_resetCombatFlags ile bunları temizliyor.",
+   "impact": "Boğulup ya da dümende/topta ölüp limanda doğan oyuncu silahını görmeden saldırıyor, meşalesi yanmıyor. Dümende ölmüşse kolları suya girene ya da gemiye binene dek yüzlerce metre ötedeki çark konumuna uzanmış kalıyor. Co-op'ta dümen diğer oyunculara 'kullanımda' görünüyor.",
+   "priority": "orta",
+   "fix": "Tek bir geçiş noktası kur (02 önerisi: Player.setMode(next)). respawn'da önce mevcut kipten çık (helm/cannon → shipControl.leaveStation, boat → exitBoat, swim → exitWater), sonra _resetCombatFlags, char.ik temizliği, hold(equipped), _syncTorch ve underwater=false uygula.",
+   "repro": "1) Derin suda DK.G.godMode=false; p.hurt(999), ölüm ekranında 'Kırlangıç Limanı'nda uyan'ı seç: p.equipped==='sword' ama p.char.heldType===null ve p.underwater===true. 2) DK.shipControl.takeHelm(p, s); p.hurt(999), limanda doğ: p.char.ik.handL !== null, bilekler sabit bir dünya noktasına uzanıyor.",
+   "acceptance": "16 P01'e ek: suda, dümende, topta ve kayıkta ölüp limanda doğunca heldType===equipped (silah varsa), meşale açıksa görünür, underwater false, ik.handL/R null ve interact.locks boş.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "02 E_gemi-ek-calistir-118 (kilit kısmı); 02 C12'nin benzeri (respawn yolu kapsanmamış). Silah/meşale ve underwater kısmı v0.3'te de var, IK ve dümende gizlenen silah kısmı yalnız v0.4'te."
+  },
+  {
+   "id": "I-08",
+   "title": "Yüzme/dalış IK pozu gövde eğimini hesaba katmıyor: kollar omzun gerisinde, bacaklar aşağı sarkık",
+   "file": "js/player/character.js",
+   "func": "Character.update (o.swim 891–898; W() kök uzayı 864)",
+   "rootCause": "Yüzerken model 1,2–1,7 rad öne eğiliyor ve 1,0 m kaldırılıyor (player.js:788–791). Kol ve bacak IK hedefleri ise eğimsiz kök uzayında (this._w → root.localToWorld) sabit yükseklik/ileri değerlerle veriliyor. Node ölçümü (eğim 1,2): omuz kökte (−0,17; 1,37; 0,96), el hedeflerinin z değeri 0,3–0,8, yani eller omzun 0,16–0,66 m gerisinde kalıyor ve baştan öne hiç uzanmıyor. Bacak hedefleri y≈0,08 (kalça 1,17'de) olduğundan gövde–bacak açısı 129° (dalışta 122°); düz uzanmış gövde için ~180° beklenir.",
+   "impact": "Yüzme ve dalış; yatay gövdede kolları göğsün altında çeviren, bacakları sarkan bir poz olarak görünüyor. İleri kulaç yok, poz ile hareket yönü arasındaki bağ zayıf.",
+   "priority": "orta",
+   "fix": "Yüzme hedeflerini eğimli model uzayında tanımla (this.model.localToWorld) ya da kök hedeflerini eğim açısıyla döndür. Kulaç döngüsü baş önünden kalçaya uzanan bir yay olsun, bacak çırpması gövde ekseni doğrultusunda olsun; swimPhase'i yüzme hızına bağla.",
+   "repro": "Node: /tmp/denetim_alan/char1.mjs ve char2.mjs (gövde–bacak açısı, el–omuz konumu). Tarayıcıda 04 C01 sonrasında DK.snapFrom ile yandan bir kare al.",
+   "acceptance": "Yüzerken gövde–bacak açısı ≥ 160°; her kulaç döngüsünde el en az bir kez gövde ekseninde baş kemiğinin önüne geçmeli. 04 C01, 16 P01 ve 14 D01–D03 geçmeli.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "orta"
+  },
+  {
+   "id": "I-09",
+   "title": "Duran oyuncu saldırı/isabet/fırlatma sırasında hareket girişi verince tam gövde klibi oynarken 2,2 m/sn kayıyor",
+   "file": "js/player/player.js",
+   "func": "Player.startAction pick() (250–256), Player._speedFor (467–472), Player._updateGround atılım (522–525), Player._locomotion (660)",
+   "rootCause": "pick() tam gövde ile üst katman arasındaki seçimi eylem başındaki hıza (>1,6 m/sn) göre bir kez yapıyor. Duran oyuncu saldırınca tam gövde klibi oynuyor ve _locomotion eylem boyunca erken döndüğü için bacaklar yürümüyor. Buna karşın _speedFor hızı saldırıda, isabet tepkisinde, fırlatmada ve yumrukta yalnız ×0,5 (2,2 m/sn); interact/pickup/land/parry'de ×0,1 kısıyor. Ayrıca atılım (lunge 1,4–2,6 m/sn) vuruş anına dek ayakları yere basılı klibe ekleniyor.",
+   "impact": "Saldırırken W'ye basan ya da atılımlı vuruş yapan oyuncunun ayakları yerdeyken 0,35–1,5 m kayıyor (ağır saldırıda atılım 0,6 sn × 2,6 m/sn); fiziksel hareket ile animasyon kopuyor.",
+   "priority": "orta",
+   "fix": "Tam gövde eylemlerinde hareket girişini sıfırla, ya da hareket başlayınca eylemi üst katmana devret (playUpper, alt katmanda yürüyüş). Atılımı kliplerin kök hareketinden türet ya da bacak katmanına kısa bir adım klibi ekle.",
+   "repro": "Duran oyuncu kılıçla Mouse0'a basıp hemen W'yi basılı tutsun: 0,66 sn boyunca p.char.currentName 'Atk1' ve upper null; p.pos ~1,4 m ilerliyor; destek ayağının dünya hızı ≈2 m/sn.",
+   "acceptance": "Saldırı, isabet ve fırlatma eylemlerinde tam gövde klibi oynarken destek ayağının dünya hızı < 0,3 m/sn. Hareket başlarsa eylem üst katmana geçmeli ve bacaklar yürüyüş klibi oynatmalı.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "I-10",
+   "title": "Bazı tam gövde eylemleri klip bitmeden Idle'a kesiliyor; iki saldırıda vuruş anı salınımla örtüşmüyor",
+   "file": "js/game/combat.js",
+   "func": "FIST_MOVES (25–29), SWORD_MOVES (18–24); Player.startAction (js/player/player.js:258–271); fishing.js:262 'cheer'",
+   "rootCause": "Eylem süresi klip süresinin hıza bölümünden kısa: Punch 0,86 sn'lik klibin 0,6 sn'si oynuyor (%70), Punch2 %67, Cheer 1,67 sn'nin 1,2 sn'si (%72), isabet tepkisi 0,45 sn (%57–74), küçük inişte Jump_Land %63. Eylem bitince _locomotion klibi 0,3 sn geçişle Idle'a kesiyor. Node FK'de bilek hızı tepesi ile hitAt farkı: Atk2'de +0,11 sn (vuruş salınımdan sonra işleniyor), Counter'da −0,14 sn (salınımdan önce); Atk1/Atk3/Heavy/Punch'ta ≤0,08 sn.",
+   "impact": "Yumruk kombosunda toparlanma evresi atlanıyor ve karakter aniden Idle'a dönüyor. Karşı saldırıda hasar kılıç hedefe varmadan, Atk2'de ise kılıç geçtikten sonra işleniyor.",
+   "priority": "dusuk",
+   "fix": "Eylem sürelerini klip süresi/hız oranına eşitle; ya da eylem bittiğinde klip bitmemişse hareketle kesilebilen bir toparlanma evresi olarak sürdür. hitAt değerlerini yüklemede bilek ya da kılıç ucu hız tepesinden türet (Counter ≈0,40, Atk2 ≈0,16–0,2).",
+   "repro": "Node: /tmp/denetim_alan/char5.mjs (oynatılan klip yüzdesi ve hız tepesi). Tarayıcıda yumrukla Mouse0'a bas: 0,6. sn'de currentName Punch'tan Idle'a geçiyor.",
+   "acceptance": "Tüm SWORD_MOVES/FIST_MOVES ile cheer/hit/land eylemlerinde eylem süresi klip süresinin ≥ %90'ı olmalı ya da toparlanma evresi bulunmalı; |hitAt − hız tepesi| ≤ 0,06 sn.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "orta",
+   "knownAs": "02 C_oyuncu önerisi 'Eylem kesme/kırpma zamanlamaları'"
+  },
+  {
+   "id": "I-11",
+   "title": "Kip geçişinde üst katman durduruluyor ama eylem sürüyor: kalan süre boyunca taban klibi donuyor",
+   "file": "js/player/player.js",
+   "func": "Player._resetCombatFlags (309–313), Player._locomotion (660), Player._wantAnim (423)",
+   "rootCause": "boardShip, enterWater, startClimb, takeHelm/takeCannon ve enterBoat _resetCombatFlags ile char.stopUpper çağırıyor, ama this.action'ı (reload ≤1,8 sn, atk ≤1,1 sn, shoot, hit, throw…) sıfırlamıyor. Üst katman yokken eylem sürdüğü için _locomotion ve _wantAnim 'tam gövde eylemi oynuyor' varsayımıyla erken dönüyor; oysa oynayan klip önceki taban klibi.",
+   "impact": "Dolum ya da saldırı sırasında gemiye binen veya suya giren oyuncu, kalan eylem süresi boyunca (≤1,8 sn) yerinde Walk/Run oynatıyor ya da yanlış klipte donuyor; suda Run klibiyle yüzüyor.",
+   "priority": "dusuk",
+   "fix": "_resetCombatFlags'te üst katmanda oynayan eylemleri (shoot, reload, use, throw, blockhit, parry ya da üst katmanda başlamış atk) da iptal et (this.action=null), ya da eylemi yeni kipe uygun biçimde sürdür. _locomotion'daki koşulu 'eylem tam gövde klibi mi' bayrağına bağla.",
+   "repro": "Tabanca boşken R ile dolum başlat (action 'reload', 1,8 sn) ve hemen p.boardShip(s, …) çağır: 1,8 sn boyunca p.char.currentName değişmiyor, yürüyünce de klip güncellenmiyor.",
+   "acceptance": "Her kip geçişinden sonra, p.action yoksa ya da oynayan tam gövde klibine karşılık geliyorsa _locomotion klibi günceller. Dolum sırasında binme testinde doğru taban klibi 0,1 sn içinde başlamalı.",
+   "presentIn": "yalniz_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "I-12",
+   "title": "Eğimli zemin ayak IK'sı hiç etkin değil (ik.ground atanmıyor)",
+   "file": "js/player/character.js",
+   "func": "Character.update (920–935)",
+   "rootCause": "Ayakları zemine yerleştiren kod mevcut, ama this.ik.ground hiçbir dosyada atanmıyor (grep yalnız okuma buluyor). Basamak yumuşatma (player.js:397–402) yalnız gövde yüksekliğini düzeltiyor.",
+   "impact": "Yamaçta, iskele basamağında ve yalpalayan güvertede ayaklardan biri havada ya da zeminin içinde kalıyor. 07. belgedeki 'ayak yerleştirme IK' iddiası gerçekleşmiyor.",
+   "priority": "dusuk",
+   "fix": "Player.update'te karadayken c.ik.ground=(x,z)=>physics.groundAt(x,z,this.pos.y+0.6), güvertede gemi yerel deckAt ile ver. Hareket hızı arttıkça ağırlığı azalt. model.position.y ofsetlerini (lift, crouch, ground) tek birikimli değişkende topla.",
+   "repro": "physics.groundAt eğiminin > 15° olduğu bir yamaçta dur: bones.footl/footr y değeri ile groundAt arasındaki fark 0,1–0,3 m.",
+   "acceptance": "Duran oyuncuda 20°'ye kadar yamaçta ve 0,3 m'lik basamakta iki ayak tabanı da zemine ±3 cm. Düz zeminde ve koşuda davranış değişmemeli.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "kesin",
+   "knownAs": "02 C08 (ayak IK) ve 02 C_oyuncu önerisi 'Eğimli zeminde ayak IK'sını etkinleştir'"
+  },
+  {
+   "id": "I-13",
+   "title": "Kamera nokta olarak çarpışıyor ve 0,4 m'nin altına inmiyor: duvara dayalı oyuncuda ve ada yapılarında kamera duvarın içine girebiliyor",
+   "file": "js/player/camera.js",
+   "func": "tpCamera.update (114–127)",
+   "rootCause": "Görüş doğrusu yarıçapsız ve hit=max(0,4, lo−0,1). Baş bir duvara 0,4 m'den yakınken kamera 0,4 m'de duvar kutusunun içinde kalıyor (Node: sırtı duvara 0,35 m → kamera kutunun 5 cm içinde). Yakın düzlem 0,1 m uzaklıkta ve ±0,12 m genişlikte; sıyırma açılarında duvarı kesebilir. Ada yapılarının çarpışma kutuları görselden küçük (islands.js:496 colK 0,6–0,95; bilinen #43). Kale, kule, duvar ve maden yakın-kamera silinmesinin dışında (nearfade.js:113) olduğundan kamera görsel duvarın 0,1–1 m içinde durabilir.",
+   "impact": "Dar yerlerde (bina araları, ada kasabaları, kale/kule yanı) ekranın bir kenarında duvarın içi ya da arkası görünebilir. 17 K08 yalnız orman/palmiye, 15 C03 ise yalnız 0,2 m büyütülmüş kutularla liman binasını ölçüyor.",
+   "priority": "dusuk",
+   "fix": "Kamerayı ~0,2 m yarıçaplı küre olarak süpür (doğruyu yan ofsetlerle ya da ek normal itmeyle sına). 0,4 m alt sınırı, engel varsa başın yanına kaydırmayla değiştir. Kamera için görsel kutuya eşit ayrı çarpıştırıcılar kullan ya da yapılara 'prop' silinmesi ekle.",
+   "repro": "Node: /tmp/denetim_alan/camtest/run.mjs ('sırtı duvara 0,35 m' satırı). Tarayıcıda kasaba halkasındaki taverna çevresinde 17 K08'deki gibi 2 eğim × 32 açı döndür; kameranın yapının görsel Box3'ü içinde kaldığı kareleri say.",
+   "acceptance": "Yeni test: limanda ve 2 ada kasabasında 4 yapı çevresinde 2 eğim × 32 açıda kamera hiçbir yapının görsel kutusunun içinde olmamalı ve karanlık kare çıkmamalı.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "orta",
+   "knownAs": "11 #43 (çarpıştırıcı görselden küçük; kameraya etkisi belgelenmemiş)"
+  },
+  {
+   "id": "I-14",
+   "title": "Güverte topları, ambar kapağı, çapa ve fener ne kamera çarpışmasında ne de yakın-kamera silinmesinde",
+   "file": "js/ship/shipModel.js",
+   "func": "cannonMesh (177–203); gemi modeli kurulumu (ambar kapağı, çapa, fener ve harita düzlemi malzemeleri)",
+   "rootCause": "Yalnız küpeşte/direk/seren (railMat, spar) 'rail' ve yelken/bayrak 'sail' kategorisinde siliniyor (shipModel.js:281, 294, 306, 409). Topun demir ve ahşap malzemesi, ambar kapağı, çapa, fener ve harita düzlemi nearFade almıyor. hullSolid de yalnız gövde kabuğunu ve küpeşteyi katı sayıyor.",
+   "impact": "Alttan bakışta (eğim ≤ −0,2) kamera güverte+0,45 m'ye inince bir topun namlusundan (0,23–0,61 m yükseklik) geçebilir ve koyu metal ekranı kaplar. 17 K04/K05 seçilen 3–4 noktada bunu yakalamadı.",
+   "priority": "dusuk",
+   "fix": "cannonMesh ve güverte donanımı malzemelerine nearFade(…, 'prop') uygula, ya da topları kamera için hullSolid'e kutu olarak ekle.",
+   "repro": "Güvertede bir topun 1 m yanına geç, tpCamera.pitch=−0,25 yap ve yaw'ı topa doğru 24 adımda döndür; kamera top kutusunun içindeyken _lum() düşüşünü ölç.",
+   "acceptance": "17 K05'e top yanı noktası eklendiğinde karanlık kare 0 olmalı; top malzemesi için nearFadeCategory 'prop' dönmeli.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "orta"
+  },
+  {
+   "id": "I-15",
+   "title": "Uzak oyuncu animasyonu eksik eşitleniyor: oynatma hızı, çömelme/su içinde durma/tırmanma/olta pozları ve dümen IK'sı gönderilmiyor",
+   "file": "js/net/net.js",
+   "func": "RemotePlayer.update (87–124); Player.netState (js/player/player.js:986–993)",
+   "rootCause": "netState anim, up, loop, mode, carry ve swimP gönderiyor; klip hızı (timeScale), crouch/tread/climb/fish/air bayrakları ve IK hedefleri gönderilmiyor. RemotePlayer klibi hız 1 ile başlatıyor (net.js:112), mod 'swim' iken overlay.swim'i hep açıyor (su içinde durma pozu yok). Art arda gelen aynı adlı tek seferlik klip (örneğin aynı saldırı) currentName değişmediği için yeniden başlatılmıyor.",
+   "impact": "Co-op'ta diğer oyuncular yerel hızdan bağımsız olarak kayarak yürüyüp koşuyor; çömelen oyuncu ayakta, suda duran oyuncu kulaç atarken, dümendeki oyuncunun elleri çarkta değilken görünüyor. Art arda aynı saldırılar tek animasyon gibi görünüyor.",
+   "priority": "dusuk",
+   "fix": "netState'e ts (taban klip hızı), ov bit alanı (crouch, tread, climb, fish, air) ve tek seferlik klipler için 'seq' sayacı ekle. RemotePlayer'da setSpeed ve overlay'leri uygula; seq değişince klibi yeniden başlat.",
+   "repro": "coop/06b düzeninde konukta C ile çömel: ev sahibindeki RemotePlayer.char.overlay.crouch tanımsız. Konuk koşarken ev sahibinde current.timeScale 1.",
+   "acceptance": "2 oyunculu testte uzak oyuncunun taban klip hızı yereldekinden en çok ±0,05 farklı olmalı, crouch/tread pozları eşleşmeli, aynı saldırı art arda iki kez yapılınca iki kez başlamalı.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "02 C_oyuncu önerisi 'Uzak oyuncu duruş senkronu' (C25'in kalan kısmı)"
+  },
+  {
+   "id": "I-16",
+   "title": "Ragdoll'dan kalkışta ilk karelerde karakter ayakta görünüp yere yatıyor (poz ve konum sıçraması)",
+   "file": "js/player/character.js",
+   "func": "Character.stopRagdoll (796–809); Player.revive (js/player/player.js:236–245)",
+   "rootCause": "stopRagdoll kemikleri bağlama pozuna döndürüp Idle'ı geçişsiz başlatıyor; ardından revive LieUp'ı 0,1 sn'lik crossFade ile başlatıyor. Bu yüzden ilk karede ağırlık tamamen Idle'da, yani karakter ayakta. Ragdoll gövdeyi fiziksel konumdan kaydırmışsa (Node: kalça 1,22 m) bu fark da tek karede sıfırlanıyor. Node: kalkışın ilk karesinde baş 1,134 m (ayakta), kalça x 1,22 → 0.",
+   "impact": "Limanda ya da gemide uyanırken karakter bir an ayakta parlıyor, sonra yere yatıp kalkıyor; ölüm→kalkış geçişi kopuk görünüyor.",
+   "priority": "dusuk",
+   "fix": "stopRagdoll'da Idle yerine LieUp ya da Lie_Idle'ı geçişsiz ve ilk karesinden başlat (veya ragdoll'un son pozundan LieUp'a 0,2 sn karıştır); kök konumunu ragdoll kalçasına taşı.",
+   "repro": "Node: /tmp/denetim_alan/char6.mjs. Tarayıcıda tek oyunculu ölüm (ragdoll) sonrası 'Limanda uyan': ilk 3 karede bones.head y ≈1,13 m, sonra ≈0,2 m.",
+   "acceptance": "Kalkışın ilk 0,1 sn'sinde baş kemiği yüksekliği < 0,5 m olmalı; 04 C19 geçmeye devam etmeli.",
+   "presentIn": "yalniz_v04",
+   "confidence": "yuksek",
+   "knownAs": "02 C19 (statik mercekte 'ragdoll pozundan LieUp'a geçiş de sıçrardı' uyarısı)"
+  },
+  {
+   "id": "I-17",
+   "title": "Kazı animasyonu yere değmiyor ve toprak efekti klibe bağlı değil; sol el kürekte değil",
+   "file": "js/treasure/treasure.js",
+   "func": "treasure.startDig (186–205); Player.startAction 'dig' (js/player/player.js:273), Player.startBusy (279–284)",
+   "rootCause": "Kazı için 2H_Melee_Attack_Chop (Heavy2H) 0,85× döngüde oynatılıyor. Node FK'ye göre döngüde kürek ucu en az 0,30 m yüksekte kalıyor (kazı noktası 0,9 m önde, yerde) ve sol bilek kürek sapına 0,13–0,38 m uzakta. Toprak ve ses efekti gerçek zamanlı setInterval (380 ms) ile 7 kez üretiliyor; klibin en alçak anına (1,92 sn'lik döngünün 1,17. sn'si) bağlı değil ve oyun duraklatılsa da sürüyor. busy.cancelOnMove hiç okunmuyor.",
+   "impact": "Kazarken kürek havayı dövüyor, toprak klipten bağımsız fışkırıyor; duraklatma menüsünde efekt ve ses devam ediyor.",
+   "priority": "dusuk",
+   "fix": "Kürek ucunu yere indiren bir poz kullan (2H chop'a omurga/kol IK ile ek eğilme) ya da özel bir klip ekle. Efekt ve sesi oyun zamanında, klibin en alt karesinde üret (action.t ile). Sol eli IK ile kürek sapına bağla. cancelOnMove'u uygula ya da kaldır.",
+   "repro": "Node: /tmp/denetim_alan/char7.mjs. Tarayıcıda kürek kuşanıp Mouse0'a bas (2,6 sn); bu sırada G.paused=true yapınca efekt sürüyor.",
+   "acceptance": "Kazı döngüsünde kürek ucu kazı noktasında zemine ≤ 0,05 m inmeli; efekt bu ana ±0,05 sn içinde çıkmalı; duraklatmada efekt olmamalı; sol bilek sapa < 0,08 m.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "02 C08 (kazıda sol el); 02 C_oyuncu 'Ölü kod temizliği' (cancelOnMove)"
+  },
+  {
+   "id": "I-18",
+   "title": "Sandık açma, onarım, yangın söndürme, su boşaltma ve ganimet toplamada karakter animasyonu yok",
+   "file": "js/game/interact.js",
+   "func": "interact.update (47–70)",
+   "rootCause": "Basılı tutmalı etkileşimler yalnız holdT sayıyor, oyuncuya eylem ya da klip başlatmıyor. 'Interact' klibi oyuncuda yalnız hiç çağrılmayan startBusy (kazı dışı) yolunda; 'PickUp' yalnız deniz kabuğu toplamada kullanılıyor (details.js:387).",
+   "impact": "1,4–5 sn süren onarım, söndürme ve sandık açma sırasında karakter boşta duruyor ya da yürüyor; eylem ile animasyon arasında bağ yok.",
+   "priority": "dusuk",
+   "fix": "Süreli (hold) adaylarda tuş basılıyken startBusy(label, hold, …, {anim:'interact' ya da 'use', cancelOnMove:true}) çağır ya da Interact/UseItem/PickUp klibini döngüde oynat. Tek basışlı toplama ve açmada startAction('pickup' ya da 'interact') kullan.",
+   "repro": "Güvertede bir deliğin yanında E'yi basılı tut: p.char.currentName 'Idle' olarak kalıyor.",
+   "acceptance": "Her basılı tutmalı etkileşimde ilk 0,1 sn içinde Interact ya da UseItem klibi başlamalı, tuş bırakılınca kesilmeli.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "I-19",
+   "title": "Güvertede ölen oyuncunun ragdoll'u dünya uzayında: gemi ilerlerken ceset güverteden kayıp denize düşüyor",
+   "file": "js/player/player.js",
+   "func": "Player._ragdoll (224–235); Ragdoll.update/_step (js/player/ragdoll.js:110–154)",
+   "rootCause": "Ragdoll noktaları dünya uzayında simüle ediliyor. Gemi yalnız ground() fonksiyonunda o anki dönüşümüyle örnekleniyor; noktalar gemiyle birlikte taşınmıyor.",
+   "impact": "Seyir hâlindeki gemide ölünce ölüm ekranı açılana kadar (2,2 sn) beden geride kalıp suya düşüyor.",
+   "priority": "dusuk",
+   "fix": "opts.frame=ship.root verildiğinde noktaları gemi yerel uzayında tut ve _pose'da localToWorld uygula (02 önerisi).",
+   "repro": "Gemi 6 m/sn hızla seyrederken güvertede p.hurt(999): 2 sn içinde bones.hips ile gemi arasındaki yerel fark 5 m'yi aşıyor.",
+   "acceptance": "Seyir hâlindeki gemide ölümden 2,5 sn sonra kalça güverte izdüşümü içinde ve deckAt değerinin ±0,3 m'sinde olmalı.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "orta",
+   "knownAs": "02 C_oyuncu önerisi 'Ragdoll'u gemi yerel uzayında simüle et'"
+  },
+  {
+   "id": "I-20",
+   "title": "Tabanca namlu alevi elden bağımsız sabit bir noktadan çıkıyor",
+   "file": "js/game/combat.js",
+   "func": "combat.shoot (249–250)",
+   "rootCause": "Alev konumu p.pos + ileri·0,6 + y 1,45 olarak sabit; tabanca modelinin userData.muzzle noktası kullanılmıyor. Node FK: nişan pozunda gerçek namlu kök uzayında (−0,19; 1,30; 0,61), yani alev ~0,24 m yanda ve yukarıda.",
+   "impact": "Ateş ederken alev tabancanın değil başın sağ önünde beliriyor.",
+   "priority": "dusuk",
+   "fix": "p.char.held.userData.muzzle noktasını held grubunun localToWorld'üyle dünyaya çevirip alev konumu olarak kullan.",
+   "repro": "Node: /tmp/denetim_alan/char4.mjs (Aim satırı).",
+   "acceptance": "Ateş anında alev konumu ile tabanca namlusunun dünya konumu arasındaki fark < 0,05 m.",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek"
+  },
+  {
+   "id": "I-21",
+   "title": "Güvertede animasyon hızı gerçek yer değiştirmeden değil girişten alınıyor: küpeşteye/direğe doğru yerinde koşma",
+   "file": "js/player/player.js",
+   "func": "Player._updateDeck (894–898)",
+   "rootCause": "ws = sp (giriş hızı) ve this.vel ile _locomotion buna göre ayarlanıyor. clampDeck (ship.js:184–196) oyuncuyu küpeşte ya da direk sınırında durdursa da klip ve hız değişmiyor. Karadaki çarpışma sonrası hız izdüşümü (player.js:592–595) güvertede yok.",
+   "impact": "Güvertede küpeşteye ya da direğe doğru yürüyen oyuncu yerinde koşuyor ya da yürüyor.",
+   "priority": "dusuk",
+   "fix": "Güvertede kare başına gerçek yerel yer değiştirmeyi (clampDeck sonrası local farkı / dt) hız olarak kullan ve _locomotion'a bu değeri ver.",
+   "repro": "Güvertede küpeşteye doğru W'yi basılı tut: p.local değişmiyor, p.char.currentName 'Run' ve timeScale ~0,85.",
+   "acceptance": "Küpeşteye ya da direğe dayanınca 0,2 sn içinde Idle'a geçilmeli; serbest güvertede davranış değişmemeli (04 C09 geçmeli).",
+   "presentIn": "v03_ve_v04",
+   "confidence": "yuksek",
+   "knownAs": "02 C_oyuncu önerisi (duvara dayanırken animasyon hızı gerçek yer değiştirmeden alınsın)"
+  }
+ ],
+ "userClaims": [
+  {
+   "claim": "16 §16.9/§16.11: Kamera nesnelerle (duvar, kaya, bina) çarpışır, içlerinden bakmaz",
+   "v03": "yanlis",
+   "v04": "kismen",
+   "evidence": "v0.3 camera.js:30–40 yalnız arazi yüksekliğini ve su yüzeyini sınırlıyor (02 C07). v0.4 camera.js:66–129 lineBlocked/slabBlocked ile ikili arama yapıyor; 04 C07 (5,07→2,77→5,07 m) ve 15 C03 geçti. Ancak nişanda omuz kaydırması daraltılmadığından kamera sağdaki duvarın içine giriyor (Node'da gerçek camera.js+physics.js: duvar 0,4 m sağdayken kamera kutunun 0,25 m içinde; I-02). 0,4 m alt sınır ve ada yapılarının küçük kutuları da kamerayı duvar içinde bırakabiliyor (I-13)."
+  },
+  {
+   "claim": "16 §16.9 (1): Kamera iskele güvertesinin ve gemi gövdesinin altına inmez (96 açıda 0)",
+   "v03": "yanlis",
+   "v04": "dogru",
+   "evidence": "v0.4 camera.js:132–145 (floorMax ile üzerinde durulan platform zemin sayılıyor, deckShip sınırı), physics.js:102–117 slabBlocked. Taban koşusu 15 C01: n=96, under=0, en düşük parlaklık 116; 17 K04/K06 ihlal 0. v0.3'te bu sınırlar yok."
+  },
+  {
+   "claim": "16 §16.9 (2): İnce/hareketli engeller (fener direği, NPC, ağaç) kamerayı başa çekmez",
+   "v03": "kismen",
+   "v04": "dogru",
+   "evidence": "v0.3'te hiç nesne çarpışması olmadığı için bunlar kamerayı çekmiyordu, ama kamera içlerinden geçince ekranı kaplıyordu. v0.4 physics.js:220 (noCam ve r<0,2 m atlanıyor), npcs.js:83, props.js:238–249; 15 C02 kamera–baş 4,6 m (taban koşusu)."
+  },
+  {
+   "claim": "16 §16.9 (3): Duvara yaslanınca karakter örgüleri gizlenir, meşale ışığı sönmez; dümende karakter görünür",
+   "v03": "yanlis",
+   "v04": "dogru",
+   "evidence": "v0.3'te setCamHidden yok. v0.4 character.js:416–427 ve game.js:371–375 (0,8/1,0 m histerezis); 15 C03: camHead 0,4, hidden true, torchLit true, helmVisible true, stale 0. Not: 0,4 m'de kamera duvar kutusunun birkaç cm içinde kalabiliyor (I-13)."
+  },
+  {
+   "claim": "16 §16.11: Gemi gövdesi ve kıçtaki kayık kamera için katı",
+   "v03": "yanlis",
+   "v04": "dogru",
+   "evidence": "v0.4 camera.js:15–31 hullSolid/boatSolid ve 69–99 hullBlocked; game.js:349–352. 17 K04 (4 nokta × 48: ihlal 0), K05 (karanlık kare 0), K06 (ihlal 0)."
+  },
+  {
+   "claim": "16 §16.11: Mağarada kamera kesitin içinde kalır (tavandan kayaya çıkmaz)",
+   "v03": "yanlis",
+   "v04": "dogru",
+   "evidence": "v0.3 game.js mağarada yalnız dist≤3,2 kullanıyor; ceiling hiç verilmiyor. v0.4 camera.js:100–110 ve 128, game.js:346–347; 17 K07: 4 konum × 72 açıda kesit dışı 0."
+  },
+  {
+   "claim": "16 §16.11: Yüzeyde yüzerken kamera su altına geçmez; dalışta su altında kalır; su altı sisi histerezisli",
+   "v03": "kismen",
+   "v04": "dogru",
+   "evidence": "v0.3 camera.js'de odağa bakarak yapılan kısmi bir su üstü sınırı var, game.js'de histerezis yok (sky.underwater = cam.y < wh−0,05). v0.4 camera.js:146–152, game.js:330–341 ve 384–387; 15 C04 (144 açıda 0), C05 (96 açıda 0), 17 K09."
+  },
+  {
+   "claim": "16 §16.11: Yakın-kamera titreşimli silinme (bitki, karakter, oyuncu, yelken, küpeşte, direk, tente, kayık) ile kamera ağaç/ince nesne içinden geçtiğinde ekran kaplanmaz",
+   "v03": "yanlis",
+   "v04": "kismen",
+   "evidence": "v0.3'te nearfade.js yok. v0.4 nearfade.js:16–23, 79–99; 17 K02/K03/K12 geçti. Kamera ağacın içinden tasarım gereği geçiyor (yalnız silinme var). Güverte topları, ambar kapağı, çapa, fener ve kit binaları (kale, kule, duvar, maden) silinmiyor (I-13, I-14)."
+  }
+ ],
+ "docClaims": [
+  {
+   "doc": "docs/denetim/06_ANIMASYON_SAVAS_TESTLERI.md §6.1",
+   "claim": "Dümen — Düzeltildi (C08): Eller çark halkasında (yarıçap 0,50 m, iki el 1,0 m ayrı)",
+   "verdict": "yanlis",
+   "evidence": "Hedef vektörleri halkada (04 C08: dl=dr=0,5), ama bilek kemikleri hedefe ulaşmıyor: kol 0,47 m, omuz–hedef ≈0,90 m. Node ölçümünde bilek ile hedef arası 0,39–0,53 m (player.js:905–924, shipModel.js:440/529; I-03)."
+  },
+  {
+   "doc": "docs/denetim/06_ANIMASYON_SAVAS_TESTLERI.md §6.1",
+   "claim": "Top — Düzeltildi (C08): Eller kundak arkasında (topa 0,84 m, eller 0,56 m ayrı)",
+   "verdict": "yanlis",
+   "evidence": "04 C08b yalnız hedef–top uzaklığını ölçüyor. Node ölçümünde bilek ile hedef arası 0,34–0,37 m (player.js:926–942; I-03)."
+  },
+  {
+   "doc": "docs/denetim/06_ANIMASYON_SAVAS_TESTLERI.md §6.1 ve tests/scenarios/04_karakter.js C13 etiketi",
+   "claim": "Yürüme→koşma animasyon eşiği düzeltildi: 3,0 m/sn'de Walk, 'ayak kayması bandı kapandı'",
+   "verdict": "yanlis",
+   "evidence": "Test yalnız klip adını ölçüyor. Node FK'ye göre Walking_A'nın doğal hızı ≈0,7–0,9 m/sn; 3 m/sn'de Walk 1,58× oynayınca ayak ≈1,3 m/sn hızda kalıyor (kayma ~%55). v0.3'teki Run 0,7× ile kayma ~%14'tü (player.js:697–699; I-01)."
+  },
+  {
+   "doc": "docs/07_ANIMASYON_LISTESI.md §7.1",
+   "claim": "IK: analitik iki kemikli IK (ayak/el yerleştirme için)",
+   "verdict": "kismen",
+   "evidence": "El IK var (character.js:868–918), ama dümen ve topta hedefe ulaşmıyor. Ayak yerleştirme kodu (920–935) hiç beslenmiyor, ik.ground hiçbir yerde atanmıyor (I-03, I-12)."
+  },
+  {
+   "doc": "docs/07_ANIMASYON_LISTESI.md §7.1",
+   "claim": "Hareket bağlamı: ivmeye göre yürü/koş/sprint, yan adım ve geri yürüme, iniş sertliğine göre iniş klibi",
+   "verdict": "kismen",
+   "evidence": "Klip seçimi hız ve düşüş yüksekliğine göre yapılıyor ve test edilmiş (16 K03/K05/K06). Ancak klip hızları gövde hızıyla eşleşmiyor (yalnız yan adım doğru; I-01)."
+  },
+  {
+   "doc": "docs/07_ANIMASYON_LISTESI.md başlık",
+   "claim": "ANIM_MAP 89 giriş",
+   "verdict": "dogru",
+   "evidence": "kk.js:23–49'da 89 giriş var; Node GLB kontrolünde hepsi kk_anims.glb'deki 81 klip arasında bulundu (eksik 0)."
+  },
+  {
+   "doc": "docs/07_ANIMASYON_LISTESI.md §7.1",
+   "claim": "Ragdoll: ölümde ya da ağır darbede; ayağa kalkış (getup) klibiyle geri dönüş",
+   "verdict": "kismen",
+   "evidence": "Oyuncuda ragdoll yalnız karada/güvertede ölümde başlıyor (player.js:219); ağır darbede ragdoll değil 'stagger' klibi oynuyor (player.js:190). Getup var (04 C19), ama ilk karede ayakta poz parlıyor (I-16)."
+  },
+  {
+   "doc": "docs/07_ANIMASYON_LISTESI.md §7.1",
+   "claim": "Prosedürel pozlar: yüzme, dalış, tırmanma, kürek çekme, kazma, dümen tutma",
+   "verdict": "kismen",
+   "evidence": "Kazma prosedürel değil, 2H_Melee_Attack_Chop klibi ve kürek yere değmiyor (I-17). Yüzme ve dalış pozu gövde eğimini hesaba katmıyor (I-08). Dümende eller ulaşmıyor (I-03)."
+  },
+  {
+   "doc": "docs/denetim/06_ANIMASYON_SAVAS_TESTLERI.md §6.1",
+   "claim": "Kamera — Düzeltildi (C07): oyuncunun 2,5 m arkasına duvar konunca mesafe 5,07 → 2,77 m, duvar kalkınca 5,07 m",
+   "verdict": "dogru",
+   "evidence": "Taban koşusu 04 C07: d0 5,07, dWall 2,77, dAfter 5,07. Nişan omzu durumu bu kapsamın dışında ve hatalı (I-02)."
+  },
+  {
+   "doc": "docs/denetim/06_ANIMASYON_SAVAS_TESTLERI.md §6.1",
+   "claim": "Yüzme/dalış — Düzeltildi (C01, D-01): gövde kaldırması 1,0 uygulanıyor",
+   "verdict": "dogru",
+   "evidence": "04 C01: lift 1, modelY 1,01, pitch 1,2 (character.js:858). Poz kalitesi bu iddianın kapsamında değil (I-08)."
+  },
+  {
+   "doc": "docs/denetim/12_TEST_PLANI_VE_SONUCLAR.md tablo #9",
+   "claim": "Dövüş: kılıç, parry, tabanca, kaçınma — GEÇTİ",
+   "verdict": "kismen",
+   "evidence": "Testler yalnız savunma bayrağı histerezisini (03_fizik_duzeltmeler), tabanca ışınının duvara takılmasını (05 F-16), düşman telgrafını ve kaçınma mesafesini (03_fizik_dt, 04 C09) ölçüyor. Oyuncunun kılıç kombosu, parry'si ve dolumu hiçbir testte sınanmıyor."
+  },
+  {
+   "doc": "docs/denetim/12_TEST_PLANI_VE_SONUCLAR.md tablo #3",
+   "claim": "Gemiye biniş, yelken, çapa, top atışı — GEÇTİ (dümen/top IK)",
+   "verdict": "kismen",
+   "evidence": "IK hedefleri doğru konumda, ama eller hedefe 0,34–0,53 m kala kalıyor (I-03)."
+  },
+  {
+   "doc": "docs/denetim/11_BILINEN_SORUNLAR.md #7",
+   "claim": "Gemi gövdesi kamera çarpışmasına dahil değil — Kapalı",
+   "verdict": "dogru",
+   "evidence": "camera.js:15–31 ve 69–99; 17 K04/K05/K06 geçti."
+  },
+  {
+   "doc": "docs/denetim/11_BILINEN_SORUNLAR.md #40",
+   "claim": "Kamera ince engellerin içinden geçebilir — Kapalı: içinden geçilen nesne artık ekranı kaplamaz",
+   "verdict": "kismen",
+   "evidence": "Bitki, karakter, yelken, küpeşte ve direk siliniyor (17 K02/K03). Güverte topları, ambar kapağı, çapa, fener ve kit binaları silinmiyor (I-14, I-13)."
+  },
+  {
+   "doc": "docs/denetim/11_BILINEN_SORUNLAR.md #8",
+   "claim": "Kürek/sandık için el IK hedefleri yok — Açık (düşük)",
+   "verdict": "kismen",
+   "evidence": "Sabit IK hedefleri var (character.js:879–890), ama geometriden türetilmiyor: Node ölçümünde eller sandık kutusunun içinde. Maddenin açık kalması doğru (I-04)."
+  },
+  {
+   "doc": "docs/denetim/16_SON_RAPOR.md §16.10",
+   "claim": "Çömelince baş 0,82–0,84 m'de sabit kalıyor, ayağa kalkınca 1,15–1,17 m'ye dönüyor",
+   "verdict": "dogru",
+   "evidence": "Node ölçümü: 3 sn sonra 0,837 m, kalkınca 1,154 m (character.js:847–856). Kalıcı regresyon testi yok; değer yalnız 12. belge tablosunda."
+  },
+  {
+   "doc": "docs/denetim/16_SON_RAPOR.md §16.10",
+   "claim": "Ragdoll sonrası yürüyüşte en düşük baş 0,35 m → 1,06 m (bağlama pozu bozulması giderildi)",
+   "verdict": "dogru",
+   "evidence": "Node ölçümü: ölüm öncesi ve sonrası yürüyüşte en düşük baş 1,115 m (eşit) (character.js:796–809). Kalıcı test yok."
+  },
+  {
+   "doc": "docs/denetim/16_SON_RAPOR.md §16.10",
+   "claim": "Yürü/koş/sprint eşiklerine histerezis ve titreşim bastırma eklendi (K06, 04 C13)",
+   "verdict": "dogru",
+   "evidence": "player.js:688–696; 16 K06 seq=[], K05 3 geçiş. Titreme giderilmiş; ayak kayması ayrı bir sorun (I-01)."
+  }
+ ],
+ "requirements": [
+  {
+   "req": "Hareketlerin animasyonla senkronu (genel)",
+   "status": "kismen",
+   "evidence": "Klip seçimi ve geçişler test edilmiş (16 K03/K05/K06, 04 C09/C10/C13). Node FK ölçümleri ise hız uyumsuzluğu (player.js:697–699), geç zıplama (557–565), kaçınmada kök hareketi (kk.js:130–142) ve tam gövde kayması (player.js:250–256, 467–472) gösteriyor.",
+   "plan": "I-01, I-05, I-06 ve I-09'u düzelt. tests/scenarios/18_animasyon_senkron.js'i ekle: destek ayağı hızı, zıplama kalkış anı, kaçınma kalça ofseti ve eylem sırasında kayma ölçülsün."
+  },
+  {
+   "req": "Her hareket için uygun animasyon klibi (yürüme, koşma, sprint, ani durma, yön değiştirme, zıplama, iniş, yüzme, dalış, merdiven, sandık taşıma, kazı, saldırı, parry, blok, kaçınma, tabanca doldurma, dümen, top)",
+   "status": "kismen",
+   "evidence": "Walk/Run/Sprint/Strafe/WalkBack, Jump_Start/Idle/Land, saldırılar, Block/Parry, Dodge ve Reload klipleri mevcut (kk.js:23–49, hepsi GLB'de). Yüzme, dalış, merdiven, dümen, top ve taşıma prosedürel; kazı 2H chop klibi; ani durma ve dönüş için klip yok; etkileşimlerde animasyon yok (interact.js:47–70).",
+   "plan": "Kazı için yere inen poz ya da klip ekle (I-17). Durmada klip hızını sıfıra çeken kısa bir fren evresi ekle. Etkileşimlere Interact/UseItem klibini bağla (I-18). Yüzme pozunu düzelt (I-08)."
+  },
+  {
+   "req": "Ayak kayması: hız ile klip oynatma hızının eşleşmesi",
+   "status": "yok",
+   "evidence": "player.js:685 ve 697–699 referansları (1,9/5,2/6,6) kliplerin doğal hızlarının (Node FK: ≈0,85 / ≈3,7 / ≈3,8 m/sn) 1,4–2,3 katı. Ayak kaymasını ölçen test yok; C13 testi yalnız klip adını ölçüyor.",
+   "plan": "Doğal hızları yüklemede ölçüp timeScale = hs/doğalHız yap, Walk→Run eşiğini ~1,6–1,9 m/sn'ye indir, karıştırma ekle (I-01). Kabul ölçütü: 1,5–7 m/sn aralığında destek ayağının dünya hızı < 0,25 m/sn."
+  },
+  {
+   "req": "Ellerin tuttuğu nesnelerle hizası",
+   "status": "kismen",
+   "evidence": "Tek elle tutulan eşyalar el yuvasına bağlı (character.js:646–694). Dümende bilek–hedef 0,39–0,53 m, topta 0,34–0,37 m (I-03); sandıkta eller sandığın içinde (I-04); kazıda sol el saptan 0,13–0,38 m uzakta (I-17); namlu alevi 0,24 m kayık (I-20). 04 C08 yalnız hedef vektörünü ölçüyor.",
+   "plan": "İstasyon konumlarını kol erimine getir, sandık tutamaklarını geometriden türet, kürek sapına sol el IK'sı ekle. Testler hedef vektörü yerine bilek kemiği–nesne uzaklığını (< 0,08 m) ölçsün."
+  },
+  {
+   "req": "Animasyonların yarıda kesilmemesi",
+   "status": "kismen",
+   "evidence": "Dodge, Reload, PickUp, Throw, UseItem ve LieUp süreleri eyleme eşit (player.js:260–272). Punch/Punch2 %67–70'te, Cheer %72'de, isabet tepkisi %57–74'te, küçük iniş %63'te kesiliyor; Jump_Start'ın kalkış evresi yalnız 0,06 sn görünüyor (I-10, I-05).",
+   "plan": "Eylem sürelerini klip/hız oranına eşitle ya da hareketle kesilebilir bir toparlanma evresi ekle; hitAt değerlerini hız tepesinden türet."
+  },
+  {
+   "req": "Yanlış klipte kalmama",
+   "status": "kismen",
+   "evidence": "Normal akışta _locomotion ve _wantUpper doğru klibe dönüyor. Kip geçişinde üst katman durup eylem sürünce taban klibi donuyor (player.js:309–313, 660; I-11). Limanda doğuşta silah görünmez kalıyor ve IK eski noktaya kilitli (main.js:233; I-07). Güvertede yerinde koşuluyor (player.js:894–898; I-21). Uzak oyuncuda aynı adlı tek seferlik klip yeniden başlamıyor (net.js:112; I-15).",
+   "plan": "Tek kip geçiş noktası (setMode) kur, _resetCombatFlags'te üst katman eylemlerini iptal et, güvertede gerçek yer değiştirmeyi kullan, uzak oyuncuya seq sayacı ekle; her biri için regresyon kontrolü yaz."
+  },
+  {
+   "req": "Animasyonun fiziksel hareketten kopmaması",
+   "status": "kismen",
+   "evidence": "Karada çarpışma sonrası hız izdüşümü var (player.js:592–595). Ancak kaçınma kliplerinde 0,27–0,67 m kök hareketi (I-06), 0,19 sn geç zıplama (I-05), tam gövde eylemlerinde 2,2 m/sn kayma (I-09) ve güvertede yerinde koşma (I-21) var.",
+   "plan": "Kök hareketini kliplerden ayıkla ya da fiziğe dönüştür, zıplama klibini kalkış karesinden başlat, tam gövde eylemlerinde hareketi kilitle ya da üst katmana devret."
+  },
+  {
+   "req": "Dar alanlarda kameranın duvar içinden geçmemesi",
+   "status": "kismen",
+   "evidence": "camera.js:66–129 (lineBlocked/slabBlocked ile ikili arama); 04 C07 ve 15 C01/C03 geçti. Ancak nişan omzu kamerayı duvara sokuyor ve atış ışını duvarı saymıyor (Node; I-02); 0,4 m alt sınır, nokta kamera ve ada yapılarının küçük kutuları da sorunlu (islands.js:496; I-13).",
+   "plan": "Omuz kaydırmasını daraltan ve küre süpürmeli kamera araması yaz, atışı gözden ya da namludan başlat, yapılar için kameraya özel kutu ya da 'prop' silinmesi ekle. Testler: duvar sağdayken nişan (0,2/0,4/0,6 m) ve ada kasabalarında yapı çevresi taraması."
+  },
+  {
+   "req": "Dar alanlarda kameranın ağaç içinden geçmemesi",
+   "status": "kismen",
+   "evidence": "Ağaçlar tasarım gereği çarpışmıyor (props.js:238–249, islands.js:478 noCam; physics.js:220); kameraya yakın parçalar titreşimle siliniyor ve görüş çizgisi silindiri var (nearfade.js). 15 C02 ve 17 K02/K03/K08/K12 geçti.",
+   "plan": "Tasarım kararını belgeye 'kamera ağaçtan geçer, ağaç silinir' diye açıkça yaz. Gerçek GPU'da görsel his kontrolü (11 #54) yap. İstenirse kalın gövdeli ağaçlar (r ≥ 0,35 m) için kamera çarpışmasını aç."
+  },
+  {
+   "req": "Dar alanlarda kameranın gemi gövdesi içinden geçmemesi",
+   "status": "karsilaniyor",
+   "evidence": "camera.js:15–31 ve 69–99 hullSolid/boatSolid; game.js:349–352. 17 K04 (4 nokta × 48 açı: ihlal 0), K05 (karanlık kare 0), K06 (ihlal 0) taban koşusunda geçti.",
+   "plan": "Düşman ve tüccar gemisi yanında da K04 benzeri bir kontrol ekle (şu an yalnız oyuncunun gemisi ölçülüyor)."
+  },
+  {
+   "req": "Dar alanlarda kameranın güverte yapısı içinden geçmemesi",
+   "status": "kismen",
+   "evidence": "Küpeşte, direk, seren ve yelken siliniyor (shipModel.js:281, 294, 306); güverte düzlemi sınırı var (camera.js:138–145). Toplar, ambar kapağı, çapa ve fener ne siliniyor ne çarpışıyor (shipModel.js:177–203; I-14).",
+   "plan": "cannonMesh ve diğer donanım malzemelerine nearFade('prop') uygula ya da kamera için kutu ekle; 17 K05'e top yanı noktası ekle."
+  },
+  {
+   "req": "Her hareket için test kanıtı",
+   "status": "kismen",
+   "evidence": "Testli: yürüme/koşma/sprint geçişleri (16 K05/K06, 04 C10/C13), zıplama/iniş (03, 16 K03, 04 C09), yüzme/dalış (04 C01, 14 D01–D03, 16 K01/P01), kaçınma (03_fizik_dt, 04 C09), blok bayrağı (03_fizik_duzeltmeler), dümen/top hedefleri (04 C08). Testsiz: ani durma, saldırı kombosu, parry, tabanca doldurma, merdiven, kazı animasyonu; ayrıca hiçbir test ayak kaymasını ya da bilek–nesne hizasını ölçmüyor.",
+   "plan": "18_animasyon_senkron.js (ayak hızı, zıplama, kaçınma, eylem kayması) ve 19_dovus_animasyon.js (kombo, hitAt, parry penceresi, dolum, kip geçişinde dolum) ekle; 04 C08'i bilek ölçümüne çevir; merdiven ve kazı için ayrı kontroller yaz."
+  }
+ ]
+}
