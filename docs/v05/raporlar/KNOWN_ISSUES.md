@@ -10,7 +10,7 @@ Bu liste `docs/v05/raporlar/AUDIT_CURRENT.md`'den (Faz 0 denetimi, v0.4 `44d548c
 - **Kapsam dışı kalan kayıtlar:** Faz tasarım belgelerinin ilk kez kaydettiği bulgular (ör. Faz 7 §0.5'teki N-1…N-19, Faz 9 §0.2'deki N9-x) bu listeye alınmadı; ilgili faz başlarken eklenmeli. Faz 7 N-11, burada H-M04 olarak var. Hedef fazlar KARARLAR.md'ye göre (K9-16: Faz 9'un Y1, Y3 ve Y9a adımları Faz 1'in başına alındı).
 - **Alan:** A açılış ve arazi işçisi, B ağ güvenliği, C fizik, D kayıt, E co-op senkronu, F hikâye, G dünya ve keşif, H AI ve savaş, I karakter ve kamera, J performans, K yayın ve test altyapısı.
 
-**Özet:** 234 açık sorun — kritik 13, yüksek 20, orta 121, düşük 80. Birincil faza göre: Faz 1 28, Faz 2 33, Faz 3 22, Faz 4 20, Faz 5 20, Faz 6 21, Faz 7 43, Faz 8 32, Faz 9 15. (KI-233 ve KI-234 denetim sentezinden sonra taban koşusundan eklendi.)
+**Özet:** 233 açık sorun — kritik 13, yüksek 20, orta 121, düşük 79. Birincil faza göre: Faz 1 27, Faz 2 33, Faz 3 22, Faz 4 20, Faz 5 20, Faz 6 21, Faz 7 43, Faz 8 32, Faz 9 15. (KI-233 ve KI-234 denetim sentezinden sonra taban koşusundan eklendi.)
 
 | Kimlik | Başlık | Öncelik | Alan | Dosya | Hedef faz | Durum | Kaynak |
 |---|---|---|---|---|---|---|---|
@@ -159,8 +159,8 @@ Bu liste `docs/v05/raporlar/AUDIT_CURRENT.md`'den (Faz 0 denetimi, v0.4 `44d548c
 | KI-143 | window.DK ve test yardımcıları (DK.sim/tap/press/snap/snapFrom, G.godMode erişimi) üretimde koşulsuz açık | orta | K | js/main.js:134-153 (v0.3: 133-152) | Faz 1 (+Faz 9) | Açık | K-07 (doğrulandı) |
 | KI-144 | Üretimde URL test parametreleri açık: ?peerhost ile sinyal sunucusu yönlendirilebiliyor, ?terrain ile oyun bozuk kipte açılabiliyor | orta | K | js/net/net.js:49-55 (peerOpts) | Faz 1 | Açık | K-08 (doğrulandı) |
 | KI-145 | Tek HTML, adı 'assets' ile biten bir klasörde açılırsa hiç açılmıyor (fetch anahtarı URL'deki ilk 'assets/' geçişini alıyor) | orta | K | tools/build-single-html.mjs:79-85 (prelude key()) | Faz 9 | Açık | K-09 (doğrulandı) / eski: 02 §4 Geliştirme önerileri (A_motor): 'Tek dosya: anahtar çözümleme ve davet bağlantısı' (açık) |
-| KI-146 | Test koşucusu konsol hatalarını, 404'leri ve başarısız istekleri başarısızlık saymıyor; tek dosya testinde varlık ve ses denetimi yok | orta | K | tests/harness/run.cjs:40, 44, 96 | Faz 1 | Açık | K-11 (doğrulandı) |
-| KI-147 | Onaysız ölçüm betikleri ve açığı kabul eden kontroller belgelerde 'GEÇTİ' olarak görünüyor | orta | K | tests/scenarios/03_fizik_dt.js (expect yok) | Faz 1 (+Faz 9) | Açık | K-13 (doğrulandı) / eski: denetim/11 #1 (120 FPS farkı); 02 T07 (sahte geçiş örneği) |
+| KI-146 | Test koşucusu konsol hatalarını, 404'leri ve başarısız istekleri başarısızlık saymıyor; tek dosya testinde varlık ve ses denetimi yok | orta | K | tests/harness/run.cjs:40, 44, 96 | Faz 1 (+Faz 9) | Kısmen düzeltildi: koşucu kısmı Faz 1 A1'de (`b2748cc`, FIX_REPORT). Kalan: tek dosya varlık ve ses denetimi (Faz 9, tasarım §4.6) | K-11 (doğrulandı) |
+| KI-147 | Onaysız ölçüm betikleri ve açığı kabul eden kontroller belgelerde 'GEÇTİ' olarak görünüyor | orta | K | tests/scenarios/03_fizik_dt.js (expect yok) | Faz 1 (+Faz 2, Faz 9) | Kısmen düzeltildi: onaysız senaryo KALDI, ölçüm OLCUM (Faz 1 A1, `b2748cc`, FIX_REPORT). Kalan: açığı kabul eden kontroller (06a H07, Faz 2) ve belgelerdeki eski kayıtlar (Faz 9 katalog) | K-13 (doğrulandı) / eski: denetim/11 #1 (120 FPS farkı); 02 T07 (sahte geçiş örneği) |
 | KI-148 | 06c D4-07 kopma kontrolünde önkoşul yok: kapatılan konuk odada olmasa da geçiyor (tabanda boşuna geçti) | orta | K | tests/scenarios/coop/06c_dort_oyuncu.cjs:53-59 | Faz 5 | Açık | K-M01 (belirsiz) |
 | KI-149 | 02_arazi_yedek etkin arazi kipini doğrulamıyor; Faz 0 tabanı işçisiz kipleri hiç koşmadığı hâlde 'İşçisiz kipler 12/12' kaydediyor | orta | K | tests/scenarios/02_arazi_yedek.js:1-21 | Faz 1 | Açık (başlangıç kaydı 8d8fb8a'da düzeltildi ve işçisiz kipler f80f205'te tabana eklendi; senaryonun etkin kipi doğrulamaması açık) | K-M02 (doğrulandı) |
 | KI-150 | Belgeler v0.3 tek dosyasının file:// davranışında çelişiyor: 03:21 ve 04 §4.2c 'yükleme ekranında takılma' diyor, 01:43 ise açıldığını kaydediyor | orta | K | docs/denetim/03_DEGISIKLIK_LISTESI.md:21 | Faz 9 | Açık | K-M03 (doğrulandı) |
@@ -240,7 +240,6 @@ Bu liste `docs/v05/raporlar/AUDIT_CURRENT.md`'den (Faz 0 denetimi, v0.4 `44d548c
 | KI-222 | Uzak oyuncunun ad etiketi sprite'ı ve CanvasTexture'ı bırakılmıyor | düşük | J | js/net/net.js:75-85, 125 (RemotePlayer._label / dispose) | Faz 8 | Açık | J-M04 (belirsiz) |
 | KI-223 | Pages artifact'i tüm depoyu yüklüyor (path: .) | düşük | K | .github/workflows/pages.yml:48-50 | Faz 9 | Açık | K-06 (doğrulandı) |
 | KI-224 | Tek HTML'de (file://) davet bağlantısı yerel dosya yolunu paylaşıyor | düşük | K | js/ui/menu.js:266, 353 | Faz 9 | Açık | K-10 (belirsiz) / eski: 02 §4 Geliştirme önerileri (A_motor): 'Tek dosya: anahtar çözümleme ve davet bağlantısı' |
-| KI-225 | coop.cjs adım istisnalarını yutuyor; konsol uyarıları kaydedilmiyor | düşük | K | tests/harness/coop.cjs:34, 53, 61 | Faz 1 | Açık | K-12 (belirsiz) / eski: 02 T09 (yalnız run.cjs için düzeltildi); denetim/14 #20; denetim/11 #37 |
 | KI-226 | tests/README'deki tek dosya komutu kökteki bayat (v0.3) dosyayı sınatıyor | düşük | K | tests/README.md:33-36 | Faz 9 | Açık | K-14 (doğrulandı) |
 | KI-227 | Derleme ve test bağımlılıklarının sürümleri sabitlenmemiş (package.json ve kilit dosyası yok) | düşük | K | README.md:18 | Faz 9 | Açık | K-15 (belirsiz) |
 | KI-228 | esbuild uyarıları derlemeyi durdurmuyor: IIFE çıktısında import.meta sessizce boşaltılıyor | düşük | K | tools/build-single-html.mjs:32-38 | Faz 9 | Açık | K-16 (belirsiz) |
@@ -260,3 +259,10 @@ tek tek alınmadı; her biri ilgili faz başlarken bu listeye KI kimliğiyle ekl
 | `docs/v05/tasarim/FAZ8_PERFORMANS_TASARIM.md` | §5.5, Ek C | Bu çalışmada bulunan ek bellek sorunları; Volkanik Dev ve Kraken ölçüm kusuru (09'un 'boss_kraken' adımı boss'suz ölçüyor) |
 | `docs/v05/tasarim/FAZ9_YAYIN_GUVENLIGI_TASARIM.md` | §0.2 (N9-1…N9-14), §İ | K-09'un gerçek tarayıcıda yeniden üretilmesi (N9-2), gizli 404 ölçümü (N9-11), canlı dalda dal kuralı olmaması (N9-14) |
 
+## Kapanan maddeler
+
+Bu tablodan çıkarılan maddeler. Her biri kabul testleriyle `FIX_REPORT.md`'de kayıtlıdır. Kısmen düzeltilen maddeler yukarıdaki tabloda kalır ve "Durum" sütununda neyin kaldığı yazar.
+
+| Kimlik | Başlık | Kapandığı adım | Commit | Kayıt |
+|---|---|---|---|---|
+| KI-225 | coop.cjs adım istisnalarını yutuyor; konsol uyarıları kaydedilmiyor | Faz 1 Adım A1 (Y1) | `b2748cc` | FIX_REPORT §Faz 1 / KI-225 |

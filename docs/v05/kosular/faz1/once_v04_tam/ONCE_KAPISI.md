@@ -88,6 +88,19 @@ Bu ortam kaynaklı bir sorun, oyun mantığı değil. Bellek konusu Faz 8'e ve t
 - H07/H22 ve H13 bu ilk kalmanın zincirleme sonuçları: ölçüm üç oyuncunun da oyunda olmasını gerektiriyor.
 - Konuğun katılırken menüye düşmesi Faz 0'da 06c'de de görüldü (KI-233). Katılma isteği yeniden denenmiyor. **Kök neden kanıtlanmadı**; Faz 5'te ele alınacak.
 
+**Faz 1'deki bütün 06a2 koşuları (v0.4'e karşı):**
+
+| Koşucu | Koşular | GEÇTİ / koşu | Kayıtlar |
+|---|---|---|---|
+| Yeni (A1 ara sürümleri dahil) | 9 | **7/9**. İki kalmada da Tayfa menüde. | `once_v04_yeni_kosucu/coop_06a2_*`, `once_v04_yeni_kosucu/tani/coop_06a2_tani_yeni1`, `a1_duzeltme/sonra/coop_06a2_v04`, bu klasör |
+| Eski (44d548c) | 3 | 3/3 | Faz 0 tabanı, `tekrar/coop_06a2_eski_*` |
+
+2/9'a karşı 0/3 farkı bu örneklemde anlamlı değil (tek yönlü Fisher kesin testi p = 36/66 ≈ 0,55). Yine de koşucunun zamanlamayı etkilemiş olma ihtimali dışlanmadı. Yeni koşucu iki şey ekliyor:
+- `requestAnimationFrame` sarmalayıcısı;
+- 1 sn yerleşme beklemesi.
+
+Bu yüzden 06a2, Faz 5'te KI-233 ele alınırken iki koşucuyla da tekrarlı ölçülecek. O zamana kadar 06a2'nin bir kalması kapıda "KARARSIZ" diye yazılır ve gerekçesiyle raporlanır.
+
 ## Karar (§7.4-6)
 
 `17_kamera_kararma`, `14_deniz_ekipmani` ve `coop_06a2` yeni koşucuyla **KARARSIZ** diye kaydedildi:
