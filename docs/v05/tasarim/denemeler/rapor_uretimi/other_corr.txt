@@ -1,0 +1,102 @@
+[A UC3 uc#2] dogrulandi {v03=dogru v04=kismen} :: game.buildWorld() başlangıçta terrain.prepare() çağırıyor; prepare() requestDept
+   C: Küçük satır düzeltmesi: v0.3'te prepare çağrısı game.js:45'te; 44. satır onProgress('Arazi örülüyor…').
+[A REQ4 req#3] dogrulandi {karsilaniyor} :: FAZ1-4: İşçi başlatılamazsa oyun açılmalı
+   C: Kaynak kod ve dist derlemesi için doğru. Ancak README'nin gösterdiği depo kökündeki tek dosya v0.3 (md5 42d9e9bb…, A-01) ve bu gereksinimi karşılamıyor; kurucu hatası kipinin depo testi de yok.
+[A REQ9 req#18] dogrulandi {karsilaniyor} :: Kabul: işçi yokken oyun yükleme ekranında kalmamalı
+   C: Kalan riskler listesindeki A-02 bu senaryoya bağlı değil: işçi yokken ızgara yerelde üretiliyor, red ancak gridGen istisnasıyla mümkün. Bu gereksinime bağlı gerçek kalan risk A-01 (kök tek dosya). İşçiden bağımsız ayrı bir açılış engeli de var: site verisi engelliyken boot save.profile()'da düşüyor 
+[B UC2 uc#1] dogrulandi {v03=dogru v04=kismen} :: Host, konuk sonuçlarını (hurtEnemy, hurtBoss, hurtAnimal, hurtMarine, stunEnemy)
+   C: Kanıttaki iki ayrıntı yanlış: (a) 'Bu mesafeler NaN'da açık kalıyor' yalnız hurtEnemy için geçerli (:284 `d > eşik → break`); hurtAnimal (:290), hurtMarine (:291) ve stunEnemy (:289) `< eşik` biçiminde, NaN'da reddediyor. (b) Infinity JSON ile iletilemez (null olur, hasar 0); v0.3'te aynı etkiyi 1e3
+[C UC1 uc#0] dogrulandi {v03=kismen v04=yanlis} :: physics.js içindeki lineBlocked() 64 hücreden büyük alanlarda çarpışma kontrolün
+   C: Hükümler (v03 kismen, v04 yanlis) doğru; yalnız sayılar küçük düzeltme istiyor. Sınırın tetiklendiği en kısa çapraz doğru ≈147,6 m (9×8 = 72 hücre, 45°'den sapan doğru); '≈158 m' yalnız tam 45° için geçerli. Eksene paralel bir doğru 16 m'lik hücre sınırının üstünden geçiyorsa (2 sıra) sınır ≈513 m'd
+[C UC2 uc#1] dogrulandi {v03=dogru v04=kismen} :: Fizik değişken FPS ile farklı sonuç üretebiliyor (sabit adım yok).
+   C: '15/20/30/60 FPS'te birebir aynı' sonucu yalnız testlerdeki tam dt değerleri için geçerli. Gerçek tarayıcıda rAF zaman damgaları kabalaştırılıyor (Chrome ≈0,1 ms, Firefox 1 ms), bu yüzden kare süreleri 16,6/16,7 ms gibi geliyor. Node modelinde (jitter.mjs, jitter2.mjs) 60 Hz'de karelerin 2/3'ünde n 
+[C UC3 uc#2] dogrulandi {v03=dogru v04=kismen} :: Düşman görüşü, tabanca görüşü ve çevresel engel kontrolleri tek sistemden geçmiy
+   C: Ek tutarsızlıklar: algı ve _los varsayılan tMax = 0,98 kullandığı için hedefin dibindeki ince engel uzaktan yok sayılıyor. Node'da 0,2 m'lik çite yaslanan oyuncu 27 m ve üstünden görünüyor; 0,4 m'lik duvarda bu eşik ≈36,5 m. Tabanca ışını ise kameradan çıktığı için kamera ile oyuncu arasındaki hedef
+[C REQ1 req#3] kismen {karsilaniyor} :: (4) Maksimum alt adım ve zaman sıçraması sınırları
+   C: Gereksinim 'kismen karşılanıyor': ana benzetimde üst sınır var, ama LOD'daki 0,25 sn'lik sıçrama ve kare başına çalışan fizikler sınırın dışında kalıyor; tutarlı adım boyu (sabit adım) da yok.
+[C REQ2 req#5] dogrulandi {karsilaniyor} :: (6) FPS düşüşünde zemine gömülme olmamalı
+   C: Gereksinim kodda karşılanıyor ama hiçbir senaryo sınamıyor (denetçi de belirtmiş); kanıt düzeyi 'dogrulanmamis'. 0,1 sn'lik tek kare ile iskeleye düşüş senaryosu eklenmeli.
+[C REQ5 req#19] kismen {karsilaniyor} :: Test: iskeleler
+   C: Gereksinim 'kismen karşılanıyor': oyuncu ve kamera için evet; gemi/kayık (#39) ve diğer limanlarda sudan çıkış (#23) için test yok ve hata açık.
+[C DOC1 doc#1] dogrulandi {yanlis} :: docs/denetim/05_FIZIK_GEMI_TESTLERI.md §5.2 #6 ve 04_KOK_NEDENLER.md §4.5 (Doğru
+   C: İnce ayrım: 'v0.3 64 hücre üstünde çarpıştırıcıları atlıyordu' cümlesi eski kod için doğru (physics.js:159). Ama 'her zaman false' değil, çünkü arazi 149-153'te daha önce örnekleniyor; test de bu farkı göstermiyor. 04 §4.5'teki 'Doğrulama' kanıt değeri taşımıyor.
+[C DOC2 doc#2] dogrulandi {yanlis} :: docs/denetim/04_KOK_NEDENLER.md §4.5 (Belirti) ve 03_DEGISIKLIK_LISTESI.md satır
+   C: Duvar arkasından görme belirtisi gerçekse nedeni 64 hücre değil. Aday nedenler: tek noktada sınanan yükseklik (C-04), %2 uç payları (hedefin dibindeki ince engel) ve görselden küçük kutular (colK, #43).
+[C DOC4 doc#6] kismen {yanlis} :: docs/08_FIZIK_RAPORU.md §8.6 :: Fizik kare hızına bağlı adımlarla çalışır; çok d
+   C: Belge 'kısmen eskimiş': ilk cümle doğru kalıyor; '2 alt adım' mekanizması yerini döngü genelindeki ≤6 eşit alt adıma bıraktı. 'Hiç tetiklenmiyor' ifadesi yalnız oyun döngüsü için doğru.
+[D UC1 uc#0] kismen {v03=dogru v04=kismen} :: Kayıt yapısı version: 1; sürüm kontrolü ve migrasyon yok.
+   C: v04 hükmü 'kismen' değil 'dogru' olmalı (v03 ile aynı). Denetçi aynı ölçütü v0.3'e 'dogru', v0.4'e 'kismen' olarak uygulayıp tutarsız davranmış.
+[D UC2 uc#1] kismen {v03=dogru v04=yanlis} :: Barut fıçıları ada yeniden kurulunca ya da kayıt yüklenince tekrar doğuyor.
+   C: v04 hükmü 'yanlis' değil 'kismen' olmalı. Geç ya da yeniden katılan konukta hazards.start boş gone ile başlıyor ve patlamış fıçı yeniden kuruluyor. Ayrıca ev sahibi o adayı kurmamışsa konuğun patlattığı fıçı hiçbir kayda girmiyor (hazards.js:672-674, islands.js:273), bu yüzden sonraki oturumda ev sa
+[D UC3 uc#2] kismen {v03=dogru v04=yanlis} :: Kırılabilir sandıklar ada yeniden kurulunca ya da kayıt yüklenince tekrar doğuyo
+   C: v04 hükmü 'kismen' olmalı. Konukta kırık sandık yeniden kuruluyor ve konuk onu kırınca lootReq ile ev sahibinden gerçek ganimet alıyor (treasure.js:84-90, net.js:301-313). Ev sahibinin kurmadığı adada konuğun kırdığı sandık kayda geçmiyor.
+[D UC6 uc#5] kismen {v03=kismen v04=yanlis} :: Açılan geçitler (tapınak kapısı, bulmaca kafesi) tekrar kapanıyor.
+   C: v04 hükmü 'yanlis' değil 'kismen' olmalı. Geç ya da yeniden katılan konukta templeState ve solved boş geliyor: tapınak kapısı kapalı ve çarpıştırıcısı yerinde (islands.js:810), kafes çarpıştırıcısı da kuruluyor (hazards.js:501). Yani konuk için geçit yeniden kapanıyor.
+[D UC7 uc#6] kismen {v03=kismen v04=yanlis} :: Çözülen bulmacalar ada yeniden kurulunca ya da kayıt yüklenince sıfırlanıyor.
+   C: v04 hükmü 'kismen' olmalı; denetçinin kendi kanıtı da bunu söylüyor. Konukta tapınak ve plaka bulmacası yeniden çözülüyor, +250 XP ve gizli sandık (hazards.js:652-658) her katılımda yeniden alınıyor.
+[D REQ1 req#8] kismen {karsilaniyor} :: 7.2 — Barut fıçıları ada yeniden kurulunca tekrar doğmamalı
+   C: Tam karşılanmıyor. Co-op konuğunda patlamış fıçı yeniden kuruluyor (gone konuğa gönderilmiyor, net.js:510-522). Ev sahibi adayı kurmamışsa konuğun patlattığı fıçı kayda girmiyor (hazards.js:672-674).
+[D REQ2 req#9] kismen {karsilaniyor} :: 7.2 — Kırılabilir sandıklar tekrar doğmamalı
+   C: Konukta kırık sandık yeniden kuruluyor ve kırılınca lootReq ile ev sahibinde yeni ganimet doğuyor (treasure.js:84-90, net.js:301-313).
+[D REQ3 req#12] kismen {karsilaniyor} :: 7.2 — Açılan geçitler tekrar kapanmamalı
+   C: Geç ya da yeniden katılan konukta tapınak kapısı ve kafes yeniden kapalı geliyor, çarpıştırıcıları da kuruluyor (islands.js:810, hazards.js:501).
+[D REQ4 req#13] kismen {karsilaniyor} :: 7.2 — Çözülen bulmacalar sıfırlanmamalı
+   C: Konukta iki bulmaca da sıfırdan başlıyor ve yeniden çözülebiliyor; +250 XP ve gizli sandık ödülü (hazards.js:652-658) her katılımda yeniden alınabiliyor.
+[D REQ9 req#22] kismen {karsilaniyor} :: 7.3 — Gemi geliştirmeleri korunmalı
+   C: Gemi tipi değişince (buyShip → replaceShip, shipControl.js:41-53) eski geminin mastHp/cannonHp dizileri yeni tipe taşınıyor ve bu bozuk durum kayda yazılıp yeniden yükleniyor (ship.js:43-44). Brigantine'in 2. direği devrik görünüyor, 4–7 numaralı toplar hasar almıyor. Ayrıntı missed listesinde. Test
+[D DOC1 doc#15] dogrulandi {yanlis} :: docs/denetim/09 başlık; 08_COOP_TESTLERI.md son paragraf; 16_SON_RAPOR.md Aşama 
+   C: 08_COOP'taki iddia 'son paragraf' değil, §8.6'da (satır 91). Aynı satırdaki 07_ekonomi 2/2 (dosyada 3 expect) ve 06_arayuz_960 2/2 (dosyada 4 expect) sayıları da tutmuyor.
+[E UC3 uc#2] dogrulandi {v03=dogru v04=kismen} :: (3) Kazazede co-op'ta eksik
+   C: Küçük ek: konuk tarafında harita 'Yüzen varil: …' etiketiyle bildiriliyor (give fonksiyonunun varsayılan değeri, events.js:206). 50 altın da 'Tayfa kazancı' olarak görünüyor (net.js:569). Kazazedenin teşekkür iletisi konukta hiç çıkmıyor.
+[E UC6 uc#5] dogrulandi {v03=kismen v04=kismen} :: (6) Konuk korsan rütbesinin kalıcı ilerlemesi eksik
+   C: Kanıttaki bir ayrıntı düzeltilmeli. v0.3'te seviye içi XP hiç kaydedilmiyor değildi: save() xp'yi içeriyordu ve stop() (v0.3 progress.js:101) oyun durunca (menüye dönüşte ya da ev sahibi ayrıldığında) yazıyordu. Yazılmadığı durumlar yalnız sekme kapanışı ve odak kaybıydı. 'Görev/keşif kaydı yoktu' k
+[E UC9 uc#8] dogrulandi {v03=dogru v04=kismen} :: (9) Bağlantı kopması ve tekrar bağlanma eksik
+   C: Kopma algısında bir boşluk daha var. Ev sahibi bir konuğu bağlantının 'error' olayıyla düşürdüğünde (net.js:233) bağlantıyı kapatmıyor. 'ping' conns denetiminden önce yanıtlandığı için (269) konuk 25 sn zaman aşımına hiç ulaşmıyor (missed listesindeki 16 300 bayt bulgusu).
+[E DOC1 doc#0] dogrulandi {yanlis} :: docs/denetim/13_TURN_VE_ODA_SAHIBI_DEVRI_TASARIMI.md §1 :: ICE sunucusu olarak y
+   C: Ek risk: 13. belge §2.2 madde 1'deki plan (config.iceServers'a yalnız kullanıcının TURN'u ve varsayılan STUN) olduğu gibi uygulanırsa PeerJS'in örtük TURN sunucuları sessizce devreden çıkar. Bu, bugünkü davranışa göre geriye gidiş olur.
+[F UC1 uc#0] dogrulandi {v03=dogru v04=dogru} :: README ve yol haritasında 6–10. aşamalar eksik olarak belirtilmiş.
+   C: Küçük düzeltme: 'README v0.3'ten beri güncellenmemiş' ifadesi doğru değil. v0.4 README'sinde kontroller (C ve N tuşları) güncellenmiş, 'Dalış, balıkçılık ve deniz ekipmanı' ile 'Avcılık ve toplama' bölümleri eklenmiş (diff, README.md:33-79). Güncellenmeyen yalnız sürüm satırı (README.md:8 'Bu sürüm:
+[F REQ1 req#0] kismen {karsilaniyor} :: Mevcut ilk 5 aşama ve karakterler korunacak
+   C: Durum 'kismen' olmalı. v0.4'teki F-01 gerilemesi co-op'ta 2→3 geçişini kalıcı olarak kilitleyebildiği için ilk 5 aşama v0.4'te işlevsel olarak tam korunmuyor. Bunu koruyan etiketli bir test de yok: tests/scenarios/v03/g2b.js, g2c.js ve g2d.js 0–2. aşamaları yürüyor ama hiç 'expect' içermiyor (0 bekl
+[F DOC3 doc#9] kismen {yanlis} :: docs/denetim/02_HATA_LISTESI.md:495 (B05) :: Co-op hikâye senkronu tek yönlü: ko
+   C: B05'in ana iddiası (aşama ve bayrakların advance ile ev sahibine ulaşmaması) v0.4'te giderilmiş, ama iki alt iddia v0.4'te hâlâ geçerli. (1) advance() dışındaki konuk bayrak değişimleri ev sahibine gitmiyor; örneğin Nevra'dan alınan ilk harita bayrağı flags.ilkHarita (quests.js:404). netStory yalnız
+[G UC1 uc#0] kismen {v03=kismen v04=kismen} :: Mevcut özel bölgeler: batık şehir, terk edilmiş maden, korsan mezarlığı, kadim t
+   C: Doğru ifade: 'Özel bölgelerin oynanış amacını uçtan uca sınayan test yok; yalnız kurulum (P02, 09_performans), tapınak bulmacası kalıcılığı (P08) ve kasaba sandığı eylemi (T08) sınanıyor.' v03 ve v04 için 'kismen' hükümleri doğru.
+[G UC4 uc#3] dogrulandi {v03=kismen v04=kismen} :: Korsan mezarlığı kodda var ve gerçek oynanış amacı var
+   C: 'Gündüz iskeletler, gece hayaletler' yerine 'iskeletler her zaman, gece ek olarak hayaletler ve Hayalet Kaptan' daha doğru. Hüküm değişmiyor.
+[H REQ4 req#3] kismen {karsilaniyor} :: Düşmanlar: görüş mesafesi
+   C: Kısmen karşılanıyor: tek oyunculuda doğru, co-op'ta konuk için görüş mesafesi değiştiricileri uygulanmıyor (H-13). Görüş sınırının dışı için olumsuz test yok.
+[I UC3 uc#2] kismen {v03=kismen v04=dogru} :: 16 §16.9 (2): İnce/hareketli engeller (fener direği, NPC, ağaç) kamerayı başa çe
+   C: v03 hükmü 'doğru' olmalı. İddia yalnız 'kamerayı başa çekmez' diyor; v0.3'te nesne çarpışması hiç olmadığından (camera.js:37–44) bu engeller kamerayı zaten çekmiyordu. Kameranın içlerinden geçip ekranı kaplaması ayrı bir iddia (UC8) ve orada v03 zaten 'yanlış'. Başa çekme sorunu, v0.4 geliştirilirke
+[I UC5 uc#4] kismen {v03=yanlis v04=dogru} :: 16 §16.11: Gemi gövdesi ve kıçtaki kayık kamera için katı
+   C: v04 hükmü 'kısmen' olmalı. Gövde ve kayık kamera için katı sayılıyor, ama nişanda gövde 0,65 m içinde sağdaysa kamera gövdenin içine yerleşiyor (I-02 ile aynı kök neden). v03 için 'yanlış' hükmü doğru.
+[I REQ1 req#9] kismen {karsilaniyor} :: Dar alanlarda kameranın gemi gövdesi içinden geçmemesi
+   C: Gereksinim 'kısmen' karşılanıyor. Nişanlı durumda (tabanca ya da zıpkın) gövde 0,65 m içinde sağdaysa kamera gövdenin içine yerleşiyor; örneğin suda gemi yanında zıpkınla nişan alırken. Plana nişanlı K04/K06 varyantı ve gövde yanında zıpkın nişanı eklenmeli. Düşman ve tüccar gemisi önerisi de geçerl
+[I DOC3 doc#2] dogrulandi {yanlis} :: docs/denetim/06_ANIMASYON_SAVAS_TESTLERI.md §6.1 ve tests/scenarios/04_karakter.
+   C: Hüküm değişmiyor; yalnız sayılar düzeltilmeli. v0.4'te kayma %61 (denetçi ~%55 demiş), v0.3'te %4–9 (denetçi bilekten ölçüp ~%14 bulmuş).
+[J UC1 uc#0] kismen {v03=dogru v04=kismen} :: Başlangıç limanında yaklaşık 1.045 draw call raporlanmış
+   C: v03 için 'dogru' hükmü yerinde. v04 de 'dogru' sayılmalı: iddia 'yaklaşık 1 045 raporlanmış' diyor, bu satır v0.4 deposunda aynen duruyor ve v0.4'ün kendi ölçümleri 999–1 036 arasında (son ölçüm 1 035, %1 fark). Tek ayrıntı, 1 045'in v0.3 koduyla ölçülmüş olması.
+[J DOC1 doc#7] kismen {yanlis} :: docs/denetim/10_PERFORMANS_KARSILASTIRMA.md §10.2 :: Aşama 8 sonrası başlangıç l
+   C: Belge ifadesi 'yanlış' değil 'eskimiş': 999 Aşama 8 sonundaki kod için geçerli, son kod için değil. §10.6'daki '1 036 → 999' özeti güncel durum gibi okunabiliyor. 'Azalma kaybolmuş' yorumu da desteklenmiyor: yöntem duruyor, artış büyük olasılıkla sonraki turlarda eklenen içerikten geliyor. Kesin kay
+[K REQ6 req#17] kismen {karsilaniyor} :: T7 Yeni oyun
+   C: Oyun başlatma mantığı karşılanıyor; oyuncunun izlediği arayüz akışı (Yeni Macera → oluşturucu → yuva → başlat) sınanmıyor.
+[K REQ7 req#18] kismen {karsilaniyor} :: T8 Kayıt yükleme
+   C: Aynı sürümde programatik yükleme karşılanıyor; arayüz yolu ve v0.3→v0.4 kayıt yüklemesi sınanmıyor.
+[K REQ8 req#25] kismen {karsilaniyor} :: T15 Karakter çarpışmaları
+   C: Sınanan durumlar geçiyor; ama bilinen açık maddeler (#43, #5) yüzünden karakter çarpışmaları tam karşılanmıyor.
+[K REQ10 req#31] kismen {karsilaniyor} :: T21 Oda kurma
+   C: Ağ katmanında oda kurma karşılanıyor; Oda Kur panelinden kurulum sınanmıyor.
+[K REQ11 req#32] kismen {karsilaniyor} :: T22 Odaya katılma
+   C: 2 oyunculu katılım karşılanıyor; 4 oyunculu katılım tabanda kaldı ve arayüz yolu sınanmıyor.
+[K REQ16 req#44] kismen {karsilaniyor} :: T34 Bağlantı kopması
+   C: Yalnız konuk kopması karşılanıyor. Ev sahibi kopması ve yeniden bağlanma sınanmıyor; D4-07 de tabanda geçerli bir kanıt değil.
+[K REQ17 req#52] kismen {karsilaniyor} :: T42 Yedekten kurtarma
+   C: Yedekten okuma yalnız JSON düzeyindeki bozulmada karşılanıyor.
+[K REQ18 req#53] kismen {karsilaniyor} :: T43 Bozuk kayıt
+   C: Sözdizimsel bozulma karşılanıyor; anlamsal bozulma karşılanmıyor.
+[K REQ19 req#55] kismen {karsilaniyor} :: T45 Ada durumunun korunması
+   C: Sınanan alanlar korunuyor; ada durumunun tamamı korunmuyor.
+[K REQ22 req#67] kismen {karsilaniyor} :: T57 Single HTML açılışı
+   C: v0.4 tek HTML'inin Chromium'da file:// açılışı karşılanıyor; dağıtılan dosya ve http yolu için kanıt yok.
+[K DOC1 doc#0] kismen {yanlis} :: README.md:8 :: 'Bu sürüm: 0.3 — 20 × 20 km dünya, altı bölge, beş efsanevi boss…
+   C: 'README güncellenmemiş' tespiti yanlış; yalnız sürüm satırı ve bazı bölümler bayat. Sürüm satırı kodun kendi etiketiyle tutarlı. Asıl sorun, v0.4'ü ayırt eden hiçbir sürüm ya da derleme damgasının olmaması; menu.js:109,112 ve README birlikte güncellenmeli.

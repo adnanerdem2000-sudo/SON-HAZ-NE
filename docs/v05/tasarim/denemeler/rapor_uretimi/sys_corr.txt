@@ -1,0 +1,88 @@
+[A SYS1 idx0] dogrulandi :: Arazi işçi havuzu ve iş kuyruğu (_initWorkers, _pump, _onMsg, _workerFailed)
+   C: Nota eklenmeli: hazır sinyali gelmemesi (75), iş zaman aşımı (144) ve MAX_TRIES (97) dalları hiçbir depo testinde yok; bunlar yalnız Node'da sahte işçiyle sınandı.
+[A SYS3 idx3] kismen :: İşçi betiği protokolü (terrainWorker.js: ready, error, test-crash)
+   C: 'ready' ve 'test-crash' için calisiyor_test_edilmis doğru; 'error' iletisi yolu için durum dogrulanmamis (depo testi yok).
+[A SYS4 idx6] kismen :: Bölge hazırlığı ve odak koruması (prepare, focus)
+   C: prepare'in sonlanması: calisiyor_test_edilmis. Odak koruması (uzak kamerada karoların korunması, odakta LOD yükseltme) ve zaman aşımı dalı: dogrulanmamis.
+[A SYS5 idx7] kismen :: Okyanus derinlik penceresi (requestDepth, _depthSeq, odak bastırma; ocean.setDepth)
+   C: Temel pencere üretimi ve taşıma: calisiyor_test_edilmis. _depthSeq ve odak bastırması: dogrulanmamis.
+[A SYS6 idx9] kismen :: Fizik yükseklik sorgusu (heightAt/normalAt, ağ üçgenlemesiyle tutarlı)
+   C: heightAt'ın çalışması test edilmiş, ama 'ağ üçgenlemesiyle tutarlı' özelliği depo testiyle korunmuyor (B-04 gerilemeye açık). Bu özellik için durum dogrulanmamis (yalnız Node'da doğrulandı).
+[A SYS7 idx12] dogrulandi :: Dünya kurulumu (game.buildWorld)
+   C: Nottaki 'yedek kipte dünya ızgarası daha yavaş üretiliyor' etkisi ölçülemeyecek kadar küçük. Karşıt Node /tmp/denetim_alan/karsit_A/butce_izgara.mjs: 1024² ızgara bütçe 10 ms iken 290–321 ms, 40 ms iken 278–317 ms sürdü. Dilim süresini zaten üreteç parçası belirliyor (bütçe 10 ms'de en uzun dilim 15–17 ms; A-06).
+[A SYS8 idx13] kismen :: Ana menü sahnesi (setupMenuScene, menuUpdate)
+   C: Menü ekranının açılması test edilmiş; 3B menü sahnesi mantığı dogrulanmamis (yalnız dolaylı duman testi var).
+[B SYS1 idx3] kismen :: Altın paylaşım bütçesi (5000/ileti, 20 000/dk/konuk)
+   C: Durum 'calisiyor_test_edilmis' değil 'calisiyor_gelistirilmeli' (proje testinde sınanmamış; sabit 60 sn pencere sınır anında ~1 sn'de 40 000'e izin veriyor; aynı kırpma dürüst büyük satış paylarını yok ediyor — missed).
+[B SYS2 idx4] kismen :: Oyuncu adı temizliği (cleanName)
+   C: Sistem bütünüyle 'calisiyor_gelistirilmeli': temizlik bir yolda (hello) test edilmiş, ikinci yolda (app) yok.
+[B SYS3 idx5] kismen :: Aynı adlı konuk / yeniden katılım eşleşmesi
+   C: 'calisiyor_gelistirilmeli': aynı adlı konuk test edilmiş; yeniden katılım eşleşmesi test edilmemiş ve amaçladığı hızlı yeniden bağlanma durumunda çalışmıyor.
+[B SYS4 idx6] kismen :: Kalp atışı ve kopma temizliğinin yayılması
+   C: 'calisiyor_gelistirilmeli': ev sahibi yarısı test edilmiş; konuk yarısı test edilmemiş ve pong yüzünden snap kesintisini algılamıyor.
+[B SYS5 idx26] kismen :: mesaj:chat
+   C: 'calisiyor_gelistirilmeli': iletim test edilmiş, güvenlik sınırları (boyut, 240 karakter) test edilmemiş.
+[C SYS1 idx1] kismen :: Girdi kenar tetikleyicilerinin alt adımlarda korunması (input.subframe)
+   C: Durum 'dogrulanmamis' olmalı (kod incelemesiyle doğru, testle kanıtlanmamış). Ayırt edici test: 1/15 sn'lik karede C bir kez basılınca crouch tam bir kez değişmeli; dümende Boşluk tek bir toggleSails üretmeli.
+[C SYS2 idx2] dogrulandi :: Statik çarpışma ızgarası ve daire itme çözücüsü (physics._insert/removeTag/resolve)
+   C: Not: 3 geçişli köşe ve dar aralık davranışı (dar kapı) için ayrı test yok. Ada yapı kutularının görselden küçük olması (colK 0,6–0,9; islands.js:495-500, bilinen #43) veri sorunu olarak doğru tespit edilmiş.
+[C SYS3 idx3] dogrulandi :: Zemin/platform sorgusu (groundAt/floorAt) ve platform yan yüzleri
+   C: Not: düşüşte süpürme yok. Oyuncunun penceresi v·h ≤ 0,6 m, yani en çok 36 m/s (C-17); hızlı düşüşü sınayan test yok.
+[C SYS4 idx5] dogrulandi :: Kamera–platform güvertesi kesişimi (slabBlocked)
+   C: Not: C01'deki 'under' sayacını floorAt kıskacı (camera.js:132-136, floorMax game.js:357) da tek başına sağlıyor; slabBlocked'ı asıl sınayan parlaklık kısmı. Mermi ve yapay zekâ için güverte engeli olmadığı tespiti (C-06) doğru.
+[C SYS5 idx6] kismen :: Oyuncu kara hareketi (ivme, zıplama, eğim, basamak, geri tepme)
+   C: Durum 'calisiyor_gelistirilmeli' olmalı: temel hareket test edilmiş, ama zıplama ve eğim için beklenti yok ve kare hızı bağımlılığı açık.
+[C SYS7 idx12] kismen :: Gemi çapa zinciri ve liman halatı
+   C: Çapa sıfırlaması için 'calisiyor_test_edilmis' doğru; liman halatı ve çekiş sınırı 'dogrulanmamis'.
+[C SYS8 idx26] kismen :: Ragdoll (kendi 1/60 sabit adım biriktiricisi)
+   C: Biriktirici ve kararlılık iddiası için durum 'dogrulanmamis' olmalı (kod incelemesine göre doğru); C19 yalnız kalkış eylemini kanıtlıyor.
+[D SYS1 idx8] kismen :: Oyuncu konumu, canı ve gemide olma
+   C: onShip=true → boardShip(lx, lz) yolunu (game.js:131) olumlu sınayan bir test yok; 08 yalnız batık gemide oyuncunun güverteye bindirilmediğini denetliyor. Yüzerken lastSafe kullanımı (game.js:175) testsiz. Ayrıca 'Demir Bilek' becerisi olan oyuncunun canı yüklemede şişiyor: game.js:130 canı maxHp=100 iken (player.js:42) atıyor, progress.recompute (progress.js:159-161) oranı bu değerle hesaplıyor. Azami canı 145 olan oyuncuda art arda yüklemelerde 50 → 73 → 106 → 145 (/tmp/denetim_alan/karsit_kayit/hp_mast_probe.mjs)
+[D SYS2 idx9] kismen :: Envanter ve altın
+   C: Altın 08, 12 ve 14 senaryolarının hiçbirinde yükleme sonrası ölçülmüyor (grep 'gold' yalnız L02'de, yükleme öncesinde). 'Envanter ve altın' bütün olarak test edilmiş sayılamaz; altın için durum 'dogrulanmamis' olmalı. inv.load şema denetimi de yok (inventory.js:77-82).
+[D SYS3 idx15] kismen :: Gemi durumu (gövde, bölgesel hasar, direk/top, delik, ambar, batık)
+   C: Delik (holes) ve ambar (hold) hiçbir testte yok. Testler yalnız sloop kullanıyor. v0.4'te gemi tipi değişince mastHp/cannonHp eski uzunluklarıyla taşınıp kayda yazılıyor (missed listesindeki Brigantine maddesi). Durum 'calisiyor_gelistirilmeli' olmalı.
+[D SYS6 idx26] kismen :: Ada sandıkları ve tapınak sunağı (islands.opened)
+   C: Sandık ve sunak eylemleri (islands.js:746-751, 857-862) testlerde hiç çağrılmıyor; gerçek anahtarlarla (f.id ve 'altar'+f.id) uçtan uca davranış sınanmıyor. Çanta doluyken taşan ödül kesesi kaydedilmediği için (treasure.js:99, D-14) tek seferlik sandığın taşan kısmı yüklemede kalıcı olarak kayboluyor. Durum 'calisiyor_gelistirilmeli' olmalı.
+[D SYS8 idx30] kismen :: Dünyadaki hazine sandıkları (yerde, suda, taşınan, kayıktaki)
+   C: Yerdeki, sudaki ve kayıktaki sandık için kayıt/yükleme testi yok, oysa treasure.js:119-126'daki filtre dört durumu da kapsıyor. Kayıktaki sandığın suya bırakılması (D-16) da testsiz.
+[E SYS1 idx15] dogrulandi :: Ganimet keseleri
+   C: Testlerin kapsamadığı bir eşitleme boşluğu var: kese konumu yalnız doğuşta gönderiliyor. Ev sahibinde fizikle seken ya da suda sürüklenen kese konukta doğduğu yerde kalıyor (missed listesinde). Alma işlemi bugün yalnız pickupReq'de mesafe denetimi olmadığı için çalışıyor; E-03'ün önerdiği mesafe denetimi eklenirse bu yol bozulur.
+[E SYS2 idx25] kismen :: Sohbet
+   C: (1) 06a/06a2'deki 'H07/H22 200 KB sohbet düşürülür' kontrolü ev sahibinin boyut sınırını sınamıyor. PeerJS 1.5.5 JSON kanalı 16 300 bayt ve üstü iletiyi konuk tarafında hiç göndermiyor (vendor/peerjs/peerjs.min.js). Kontrol, ileti ev sahibine hiç ulaşmadığı için geçiyor. 240 karakter kırpması da hiçbir testte sınanmıyor. (2) v05 taban koşusunda 06c D4-04 KALDI ([0,1,0,0]); gönderen konuk o sırada menüye düşmüştü (#37). En güncel kayıt geçmiyor. (3) 'app' iletisi (net.js:274) c.info.name'i cleanName'den geçirmeden v
+[E SYS3 idx31] kismen :: Oda kurma ve katılma (özel kod)
+   C: Kanıtta adı geçen dalların çoğu sınanmamış. Şifre reddi, 'Oda dolu', sürüm reddi, listPublic/quickJoin, davet bağlantısı (?join=) ve menü/lobi arayüzü (menu.js:180-302) hiçbir testte yok. Testler yerel PeerJS sunucusu ve loopback üzerinde koşuyor (tests/harness/coop.cjs:20); gerçek sinyal sunucusu ve NAT hiç denenmedi. Sürüm denetimi fiilen işlevsiz: VER iki sürümde de 'dksh-v1' (v0.3 net.js:26, v0.4 net.js:27), yani canlıdaki v0.3 istemcisi bir v0.4 odasına katılabiliyor. Aynı bağlantıdan gelen ikinci 'hello' (net
+[F SYS1 idx13] kismen :: Hikâye bosslarının dövüş davranışı (Morvan ve Kızıl Hançer evreleri)
+   C: Sınanan yalnız evre eşikleri. 'F-05 Çağırma hazırlığı hafif vuruşla bozulmaz' kontrolü (05_dusman_ai.js:24) bir haydutla yapılıyor (window._e1, satır 8'de 'haydut'), bossa özgü değil. Dövüşün geri kalanı hiç sınanmamış: Morvan'ın 'rise' doğuşu, dönen saldırısı, Kızıl'ın tabancası ve duman bombası, oyuncuya karşı tam savaş. denetim/12 #10 'Boss savaşı' KISMİ (satır 19), denetim/11 #12 Açık (satır 16). Doğru durum: evre eşikleri için calisiyor_test_edilmis, 'dövüş davranışı'nın bütünü için dogrulanmamis.
+[F SYS2 idx22] kismen :: Kadim Tapınak levye bulmacası ve kalıcılığı
+   C: Tek oyunculu mekanizma ve kalıcılık test edilmiş, ama sistemin bütünü için doğru durum 'calisiyor_gelistirilmeli'. (1) Co-op'ta tapınak durumu hiç eşlenmiyor. 'inter' türü net.js:46'daki KNOWN listesinde var ama _hostData'da işleyicisi yok; levye eylemleri yalnız yerelde çalışıyor (islands.js:841-847) ve ada durumu için bir ağ iletisi yok. Ev sahibinin _check'i kendi islands.temples durumuna bakıyor (bosses.js:1088): yalnız konuk çözerse Taş Muhafız doğmaz; ev sahibi çözerse konuğun yerel kapı çarpıştırıcısı (islan
+[F SYS3 idx24] kismen :: Dünya alanları ve biyomlar (6–10 için hazır alanlar)
+   C: Testler dünyanın verisini ve geometrisini sınıyor. 07_dunya_kesif etiketleri dünya boyutu, kıyı dikişi, iskeleye sudan çıkış, adacık özellikleri ve liman barınağını kapsıyor; archipelago_sabit v0.3 sabitiyle birebirliği denetliyor. Bölgelerin oynanabilir içeriği test edilmiyor: efsanevi boss karşılaşmaları denetim/11 #12'de 'Açık (test)', denetim/12 #10'da KISMİ; Taş Muhafız co-op'ta eşlenmiyor. '6–10 için hazır' ifadesine dayanak olacak bir test kaydı yok. Doğru durum: veri ve geometri için calisiyor_test_edilmis,
+[G SYS2 idx1] kismen :: Ada envanteri — çekirdek el yapımı adalar (6; worldData.js:9-40, props.js, port.js, cave.js)
+   C: Sistemin tamamı için 'calisiyor_test_edilmis' doğru değil. Kırlangıç limanı ve iskelesi, mağara kamerası ve Martı Batığı sandığı: 'calisiyor_test_edilmis'. Çekirdek adaların geri kalan içeriği: 'dogrulanmamis'.
+[G SYS8 idx12] kismen :: Ada içerik akışı ve zaman dilimli kurulum (islands.js:271-435)
+   C: Tek oyunculu akış: calisiyor_test_edilmis. Co-op'ta ev sahibi tarafı eksik olduğu için genel durum 'calisiyor_gelistirilmeli' olmalı.
+[G SYS11 idx23] kismen :: Karaya oturmuş gemi (islands.js _wreck:1001-1022; 26 adet)
+   C: Durum 'calisiyor_gelistirilmeli' olmalı: kurulum ve yerleşim test edilmiş, ancak sandık erişimi olasılıksal olarak bozuk.
+[G SYS12 idx24] kismen :: Ada sandıkları ve kalıcılık (islands.js _chest:742-752; save:269)
+   C: Tek oyunculu yol: 'calisiyor_test_edilmis'. Co-op: 'hatali_kararsiz'. Sistem geneli için 'calisiyor_gelistirilmeli' daha doğru.
+[G SYS13 idx36] kismen :: Barut fıçısı ve kırılabilir sandık (hazards.js:163-294)
+   C: Kırılabilir sandık ve kalıcılık: 'calisiyor_test_edilmis'. Barut fıçısının patlama mekaniği: 'dogrulanmamis'.
+[H SYS2 idx30] curutuldu :: Saldırı hazırlığı (telgraf süresi)
+   C: Durum 'hatali_kararsiz' olmalı. Zincir saldırılarda telgraf süresi fiilen yok. Tekil saldırılarda kod tutarlı, ama test vuruş anını ölçmüyor (kaçırılanlar listesinde iki ayrı madde).
+[H SYS4 idx35] kismen :: Kamp doğurma, yenilenme bekleme süresi ve kaydı (F-07)
+   C: Durum 'calisiyor_gelistirilmeli' olmalı. Bekleme süresi ve kayıt kısmı test edilmiş; doğurma ve gece dalgası kısmı test edilmemiş ve gece dalgası bekleme kuralını çiğniyor.
+[I SYS2 idx19] kismen :: Animasyon klip altyapısı (kk.js: ANIM_MAP, oran düzeltme, klip yarıları)
+   C: ANIM_MAP ad çözümü 'calisiyor_test_edilmis' sayılabilir (C09, C13, K06 currentName'i doğruluyor). Oran düzeltme ve üst/alt katman bölme ise 'dogrulanmamis'. Kanıtta gösterilen C19 ve C25 klip oynatımını sınamıyor.
+[I SYS3 idx21] kismen :: Yürüyüş biçimi histerezisi (Walk/Run/Sprint titremesinin bastırılması)
+   C: Sprint bayrağı histerezisi ve tükenme kilidi test edilmiş (C10, K05). Walk↔Run klip histerezisi ve A→B→A bastırma ise 'dogrulanmamis': hızı 3,1–3,7 bandında salındıran, ayırt edici bir test yok.
+[I SYS4 idx29] kismen :: Kamera: gemi gövdesi ve kıçtaki kayık
+   C: Durum 'calisiyor_gelistirilmeli' olmalı; bu, duvar çarpışması sisteminin derecesiyle de tutarlı. Nişanda omuz kaydırması küçültülmediği için kamera gövdeye ve kayığa girebiliyor. K04–K06'ya nişanlı bir varyant eklenmeli.
+[J SYS1 idx1] kismen :: GPU kaynak bırakma: ada içeriği, hayvan bölgesi, düşman
+   C: Durum 'calisiyor_gelistirilmeli' olmalı. Ada ve hayvan bırakma doğru çalışıyor; düşmanlarda elde tutulan prosedürel silah bırakılmıyor (missed: elde tutulan eşyalar). Testin düşman döngüsü kamerayı düşmanlara çevirmeli. Bu sistemin dışında kalan bırakılmayan yollar da var: Ship.rebuild ve _syncHoles (missed); post.setQuality'de UnrealBloomPass'in 11 HalfFloat hedefi bırakılmıyor (post.js:65; EffectComposer.dispose yalnız kendi hedeflerini bırakıyor, EffectComposer.js:354-361), bu da efekt ayarı her değiştiğinde 108
+[J SYS2 idx5] kismen :: Arayüz dinleyici/rAF/WebGL temizliği (11_arayuz_sizinti)
+   C: Dinleyici ve rAF temizliği test edilmiş. 'WebGL temizliği' ise yalnız kodda var; bu kısım 'dogrulanmamis'. Teste webglcontextlost olayı ya da açık bağlam sayısı denetimi eklenmeli.
+[J SYS4 idx13] dogrulandi :: Düşman AI LOD'u
+   C: Hüküm değişmiyor. Not: 45–90 m bandı ve 140/220 m doğma/kaldırma sınırları ayrıca sınanmıyor; kazanç da ölçülmedi.
+[J SYS5 idx15] kismen :: Balık sürüsü benzetimi (ayırma azaltma)
+   C: Benzetimin geçerliliği test edilmiş; ayırma azaltması yalnız bir kez ölçülmüş, test edilmemiş ('dogrulanmamis'). Durum 'calisiyor_gelistirilmeli' olmalı ya da sistem adı yalnız 'balık sürüsü benzetimi' ile sınırlandırılmalı. Mesafeye bağlı benzetim seyreltmesinin olmadığı notu doğru.
