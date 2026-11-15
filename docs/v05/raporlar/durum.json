@@ -34,20 +34,20 @@
   "not": "Serbest not (kalan kısım, gerekçe, kaynak çelişkisi)"
  },
  "ozet": {
-  "toplam": 234,
+  "toplam": 237,
   "durum": {
-   "acik": 228,
+   "acik": 231,
    "duzeltildi": 2,
    "kismi": 4
   },
   "oncelik": {
    "düşük": 80,
    "kritik": 13,
-   "orta": 121,
+   "orta": 124,
    "yüksek": 20
   },
   "birincilFaz": {
-   "Faz 1": 28,
+   "Faz 1": 31,
    "Faz 2": 33,
    "Faz 3": 22,
    "Faz 4": 20,
@@ -57,7 +57,7 @@
    "Faz 8": 32,
    "Faz 9": 15
   },
-  "not": "oncelik ve birincilFaz sayımları kapanan maddeler dahil 234 kaydın hepsini sayar; KNOWN_ISSUES.md'nin özeti yalnız ana tablodaki (açık + kısmen düzeltilmiş) maddeleri sayar (232; orta 120, düşük 79, Faz 1 26). Fark KI-225 (düşük, Faz 1) ve KI-144'tür (orta, Faz 1); ikisi de duzeltildi."
+  "not": "oncelik ve birincilFaz sayımları kapanan maddeler dahil 237 kaydın hepsini sayar; KNOWN_ISSUES.md'nin özeti yalnız ana tablodaki (açık + kısmen düzeltilmiş) maddeleri sayar (235; orta 123, düşük 79, Faz 1 29). Fark KI-225 (düşük, Faz 1) ve KI-144'tür (orta, Faz 1); ikisi de duzeltildi."
  },
  "sorunlar": {
   "KI-001": {
@@ -4912,7 +4912,62 @@
    "commit": null,
    "testler": [],
    "kanit": null,
-   "not": "Denetim kimliği yok; kaynak: Ana oturum ölçümü, 14 Kasım 2026: 02_arazi_yedek `?terrain=crash` (docs/v05/taban_kosusu_44d548c/02_arazi_yedek_crash.json, prepMs 28 771); kök neden henüz bili"
+   "not": "Denetim kimliği yok; kaynak: Ana oturum ölçümü, 14 Kasım 2026: 02_arazi_yedek `?terrain=crash` (docs/v05/taban_kosusu_44d548c/02_arazi_yedek_crash.json, prepMs 28 771); kök neden henüz bilinmiyor | Yeniden ölçüldü (Faz 1 B0, 15 Kasım): v0.4'te kuyruk kusuru gözlenmedi; çizim durdurulunca dört kipte 150–211 ms (tests/scenarios/02_arazi_yedek.js AYS-01; docs/v05/kosular/faz1/b/once_v04/son/02_arazi_yedek_crash.log). 28,8 sn ana iş parçacığı/GPU duraklamasından ve koşucunun işaretçi kilidi selinden; sonra kapısında düzeltilmiş koşucuyla w2'de crash/crash1 yeniden ölçülecek."
+  },
+  "KI-235": {
+   "durum": "acik",
+   "faz": 1,
+   "fazEk": [],
+   "fazMetni": "Faz 1",
+   "oncelik": "orta",
+   "alan": [
+    "A"
+   ],
+   "baslik": "Ana menüye dönüşte fare kilidi menüde yeniden alınıyor; menü düğmelerine tıklanamıyor, kilit ancak Esc ile bırakılıyor",
+   "dosya": "js/ui/ui.js:64; js/core/input.js:95-98; js/main.js (toMenu)",
+   "denetim": [],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": "Denetim kimliği yok; kaynak: Faz 1 B0 testi: tests/scenarios/02_acilis_akisi.js AA09b (docs/v05/kosular/faz1/b/once_v04/son/02_acilis_akisi.log); kök neden: docs/v05/kosular/faz1/b/README.md bulgu 1"
+  },
+  "KI-236": {
+   "durum": "acik",
+   "faz": 1,
+   "fazEk": [],
+   "fazMetni": "Faz 1",
+   "oncelik": "orta",
+   "alan": [
+    "G",
+    "A"
+   ],
+   "baslik": "Hızlı yolculukla ek limanlara varışta oyuncu iskele platformunun 0,1 m dışına, suya konuyor",
+   "dosya": "js/world/ports.js:47; js/world/islands.js (_pier)",
+   "denetim": [],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": "Denetim kimliği yok; kaynak: Faz 1 B0 testi: tests/scenarios/02_hizli_yolculuk.js HYU-02, HYU-05 (docs/v05/kosular/faz1/b/once_v04/son/02_hizli_yolculuk_normal.log); docs/v05/kosular/faz1/b/README.md bulgu 2"
+  },
+  "KI-237": {
+   "durum": "acik",
+   "faz": 1,
+   "fazEk": [],
+   "fazMetni": "Faz 1",
+   "oncelik": "orta",
+   "alan": [
+    "A"
+   ],
+   "baslik": "İşçisiz kipte hızlı yolculuk hazırlığı 10–45 sn sürüyor (normal kipte 0,2–2,2 sn); 45 sn sınırına yakın, zaman aşımında varış sessizce eksik kalıyor",
+   "dosya": "js/main.js (fastTravel); js/world/terrain.js (localBudget)",
+   "denetim": [],
+   "ilgili": [],
+   "commit": null,
+   "testler": [],
+   "kanit": null,
+   "not": "Denetim kimliği yok; kaynak: Faz 1 B0 testi: tests/scenarios/02_hizli_yolculuk.js HYS-01, noworker kipi (docs/v05/kosular/faz1/b/once_v04/son/02_hizli_yolculuk_noworker.log; kilit bırakılmış tanı 10,3 sn: docs/v05/kosular/faz1/b/once_v04/duzeltme3/isaretci/); kök neden kanıtlanmadı; docs/v05/kosular/faz1/b/README.md bulgu 3"
   }
  }
 }
