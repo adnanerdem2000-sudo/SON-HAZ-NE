@@ -77,6 +77,17 @@ Kaba sayım: rAF sarmalayıcılı koşularda 4/6 çöküş, sarmalayıcısız ya
 
 Süreç belleği ölçümlü ayrı bir inceleme ve gerekirse koşucu düzeltmesi yapılıyor. Kesin hüküm o inceleme bitince buraya ve FIX_REPORT'a yazılacak.
 
+**Kesin hüküm (kosucu17, 15 Kasım; ayrıntı `../kosucu17/KOSUCU17.md`, FIX_REPORT §Faz 1 / KI-238):**
+- Kalmanın kök nedeni koşucunun rAF sarmalayıcısı değil, oyunun oturum başında aldığı işaretçi kilidi (`js/game/game.js:149`).
+  Başsız Chromium kilitliyken saniyede ~41 bin sentetik fare hareketi üretiyor; tarayıcı ana ipliği ~%90 meşgul oluyor ve renderer
+  uzun iş yaparken iki süreçte de bellek büyüyor. cgroup OOM'u buradan geliyor; öldürülecek süreci `oom_score_adj` seçiyor.
+- Sel eski koşucuda da vardı (aynı iplik yükü). Sarmalayıcısız koşu da çöktü; yani sarmalayıcı çökme için gerekli değil ve kendi
+  başına belleği büyütmüyor. Yukarıdaki 4/6 ↔ 0/5 sayımı küçük örneklemdi.
+- Düzeltme koşucuda (commit `2586265`): kilit taklit ediliyor, `--isaretci-kilidi gercek` kapatır. 17 taklitle v0.4'te ve w2'de 13/13;
+  tarayıcı VmHWM ~1 GB → ~96 MB, cgroup tepesi 3,3–4,5 → 1,3–1,4 GB.
+- Bu klasördeki ve tabandaki bütün koşular gerçek kilitle (selle) alındı. Sonra kapısındaki karşılaştırmada süreye ve belleğe bağlı
+  farklar selden gelebilir; gerçek kilitte her kilit alınışı kamerayı da döndürür (KOSUCU17 "Taklidin sadakati", GZ-1).
+
 ### 14: çanta kapasitesi (test ön koşulu eksik)
 
 **Kalan koşudaki iz:** L03'ün ara çıktısı `R: {"zipkin":1,"ag":1,"maske":1,"palet":0,"kese":1}` oldu.
@@ -128,14 +139,14 @@ Bu yüzden 06a2, Faz 5'te KI-233 ele alınırken iki koşucuyla da tekrarlı öl
 
 `17_kamera_kararma`, `14_deniz_ekipmani` ve `coop_06a2` yeni koşucuyla **KARARSIZ** diye kaydedildi:
 
-- **17:** 2/3 (kalma bellek çökmesi; koşucunun rAF sarmalayıcısıyla ilişkisi araştırılıyor, yukarıya bakın).
+- **17:** 2/3 (kalma bellek çökmesi; kök neden işaretçi kilidi seli, koşucuda düzeltildi: KI-238, yukarıya bakın).
 - **14:** 3/4.
 - **06a2:** 3/4.
 
 Bunlar GEÇTİ sayılmadı.
 
 - **14 ve 06a2:** Yeni koşucunun kendisinden kaynaklanan bir regresyon bulunmadı.
-- **17:** Koşucu kaynaklı olma ihtimali açık; araştırılıyor.
+- **17:** Koşu ortamından geldi (işaretçi kilidi seli, KI-238); oyun mantığında bir kusur gösterilmedi. Başlı tarayıcıda sel ölçülmedi.
 
 Faz 1 "sonra" kapısında w2 aynı araçla karşılaştırılacak. Bu üç koşudan biri kalırsa, yukarıdaki k/N ve nedenlerle birlikte yeniden koşulup kaydedilecek. 14'ün test sağlamlaştırmasından sonra belirlenimli geçmesi beklenir; bu ayrıca sınanacak. `09_performans` ve `coop_06c` Faz 0'dan beri kararsız diye kayıtlı.
 

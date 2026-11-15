@@ -12,7 +12,7 @@ Bu rapor v0.5 çalışmasında düzeltilen sorunları faz faz kaydeder. Her gird
 
 ## Faz 1 — Arazi işçisi yedeği ve açılış hataları (sürüyor)
 
-**Durum:** Faz 1 kapanmadı. Bu bölüm şimdilik Adım A1'i, "önce" kapısını ve Adım A2'yi içerir.
+**Durum:** Faz 1 kapanmadı. Bu bölüm şimdilik Adım A1'i, "önce" kapısını, Adım A2'yi, `14_deniz_ekipmani` test sağlamlaştırmasını ve koşucu düzeltmesini (KI-238) içerir.
 
 Henüz bu rapora girmeyen:
 - **Adım B:** arazi işçisi kuyruğu ve açılış akışı. Commit'lenip sınandıkça eklenecek.
@@ -124,7 +124,7 @@ Uygulamadan sonra ayrı bir inceleme 13 bulgu çıkardı. Ayrı bir düzeltici 1
 
 | Koşu | Yeni koşucu | Eski koşucu | İlk kalmanın nedeni |
 |---|---|---|---|
-| `17_kamera_kararma` | 2/3 | — | Bellek: cgroup OOM sayfayı çökertti. A2'nin daraltmasına göre koşucunun rAF sarmalayıcısıyla ilişkili olabilir; araştırılıyor. |
+| `17_kamera_kararma` | 2/3 | — | Bellek: cgroup OOM sayfayı çökertti. Kök neden sonradan ölçüldü: oyunun aldığı işaretçi kilidinin başsız Chromium'da ürettiği fare olayı seli (KI-238, aşağıda). A2'nin işaret ettiği rAF sarmalayıcısı çökme için gerekli değil. |
 | `14_deniz_ekipmani` | 3/4 | 3/3 | Testin ön koşulu eksik: çanta önceki adımların rastgele balıklarıyla doluyor. |
 | `coop_06a2` | 3/4 | 3/3 | Konuk menüye düştü (KI-233 belirtisi); kök neden kanıtlanmadı. |
 
@@ -205,7 +205,7 @@ Uygulamadan sonra ayrı bir inceleme 13 bulgu çıkardı. Ayrı bir düzeltici 1
 | A2-UY-04 | düşük | `durum.json` KNOWN_ISSUES ve FIX_REPORT ile çelişiyordu. | Düzeltildi. |
 
 **A2'nin bulduğu başka sorunlar:**
-- **`17_kamera_kararma` bellek çökmesi:** A1 koşucusunun rAF sarmalayıcısıyla ilişkili olabilir. Ayrı ölçümle inceleniyor; bkz. önce kapısı notu.
+- **`17_kamera_kararma` bellek çökmesi:** Ayrı ölçümde kök neden işaretçi kilidi seli çıktı, rAF sarmalayıcısı değil. Koşucuda düzeltildi: KI-238 (aşağıda).
 - **`14_deniz_ekipmani` L03 ön koşulu (çanta yeri):** Test sağlamlaştırması hazırlanıyor.
 - **Tasarımdaki Y3 kodunda ölçülen bir zamanlama sorunu:** Boot sonunda başlatılan `import()`, `__ready`'yi ağır ilk karenin arkasına itiyordu. Uygulamada söz boot başında başlatılıyor. Ölçüldü: `__ready` v0.4 ile aynı yerde.
 
@@ -232,3 +232,64 @@ Uygulamadan sonra ayrı bir inceleme 13 bulgu çıkardı. Ayrı bir düzeltici 1
 
 Son sürüm 6 çeşidin 6'sında ve commit'lenen dosyayla w2'de 16/16 GEÇTİ.
 
+
+### Koşucu düzeltmesi — işaretçi kilidi seli ve çökme kaydı (kosucu17)
+
+**Commit:** `2586265` (koşucu, testler, ham kayıtlar). **Ayrıntı:** `docs/v05/kosular/faz1/kosucu17/KOSUCU17.md`.
+
+**Neden şimdi?** Önce kapısında `17_kamera_kararma` bellek çökmesiyle KARARSIZ kaldı. B0'ın "önce" koşularında da çökmeler ve süre şişmesi görüldü. Kök neden koşucunun ortamındaysa Faz 1'in "önce/sonra" karşılaştırmaları güvenilir olmaz. Bu yüzden B'nin "sonra" koşularından önce çözüldü.
+
+#### KI-238 (Faz 1 ölçümü; denetim kimliği yok): Başsız Chromium'da oyunun aldığı işaretçi kilidi test koşularını bellek çökmesine sürüklüyordu; çökme raporda görünmüyordu — **düzeltildi**
+
+- **Belirti:**
+  - Önce kapısında `17_kamera_kararma` 2/3 KARARSIZ kaldı: cgroup OOM sayfayı çökertti.
+  - B0'ın v0.4 "önce" koşularında da çökmeler vardı. LY13 (dilim süresi) ve HYS-01 (işçisiz hızlı yolculuk hazırlığı) selle şişiyordu.
+- **Kök neden (ölçüldü):**
+  - Oyun oturum başında `input.lockPointer()` çağırıyor (`js/game/game.js:149`). Başsız Chromium kilidi veriyor.
+  - Kilit açık kaldıkça tarayıcı süreci renderer'a saniyede ~41 bin sentetik fare hareketi gönderiyor. Chrome izinde 2,41 sn'de 98.630 `PostSynthesizeMouseMove` görevi sayıldı.
+  - Bu sel tarayıcı ana ipliğini ~%90, renderer Compositor ipliğini ~%72 meşgul ediyor.
+  - Renderer'ın ana ipliği uzun iş yaparken iki süreçte de bellek büyüyor. Blok deneyinde tarayıcı ~59 MB/sn, renderer ~40 MB/sn büyüdü.
+  - OOM iki sürecin toplamından geliyor. Öldürülecek süreci `oom_score_adj` seçiyor: çoğu kez renderer.
+  - Sel eski koşucuda da vardı: eski koşucuyla tarayıcı ana ipliği %88 meşguldü.
+  - A2'nin işaret ettiği rAF sarmalayıcısı çökme için gerekli değil: sarmalayıcısız koşu da çöktü. Sarmalayıcı kendi başına belleği de büyütmüyor.
+- **Koşucunun kendi kusurları (aynı inceleme):**
+  - Tarayıcı ölünce raporun `hatalar.sayfa` alanı boş kalıyordu.
+  - Renderer çökünce kalan adımlar koşuyordu; koşu ZAMAN_ASIMI ya da KOSUCU_HATASI oluyordu. Metrics isteği `--timeout` dolana dek asılı kalabiliyordu.
+  - Co-op'ta kopmadan sonraki kontroller sayılıyordu.
+- **Değişiklik:**
+  - **Kilit taklidi.** Koşucular sayfa betiklerinden önce işaretçi kilidini taklit ediyor. Bu varsayılan; `--isaretci-kilidi gercek` kapatır. Gerçek kilit istenmediği için sel kaynağında kesiliyor.
+  - **Korunan davranış.** Oyunun gözlenebilir kilit anlamı gerçek kilitle aynı: öğe, olaylar, söz, istek kısıtlaması, jest kuralı, kilitliyken fare olaylarının kilitli öğeye gitmesi.
+  - **Kilitliyken tıklama.** Arayüze tıklama (`tikla` adımı, co-op `tikla` yardımcısı) gerçek kilitteki gibi amacına ulaşmıyor. Bu yüzden "menüde kalan kilit" türü hatalar taklitle de görünür kalıyor: KI-235 (`02_acilis_akisi` AA09b) taklitle de kırmızı.
+  - **Çökme kaydı.** Tarayıcı ölürse `hatalar.sayfa`'ya `TARAYICI ÇÖKTÜ/KOPTU …`, sayfanın renderer'ı ölürse `SAYFA ÇÖKTÜ (renderer crash): …` yazılıyor. Durum KALDI; `kopma` alanı ayrıntıyı veriyor.
+  - **Kopmadan sonra.** `run.cjs`'te kalan adımlar koşmuyor. `coop.cjs`'te kopmadan sonraki ilk `ev`/`tick`/`tikla` senaryoyu durduruyor ve sonraki `check` sayılmıyor. Metrics isteği kopmayla ve 120 sn sınırla yarışıyor.
+  - **Rapor anı.** Durum bütün beklemelerden (son görüntü, sayaç okuması) sonra hesaplanıyor.
+- **Dosyalar:**
+  - `tests/harness/run.cjs`, `tests/harness/coop.cjs`, `tests/harness/ortak.cjs`
+  - `tests/node/kosucu_negatif.mjs`
+  - `tests/fixtures/kosucu/`: 23 yeni fikstür.
+  - `tests/README.md`
+  - Oyun kodu (`js/`, `index.html`) değişmedi.
+- **Testler:**
+  - `kosucu_negatif` 73/73 (w2, son kod; 28 yeni durum). Yeni durumlar düzeltmeden önceki koşucuları yakalıyor: eski koşucuyla "KOŞUCU YANLIŞLIKLA GEÇİRDİ" ya da beklenmeyen sonuç verdiler.
+  - `17_kamera_kararma` v0.4 ve w2'de taklitle 13/13:
+    - Tarayıcı VmHWM 867–1101 MB → ~96 MB; renderer 1,8–3,1 GB → ~0,46 GB.
+    - cgroup tepesi 3,3–4,5 GB → 1,3–1,4 GB.
+    - Tarayıcı ana ipliği %91 → %0–0,2.
+    - K08 63–70 sn → 23–30 sn.
+  - Blok deneyi: taklitte bellek büyümesi 0. Gerçek kilitte tarayıcı 59, renderer 40 MB/sn büyüdü.
+  - B0'ın `tikla` kullanan senaryoları son düzelticinin koduyla v0.4'te taklitle B0'ın gerçek kilitli kayıtlarıyla kontrol kontrol aynı çıktı: `02_acilis_akisi` 22/23 (yalnız AA09b = KI-235), `02_ayar_lod` 4/11, `02_yukleme_bekleme` 4/9, `02_depolama_kapali` 2/15, `02_hizli_yolculuk` 23/34.
+  - Gerçek kilit ↔ taklit yoklaması: 53 maddenin 49'u aynı, 3 fark bilinen, 1 fark açıklanmamış (`kisit_olay`; oyun açılır pencere açmıyor).
+  - w2'ye uygulandıktan sonra (`kosucu17/w2_dogrulama/`): `kosucu_negatif` 73/73. İlk koşuda `tm` kaldı: fikstürdeki öldürme işareti js adımının içinde verildiği için yükte öldürme metrics adımından önce iniyordu; koşucu o koşuda da doğru davrandı (KALDI, asılı kalma yok). İşaret dört fikstürde js adımının yanıtından sonraya alındı; td/rw/rm/tm 3 tekrarda ve tam takımda geçti. Co-op 06a2 3/3, 06a 10/10, 06c 7/7 (v0.4'e karşı); 06d 9/9 (w2'ye karşı; w2'nin 06d senaryosu A2'den beri `DK.mod` kancasını kullanıyor, v0.4'te bu kanca yok).
+  - İki karşıt inceleme turu yapıldı: dört inceleyici 19 bulgu verdi. 17'si düzeltildi; 2'si belgelenip ertelendi:
+    - GZ-3: çerçeveler arası kilit.
+    - GZ-5: `02_acilis_akisi` AA15'in tabanı yükleme bitmeden alınıyor.
+- **Taklidin bilinen farkları:**
+  - Gerçek başsız kilitte her kilit alınışı kamerayı döndüren bir fare sıçraması veriyor; taklitte yok.
+  - Taklit çerçeve başına çalışıyor.
+  - Sandbox'lı çerçeve yaklaşıkla taklit ediliyor.
+  - Yönlendirilen olayların `isTrusted`'ı false.
+  - Oyun ve bugünkü senaryolar bunlara dayanmıyor. Bu davranışlar `--isaretci-kilidi gercek` ile sınanmalı (`tests/README.md`).
+- **Kalan:**
+  - Başlı (gerçek) tarayıcıda selin olup olmadığı ölçülmedi. Bu bir test ortamı kusuru; oyun mantığında bir kusur gösterilmedi.
+  - KI-233 (co-op'ta konuğun menüye düşmesi) ile selin ilişkisi bir hipotez: taklitle 06c 2/2 ve 06a2 2/2 temiz geçti; gerçek kilitli kayıtlarda 14 koşunun 3'ünde konuk menüye düştü. Dört temiz koşu o oranla da ≈ %38 olasılıkla görülür, yani kanıt değil. Faz 5'te tekrarlı ölçülecek.
+  - Taban, önce kapısı ve B0 "önce" kayıtları gerçek kilitle (selle) alındı. B0'ın bütün tarayıcı koşuları son koşucuyla v0.4'e karşı yeniden koşuluyor (`kosular/faz1/b/once_v04_taklit/`); sonra kapısı bu kayıtlarla karşılaştırır. İlk sonuçlar: LY13 (A-06) taklitle v0.4'te normal ve işçisiz kipte yeşil, yani tarayıcıdaki "önce" kırmızısı selden geliyordu (A-06'nın belirlenimli kanıtı Node'daki KY25); işçisiz HYS-01 taklitle de 19,7 sn (KI-237 selden bağımsız).

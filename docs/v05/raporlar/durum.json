@@ -34,20 +34,20 @@
   "not": "Serbest not (kalan kısım, gerekçe, kaynak çelişkisi)"
  },
  "ozet": {
-  "toplam": 237,
+  "toplam": 238,
   "durum": {
    "acik": 231,
-   "duzeltildi": 2,
+   "duzeltildi": 3,
    "kismi": 4
   },
   "oncelik": {
    "düşük": 80,
    "kritik": 13,
-   "orta": 124,
+   "orta": 125,
    "yüksek": 20
   },
   "birincilFaz": {
-   "Faz 1": 31,
+   "Faz 1": 32,
    "Faz 2": 33,
    "Faz 3": 22,
    "Faz 4": 20,
@@ -57,7 +57,7 @@
    "Faz 8": 32,
    "Faz 9": 15
   },
-  "not": "oncelik ve birincilFaz sayımları kapanan maddeler dahil 237 kaydın hepsini sayar; KNOWN_ISSUES.md'nin özeti yalnız ana tablodaki (açık + kısmen düzeltilmiş) maddeleri sayar (235; orta 123, düşük 79, Faz 1 29). Fark KI-225 (düşük, Faz 1) ve KI-144'tür (orta, Faz 1); ikisi de duzeltildi."
+  "not": "oncelik ve birincilFaz sayımları kapanan maddeler dahil 238 kaydın hepsini sayar; KNOWN_ISSUES.md'nin özeti yalnız ana tablodaki (açık + kısmen düzeltilmiş) maddeleri sayar (235; orta 123, düşük 79, Faz 1 29). Fark KI-225 (düşük, Faz 1), KI-144 (orta, Faz 1) ve KI-238'dir (orta, Faz 1); üçü de duzeltildi."
  },
  "sorunlar": {
   "KI-001": {
@@ -4968,6 +4968,49 @@
    "testler": [],
    "kanit": null,
    "not": "Denetim kimliği yok; kaynak: Faz 1 B0 testi: tests/scenarios/02_hizli_yolculuk.js HYS-01, noworker kipi (docs/v05/kosular/faz1/b/once_v04/son/02_hizli_yolculuk_noworker.log; kilit bırakılmış tanı 10,3 sn: docs/v05/kosular/faz1/b/once_v04/duzeltme3/isaretci/); kök neden kanıtlanmadı; docs/v05/kosular/faz1/b/README.md bulgu 3"
+  },
+  "KI-238": {
+   "durum": "duzeltildi",
+   "faz": 1,
+   "fazEk": [],
+   "fazMetni": "Faz 1",
+   "oncelik": "orta",
+   "alan": [
+    "K"
+   ],
+   "baslik": "Başsız Chromium'da oyunun aldığı işaretçi kilidi test koşularını bellek çökmesine sürüklüyordu (saniyede ~41 bin sentetik fare olayı); tarayıcı ve sayfa çökmesi raporda görünmüyordu",
+   "dosya": "tests/harness/run.cjs, tests/harness/coop.cjs, tests/harness/ortak.cjs",
+   "denetim": [],
+   "ilgili": [],
+   "commit": "2586265",
+   "testler": [
+    "tests/node/kosucu_negatif.mjs:pk",
+    "tests/node/kosucu_negatif.mjs:pk2",
+    "tests/node/kosucu_negatif.mjs:pk4",
+    "tests/node/kosucu_negatif.mjs:pk5",
+    "tests/node/kosucu_negatif.mjs:pk6",
+    "tests/node/kosucu_negatif.mjs:pk7",
+    "tests/node/kosucu_negatif.mjs:pk8",
+    "tests/node/kosucu_negatif.mjs:ia",
+    "tests/node/kosucu_negatif.mjs:ib",
+    "tests/node/kosucu_negatif.mjs:tc",
+    "tests/node/kosucu_negatif.mjs:td",
+    "tests/node/kosucu_negatif.mjs:te",
+    "tests/node/kosucu_negatif.mjs:rk",
+    "tests/node/kosucu_negatif.mjs:rw",
+    "tests/node/kosucu_negatif.mjs:rm",
+    "tests/node/kosucu_negatif.mjs:tm",
+    "tests/node/kosucu_negatif.mjs:rc",
+    "tests/node/kosucu_negatif.mjs:rg",
+    "tests/node/kosucu_negatif.mjs:rd",
+    "tests/node/kosucu_negatif.mjs:ie",
+    "tests/node/kosucu_negatif.mjs:ie2",
+    "tests/node/kosucu_negatif.mjs:ig",
+    "tests/node/kosucu_negatif.mjs:ih",
+    "tests/scenarios/17_kamera_kararma.js:K01-K12"
+   ],
+   "kanit": "docs/v05/kosular/faz1/kosucu17/w2_dogrulama/kosucu_negatif_2.log",
+   "not": "Denetim kimliği yok; kaynak: Faz 1 önce kapısı (17_kamera_kararma 2/3 KARARSIZ, docs/v05/kosular/faz1/once_v04_tam/ONCE_KAPISI.md) ve koşucu ölçümü (docs/v05/kosular/faz1/kosucu17/KOSUCU17.md). FIX_REPORT.md §Faz 1 / KI-238; KNOWN_ISSUES.md 'Kapanan maddeler'. Koşucular işaretçi kilidini taklit ediyor (--isaretci-kilidi gercek kapatır); tarayıcı/renderer çökmesi KALDI ve kopma kaydı. 17: tarayıcı VmHWM ~1 GB → ~96 MB. Oyun kodu değişmedi."
   }
  }
 }
