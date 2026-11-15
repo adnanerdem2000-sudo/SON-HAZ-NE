@@ -1,0 +1,50 @@
+# 2026-11-15T01:53:53Z deneme 1; koşucu run.cjs 591dff27aa01 ortak.cjs df191a997375; senaryo tests/scenarios/02_hizli_yolculuk.js abf125923f9a; hedef http://localhost:8080/index.html; v0.4 44d548c
+# komut: /home/user/devtools/tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_hizli_yolculuk.js --url 'http://localhost:8080/index.html' --size 640x360 --timeout 540 --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_hizli_yolculuk_normal.json 
+başlatma betiği: 1 meta, 0 dosya
+ready in 4.9 s
+DEGISKEN yardimci = "(()=>{ const T = DK.terrain;\n   const Y = window.__Y = {};\n   Y.bekle = (ms) => new Promise((r) => setTimeout(r, ms));\n   Y.agYakin = (x, z, r) => [...T.tiles.values()].filter((t) => t.mesh && t.m
+R: ["bekle","agYakin","derinlikUzak","ortu","yeniOyun","ucret","prepareIzle","prepareBitti","varisIzle","bildirimIzle","ucgenFark","zeminTutarliligi","ilkKare","gorunurluk"]
+DEGISKEN kip = ""
+PASS HY00 Etkin arazi kipi URL ile aynı (normal: işçi ≥ 1, yedek kapalı; noworker: işçi 0, yedek açık) → true
+R: {"k":"","mode":"","workers":3,"fallback":false}
+PASS HY01 Yeni oyun başladı, oyuncu Kırlangıç Limanı'nda → true
+R: {"hedef":{"id":"kuzeyfener_port_0","mx":282.41917801604757,"mz":-5006.38815640651,"bx":288.7288505086093,"bz":-5003.202558654656,"ix":300,"iz":-5300,"uzaklik":5348},"ucret":159}
+PASS HY02 Hedef liman (Kuzeyfener) Kırlangıç Limanı'na ≥ 5 km uzakta → 5348
+M: {"label":"m_once","heapMB":42.3,"heapTotalMB":106.5,"backingMB":67.7,"embedderMB":178.3,"nodes":799,"listeners":58,"docs":1,"frames":1}
+R: "yola çıkıldı"
+PASS HY03 Gemi hedef limanın demir yerinde (≤ 5 m) → 0.03
+M: {"label":"m_varis","heapMB":44.5,"heapTotalMB":58.8,"backingMB":75.2,"embedderMB":5.2,"nodes":799,"listeners":58,"docs":1,"frames":1}
+R: {"varisIlkKareMs":29196,"prepare":[{"x":282,"z":-5006,"r":450,"t0":21265.69999999972,"donus":"undefined","ms":181}],"varis":{"ms":29153,"ag300":11,"karoAltinda":{"karo":true,"hires":true,"ucgen":true,"fark":2.6645352591003757e-14},"derinlikUzak":9,"x":288,"z":-5003,"y":1.57,"zemin":-8.07,"sonra":[{"ms":200,"y":-1.92,"mod":"swim","zemin":-8.07,"varisNoktasiZemin":-8.07},{"ms":500,"y":-2.21,"mod":"swim","zemin":-8.07,"varisNoktasiZemin":-8.07},{"ms":1000,"y":-2.48,"mod":"swim","zemin":-8.07,"varisNoktasiZemin":-8.07},{"ms":2000,"y":-2.52,"mod":"swim","zemin":-8.07,"varisNoktasiZemin":-8.07}]},"yolculukOncesiKuyruk":{"jobs":0,"queue":0,"meshes":129,"sayfaMs":20065}}
+PASS HYS-01 Hızlı yolculuktaki bölge hazırlığı (terrain.prepare, 5,3 km) ≤ 3 sn (normal kipte gerileme koruması; noworker kipindeki v0.4 kırmızısı KI-234 DEĞİL: işçisiz hızlı yolculuk 33–45 sn, 45 sn sınırına yakın — ayrı bilinen sorun adayı) → 181
+FAIL HYS-02 Hızlı yolculuktaki bölge hazırlığı 'ok' ile döner (A-11: sonuç çağırana iletilir; 'timeout' ile sessiz eksik varış yok) → "undefined"
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_hizli_yolculuk_2026-11-15T01-54-19-132Z_14199/ilk_kalan.png
+PASS HY04 Oyuncu hedef iskelede (biniş noktasına yatayda ≤ 3 m) → 0.23
+PAGECRASH
+FAIL (hata) HY05 Gemi hızı < 1 m/s (demirli) page.evaluate: Target crashed 
+FAIL (hata) HY06 Derinlik penceresi hedefte (pencere merkezi demir yerine ≤ 60 m) page.evaluate: Target crashed 
+FAIL (hata) HY07 Hedefte ≥ 6 karo ağı (450 m içinde, sahne grubunda) page.evaluate: Target crashed 
+FAIL (hata) HY08 Yol parası bir kez düşüldü page.evaluate: Target crashed 
+FAIL (hata) HYU-01 Uzak ada ışınlanması (≥ 5 km, hızlı yolculuk yolu): varışın ilk karesinde oyuncunun altında yükseklik ızgaralı karo ağı, çevrede ≥ 6 ağ, derinlik penceresi oyuncuyu kapsıyor, heightAt = çizilen ağ page.evaluate: Target crashed 
+FAIL (hata) HYU-02 Varışta oyuncu zeminde: ilk karede zemin sorgusunun (physics.floorAt) 1,5 m içinde, 2 sn sonra yüzmüyor ve zeminde (suya düşmüyor) (v0.4 kırmızısının nedeni arazi değil: biniş noktası iskele platformunun dışında, bkz. HYU-05; hedef ports.js biniş noktası / islands.js iskele) page.evaluate: Target crashed 
+EVALERR page.evaluate: Target crashed 
+FAIL (hata) HYU-03 Varış bölgesinde (220 m) zemin sorgusu = çizilen ağ: heightAt ile ağ üçgeni farkı < 1 cm page.evaluate: Target crashed 
+EVALERR page.evaluate: Target crashed 
+FAIL (hata) HYU-04 Arazi görünür: adaya bakan kamerada ≥ 6 karo ağı sahnede, görünür ve frustum içinde; arazi gizlenince piksellerin ≥ %5'i değişiyor page.evaluate: Target crashed 
+EVALERR page.evaluate: Target crashed 
+FAIL (hata) HYU-05 Biniş noktası iskele platformunun üstünde: iskele kurulduktan sonra biniş noktasında zemin sorgusu (physics.floorAt) iskele ekseniyle aynı yükseklikte (HYU-02 kırmızısının nedeni; hedef ports.js biniş noktası / islands.js iskele genişliği) page.evaluate: Target crashed 
+EVALERR page.evaluate: Target crashed 
+EVALERR page.goto: Page crashed
+Call log:
+[2m  - navigating to "http://localhost:8080/index.html?test=1", waiting until "load"[22m
+
+EVALERR page.evaluate: Target crashed 
+FAIL (hata) HYK-2 (bölüm 2) Arazi kipi gezinmeden sonra korundu (ilk sayfanın ?terrain değeri) page.evaluate: Target crashed 
+FAIL (hata) HY09 (bölüm 2) Yeni oyun başladı page.evaluate: Target crashed 
+EVALERR page.evaluate: Target crashed 
+EVALERR page.evaluate: Target crashed 
+TIMEOUT
+errors: 0 pageErrors: 1 fails: 20 evalErrors: 8 TIMEOUT (540.3 s)
+SONUC: ZAMAN_ASIMI (çıkış 1) kontrol 6/18, onay 34 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34 | neden: başarısız kontrol ya da adım: 20; sayfa hatası (pageerror): 1; adım istisnası (evalErrors): 8; zaman aşımı (540 sn)
+METRICSFAIL cdpSession.send: Target page, context or browser has been closed
+KANIT UYARISI metrics cdpSession.send: Target page, context or browser has been closed
+# çıkış 1 2026-11-15T02:03:19Z

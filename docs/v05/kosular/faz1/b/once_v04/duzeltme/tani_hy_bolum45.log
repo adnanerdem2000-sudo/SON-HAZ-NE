@@ -1,0 +1,14 @@
+# 2026-11-14T14:19:01Z deneme 1; koşucu run.cjs 591dff27aa01 ortak.cjs df191a997375; senaryo /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/fb0/tani/hy_bolum45.js 697acf179085; hedef http://localhost:8080/index.html; v0.4 44d548c
+# komut: /home/user/devtools/tk timeout 590 node tests/harness/run.cjs /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/fb0/tani/hy_bolum45.js --url 'http://localhost:8080/index.html' --size 640x360 --timeout 540 --report /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/fb0/tani/hy_bolum45.json 
+ready in 5.1 s
+DEGISKEN dene = "(async()=>{ const bekle = (ms) => new Promise((r) => setTimeout(r, ms)); DK.G.noAutoPause = true; await DK.handlers.startGame({ kind: 'solo', slot: 0, data: null }); for (let i = 0; i < 100 && !(DK.G
+R: {"once":{"gemi":true,"batik":false,"online":false,"host":true,"tasiyor":false,"durum":"playing","altin":2000,"mod":"ground"},"perde":true,"bildirim":["Keşfedildi: Kırlangıç Adası [discover]","Keşfedildi: Kırlangıç Limanı [discover]","Hedef: Hanın önündeki Yaşlı Kaptan Tuzla ile konuş. (J: Korsan Defteri) [quest]"],"prepare":[[1682,808]],"gemi":[10,285],"altinSonra":1928,"hata":null}
+R: {"gemi":[4000,-4000],"mod":"deck"}
+R: "öldü"
+R: {"durum":"playing","mod":"ground","inCombat":false}
+DIALOG beforeunload kabul edildi 
+GOTO http://localhost:8080/index.html?test=1
+R: {"once":{"gemi":true,"batik":false,"online":false,"host":true,"tasiyor":false,"durum":"playing","altin":2000,"mod":"ground"},"perde":true,"bildirim":["Keşfedildi: Kırlangıç Adası [discover]","Keşfedildi: Kırlangıç Limanı [discover]","Hedef: Hanın önündeki Yaşlı Kaptan Tuzla ile konuş. (J: Korsan Defteri) [quest]"],"prepare":[[1682,808]],"gemi":[10,285],"altinSonra":1928,"hata":null}
+errors: 0 pageErrors: 0 fails: 0 (67.4 s)
+SONUC: OLCUM (çıkış 0) kontrol 0/0, onay 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/68
+# çıkış 0 2026-11-14T14:28:13Z

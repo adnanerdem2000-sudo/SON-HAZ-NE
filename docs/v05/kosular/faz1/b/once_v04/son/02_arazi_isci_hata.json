@@ -1,0 +1,687 @@
+{
+ "scenario": "tests/scenarios/02_arazi_isci_hata.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "HI00 Senaryo işçili kipte: en az bir arazi işçisi çalışıyor, yedek kip kapalı",
+    "ok": true,
+    "value": true
+   },
+   "ms": 16
+  },
+  {
+   "n": 2,
+   "label": null,
+   "result": {
+    "mode": "",
+    "workers": 3,
+    "fallback": false,
+    "failures": 0
+   },
+   "ms": 2
+  },
+  {
+   "n": 3,
+   "label": null,
+   "expect": {
+    "label": "HI01 İşçinin 'error' iletisi: ızgara sözü ≤ 3 sn içinde sonuçlanır, işçi ölmez, yedek kip açılmaz",
+    "ok": true,
+    "value": true
+   },
+   "ms": 9
+  },
+  {
+   "n": 4,
+   "label": null,
+   "result": {
+    "sonuc": "RED: test: enjekte üretim hatası",
+    "ms": 6,
+    "workersOnce": 3,
+    "workersSonra": 3,
+    "fallback": false
+   },
+   "ms": 1
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": "başlatıldı",
+   "ms": 11
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "HI02 Oyun başladı",
+    "ok": true,
+    "value": true
+   },
+   "ms": 12309
+  },
+  {
+   "n": 7,
+   "label": null,
+   "expect": {
+    "label": "HI03 Kalıcı hatalı karo (A-05): 12 sn içinde (10 güncelleme/sn) aynı karo en çok 5 kez istenir (üstel geri çekilme)",
+    "ok": false,
+    "value": 87
+   },
+   "ms": 41471
+  },
+  {
+   "n": 8,
+   "label": null,
+   "result": {
+    "key": 63551,
+    "istek12sn": 87,
+    "failuresArtis": 86,
+    "failures": 86
+   },
+   "ms": 13283
+  },
+  {
+   "n": 9,
+   "label": null,
+   "expect": {
+    "label": "HI04 Kalıcı hatalı karodan sonra failures.length ≤ 50 (A-05)",
+    "ok": false,
+    "value": 87
+   },
+   "ms": 4
+  },
+  {
+   "n": 10,
+   "label": null,
+   "expect": {
+    "label": "HI05 MAX_TRIES (A-05): ızgara işini alan her işçi çökse de iş yerel yedekte üretilir (söz reddedilmez)",
+    "ok": false,
+    "value": "RED: Arazi işi grid tekrarlanan işçi hatası"
+   },
+   "ms": 44
+  },
+  {
+   "n": 11,
+   "label": null,
+   "result": {
+    "sonuc": "RED: Arazi işi grid tekrarlanan işçi hatası",
+    "ms": 27,
+    "workers": 0,
+    "fallback": true,
+    "gridGonderim": 3,
+    "failures": [
+     "işçi 0: hata: test: enjekte işçi çökmesi",
+     "işçi 1: hata: test: enjekte işçi çökmesi",
+     "işçi 2: hata: test: enjekte işçi çökmesi",
+     "hata: test: enjekte işçi çökmesi"
+    ]
+   },
+   "ms": 8
+  },
+  {
+   "n": 12,
+   "label": null,
+   "expect": {
+    "label": "HI06 İşçiler çöktükten sonra kalan bütün arazi işleri 30 sn içinde sonuçlanır",
+    "ok": true,
+    "value": 0
+   },
+   "ms": 3
+  },
+  {
+   "n": 13,
+   "label": null,
+   "goto": {
+    "url": "http://localhost:8080/index.html?kurucu2=1&test=1"
+   },
+   "ms": 15741
+  },
+  {
+   "n": 14,
+   "label": null,
+   "result": {
+    "workers": 1,
+    "fallback": true,
+    "failures": [
+     "işçi oluşturulamadı: Test: ikinci işçi kurulamadı"
+    ],
+    "meshes": 107
+   },
+   "ms": 11
+  },
+  {
+   "n": 15,
+   "label": null,
+   "expect": {
+    "label": "HI07 Kısmi kurucu hatası (A-15): kurulabilen işçi çalışır ve yedek kip işareti KAPALI kalır (fallback=false)",
+    "ok": false,
+    "value": false
+   },
+   "ms": 5
+  },
+  {
+   "n": 16,
+   "label": null,
+   "expect": {
+    "label": "HI08 Kısmi kurucu hatasında açılış tamamlanır (≥ 20 karo ağı)",
+    "ok": true,
+    "value": 115
+   },
+   "ms": 2
+  }
+ ],
+ "errors": [
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası",
+  "Arazi işçisi: test: enjekte üretim hatası"
+ ],
+ "pageErrors": [],
+ "fails": 4,
+ "evalErrors": 0,
+ "readyMs": 5091,
+ "ms": 91696,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/scenarios/02_arazi_isci_hata.js",
+ "meta": {
+  "testler": [
+   "2 Worker bulunamadığında",
+   "3 Worker çöktüğünde",
+   "KI-034",
+   "KI-153",
+   "KI-163",
+   "KI-165",
+   "A-02",
+   "A-05",
+   "A-15",
+   "A-17"
+  ],
+  "dosyalar": [
+   "js/world/terrain.js",
+   "js/world/terrainWorker.js",
+   "js/ui/mapArt.js"
+  ],
+  "izinliHatalar": [
+   {
+    "desen": "Arazi işçisi: .*test: enjekte üretim hatası",
+    "gerekce": "HI01/HI03 kasıtlı enjekte edilen işçi 'error' iletisi; v0.4 terrain._onMsg bunu console.error ile günlüğe yazar (beklenen tepki)",
+    "tur": "konsol"
+   }
+  ],
+  "baslatma": "(() => { const W = window.Worker; if (typeof W !== 'function') return;\n     const kayit = window.__isciIleti = []; let kurulan = 0; const kurucu2 = /[?&]kurucu2=1/.test(location.search);\n     function Sarili(url, opts) {\n       kurulan++; if (kurucu2 && kurulan === 2) throw new DOMException('Test: ikinci işçi kurulamadı', 'SecurityError');\n       const w = new W(url, opts); const post = w.postMessage.bind(w);\n       w.postMessage = function (m, tr) { try { if (m && m.t && kayit.length < 50000) kayit.push({ t: m.t, key: m.key, seg: m.seg, res: m.res, id: m.id }); } catch (e) { /* yoksay */ }\n         const k = typeof window.__isciKanca === 'function' ? window.__isciKanca(m) : null;\n         if (k === 'cok') { setTimeout(() => { try { w.dispatchEvent(new ErrorEvent('error', { message: 'test: enjekte işçi çökmesi', cancelable: true })); } catch (e) { /* yoksay */ } }, 5); return; }\n         if (k === 'hata') { setTimeout(() => { try { w.dispatchEvent(new MessageEvent('message', { data: { t: 'error', id: m.id, msg: 'test: enjekte üretim hatası' } })); } catch (e) { /* yoksay */ } }, 5); return; }\n         if (k && k.gecikme > 0) { setTimeout(() => { try { post(m, tr); } catch (e) { /* kapalı */ } }, k.gecikme); return; }\n         return post(m, tr); };\n       return w; }\n     Sarili.prototype = W.prototype; window.Worker = Sarili; })();"
+ },
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8080/index.html?test=1",
+  "verilenUrl": "http://localhost:8080/index.html",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "0140a050f840e78d8572e1b97356b4b9a1d0153b",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-15T01:00:19.013Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs /home/user/SON-HAZ-NE-w2/tests/scenarios/02_arazi_isci_hata.js --url http://localhost:8080/index.html --size 640x360 --timeout 540 --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_arazi_isci_hata.json",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://localhost:8080 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8080"
+  ],
+  "commit": "0140a050f840e78d8572e1b97356b4b9a1d0153b-kirli",
+  "senaryoSha256": "1477bbb33dfb92ebc63b5624a6e404113ffab1facb3d04dfa34a19b6b86336fc",
+  "adim": {
+   "n": 7,
+   "js": "(async()=>{ const T = DK.terrain, p = DK.G.player; if (typeof T._drop !== 'function') return 'iç ad yok: _drop';\n   const t = [...T.tiles.values()].filter((x) => x.mesh && x.seg === 80).sort((a, b) => Math.hypot(a.x0 + 80 - p.pos.x, a.z0 + 80 - p.pos.z) - Math.hypot(b.x0 + 80 - p.pos.x, b.z0 + 80 - p.pos.z))[0];\n   if (!t) return 'seg 80 karo yok'; const K = t.k; const f0 = T.failures.length;\n   w"
+  },
+  "url": "http://localhost:8080/index.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 1,
+   "id": "HI00",
+   "etiket": "HI00 Senaryo işçili kipte: en az bir arazi işçisi çalışıyor, yedek kip kapalı",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 13,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 3,
+   "id": "HI01",
+   "etiket": "HI01 İşçinin 'error' iletisi: ızgara sözü ≤ 3 sn içinde sonuçlanır, işçi ölmez, yedek kip açılmaz",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 7,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 6,
+   "id": "HI02",
+   "etiket": "HI02 Oyun başladı",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 10832,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 7,
+   "id": "HI03",
+   "etiket": "HI03 Kalıcı hatalı karo (A-05): 12 sn içinde (10 güncelleme/sn) aynı karo en çok 5 kez istenir (üstel geri çekilme)",
+   "ok": false,
+   "deger": 87,
+   "beklenen": {
+    "lte": 5
+   },
+   "sure_ms": 12364,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"lte\":5}, gelen 87 (sağlanmayan: lte 5)",
+   "goruntu": {
+    "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_arazi_isci_hata_2026-11-15T01-00-18-852Z_2678/ilk_kalan.png",
+    "tuval": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_arazi_isci_hata_2026-11-15T01-00-18-852Z_2678/ilk_kalan_tuval.jpg"
+   }
+  },
+  {
+   "n": 9,
+   "id": "HI04",
+   "etiket": "HI04 Kalıcı hatalı karodan sonra failures.length ≤ 50 (A-05)",
+   "ok": false,
+   "deger": 87,
+   "beklenen": {
+    "lte": 50
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"lte\":50}, gelen 87 (sağlanmayan: lte 50)",
+   "goruntu": null
+  },
+  {
+   "n": 10,
+   "id": "HI05",
+   "etiket": "HI05 MAX_TRIES (A-05): ızgara işini alan her işçi çökse de iş yerel yedekte üretilir (söz reddedilmez)",
+   "ok": false,
+   "deger": "RED: Arazi işi grid tekrarlanan işçi hatası",
+   "beklenen": {
+    "eq": "tamam"
+   },
+   "sure_ms": 37,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"eq\":\"tamam\"}, gelen \"RED: Arazi işi grid tekrarlanan işçi hatası\" (sağlanmayan: eq \"tamam\")",
+   "goruntu": null
+  },
+  {
+   "n": 12,
+   "id": "HI06",
+   "etiket": "HI06 İşçiler çöktükten sonra kalan bütün arazi işleri 30 sn içinde sonuçlanır",
+   "ok": true,
+   "deger": 0,
+   "beklenen": {
+    "eq": 0
+   },
+   "sure_ms": 1,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 15,
+   "id": "HI07",
+   "etiket": "HI07 Kısmi kurucu hatası (A-15): kurulabilen işçi çalışır ve yedek kip işareti KAPALI kalır (fallback=false)",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 3,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 16,
+   "id": "HI08",
+   "etiket": "HI08 Kısmi kurucu hatasında açılış tamamlanır (≥ 20 karo ağı)",
+   "ok": true,
+   "deger": 115,
+   "beklenen": {
+    "gte": 20
+   },
+   "sure_ms": 1,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [
+   {
+    "oyuncu": null,
+    "ileti": "Arazi işçisi: test: enjekte üretim hatası",
+    "url": "http://localhost:8080/js/world/terrain.js",
+    "satir": 107,
+    "isci": false,
+    "izin": "Arazi işçisi: .*test: enjekte üretim hatası",
+    "sayi": 88
+   }
+  ],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 66
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 2
+  },
+  {
+   "oyuncu": null,
+   "ileti": "Arazi işçisi 0 devre dışı (hata: test: enjekte işçi çökmesi); 1 iş yeniden kuyruğa alınıyor",
+   "url": "http://localhost:8080/js/world/terrain.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "Arazi işçisi 1 devre dışı (hata: test: enjekte işçi çökmesi); 1 iş yeniden kuyruğa alınıyor",
+   "url": "http://localhost:8080/js/world/terrain.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "Arazi işçisi 2 devre dışı (hata: test: enjekte işçi çökmesi); 1 iş yeniden kuyruğa alınıyor",
+   "url": "http://localhost:8080/js/world/terrain.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "Arazi üretimi ana iş parçacığına alındı (hata: test: enjekte işçi çökmesi)",
+   "url": "http://localhost:8080/js/world/terrain.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "Arazi üretimi ana iş parçacığına alındı (işçi oluşturulamadı: Test: ikinci işçi kurulamadı)",
+   "url": "http://localhost:8080/js/world/terrain.js",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 7,
+  "toplam": 73,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  },
+  {
+   "desen": "Arazi işçisi: .*test: enjekte üretim hatası",
+   "gerekce": "HI01/HI03 kasıtlı enjekte edilen işçi 'error' iletisi; v0.4 terrain._onMsg bunu console.error ile günlüğe yazar (beklenen tepki)",
+   "tur": "konsol",
+   "kaynak": "meta",
+   "eslesme": 88
+  }
+ ],
+ "diyaloglar": [
+  {
+   "tur": "beforeunload",
+   "ileti": "",
+   "adim": 13,
+   "kabul": true
+  }
+ ],
+ "goruntuler": [
+  {
+   "ad": "ilk_kalan",
+   "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_arazi_isci_hata_2026-11-15T01-00-18-852Z_2678/ilk_kalan.png",
+   "tuval": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_arazi_isci_hata_2026-11-15T01-00-18-852Z_2678/ilk_kalan_tuval.jpg"
+  }
+ ],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 420,
+ "sonuc": {
+  "durum": "KALDI",
+  "cikisKodu": 1,
+  "neden": [
+   "başarısız kontrol ya da adım: 4"
+  ],
+  "onaySayisi": 9,
+  "kontrolSayisi": 9,
+  "gecen": 5,
+  "kalan": 4,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 88,
+  "izinliAg": 0,
+  "tur": "tarayici",
+  "turSayim": {
+   "tarayici": 9
+  }
+ },
+ "sure": {
+  "hazirMs": 5091,
+  "toplamMs": 91696,
+  "yerlesmeMs": 1001
+ }
+}

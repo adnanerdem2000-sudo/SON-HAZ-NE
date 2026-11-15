@@ -1,0 +1,18 @@
+# 2026-11-14T11:12:57Z deneme 1; koşucu run.cjs 591dff27aa01 ortak.cjs df191a997375; senaryo tests/scenarios/00_acilis.js 29dab6866093; hedef http://localhost:8080/index.html; v0.4 44d548c
+# komut: timeout 590 /home/user/devtools/tk node tests/harness/run.cjs tests/scenarios/00_acilis.js --url 'http://localhost:8080/index.html' --size 640x360 --timeout 540 --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/00_acilis.json 
+ready in 6.1 s
+PASS Ana menü görünür → true
+PASS Menü düğmeleri → 8
+R: {"durum":"menu"}
+R: "ok"
+PASS Oyun başladı → "playing"
+R: [{"t":2,"from":"menu","to":"playing","oyuncu":false}]
+FAIL AC01 G.state 'playing'e yalnız oyuncu kurulduktan (bölge hazırlığı bittikten) sonra geçer (A-10; eski 'Oyun başladı' kontrolü prepare'den önce atanan değeri görüyordu) → false
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/goruntu/00_acilis_2026-11-14T11-18-12-779Z_17960/ilk_kalan.png
+FAIL AC02 Bölge hazırlığı (prepare) süresince G.state 'loading' (A-10) → false
+PASS Oyuncu dünyada → true
+PASS Arazi karoları yüklendi → 129
+PASS Arazi işçileri çalışıyor → 3
+errors: 0 pageErrors: 0 fails: 2 (54.8 s)
+SONUC: KALDI (çıkış 1) kontrol 6/8, onay 8 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34 | neden: başarısız kontrol ya da adım: 2
+# çıkış 1 2026-11-14T11:19:17Z

@@ -1,0 +1,568 @@
+{
+ "scenario": "tests/scenarios/02_yukleme_bekleme.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "YB00 Test verisi: yuva 1'de Kuzeyfener'de (5,3 km) kayıt var, oyun menüde",
+    "ok": false,
+    "value": false
+   },
+   "ms": 48024
+  },
+  {
+   "n": 2,
+   "label": null,
+   "result": {
+    "vardi": false,
+    "kayitKonum": [
+     2,
+     212
+    ],
+    "durum": "menu"
+   },
+   "ms": 17
+  },
+  {
+   "n": 3,
+   "label": null,
+   "degisken": {
+    "ad": "kayitOnce",
+    "deger": "{\"version\":1,\"savedAt\":1794665446824,\"playTime\":1.9331999999999971,\"name\":\"Kaptan Deniz\",\"player\":{\"pos\":{\"x\":2,\"y\":2.5999999046325684,\"z\":212},\"hp\":100,\"inv\":{\"stacks\":[{\"id\":\"kilic\",\"n\":1},{\"id\":\"tabanca\",\"n\":1},{\"id\":\"mermi\",\"n\":12},{\"id\":\"kurek\",\"n\":1},{\"id\":\"olta\",\"n\":1},{\"id\":\"yem_solucan\",\"n\":10},{\"id\":\"fener\",\"n\":1},{\"id\":\"pusula\",\"n\":1},{\"id\":\"muz\",\"n\":3},{\"id\":\"ekmek\",\"n\":2}],\"gold\":150,\"capacity\":45},\"onShip\":false,\"lx\":0,\"lz\":0},\"ship\":{\"id\":\"ship_main\",\"typeId\":\"sloop\",\"name\":\"Martı\",\"look\":{},\"upg\":{\"hull\":0,\"sails\":0,\"cannons\":0},\"x\":282.48285317121304,\"z\":-5006.32322366748,\"yaw\":-0.044312549000056656,\"hp\":100,\"water\":0,\"holes\":[],\"hold\":{\"items\":{},\"chests\":[]},\"cannonballs\":20,\"planks\":6,\"sailTarget\":0,\"parts\":{\"pruva\":100,\"kic\":100,\"iskele\":100,\"sancak\":100,\"dumen\":100,\"yelken\":100},\"mastHp\":[100],\"cannonHp\":[100,100,100,100],\"anchorState\":\"down\",\"sunk\":false},\"world\":{\"hour\":10.53222,\"weather\":\"acik\",\"windDir\":0.6,\"wetness\":0},\"misc\":{\"crewHired\":false,\"ownedShips\":[\"sloop\"]},\"time\":{\"day\":1,\"log\":[{\"day\":1,\"hour\":8.5,\"text\":\"Keşif: Kırlangıç Adası\",\"kind\":\"info\"},{\"day\":1,\"hour\":8.5,\"text\":\"Keşif: Kırlangıç Limanı\",\"kind\":\"info\"},{\"day\":1,\"hour\":10.51,\"text\":\"Kırlangıç Limanı → Kuzeyfener Limanı hızlı yolculuk (0 altın)\",\"kind\":\"info\"},{\"day\":1,\"hour\":10.52,\"text\":\"Keşif: Kuzeyfener\",\"kind\":\"info\"}]},\"treasure\":{\"found\":{},\"chests\":[],\"holes\":[]},\"enemies\":{\"groups\":{\"kemik_harabe\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"kemik_mezar\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"kemik_kuzey\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"kamp\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"sahil_gece\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"korsan_kasabasi_camp_1\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"korsan_kasabasi_fort_2\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"mercan_halkasi_ruin_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"buzdisi_camp_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"buzdisi_ruin_1\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"kurt_adasi_camp_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"kadim_tapinak_ruin_1\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"timsah_batakligi_camp_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"ates_dagi_camp_1\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"obsidyen_mine_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"demirkapi_prison_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"gumus_madeni_mine_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"kizil_kanyon_ruin_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"korsan_mezarligi_graveyard_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"korsan_mezarligi_graveyard_1\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"sis_adasi_ruin_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"ada_merkez_1_ruin_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"ada_merkez_3_ruin_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"ada_merkez_4_camp_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"ada_merkez_6_camp_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"ada_buzul_0_ruin_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"ada_buzul_4_ruin_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"ada_buzul_7_ruin_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"ada_tropik_0_ruin_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"ada_tropik_4_ruin_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"ada_tropik_5_ruin_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"ada_tropik_6_ruin_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"ada_tropik_7_ruin_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"ada_volkan_1_ruin_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"ada_volkan_2_ruin_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"ada_col_0_camp_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"ada_col_2_ruin_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"ada_col_3_ruin_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"ada_col_4_ruin_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"ada_col_5_camp_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"ada_col_6_camp_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"ada_hayalet_0_ruin_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"ada_hayalet_1_ruin_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false},\"ada_hayalet_4_camp_0\":{\"spawned\":false,\"cooldown\":-1.9331999999999971,\"nightDone\":false}}},\"islands\":{\"opened\":[],\"freed\":[],\"temples\":{}},\"hazards\":{\"solved\":[],\"looted\":[],\"gone\":[]},\"bosses\":{\"defeated\":{}},\"quests\":{\"stage\":0,\"flags\":{},\"side\":[],\"completed\":[],\"discovered\":{\"kirlangic\":true,\"liman\":true,\"kuzeyfener\":true},\"fog\":\"v2:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgDwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=\",\"stats\":{\"treasures\":0,\"earned\":0,\"fish\":0,\"kills\":{},\"maxDepth\":0,\"sold\":0,\"soldValue\":0,\"shipsBought\":0,\"shipsSunk\":0,\"chests\":0},\"collection\":{\"fish\":{},\"animals\":{}},\"achievements\":{},\"markers\":[],\"boardSeed\":64071},\"progress\":{\"level\":1,\"xp\":75,\"points\":0,\"skills\":{},\"seen\":[]},\"appearance\":{\"name\":\"Kaptan Deniz\",\"gender\":\"m\",\"body\":\"kaba\",\"cape\":\"yok\",\"skin\":2,\"hairStyle\":\"daginik\",\"hairColor\":1,\"beard\":\"kisa\",\"beardColor\":1,\"eyeColor\":0,\"height\":1,\"build\":1,\"age\":0.2,\"face\":\"oval\",\"nose\":\"normal\",\"chin\":\"normal\",\"scar\":\"yok\",\"tattoo\":\"yok\",\"facemark\":\"yok\",\"hat\":\"tricorn\",\"hatColor\":\"#2a2a2a\",\"coat\":\"yok\",\"coatColor\":\"#7a1f1f\",\"shirtColor\":\"#e8dcc2\",\"pantsColor\":\"#3b2a1a\",\"bootsColor\":\"#2a2a2a\",\"beltColor\":\"#6b4a2c\",\"eyepatch\":\"yok\",\"earring\":\"yok\",\"necklace\":\"yok\",\"gloves\":\"yok\",\"belt\":\"kemer\"}}"
+   },
+   "ms": 38
+  },
+  {
+   "n": 4,
+   "label": null,
+   "goto": {
+    "url": "http://localhost:8080/index.html?test=1"
+   },
+   "ms": 10210
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": {
+    "durum": "menu",
+    "oyuncu": false,
+    "menu": true
+   },
+   "ms": 21
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "YB01 Yeniden yüklenen sayfada ana menü ve DEVAM ET düğmesi var, oyuncu yok",
+    "ok": true,
+    "value": true
+   },
+   "ms": 16
+  },
+  {
+   "n": 7,
+   "label": null,
+   "tikla": {
+    "metin": "DEVAM ET"
+   },
+   "ms": 255
+  },
+  {
+   "n": 8,
+   "label": null,
+   "expect": {
+    "label": "YB02 Önkoşul: DEVAM ET kayıttaki bölgenin (Kuzeyfener) hazırlığını başlattı ve start o hazırlığı bekliyor (kapı kapalı)",
+    "ok": false,
+    "value": false
+   },
+   "ms": 15103
+  },
+  {
+   "n": 9,
+   "label": null,
+   "result": {
+    "cagri": [
+     [
+      2,
+      212
+     ]
+    ],
+    "kapida": false
+   },
+   "ms": 1
+  },
+  {
+   "n": 10,
+   "label": null,
+   "expect": {
+    "label": "YB03 Bölge hazırlığı beklenirken yükleme katmanı görünür (#loading etkin ya da perde açık; A-10)",
+    "ok": false,
+    "value": false
+   },
+   "ms": 614
+  },
+  {
+   "n": 11,
+   "label": null,
+   "result": {
+    "yukleme": false,
+    "perde": false,
+    "menu": false,
+    "hud": false,
+    "durum": "playing"
+   },
+   "ms": 2
+  },
+  {
+   "n": 12,
+   "label": null,
+   "expect": {
+    "label": "YB04 Bölge hazırlığı beklenirken oyun durumu 'playing' değil (A-10: G.state 'loading')",
+    "ok": false,
+    "value": false
+   },
+   "ms": 6
+  },
+  {
+   "n": 13,
+   "label": null,
+   "ms": 3
+  },
+  {
+   "n": 14,
+   "label": null,
+   "expect": {
+    "label": "YB05 Bölge hazırlığı beklenirken Esc duraklatma menüsünü açmaz (A-10)",
+    "ok": false,
+    "value": false
+   },
+   "ms": 811
+  },
+  {
+   "n": 15,
+   "label": null,
+   "result": {
+    "paneller": [
+     "Duraklatıldı"
+    ],
+    "duraklatildi": true
+   },
+   "ms": 5
+  },
+  {
+   "n": 16,
+   "label": null,
+   "result": {
+    "durum": "menu"
+   },
+   "ms": 3
+  },
+  {
+   "n": 17,
+   "label": null,
+   "result": {
+    "durum": "menu",
+    "menu": true,
+    "hud": true,
+    "oyuncu": true,
+    "bildirim": [
+     "Kayıt yüklendi: Kaptan Deniz",
+     "Hedef: Hanın önündeki Yaşlı Kaptan Tuzla ile konuş. (J: Korsan Defteri)"
+    ],
+    "kilit": true
+   },
+   "ms": 3643
+  },
+  {
+   "n": 18,
+   "label": null,
+   "expect": {
+    "label": "YB06 İptal edilen yükleme hiçbir durumu değiştirmez: hazırlık bittikten sonra da durum 'menu', ana menü açık, HUD kapalı, oyuncu kurulmamış (A-10, oturum belirteci)",
+    "ok": false,
+    "value": false
+   },
+   "ms": 12
+  },
+  {
+   "n": 19,
+   "label": null,
+   "expect": {
+    "label": "YB07 İptal edilen yükleme 'Kayıt yüklendi' bildirimi üretmez (A-10)",
+    "ok": false,
+    "value": false
+   },
+   "ms": 37
+  },
+  {
+   "n": 20,
+   "label": null,
+   "expect": {
+    "label": "YB08 İptal edilen yükleme kayıttaki veriyi değiştirmez (yuva 1 aynı)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 20
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 7,
+ "evalErrors": 0,
+ "readyMs": 6155,
+ "ms": 90588,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/scenarios/02_yukleme_bekleme.js",
+ "meta": {
+  "testler": [
+   "8 Kayıt yükleme",
+   "KI-158",
+   "A-10",
+   "brief madde 6"
+  ],
+  "dosyalar": [
+   "js/main.js",
+   "js/game/game.js",
+   "js/ui/menu.js",
+   "js/ui/ui.js",
+   "js/world/terrain.js",
+   "js/core/save.js"
+  ]
+ },
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8080/index.html?test=1",
+  "verilenUrl": "http://localhost:8080/index.html",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "29315b5c24bfc89ae51a6a156de961b98b08fb15",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T14:10:02.286Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs /home/user/SON-HAZ-NE-w2/tests/scenarios/02_yukleme_bekleme.js --url http://localhost:8080/index.html --size 640x360 --timeout 540 --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_yukleme_bekleme.json",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://localhost:8080 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8080"
+  ],
+  "commit": "29315b5c24bfc89ae51a6a156de961b98b08fb15-kirli",
+  "senaryoSha256": "fa17fe40dfa41456e7605b400a838864454af36f834b841930f83e5efffcb15b",
+  "adim": {
+   "n": 1,
+   "js": "(async()=>{ const bekle = (ms) => new Promise((r) => setTimeout(r, ms)); DK.G.noAutoPause = true;\n   await DK.handlers.startGame({ kind: 'solo', slot: 0, data: null }); for (let i = 0; i < 100 && !(DK.G.state === 'playing' && DK.G.player); i++) await bekle(100);\n   const P = DK.ports.byId('kuzeyfener_port_0'); DK.G.emit('fastTravel', { to: P.id, from: 'kirlangic_limani', cost: 0 }); const t0 = per"
+  },
+  "url": "http://localhost:8080/index.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 1,
+   "id": "YB00",
+   "etiket": "YB00 Test verisi: yuva 1'de Kuzeyfener'de (5,3 km) kayıt var, oyun menüde",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 34468,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": {
+    "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_yukleme_bekleme_2026-11-14T14-10-02-136Z_24231/ilk_kalan.png",
+    "tuval": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_yukleme_bekleme_2026-11-14T14-10-02-136Z_24231/ilk_kalan_tuval.jpg"
+   }
+  },
+  {
+   "n": 6,
+   "id": "YB01",
+   "etiket": "YB01 Yeniden yüklenen sayfada ana menü ve DEVAM ET düğmesi var, oyuncu yok",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 14,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 8,
+   "id": "YB02",
+   "etiket": "YB02 Önkoşul: DEVAM ET kayıttaki bölgenin (Kuzeyfener) hazırlığını başlattı ve start o hazırlığı bekliyor (kapı kapalı)",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 15100,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 10,
+   "id": "YB03",
+   "etiket": "YB03 Bölge hazırlığı beklenirken yükleme katmanı görünür (#loading etkin ya da perde açık; A-10)",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 7,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 12,
+   "id": "YB04",
+   "etiket": "YB04 Bölge hazırlığı beklenirken oyun durumu 'playing' değil (A-10: G.state 'loading')",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 14,
+   "id": "YB05",
+   "etiket": "YB05 Bölge hazırlığı beklenirken Esc duraklatma menüsünü açmaz (A-10)",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 5,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 18,
+   "id": "YB06",
+   "etiket": "YB06 İptal edilen yükleme hiçbir durumu değiştirmez: hazırlık bittikten sonra da durum 'menu', ana menü açık, HUD kapalı, oyuncu kurulmamış (A-10, oturum belirteci)",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 6,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 19,
+   "id": "YB07",
+   "etiket": "YB07 İptal edilen yükleme 'Kayıt yüklendi' bildirimi üretmez (A-10)",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 17,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 20,
+   "id": "YB08",
+   "etiket": "YB08 İptal edilen yükleme kayıttaki veriyi değiştirmez (yuva 1 aynı)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 66
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 2
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 2,
+  "toplam": 68,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [
+  {
+   "ad": "ilk_kalan",
+   "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_yukleme_bekleme_2026-11-14T14-10-02-136Z_24231/ilk_kalan.png",
+   "tuval": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_yukleme_bekleme_2026-11-14T14-10-02-136Z_24231/ilk_kalan_tuval.jpg"
+  }
+ ],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 449,
+ "sonuc": {
+  "durum": "KALDI",
+  "cikisKodu": 1,
+  "neden": [
+   "başarısız kontrol ya da adım: 7"
+  ],
+  "onaySayisi": 9,
+  "kontrolSayisi": 9,
+  "gecen": 2,
+  "kalan": 7,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": "tarayici",
+  "turSayim": {
+   "tarayici": 9
+  }
+ },
+ "sure": {
+  "hazirMs": 6155,
+  "toplamMs": 90588,
+  "yerlesmeMs": 1002
+ }
+}

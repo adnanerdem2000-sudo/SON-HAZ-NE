@@ -1,0 +1,1456 @@
+{
+ "scenario": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/fb0/bisect/02_arazi_yasam_V3_bellek.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": [
+    "bekle",
+    "kosul",
+    "agYakin",
+    "hayalet",
+    "sessizIsci",
+    "derinMi",
+    "gemiyleGit"
+   ],
+   "ms": 9
+  },
+  {
+   "n": 2,
+   "label": null,
+   "degisken": {
+    "ad": "kip",
+    "deger": ""
+   },
+   "ms": 4
+  },
+  {
+   "n": 3,
+   "label": null,
+   "expect": {
+    "label": "LY00 Kip denetimi: URL ?terrain = DK.terrain.mode ve kipin beklenen işçi/yedek durumu (normal: işçi ≥ 1; noworker/ctorthrow/badurl: işçi 0 + yedek; crash/hang: hata kaydı, iş alıp yanıt vermeyen her işçi sonlandırılmış, kurulan işçi ≤ 9; crash1: yedek kapalı + çökme kaydı; noready: zaman aşımı kaydı + yedek)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 3
+  },
+  {
+   "n": 4,
+   "label": null,
+   "result": {
+    "k": "",
+    "mode": "",
+    "workers": 3,
+    "fallback": false,
+    "failures": [],
+    "beklemeMs": 0,
+    "isciler": [
+     [
+      0,
+      49,
+      49,
+      0,
+      "canli"
+     ],
+     [
+      1,
+      70,
+      70,
+      0,
+      "canli"
+     ],
+     [
+      2,
+      8,
+      8,
+      0,
+      "canli"
+     ]
+    ]
+   },
+   "ms": 2
+  },
+  {
+   "n": 5,
+   "label": null,
+   "expect": {
+    "label": "LY01 Açılış tamamlandı (window.__ready, yükleme ekranı kapalı)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 2
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "LY02 Menü sahnesinde ≥ 20 karo ağı",
+    "ok": true,
+    "value": 125
+   },
+   "ms": 3
+  },
+  {
+   "n": 7,
+   "label": null,
+   "expect": {
+    "label": "LY03 Okyanus derinlik penceresi hazır ve açılış noktasında (≤ 600 m)",
+    "ok": true,
+    "value": 10
+   },
+   "ms": 3
+  },
+  {
+   "n": 8,
+   "label": null,
+   "expect": {
+    "label": "LY04 Harita ızgarası (256²) isteği sonuçlanıyor",
+    "ok": true,
+    "value": "tamam"
+   },
+   "ms": 35
+  },
+  {
+   "n": 9,
+   "label": null,
+   "expect": {
+    "label": "LY05 prepare dönüş değeri 'ok' (A-11: sonuç çağırana iletilir)",
+    "ok": false,
+    "value": "undefined"
+   },
+   "ms": 8285
+  },
+  {
+   "n": 10,
+   "label": null,
+   "result": "başlatıldı",
+   "ms": 26
+  },
+  {
+   "n": 11,
+   "label": null,
+   "expect": {
+    "label": "LY06 Oyun başladı",
+    "ok": true,
+    "value": true
+   },
+   "ms": 415
+  },
+  {
+   "n": 12,
+   "label": null,
+   "result": {
+    "izlenen": 126
+   },
+   "ms": 407
+  },
+  {
+   "n": 13,
+   "label": null,
+   "expect": {
+    "label": "LY07 LOD yarışı: yavaşlatılan eski seg-32 sonucu, yeni seg-80 geometriyi ezmez (son seg 80, indeks 40 320)",
+    "ok": true,
+    "value": "tamam"
+   },
+   "ms": 24124
+  },
+  {
+   "n": 14,
+   "label": null,
+   "result": {
+    "key": 63551,
+    "isci": true,
+    "p80": 41698.20000000298,
+    "p32": 43313.40000000596,
+    "segP32": 80,
+    "sonSeg": 80,
+    "idx": 40320,
+    "eskiSonraBitti": true
+   },
+   "ms": 19
+  },
+  {
+   "n": 15,
+   "label": null,
+   "expect": {
+    "label": "LY08 Silinen karonun geç gelen sonucu yok sayılır (sahne grubunda sahipsiz ağ kalmaz; düşürülen karo nesnesine yeni geometri yazılmaz)",
+    "ok": true,
+    "value": "tamam"
+   },
+   "ms": 2319
+  },
+  {
+   "n": 16,
+   "label": null,
+   "result": {
+    "key": 62525,
+    "karoYenidenIstendi": false,
+    "ilgiliAg": 0,
+    "ilgiliAgKarosu": [],
+    "silinenKaroyaApply": 0,
+    "silinenKaroyaYeniGeometri": 0,
+    "silinenKaroGeometrisiAyni": true
+   },
+   "ms": 1
+  },
+  {
+   "n": 17,
+   "label": null,
+   "expect": {
+    "label": "LY10 26 farklı harita ızgarası çözüldükten sonra önbellekte ≤ 2 çözülmüş kayıt (A-13)",
+    "ok": false,
+    "value": 24
+   },
+   "ms": 267
+  },
+  {
+   "n": 18,
+   "label": null,
+   "result": {
+    "adim": 33,
+    "derinEnCok": 83,
+    "derinNokta": 6500,
+    "hayaletEnCok": 0,
+    "failuresEnCok": 1,
+    "beklemeMs": 18615,
+    "ms": 63447,
+    "stats": {
+     "tiles": 110,
+     "meshes": 110,
+     "hires": 0,
+     "tris": 24256,
+     "queue": 0,
+     "jobs": 0,
+     "workers": 2,
+     "fallback": false,
+     "failures": 1,
+     "mode": ""
+    },
+    "ic": "_land"
+   },
+   "ms": 63455
+  },
+  {
+   "n": 19,
+   "label": null,
+   "expect": {
+    "label": "LY11 8 km açık deniz dolaşımında 600 m ötesindeki derin deniz karosu ≤ 10 (A-07)",
+    "ok": false,
+    "value": 83
+   },
+   "ms": 5
+  },
+  {
+   "n": 20,
+   "label": null,
+   "expect": {
+    "label": "LY12 Dolaşım boyunca değişmezler: hayalet iş yuvası 0 (işçi kayıtlarının işleri _jobs içinde), failures ≤ 50",
+    "ok": true,
+    "value": true
+   },
+   "ms": 2
+  },
+  {
+   "n": 21,
+   "label": null,
+   "result": {
+    "isciVardi": 2,
+    "workers": 0,
+    "fallback": true
+   },
+   "ms": 9
+  },
+  {
+   "n": 22,
+   "label": null,
+   "result": {
+    "dolasim": {
+     "adim": 33,
+     "derinEnCok": 83,
+     "failuresEnCok": 4,
+     "ms": 30426
+    },
+    "dilim": {
+     "dilim": 138,
+     "enUzun": 31.1,
+     "asim": 18,
+     "enUzunBut": 10,
+     "ornek": [
+      [
+       27.4,
+       10
+      ],
+      [
+       17,
+       10
+      ],
+      [
+       14.6,
+       10
+      ],
+      [
+       16,
+       10
+      ],
+      [
+       17.4,
+       10
+      ],
+      [
+       20,
+       10
+      ],
+      [
+       31.1,
+       10
+      ],
+      [
+       14.3,
+       10
+      ]
+     ],
+     "isciVardi": 2,
+     "butceKaynagi": "v0.4 kuralı (terrain.js:162)",
+     "p99Fark": 17.4,
+     "enBuyukFark": 21.1,
+     "asimOrani": 0.13
+    }
+   },
+   "ms": 30431
+  },
+  {
+   "n": 23,
+   "label": null,
+   "expect": {
+    "label": "LY13 Ana iş parçacığı yedeğinde 8 km dolaşım: yerel dilimlerin p99'u bütçe + 4 ms'yi, en uzunu bütçe + 15 ms'yi aşmaz (A-06; tek GC duraklamasına dayanıklı dağılım ölçümü)",
+    "ok": false,
+    "value": "p99 bütçe+17.4 ms, en uzun bütçe+21.1 ms"
+   },
+   "ms": 16
+  },
+  {
+   "n": 24,
+   "label": null,
+   "expect": {
+    "label": "LY14 Yedek kipte 8 km dönüş dolaşımında 600 m ötesindeki derin deniz karosu ≤ 10 (A-07)",
+    "ok": false,
+    "value": 83
+   },
+   "ms": 4
+  },
+  {
+   "n": 25,
+   "label": null,
+   "expect": {
+    "label": "LY15 Dolaşımlardan sonra bütün arazi işleri 30 sn içinde sonuçlanır (askıda iş yok)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 9
+  },
+  {
+   "n": 26,
+   "label": null,
+   "expect": {
+    "label": "LY16 Karo oluşturma/kaldırma döngüsünde geometri sızıntısı yok: canlı (atılmamış) karo geometrisi = karo ağı sayısı, grupta sahipsiz ağ yok",
+    "ok": true,
+    "value": "tamam"
+   },
+   "ms": 4
+  },
+  {
+   "n": 27,
+   "label": null,
+   "result": {
+    "izlenen": 1457,
+    "atilan": 1216,
+    "canli": 241,
+    "karoAgi": 241,
+    "grupCocuk": 241,
+    "sahipsizCanli": 0
+   },
+   "ms": 1
+  },
+  {
+   "n": 28,
+   "label": null,
+   "goto": {
+    "url": "http://localhost:8080/index.html?test=1"
+   },
+   "ms": 10242
+  },
+  {
+   "n": 29,
+   "label": null,
+   "expect": {
+    "label": "LYK-09 (LY09 sayfası) Arazi kipi gezinmeden sonra korundu (ilk sayfanın ?terrain değeri)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 19
+  },
+  {
+   "n": 30,
+   "label": null,
+   "result": [
+    "bekle",
+    "kosul",
+    "agYakin",
+    "hayalet",
+    "sessizIsci",
+    "derinMi",
+    "gemiyleGit"
+   ],
+   "ms": 1
+  },
+  {
+   "n": 31,
+   "label": null,
+   "result": {
+    "basladi": true,
+    "oyuncu": [
+     2,
+     212
+    ],
+    "workers": 3
+   },
+   "ms": 13049
+  },
+  {
+   "n": 32,
+   "label": null,
+   "expect": {
+    "label": "LY09 Örtüşen iki prepare: önce biten A, sonra başlayan B'nin odağını kısaltmaz (işçili kipte: B'nin karo işleri 14 sn gecikirken B bitince B bölgesinde ≥ 6 ağ ve derinlik penceresi B'de; işçisiz kipte: A bitince B odağının kalan süresi ≥ 60 sn; A-12)",
+    "ok": false,
+    "value": "B odağı kısaldı: B bölgesinde 20 ağ, derinlik 5214 m"
+   },
+   "ms": 15135
+  },
+  {
+   "n": 33,
+   "label": null,
+   "result": {
+    "yontem": "gözlenebilir (işçi gecikmesi)",
+    "aMs": 241,
+    "bMs": 14374,
+    "yavasIs": 3,
+    "bAg": 20,
+    "bDerinlikUzak": 5214
+   },
+   "ms": 2
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 6,
+ "evalErrors": 0,
+ "readyMs": 6138,
+ "ms": 179539,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "../../../tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/fb0/bisect/02_arazi_yasam_V3_bellek.js",
+ "meta": {
+  "testler": [
+   "1 Normal Worker açılışı",
+   "2 Worker bulunamadığında",
+   "3 Worker çöktüğünde",
+   "4 Arazi mesh oluşturulması",
+   "5 Harita derinliği",
+   "KI-154",
+   "KI-155",
+   "KI-156",
+   "KI-157",
+   "KI-159",
+   "KI-160",
+   "KI-161",
+   "KI-165",
+   "A-06",
+   "A-07",
+   "A-08",
+   "A-09",
+   "A-11",
+   "A-12",
+   "A-13",
+   "A-17"
+  ],
+  "dosyalar": [
+   "js/world/terrain.js",
+   "js/world/terrainGen.js",
+   "js/world/terrainWorker.js",
+   "js/game/game.js",
+   "js/world/ocean.js"
+  ],
+  "baslatma": [
+   "(() => { try { const q = new URLSearchParams(location.search); const k = q.get('terrain'); if (k !== null) sessionStorage.setItem('__fb0_arazi_kipi', k); else { const s = sessionStorage.getItem('__fb0_arazi_kipi'); if (s) { q.set('terrain', s); history.replaceState(history.state, '', location.pathname + '?' + q.toString() + location.hash); window.__kipKorundu = s; } } } catch (e) { /* oturum deposu yok: kip korunamaz, HYK/LYK kontrolleri yakalar */ } })();",
+   "(() => { const W = window.Worker; if (typeof W !== 'function') return;\n     const kayit = window.__isciIleti = []; const I = window.__isciler = [];\n     function Sarili(url, opts) { const w = new W(url, opts); const post = w.postMessage.bind(w);\n       const ik = { no: I.length, is: 0, yanit: 0, hata: 0, sonlandi: false }; I.push(ik);\n       const son = w.terminate.bind(w); w.terminate = function () { ik.sonlandi = true; return son(); };\n       // yanıt/hata sayımı ek dinleyiciyle değil, oyunun kendi onmessage/onerror işleyicisi sarılarak yapılır (ek 'message' dinleyicisi\n       // her karo iletisinin verisine ikinci kez erişiyordu; FB0 koşularında normal kipte uzun dolaşımda sayfa çöktü)\n       for (const [ad, say] of [['onmessage', (e) => { if (e && e.data && e.data.t && e.data.t !== 'ready') ik.yanit++; }], ['onerror', () => { ik.hata++; }]]) {\n         const d = Object.getOwnPropertyDescriptor(W.prototype, ad); if (!d || !d.set) continue;\n         Object.defineProperty(w, ad, { configurable: true, get() { return d.get.call(w); }, set(fn) { d.set.call(w, typeof fn === 'function' ? function (e) { try { say(e); } catch (x) { /* yoksay */ } return fn.call(this, e); } : fn); } });\n       }\n       w.postMessage = function (m, tr) { try { if (m && m.t && m.id != null) ik.is++; if (m && m.t && kayit.length < 50000) kayit.push({ t: m.t, key: m.key, seg: m.seg, res: m.res, id: m.id }); } catch (e) { /* yoksay */ }\n         const k = typeof window.__isciKanca === 'function' ? window.__isciKanca(m) : null;\n         if (k && k.gecikme > 0) { setTimeout(() => { try { post(m, tr); } catch (e) { /* işçi kapatılmış */ } }, k.gecikme); return; }\n         return post(m, tr); };\n       return w; }\n     Sarili.prototype = W.prototype; window.Worker = Sarili; })();"
+  ]
+ },
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8080/index.html?test=1",
+  "verilenUrl": "http://localhost:8080/index.html",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "6e637caf5fabae6fc7cc5f2a8abbd3f45cc1bb2f",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T16:00:35.758Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/fb0/bisect/02_arazi_yasam_V3_bellek.js --url http://localhost:8080/index.html --size 640x360 --timeout 540 --report /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/fb0/bisect/V3_normal.json",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://localhost:8080 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8080"
+  ],
+  "commit": "6e637caf5fabae6fc7cc5f2a8abbd3f45cc1bb2f-kirli",
+  "senaryoSha256": "60e776128b0b82c98e3706cdc36f69d46895d539271369c0e9a90bd75577fc7c",
+  "adim": {
+   "n": 9,
+   "js": "(async()=>{ const r = await DK.terrain.prepare(160, 470, { radius: 300 }); window.__prepDonus = r === undefined ? 'undefined' : r; return window.__prepDonus; })()"
+  },
+  "url": "http://localhost:8080/index.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 3,
+   "id": "LY00",
+   "etiket": "LY00 Kip denetimi: URL ?terrain = DK.terrain.mode ve kipin beklenen işçi/yedek durumu (normal: işçi ≥ 1; noworker/ctorthrow/badurl: işçi 0 + yedek; crash/hang: hata kaydı, iş alıp yanıt vermeyen her işçi sonlandırılmış, kurulan işçi ≤ 9; crash1: yedek kapalı + çökme kaydı; noready: zaman aşımı kaydı + yedek)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 5,
+   "id": "LY01",
+   "etiket": "LY01 Açılış tamamlandı (window.__ready, yükleme ekranı kapalı)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 6,
+   "id": "LY02",
+   "etiket": "LY02 Menü sahnesinde ≥ 20 karo ağı",
+   "ok": true,
+   "deger": 125,
+   "beklenen": {
+    "gte": 20
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 7,
+   "id": "LY03",
+   "etiket": "LY03 Okyanus derinlik penceresi hazır ve açılış noktasında (≤ 600 m)",
+   "ok": true,
+   "deger": 10,
+   "beklenen": {
+    "lte": 600
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 8,
+   "id": "LY04",
+   "etiket": "LY04 Harita ızgarası (256²) isteği sonuçlanıyor",
+   "ok": true,
+   "deger": "tamam",
+   "beklenen": {
+    "eq": "tamam"
+   },
+   "sure_ms": 24,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 9,
+   "id": "LY05",
+   "etiket": "LY05 prepare dönüş değeri 'ok' (A-11: sonuç çağırana iletilir)",
+   "ok": false,
+   "deger": "undefined",
+   "beklenen": {
+    "eq": "ok"
+   },
+   "sure_ms": 102,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"eq\":\"ok\"}, gelen \"undefined\" (sağlanmayan: eq \"ok\")",
+   "goruntu": {
+    "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_arazi_yasam_V3_bellek_2026-11-14T16-00-35-595Z_30989/ilk_kalan.png",
+    "tuval": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_arazi_yasam_V3_bellek_2026-11-14T16-00-35-595Z_30989/ilk_kalan_tuval.jpg"
+   }
+  },
+  {
+   "n": 11,
+   "id": "LY06",
+   "etiket": "LY06 Oyun başladı",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 227,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 13,
+   "id": "LY07",
+   "etiket": "LY07 LOD yarışı: yavaşlatılan eski seg-32 sonucu, yeni seg-80 geometriyi ezmez (son seg 80, indeks 40 320)",
+   "ok": true,
+   "deger": "tamam",
+   "beklenen": {
+    "eq": "tamam"
+   },
+   "sure_ms": 24111,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 15,
+   "id": "LY08",
+   "etiket": "LY08 Silinen karonun geç gelen sonucu yok sayılır (sahne grubunda sahipsiz ağ kalmaz; düşürülen karo nesnesine yeni geometri yazılmaz)",
+   "ok": true,
+   "deger": "tamam",
+   "beklenen": {
+    "eq": "tamam"
+   },
+   "sure_ms": 2317,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 17,
+   "id": "LY10",
+   "etiket": "LY10 26 farklı harita ızgarası çözüldükten sonra önbellekte ≤ 2 çözülmüş kayıt (A-13)",
+   "ok": false,
+   "deger": 24,
+   "beklenen": {
+    "lte": 2
+   },
+   "sure_ms": 264,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"lte\":2}, gelen 24 (sağlanmayan: lte 2)",
+   "goruntu": null
+  },
+  {
+   "n": 19,
+   "id": "LY11",
+   "etiket": "LY11 8 km açık deniz dolaşımında 600 m ötesindeki derin deniz karosu ≤ 10 (A-07)",
+   "ok": false,
+   "deger": 83,
+   "beklenen": {
+    "lte": 10
+   },
+   "sure_ms": 3,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"lte\":10}, gelen 83 (sağlanmayan: lte 10)",
+   "goruntu": null
+  },
+  {
+   "n": 20,
+   "id": "LY12",
+   "etiket": "LY12 Dolaşım boyunca değişmezler: hayalet iş yuvası 0 (işçi kayıtlarının işleri _jobs içinde), failures ≤ 50",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 23,
+   "id": "LY13",
+   "etiket": "LY13 Ana iş parçacığı yedeğinde 8 km dolaşım: yerel dilimlerin p99'u bütçe + 4 ms'yi, en uzunu bütçe + 15 ms'yi aşmaz (A-06; tek GC duraklamasına dayanıklı dağılım ölçümü)",
+   "ok": false,
+   "deger": "p99 bütçe+17.4 ms, en uzun bütçe+21.1 ms",
+   "beklenen": {
+    "eq": "tamam"
+   },
+   "sure_ms": 13,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"eq\":\"tamam\"}, gelen \"p99 bütçe+17.4 ms, en uzun bütçe+21.1 ms\" (sağlanmayan: eq \"tamam\")",
+   "goruntu": null
+  },
+  {
+   "n": 24,
+   "id": "LY14",
+   "etiket": "LY14 Yedek kipte 8 km dönüş dolaşımında 600 m ötesindeki derin deniz karosu ≤ 10 (A-07)",
+   "ok": false,
+   "deger": 83,
+   "beklenen": {
+    "lte": 10
+   },
+   "sure_ms": 3,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"lte\":10}, gelen 83 (sağlanmayan: lte 10)",
+   "goruntu": null
+  },
+  {
+   "n": 25,
+   "id": "LY15",
+   "etiket": "LY15 Dolaşımlardan sonra bütün arazi işleri 30 sn içinde sonuçlanır (askıda iş yok)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 3,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 26,
+   "id": "LY16",
+   "etiket": "LY16 Karo oluşturma/kaldırma döngüsünde geometri sızıntısı yok: canlı (atılmamış) karo geometrisi = karo ağı sayısı, grupta sahipsiz ağ yok",
+   "ok": true,
+   "deger": "tamam",
+   "beklenen": {
+    "eq": "tamam"
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 29,
+   "id": "LYK-09",
+   "etiket": "LYK-09 (LY09 sayfası) Arazi kipi gezinmeden sonra korundu (ilk sayfanın ?terrain değeri)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "eq": true
+   },
+   "sure_ms": 17,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 32,
+   "id": "LY09",
+   "etiket": "LY09 Örtüşen iki prepare: önce biten A, sonra başlayan B'nin odağını kısaltmaz (işçili kipte: B'nin karo işleri 14 sn gecikirken B bitince B bölgesinde ≥ 6 ağ ve derinlik penceresi B'de; işçisiz kipte: A bitince B odağının kalan süresi ≥ 60 sn; A-12)",
+   "ok": false,
+   "deger": "B odağı kısaldı: B bölgesinde 20 ağ, derinlik 5214 m",
+   "beklenen": {
+    "eq": "tamam"
+   },
+   "sure_ms": 15133,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"eq\":\"tamam\"}, gelen \"B odağı kısaldı: B bölgesinde 20 ağ, derinlik 5214 m\" (sağlanmayan: eq \"tamam\")",
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 66
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 2
+  },
+  {
+   "oyuncu": null,
+   "ileti": "Arazi işçisi 1 devre dışı (tile işi 20 sn içinde bitmedi); 1 iş yeniden kuyruğa alınıyor",
+   "url": "http://localhost:8080/js/world/terrain.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":0,\"heap\":93,\"top\":103,\"geo\":509,\"tex\":181,\"karo\":165,\"cocuk\":72,\"kuyruk\":91,\"izIleti\":278,\"geoCanli\":72,\"t\":81241}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":250,\"heap\":98,\"top\":111,\"geo\":532,\"tex\":215,\"karo\":179,\"cocuk\":179,\"kuyruk\":0,\"izIleti\":387,\"geoCanli\":179,\"t\":82181}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":500,\"heap\":101,\"top\":112,\"geo\":531,\"tex\":215,\"karo\":192,\"cocuk\":192,\"kuyruk\":0,\"izIleti\":421,\"geoCanli\":192,\"t\":82340}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":750,\"heap\":102,\"top\":112,\"geo\":519,\"tex\":215,\"karo\":198,\"cocuk\":198,\"kuyruk\":0,\"izIleti\":452,\"geoCanli\":198,\"t\":82495}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":1000,\"heap\":100,\"top\":105,\"geo\":522,\"tex\":216,\"karo\":195,\"cocuk\":195,\"kuyruk\":0,\"izIleti\":479,\"geoCanli\":195,\"t\":92288}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":1250,\"heap\":101,\"top\":106,\"geo\":515,\"tex\":216,\"karo\":190,\"cocuk\":190,\"kuyruk\":0,\"izIleti\":505,\"geoCanli\":190,\"t\":92444}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":1500,\"heap\":100,\"top\":107,\"geo\":506,\"tex\":216,\"karo\":183,\"cocuk\":183,\"kuyruk\":0,\"izIleti\":528,\"geoCanli\":183,\"t\":92595}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":1750,\"heap\":101,\"top\":107,\"geo\":501,\"tex\":216,\"karo\":174,\"cocuk\":174,\"kuyruk\":0,\"izIleti\":555,\"geoCanli\":174,\"t\":92747}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":2000,\"heap\":103,\"top\":110,\"geo\":497,\"tex\":216,\"karo\":162,\"cocuk\":162,\"kuyruk\":0,\"izIleti\":583,\"geoCanli\":162,\"t\":92901}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":2250,\"heap\":106,\"top\":112,\"geo\":495,\"tex\":216,\"karo\":152,\"cocuk\":152,\"kuyruk\":0,\"izIleti\":601,\"geoCanli\":152,\"t\":93056}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":2500,\"heap\":109,\"top\":115,\"geo\":495,\"tex\":216,\"karo\":151,\"cocuk\":151,\"kuyruk\":0,\"izIleti\":613,\"geoCanli\":151,\"t\":93210}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":2750,\"heap\":120,\"top\":129,\"geo\":546,\"tex\":295,\"karo\":151,\"cocuk\":151,\"kuyruk\":0,\"izIleti\":624,\"geoCanli\":151,\"t\":94797}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":3000,\"heap\":126,\"top\":138,\"geo\":559,\"tex\":234,\"karo\":148,\"cocuk\":148,\"kuyruk\":0,\"izIleti\":639,\"geoCanli\":148,\"t\":94974}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":3250,\"heap\":111,\"top\":130,\"geo\":554,\"tex\":185,\"karo\":137,\"cocuk\":136,\"kuyruk\":4,\"izIleti\":654,\"geoCanli\":136,\"t\":104028}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":3500,\"heap\":112,\"top\":131,\"geo\":527,\"tex\":185,\"karo\":126,\"cocuk\":126,\"kuyruk\":0,\"izIleti\":684,\"geoCanli\":126,\"t\":104183}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":3750,\"heap\":113,\"top\":131,\"geo\":520,\"tex\":185,\"karo\":125,\"cocuk\":125,\"kuyruk\":0,\"izIleti\":708,\"geoCanli\":125,\"t\":104337}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":4000,\"heap\":113,\"top\":131,\"geo\":512,\"tex\":185,\"karo\":124,\"cocuk\":124,\"kuyruk\":0,\"izIleti\":724,\"geoCanli\":124,\"t\":104488}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":4250,\"heap\":113,\"top\":131,\"geo\":509,\"tex\":185,\"karo\":126,\"cocuk\":126,\"kuyruk\":0,\"izIleti\":742,\"geoCanli\":126,\"t\":104644}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":4500,\"heap\":114,\"top\":131,\"geo\":505,\"tex\":185,\"karo\":124,\"cocuk\":124,\"kuyruk\":0,\"izIleti\":760,\"geoCanli\":124,\"t\":104796}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":4750,\"heap\":114,\"top\":132,\"geo\":505,\"tex\":185,\"karo\":127,\"cocuk\":127,\"kuyruk\":0,\"izIleti\":783,\"geoCanli\":127,\"t\":104951}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":5000,\"heap\":114,\"top\":132,\"geo\":505,\"tex\":185,\"karo\":125,\"cocuk\":125,\"kuyruk\":0,\"izIleti\":796,\"geoCanli\":125,\"t\":105102}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":5250,\"heap\":115,\"top\":132,\"geo\":503,\"tex\":185,\"karo\":126,\"cocuk\":126,\"kuyruk\":0,\"izIleti\":807,\"geoCanli\":126,\"t\":105253}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":5500,\"heap\":115,\"top\":132,\"geo\":501,\"tex\":185,\"karo\":125,\"cocuk\":125,\"kuyruk\":0,\"izIleti\":819,\"geoCanli\":125,\"t\":105405}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":5750,\"heap\":115,\"top\":132,\"geo\":498,\"tex\":185,\"karo\":119,\"cocuk\":119,\"kuyruk\":0,\"izIleti\":828,\"geoCanli\":119,\"t\":105556}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":6000,\"heap\":129,\"top\":147,\"geo\":524,\"tex\":186,\"karo\":118,\"cocuk\":118,\"kuyruk\":0,\"izIleti\":844,\"geoCanli\":118,\"t\":107845}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":6250,\"heap\":129,\"top\":149,\"geo\":535,\"tex\":187,\"karo\":111,\"cocuk\":111,\"kuyruk\":0,\"izIleti\":851,\"geoCanli\":111,\"t\":108272}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":6500,\"heap\":131,\"top\":149,\"geo\":536,\"tex\":187,\"karo\":112,\"cocuk\":112,\"kuyruk\":0,\"izIleti\":857,\"geoCanli\":112,\"t\":108456}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":6750,\"heap\":132,\"top\":150,\"geo\":536,\"tex\":186,\"karo\":110,\"cocuk\":110,\"kuyruk\":0,\"izIleti\":870,\"geoCanli\":110,\"t\":108635}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":7000,\"heap\":132,\"top\":150,\"geo\":531,\"tex\":186,\"karo\":113,\"cocuk\":113,\"kuyruk\":0,\"izIleti\":884,\"geoCanli\":113,\"t\":108789}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":7250,\"heap\":132,\"top\":150,\"geo\":529,\"tex\":186,\"karo\":111,\"cocuk\":111,\"kuyruk\":0,\"izIleti\":893,\"geoCanli\":111,\"t\":108941}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":7500,\"heap\":133,\"top\":150,\"geo\":527,\"tex\":186,\"karo\":109,\"cocuk\":109,\"kuyruk\":0,\"izIleti\":906,\"geoCanli\":109,\"t\":109097}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":7750,\"heap\":133,\"top\":150,\"geo\":527,\"tex\":186,\"karo\":112,\"cocuk\":112,\"kuyruk\":0,\"izIleti\":915,\"geoCanli\":112,\"t\":109248}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":1,\"x\":8000,\"heap\":133,\"top\":150,\"geo\":527,\"tex\":186,\"karo\":110,\"cocuk\":110,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":110,\"t\":109400}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "Arazi işçisi 0 devre dışı (test: işçi sonlandırıldı); 0 iş yeniden kuyruğa alınıyor",
+   "url": "http://localhost:8080/js/world/terrain.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "Arazi işçisi 2 devre dışı (test: işçi sonlandırıldı); 0 iş yeniden kuyruğa alınıyor",
+   "url": "http://localhost:8080/js/world/terrain.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "Arazi üretimi ana iş parçacığına alındı (test: işçi sonlandırıldı)",
+   "url": "http://localhost:8080/js/world/terrain.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":8000,\"heap\":133,\"top\":150,\"geo\":527,\"tex\":186,\"karo\":110,\"cocuk\":110,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":110,\"t\":109571}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":7750,\"heap\":133,\"top\":150,\"geo\":527,\"tex\":186,\"karo\":110,\"cocuk\":110,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":110,\"t\":109724}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":7500,\"heap\":132,\"top\":155,\"geo\":547,\"tex\":187,\"karo\":110,\"cocuk\":110,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":110,\"t\":126638}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":7250,\"heap\":114,\"top\":135,\"geo\":548,\"tex\":187,\"karo\":110,\"cocuk\":110,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":110,\"t\":129331}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":7000,\"heap\":113,\"top\":135,\"geo\":549,\"tex\":187,\"karo\":110,\"cocuk\":110,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":110,\"t\":129603}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":6750,\"heap\":116,\"top\":137,\"geo\":552,\"tex\":187,\"karo\":110,\"cocuk\":110,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":110,\"t\":130944}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":6500,\"heap\":121,\"top\":138,\"geo\":554,\"tex\":187,\"karo\":110,\"cocuk\":110,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":110,\"t\":131235}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":6250,\"heap\":115,\"top\":138,\"geo\":555,\"tex\":187,\"karo\":110,\"cocuk\":110,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":110,\"t\":131388}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":6000,\"heap\":119,\"top\":139,\"geo\":554,\"tex\":186,\"karo\":110,\"cocuk\":110,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":110,\"t\":131612}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":5750,\"heap\":116,\"top\":139,\"geo\":550,\"tex\":187,\"karo\":114,\"cocuk\":114,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":114,\"t\":132034}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":5500,\"heap\":118,\"top\":139,\"geo\":550,\"tex\":187,\"karo\":120,\"cocuk\":120,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":120,\"t\":132321}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":5250,\"heap\":120,\"top\":140,\"geo\":547,\"tex\":187,\"karo\":133,\"cocuk\":133,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":133,\"t\":132477}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":5000,\"heap\":116,\"top\":140,\"geo\":554,\"tex\":186,\"karo\":145,\"cocuk\":145,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":145,\"t\":132785}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":4750,\"heap\":119,\"top\":140,\"geo\":560,\"tex\":187,\"karo\":144,\"cocuk\":144,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":144,\"t\":132990}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":4500,\"heap\":122,\"top\":141,\"geo\":555,\"tex\":187,\"karo\":142,\"cocuk\":142,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":142,\"t\":133142}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":4250,\"heap\":117,\"top\":141,\"geo\":561,\"tex\":186,\"karo\":145,\"cocuk\":145,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":145,\"t\":133410}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":4000,\"heap\":122,\"top\":142,\"geo\":555,\"tex\":186,\"karo\":143,\"cocuk\":143,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":143,\"t\":133562}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":3750,\"heap\":119,\"top\":142,\"geo\":552,\"tex\":186,\"karo\":145,\"cocuk\":145,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":145,\"t\":133713}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":3500,\"heap\":120,\"top\":144,\"geo\":562,\"tex\":186,\"karo\":143,\"cocuk\":143,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":143,\"t\":134495}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":3250,\"heap\":127,\"top\":147,\"geo\":566,\"tex\":187,\"karo\":143,\"cocuk\":143,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":143,\"t\":134849}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":3000,\"heap\":131,\"top\":150,\"geo\":563,\"tex\":187,\"karo\":142,\"cocuk\":142,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":142,\"t\":135006}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":2750,\"heap\":130,\"top\":153,\"geo\":558,\"tex\":187,\"karo\":146,\"cocuk\":146,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":146,\"t\":135158}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":2500,\"heap\":131,\"top\":154,\"geo\":552,\"tex\":187,\"karo\":147,\"cocuk\":147,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":147,\"t\":135309}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":2250,\"heap\":133,\"top\":173,\"geo\":566,\"tex\":186,\"karo\":148,\"cocuk\":148,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":148,\"t\":136744}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":2000,\"heap\":133,\"top\":171,\"geo\":565,\"tex\":187,\"karo\":153,\"cocuk\":153,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":153,\"t\":137453}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":1750,\"heap\":126,\"top\":155,\"geo\":550,\"tex\":187,\"karo\":155,\"cocuk\":155,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":155,\"t\":137612}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":1500,\"heap\":116,\"top\":156,\"geo\":544,\"tex\":187,\"karo\":169,\"cocuk\":169,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":169,\"t\":137766}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":1250,\"heap\":117,\"top\":157,\"geo\":549,\"tex\":186,\"karo\":184,\"cocuk\":184,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":184,\"t\":138237}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":1000,\"heap\":125,\"top\":157,\"geo\":545,\"tex\":186,\"karo\":202,\"cocuk\":202,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":202,\"t\":138389}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":750,\"heap\":129,\"top\":158,\"geo\":556,\"tex\":186,\"karo\":215,\"cocuk\":215,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":215,\"t\":139340}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":500,\"heap\":125,\"top\":159,\"geo\":561,\"tex\":187,\"karo\":226,\"cocuk\":226,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":226,\"t\":139542}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":250,\"heap\":120,\"top\":159,\"geo\":555,\"tex\":187,\"karo\":241,\"cocuk\":241,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":241,\"t\":139694}",
+   "url": null,
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "TANI {\"d\":2,\"x\":0,\"heap\":117,\"top\":151,\"geo\":547,\"tex\":187,\"karo\":241,\"cocuk\":241,\"kuyruk\":0,\"izIleti\":923,\"geoCanli\":241,\"t\":139845}",
+   "url": null,
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 72,
+  "toplam": 138,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [
+  {
+   "tur": "beforeunload",
+   "ileti": "",
+   "adim": 28,
+   "kabul": true
+  }
+ ],
+ "goruntuler": [
+  {
+   "ad": "ilk_kalan",
+   "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_arazi_yasam_V3_bellek_2026-11-14T16-00-35-595Z_30989/ilk_kalan.png",
+   "tuval": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_arazi_yasam_V3_bellek_2026-11-14T16-00-35-595Z_30989/ilk_kalan_tuval.jpg"
+  }
+ ],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 432,
+ "sonuc": {
+  "durum": "KALDI",
+  "cikisKodu": 1,
+  "neden": [
+   "başarısız kontrol ya da adım: 6"
+  ],
+  "onaySayisi": 18,
+  "kontrolSayisi": 18,
+  "gecen": 12,
+  "kalan": 6,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": "tarayici",
+  "turSayim": {
+   "tarayici": 18
+  }
+ },
+ "sure": {
+  "hazirMs": 6138,
+  "toplamMs": 179539,
+  "yerlesmeMs": 1002
+ }
+}

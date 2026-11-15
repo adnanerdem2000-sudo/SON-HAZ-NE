@@ -1,0 +1,359 @@
+{
+ "scenario": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_b0/inceleme_hy13_zamanlama.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": [
+    "bekle",
+    "agYakin",
+    "derinlikUzak",
+    "ortu",
+    "odak",
+    "ilkKare"
+   ],
+   "ms": 18
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "T01 Yeni oyun başladı",
+    "ok": true,
+    "value": true
+   },
+   "ms": 1168
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": {
+    "ms": 299,
+    "odak": {
+     "x": 2,
+     "z": 212,
+     "r": 500,
+     "kalanMs": 11987
+    }
+   },
+   "ms": 12670
+  },
+  {
+   "n": 4,
+   "label": null,
+   "result": {
+    "gemi": [
+     4000,
+     -4000
+    ],
+    "mod": "deck",
+    "odak": {
+     "x": 2,
+     "z": 212,
+     "r": 500,
+     "kalanMs": -2526
+    }
+   },
+   "ms": 1192
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": {
+    "x": 4000,
+    "z": -4006,
+    "kirlangicaUzaklik": 5814,
+    "kirlangicCevresiAg": 11,
+    "derinlikKirlangicaUzak": 4848,
+    "odak": {
+     "x": 2,
+     "z": 212,
+     "r": 500,
+     "kalanMs": -7432
+    }
+   },
+   "ms": 4750
+  },
+  {
+   "n": 6,
+   "label": null,
+   "tikla": {
+    "metin": "Kırlangıç Limanı'nda uyan"
+   },
+   "ms": 2838
+  },
+  {
+   "n": 7,
+   "label": null,
+   "expect": {
+    "label": "T02 (HY13 ifadesi; ölüm 1 sn sonra) uyanışın ilk karesinde oyuncu çevresinde ≥ 6 karo ağı",
+    "ok": false,
+    "value": 0
+   },
+   "ms": 18030
+  },
+  {
+   "n": 8,
+   "label": null,
+   "expect": {
+    "label": "T03 (HY14 ifadesi; ölüm 1 sn sonra) uyanışın ilk karesinde derinlik penceresi uyanma noktasında",
+    "ok": false,
+    "value": 5635
+   },
+   "ms": 7837
+  },
+  {
+   "n": 9,
+   "label": null,
+   "result": {
+    "bas": {
+     "ms": 299,
+     "odak": {
+      "x": 2,
+      "z": 212,
+      "r": 500,
+      "kalanMs": 11987
+     }
+    },
+    "olum": {
+     "x": 4000,
+     "z": -4006,
+     "kirlangicaUzaklik": 5814,
+     "kirlangicCevresiAg": 11,
+     "derinlikKirlangicaUzak": 4848,
+     "odak": {
+      "x": 2,
+      "z": 212,
+      "r": 500,
+      "kalanMs": -7432
+     }
+    },
+    "dogus": {
+     "ms": 2882,
+     "ag300": 0,
+     "derinlikUzak": 5635,
+     "odak": null,
+     "x": 4,
+     "z": 210
+    }
+   },
+   "ms": 5
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 2,
+ "evalErrors": 0,
+ "readyMs": 6575,
+ "ms": 60748,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "../../../tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_b0/inceleme_hy13_zamanlama.js",
+ "meta": {
+  "testler": [
+   "inceleme: HY13/HY14 zamanlama"
+  ],
+  "dosyalar": [
+   "js/main.js",
+   "js/world/terrain.js",
+   "js/game/game.js"
+  ],
+  "olcum": true
+ },
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8080/index.html?test=1",
+  "verilenUrl": "http://localhost:8080/index.html",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "29315b5c24bfc89ae51a6a156de961b98b08fb15",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T13:16:47.397Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_b0/inceleme_hy13_zamanlama.js --url http://localhost:8080/index.html --size 640x360 --timeout 540 --report docs/v05/kosular/faz1/b/once_v04/inceleme_hy13_zamanlama.json",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://localhost:8080 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8080"
+  ],
+  "commit": "29315b5c24bfc89ae51a6a156de961b98b08fb15-kirli",
+  "senaryoSha256": "ffa96d27b9e450825484e06531abc76009b555df5767913683a6057375211fa5",
+  "adim": {
+   "n": 7,
+   "js": "(async()=>{ for (let i = 0; i < 600 && !window.__dogus; i++) await window.__Y.bekle(100); return window.__dogus ? window.__dogus.ag300 : -1; })()"
+  },
+  "url": "http://localhost:8080/index.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 2,
+   "id": "T01",
+   "etiket": "T01 Yeni oyun başladı",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 310,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 7,
+   "id": "T02",
+   "etiket": "T02 (HY13 ifadesi; ölüm 1 sn sonra) uyanışın ilk karesinde oyuncu çevresinde ≥ 6 karo ağı",
+   "ok": false,
+   "deger": 0,
+   "beklenen": {
+    "gte": 6
+   },
+   "sure_ms": 4,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"gte\":6}, gelen 0 (sağlanmayan: gte 6)",
+   "goruntu": {
+    "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/inceleme_hy13_zamanlama_2026-11-14T13-16-47-171Z_9785/ilk_kalan.png",
+    "tuval": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/inceleme_hy13_zamanlama_2026-11-14T13-16-47-171Z_9785/ilk_kalan_tuval.jpg"
+   }
+  },
+  {
+   "n": 8,
+   "id": "T03",
+   "etiket": "T03 (HY14 ifadesi; ölüm 1 sn sonra) uyanışın ilk karesinde derinlik penceresi uyanma noktasında",
+   "ok": false,
+   "deger": 5635,
+   "beklenen": {
+    "lte": 100
+   },
+   "sure_ms": 7833,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"lte\":100}, gelen 5635 (sağlanmayan: lte 100)",
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 33
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 2,
+  "toplam": 34,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [
+  {
+   "ad": "ilk_kalan",
+   "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/inceleme_hy13_zamanlama_2026-11-14T13-16-47-171Z_9785/ilk_kalan.png",
+   "tuval": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/inceleme_hy13_zamanlama_2026-11-14T13-16-47-171Z_9785/ilk_kalan_tuval.jpg"
+  }
+ ],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 233,
+ "sonuc": {
+  "durum": "KALDI",
+  "cikisKodu": 1,
+  "neden": [
+   "başarısız kontrol ya da adım: 2"
+  ],
+  "onaySayisi": 3,
+  "kontrolSayisi": 3,
+  "gecen": 1,
+  "kalan": 2,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": "tarayici",
+  "turSayim": {
+   "tarayici": 3
+  }
+ },
+ "sure": {
+  "hazirMs": 6575,
+  "toplamMs": 60748,
+  "yerlesmeMs": 1001
+ }
+}

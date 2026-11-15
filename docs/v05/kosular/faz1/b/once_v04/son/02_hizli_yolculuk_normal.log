@@ -1,0 +1,78 @@
+# 2026-11-15T02:22:11Z deneme 1; koşucu run.cjs 591dff27aa01 ortak.cjs df191a997375; senaryo tests/scenarios/02_hizli_yolculuk.js abf125923f9a; hedef http://localhost:8080/index.html; v0.4 44d548c
+# komut: /home/user/devtools/tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_hizli_yolculuk.js --url 'http://localhost:8080/index.html' --size 640x360 --timeout 540 --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_hizli_yolculuk_normal.json 
+başlatma betiği: 1 meta, 0 dosya
+ready in 4.6 s
+DEGISKEN yardimci = "(()=>{ const T = DK.terrain;\n   const Y = window.__Y = {};\n   Y.bekle = (ms) => new Promise((r) => setTimeout(r, ms));\n   Y.agYakin = (x, z, r) => [...T.tiles.values()].filter((t) => t.mesh && t.m
+R: ["bekle","agYakin","derinlikUzak","ortu","yeniOyun","ucret","prepareIzle","prepareBitti","varisIzle","bildirimIzle","ucgenFark","zeminTutarliligi","ilkKare","gorunurluk"]
+DEGISKEN kip = ""
+PASS HY00 Etkin arazi kipi URL ile aynı (normal: işçi ≥ 1, yedek kapalı; noworker: işçi 0, yedek açık) → true
+R: {"k":"","mode":"","workers":3,"fallback":false}
+PASS HY01 Yeni oyun başladı, oyuncu Kırlangıç Limanı'nda → true
+R: {"hedef":{"id":"kuzeyfener_port_0","mx":282.41917801604757,"mz":-5006.38815640651,"bx":288.7288505086093,"bz":-5003.202558654656,"ix":300,"iz":-5300,"uzaklik":5348},"ucret":159}
+PASS HY02 Hedef liman (Kuzeyfener) Kırlangıç Limanı'na ≥ 5 km uzakta → 5348
+M: {"label":"m_once","heapMB":40.3,"heapTotalMB":101.3,"backingMB":60.7,"embedderMB":3.1,"nodes":710,"listeners":58,"docs":1,"frames":1}
+R: "yola çıkıldı"
+PASS HY03 Gemi hedef limanın demir yerinde (≤ 5 m) → 0.03
+M: {"label":"m_varis","heapMB":42.1,"heapTotalMB":108,"backingMB":74.6,"embedderMB":370.3,"nodes":802,"listeners":58,"docs":1,"frames":1}
+R: {"varisIlkKareMs":26498,"prepare":[{"x":282,"z":-5006,"r":450,"t0":17981.199999999255,"donus":"undefined","ms":1810}],"varis":{"ms":26380,"ag300":11,"karoAltinda":{"karo":true,"hires":true,"ucgen":true,"fark":2.6645352591003757e-14},"derinlikUzak":9,"x":288,"z":-5003,"y":0.92,"zemin":-8.07,"sonra":[{"ms":200,"y":-1.67,"mod":"swim","zemin":-8.07,"varisNoktasiZemin":-8.07},{"ms":500,"y":-2.26,"mod":"swim","zemin":-8.07,"varisNoktasiZemin":-8.07}]},"yolculukOncesiKuyruk":{"jobs":0,"queue":0,"meshes":125,"sayfaMs":7293}}
+PASS HYS-01 Hızlı yolculuktaki bölge hazırlığı (terrain.prepare, 5,3 km) ≤ 3 sn (normal kipte gerileme koruması; noworker kipindeki v0.4 kırmızısı KI-234 DEĞİL: işçisiz hızlı yolculuk 33–45 sn, 45 sn sınırına yakın — ayrı bilinen sorun adayı) → 1810
+FAIL HYS-02 Hızlı yolculuktaki bölge hazırlığı 'ok' ile döner (A-11: sonuç çağırana iletilir; 'timeout' ile sessiz eksik varış yok) → "undefined"
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_hizli_yolculuk_2026-11-15T02-24-34-161Z_22329/ilk_kalan.png
+PASS HY04 Oyuncu hedef iskelede (biniş noktasına yatayda ≤ 3 m) → 0.23
+PASS HY05 Gemi hızı < 1 m/s (demirli) → 0.116
+PASS HY06 Derinlik penceresi hedefte (pencere merkezi demir yerine ≤ 60 m) → 7
+PASS HY07 Hedefte ≥ 6 karo ağı (450 m içinde, sahne grubunda) → 20
+PASS HY08 Yol parası bir kez düşüldü → true
+PASS HYU-01 Uzak ada ışınlanması (≥ 5 km, hızlı yolculuk yolu): varışın ilk karesinde oyuncunun altında yükseklik ızgaralı karo ağı, çevrede ≥ 6 ağ, derinlik penceresi oyuncuyu kapsıyor, heightAt = çizilen ağ → true
+FAIL HYU-02 Varışta oyuncu zeminde: ilk karede zemin sorgusunun (physics.floorAt) 1,5 m içinde, 2 sn sonra yüzmüyor ve zeminde (suya düşmüyor) (v0.4 kırmızısının nedeni arazi değil: biniş noktası iskele platformunun dışında, bkz. HYU-05; hedef ports.js biniş noktası / islands.js iskele) → false
+R: {"ilkKare":{"y":0.92,"zemin":-8.07},"sonra":[{"ms":200,"y":-1.67,"mod":"swim","zemin":-8.07,"varisNoktasiZemin":-8.07},{"ms":500,"y":-2.26,"mod":"swim","zemin":-8.07,"varisNoktasiZemin":-8.07},{"ms":1000,"y":-2.26,"mod":"swim","zemin":-8.07,"varisNoktasiZemin":-8.07},{"ms":2000,"y":-2.35,"mod":"swim","zemin":-8.07,"varisNoktasiZemin":-8.07}]}
+PASS HYU-03 Varış bölgesinde (220 m) zemin sorgusu = çizilen ağ: heightAt ile ağ üçgeni farkı < 1 cm → true
+R: {"nokta":364,"ucgensiz":0,"enBuyuk":0}
+PASS HYU-04 Arazi görünür: adaya bakan kamerada ≥ 6 karo ağı sahnede, görünür ve frustum içinde; arazi gizlenince piksellerin ≥ %5'i değişiyor → true
+R: {"from":[278.2352279705502,32,-4936.513307125693],"to":[300,10,-5300],"sahnede":true,"kareIcindeAg":60,"pikselOrani":0.0606}
+FAIL HYU-05 Biniş noktası iskele platformunun üstünde: iskele kurulduktan sonra biniş noktasında zemin sorgusu (physics.floorAt) iskele ekseniyle aynı yükseklikte (HYU-02 kırmızısının nedeni; hedef ports.js biniş noktası / islands.js iskele genişliği) → false
+R: {"yanUzaklik":2.6,"eksenZemin":2.9,"binisZemin":-8.08,"binisY":3.1}
+DIALOG beforeunload kabul edildi 
+GOTO http://localhost:8080/index.html?test=1
+R: ["bekle","agYakin","derinlikUzak","ortu","yeniOyun","ucret","prepareIzle","prepareBitti","varisIzle","bildirimIzle","ucgenFark","zeminTutarliligi","ilkKare","gorunurluk"]
+PASS HYK-2 (bölüm 2) Arazi kipi gezinmeden sonra korundu (ilk sayfanın ?terrain değeri) → true
+PASS HY09 (bölüm 2) Yeni oyun başladı → true
+R: {"a":{"id":"tuz_pazari_port_0","mx":1681.8484364704666,"mz":808.2576445460988,"c":72},"b":{"id":"kuzeyfener_port_0","mx":282.41917801604757,"mz":-5006.38815640651,"c":159},"altin":2000}
+R: {"a":{"id":"tuz_pazari_port_0","mx":1681.8484364704666,"mz":808.2576445460988,"c":72},"b":{"id":"kuzeyfener_port_0","mx":282.41917801604757,"mz":-5006.38815640651,"c":159},"altin":2000,"yerlesti":true,"son":"b","ms":35897,"altinSon":1769,"varislar":["tuz_pazari_port_0","kuzeyfener_port_0"],"sicramalar":["a","b"],"prepare":[{"x":1682,"z":808,"ms":947,"donus":"undefined"},{"x":282,"z":-5006,"ms":9902,"donus":"undefined"}]}
+M: {"label":"m_iki_emit","heapMB":85.4,"heapTotalMB":138.6,"backingMB":134.7,"embedderMB":903.9,"nodes":1663,"listeners":66,"docs":2,"frames":2}
+FAIL HY10 Bekleme sırasında gelen ikinci hızlı yolculuk yok sayılır: bütün hazırlıklar bitip 5 sn sakin geçtiğinde tam bir varış olmuş (gemi sıçraması 1, arrivedPort ≤ 1), o varış ilk hedefe (Tuz Pazarı) ve gemi orada (A-03) → false
+FAIL HY11 Bekleme sırasında ikinci emit: yol parası bir kez düşer (A-03) → false
+DIALOG beforeunload kabul edildi 
+GOTO http://localhost:8080/index.html?test=1
+R: ["bekle","agYakin","derinlikUzak","ortu","yeniOyun","ucret","prepareIzle","prepareBitti","varisIzle","bildirimIzle","ucgenFark","zeminTutarliligi","ilkKare","gorunurluk"]
+PASS HYK-3 (bölüm 3) Arazi kipi gezinmeden sonra korundu (ilk sayfanın ?terrain değeri) → true
+PASS HY12 (bölüm 3) Yeni oyun başladı → true
+R: {"gemi":[4000,-4000],"mod":"deck"}
+PASS HY12b Önkoşul: ölümden önce Kırlangıç Limanı'nın 300 m içinde karo ağı yok ve derinlik penceresi 600 m'den uzak (60 sn içinde; sağlanmazsa HY13/HY14 kanıt değildir) → true
+R: {"ms":12508,"kirlangicCevresiAg":0,"derinlikKirlangicaUzak":5809}
+R: {"x":4000,"z":-4006,"kirlangicaUzaklik":5814,"kirlangicCevresiAg":0,"derinlikKirlangicaUzak":5809}
+FAIL HY13 Uzak ölümden (Kırlangıç'a 5,8 km) sonra limanda uyanışın ilk karesinde oyuncu çevresinde ≥ 6 karo ağı (A-14) → 0
+FAIL HY14 Uyanışın ilk karesinde derinlik penceresi uyanma noktasında (merkez ≤ 100 m, A-14) → 5804
+R: {"olum":{"x":4000,"z":-4006,"kirlangicaUzaklik":5814,"kirlangicCevresiAg":0,"derinlikKirlangicaUzak":5809},"dogus":{"ms":4503,"ag300":0,"karoAltinda":{"karo":false},"derinlikUzak":5804,"x":4,"z":210,"y":3.47,"zemin":2.6,"sonra":[{"ms":200,"y":2.6,"mod":"ground","zemin":2.6,"varisNoktasiZemin":2.6},{"ms":500,"y":2.6,"mod":"ground","zemin":2.6,"varisNoktasiZemin":2.6},{"ms":1000,"y":2.6,"mod":"ground","zemin":2.6,"varisNoktasiZemin":2.6},{"ms":2000,"y":2.6,"mod":"ground","zemin":2.6,"varisNoktasiZemin":2.6}]}}
+DIALOG beforeunload kabul edildi 
+GOTO http://localhost:8080/index.html?test=1
+R: ["bekle","agYakin","derinlikUzak","ortu","yeniOyun","ucret","prepareIzle","prepareBitti","varisIzle","bildirimIzle","ucgenFark","zeminTutarliligi","ilkKare","gorunurluk"]
+PASS HYK-4 (bölüm 4) Arazi kipi gezinmeden sonra korundu (ilk sayfanın ?terrain değeri) → true
+PASS HY15 (bölüm 4) Yeni oyun başladı → true
+R: {"hedef":{"mx":1681.8484364704666,"mz":808.2576445460988},"altinOnce":2000,"ucret":72,"gun":1}
+R: {"hedef":{"mx":1681.8484364704666,"mz":808.2576445460988},"altinOnce":2000,"ucret":72,"gun":1,"tasindi":true,"prepare":[{"ms":755,"donus":"undefined"}],"izlemeMs":17625,"tur":19,"varisSonra":1,"bildirimSonra":["Otomatik kayıt yapıldı.","Hedef: Hanın önündeki Yaşlı Kaptan Tuzla ile konuş. (J: Korsan Defteri)","Tuz Pazarı Limanı limanına vardın."],"durum":"menu","menu":true,"hud":false,"kayitAltin":1928,"gunSon":1}
+PASS HY16 Bekleme sırasında menüye dönüş: ana menü açık, HUD kapalı, durum menu → true
+FAIL HY17 Bekleme sırasında menüye dönüş: devam kodu menü gemisini hedef limana taşımaz (A-03) → true
+FAIL HY18 Bekleme sırasında menüye dönüş: kayıttaki altın yolculuk öncesiyle aynı (ücret iade / varışta düşülür, A-03) → false
+FAIL HY19 Bekleme sırasında menüye dönüş: hazırlık bittikten (ya da hiç başlamadıysa ~15 sn) sonra devam kodu varış olayı (arrivedPort) ve "limanına vardın" bildirimi üretmez (oturum belirteci, A-03) → false
+R: {"prepare":[{"ms":755,"donus":"undefined"}],"izlemeMs":17625,"varisSonra":1,"bildirimSonra":["Otomatik kayıt yapıldı.","Hedef: Hanın önündeki Yaşlı Kaptan Tuzla ile konuş. (J: Korsan Defteri)","Tuz Pazarı Limanı limanına vardın."]}
+GOTO http://localhost:8080/index.html?test=1
+R: ["bekle","agYakin","derinlikUzak","ortu","yeniOyun","ucret","prepareIzle","prepareBitti","varisIzle","bildirimIzle","ucgenFark","zeminTutarliligi","ilkKare","gorunurluk"]
+PASS HYK-5 (bölüm 5) Arazi kipi gezinmeden sonra korundu (ilk sayfanın ?terrain değeri) → true
+PASS HY20 (bölüm 5) Yeni oyun başladı → true
+R: {"hedef":{"mx":1681.8484364704666,"mz":808.2576445460988},"t0":12058.100000000559}
+R: {"hedef":{"mx":1681.8484364704666,"mz":808.2576445460988},"t0":12058.100000000559,"zorlanan":{"x":1682,"z":808},"vardi":true,"bildirimler":[{"text":"Keşfedildi: Kırlangıç Adası","kind":"discover"},{"text":"Keşfedildi: Kırlangıç Limanı","kind":"discover"},{"text":"Hedef: Hanın önündeki Yaşlı Kaptan Tuzla ile konuş. (J: Korsan Defteri)","kind":"quest"},{"text":"Tuz Pazarı Limanı limanına vardın.","kind":"good"},{"text":"Keşfedildi: Tuz Pazarı","kind":"discover"},{"text":"Dalmak için C basılı tut, çıkmak için Boşluk · nefes ≈ 50 sn","kind":"info"}]}
+FAIL HY21 Hızlı yolculuktaki bölge hazırlığı zaman aşımına uğrarsa ('timeout') oyuncu bir uyarı bildirimi alır (brief madde 5, A-03/A-11) → false
+errors: 0 pageErrors: 0 fails: 11 (265.0 s)
+SONUC: KALDI (çıkış 1) kontrol 23/34, onay 34 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 3 farklı/171 | neden: başarısız kontrol ya da adım: 11
+# çıkış 1 2026-11-15T02:29:03Z

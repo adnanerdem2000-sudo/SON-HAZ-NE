@@ -1,0 +1,267 @@
+{
+ "scenario": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_b0/inceleme_a02_acilis_izgara.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "T00 Normal açılış (enjeksiyonsuz) tamam",
+    "ok": true,
+    "value": true
+   },
+   "ms": 6
+  },
+  {
+   "n": 2,
+   "label": null,
+   "goto": {
+    "url": "http://localhost:8080/index.html?izgarahata=1&test=1"
+   },
+   "ms": 2581
+  },
+  {
+   "n": 3,
+   "label": null,
+   "expect": {
+    "label": "T01 (A-02 kabulü) açılıştaki dünya ızgarası işi işçiden 'error' alınca da window.__ready ve menü gelir",
+    "ok": false,
+    "value": false
+   },
+   "ms": 5930
+  },
+  {
+   "n": 4,
+   "label": null,
+   "result": {
+    "ready": false,
+    "ms": 3250,
+    "yuklemeMetni": "Oyun başlatılamadı: inceleme: enjekte ızgara hatasıWebGL destekli güncel bir tarayıcı (Chrome, Edge, Firefox) gerekiyor.",
+    "menu": false
+   },
+   "ms": 7
+  }
+ ],
+ "errors": [
+  "Arazi işçisi: inceleme: enjekte ızgara hatası",
+  "Error: inceleme: enjekte ızgara hatası\n    at Object._onMsg (http://localhost:8080/js/world/terrain.js:108:91)\n    at w.onmessage (http://localhost:8080/js/world/terrain.js:72:33)\n    at <anonymous>:4:97"
+ ],
+ "pageErrors": [],
+ "fails": 1,
+ "evalErrors": 0,
+ "readyMs": 6908,
+ "ms": 19853,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "../../../tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_b0/inceleme_a02_acilis_izgara.js",
+ "meta": {
+  "testler": [
+   "inceleme: A-02 açılış yolu"
+  ],
+  "dosyalar": [
+   "js/main.js",
+   "js/ui/mapArt.js",
+   "js/world/terrain.js"
+  ],
+  "olcum": true,
+  "izinliHatalar": [
+   {
+    "desen": "Arazi işçisi: .*inceleme: enjekte ızgara hatası",
+    "gerekce": "inceleme: kasıtlı enjekte edilen işçi error iletisi (v0.4 terrain._onMsg console.error ile yazar)",
+    "tur": "konsol"
+   }
+  ],
+  "baslatma": "(() => { const W = window.Worker; if (typeof W !== 'function' || !/[?&]izgarahata=1/.test(location.search)) return;\n     function Sarili(url, opts) { const w = new W(url, opts); const post = w.postMessage.bind(w);\n       w.postMessage = function (m, tr) { if (m && m.t === 'grid') { setTimeout(() => { try { w.dispatchEvent(new MessageEvent('message', { data: { t: 'error', id: m.id, msg: 'inceleme: enjekte ızgara hatası' } })); } catch (e) { /* yoksay */ } }, 5); return; } return post(m, tr); };\n       return w; }\n     Sarili.prototype = W.prototype; window.Worker = Sarili; })();"
+ },
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8080/index.html?test=1",
+  "verilenUrl": "http://localhost:8080/index.html",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "29315b5c24bfc89ae51a6a156de961b98b08fb15",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T13:27:09.703Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_b0/inceleme_a02_acilis_izgara.js --url http://localhost:8080/index.html --size 640x360 --timeout 540 --report docs/v05/kosular/faz1/b/once_v04/inceleme_a02_acilis_izgara.json",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://localhost:8080 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8080"
+  ],
+  "commit": "29315b5c24bfc89ae51a6a156de961b98b08fb15-kirli",
+  "senaryoSha256": "36e5edeefe2d7c5577a72909dc3c04607911d4e523b718ed9c972fbf6281d8f8",
+  "adim": {
+   "n": 3,
+   "js": "(async()=>{ const t0 = performance.now(); while (!window.__ready && performance.now() - t0 < 60000) { const t = document.getElementById('load-text'); if (t && /başlatılamadı/i.test(t.textContent) && performance.now() - t0 > 3000) break; await new Promise((r) => setTimeout(r, 250)); } window.__sonuc = { ready: !!window.__ready, ms: Math.round(performance.now() - t0), yuklemeMetni: (document.getElem"
+  },
+  "url": "http://localhost:8080/index.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 1,
+   "id": "T00",
+   "etiket": "T00 Normal açılış (enjeksiyonsuz) tamam",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 4,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 3,
+   "id": "T01",
+   "etiket": "T01 (A-02 kabulü) açılıştaki dünya ızgarası işi işçiden 'error' alınca da window.__ready ve menü gelir",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 3398,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": {
+    "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/inceleme_a02_acilis_izgara_2026-11-14T13-27-09-524Z_13091/ilk_kalan.png",
+    "tuval": null
+   }
+  }
+ ],
+ "hatalar": {
+  "konsol": [
+   {
+    "oyuncu": null,
+    "ileti": "Error: inceleme: enjekte ızgara hatası\n    at Object._onMsg (http://localhost:8080/js/world/terrain.js:108:91)\n    at w.onmessage (http://localhost:8080/js/world/terrain.js:72:33)\n    at <anonymous>:4:97",
+    "url": "http://localhost:8080/js/main.js",
+    "satir": 388,
+    "isci": false,
+    "sayi": 1
+   }
+  ],
+  "konsolIzinli": [
+   {
+    "oyuncu": null,
+    "ileti": "Arazi işçisi: inceleme: enjekte ızgara hatası",
+    "url": "http://localhost:8080/js/world/terrain.js",
+    "satir": 107,
+    "isci": false,
+    "izin": "Arazi işçisi: .*inceleme: enjekte ızgara hatası",
+    "sayi": 1
+   }
+  ],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 66
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 2,
+  "toplam": 67,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  },
+  {
+   "desen": "Arazi işçisi: .*inceleme: enjekte ızgara hatası",
+   "gerekce": "inceleme: kasıtlı enjekte edilen işçi error iletisi (v0.4 terrain._onMsg console.error ile yazar)",
+   "tur": "konsol",
+   "kaynak": "meta",
+   "eslesme": 1
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [
+  {
+   "ad": "ilk_kalan",
+   "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/inceleme_a02_acilis_izgara_2026-11-14T13-27-09-524Z_13091/ilk_kalan.png",
+   "tuval": null
+  }
+ ],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 430,
+ "sonuc": {
+  "durum": "KALDI",
+  "cikisKodu": 1,
+  "neden": [
+   "başarısız kontrol ya da adım: 1",
+   "izinsiz konsol hatası: 1"
+  ],
+  "onaySayisi": 2,
+  "kontrolSayisi": 2,
+  "gecen": 1,
+  "kalan": 1,
+  "izinsizKonsol": 1,
+  "izinsizAg": 0,
+  "izinliKonsol": 1,
+  "izinliAg": 0,
+  "tur": "tarayici",
+  "turSayim": {
+   "tarayici": 2
+  }
+ },
+ "sure": {
+  "hazirMs": 6908,
+  "toplamMs": 19853,
+  "yerlesmeMs": 1001
+ }
+}

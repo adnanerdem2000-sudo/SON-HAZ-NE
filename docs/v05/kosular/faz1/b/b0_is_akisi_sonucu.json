@@ -1,0 +1,3314 @@
+{
+ "aciklama": "Faz 1 Adım B0 iş akışının ham sonucu (t: test yazıcı, r: bağımsız inceleyici, f: test düzeltici). Ana oturum tarafından 15 Kasım 2026 kaydedildi.",
+ "sonuc": {
+  "t": {
+   "ozet": "Faz 1 Adım B \"önce\" yarısı tamamlandı. Oyun kodu, koşucu ve A2 dosyaları değiştirilmedi. Commit ya da push yapılmadı. Yazılanlar: 2 Node testi (arazi_sozlesme.mjs: 36 denetim, arazi_kuyruk.mjs: 89 denetim / 22 sahte-işçi durumu) ve 6 yeni tarayıcı senaryosu. Bu altı senaryodan biri istenen listenin dışında, ek olarak yazıldı: 02_arazi_isci_hata.js. Yalnız işçili kipte anlamlı olan MAX_TRIES, 'error' iletisi, kalıcı karo hatası ve kısmi kurucu hatası enjeksiyonları 02_arazi_yasam'ın bütün kiplerde koşulabilmesi için bu dosyaya ayrıldı. Diğer beşi: 02_hizli_yolculuk 24, 02_arazi_yasam 17, 02_ayar_lod 11, 02_depolama_kapali 11, 02_acilis_akisi 18 kontrol. Mevcut 02_arazi_yedek.js'e AYK-01/AYK-02 (kip denetimi, eski kontrollerin önünde) ve AYS-01 (madde 20 süre kontrolü + dilim/boşluk/kare tanı satırı) eklendi. 00_acilis.js'e AC01/AC02 eklendi (G.state geçiş kaydı). İki dosyada da eski kontroller aynen duruyor (git diff yalnız ekleme). Bütün \"önce\" koşuları v0.4'e (8080, 44d548c) karşı, w2'deki b2748cc koşucusuyla yapıldı (run.cjs sha 591dff27aa01; her günlükte kayıtlı). Koşular tk kilidiyle yapıldı. Ham kayıtlar /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/ altında (ozet.txt + her koşunun .log/.json'u). SONUÇ: hedeflenen denetim maddelerinin hepsi en az bir kontrolde KIRMIZI: A-03, A-05, A-06, A-07, A-08, A-09 (Node), A-10, A-11, A-12, A-13, A-14, A-15, A-18, A-19/KI-130. Sayılar: Node kuyruk 67/89, tarayıcıda 00_acilis 6/8, 02_ayar_lod 4/11, 02_depolama_kapali 2/11, 02_hizli_yolculuk normal 17/24 ve noworker 16/24, 02_arazi_yasam normal/noworker/crash 11/17, 02_arazi_isci_hata 5/9, 02_acilis_akisi 17/18. Arazi sözleşmesi (36/36) v0.4'te tümüyle YEŞİL ve gerileme koruması olarak duruyor. Duyarlılığı kanıtlandı: depo dışı bir kopyada heightAt çift doğrusala çevrilince SZ18 2,46 m farkla kırmızıya döndü. Kuyruk testinin karşılanabilir olduğu da gösterildi: depo dışı bir v0.4 kopyasına brief'teki en küçük düzeltmeler (A-08/A-09/A-11/A-13) uygulandı ve hedeflenen 32 denetim 32/32 geçti (scratchpad/onizkok; repoya dokunulmadı). Önemli bulgular (aşağıda ayrıntılı): (1) menüye dönüşte fare kilidi menüde kalıyor ve menü düğmelerine tıklanamıyor (AA09b); (2) hızlı yolculukla ek limanlara varışta oyuncu iskelenin 0,1 m dışına konup suya düşüyor (HYU-02); (3) KI-234 aralıklı ve kaynağı arazi kuyruğu değil, ana iş parçacığı/GPU duraklaması (crash kipinde 0,37 / 36,5 / 1,38 sn; yavaş koşuda yerel dilimler toplam 0,66 sn, tek kare aralığı 18,5 sn). Bu yüzden AYS-01 ve HYS-01 bu ortamda aralıklı kırmızı veriyor. (4) Uzak limana varıştan sonraki ilk kare 26–37 sn sürüyor, bölge hazırlığı ise 0,27–1,4 sn (yeni gölgelendirici derlemeleri). (5) Ardışık uzak varışlar ilk denemede tarayıcıyı bellek sınırında çökertti; senaryo bölümlere ayrıldı. Yeni kipler (ctorthrow, noready, hang, crash1) v0.4'te olmadığı için o kip koşuları UYGULANAMAZ. w2'ye (8081) karşı koşu yapılmadı.",
+   "dosyalar": [
+    {
+     "yol": "/home/user/SON-HAZ-NE-w2/tests/node/arazi_sozlesme.mjs",
+     "kapsadigi": "terrainGen tile/depth/grid veri sözleşmesi (alan, tip, uzunluk, aralık, min/max, etek, indeks deseni, aktarım listesi); işçi yolu (runAll) ↔ dilimli yol ve terrain.js'in gerçek yerel şerit yolu ↔ runAll bayt eşitliği; yerel ağın sahne grubunda olması; heightAt ↔ çizilen ağ üçgeni (madde 17). --kok seçeneği (varsayılan: dosyanın ağacı = w2); 'three' module.registerHooks ile kök ağacın vendor dosyasına çözülür; PASS/FAIL satırları, SONUC, --rapor JSON, KALDI → çıkış 1.",
+     "kontrol_sayisi": 36,
+     "yeni": true
+    },
+    {
+     "yol": "/home/user/SON-HAZ-NE-w2/tests/node/arazi_kuyruk.mjs",
+     "kapsadigi": "Sahte Worker ile terrain kuyruğu: normal, kurucu hatası (tüm/kısmi), 404, hazır sinyali yok, askı, tek/tüm işçi çökmesi, MAX_TRIES → yerel devir, 'error' iletisi, kalıcı karo hatası (geri çekilme, failures ≤ 50), iptal (şerit/işçi/requestDepth), _depthSeq, odak bastırması, prepare odak koruması, örtüşen prepare (A-12), prepare 'ok'/'timeout', terminate sonrası geç ileti (A-09), _workerFailed karo denetimi, LOD histerezisi, derin karo, ızgara önbelleği. Her durumda değişmezler ~10 ms'de bir örneklenir (hayalet yuva, uçuştaki sayaç ⊆ yanıtlanmamış iletiler, failures ≤ 50) ve bütün sözlerin süre sınırında sonuçlandığı denetlenir. Node'da MessageChannel zinciri setTimeout'u aç bıraktığı için şerit durumları _localSlice sarılarak dilimler arasında yakalanır.",
+     "kontrol_sayisi": 89,
+     "yeni": true
+    },
+    {
+     "yol": "/home/user/SON-HAZ-NE-w2/tests/scenarios/02_hizli_yolculuk.js",
+     "kapsadigi": "Madde 5, 10, 19: oyunun kendi G.emit('fastTravel') yoluyla Kırlangıç → Kuzeyfener (5,3 km). Varışın ilk karesinde ve sonrasında gemi/oyuncu hedefte, gemi durgun, derinlik penceresi, ≥ 6 ağ, zemin sorgusu = ağ, oyuncu zeminde, frustum + piksel farkı ölçümü. Hızlı yolculuktaki prepare süresi (KI-234). A-03: ikinci emit ve bekleme sırasında menüye dönüş. A-14: açık denizde ölüm → ölüm ekranındaki 'Kırlangıç Limanı'nda uyan' düğmesi → ilk karede ağ ve derinlik penceresi. Dört bölüm, her biri sayfa yenilemesiyle (bellek). Normal ve noworker kipinde ayrı koşulur.",
+     "kontrol_sayisi": 24,
+     "yeni": true
+    },
+    {
+     "yol": "/home/user/SON-HAZ-NE-w2/tests/scenarios/02_arazi_yasam.js",
+     "kapsadigi": "Her kipte açılış ve kip denetimi (LY00–LY04; yeni kiplerin beklentileri dahil); prepare dönüş değeri; LOD yarışı (Worker sarmalayıcısıyla işçi gecikmesi enjekte, işçisiz kipte şerit); silinen karonun geç sonucu; örtüşen prepare; ızgara önbelleği; 8 km açık deniz dolaşımı (derin karo, hayalet yuva, failures); killWorkers sonrası 8 km yedek dolaşımında en uzun yerel dilim (A-06); askıda iş yok; _apply izleyicisiyle geometri sızıntısı.",
+     "kontrol_sayisi": 17,
+     "yeni": true
+    },
+    {
+     "yol": "/home/user/SON-HAZ-NE-w2/tests/scenarios/02_arazi_isci_hata.js",
+     "kapsadigi": "EK DOSYA (madde 3, 17). Yalnız işçili kipte: Worker sarmalayıcısıyla dispatchEvent tabanlı 'error' iletisi ve çökme enjeksiyonu; MAX_TRIES → yerel devir; kalıcı karo hatası (12 sn'de istek sayısı, failures ≤ 50); kısmi kurucu hatası (?kurucu2=1 sayfası, A-15). Enjekte edilen 'Arazi işçisi: …' konsol hatası gerekçeli izinle.",
+     "kontrol_sayisi": 9,
+     "yeni": true
+    },
+    {
+     "yol": "/home/user/SON-HAZ-NE-w2/tests/scenarios/02_ayar_lod.js",
+     "kapsadigi": "Madde 16 / A-19 / KI-130. meta.baslatma, adreste ?ayar=<profil> varsa 'dksh.settings' kaydına (settings.js biçimi) sayfa açılmadan profil yazar. Ayar değişiklikleri gerçek arayüzden: AYARLAR → Ses / Görüntü sekmeleri → kaydırıcıya tıklama + Home/End. Kontroller: açılışta 0,553; ses değişimi lodScale'i değiştirmez; %100 → 0,7; yenilemeden sonra 0,553; karo sayısı ≤ %85; yüksek + %100 → 1; gölgeler 'orta' → 1024 (açılışta ve yenilemede).",
+     "kontrol_sayisi": 11,
+     "yeni": true
+    },
+    {
+     "yol": "/home/user/SON-HAZ-NE-w2/tests/scenarios/02_depolama_kapali.js",
+     "kapsadigi": "Madde 15 / A-18. meta.baslatma (depolama_engelle.js ile aynı SecurityError engeli) yalnız ?depolama=kapali adresinde etkin; ayrıca SecurityError konsol/sayfa hatalarını sayar. Kontroller: __ready, ana menü, yanıltıcı WebGL metni yok, menüde bildirim, arayüzden YENİ MACERA → Maceraya Başla, kayıt denemesi bildirimi, toMenu/menu.show, DK.handlers.startGame, SecurityError hatası 0. Normal açılış gerileme koruması.",
+     "kontrol_sayisi": 11,
+     "yeni": true
+    },
+    {
+     "yol": "/home/user/SON-HAZ-NE-w2/tests/scenarios/02_acilis_akisi.js",
+     "kapsadigi": "Madde 19, 62-6/7/8/10: gerçek tıklama ve klavyeyle (tikla/key/down/up; DK.handlers YOK) ana menü → KREDİLER/AYARLAR → YENİ MACERA → oluşturucu (ad, cinsiyet) → Maceraya Başla → yürü (W) → Esc → Kaydet → Ana menüye dön → Evet → menüde fare kilidi denetimi (AA09b) → DEVAM ET (yeni oyuncu nesnesi; konum, altın, envanter, ad) → DÜNYALAR → 'Yuva 2 — Yeni macera başlat' → yeni dünya (veri sızıntısı yok, kalıntı ölçüleri, önceki yuva bozulmaz, sayfa yenilenmeden). v0.4 hatası (AA09b) yüzünden kilit, akış sürsün diye document.exitPointerLock() ile bırakılır.",
+     "kontrol_sayisi": 18,
+     "yeni": true
+    },
+    {
+     "yol": "/home/user/SON-HAZ-NE-w2/tests/scenarios/02_arazi_yedek.js",
+     "kapsadigi": "Madde 18a + 20: eski kontrollerin ÖNÜNE AYK-01 (URL ?terrain = DK.terrain.mode) ve AYK-02 (8 kipin beklenen işçi/yedek durumu, en çok 45 sn yoklama) eklendi. Uzak prepare öncesine tanı adımı (yerel dilim/boşluk/kare ölçümü), sonrasına tanı R: satırı ve AYS-01 (normal ≤ 2 sn, diğer kipler ≤ 3 sn) eklendi. Eski 12 kontrol değişmedi; toplam 15 kontrol.",
+     "kontrol_sayisi": 3,
+     "yeni": false
+    },
+    {
+     "yol": "/home/user/SON-HAZ-NE-w2/tests/scenarios/00_acilis.js",
+     "kapsadigi": "Madde 17 / A-10: DK.G.state erişimciyle sarılıp geçişler kaydediliyor. AC01: 'playing'e yalnız oyuncu kurulduktan sonra geçilir. AC02: prepare sırasında 'loading'. Eski 6 kontrol değişmedi; toplam 8.",
+     "kontrol_sayisi": 2,
+     "yeni": false
+    },
+    {
+     "yol": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/",
+     "kapsadigi": "Ham 'önce' koşu günlükleri ve dk-test-raporu/2 raporları. Her günlüğün başında tarih, koşucu/senaryo sha'sı, hedef ve komut var. ozet.txt toplu koşu özetidir. 02_acilis_akisi_deneme1..3, senaryonun önceki sürümlerinin kanıt koşularıdır. PNG'ler tests/out/goruntu altında (git dışı).",
+     "kontrol_sayisi": 0,
+     "yeni": true
+    }
+   ],
+   "kontroller": [
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ01a–c",
+     "hedef_madde": "FAZ1-2 veri sözleşmesi (tileGen alan/tip/uzunluk)",
+     "once_v04": "YESIL",
+     "aciklama": "3 örnek karo (hires kara seg 80, kara seg 32, derin seg 8) geçti; gerileme koruması"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ02a–c",
+     "hedef_madde": "FAZ1-2 (ızgara konumu, yükseklik = computeHeight)",
+     "once_v04": "YESIL",
+     "aciklama": "konum ve yükseklik hatası 0 (Float32 birebir)"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ03a–c",
+     "hedef_madde": "FAZ1-2 (normaller)",
+     "once_v04": "YESIL",
+     "aciklama": "birim uzunluk, ana ızgarada ny>0"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ04a–c",
+     "hedef_madde": "FAZ1-2 (renk)",
+     "once_v04": "YESIL",
+     "aciklama": "renkler sonlu ve [0,1]"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ05a–c",
+     "hedef_madde": "FAZ1-2 + madde 17 (köşegen b–d)",
+     "once_v04": "YESIL",
+     "aciklama": "indeksler sınır içinde; hücre üçgenlemesi (a,d,b)/(b,d,e)"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ06a–c",
+     "hedef_madde": "FAZ1-2 (etek)",
+     "once_v04": "YESIL",
+     "aciklama": "etek köşeleri 4 m aşağıda, renk ×0,8"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ07a–c",
+     "hedef_madde": "FAZ1-2 (min/max yükseklik)",
+     "once_v04": "YESIL",
+     "aciklama": "minH/maxH ana ızgaranın tam min/max'ı, makul aralıkta"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ08a–c",
+     "hedef_madde": "FAZ1-2 (hires yükseklik ızgarası)",
+     "once_v04": "YESIL",
+     "aciklama": "yalnız hires'ta Float32Array(n²) = ızgara yükseklikleri"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ09a–c",
+     "hedef_madde": "FAZ1-2 (aktarım listesi)",
+     "once_v04": "YESIL",
+     "aciklama": "bütün arabellekler yinelemesiz"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ10",
+     "hedef_madde": "62-5; FAZ1-2 (depthGen kodlaması)",
+     "once_v04": "YESIL",
+     "aciklama": "toHalf(computeHeight) birebir"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ11",
+     "hedef_madde": "62-5 (depthGen kod çözümü)",
+     "once_v04": "YESIL",
+     "aciklama": "yarım duyarlık sınırında doğru"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ12",
+     "hedef_madde": "FAZ1-1/2 (gridGen yükseklik)",
+     "once_v04": "YESIL",
+     "aciklama": "yükseklikler birebir"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ13",
+     "hedef_madde": "FAZ1-1/2 (gridGen biyom)",
+     "once_v04": "YESIL",
+     "aciklama": "BIOME_ID[biomeAt] birebir, 7 farklı biyom"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ14",
+     "hedef_madde": "FAZ1-1 (bilinmeyen iş)",
+     "once_v04": "YESIL",
+     "aciklama": "açık hata"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ15",
+     "hedef_madde": "FAZ1-2 işçi yolu ↔ dilimli yol bayt eşitliği",
+     "once_v04": "YESIL",
+     "aciklama": "5 iş, iki üreteç dönüşümlü adımlandı, fark yok"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ16",
+     "hedef_madde": "FAZ1-1/2 terrain.js yerel şerit ↔ runAll",
+     "once_v04": "YESIL",
+     "aciklama": "121 sonuç (119 karo, 1 derinlik, 1 ızgara) bayt düzeyinde aynı"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ17",
+     "hedef_madde": "FAZ1-3 yerel üretimde gerçek ağ",
+     "once_v04": "YESIL",
+     "aciklama": "119 ağ sahne grubunda, öznitelikler üretilen dizilerin kendisi"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ18",
+     "hedef_madde": "madde 17 heightAt ↔ ağ üçgenlemesi (SYS6)",
+     "once_v04": "YESIL",
+     "aciklama": "22 karo, 1760 nokta, en büyük fark 1,6e-12 m; negatif denemede (çift doğrusal heightAt) 2,46 m ile KIRMIZI"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY01a",
+     "hedef_madde": "62-1 normal açılış",
+     "once_v04": "YESIL",
+     "aciklama": "prepare 508 ms"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY01b",
+     "hedef_madde": "62-1/4/5",
+     "once_v04": "YESIL",
+     "aciklama": "125 ağ, derinlik penceresi, 256² ızgara"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY01c",
+     "hedef_madde": "62-1",
+     "once_v04": "YESIL",
+     "aciklama": "3 işçi, yedek kapalı, failures 0"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY01d",
+     "hedef_madde": "madde 7 / A-11 / KI-159",
+     "once_v04": "KIRMIZI",
+     "aciklama": "prepare 'ok' döndürmüyor (undefined)"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY02a–c",
+     "hedef_madde": "62-2 / A-17 kurucu hatası",
+     "once_v04": "YESIL",
+     "aciklama": "işçi 0, yedek açık, 396 ms, 125 ağ, derinlik, ızgara"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY03a",
+     "hedef_madde": "madde 3 / A-15 / KI-163",
+     "once_v04": "KIRMIZI",
+     "aciklama": "2. kurucu hatasında 1 işçi canlı ama fallback=true"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY03b",
+     "hedef_madde": "62-2",
+     "once_v04": "YESIL",
+     "aciklama": "açılış tamam (125 ağ)"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY04a–c",
+     "hedef_madde": "62-2 (404)",
+     "once_v04": "YESIL",
+     "aciklama": "yedek açık, 457 ms, 125 ağ"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY05a",
+     "hedef_madde": "madde 7, 17 / A-11 hazır sinyali yok",
+     "once_v04": "KIRMIZI",
+     "aciklama": "prepare 8409 ms > normal+5 sn (5508 ms)"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY05b",
+     "hedef_madde": "madde 17",
+     "once_v04": "YESIL",
+     "aciklama": "sonunda açılış tamam, hata kaydı var"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY06a",
+     "hedef_madde": "madde 7, 17 / A-11 askı (iş zaman aşımı)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "prepare 20319 ms"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY06b",
+     "hedef_madde": "madde 17",
+     "once_v04": "YESIL",
+     "aciklama": "20 sn zaman aşımından sonra yedekte tamam"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY07a–b",
+     "hedef_madde": "62-3 / FAZ1-5 tek işçi çökmesi",
+     "once_v04": "YESIL",
+     "aciklama": "işler kaybolmaz, 2 işçi sürer, yedek kapalı"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY07c",
+     "hedef_madde": "madde 3 / A-15",
+     "once_v04": "KIRMIZI",
+     "aciklama": "ölen işçi 30 sn içinde yeniden başlatılmıyor (workers 2)"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY08a",
+     "hedef_madde": "62-3 bütün işçiler çöker",
+     "once_v04": "YESIL",
+     "aciklama": "yedek açık, açılış tamam"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY08b",
+     "hedef_madde": "madde 20 / KI-234 (Node)",
+     "once_v04": "YESIL",
+     "aciklama": "çökmeden sonra uzak prepare 137 ms, işçisiz 148 ms: kuyruk crash'te noworker ile aynı davranıyor (beklenmeyen yeşil, açıklandı)"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY09a",
+     "hedef_madde": "madde 3, 17 / A-05 / KI-153 MAX_TRIES",
+     "once_v04": "KIRMIZI",
+     "aciklama": "3 işçi ölünce ızgara reddediliyor: 'tekrarlanan işçi hatası'"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY09b",
+     "hedef_madde": "madde 3",
+     "once_v04": "YESIL",
+     "aciklama": "karo işleri sürer"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY10a–b",
+     "hedef_madde": "madde 17 'error' iletisi yolu",
+     "once_v04": "YESIL",
+     "aciklama": "söz 9 ms'de reddediliyor, işçi ölmüyor"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY11a",
+     "hedef_madde": "madde 3 / A-05 geri çekilme",
+     "once_v04": "KIRMIZI",
+     "aciklama": "3 sn'de aynı karo 60 kez istendi (≤ 3 beklenir), 60 konsol hatası"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY11b",
+     "hedef_madde": "madde 3 / A-05 failures ≤ 50",
+     "once_v04": "KIRMIZI",
+     "aciklama": "failures 61"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY11c",
+     "hedef_madde": "madde 3",
+     "once_v04": "YESIL",
+     "aciklama": "diğer karolar tamam"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY12a",
+     "hedef_madde": "madde 4 / A-08 / KI-156 şerit iptali",
+     "once_v04": "KIRMIZI",
+     "aciklama": "_drop sonrası şeritteki seg 80 iş sonuna kadar üretildi"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY13a",
+     "hedef_madde": "madde 4 / A-08 işçideki iş",
+     "once_v04": "KIRMIZI",
+     "aciklama": "söz 382 ms'de sonuçlu bitti (≤ 50 ms sonuçsuz beklenir)"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY14a",
+     "hedef_madde": "madde 4 / A-08 requestDepth (işçi)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "eski derinlik işi 406 ms'de sonuç üretti"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY14b",
+     "hedef_madde": "madde 4 / A-08 requestDepth (şerit)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "eski derinlik işi şeritte sonuna kadar hesaplandı"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY15",
+     "hedef_madde": "madde 17 _depthSeq",
+     "once_v04": "YESIL",
+     "aciklama": "pencere yeni bölgede"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY16",
+     "hedef_madde": "madde 17 odak bastırması",
+     "once_v04": "YESIL",
+     "aciklama": "yeni derinlik işi 0, pencere odakta"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY17",
+     "hedef_madde": "madde 17 prepare odak koruması",
+     "once_v04": "YESIL",
+     "aciklama": "5,5 km uzak kamerada odakta 20 ağ, 15 seg 80"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY18",
+     "hedef_madde": "madde 8 / A-12 / KI-160",
+     "once_v04": "KIRMIZI",
+     "aciklama": "A 144 ms'de bitince B odağı 12 sn'ye indi; B bitince B bölgesinde 0 ağ"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY19a",
+     "hedef_madde": "madde 17 zaman aşımı dalı",
+     "once_v04": "YESIL",
+     "aciklama": "400 ms'de sonuçlanıyor"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY19b",
+     "hedef_madde": "madde 7 / A-11",
+     "once_v04": "KIRMIZI",
+     "aciklama": "'timeout' yerine undefined"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY20a",
+     "hedef_madde": "madde 4 / A-09 / KI-157",
+     "once_v04": "KIRMIZI",
+     "aciklama": "işçi 1'de 2 hayalet yuva"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY20b",
+     "hedef_madde": "madde 4 / A-09",
+     "once_v04": "KIRMIZI",
+     "aciklama": "sonraki dalgada işçi 1 hiç iş almadı (0/94)"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY21",
+     "hedef_madde": "madde 4 / A-08",
+     "once_v04": "KIRMIZI",
+     "aciklama": "düşürülmüş karonun işi çöküşten sonra 3 kez yeniden gönderildi"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY22",
+     "hedef_madde": "madde 12 / A-07 / KI-155 histerezis",
+     "once_v04": "KIRMIZI",
+     "aciklama": "±20 m salınımda 6 yeniden üretim"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY23",
+     "hedef_madde": "madde 12 / A-07 derin karo",
+     "once_v04": "KIRMIZI",
+     "aciklama": "600 m ötesinde en çok 81 derin karo"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY24a",
+     "hedef_madde": "madde 9 / A-13",
+     "once_v04": "YESIL",
+     "aciklama": "bekleyen aynı istek tek söz"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY24b",
+     "hedef_madde": "madde 9 / A-13 / KI-161",
+     "once_v04": "KIRMIZI",
+     "aciklama": "önbellekte 24 çözülmüş kayıt"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KYxx-D (22 durum)",
+     "hedef_madde": "değişmezler (hayalet yuva, uçuştaki sayaç, failures ≤ 50)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "20 durumda temiz; KY11-D (failures 61) ve KY20-D (hayalet yuva) kalıyor"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KYxx-S (22 durum)",
+     "hedef_madde": "bütün sözler süre sınırında",
+     "once_v04": "YESIL",
+     "aciklama": "hepsi sonuçlandı (en uzun 20,4 sn askıda)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY00",
+     "hedef_madde": "madde 18a kip",
+     "once_v04": "YESIL",
+     "aciklama": "normal ve noworker"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY01/HY09/HY12/HY15",
+     "hedef_madde": "kurulum",
+     "once_v04": "YESIL",
+     "aciklama": "her bölümde yeni oyun"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY02",
+     "hedef_madde": "madde 19 (≥ 5 km)",
+     "once_v04": "YESIL",
+     "aciklama": "5348 m"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY03",
+     "hedef_madde": "madde 5 / A-03 gemi hedefte",
+     "once_v04": "YESIL",
+     "aciklama": "0,03 / 0,01 m"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HYS-01",
+     "hedef_madde": "madde 20 / KI-234 hızlı yolculuktaki prepare ≤ 3 sn",
+     "once_v04": "KIRMIZI",
+     "aciklama": "normal 272 ms; noworker 33366 ms (aralıklı: tanı koşusunda 334 ms)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY04",
+     "hedef_madde": "A-03 oyuncu hedefte",
+     "once_v04": "YESIL",
+     "aciklama": "0,23 m (yatay)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY05",
+     "hedef_madde": "A-03 gemi < 1 m/s",
+     "once_v04": "YESIL",
+     "aciklama": "0,09 / 0,16 m/s"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY06",
+     "hedef_madde": "A-03 / 62-5 derinlik hedefte",
+     "once_v04": "YESIL",
+     "aciklama": "7 m"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY07",
+     "hedef_madde": "A-03 / 62-4 ≥ 6 ağ",
+     "once_v04": "YESIL",
+     "aciklama": "20 / 22"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY08",
+     "hedef_madde": "A-03 ücret",
+     "once_v04": "YESIL",
+     "aciklama": "tek yolculukta bir kez"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HYU-01",
+     "hedef_madde": "madde 19 uzak ada ilk kare",
+     "once_v04": "YESIL",
+     "aciklama": "ilk karede altta hires ağ, 11 ağ/300 m, derinlik 9 m, heightAt=ağ"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HYU-02",
+     "hedef_madde": "madde 19 varışta oyuncu zeminde",
+     "once_v04": "KIRMIZI",
+     "aciklama": "iki kipte oyuncu iskele yanında suya düşüyor (swim, y≈−2; floorAt −8,07): yeni bulgu"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HYU-03",
+     "hedef_madde": "madde 19/17 heightAt=ağ (220 m)",
+     "once_v04": "YESIL",
+     "aciklama": "355 nokta, fark 0"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HYU-04",
+     "hedef_madde": "madde 19 görünürlük + piksel",
+     "once_v04": "YESIL",
+     "aciklama": "60 ağ frustum içinde, piksel farkı %5,96"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY10",
+     "hedef_madde": "madde 5 / A-03 / KI-035 ikinci emit",
+     "once_v04": "KIRMIZI",
+     "aciklama": "gemi ikinci hedefte (Kuzeyfener) bitti"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY11",
+     "hedef_madde": "madde 5 / A-03 ücret",
+     "once_v04": "KIRMIZI",
+     "aciklama": "72+159 altın düştü"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY13",
+     "hedef_madde": "madde 10 / A-14 / KI-162",
+     "once_v04": "KIRMIZI",
+     "aciklama": "uyanışın ilk karesinde 300 m içinde 0 ağ"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY14",
+     "hedef_madde": "madde 10 / A-14",
+     "once_v04": "KIRMIZI",
+     "aciklama": "derinlik penceresi 5804 / 5635 m uzakta"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY16",
+     "hedef_madde": "A-03 menüye dönüş",
+     "once_v04": "YESIL",
+     "aciklama": "menü açık, HUD kapalı"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY17",
+     "hedef_madde": "madde 5 / A-03",
+     "once_v04": "KIRMIZI",
+     "aciklama": "devam kodu menü gemisini Tuz Pazarı'na taşıdı"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY18",
+     "hedef_madde": "madde 5 / A-03",
+     "once_v04": "KIRMIZI",
+     "aciklama": "kayıttaki altın 1928 (2000 beklenir)"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY00",
+     "hedef_madde": "madde 18a/17 kip ve açılış",
+     "once_v04": "YESIL",
+     "aciklama": "normal, noworker, crash"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY01–LY04",
+     "hedef_madde": "62-1..5 açılış, ağ, derinlik, ızgara",
+     "once_v04": "YESIL",
+     "aciklama": "3 kipte: 125 ağ, derinlik 10 m, 256² ızgara"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY05",
+     "hedef_madde": "madde 7 / A-11",
+     "once_v04": "KIRMIZI",
+     "aciklama": "prepare undefined döndürüyor (3 kip)"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY06",
+     "hedef_madde": "kurulum",
+     "once_v04": "YESIL",
+     "aciklama": "oyun başladı"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY07",
+     "hedef_madde": "madde 17 / FAZ1-9 LOD yarışı",
+     "once_v04": "YESIL",
+     "aciklama": "eski seg 32 sonucu geç geldi, yok sayıldı; son seg 80 (beklenen, gerileme koruması)"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY08",
+     "hedef_madde": "FAZ1-8 silinen karo",
+     "once_v04": "YESIL",
+     "aciklama": "sahipsiz ağ yok"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY09",
+     "hedef_madde": "madde 8 / A-12",
+     "once_v04": "KIRMIZI",
+     "aciklama": "A bitince B odağında 12 sn kaldı (≥ 60 beklenir)"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY10",
+     "hedef_madde": "madde 9 / A-13",
+     "once_v04": "KIRMIZI",
+     "aciklama": "_gridCache 24"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY11",
+     "hedef_madde": "madde 12 / A-07",
+     "once_v04": "KIRMIZI",
+     "aciklama": "8 km dolaşımda 600 m ötesinde 83 derin karo"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY12",
+     "hedef_madde": "madde 4 / A-09 hayalet yuva, failures ≤ 50",
+     "once_v04": "YESIL",
+     "aciklama": "tarayıcıda hayalet 0 (A-09 yalnız Node'da kırmızı; açıklandı)"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY13",
+     "hedef_madde": "madde 11 / A-06 / KI-154",
+     "once_v04": "KIRMIZI",
+     "aciklama": "bütçe+4 ms'yi aşan dilim: 20/14/17, en uzun 31/34/28 ms (bütçe 10)"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY14",
+     "hedef_madde": "madde 12 / A-07 yedek kipte",
+     "once_v04": "KIRMIZI",
+     "aciklama": "83 derin karo"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY15",
+     "hedef_madde": "FAZ1-6 askıda iş yok",
+     "once_v04": "YESIL",
+     "aciklama": "bütün işler bitti"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY16",
+     "hedef_madde": "geometri sızıntısı",
+     "once_v04": "YESIL",
+     "aciklama": "1479 oluşturuldu, 1238 atıldı, canlı 241 = ağ 241"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY00–LY16 (ctorthrow/noready/hang/crash1)",
+     "hedef_madde": "madde 14, 17 yeni kiplerde açılış",
+     "once_v04": "UYGULANAMAZ",
+     "aciklama": "kipler v0.4'te yok (test API'si yok); koşulmadı"
+    },
+    {
+     "test": "02_arazi_isci_hata.js",
+     "kimlik": "HI00/HI02",
+     "hedef_madde": "kurulum",
+     "once_v04": "YESIL",
+     "aciklama": "3 işçi; oyun başladı"
+    },
+    {
+     "test": "02_arazi_isci_hata.js",
+     "kimlik": "HI01",
+     "hedef_madde": "madde 17 'error' iletisi",
+     "once_v04": "YESIL",
+     "aciklama": "söz 6 ms'de reddedildi, işçi ölmedi"
+    },
+    {
+     "test": "02_arazi_isci_hata.js",
+     "kimlik": "HI03",
+     "hedef_madde": "madde 3 / A-05 geri çekilme",
+     "once_v04": "KIRMIZI",
+     "aciklama": "12 sn'de 75 istek (≤ 5 beklenir)"
+    },
+    {
+     "test": "02_arazi_isci_hata.js",
+     "kimlik": "HI04",
+     "hedef_madde": "madde 3 / A-05 failures",
+     "once_v04": "KIRMIZI",
+     "aciklama": "75"
+    },
+    {
+     "test": "02_arazi_isci_hata.js",
+     "kimlik": "HI05",
+     "hedef_madde": "madde 3, 17 / A-05 MAX_TRIES",
+     "once_v04": "KIRMIZI",
+     "aciklama": "3 işçi öldü, ızgara reddedildi"
+    },
+    {
+     "test": "02_arazi_isci_hata.js",
+     "kimlik": "HI06",
+     "hedef_madde": "FAZ1-6",
+     "once_v04": "YESIL",
+     "aciklama": "kalan işler bitti"
+    },
+    {
+     "test": "02_arazi_isci_hata.js",
+     "kimlik": "HI07",
+     "hedef_madde": "madde 3 / A-15",
+     "once_v04": "KIRMIZI",
+     "aciklama": "1 işçi canlı ama fallback=true"
+    },
+    {
+     "test": "02_arazi_isci_hata.js",
+     "kimlik": "HI08",
+     "hedef_madde": "62-2",
+     "once_v04": "YESIL",
+     "aciklama": "96 ağ"
+    },
+    {
+     "test": "02_ayar_lod.js",
+     "kimlik": "AL00",
+     "hedef_madde": "gerileme koruması",
+     "once_v04": "YESIL",
+     "aciklama": "varsayılan 1"
+    },
+    {
+     "test": "02_ayar_lod.js",
+     "kimlik": "AL01",
+     "hedef_madde": "madde 16 / A-19 / KI-038",
+     "once_v04": "KIRMIZI",
+     "aciklama": "0,7 (0,553 beklenir)"
+    },
+    {
+     "test": "02_ayar_lod.js",
+     "kimlik": "AL02",
+     "hedef_madde": "madde 16",
+     "once_v04": "KIRMIZI",
+     "aciklama": "ses değişince 0,7 → 0,79"
+    },
+    {
+     "test": "02_ayar_lod.js",
+     "kimlik": "AL03",
+     "hedef_madde": "madde 16",
+     "once_v04": "KIRMIZI",
+     "aciklama": "%100'de 1 (0,7 beklenir)"
+    },
+    {
+     "test": "02_ayar_lod.js",
+     "kimlik": "AL04",
+     "hedef_madde": "madde 16 yenileme",
+     "once_v04": "KIRMIZI",
+     "aciklama": "0,7"
+    },
+    {
+     "test": "02_ayar_lod.js",
+     "kimlik": "AL05",
+     "hedef_madde": "madde 16",
+     "once_v04": "YESIL",
+     "aciklama": "0,7"
+    },
+    {
+     "test": "02_ayar_lod.js",
+     "kimlik": "AL06",
+     "hedef_madde": "madde 16 karo sayısı",
+     "once_v04": "KIRMIZI",
+     "aciklama": "90/90 (Node'da 0,553 ile 73/90 = 0,81 → eşik karşılanabilir)"
+    },
+    {
+     "test": "02_ayar_lod.js",
+     "kimlik": "AL07",
+     "hedef_madde": "madde 16",
+     "once_v04": "YESIL",
+     "aciklama": "1"
+    },
+    {
+     "test": "02_ayar_lod.js",
+     "kimlik": "AL08",
+     "hedef_madde": "madde 16 / KI-130",
+     "once_v04": "KIRMIZI",
+     "aciklama": "2048"
+    },
+    {
+     "test": "02_ayar_lod.js",
+     "kimlik": "AL09",
+     "hedef_madde": "madde 16 / KI-130",
+     "once_v04": "KIRMIZI",
+     "aciklama": "yenilemeden sonra 2048"
+    },
+    {
+     "test": "02_ayar_lod.js",
+     "kimlik": "AL10",
+     "hedef_madde": "madde 16",
+     "once_v04": "YESIL",
+     "aciklama": "1"
+    },
+    {
+     "test": "02_depolama_kapali.js",
+     "kimlik": "DK01",
+     "hedef_madde": "gerileme koruması",
+     "once_v04": "YESIL",
+     "aciklama": "normal açılış"
+    },
+    {
+     "test": "02_depolama_kapali.js",
+     "kimlik": "DK02",
+     "hedef_madde": "kurulum",
+     "once_v04": "YESIL",
+     "aciklama": "SecurityError etkin"
+    },
+    {
+     "test": "02_depolama_kapali.js",
+     "kimlik": "DK03",
+     "hedef_madde": "madde 15 / A-18 / KI-037",
+     "once_v04": "KIRMIZI",
+     "aciklama": "__ready yok; 'Oyun başlatılamadı: … WebGL'"
+    },
+    {
+     "test": "02_depolama_kapali.js",
+     "kimlik": "DK04–DK06",
+     "hedef_madde": "madde 15 (+A-04 metni)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "menü yok, yanıltıcı WebGL metni var, bildirim yok"
+    },
+    {
+     "test": "02_depolama_kapali.js",
+     "kimlik": "DK07–DK10",
+     "hedef_madde": "madde 15 / 62-7",
+     "once_v04": "KIRMIZI",
+     "aciklama": "açılış düştüğü için arayüz ve DK yok (adım hataları dahil)"
+    },
+    {
+     "test": "02_depolama_kapali.js",
+     "kimlik": "DK11",
+     "hedef_madde": "madde 15",
+     "once_v04": "KIRMIZI",
+     "aciklama": "SecurityError konsol hatası 1"
+    },
+    {
+     "test": "02_acilis_akisi.js",
+     "kimlik": "AA01–AA08",
+     "hedef_madde": "madde 19 / 62-6, 62-7, 62-8",
+     "once_v04": "YESIL",
+     "aciklama": "menü, paneller, oluşturucu (ad/cinsiyet), yeni oyun (19 ağ, derinlik 12 m, zeminde), Kaydet"
+    },
+    {
+     "test": "02_acilis_akisi.js",
+     "kimlik": "AA09",
+     "hedef_madde": "62-8 menüye dönüş",
+     "once_v04": "YESIL",
+     "aciklama": "kart ve menü görünür"
+    },
+    {
+     "test": "02_acilis_akisi.js",
+     "kimlik": "AA09b",
+     "hedef_madde": "madde 19 menüde fare kilidi",
+     "once_v04": "KIRMIZI",
+     "aciklama": "iki dönüşte de pointerLockElement var; DEVAM ET tıklanamıyor (deneme1–3): yeni bulgu"
+    },
+    {
+     "test": "02_acilis_akisi.js",
+     "kimlik": "AA10–AA11",
+     "hedef_madde": "62-8 kayıt yükleme",
+     "once_v04": "YESIL",
+     "aciklama": "kilit bırakılınca DEVAM ET yeni oyuncuyla yükler; konum farkı 0, altın 777, envanter aynı"
+    },
+    {
+     "test": "02_acilis_akisi.js",
+     "kimlik": "AA12–AA16",
+     "hedef_madde": "62-10 dünya değişimi",
+     "once_v04": "YESIL",
+     "aciklama": "yuva 2 Kaptan İki, 150 altın, 3 muz; sahne 329/329, geometri 783/754, gemi 1; yuva 1 bozulmadı"
+    },
+    {
+     "test": "02_acilis_akisi.js",
+     "kimlik": "AA17",
+     "hedef_madde": "madde 19",
+     "once_v04": "YESIL",
+     "aciklama": "sayfa yenilenmedi"
+    },
+    {
+     "test": "02_arazi_yedek.js",
+     "kimlik": "AYK-01",
+     "hedef_madde": "madde 18a / KI-149",
+     "once_v04": "YESIL",
+     "aciklama": "normal, noworker, crash ×3, badurl"
+    },
+    {
+     "test": "02_arazi_yedek.js",
+     "kimlik": "AYK-02",
+     "hedef_madde": "madde 18a / KI-149",
+     "once_v04": "YESIL",
+     "aciklama": "aynı 6 koşu"
+    },
+    {
+     "test": "02_arazi_yedek.js",
+     "kimlik": "AYS-01",
+     "hedef_madde": "madde 20 / KI-234",
+     "once_v04": "KIRMIZI",
+     "aciklama": "normal 368, noworker 1475, badurl 1756, crash 365 / 36481 / 1381 ms → aralıklı (6 koşudan 1'i)"
+    },
+    {
+     "test": "02_arazi_yedek.js",
+     "kimlik": "AYK-01/02, AYS-01 (ctorthrow/noready/hang/crash1)",
+     "hedef_madde": "madde 14, 18a",
+     "once_v04": "UYGULANAMAZ",
+     "aciklama": "kipler v0.4'te yok; koşulmadı"
+    },
+    {
+     "test": "02_arazi_yedek.js",
+     "kimlik": "eski 12 kontrol",
+     "hedef_madde": "62-1..5",
+     "once_v04": "YESIL",
+     "aciklama": "6 koşunun hepsinde 12/12"
+    },
+    {
+     "test": "00_acilis.js",
+     "kimlik": "AC01",
+     "hedef_madde": "madde 17 / A-10 / KI-158",
+     "once_v04": "KIRMIZI",
+     "aciklama": "menu→playing geçişinde oyuncu yok (oyuncu:false)"
+    },
+    {
+     "test": "00_acilis.js",
+     "kimlik": "AC02",
+     "hedef_madde": "madde 6 / A-10",
+     "once_v04": "KIRMIZI",
+     "aciklama": "'loading' durumu hiç yok"
+    },
+    {
+     "test": "00_acilis.js",
+     "kimlik": "eski 6 kontrol",
+     "hedef_madde": "62-1, 6, 7",
+     "once_v04": "YESIL",
+     "aciklama": "6/6"
+    }
+   ],
+   "kosular": [
+    {
+     "ne": "Node arazi_sozlesme, v0.4",
+     "komut": "node tests/node/arazi_sozlesme.mjs --kok /home/user/SON-HAZ-NE --rapor docs/v05/kosular/faz1/b/once_v04/arazi_sozlesme.json",
+     "sonuc": "GECTI 36/36 (çıkış 0)"
+    },
+    {
+     "ne": "Node arazi_kuyruk, v0.4",
+     "komut": "node tests/node/arazi_kuyruk.mjs --kok /home/user/SON-HAZ-NE --rapor docs/v05/kosular/faz1/b/once_v04/arazi_kuyruk.json",
+     "sonuc": "KALDI 67/89 (çıkış 1). Kalan: KY01d, KY03a, KY05a, KY06a, KY07c, KY09a, KY11a, KY11b, KY11-D, KY12a, KY13a, KY14a, KY14b, KY18, KY19b, KY20a, KY20b, KY20-D, KY21, KY22, KY23, KY24b. Süre ~90 sn"
+    },
+    {
+     "ne": "Negatif deneme (depo dışı): heightAt çift doğrusal yapılmış v0.4 kopyası",
+     "komut": "node tests/node/arazi_sozlesme.mjs --kok <scratchpad>/negkok",
+     "sonuc": "SZ18 FAIL (en büyük fark 2,46 m), 35/36: test hatayı yakalıyor"
+    },
+    {
+     "ne": "Karşılanabilirlik denemesi (depo dışı): brief'teki en küçük A-08/A-09/A-11/A-13 düzeltmeleri uygulanmış v0.4 kopyası",
+     "komut": "node tests/node/arazi_kuyruk.mjs --kok <scratchpad>/onizkok --sadece KY01,KY12,KY13,KY14,KY19,KY20,KY21,KY24",
+     "sonuc": "GECTI 32/32: hedeflenen kırmızılar düzeltmeyle yeşile dönüyor"
+    },
+    {
+     "ne": "00_acilis normal",
+     "komut": "timeout 590 /home/user/devtools/tk node tests/harness/run.cjs tests/scenarios/00_acilis.js --url http://localhost:8080/index.html --size 640x360 --timeout 540 --report docs/v05/kosular/faz1/b/once_v04/00_acilis.json",
+     "sonuc": "KALDI 6/8 (AC01, AC02)"
+    },
+    {
+     "ne": "02_arazi_yedek: normal / noworker / crash / badurl / crash#2 / crash#3",
+     "komut": "aynı komut; ?terrain=noworker|crash|badurl; badurl için ayrıca --izin-hata 'terrainWorker\\.missing\\.js$ # badurl kipi işçi adresini kasıtlı olarak var olmayan dosyaya çevirir; 3 × 404 + 3 × requestfailed beklenir' (rapor: 02_arazi_yedek_<kip>.json, _crash_tekrar2/3)",
+     "sonuc": "15/15, 15/15, 15/15, 15/15 (izinli ağ 6), 14/15 (AYS-01: prepare 36481 ms), 15/15. Uzak prepare: 368 / 1475 / 365 / 1756 / 36481 / 1381 ms"
+    },
+    {
+     "ne": "02_hizli_yolculuk normal ve noworker",
+     "komut": "… tests/scenarios/02_hizli_yolculuk.js --url http://localhost:8080/index.html[?terrain=noworker] … --report …/02_hizli_yolculuk_{normal,noworker}.json",
+     "sonuc": "normal KALDI 17/24 (HYU-02, HY10, HY11, HY13, HY14, HY17, HY18); noworker KALDI 16/24 (+HYS-01 33366 ms). Varışta ilk kare 31,4 / 37,1 sn"
+    },
+    {
+     "ne": "02_arazi_yasam normal / noworker / crash",
+     "komut": "… tests/scenarios/02_arazi_yasam.js --url …[?terrain=noworker|crash] …",
+     "sonuc": "üçü de KALDI 11/17 (LY05, LY09, LY10, LY11, LY13, LY14)"
+    },
+    {
+     "ne": "02_arazi_isci_hata normal",
+     "komut": "… tests/scenarios/02_arazi_isci_hata.js --url http://localhost:8080/index.html …",
+     "sonuc": "KALDI 5/9 (HI03, HI04, HI05, HI07); izinli konsol 76 (enjekte 'error' iletileri)"
+    },
+    {
+     "ne": "02_ayar_lod",
+     "komut": "… tests/scenarios/02_ayar_lod.js --url http://localhost:8080/index.html …",
+     "sonuc": "KALDI 4/11 (AL01–AL04, AL06, AL08, AL09). İlk koşunun günlüğü betik yarıda değişince bozulduğu için temiz olarak yeniden koşuldu; sonuç aynı"
+    },
+    {
+     "ne": "02_depolama_kapali",
+     "komut": "… tests/scenarios/02_depolama_kapali.js --url http://localhost:8080/index.html …",
+     "sonuc": "KALDI 2/11; izinsiz konsol 1 (SecurityError), adım hatası 5 (açılış düştüğü için)"
+    },
+    {
+     "ne": "02_acilis_akisi (son sürüm) ve deneme1–3",
+     "komut": "… tests/scenarios/02_acilis_akisi.js --url http://localhost:8080/index.html … (deneme1–3 kayıtları: 02_acilis_akisi_deneme{1,2,3}.{log,json})",
+     "sonuc": "Son: KALDI 17/18 (yalnız AA09b). Deneme1–3: DEVAM ET tıklanamadı ('section#menu intercepts pointer events'); deneme1'de AA11/AA15 yanlış geçti. Bu yüzden kontroller sıkılaştırıldı ve exitPointerLock geçici çözümü eklendi"
+    },
+    {
+     "ne": "Tanı koşuları (depo dışı, scratchpad/b_deneme)",
+     "komut": "tani_b/hy_tani{1..4}.js, menu_tani{,2}.js (aynı koşucu, kilitle)",
+     "sonuc": "hy_tani3: ilk kare 32 sn; renderer.render 1,56 sn; program 95→102; islands._build 75 ms. hy_tani4 (noworker): prepare 334 ms, 0 kare. menu_tani/2: menüde pointerLockElement=true, elementFromPoint düğmeyi buluyor. Ayrıca ilk hizli denemesinde ardışık üç uzak varıştan sonra renderer cgroup OOM ile çöktü (dmesg)"
+    }
+   ],
+   "test_edilemeyenler": [
+    "Yeni ?terrain kipleri (ctorthrow, noready, hang, crash1) v0.4'te yok: AYK-01/02, AYS-01 ve LY00–LY16 bu kiplerde 'önce' koşusunda UYGULANAMAZ. Hazır sinyali yok, askı ve MAX_TRIES dalları önce yalnız Node'da sahte işçiyle (KY05, KY06, KY09) ve tarayıcıda Worker sarmalayıcısıyla (HI05) kırmızı gösterildi.",
+    "w2'ye (8081) karşı 'sonra' koşusu yapılmadı (A2 sürüyor; brief gereği). Senaryolar DK.terrain, DK.G, DK.handlers, DK.ports, DK.archipelago, DK.physics, DK.port, DK.time, DK.save, DK.settings, DK.sky, DK.engine, DK.THREE, DK.snapFrom, DK.sim ve iç adlara (_apply, _requestTile, _drop, _lanes, _localSlice, _land, _jobs, workers[].jobs, focus, _gridCache, _enqueue) dayanıyor. A2/B bunları değiştirirse ilgili kontrol 'iç ad yok' diye KALIR.",
+    "A-03'ün konuk tarafı (net 'teleport' işleyicisi): co-op koşucusu ve A2'nin coop dosyaları gerektiği için yazılmadı.",
+    "A-02 tarayıcıda açılış düzeyinde (initMapBase reddinde menünün açılması) sınanmadı; yalnız terrain düzeyi var: KY09, KY10, HI01, HI05. A-04 (import map yok / modül 404) ve A-16 (tek dosya 'null' köken) kapsam dışında kaldı. DK05 yalnız depolama engelinde yanıltıcı WebGL metnine bakıyor.",
+    "A-10'un yükleme katmanının görünürlüğü ve 'duraklatma menüsü G.player şartı' sınanmadı: AC02 yalnız G.state 'loading'e bakıyor. A-11'in 'yükleme metni gecikmenin nedenini gösterir' kısmı ve A-03'ün prepare 'timeout' bildirimi tarayıcıda sınanmadı (Node KY19b dönüş değerini denetliyor).",
+    "A-15'in '30 sn içinde işçi sayısı geri gelir' kısmı yalnız Node'da (KY07c), tarayıcıda yok.",
+    "HYU-04 piksel ölçümü 'arazi rengi' eşleştirmesi değil: arazi grubu gizlenmiş ve görünür iki çizim arasındaki piksel farkı (≥ %5; v0.4'te %5,96, eşiğe yakın). Gerçek GPU, Firefox ve Safari yok; bütün tarayıcı ölçümleri yazılımsal WebGL (SwiftShader) üzerinde.",
+    "AYS-01 ve HYS-01 bu ortamda aralıklı. Yavaş durum ana iş parçacığı/GPU duraklamasından geliyor; hangi işin bloke ettiği (gölgelendirici derleme mi, başka bir çizim işi mi) kesin ölçülmedi, yalnız dilim, boşluk ve kare süreleri kaydedildi."
+   ],
+   "beklenmeyen_yesiller": [
+    "AYS-01 (KI-234: v0.4 crash 28,8 sn, badurl 13,9 sn): bugünkü crash koşularının 2'si yeşil (0,37 ve 1,38 sn), 1'i kırmızı (36,5 sn). badurl 1,76 sn ile yeşil. Test zayıf değil, hata aralıklı ve kaynağı arazi kuyruğu değil. Kanıt: yavaş crash koşusunda 52 yerel dilim toplam 655 ms, dilimler arası boşluk toplam 36 sn, tek kare aralığı 18,5 sn. Hızlı koşularda prepare boyunca 0 kare çizildi, yani yerel pompa kareleri aç bırakıyor. Node'da crash ve noworker aynı süreyi veriyor (KY08b: 137 / 148 ms).",
+    "KY08b (Node, KI-234) yeşil: Node'da çizim ya da kare olmadığı için tarayıcıdaki duraklama oluşmuyor. Bu, çökme sonrası kuyruk mantığının noworker ile aynı çalıştığını, KI-234'ün kuyruk dışından geldiğini gösteriyor.",
+    "LY12 (tarayıcıda hayalet iş yuvası 0), A-09 Node'da KY20a/b/-D ile kırmızıyken yeşil. Hayalet yuva, sonlandırılmış işçinin iletisinin terminate'ten sonra teslim edilmesini gerektiriyor (denetim güveni 'orta'). Chromium'da bu olmuyor, yani normal oyunda tetiklenmiyor. Hata kod yolunda var ve Node'daki sahte işçiyle kanıtlandı.",
+    "HYS-01 normal kipte yeşil (272 ms); KI-234 zaten işçisiz ve çöken kipleri anlatıyor. noworker'da bir koşuda 33,4 sn ile kırmızı, tanı koşusunda (hy_tani4) 334 ms ile yeşil: AYS-01 ile aynı aralıklı duraklama."
+   ],
+   "bulunan_hatalar": [
+    {
+     "baslik": "Ana menüye dönüşte fare imleci kilitli kalıyor; menü düğmelerine (DEVAM ET, DÜNYALAR) tıklanamıyor",
+     "kanit": "02_acilis_akisi.log: AA09b FAIL ve iki dönüşte de kilitVardi:true. deneme1–3: Playwright 'section#menu intercepts pointer events' ile DEVAM ET tıklanamadı. menu_tani/menu_tani2 (scratchpad/b_deneme): Esc → Ana menüye dön → Evet sonrası document.pointerLockElement=true, elementFromPoint ise düğmeyi buluyor.",
+     "kok_neden": "js/ui/ui.js:64: ui.close() son paneli kapatırken G.state==='playing' ise setTimeout(() => input.lockPointer(), 30) kuruyor. Onay penceresinin 'Evet' düğmesi (ui.js:95) önce close(), sonra onYes() → handlers.toMenu() çağırıyor. toMenu (main.js:216-224) unlockPointer'ı hemen yapıyor; 30 ms sonra çalışan lockPointer (input.js:95-98, G.state'e bakmıyor) kilidi menüdeyken yeniden alıyor."
+    },
+    {
+     "baslik": "Hızlı yolculukla ek limanlara (Kuzeyfener vb.) varışta oyuncu iskelenin yanına konup suya düşüyor",
+     "kanit": "02_hizli_yolculuk_{normal,noworker}.log HYU-02: ilk karede y=1,57 iken zemin −8,07; 200 ms sonra mod 'swim', y −1,74…−2,35. Biniş noktasında floorAt 2 sn sonra da −8,07 (deniz tabanı).",
+     "kok_neden": "js/world/ports.js:47: biniş noktası = iskele ucu + px·2,6 − dx·3, yani iskele ekseninden 2,6 m yanda. js/world/islands.js _pier platformu physics.addPlatform(mx, mz, 2.5, L/2, …) ile yarı genişliği 2,5 m. Biniş noktası yürünebilir platformun 0,1 m dışında kalıyor ve main.js:293 oyuncuyu boarding.y+0,3'e koyuyor."
+    },
+    {
+     "baslik": "KI-234 aralıklı ve arazi kuyruğundan değil, ana iş parçacığı/GPU duraklamasından geliyor",
+     "kanit": "02_arazi_yedek crash: 365 / 36481 / 1381 ms. Yavaş koşunun tanı satırı: 52 dilim toplam 655 ms, boşluk toplam 35967 ms, en uzun boşluk 18514 ms, 44 kare, en uzun kare aralığı 18529 ms. noworker hızlı yolculukta prepare bir kez 33366 ms, tanıda 334 ms. Hızlı koşularda prepare boyunca kare sayısı 0. Node KY08b: crash 137 ms, noworker 148 ms.",
+     "kok_neden": "Kanıta dayalı olasılık: prepare penceresine uzun bir çizim/GPU duraklaması (yazılımsal WebGL'de gölgelendirici derleme ya da benzeri) denk gelince yerel dilimler saniyelerce çalışamıyor. Diğer koşularda MessageChannel tabanlı yerel pompa kareleri tümüyle aç bırakıyor; prepare hızlı bitiyor ama oyun donuyor. Kuyruktaki çökme mantığı noworker ile aynı. terrain.js'deki bir düzeltme tek başına AYS-01'i güvenilir biçimde yeşile çevirmeyebilir."
+    },
+    {
+     "baslik": "Uzak limana varıştan sonraki ilk kare 26–37 sn gecikiyor (yazılımsal WebGL)",
+     "kanit": "02_hizli_yolculuk_normal: ilk kare 31423 ms, terrain.prepare 272 ms. hy_tani3: ilk kare 32095 ms; renderer.render 1561 ms; ardından ~25 sn boyunca 50 ms'yi aşan JS çağrısı yok; gölgelendirici programları 95→102; islands._build(kuzeyfener) 75 ms; ışık sayısı 9→9.",
+     "kok_neden": "Olasılık: varışta ilk kez çizilen malzemeler için 7 yeni gölgelendirici programı derleniyor ve GPU süreci kareleri durduruyor. Gerçek GPU'daki büyüklüğü bilinmiyor; Faz 8 (ön derleme) konusu."
+    },
+    {
+     "baslik": "Ardışık uzak liman varışlarında bellek patlaması; ilk denemede tarayıcı bellek sınırında çöktü",
+     "kanit": "İlk 02_hizli_yolculuk denemesi: PAGECRASH ve dmesg 'oom-kill … chrome-headless … anon-rss:6219816kB' (cgroup sınırı 14,3 GB). CDP embedderMB tek varışta 3,5 → 1105 MB.",
+     "kok_neden": "Bilinmiyor (Faz 8). Senaryo, her bölümde sayfa yenilenecek biçimde dört bölüme ayrılarak bu durumdan kaçınıldı."
+    }
+   ]
+  },
+  "r": {
+   "incelenen": "İncelenen ağaç /home/user/SON-HAZ-NE-w2. HEAD görevde yazan 5479e3b değil, 29315b5. Oyun koduna ve izlenen dosyalara dokunmadım; çalışma ağacında yalnız once_v04/ altına inceleme_* dosyaları ekledim.\n\nİncelenen test dosyaları:\n- Değişikliği okunan iki senaryo: 00_acilis ve 02_arazi_yedek.\n- Yeni senaryolar: 02_hizli_yolculuk, 02_arazi_yasam, 02_ayar_lod, 02_depolama_kapali, 02_acilis_akisi. Listede yok ama izlenmeyen dosyalar arasında olan 02_arazi_isci_hata.js de incelendi.\n- Node testleri: arazi_sozlesme.mjs, arazi_kuyruk.mjs.\n- Bunlara ek olarak faz1b_brief madde 1–20, audit_A (A-01…A-17), dogrulama_A, B0 kontrol tablosu, docs/v05/kosular/faz1/b/once_v04 altındaki bütün \"önce\" günlükleri ve aynı v0.4 koduna ait önceki koşular (taban_kosusu_44d548c, once_v04_tam, once_v04_yeni_kosucu) okundu. Koşucunun tikla ve karsilastir kodu da okundu.\n\nKendi koşularım (hepsi kilitli, hepsi v0.4/8080'e karşı; günlük ve raporlar /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/inceleme_* altında):\n- inceleme_hy13_zamanlama: HY13/HY14'ün zamanlama tanısı.\n- inceleme_02_hizli_yolculuk_noworker_tekrar2: senaryonun aynısı, ikinci noworker koşusu.\n- inceleme_a02_acilis_izgara: madde 1'in açılış yolunun v0.4'te sınanabilirliği.\n\nNode deneyleri (/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_b0/):\n- lod_oran.mjs: AL06 eşiği.\n- ly08_esdeger.mjs: LY08'in mutasyona duyarlılığı.\n- mut/m1, m3, m8: v0.4 kopyası üzerinde mutasyonlar.\n\nDoğrulanan olumlu noktalar:\n- 02_acilis_akisi arayüzde gerçek Playwright tıklaması (locator.click) kullanıyor. DK.handlers kısayolu yok. İstisnalar senaryoda yazılı: ad kutusu DOM input olayıyla dolduruluyor, altın ve envanter DK ile hazırlanıyor, işaretçi kilidi document.exitPointerLock ile bırakılıyor.\n- Uzak ada ışınlanması oyunun kendi fastTravel işleyicisinden yapılıyor (5348 m) ve iki kipte de koşuluyor.\n- HYU-04'ün \"arazi görünür\" ölçümü renge bakmıyor; arazi açıkken ve gizliyken alınan iki kareyi karşılaştırıyor, yani gök ya da deniz rengiyle karışmıyor. Değer 0,0591–0,0596 ile 0,05 eşiğinin üstünde; sonuç belirlenimci ama pay dar.\n- AL06 eşiği doğru bir düzeltmeyle sağlanabiliyor (Node hesabı: 73/90 = 0,81 ≤ 0,85).\n- SZ18 mutasyonu yakalıyor: çift doğrusal heightAt'ta 2,46 m fark buluyor. KY15 de _depthSeq denetimi kaldırılınca kalıyor.\n- 02_ayar_lod ve 02_depolama_kapali v0.4'te doğru nedenle kırmızı. Node testlerinde kırmızı çıkan kontrollerin değerleri denetimin anlattığı kusurlarla uyuşuyor.\n- \"UYGULANAMAZ\" etiketi kurala uygun: ctorthrow, noready, hang ve crash1 kipleri v0.4'te yok, bilinmeyen kip değeri normal kip gibi çalışıyor. Ancak bu davranışlar v0.4'te de Worker sarmalayıcısıyla üretilebilirdi; ayrıntısı B0-I11'de.\n\nAna sorunlar:\n- AYS-01 ve HY10 aynı v0.4 kodunda yeşil verebildi.\n- KI-234'ün \"çökme kipine özgü\" varsayımı ölçümlerle tutmuyor.\n- Brief'in 1. ve 2. maddeleri, ayrıca 13. madde hiçbir testle karşılanmıyor. 6. ve 7. maddeler ise ancak kısmen karşılanıyor.",
+   "bulgular": [
+    {
+     "kimlik": "B0-I01",
+     "onem": "yuksek",
+     "dosya": "tests/scenarios/02_arazi_yedek.js",
+     "satir": "40 (tanı satırı 32-37)",
+     "baslik": "AYS-01 (KI-234, ≤ 3 sn) aynı v0.4 kodunda bazen geçiyor bazen kalıyor; ölçtüğü gecikme çökme kipine özgü değil, KI-234 düzeltmesinin kanıtı olamaz",
+     "senaryo": "B, crash kipinde kuyruğa hiçbir düzeltme yapmasa bile AYS-01 koşuların çoğunda geçer: v0.4'te B önce koşularının 3'ünden 2'si geçti. Tersine, düzeltme yapılsa bile koşuya bir çizim duraklaması denk gelirse kalır. 'Önce kırmızı, sonra yeşil' çifti KI-234'ün düzeldiğini göstermez.",
+     "kanit": "Aynı senaryo (5fa025166c35) ve aynı v0.4 (44d548c) ile crash kipinde uzak prepare süresi (prepMs):\n- 365 ms → geçti\n- 36481 ms → kaldı (02_arazi_yedek_crash_tekrar2.log)\n- 1381 ms → geçti (tekrar3)\n\nAynı koda karşı önceki koşular:\n- crash: 28771 / 1260 / 27193 ms\n- badurl: 1815 / 13877 (once_v04_tam) / 27281 (once_v04_yeni_kosucu) / 1756 ms\n- noworker: 1561 / 1261 / 1475 ms\n\nUzak prepare başladığında crash ve badurl kipinin durumu aynı: workers 0, fallback true, failures 4, beklemeMs 0. v0.4 işçiyi yeniden başlatmıyor (_initWorkers yalnız init'te çağrılıyor, _workerFailed işçi kurmuyor). Yani açılıştan sonra kuyruk açısından crash, badurl ve noworker aynı.\n\nYavaş koşuda (tekrar2):\n- Yerel üretimin toplam süresi (dilimToplamMs) 655 ms, prepare ise 36481 ms sürdü.\n- En uzun dilim boşluğu (enUzunBosluk) 18513,6 ms, en uzun kare (enUzunKareMs) 18529 ms: yaklaşık 18,5 sn'lik tek bir ana iş parçacığı duraklaması.\n\nHızlı koşularda kareSayisi 0.\n\nNode KY08b (v0.4, bütün işçiler çökmüş, aynı uzak prepare) 137 ms sürdü. AYS-01'in kendi etiketi de 'badurl 13,9 sn' ölçümünü anıyor.",
+     "oneri": "- Eşiği duvar saatine koymayın. Yerel kuyruk işini ölçün: dilim toplamı, aynı işin işçiye kaç kez yeniden gönderildiği.\n- Duvar saatini aynı sayfada crash ve noworker için en az 3 kez ölçüp medyan ya da oranla karşılaştırın, ya da bu kontrolü OLCUM yapın.\n- KI-234'ün tanımını düzeltin: badurl'de de 13,9–27,3 sn ölçüldü. Kök neden adayı yedek kipte çizim/derleme duraklaması ve zamanlayıcı.\n- Brief'in kök neden önerileri (yeniden başlatılan işçiye tekrar iş verilmesi, iş zaman aşımı, geri çekilme) v0.4'te bulunmayan yolları hedefliyor."
+    },
+    {
+     "kimlik": "B0-I02",
+     "onem": "yuksek",
+     "dosya": "tests/scenarios/02_hizli_yolculuk.js",
+     "satir": "92, 94, 95 (ayrıca 111/113)",
+     "baslik": "HY10 hatalı v0.4'te yeşil verdi: 'ikinci emit yok sayıldı' sonucu yalnız geminin son konumundan çıkarılıyor",
+     "senaryo": "v0.4'te iki yolculuk da başlıyor ve iki ücret de düşüyor. Buna karşın iki prepare'in bitiş sırası ve döngünün 6 sn'lik kararlılık penceresi gemiyi 'a'da gösterirse HY10 geçiyor. Bu yüzden travelBusy olmadan, ya da ikinci yolculuğu sıraya alan bir düzeltmeyle de HY10 geçebilir. Ücret varışta düşülürse HY11 de aynı anda ölçüldüğü için ikinci ücreti görmeyebilir.",
+     "kanit": "- Benim v0.4 noworker tekrarım (/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/inceleme_02_hizli_yolculuk_noworker_tekrar2.log): HY10 PASS ('a', 47232 ms). Oysa altinSon 1769 = 2000 − 72 − 159; iki ücret de düşmüş, HY11 FAIL.\n- B önce koşuları: normal kipte 'b' (47019 ms), noworker'da 'b' (51285 ms).\n- Üç koşuda da altinSon 1769.\n- Döngü (satır 92), gemi 'a' ya da 'b'de 6 sn kalınca bitiyor. Noworker'da tek bir prepare 33–45 sn sürüyor, yani ikinci yolculuk bitmeden döngüden çıkılabiliyor.\n- HY17'nin yoklaması (satır 111) da yalnız 20 sn sürüyor.",
+     "oneri": "- Varışları sayın: 'arrivedPort' olayını ya da gemi/oyuncu konumundaki sıçramayı kaydedin.\n- prepareIzle'nin kaydettiği bütün prepare'ler bitip 2 sn geçtikten sonra iki şartı birlikte isteyin: tam bir varış olmuş ve o varış A'ya; altın da başlangıç − c_A.\n- HY17'de sabit 20 sn yerine başlatılan prepare'in bitmesini bekleyin."
+    },
+    {
+     "kimlik": "B0-I03",
+     "onem": "yuksek",
+     "dosya": "tests/scenarios/02_arazi_isci_hata.js",
+     "satir": "31-36 (ayrıca tests/node/arazi_kuyruk.mjs:347-379)",
+     "baslik": "Kapsam boşluğu, madde 1 (A-02): açılışta ızgara reddedilince oyun açılmıyor, ama bu açılış yolunu hiçbir test sınamıyor",
+     "senaryo": "B; initMapBase/boot try/catch'ini, geçici parşömeni ve arka planda yerel yeniden denemeyi hiç yapmasa da bütün yeni testler aynı sonucu verir. Brief'in ilk maddesi kanıtsız kalır.",
+     "kanit": "- tests/ altında initMapBase ya da parşömen yalnız arazi_kuyruk.mjs:213'teki bir yorumda geçiyor.\n- HI01 ızgara 'error' iletisini açılıştan SONRA enjekte ediyor ve 'RED' sonucunu da geçer sayıyor.\n- KY09a ve KY10a yalnız requestGrid sözünü ölçüyor, açılışa bakmıyor.\n- Benim v0.4 tanı koşum (/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/inceleme_a02_acilis_izgara.log) 02_arazi_isci_hata'daki Worker sarmalayıcısının aynısını kullandı; açılıştaki 'grid' işi işçiden 'error' alıyor. Sonuç: window.__ready hiç gelmedi. 3,3 sn içinde yükleme metni şuydu: 'Oyun başlatılamadı: inceleme: enjekte ızgara hatasıWebGL destekli güncel bir tarayıcı (Chrome, Edge, Firefox) gerekiyor.'\n- Yani kusur v0.4'te tarayıcıda var ve 20 sn'lik bir senaryoyla kırmızı gösterilebiliyor.",
+     "oneri": "- Adres parametresiyle açılışta 'grid' işine 'hata' ve 'cok' (MAX_TRIES) enjekte eden bir senaryo ekleyin (goto {hazir:false}).\n- Bu senaryo dört şeyi denetlesin: __ready geliyor, menü açılıyor, yükleme metninde WebGL iddiası yok, dünya haritası ızgarası sonunda yerelde üretiliyor."
+    },
+    {
+     "kimlik": "B0-I04",
+     "onem": "orta",
+     "dosya": "tests/scenarios/02_hizli_yolculuk.js",
+     "satir": "74",
+     "baslik": "HYS-01'in noworker kırmızısı KI-234'ten kaynaklanmıyor; nedeni brief'in hedeflemediği 33–45 sn'lik işçisiz hızlı yolculuk gecikmesi",
+     "senaryo": "KI-234 (crash/crash1) düzeltilse de HYS-01 noworker'da kırmızı kalır, ya da düzeltmeyle ilgisiz şanslı bir koşuda yeşile döner. Her iki durumda da kırmızılık yanlış maddeye atfediliyor.",
+     "kanit": "- HYS-01, noworker: 33366 ms (B önce) ve 44718 ms (benim tekrarım). İkincisi terrain.js:380'deki 45 sn üst sınıra 0,3 sn kalmış.\n- Aynı kontrol normal kipte 272 ms.\n- Brief madde 20'nin kabulü yalnız crash ve crash1 için: '≤ 3 sn (noworker'a yakın)'.\n- KNOWN_ISSUES'taki KI-234 kaydı 'işçisiz kipte 1,6 sn' diyor; bu 02_arazi_yedek'in r300 prepare'ine ait. Hızlı yolculuk yolunda işçisiz kip 33–45 sn.\n- B0 tablosu HYS-01'i 'madde 20 / KI-234' diye kırmızı sayıyor.",
+     "oneri": "- HYS-01'i yalnız normal kip için kontrol olarak tutun.\n- İşçisiz hızlı yolculuk için ayrı bir bilinen sorun açın: süre 45 sn sınırına yaklaşıyor ve prepare 'timeout' dönerse oyuncu sessizce eksik hazırlanmış bölgeye varıyor. Hedefini ayrıca koyun ya da kontrolü OLCUM yapın.\n- A-11 sonrasında prepare dönüşünün 'ok' olduğunu ayrıca denetleyin."
+    },
+    {
+     "kimlik": "B0-I05",
+     "onem": "orta",
+     "dosya": "tests/scenarios/02_hizli_yolculuk.js",
+     "satir": "100-104",
+     "baslik": "HY13/HY14'ün önkoşulu denetlenmiyor: v0.4'teki kırmızılık, eski karoların tam ölüm ekranı sırasında düşürülmesine bağlı",
+     "senaryo": "v0.4'te başlangıç prepare odağı 12 sn sürüyor (terrain.js:384) ve uzak derinlik isteklerini bastırıyor (terrain.js:395). Testteki dizi — 6 sn bekleme ve en az 2,2 sn ölüm ekranı (main.js:252) — daha hızlı bir ortamda 12 sn içinde biterse Kırlangıç karoları ve derinlik penceresi yerinde kalır. O durumda HY13 (≥ 6 ağ) ve HY14 (≤ 100 m) v0.4'te geçer; ileride bir A-14 gerilemesi de kaçabilir.",
+     "kanit": "Ölüm anında Kırlangıç çevresindeki ağ sayısı ve derinlik penceresine uzaklık kaydediliyor ama denetlenmiyor:\n- B önce normal: 11 ağ, 24 m.\n- Benim noworker tekrarım: 11 ağ, 24 m.\n- Benim tanı koşum (inceleme_hy13_zamanlama.log, ölüm 1 sn sonra): 11 ağ; odak zaten bitmiş (kalanMs −7432). Başlangıçta 11987 ms olan kalan süre, iki adım arasında yaklaşık 14,5 sn'lik bir ilk-kare duraklaması yüzünden −2526 ms'ye düşmüştü.\n\nÜç koşuda da uyanışın ilk karesinde ag300 0, derinlik penceresi 5,6–5,8 km uzaktaydı. Yani düşürme 2,9–5,2 sn'lik ölüm ekranı aralığında oldu. Önkoşul yalnız B önce noworker koşusunda sağlanmıştı (0 ağ, 5639 m).",
+     "oneri": "- p.die çağrılmadan önce şu koşulu süre sınırıyla bekleyin: Kırlangıç'ın 300 m içinde ağ 0 ve derinlik penceresi 600 m'den uzak.\n- Bunu ayrı bir önkoşul kontrolü olarak yazın; sağlanmazsa senaryo KALSIN."
+    },
+    {
+     "kimlik": "B0-I06",
+     "onem": "orta",
+     "dosya": "tests/scenarios/02_arazi_yedek.js",
+     "satir": "14, 16 (ayrıca 02_arazi_yasam.js:40, 42; tests/node/arazi_kuyruk.mjs:340, 614)",
+     "baslik": "crash/hang kip beklentileri ile KY08a ve KY20b, A-15'in istediği işçi yeniden başlatmayla çelişiyor (uygulamaya bağımlılık)",
+     "senaryo": "B, A-15'i doğru uygular: ölen işçi en çok 2 kez gecikmeli yeniden kurulur. crash kipinde işçi yalnız iş alınca çöker; hang kipinde iş alınca askıda kalır. Kuyruk boşken kurulan işçi boşta canlı kalır.\n\nSonuçları:\n- AYK-02/LY00 crash (workers 0 && fallback) ve hang (fallback true) 45 sn içinde sağlanmaz.\n- KY08a (bosalt'tan sonra workers 0) kalır.\n- KY20'de dalgadan sonra kurulan işçi hiç iş almaz, KY20b kalır.\n\nTestler, bu kiplerde yeniden başlatmanın hiç yapılmamasını ya da gecikmenin kuyruğun boşalma süresinden kısa tutulmasını dayatıyor.",
+     "kanit": "Bu bulgu koşuya değil kod okumasına dayanıyor:\n- terrainWorker.js:8 — `if (self.name === 'test-crash') throw` satırı onmessage içinde.\n- Brief madde 3: 'ölen işçi en çok 2 kez gecikmeli yeniden başlatılsın'. KY07c de 30 sn içinde yeniden 3 işçi bekliyor.\n- KY08a `T.fallback === true && T.workers.length === 0` koşulunu kuyruk boşaltıldıktan sonra ölçüyor.\n- KY20b canlı işçi listesini (canli) dalgadan sonra kuruyor; o sırada yeni kurulmuş işçiye `once[w.no] ?? 0` ile 0 başlangıç değeri veriyor.",
+     "oneri": "Kip beklentilerini gözlenebilir sonuçla yazın:\n- crash: iş alan her işçi ölmüş, yuva başına yeniden başlatma ≤ 2, açılış tamam.\n- hang: zaman aşımı kaydı ≥ 1 ve açılış ≤ normal + 5 sn.\n- KY08a: işçi sayısı yerine 'hiçbir iş MAX_TRIES'tan fazla gönderilmedi ve bütün işler sonuçlandı'.\n- KY20b: yalnız dalgadan önce canlı olan işçilere bakılsın."
+    },
+    {
+     "kimlik": "B0-I07",
+     "onem": "orta",
+     "dosya": "tests/scenarios/02_acilis_akisi.js",
+     "satir": "77 (ölçüm 18)",
+     "baslik": "AA15 (dünya değişimi) kör: birinci dünya limandan hiç ayrılmıyor, ortada kalıntı olabilecek bir şey yok; düşman sayısı ölçülüyor ama karşılaştırılmıyor",
+     "senaryo": "Eski dünyanın uzak bölge karoları, ada içeriği, düşmanları ya da sandıkları yeni dünyaya geçse bile AA15 geçer. Çünkü birinci dünyada bunlar hiç oluşmuyor ve iki dünya aynı başlangıç noktasında ölçülüyor.",
+     "kanit": "- B önce günlüğü, birinci dünya: karo 126, dusman 0, sandik 0, kese 0, oyuncu [2,212].\n- İkinci dünya: karo 129, dusman 0, sandik 0, kese 0, oyuncu [2,212].\n- olcum (satır 18) dusman'ı ölçüyor ama r.ok (satır 77) onu karşılaştırmıyor.\n- Akış: yeni oyun → W 1,2 sn → kaydet → DEVAM ET (aynı yer, konumFark 0) → yuva 2.\n- Test yalnız her zaman var olan nesnelerin çiftlenmesini yakalayabilir (gemi === 1, sahne çocuk sayısı).",
+     "oneri": "- Birinci dünyada uzak bir adaya gidin (ör. hızlı yolculukla Kuzeyfener'e) ve düşman, sandık ve ada içeriği oluşsun; sonra menü → DÜNYALAR → yuva 2'ye geçin.\n- Şunları denetleyin: eski bölgede karo yok, eski adanın içerik grubu sahnede yok, düşman ve sandık listelerinde eski kimlik yok, derinlik penceresi yeni başlangıçta.\n- dusman'ı karşılaştırmaya ekleyin."
+    },
+    {
+     "kimlik": "B0-I08",
+     "onem": "orta",
+     "dosya": "tests/scenarios/02_arazi_yasam.js",
+     "satir": "113-126",
+     "baslik": "LY13 v0.4'ün iç bütçe formülünü kopyalıyor ve sıfır hata payı tanıyor: GC/CPU yüküne kırılgan, kullanıcıya görünen kare süresini de ölçmüyor",
+     "senaryo": "Doğru bir A-06 düzeltmesinden sonra 145–161 dilimden birine denk gelen tek bir GC duraklaması, ya da aynı makinede koşan başka bir iş akışının CPU yükü LY13'ü düşürür. B bütçe kuralını değiştirirse (ör. kuyruk eşiği 30 yerine 10) testin hesapladığı bütçe yanlış olur. Ayrıca yedek kipte saniyelerce hiç kare çizilmemesi hiçbir kontrolde yok.",
+     "kanit": "- Satır 116 v0.4 terrain.js:162'nin kopyası: `q > 30 ? Math.max(this.localBudget, 20) : this.localBudget`. Satır 126'da asim için beklenen değer 0.\n- v0.4 değerleri: asim 20/14/17, en uzun dilim 31 / 34,2 / 27,8 ms. Yani bugün doğru nedenle kırmızı.\n- 02_arazi_yedek tanı satırına göre yedek kipte uzak prepare boyunca kareSayisi 0: noworker 1475 ms, badurl 1756 ms, crash 365 ve 1381 ms. Normal kipte 368 ms'de 7 kare çizilmiş. Bir koşuda tek bir kare 18,5 sn sürmüş.",
+     "oneri": "- Bütçeyi uygulamanın açık bir alanından okuyun.\n- Tek değer yerine dağılım ölçün: p99 ≤ bütçe + 4 ms, en uzun ≤ bütçe + 15 ms. Katı sınırı Node'da belirlenimci biçimde ölçün.\n- Tarayıcıda yedek üretim sürerken en uzun rAF aralığı için ayrı bir kontrol ekleyin."
+    },
+    {
+     "kimlik": "B0-I09",
+     "onem": "orta",
+     "dosya": "tests/scenarios/00_acilis.js",
+     "satir": "5-12",
+     "baslik": "Madde 6 (A-10) yalnız G.state geçiş sırasıyla ölçülüyor; yükleme katmanı, Esc, iptal ve uzak kayıt yükleme test edilmiyor; AC01'in açıklaması koduyla uyuşmuyor",
+     "senaryo": "B; G.state='loading' ekler, oyuncuyu prepare'den önce kurar ve 'playing'i yine prepare'den önce atarsa AC01 (geçişte oyuncu var) ve AC02 (önce loading geçişi var) geçer. Yükleme katmanı görünmese, Esc duraklatmayı açsa, iptal edilen start HUD'u menünün üstünde açsa da hiçbir test kırmızı olmaz.",
+     "kanit": "- Yorum (satır 5-6) 'başlangıç noktası çevresinde bekleyen arazi işi yazılır' diyor; kod (satır 7) yalnız {t, from, to, oyuncu} kaydediyor.\n- AC01'in etiketi '(bölge hazırlığı bittikten)' diyor ama bunu ölçmüyor.\n- A-10'un kabulü: 'Bekleme süresince yükleme katmanı görünür ve Esc duraklatma açmaz. İptal edilen start hiçbir durumu değiştirmez.' Bunu sınayan bir adım yok.\n- 02_acilis_akisi kaydı limanda yüklüyor (konumFark 0, start yaklaşık 0,3 sn), yani iptal edilecek bir bekleme yok.\n- HY16–18 yalnız hızlı yolculuk sırasındaki iptali sınıyor.",
+     "oneri": "- 'loading' süresince prepare'in bitmediğini, yani bekleyen karo/derinlik işi olduğunu kaydedin.\n- Ayrı bir senaryo ekleyin: ?terrain=noworker ile uzak adada kayıt → arayüzden DEVAM ET.\n- Bu senaryo bekleme sırasında dört şeyi denetlesin: #loading görünür, Escape duraklatmayı açmaz, toMenu'dan sonra HUD kapalı ve G.state 'menu', kayıttaki veri değişmez."
+    },
+    {
+     "kimlik": "B0-I10",
+     "onem": "orta",
+     "dosya": "tests/scenarios/02_depolama_kapali.js",
+     "satir": "28",
+     "baslik": "Kapsam boşluğu, madde 2 (A-04) hiçbir testle karşılanmıyor",
+     "senaryo": "B; index.html'e hata yakalayıcıyı, import map denetimini, 30–60 sn __ready uyarısını ve boot().catch iletisinin hata türüne göre ayrılmasını eklemese de bütün testler aynı sonucu verir.",
+     "kanit": "- #load-text yalnız 02_depolama_kapali'da okunuyor. Oradaki DK05 de yalnız 'başlatılamadı|WebGL' metninin YOKLUĞUNA bakıyor.\n- Şunlar için adım yok: import map, HTMLScriptElement.supports, modül 404, __ready zaman aşımı uyarısı.\n- Benim A-02 tanı koşum, v0.4'ün bir arazi hatasında da 'WebGL destekli güncel bir tarayıcı gerekiyor' dediğini gösteriyor. Yani mesajın hata türüne göre ayrılmaması tarayıcıda gözlenebiliyor.",
+     "oneri": "- Başlatma betiğiyle HTMLScriptElement.supports('importmap') false döndürülsün.\n- B0-I03'teki enjeksiyonla arazi hatasında doğru mesajın çıktığı denetlensin.\n- rotaKok ya da bozuk bir kopyayla modül 404 üretilsin; 5 sn içinde anlaşılır bir ileti beklensin.\n- Bir askı durumu yaratılıp __ready uyarısının çıktığı denetlensin."
+    },
+    {
+     "kimlik": "B0-I11",
+     "onem": "orta",
+     "dosya": "tests/scenarios/02_arazi_yedek.js",
+     "satir": "16-17 (ayrıca 02_arazi_yasam.js:42-46)",
+     "baslik": "A-11: tarayıcıda hang/noready kiplerinde açılış süresi ve yükleme metni denetlenmiyor; 'önce' ölçümü yalnız Node'da var",
+     "senaryo": "B, kısa gözetimi ve paralel yerel şeridi yapmasa da, yani açılış 8–20 sn sürse de AYK-02 ve LY00 geçer. İkisi de 45 sn'ye kadar yalnız 'failures ≥ 1 && fallback' koşulunu bekliyor; koşucu __ready'yi 240 sn bekliyor; 'ready in' süresi hiçbir kontrolde kullanılmıyor.",
+     "kanit": "- Bu sürenin tek kontrolü Node'daki KY05a ve KY06a; v0.4'te 8409 ve 20319 ms ölçtüler.\n- 'UYGULANAMAZ' etiketleri kurala uygun: v0.4 terrain.js:47'deki kipler '' | noworker | crash | badurl, bilinmeyen değer normal kip gibi çalışıyor.\n- Yine de aynı davranışlar v0.4'te 02_arazi_isci_hata'daki Worker sarmalayıcısıyla (kurucu2 gibi) üretilebilirdi. Benim A-02 tanı koşum bu yöntemin v0.4'te çalıştığını gösteriyor.\n- Madde 7'deki 'yükleme metnine yansısın' kısmı hiç sınanmıyor.",
+     "oneri": "- hang ve noready için (v0.4'te sarmalayıcıyla üretilen eşdeğerleri de dahil) açılışta __ready süresini ölçüp 'normal + 5 sn' kontrolü ekleyin.\n- Yükleme metninde gecikmenin nedeninin göründüğünü denetleyin.\n- Tarayıcıdaki 'önce' ölçümünü sarmalayıcıyla v0.4'e karşı alın."
+    },
+    {
+     "kimlik": "B0-I12",
+     "onem": "orta",
+     "dosya": "tests/scenarios/02_tek_dosya.js",
+     "satir": "1-11",
+     "baslik": "Kapsam boşluğu: madde 13 (A-16) ve madde 14'ün 'badurl data:/blob altında da gerçekten bozuk içerik' kısmı test edilmiyor",
+     "senaryo": "tools/build-single-html.mjs'de 'null' köken koşulu ve blob kurulamayınca data: ile ikinci deneme yapılmasa, ya da badurl tek dosyada yine çalışan bir işçi verse de hiçbir test kırmızı olmaz.",
+     "kanit": "- 02_tek_dosya.js değişmemiş: 11 satır, 4 kontrol.\n- Yeni senaryolarda file://, sandbox'lı iframe ya da tek dosyada ?terrain=badurl yok.\n- A-16'nın kabulü: sandbox'lı iframe'de 02_tek_dosya 4/4 geçer ve en az 1 işçi çalışır.\n- A-17'nin kabulü: badurl kipi file:// altında 0 işçiyle yedek kipe geçer.",
+     "oneri": "- 02_tek_dosya'yı file:// altında ?terrain=badurl ile koşun; workers 0, fallback ve failures ≥ 1 beklensin.\n- sandbox=\"allow-scripts\" bir iframe içinde koşun; köken 'null' ve en az 1 işçi beklensin.\n- Blob kurucusunun hata verdiği durumu başlatma betiğiyle üretip data: denemesinin devreye girdiğini sınayın."
+    },
+    {
+     "kimlik": "B0-I13",
+     "onem": "dusuk",
+     "dosya": "tests/scenarios/02_arazi_yasam.js",
+     "satir": "98, 30 (başlık 11-12)",
+     "baslik": "LY10 ve LY12, iç ad bulunamayınca sessizce geçiyor; bu, başlıktaki 'iç ad yok → KALIR' sözüyle çelişiyor",
+     "senaryo": "B, _gridCache'i yeniden adlandırır ya da bir sınıfa çevirirse, veya rec.jobs'ı Set yaparsa, LY10 ve LY12 hiçbir şey ölçmeden geçer.",
+     "kanit": "- LY10 `_gridCache instanceof Map ? size : -1` ifadesini `lte: 2` ile karşılaştırıyor. Koşucunun karsilastir işlevi (tests/harness/ortak.cjs) sonlu bir sayı olan −1'i geçer sayıyor.\n- LY12'deki Y.hayalet, r.jobs bir Map değilse 0 döndürüyor.\n- Node'daki KY24b aynı durumda doğru biçimde 'iç ad yok' diye FAIL veriyor.",
+     "oneri": "- LY10'da −1 yerine 'iç ad yok' dizgesi döndürün; kontrol eq ya da truthy ile kalsın.\n- Y.hayalet, işçinin jobs yapısını tanımazsa istisna atsın."
+    },
+    {
+     "kimlik": "B0-I14",
+     "onem": "dusuk",
+     "dosya": "tests/scenarios/02_arazi_yasam.js",
+     "satir": "80-92",
+     "baslik": "LY08 iddia ettiği hatayı yakalayamıyor (mutasyonla gösterildi); hatayı ancak LY16 yakalıyor",
+     "senaryo": "B, silinen karonun geç sonucunu yok sayan denetimi bozarsa LY08 yine 'tamam' der.",
+     "kanit": "- v0.4 terrain.js'in bir kopyasında _requestTile'daki geç sonuç denetimini (satır 330) kaldırdım (mutasyon m8).\n- LY08 adımlarının Node eşdeğeri (scratchpad/inceleme_b0/ly08_esdeger.mjs) hem v0.4'te hem m8'de 'tamam' verdi.\n- m8'de, düşürülen karonun gruptan çıkarılmış ağına seg-32 geometrisi yazıldı. LY16'ya benzeyen sızıntı ölçütü 1 sahipsiz canlı geometri buldu.\n- Nedeni: v0.4'te _drop (357-362) t.mesh'i null yapmıyor. Bu yüzden geç gelen _apply gruba yeni ağ eklemiyor, gruptan çıkmış eski ağın geometrisini değiştiriyor.",
+     "oneri": "LY08'de, düşürülen karo nesnesinin ağ geometrisinin değişmediğini ya da geç sonuçtan sonra yeni geometri oluşmadığını (_apply sayacıyla) ölçün."
+    },
+    {
+     "kimlik": "B0-I15",
+     "onem": "dusuk",
+     "dosya": "tests/scenarios/02_arazi_yasam.js",
+     "satir": "95",
+     "baslik": "LY09 düzeltmenin biçimine bağlı (T.focus.until okuyor); denetimin önerdiği 'odak listesi' çözümünde yanlış nedenle kalır",
+     "senaryo": "B, A-12'yi denetimde önerilen seçeneklerden biri olan odak listesiyle çözerse T.focus/until bulunmaz. Değer null olur, gte:60 kalır; oysa düzeltme doğrudur.",
+     "kanit": "- LY09 `T.focus` ve `FB.until` alanlarını okuyor.\n- A-12'nin çözüm önerisi açıkça 'ya da odak listesi tut' diyor.\n- Aynı davranışı gözlenebilir sonuçla Node'daki KY18 zaten ölçüyor (v0.4'te odakAg 0, kırmızı).",
+     "oneri": "LY09'u gözlenebilir sonuçla yazın: A bittikten sonra, kamera uzaktayken B bölgesinin karoları ve derinlik penceresi 12 sn'den uzun süre korunuyor mu."
+    },
+    {
+     "kimlik": "B0-I16",
+     "onem": "dusuk",
+     "dosya": "tests/scenarios/02_hizli_yolculuk.js",
+     "satir": "81",
+     "baslik": "HYU-02'nin kırmızısının nedeni arazi değil: biniş noktası iskele platformunun 10 cm dışında",
+     "senaryo": "B kusuru arazi ya da prepare tarafında arar. HYU-02 bütün arazi düzeltmelerinden sonra da kırmızı kalır.",
+     "kanit": "- v0.4 ports.js:47'de biniş noktası iskele ekseninden 2,6 m yana konuyor (`px * 2.6`).\n- islands.js:581 iskeleyi `_pier(..., 2.9)` ile kuruyor; 642'deki platformun yarı genişliği 2,5 m (`physics.addPlatform(mx, mz, 2.5, L / 2, ...)`).\n- Varıştan 2 sn sonra biniş noktasında floorAt(yMax 10) −8,07/−8,08 dönüyor, yani orada platform yok.\n- Oyuncu normal kipte suya düşüp yüzüyor (y −2,35); benim noworker tekrarımda da (y −1,86, kip swim).\n- B0 tablosu bu kırmızıyı 'madde 19'a bağlıyor.",
+     "oneri": "- HYU-02'nin hedefini 'biniş noktası iskele platformunun içinde olmalı (ports.js / islands.js)' diye kaydedin.\n- Ayrı bir kontrol ekleyin: varıştan önce biniş noktasında physics.floorAt(x, z, 10) iskele üstüne (≈ 2,9) eşit olmalı."
+    },
+    {
+     "kimlik": "B0-I17",
+     "onem": "dusuk",
+     "dosya": "tests/scenarios/02_hizli_yolculuk.js",
+     "satir": "-",
+     "baslik": "Kapsam boşluğu: madde 5'te zaman aşımı bildirimi ve konuk 'teleport' işleyicisi, madde 15'te çevrimiçi yollar test edilmiyor",
+     "senaryo": "B; prepare 'timeout' sonucunu oyuncuya bildirmese, konuk 'teleport' işleyicisine aynı denetimleri eklemese, depolama kapalıyken startOnlineHost/Guest korumasız kalsa da hiçbir test kırmızı olmaz.",
+     "kanit": "- tests/ altında net.js'teki 'teleport' işleyicisini süren bir coop senaryosu yok.\n- Hızlı yolculukta zaman aşımı bildirimine bakan bir kontrol yok.\n- 02_depolama_kapali ONLINE düğmesine hiç basmıyor.",
+     "oneri": "- opts.timeout ile kısa tutulan bir prepare'de #notify-stack'te bildirimin göründüğünü denetleyin.\n- Depolama kapalıyken ONLINE → oda kur akışında sayfa hatasının 0 olduğunu denetleyin.\n- Coop'ta, bekleme sırasında gelen ikinci 'teleport' iletisinin yok sayıldığını sınayın."
+    }
+   ]
+  },
+  "f": {
+   "ozet": "B0 test düzeltici, 3. deneme (15 Kasım 00:51–02:40 UTC). Container 00:49'da yine yeniden başlamıştı; iş ilerleme dosyasından sürdürüldü. 1. ve 2. denemenin değişiklikleri yeniden doğrulandı.\n\n**Bulgular:** 17 bulgunun hepsi gerçek, geçersiz yok. 17'si de düzeltildi. B0-I08'in 'ayrı rAF aralığı kontrolü' alt önerisi gerekçesiyle ertelendi. B0-I17'nin konuk 'teleport' kısmı 2. denemede yazılan yeni coop senaryosuyla kapandı.\n\n**Bu denemedeki test değişikliği:** tests/scenarios/02_hizli_yolculuk.js → abf125923f9a. Yolculuk anındaki kuyruk durumu artık tanı olarak yazılıyor; kontrolün kendisi değişmedi.\n\n**2. denemeden kalan ve yeniden doğrulanan değişiklikler:**\n- 02_arazi_yasam.js → 1f67faee95b8: LY13'ün p99 sırası düzeltildi; LY09'un işçisiz dalı gözlenebilir yapıldı. LY09, A-12 mutantında YESIL.\n- tests/node/arazi_kuyruk.mjs → 5bf96a733963: yeni KY25. v0.4'te KIRMIZI, A-06 mutantında YESIL.\n- Yeni coop senaryosu: tests/scenarios/coop/02_hizli_yolculuk_konuk.cjs → 6cad74c81c36.\n\nOyun koduna, koşucuya ve A2 dosyalarına dokunulmadı. Commit ya da push yapılmadı.\n\n**Son 'önce' koşuları:** /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/ altında 22 kayıt var; hepsi güncel sha'lı ve tam.\n\n| Koşu | Sonuç |\n|---|---|\n| arazi_sozlesme (Node, --kok v0.4) | 36/36 GECTI |\n| arazi_kuyruk (Node, --kok v0.4) | 69/92 KALDI (KY25 dahil 23 kırmızı) |\n| 02_arazi_yedek normal / noworker / crash / badurl (izinli) | dördü de 16/16 GECTI |\n| 02_hizli_yolculuk normal / noworker | 23/34 / 22/34 |\n| 02_arazi_yasam normal / noworker / crash | 12/18 / 12/18 / 13/18 |\n| 02_ayar_lod | 4/11 |\n| 02_depolama_kapali | 2/15 |\n| 02_acilis_akisi | 22/23 |\n| 00_acilis | 6/9 |\n| 02_acilis_hatalari | 3/19 |\n| 02_yukleme_bekleme | 4/9 |\n| 02_arazi_isci_hata | 5/9 |\n| 02_tek_dosya_kipler / blob / cerceve | 3/4 / 3/4 / 2/5 |\n| coop 02_hizli_yolculuk_konuk | 5/8 |\n\nSınıflandırma tablosu 247 satır: YESIL 142, KIRMIZI 95, UYGULANAMAZ 10, KOSULAMADI 0.\n\n**İşaretçi kilidi tanısı** (once_v04/duzeltme3/isaretci/, 8 koşu; betik isaretci_tani.js de orada). Koşular iki biçimde yapıldı: kilit alınır alınmaz document.exitPointerLock(), ya da kilit açık kalıp yalnız sayaç tutularak.\n1. Sel sayfa JS'ine ulaşmıyor: kilitliyken sayfa başına en çok 24 mousemove geliyor. Etkisi CPU yarışı.\n2. LY13'ün tarayıcıdaki kırmızısı bu makinede ortamdan geliyor. Kilit bırakılınca v0.4 normal ve noworker kipinde YESIL (0 aşım). A-06'nın belirlenimci kanıtı KY25'tir.\n3. HYS-01 noworker kararsız: kilitliyken 28,7–44,7 sn (bir koşuda 0,37 sn), kilit bırakılınca 10,3 sn. Sel gecikmeyi yaklaşık 3 kat büyütüyor, ama selsiz de 3 sn'nin üstünde.\n4. AYS-01 kilitten etkilenmiyor (150–211 ms).\n5. Açılış süreleri ve Node zamanları kilitten bağımsız.\n\nKontroller gevşetilmedi.\n\n**Ortam olayları:**\n- 02:03'te son/02_hizli_yolculuk_normal, cgroup OOM yüzünden sayfa çökmesiyle düştü (renderer 5,4 GB). Koşu geçersiz sayılıp yeniden koşuldu; kayıt duzeltme3/kesik/ altında.\n- 00:48–00:49'da container yeniden başlarken yarıda kalan 02_ayar_lod ve arazi_kuyruk kayıtları duzeltme2/kesik/ altına taşındı ve yeniden koşuldu.\n\n**Ana oturuma notlar:**\n- KI-234'ün tanımı düzeltilmeli: v0.4'te kuyruk kusuru yok.\n- İşçisiz hızlı yolculuk için ayrı bir bilinen sorun açılmalı.\n- LY13 ve HYS-01 (noworker) tek başına 'önce/sonra' kanıtı sayılmamalı; koşucunun işaretçi düzeltmesinden sonra yeniden ölçülmeli.\n- HK03/HK04 brief'teki 'aynı denetimler' ifadesine göre yazıldı (bekleme sırasında gelen iletiyi yok say).\n- Koşucu gözlemi (1. deneme): goto göreli 'index.html' adresinde sorgu dizgesini düşürüyor. Senaryoda kip başlatma betiğiyle korunuyor; koşucuya dokunulmadı.\n\nİlerleme dosyası: /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/b0_duzeltici_ilerleme.md",
+   "sonuclar": [
+    {
+     "kimlik": "B0-I01",
+     "durum": "duzeltildi",
+     "aciklama": "Yeniden üretildi (1. deneme): aynı v0.4 ve aynı senaryoyla crash kipinde Tuz Pazarı prepare'i 181 / 28 822 / 451 ms sürdü. Yavaş koşuda yerel dilim toplamı 333 ms'ydi, dilimler arasında 26,2 sn'lik tek bir boşluk vardı. v0.4'te açılıştan sonra crash, badurl ve noworker kuyruk açısından aynı: işçi 0, yedek açık, _initWorkers yalnız init'te çağrılıyor. Node KY08b son koşuda 135 ms. Düzeltme (tests/scenarios/02_arazi_yedek.js, sha 7d4819041d89): AYS-01 artık çizim durdurulmuşken ölçüyor (engine.fpsLimit ≈ 0; post.render sayacı 0 ile doğrulanıyor). Üç ayrı uzak ada bölgesinin (Kuzeyfener, Kül Limanı, Kumsaati; r300) hazırlığı sırayla ölçülüyor, her ölçümden önce kuyruk boşalıyor, karar ORTANCA ile veriliyor ve her bölgede ≥ 6 ağ isteniyor. Sınırlar değişmedi: normal 2 sn, diğer kipler 3 sn. Yeni AYS-02: hiçbir iş işçilere MAX_TRIES (3) kezden fazla gönderilmez. Tuz Pazarı ölçümü (çizim açık) ve longtask bileşimi tanı satırı olarak kaldı. Son v0.4 koşularında (son/, 15 Kasım) dört kip de GECTI 16/16. AYS-01 ortancaları: normal 211 ms (211/211/181), noworker 150 (123/150/180), crash 181 (181/241/175), badurl 151 (150/151/169) → YESIL. AYS-02 de YESIL (iş başına 1 gönderim). Sonuç: KI-234 v0.4'te kuyruk kusuru olarak YOK. KI-234'ün tanımını (crash kipine özgü 28,8 sn) ana oturum düzeltmeli; KNOWN_ISSUES'a ben yazmadım. AYS-01/02, A-15'ten sonraki gerilemeye (yeniden başlatılan işçilere iş sektirme) karşı koruma görevi görüyor. İşaretçi kilidi tanısı (once_v04/duzeltme3/isaretci/; kilit alınır alınmaz document.exitPointerLock()): AYS-01 crash 150 ms (kilitli + sayaçlı tekrar 151 ms), noworker 151 ms (kilitli son/ 150) → kilit seli AYS-01'i değiştirmiyor, YESIL oyunun davranışı. Tuz Pazarı tanısında (çizim açık) kilitliyken crash/badurl'de hazırlık boyunca 0 kare çizildi (dilimler arka arkaya); kilit bırakılınca crash'te 270 ms'de 13 kare (en uzun 31 ms). Yani B'nin 'kareSayisi 0' ve 18–36 sn'lik duraklama gözlemleri bu ortamın kilit/çizim etkileşimiyle uyumlu, kuyruk kusuru değil."
+    },
+    {
+     "kimlik": "B0-I02",
+     "durum": "duzeltildi",
+     "aciklama": "Yeniden üretildi: HY10 sonucu yalnız geminin son konumundan çıkarıyordu. Düzeltme (bölüm 2, 1. deneme): varışlar sayılıyor (oyunun 'arrivedPort' olayı + rAF örnekleyicisiyle gemide tek karede ≥ 300 m sıçrama). prepare sarmalayıcısının kaydettiği bütün hazırlıklar bitip 25 yoklama turu sakin geçince sonuç yerleşiyor (üst sınır 150 sn). HY10 = yerleşti ∧ tam 1 sıçrama ∧ o sıçrama ilk hedefe ∧ arrivedPort ≤ 1 ve hepsi ilk hedefe ∧ gemi orada. HY11 aynı yerleşmeden sonra ölçülüyor. Bölüm 4'te sabit 20 sn yerine başlatılan prepare'in bitmesi + 15 tur bekleniyor (prepare hiç başlamazsa 75 tur). Yeni HY19: menüye dönüşten sonra arrivedPort ve 'vardın' bildirimi yok. Sakin süreler duvar saatiyle değil tur sayısıyla ölçülüyor. Ek bulgu: koşucunun goto'su göreli 'index.html'de sorguyu düşürüyordu; kip artık başlatma betiğiyle korunuyor, HYK-2..5 denetliyor. Son v0.4 (son/, abf125923f9a): HY10 KIRMIZI, normal ve noworker'da iki arrivedPort var (Tuz Pazarı ve Kuzeyfener). HY11 KIRMIZI (altın 2000 → 1769, iki ücret), HY17/HY19 KIRMIZI (menüye dönüşten sonra devam kodu gemiyi taşıdı, 'vardın' bildirimi geldi). HYK-2..5 YESIL. Kilit bırakılmış tanı koşularında da aynı sonuçlar alındı."
+    },
+    {
+     "kimlik": "B0-I03",
+     "durum": "duzeltildi",
+     "aciklama": "Yeniden üretildi: ?izgara=hata'da __ready gelmiyor. Yükleme metni: 'Oyun başlatılamadı: test: enjekte ızgara hatası … WebGL destekli güncel bir tarayıcı gerekiyor'. Yeni senaryo tests/scenarios/02_acilis_hatalari.js (794dd6293f65). Başlatma betiğindeki Worker sarmalayıcısı, adres parametresine göre açılıştakiler dahil her 'grid' işine 'error' iletisi (?izgara=hata) ya da işçi çökmesi (?izgara=cok → MAX_TRIES) enjekte ediyor. Sayfa goto {hazir:false} ile açılıyor. Kontroller: IZ01/IZ05 __ready; IZ02/IZ06 menü açık, yükleme ekranı kapalı; IZ03/IZ06 'başlatılamadı' ya da WebGL metni hiç görünmez (metinler MutationObserver ile zamanlı kaydediliyor); IZ04/IZ07 dünya haritası ızgarası 60 sn içinde yerelde üretilir (renderMapBase geçici 64×64 parşömenden büyük). Son v0.4 (son/): IZ01–IZ07 KIRMIZI, doğru nedenle (ızgara=cok'ta da 'Oyun başlatılamadı: Arazi işi grid tekrarlanan işçi hatası … WebGL'; harita 64). Açılış koşulu: işaretçi kilidi yok (oyun oturumu başlamadan ölçülüyor)."
+    },
+    {
+     "kimlik": "B0-I04",
+     "durum": "duzeltildi",
+     "aciklama": "Doğrulandı: KI-234'ün kabulü crash/crash1 içindir ve 02_arazi_yedek r300 ölçümüne dayanır; işçisiz hızlı yolculuk ayrı bir konudur. HYS-01 zayıflatılmadı (≤ 3 sn, iki kipte) ama etiketi düzeltildi: normal kipte gerileme koruması, noworker kırmızısı KI-234 DEĞİL. Yeni HYS-02: hızlı yolculuktaki prepare 'ok' döner (A-11); v0.4 iki kipte de 'undefined' → KIRMIZI. HY21 (bölüm 5) zaman aşımı bildirimini istiyor (B0-I17). 3. denemede YENİ GÖZLEM: HYS-01'in noworker sonucu v0.4'te KARARSIZ. Aynı kodla kilitli koşular 33 366 / 44 718 / 30 331 / 366 / 30 949 / 28 677 ms verdi; işaretçi kilidi bırakılmış tanı 10 274 ms verdi. Normal kipte 181–2196 ms (son/ 1810). 366 ms'lik koşuda yolculuktan hemen önceki 'm_once' ölçüm adımı 4,7 sn sürmüş, yolculuk sayfanın 25,9. sn'sinde başlamıştı. İlk varsayımım 'yolculuk başladığında başlangıç bölgesinin kuyruğu dolu' idi; bunu sınamak için senaryoya tanı ekledim (abf125923f9a: yolculuk anındaki kuyruk, 'yolculukOncesiKuyruk'; kontrol değişmedi). Varsayım ÇÜRÜDÜ: 30 949 ms'lik son koşuda yolculuk anında kuyruk boştu (jobs 0, queue 0), kilit bırakılmış koşuda jobs 3. Kod okuması: v0.4 yükleme ekranında yerel dilim bütçesini 40 ms'ye çıkarıyor (game.js:46), hızlı yolculuk perdesinde çıkarmıyor (10 ms; main.js fastTravel). Yazılımsal GPU'da her kare uzun sürdüğü için dilimler aç kalıyor olabilir. Bu bir aday, kanıtlanmadı. İşaretçi kilidi tanısı: noworker'da kilit bırakılınca HYS-01 10 274 ms (yine KIRMIZI); kilitli + sayaçlı tekrar 28 677 ms; normal kipte kilit bırakılınca 2196 ms (YESIL). Kilitliyken sayfaya ulaşan mousemove sayfa başına en çok 24 (≈ 0,4/sn): sel sayfa JS'ine ulaşmıyor, tarayıcı/compositor tarafında CPU harcıyor. Sonuç: sel işçisiz hazırlığı yaklaşık 3 kat uzatıyor (10 → 29–31 sn) ama gecikme selsiz de 3 sn sınırının üstünde. Noworker'da 'önce kırmızı / sonra yeşil' çifti kanıt sayılmamalı (inceleyicinin uyarısı doğrulandı). Son sınıflandırma: HYS-01 normal YESIL (son/), noworker KIRMIZI (son/ 30 949 ms) → KIRMIZI, 'kararsız/ortama duyarlı' notuyla. Ana oturuma öneri: işçisiz hızlı yolculuk için ayrı bir bilinen sorun açılsın (10–45 sn, 45 sn sınırına yakın; zaman aşımında sessiz eksik varış) ve hedef konsun; KNOWN_ISSUES'a ben yazmadım."
+    },
+    {
+     "kimlik": "B0-I05",
+     "durum": "duzeltildi",
+     "aciklama": "Doğrulandı: önkoşul denetlenmiyordu. Bölüm 3'e HY12b eklendi: ölümden önce 60 sn içinde Kırlangıç'ın 300 m çevresinde ağ 0 ve derinlik penceresi 600 m'den uzak olmalı; sağlanmazsa kontrol KALIR. Eski 'wait 6000' yerine bu koşul bekleniyor. Son v0.4 (son/): HY12b YESIL, yani önkoşul sağlandı (0 ağ, 5809 m; normal 12,5 sn'de, noworker 21,4 sn'de). HY13 0 ağ, HY14 5804 m → KIRMIZI, artık doğru nedenle (normal ve noworker)."
+    },
+    {
+     "kimlik": "B0-I06",
+     "durum": "duzeltildi",
+     "aciklama": "Kod okumasıyla doğrulandı: v0.4 terrainWorker.js:8'de çökme onmessage içinde; A-15 boşta canlı işçi bırakabilir. 02_arazi_yedek AYK-02 ile 02_arazi_yasam LY00'ın crash ve hang beklentisi gözlenebilir sonuçla yeniden yazıldı: hata kaydı ≥ 1; iş alıp hiç yanıt vermemiş ve sonlandırılmamış işçi 0; kurulan işçi 1–9 (3 yuva × (1 + 2 yeniden başlatma)). Başlatma betiğindeki işçi izleyicisi iletileri değiştirmiyor; yanıt ve hata, oyunun kendi onmessage/onerror işleyicisi sarılarak sayılıyor. KY08a: iş alan her sahte işçi sonlandırılmış, iş kimliği başına gönderim ≤ 3, kurulan işçi ≤ 9, hata kaydı var, açılış tamam. KY20b yalnız dalgadan ÖNCE canlı olup dalgada ölmeyen işçilere bakıyor. Son v0.4 (son/): AYK-02 crash YESIL (işçiler [iş 2, yanıt 0, hata 2, sonlandı] ×3), LY00 crash YESIL, KY08a YESIL, KY20b KIRMIZI (hayalet yuvalı işçi 0 iş aldı; doğru neden)."
+    },
+    {
+     "kimlik": "B0-I07",
+     "durum": "duzeltildi",
+     "aciklama": "Doğrulandı: iki dünya da başlangıçta ölçülüyordu, düşman sayısı 0/0'dı. AA11'den sonra birinci dünya Kuzeyfener'e taşınıyor: oyunun fastTravel olayı, ücret 0, yani AA16 bozulmuyor. Oyuncu limanın kara tarafına konuyor; oyunun spawnEnemies olayıyla 2 düşman, treasure.spawnChest ile 1 sandık oluşturuluyor (test verisi; menü ve yuva geçişi yine arayüzden). Yeni kontroller: AA18 önkoşul (≥ 6 ağ, ada içerik grubu sahnede, ≥ 1 düşman, ≥ 1 sandık); AA19 eski bölgede (1 km) karo yok; AA20 eski adanın içerik grubu sahnede değil ve ada kurulu değil; AA21 eski düşman/sandık nesneleri listelerde ve sahnede yok; AA22 derinlik penceresi yeni başlangıçta. AA15'e düşman karşılaştırması eklendi. Son v0.4 (son/, 1e20f2dc38df): AA18 YESIL (Kuzeyfener'de 20 ağ, 2 düşman, 1 sandık). AA15 ve AA19–AA22 YESIL, yani v0.4'te dünya değişiminde kalıntı yok; bu kontroller artık kör olmayan gerileme korumaları."
+    },
+    {
+     "kimlik": "B0-I08",
+     "durum": "duzeltildi",
+     "aciklama": "Doğrulandı: LY13 sıfır paylıydı ve v0.4 formülünün kopyasıydı. Düzeltme 1 (1. deneme): bütçe, uygulama açık bir alan verirse (terrain.dilimButcesi sayı/işlev) ondan, yoksa v0.4 kuralından okunuyor; kalan bağımlılık etikette yazılı. LY13 artık dağılım ölçüyor: p99 ≤ bütçe + 4 ms VE en uzun ≤ bütçe + 15 ms. Dolaşımlar çizim durdurulmuş koşuyor. Düzeltme 2 (2. deneme, kendi hatam): p99 sırası ⌈0,99·n⌉−1 idi; n < 100 dilimde bu EN UZUN dilime eşitti, yani tek GC duraklamasına dayanıklılık iddiası geçersizdi. Sıra ⌊(n−1)·0,99⌋ oldu: n ≤ 101'de en uzun dilim dışarıda kalıyor (sha 1f67faee95b8). Düzeltme 3 (2. deneme, inceleyicinin 'katı sınırı Node'da belirlenimci ölçün' önerisi): tests/node/arazi_kuyruk.mjs'e KY25 eklendi (5bf96a733963). Yükleme kancası geo.js computeHeight'ı çağrı başına 5 µs yavaşlatıyor, işçisiz kipte uzak bölge (Kuzeyfener r300) hazırlanıyor ve aynı ölçüt uygulanıyor. Doğrulama (duzeltme2/KY25_dogrulama.log): v0.4 KALDI (39 dilim, p99 +89,9 ms); A-06 benzeri mutant (terrainGen her satırda yield) GECTI (174 dilim, p99 +2,5 ms). Son v0.4 (son/): KY25 KIRMIZI (39 dilim, p99 = en uzun +90,2 ms). LY13: normal KIRMIZI (63 dilim, p99 +6, en uzun +8,1), noworker KIRMIZI (+15,9 / +17,3), crash YESIL (58 dilim, 1 aşım +8,8 tolere edildi, p99 +2,6). İşaretçi kilidi tanısı (önemli): kilit bırakılınca LY13 v0.4'te normal ve noworker kipinde YESIL. Normal: 54 dilim, 0 aşım, p99 +3,0 ms, en uzun +3,8. Noworker: 47 dilim, 0 aşım, p99 +0,8, en uzun +1,2. Yani kilitli son/ koşularındaki kırmızı bu makinede ORTAM kaynaklı (işaretçi kilidi seli, CPU yarışı); v0.4'ün parça boyuna bağlı dilimi bu makinenin hızında bütçeyi aşmıyor. Kontrol gevşetilmedi. Ancak tarayıcıdaki LY13'ün 'önce kırmızı / sonra yeşil' çifti A-06'nın kanıtı SAYILMAMALI; A-06'nın 'önce' kanıtı belirlenimci KY25'tir (v0.4 KIRMIZI, A-06 mutantı YESIL). Tanı kipte birer örnek; seli kaldıran koşucu düzeltmesi geldiğinde LY13 yeniden ölçülmeli. ERTELENEN alt öneri: ayrı 'en uzun rAF aralığı' kontrolü eklenmedi. Gerekçe: son v0.4 koşularında yedek kipte uzak hazırlık boyunca (çizim açık) çizilen kare sayısı noworker'da 17 (446 ms), crash'te 0 (185 ms), badurl'de 0 (150 ms); kilit bırakılınca crash'te 13 kare (en uzun 31 ms). Kare süresi yazılımsal GPU'ya ve işaretçi kilidi seline bağlı; selsiz bir ortam gelmeden eşik anlamlı olmaz."
+    },
+    {
+     "kimlik": "B0-I09",
+     "durum": "duzeltildi",
+     "aciklama": "Doğrulandı. 00_acilis'te (9b8535d42868) geçiş kaydına süren ve biten prepare sayısı (terrain.prepare sarılıyor, davranış aynı), toplam iş ve bekleyen karo merkezleri eklendi; yorum artık doğru. Yeni AC03: 'playing'e geçişte süren prepare yok, startGame'den sonra ≥ 1 prepare tamamlanmış, başlangıcın 500 m içinde bekleyen karo yok. Yeni senaryo 02_yukleme_bekleme.js (c9439e8aad63): test verisi olarak Kuzeyfener'de kayıt yapılıyor ve sayfa yenileniyor. terrain.prepare'e test kapısı konuyor: asıl hazırlık bittikten sonra, kapı açılana kadar söz sonuçlanmıyor; böylece bekleme penceresi uygulamadan ve makine hızından bağımsız. Ardından arayüzden DEVAM ET. Kontroller: YB02 önkoşul, YB03 yükleme katmanı, YB04 G.state ≠ 'playing', YB05 Esc duraklatma açmaz, YB06 iptalden sonra (toMenu; arayüzde iptal düğmesi yok) durum menu, menü açık, HUD kapalı, oyuncu yok, YB07 'Kayıt yüklendi' bildirimi yok, YB08 kayıt değişmez. Son v0.4 (son/): AC01, AC02, AC03 KIRMIZI; YB00–YB02 YESIL; YB03–YB07 KIRMIZI; YB08 YESIL."
+    },
+    {
+     "kimlik": "B0-I10",
+     "durum": "duzeltildi",
+     "aciklama": "Doğrulandı. 02_acilis_hatalari.js'te: AH06 ?webgl=yok (getContext null) → ileti WebGL'i söyler (v0.4 YESIL, gerileme koruması); AH07 ?importmap=yok (HTMLScriptElement.supports('importmap') false) → tek dosya sürümüne yönlendiren ileti; AH08 ?modul=yok (import map'teki 'three' var olmayan dosyaya çevriliyor, 404; ağ kaydı adresle gerekçeli izinli) → ~5 sn içinde modül/dosya iletisi; AH09 ?askida=1 (.glb istekleri hiç sonuçlanmıyor) → 20–65 sn arasında yeni uyarı metni; IZ03 → arazi hatasında yanıltıcı 'başlatılamadı/WebGL' metni yok. İleti, normal başvuru açılışında görülmeyen metinlerde aranıyor. Son v0.4 (son/): AH06 YESIL; AH07, AH08, AH09, IZ03 KIRMIZI. Açılış ölçümleri işaretçi kilidinden etkilenmez (oyun oturumu başlamadan)."
+    },
+    {
+     "kimlik": "B0-I11",
+     "durum": "duzeltildi",
+     "aciklama": "Doğrulandı: tarayıcıda açılış süresi kontrolü yoktu. 02_acilis_hatalari.js'te Worker sarmalayıcısıyla ?isci=hang (hazır olur, yanıt vermez) ve ?isci=noready (hazır sinyali de yanıt da yok) eşdeğerleri üretiliyor. Normal başvuru açılışı aynı koşuda sıcak önbellekle ölçülüyor; __ready'nin yazıldığı an, koşucunun erişimcisi korunarak kaydediliyor. AH02/AH04: açılış ≤ normal + 5 sn. AH03/AH05: yükleme metninde gecikmenin nedeni görünür. AH10/AH11 aynı ölçütü Faz 1'in yerleşik ?terrain=hang|noready kipleriyle uyguluyor. Son v0.4 (son/): normal 5993 ms, hang 23 576 ms, noready 13 198 ms → AH02–AH05 KIRMIZI. AH10/AH11 UYGULANAMAZ: v0.4'te kip dizgesi saklanıyor ama davranış normal (5696 / 5444 ms). Açılış süreleri oyun oturumundan önce ölçüldüğü için işaretçi kilidi selinden etkilenmez."
+    },
+    {
+     "kimlik": "B0-I12",
+     "durum": "duzeltildi",
+     "aciklama": "Doğrulandı: v0.4 ön sözü file:// için data:, değilse blob: kullanıyor; badurl data: adresine '#missing' parçası ekliyor ama içerik değişmiyor. Üç öneri de senaryoya döküldü (tek dosya v0.4 betiğiyle scratchpad/fb0/v04_tek'e derlendi, v0.4 ağacına yazılmadı). (1) 02_tek_dosya_kipler.js: file:// + ?terrain=badurl → 0 işçi, yedek açık, hata kaydı (A-17). (2) 02_tek_dosya_blob.js: http + ?blob=red'de blob: Worker kurulumu SecurityError ile reddediliyor → ≥ 1 işçi ve yedek kapalı beklenir (A-16). (3) 02_tek_dosya_cerceve.js: tek dosya sandbox='allow-scripts' iframe'de, köken 'null'. Çerçevedeki durum başlatma betiğiyle postMessage üzerinden üst çerçeveye taşınıyor; koşucuya dokunulmadı. Son v0.4 (son/): TK02 KIRMIZI (3 işçi çalışıyor); TB01 KIRMIZI (0 işçi, yedek açık), TB00/TB02/TB03 YESIL; TC01 YESIL (köken 'null'), TC02–TC04 KIRMIZI. Sandbox'lı açılış localStorage SecurityError ile düşüyor ve hiçbir Worker kurulmuyor; madde 15/A-18 ile örtüşüyor, A-16'nın işçi yolu 'önce'de ayrıca gözlenemedi."
+    },
+    {
+     "kimlik": "B0-I13",
+     "durum": "duzeltildi",
+     "aciklama": "Doğrulandı: LY10'un −1 değeri lte:2'yi geçiyordu; Y.hayalet, jobs bir Map değilse 0 dönüyordu. Düzeltme: LY10 iç ad yoksa 'iç ad yok: _gridCache' dizgesi döndürüyor (lte yalnız sonlu sayıyla geçer, yani KALIR). Y.hayalet, _jobs/workers ya da workers[].jobs tanınmazsa istisna atıyor; dolaşım bunu D.icAdYok'a yazıyor ve LY12 KALIYOR. Son v0.4 (son/): LY10 KIRMIZI (24, üç kipte), LY12 YESIL."
+    },
+    {
+     "kimlik": "B0-I14",
+     "durum": "duzeltildi",
+     "aciklama": "Mutasyonla doğrulandı ve düzeltildi (1. deneme). İnceleyicinin m8 kopyasında (geç sonuç denetimi kaldırılmış v0.4) eski LY08 ölçütü 'tamam' diyordu. _apply sarmalayıcısına, düşürülen karo nesnesine yeni geometri yazılmasını sayan bir ölçüt eklendi; LY08 'geç sonuç silinen karoya yazıldı' ile KALIYOR. Yalnız düşürmeden SONRA gelen _apply sayılıyor ve önkoşul denetleniyor: iş düşürmede kuyrukta değil, düşürmeden önce uygulama yok, sonuç düşürmeden sonra geldi. İşçili kipte işçi gecikmesi 1 sn; işçisiz kipte o işin _finish'i 1 sn geciktiriliyor. Aynı yöntem LY07'nin işçisiz kipteki yanlış kırmızısını da giderdi (seg-32 işinin _finish'i 1,5 sn geciktiriliyor). Yeniden doğrulama (2. deneme, duzeltme2/B0-I14_ly08_ly07_mutasyon_yeniden.log): Node eşdeğerleri v0.4'te iki kipte de 'tamam'; m8'de LY08 'geç sonuç silinen karoya yazıldı', LY07 'ezildi ya da eksik'. Son v0.4 (son/): LY08 ve LY07 YESIL (normal, noworker, crash; önkoşul sağlandı), yani gerileme koruması."
+    },
+    {
+     "kimlik": "B0-I15",
+     "durum": "duzeltildi",
+     "aciklama": "Doğrulandı: LY09 T.focus.until okuyordu. 1. deneme yalnız işçili kipi gözlenebilir yaptı: B'nin ilk üç karo işi işçiye 14 sn geç gönderiliyor (Node KY18 yöntemi). 2. deneme işçisiz dalı da gözlenebilir yaptı (B0-I15 yarım kalmıştı): B'nin üç karo işinin sonucu (_finish) 14 sn geciktiriliyor; focus.until yalnız tanı. Karar B bittikten 5 sn sonra veriliyor: önkoşul B'nin A'dan ≥ 12 sn sonra bitmesi; ölçüt B bölgesinde ≥ 6 ağ ve derinlik penceresi B'de (sha 1f67faee95b8). Doğrulama için A-12'nin asgari düzeltmesiyle bir mutant yapıldı (b0d/mut_a12: 'if (this.focus === F)'): LY09 normal ve noworker'da 'tamam' (duzeltme2/02_arazi_yasam_mutA12_*). Son v0.4 (son/): LY09 KIRMIZI üç kipte. Normal: A 563 ms, B 14,4 sn, B bitince derinlik 5214 m uzakta. Noworker: B'den 5 sn sonra 0 ağ, derinlik 5214 m. Crash: 20 ağ, derinlik 5214 m. LYK-09 YESIL."
+    },
+    {
+     "kimlik": "B0-I16",
+     "durum": "duzeltildi",
+     "aciklama": "Doğrulandı: biniş noktası iskele ekseninden 2,6 m yanda; iskele ekseninin zemini 2,9, biniş noktasının zemini −8,08 (platform yarı genişliği 2,5). HYU-02'nin etiketi artık hedefi gösteriyor (ports.js biniş noktası / islands.js iskele; arazi değil). Yeni HYU-05: iskele kurulduktan sonra biniş noktasında physics.floorAt iskele ekseniyle aynı (±0,3 m). Varıştan önce ölçülmedi: hedef adanın içeriği (iskele) varıştan önce kurulmuyor; bu yüzden eksen zemini > 0 olana kadar ≤ 15 sn bekleniyor. Son v0.4 (son/): HYU-02 ve HYU-05 KIRMIZI (normal ve noworker; varış zemini −8,08)."
+    },
+    {
+     "kimlik": "B0-I17",
+     "durum": "duzeltildi",
+     "aciklama": "Üç kısım da kapandı. (a) 02_hizli_yolculuk bölüm 5 (HY20/HY21, 1. deneme): bir sonraki prepare çağrısına {timeout: 30} eklenip hızlı yolculuk yapılıyor ve uyarı bildirimi bekleniyor. v0.4 KIRMIZI: zorlanan zaman aşımı uygulandı, yalnız 'Tuz Pazarı Limanı limanına vardın.' geldi. (b) 02_depolama_kapali (08831f4b6de6): engelli sayfa yerel sinyal sunucusuyla açılıyor; arayüzden ONLINE → Oda kur → Odayı oluştur → Oyunu başlat (DK12–DK15). v0.4'te açılış zaten düştüğü için KIRMIZI; çevrimiçi yolun kendi kusuru ayrıca gözlenemiyor. (c) 2. denemede ERTELENEN konuk 'teleport' işleyicisi için yeni coop senaryosu yazıldı: tests/scenarios/coop/02_hizli_yolculuk_konuk.cjs (6cad74c81c36). Oda sahibinin gerçek hızlı yolculuğu konuğa 'teleport' iletisi gönderiyor. Konukta terrain.prepare'e test kapısı konuyor, böylece bekleme penceresi açık kalıyor. Bekleme sırasında ikinci bir 'teleport' iletisi yayınlanıyor (DK.net.broadcast; test verisi, gerçek ağ iletisi). İkinci bölümde konuk bekleme sırasında menüye dönüyor. Kontroller: HK03 ikinci hazırlık başlamaz; HK04 konuk bir kez ve ilk hedefe taşınır, tek 'vardınız'; HK06 menüye dönen konuk menüde kalır; HK07 konuk taşınmaz, bildirim yok. Son v0.4 koşusu (son/coop_02_hizli_yolculuk_konuk, 2 oyuncu, yerel sinyal sunucusu): 5/8. HK00–HK02 ve HK05 önkoşulları YESIL. HK03 KIRMIZI: ikinci hazırlık başladı. HK04 KIRMIZI: konuk ikinci hedefe (Kuzeyfener) taşındı, iki 'vardınız' bildirimi geldi. HK06 YESIL: menüye dönen konuk menüde kaldı. HK07 KIRMIZI: konuk 10 046 m taşındı ve bildirim geldi. Aynı sonuç 00:30'daki ilk denemede de alındı (duzeltme2/coop_02_hizli_yolculuk_konuk_deneme1). Not: HK03/HK04, brief madde 5'in 'aynı denetimler' (travelBusy: bekleme sırasında yok say) ifadesini izliyor. B konuk için 'son hedef kazanır' tasarımını seçerse bu iki kontrol brief sahibiyle birlikte yeniden yazılmalı."
+    }
+   ],
+   "kontroller": [
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ01a–c",
+     "hedef_madde": "FAZ1-2 veri sözleşmesi (tileGen alanlar/tipler/uzunluklar)",
+     "once_v04": "YESIL",
+     "aciklama": "3 örnek karo (seg 80/32/8): hepsi geçti (gerileme koruması)"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ02a–c",
+     "hedef_madde": "FAZ1-2 (ızgara konumları, yükseklik = computeHeight)",
+     "once_v04": "YESIL",
+     "aciklama": "3 örnek karo (seg 80/32/8): hepsi geçti (gerileme koruması)"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ03a–c",
+     "hedef_madde": "FAZ1-2 (normaller)",
+     "once_v04": "YESIL",
+     "aciklama": "3 örnek karo (seg 80/32/8): hepsi geçti (gerileme koruması)"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ04a–c",
+     "hedef_madde": "FAZ1-2 (renk aralığı)",
+     "once_v04": "YESIL",
+     "aciklama": "3 örnek karo (seg 80/32/8): hepsi geçti (gerileme koruması)"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ05a–c",
+     "hedef_madde": "FAZ1-2 + madde 17 (üçgenleme köşegeni b–d)",
+     "once_v04": "YESIL",
+     "aciklama": "3 örnek karo (seg 80/32/8): hepsi geçti (gerileme koruması)"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ06a–c",
+     "hedef_madde": "FAZ1-2 (etek)",
+     "once_v04": "YESIL",
+     "aciklama": "3 örnek karo (seg 80/32/8): hepsi geçti (gerileme koruması)"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ07a–c",
+     "hedef_madde": "FAZ1-2 (min/max yükseklik)",
+     "once_v04": "YESIL",
+     "aciklama": "3 örnek karo (seg 80/32/8): hepsi geçti (gerileme koruması)"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ08a–c",
+     "hedef_madde": "FAZ1-2 (hires yükseklik ızgarası)",
+     "once_v04": "YESIL",
+     "aciklama": "3 örnek karo (seg 80/32/8): hepsi geçti (gerileme koruması)"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ09a–c",
+     "hedef_madde": "FAZ1-2 (aktarım listesi)",
+     "once_v04": "YESIL",
+     "aciklama": "3 örnek karo (seg 80/32/8): hepsi geçti (gerileme koruması)"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ10",
+     "hedef_madde": "62-5 Harita derinliği; FAZ1-2 (depthGen yarım duyarlık kodlaması)",
+     "once_v04": "YESIL",
+     "aciklama": "depthGen alanlar/tipler/uzunluk ve hücre merkezlerinde toHalf(computeHeight) birebir (gerileme koruması)"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ11",
+     "hedef_madde": "62-5; FAZ1-2 (depthGen kod çözümü)",
+     "once_v04": "YESIL",
+     "aciklama": "depthGen yarım duyarlıklı değerler çözülünce computeHeight ile yarım duyarlık sınırında aynı (gerileme koruması)"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ12",
+     "hedef_madde": "FAZ1-1/2 (gridGen yükseklik)",
+     "once_v04": "YESIL",
+     "aciklama": "gridGen alanlar/tipler/uzunluklar; yükseklikler computeHeight ile birebir (gerileme koruması)"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ13",
+     "hedef_madde": "FAZ1-1/2 (gridGen biyom)",
+     "once_v04": "YESIL",
+     "aciklama": "gridGen biyom kimlikleri BIOME_ID[biomeAt] ile birebir ve 0..6 aralığında (≥ 3 farklı biyom)"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ14",
+     "hedef_madde": "FAZ1-1 (bilinmeyen iş türü)",
+     "once_v04": "YESIL",
+     "aciklama": "generate bilinmeyen iş türünde açık hata verir (gerileme koruması)"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ15",
+     "hedef_madde": "FAZ1-2: işçi yolu (runAll) ↔ dilimli yol bayt eşitliği",
+     "once_v04": "YESIL",
+     "aciklama": "işçi yolu (runAll) ile dilimli yol çıktıları bayt düzeyinde aynı (5 iş) (gerileme koruması)"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ16",
+     "hedef_madde": "FAZ1-1/2: terrain.js gerçek yerel şerit yolu ↔ runAll bayt eşitliği",
+     "once_v04": "YESIL",
+     "aciklama": "terrain.js yerel (dilimli şerit) yolunun her sonucu runAll çıktısıyla bayt düzeyinde aynı (karo + derinlik + ızgara)"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ17",
+     "hedef_madde": "FAZ1-3 yerel üretimde gerçek ağ",
+     "once_v04": "YESIL",
+     "aciklama": "yerel yolda üretilen her karo ağı sahne grubunda, öznitelikler üretilen dizilerin kendisi (gerileme koruması)"
+    },
+    {
+     "test": "arazi_sozlesme.mjs",
+     "kimlik": "SZ18",
+     "hedef_madde": "madde 17: heightAt ↔ çizilen ağ üçgenlemesi (SYS6)",
+     "once_v04": "YESIL",
+     "aciklama": "heightAt ile çizilen ağ üçgeninin düzlemi aynı (fark < 1 mm) (gerileme koruması)"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY01a",
+     "hedef_madde": "62-1",
+     "once_v04": "YESIL",
+     "aciklama": "{ms: 382}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY01b",
+     "hedef_madde": "62-1/4/5",
+     "once_v04": "YESIL",
+     "aciklama": "{meshes: 125, depth: {x: 160, z: 480}, izgara: tamam}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY01c",
+     "hedef_madde": "62-1",
+     "once_v04": "YESIL",
+     "aciklama": "{workers: 3, fallback: false, failures: 0}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY01d",
+     "hedef_madde": "madde 7 / A-11 / KI-159 (prepare dönüş değeri)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "{donus: undefined}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY02a",
+     "hedef_madde": "62-2 / A-17",
+     "once_v04": "YESIL",
+     "aciklama": "{workers: 0, fallback: true, failures: [işçi oluşturulamadı: Sahte: Worker oluşturulamadı]}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY02b",
+     "hedef_madde": "62-2",
+     "once_v04": "YESIL",
+     "aciklama": "{ms: 339}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY02c",
+     "hedef_madde": "62-2",
+     "once_v04": "YESIL",
+     "aciklama": "{meshes: 125, izgara: tamam}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY03a",
+     "hedef_madde": "madde 3 / A-15 / KI-163 (kısmi kurucu hatası)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "{workers: 1, fallback: true, failures: [işçi oluşturulamadı: Sahte: Worker oluşturulamadı]}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY03b",
+     "hedef_madde": "62-2",
+     "once_v04": "YESIL",
+     "aciklama": "{meshes: 125, izgara: tamam, ms: 429}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY04a",
+     "hedef_madde": "62-2 (404)",
+     "once_v04": "YESIL",
+     "aciklama": "{workers: 0, fallback: true, failures: 4}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY04b",
+     "hedef_madde": "62-2",
+     "once_v04": "YESIL",
+     "aciklama": "{ms: 289}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY04c",
+     "hedef_madde": "62-2",
+     "once_v04": "YESIL",
+     "aciklama": "{meshes: 125, izgara: tamam}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY05a",
+     "hedef_madde": "madde 7, 17 / A-11 (hazır sinyali yok)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "{ms: 8306} — Node zaman ölçümü (tarayıcısız): işaretçi selinden etkilenmez."
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY05b",
+     "hedef_madde": "madde 17",
+     "once_v04": "YESIL",
+     "aciklama": "{meshes: 125, izgara: tamam, failures: [işçi 0: hazır sinyali gelmedi]}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY06a",
+     "hedef_madde": "madde 7, 17 / A-11 (askı)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "{ms: 20310} — Node zaman ölçümü (tarayıcısız): işaretçi selinden etkilenmez."
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY06b",
+     "hedef_madde": "madde 17",
+     "once_v04": "YESIL",
+     "aciklama": "{meshes: 125, izgara: tamam, failures: [işçi 0: tile işi 20 sn içinde bitmedi]}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY07a",
+     "hedef_madde": "62-3",
+     "once_v04": "YESIL",
+     "aciklama": "{coktu: true, meshes: 125, izgara: tamam, ms: 369}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY07b",
+     "hedef_madde": "62-3",
+     "once_v04": "YESIL",
+     "aciklama": "{workers: 2, fallback: false}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY07c",
+     "hedef_madde": "madde 3 / A-15 (yeniden başlatma)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "{ms: null, workers: 2, kurulan: 3}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY08a",
+     "hedef_madde": "62-3 / madde 3 (bütün işçiler çöker; B0-I06 ile gözlenebilir ölçüt)",
+     "once_v04": "YESIL",
+     "aciklama": "{isAlan: 3, isAlanCanli: 0, enCokGonderim: 1, kurulan: 3, workers: 0, fallback: true, …}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY08b",
+     "hedef_madde": "madde 20 / KI-234 (Node: işçiler çöktükten sonra uzak prepare)",
+     "once_v04": "YESIL",
+     "aciklama": "{ms: 135, isciSizMs: 141, ag: 21} — Node zaman ölçümü (tarayıcısız): işaretçi selinden etkilenmez; KI-234'ün kuyruk tarafı v0.4'te yok."
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY09a",
+     "hedef_madde": "madde 3, 17 / A-05 / KI-153 (MAX_TRIES → yerel devir)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "{izgara: RED: Arazi işi grid tekrarlanan işçi hatası, ms: 10, workers: 0, fallback: true, …}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY09b",
+     "hedef_madde": "madde 3",
+     "once_v04": "YESIL",
+     "aciklama": "{meshes: 124}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY10a",
+     "hedef_madde": "madde 17 ('error' iletisi)",
+     "once_v04": "YESIL",
+     "aciklama": "{izgara: RED: sahte üretim hatası, ms: 4}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY10b",
+     "hedef_madde": "madde 17",
+     "once_v04": "YESIL",
+     "aciklama": "{workers: 3, fallback: false, meshes: 125}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY11a",
+     "hedef_madde": "madde 3 / A-05 (geri çekilme)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "{ilkIstek: 1, sonraki3snIstek: 60, konsolHatasi3sn: 60}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY11b",
+     "hedef_madde": "madde 3 / A-05 (failures ≤ 50)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "{failures: 61}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY11c",
+     "hedef_madde": "madde 3",
+     "once_v04": "YESIL",
+     "aciklama": "{meshes: 118}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY12a",
+     "hedef_madde": "madde 4 / A-08 / KI-156",
+     "once_v04": "KIRMIZI",
+     "aciklama": "{seg: 80, sonucUretildi: true, durum: cozuldu, sonlanmaDilim: 1}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY13a",
+     "hedef_madde": "madde 4 / A-08",
+     "once_v04": "KIRMIZI",
+     "aciklama": "{isciTutuyor: true, sonlanmaMs: 381, sonucUretildi: true} — Node zaman ölçümü: işaretçi selinden etkilenmez."
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY14a",
+     "hedef_madde": "madde 4 / A-08",
+     "once_v04": "KIRMIZI",
+     "aciklama": "{sonlanmaMs: 393, eskiSonucUretildi: true} — Node zaman ölçümü: işaretçi selinden etkilenmez."
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY14b",
+     "hedef_madde": "madde 4 / A-08",
+     "once_v04": "KIRMIZI",
+     "aciklama": "{eskiSonucUretildi: true, durum: cozuldu, depthWin: {x: 1920, z: 960}}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY15",
+     "hedef_madde": "madde 17 (_depthSeq)",
+     "once_v04": "YESIL",
+     "aciklama": "{depthWin: {x: 1920, z: 960}, sonOnDepth: {x: 1920, z: 960}}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY16",
+     "hedef_madde": "madde 17 (odak bastırması)",
+     "once_v04": "YESIL",
+     "aciklama": "{yeniDerinlikIsi: 0, depthWin: {x: 280, z: -5000}}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY17",
+     "hedef_madde": "madde 17 (odak koruması)",
+     "once_v04": "YESIL",
+     "aciklama": "{odakAg: 20, odakHires: 15}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY18",
+     "hedef_madde": "madde 8 / A-12 / KI-160",
+     "once_v04": "KIRMIZI",
+     "aciklama": "{aMs: 104, bMs: 12218, odakAg: 0, yavasIs: 3, depthWin: {x: 280, z: -5000}}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY19a",
+     "hedef_madde": "madde 17 (prepare zaman aşımı dalı)",
+     "once_v04": "YESIL",
+     "aciklama": "{ms: 401}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY19b",
+     "hedef_madde": "madde 7 / A-11 (timeout dönüşü)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "{donus: undefined}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY20a",
+     "hedef_madde": "madde 4 / A-09 / KI-157",
+     "once_v04": "KIRMIZI",
+     "aciklama": "{hayalet: 2, isciYuvalari: [[1, 2], [2, 0]]}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY20b",
+     "hedef_madde": "madde 4 / A-09 (B0-I06: yalnız dalgadan önce canlı işçiler)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "{yeniIleti: [[1, 0], [2, 94]], dalgadaOlen: 0, dalgadaKurulan: 0}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY21",
+     "hedef_madde": "madde 4 / A-08",
+     "once_v04": "KIRMIZI",
+     "aciklama": "{seg32Gonderim: 3, workers: 0}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY22",
+     "hedef_madde": "madde 12 / A-07 / KI-155",
+     "once_v04": "KIRMIZI",
+     "aciklama": "{baslangicSeg: 80, salinimdakiIstek: 6, sonSeg: 80}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY23",
+     "hedef_madde": "madde 12 / A-07",
+     "once_v04": "KIRMIZI",
+     "aciklama": "{enCok: 81, enCokNokta_x: 6200, adim: 41, ic: _land, toplamKaro: 110}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY24a",
+     "hedef_madde": "madde 9 / A-13",
+     "once_v04": "YESIL",
+     "aciklama": "{ayniSoz: true}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY24b",
+     "hedef_madde": "madde 9 / A-13 / KI-161",
+     "once_v04": "KIRMIZI",
+     "aciklama": "{onbellek: 24}"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KY25",
+     "hedef_madde": "madde 11 / A-06 / KI-154 (B0-I08: belirlenimci katı dilim sınırı, Node)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "{dilim: 39, p99Fark: 90.2, enUzunFark: 90.2, asim: 32, butce: 10, butceKaynagi: v0.4 kuralı (terrain.js:162)} — Node (tarayıcı yok; tarayıcı kilidiyle tek başına koşuldu): işaretçi selinden etkilenmez. Belirlenimci: çağrı başına 5 µs yapay gecikme. Doğrulama: A-06 benzeri mutant (her satırda yield) GECTI, p99 +2,5 ms (duzeltme2/KY25_dogrulama.log)."
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KYxx-D (23 durum)",
+     "hedef_madde": "arazi_kuyruk değişmezleri (A-05, A-09)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "değişmezler (hayalet yuva, uçuştaki sayaç, failures ≤ 50): kalan KY11-D, KY20-D"
+    },
+    {
+     "test": "arazi_kuyruk.mjs",
+     "kimlik": "KYxx-S (23 durum)",
+     "hedef_madde": "arazi_kuyruk değişmezleri (A-05, A-09)",
+     "once_v04": "YESIL",
+     "aciklama": "bütün iş sözleri süre sınırında sonuçlanır: hepsi geçti"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY00",
+     "hedef_madde": "madde 18a (kip denetimi)",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (true); noworker: geçti (true)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY01",
+     "hedef_madde": "kurulum",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (true); noworker: geçti (true)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY02",
+     "hedef_madde": "madde 19 (≥ 5 km)",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (5348); noworker: geçti (5348)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY03",
+     "hedef_madde": "madde 5 / A-03 (gemi hedefte)",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (0.03); noworker: geçti (0)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HYS-01",
+     "hedef_madde": "hızlı yolculuk hazırlığı ≤ 3 sn (normal: gerileme koruması; noworker: KI-234 DEĞİL, B0-I04)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "normal: geçti (1810); noworker: KALDI (30949) — ZAMAN KONTROLÜ (oyun içinde, kilitliyken). Normal: kilit bırakılmış tanı 2196 ms → YESIL. Noworker: son/ 30 949 ms KIRMIZI; kilitli + sayaçlı tekrar 28 677 ms; kilit bırakılmış 10 274 ms (yine KIRMIZI); 15 Kasım'ın ilk koşusunda 366 ms (YESIL); önceki üç koşu 30–45 sn. KARARSIZ ve ortama duyarlı: sel gecikmeyi ~3 kat büyütüyor, selsiz de > 3 sn. Yolculuk anında kuyruk boş ya da neredeyse boş (0–3 iş). Bu kipte tek bir 'önce/sonra' koşusu kanıt sayılmamalı; KI-234 değil."
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HYS-02",
+     "hedef_madde": "madde 7 / A-11 (hızlı yolculuk prepare 'ok' döner)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "normal: KALDI (undefined); noworker: KALDI (undefined)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY04",
+     "hedef_madde": "A-03 (oyuncu hedefte)",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (0.23); noworker: geçti (0.23)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY05",
+     "hedef_madde": "A-03 (gemi hızı)",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (0.116); noworker: geçti (0.156)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY06",
+     "hedef_madde": "A-03 / 62-5 (derinlik hedefte)",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (7); noworker: geçti (7)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY07",
+     "hedef_madde": "A-03 / 62-4 (≥ 6 ağ)",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (20); noworker: geçti (21)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY08",
+     "hedef_madde": "A-03 (ücret bir kez)",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (true); noworker: geçti (true)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HYU-01",
+     "hedef_madde": "madde 19 (ilk karede ağ, derinlik, heightAt = ağ)",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (true); noworker: geçti (true)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HYU-02",
+     "hedef_madde": "madde 19 (varışta zeminde; hedef ports.js biniş noktası, B0-I16)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "normal: KALDI (false); noworker: KALDI (false)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HYU-03",
+     "hedef_madde": "madde 19 / 17 (heightAt = ağ)",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (true); noworker: geçti (true)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HYU-04",
+     "hedef_madde": "madde 19 (görünürlük + piksel)",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (true); noworker: geçti (true)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HYU-05",
+     "hedef_madde": "madde 19 (biniş noktası iskele platformunda; ports.js/islands.js, B0-I16)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "normal: KALDI (false); noworker: KALDI (false)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY09",
+     "hedef_madde": "kurulum",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (true); noworker: geçti (true)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY10",
+     "hedef_madde": "madde 5 / A-03 / KI-035 (ikinci emit yok sayılır; B0-I02: varış sayımı)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "normal: KALDI (false); noworker: KALDI (false)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY11",
+     "hedef_madde": "madde 5 / A-03 (ücret bir kez)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "normal: KALDI (false); noworker: KALDI (false)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY12",
+     "hedef_madde": "kurulum",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (true); noworker: geçti (true)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY12b",
+     "hedef_madde": "önkoşul (B0-I05)",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (true); noworker: geçti (true)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY13",
+     "hedef_madde": "madde 10 / A-14 / KI-162",
+     "once_v04": "KIRMIZI",
+     "aciklama": "normal: KALDI (0); noworker: KALDI (0)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY14",
+     "hedef_madde": "madde 10 / A-14",
+     "once_v04": "KIRMIZI",
+     "aciklama": "normal: KALDI (5804); noworker: KALDI (5804)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY15",
+     "hedef_madde": "kurulum",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (true); noworker: geçti (true)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY16",
+     "hedef_madde": "madde 5 / A-03",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (true); noworker: geçti (true)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY17",
+     "hedef_madde": "madde 5 / A-03 (B0-I02: prepare bitene kadar)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "normal: KALDI (true); noworker: KALDI (true)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY18",
+     "hedef_madde": "madde 5 / A-03",
+     "once_v04": "KIRMIZI",
+     "aciklama": "normal: KALDI (false); noworker: KALDI (false)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY19",
+     "hedef_madde": "madde 5 / A-03 (oturum belirteci: varış olayı/bildirimi yok)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "normal: KALDI (false); noworker: KALDI (false)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HYK-2",
+     "hedef_madde": "test doğruluğu (kip korunur; FB0 ek bulgusu)",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (true); noworker: geçti (true)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HYK-3",
+     "hedef_madde": "test doğruluğu (kip korunur)",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (true); noworker: geçti (true)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HYK-4",
+     "hedef_madde": "test doğruluğu (kip korunur)",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (true); noworker: geçti (true)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HYK-5",
+     "hedef_madde": "test doğruluğu (kip korunur)",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (true); noworker: geçti (true)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY20",
+     "hedef_madde": "kurulum",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (true); noworker: geçti (true)"
+    },
+    {
+     "test": "02_hizli_yolculuk.js",
+     "kimlik": "HY21",
+     "hedef_madde": "madde 5 (prepare 'timeout' → bildirim; B0-I17)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "normal: KALDI (false); noworker: KALDI (false)"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY00",
+     "hedef_madde": "madde 18a / 17 (kip denetimi; B0-I06 crash/hang ölçütü)",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (true); noworker: geçti (true); crash: geçti (true)"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY01",
+     "hedef_madde": "62-1/2/3",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (true); noworker: geçti (true); crash: geçti (true)"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY02",
+     "hedef_madde": "62-4",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (125); noworker: geçti (125); crash: geçti (125)"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY03",
+     "hedef_madde": "62-5",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (10); noworker: geçti (10); crash: geçti (10)"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY04",
+     "hedef_madde": "62-5",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (tamam); noworker: geçti (tamam); crash: geçti (tamam)"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY05",
+     "hedef_madde": "madde 7 / A-11",
+     "once_v04": "KIRMIZI",
+     "aciklama": "normal: KALDI (undefined); noworker: KALDI (undefined); crash: KALDI (undefined)"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY06",
+     "hedef_madde": "kurulum",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (true); noworker: geçti (true); crash: geçti (true)"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY07",
+     "hedef_madde": "madde 17 (LOD yarışı; FB0: önkoşul seg-32 uçuşta)",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (tamam); noworker: geçti (tamam); crash: geçti (tamam)"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY08",
+     "hedef_madde": "FAZ1-8 (geç sonuç; B0-I14, önkoşul: sonuç düşürmeden sonra)",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (tamam); noworker: geçti (tamam); crash: geçti (tamam)"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY09",
+     "hedef_madde": "madde 8 / A-12 / KI-160 (B0-I15: iki kipte gözlenebilir)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "normal / noworker / crash: KALDI (B odağı kısaldı: B bittikten 5 sn sonra derinlik 5214 m uzakta; noworker'da 0 ağ); A-12 mutantında iki kipte tamam"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY10",
+     "hedef_madde": "madde 9 / A-13 (B0-I13)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "normal: KALDI (24); noworker: KALDI (24); crash: KALDI (24)"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY11",
+     "hedef_madde": "madde 12 / A-07",
+     "once_v04": "KIRMIZI",
+     "aciklama": "normal: KALDI (83); noworker: KALDI (83); crash: KALDI (83)"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY12",
+     "hedef_madde": "madde 4 / A-09 (B0-I13)",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (true); noworker: geçti (true); crash: geçti (true)"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY13",
+     "hedef_madde": "madde 11 / A-06 / KI-154 (B0-I08: dağılım)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "normal: KALDI (p99 bütçe+6 ms, en uzun +8,1); noworker: KALDI (+15,9 / +17,3); crash: geçti (+2,6 / +8,8) — ZAMAN KONTROLÜ (oyun içinde, kilitliyken; dolaşım çizim durdurulmuş). Kilit bırakılmış tanıda v0.4 normal YESIL (54 dilim, 0 aşım, p99 +3,0 / en uzun +3,8 ms) ve noworker YESIL (47 dilim, 0 aşım, +0,8 / +1,2). Yani buradaki kırmızı bu makinede ORTAM kaynaklı (işaretçi kilidi seli, CPU yarışı); crash kipi kilitliyken de yeşildi. Kontrol gevşetilmedi. A-06'nın 'önce' kanıtı belirlenimci KY25 (Node); tarayıcıdaki LY13'ün 'sonra' yeşili tek başına A-06'yı kanıtlamaz."
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY14",
+     "hedef_madde": "madde 12 / A-07",
+     "once_v04": "KIRMIZI",
+     "aciklama": "normal: KALDI (83); noworker: KALDI (83); crash: KALDI (83)"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY15",
+     "hedef_madde": "FAZ1-6",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (true); noworker: geçti (true); crash: geçti (true)"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY16",
+     "hedef_madde": "geometri sızıntısı",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (tamam); noworker: geçti (tamam); crash: geçti (tamam)"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LYK-09",
+     "hedef_madde": "test doğruluğu (LY09 sayfasında kip korunur)",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (true); noworker: geçti (true); crash: geçti (true)"
+    },
+    {
+     "test": "02_arazi_isci_hata.js",
+     "kimlik": "HI00",
+     "hedef_madde": "kurulum",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (true)"
+    },
+    {
+     "test": "02_arazi_isci_hata.js",
+     "kimlik": "HI01",
+     "hedef_madde": "madde 17 ('error' iletisi)",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (true)"
+    },
+    {
+     "test": "02_arazi_isci_hata.js",
+     "kimlik": "HI02",
+     "hedef_madde": "kurulum",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (true)"
+    },
+    {
+     "test": "02_arazi_isci_hata.js",
+     "kimlik": "HI03",
+     "hedef_madde": "madde 3 / A-05",
+     "once_v04": "KIRMIZI",
+     "aciklama": "normal: KALDI (87)"
+    },
+    {
+     "test": "02_arazi_isci_hata.js",
+     "kimlik": "HI04",
+     "hedef_madde": "madde 3 / A-05",
+     "once_v04": "KIRMIZI",
+     "aciklama": "normal: KALDI (87)"
+    },
+    {
+     "test": "02_arazi_isci_hata.js",
+     "kimlik": "HI05",
+     "hedef_madde": "madde 3, 17 / A-05",
+     "once_v04": "KIRMIZI",
+     "aciklama": "normal: KALDI (RED: Arazi işi grid tekrarlanan işçi hatası)"
+    },
+    {
+     "test": "02_arazi_isci_hata.js",
+     "kimlik": "HI06",
+     "hedef_madde": "FAZ1-6",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (0)"
+    },
+    {
+     "test": "02_arazi_isci_hata.js",
+     "kimlik": "HI07",
+     "hedef_madde": "madde 3 / A-15",
+     "once_v04": "KIRMIZI",
+     "aciklama": "normal: KALDI (false)"
+    },
+    {
+     "test": "02_arazi_isci_hata.js",
+     "kimlik": "HI08",
+     "hedef_madde": "62-2",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (115)"
+    },
+    {
+     "test": "02_ayar_lod.js",
+     "kimlik": "AL00",
+     "hedef_madde": "gerileme koruması",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (1)"
+    },
+    {
+     "test": "02_ayar_lod.js",
+     "kimlik": "AL01",
+     "hedef_madde": "madde 16 / A-19 / KI-038",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (0.7)"
+    },
+    {
+     "test": "02_ayar_lod.js",
+     "kimlik": "AL02",
+     "hedef_madde": "madde 16",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (false)"
+    },
+    {
+     "test": "02_ayar_lod.js",
+     "kimlik": "AL03",
+     "hedef_madde": "madde 16",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (1)"
+    },
+    {
+     "test": "02_ayar_lod.js",
+     "kimlik": "AL04",
+     "hedef_madde": "madde 16",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (0.7)"
+    },
+    {
+     "test": "02_ayar_lod.js",
+     "kimlik": "AL05",
+     "hedef_madde": "madde 16",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (0.7)"
+    },
+    {
+     "test": "02_ayar_lod.js",
+     "kimlik": "AL06",
+     "hedef_madde": "madde 16",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (false)"
+    },
+    {
+     "test": "02_ayar_lod.js",
+     "kimlik": "AL07",
+     "hedef_madde": "madde 16",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (1)"
+    },
+    {
+     "test": "02_ayar_lod.js",
+     "kimlik": "AL08",
+     "hedef_madde": "madde 16 / KI-130",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (2048)"
+    },
+    {
+     "test": "02_ayar_lod.js",
+     "kimlik": "AL09",
+     "hedef_madde": "madde 16 / KI-130",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (2048)"
+    },
+    {
+     "test": "02_ayar_lod.js",
+     "kimlik": "AL10",
+     "hedef_madde": "madde 16",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (1)"
+    },
+    {
+     "test": "02_depolama_kapali.js",
+     "kimlik": "DK01",
+     "hedef_madde": "gerileme koruması",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (true)"
+    },
+    {
+     "test": "02_depolama_kapali.js",
+     "kimlik": "DK02",
+     "hedef_madde": "kurulum",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (SecurityError)"
+    },
+    {
+     "test": "02_depolama_kapali.js",
+     "kimlik": "DK03",
+     "hedef_madde": "madde 15 / A-18 / KI-037",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (false)"
+    },
+    {
+     "test": "02_depolama_kapali.js",
+     "kimlik": "DK04",
+     "hedef_madde": "madde 15",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (false)"
+    },
+    {
+     "test": "02_depolama_kapali.js",
+     "kimlik": "DK05",
+     "hedef_madde": "madde 15 + A-04",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (false)"
+    },
+    {
+     "test": "02_depolama_kapali.js",
+     "kimlik": "DK06",
+     "hedef_madde": "madde 15",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (false)"
+    },
+    {
+     "test": "02_depolama_kapali.js",
+     "kimlik": "DK07",
+     "hedef_madde": "madde 15 / 62-7",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (false)"
+    },
+    {
+     "test": "02_depolama_kapali.js",
+     "kimlik": "DK08",
+     "hedef_madde": "madde 15",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (false)"
+    },
+    {
+     "test": "02_depolama_kapali.js",
+     "kimlik": "DK09",
+     "hedef_madde": "madde 15",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (null; açılış düştüğü için DK tanımsız)"
+    },
+    {
+     "test": "02_depolama_kapali.js",
+     "kimlik": "DK10",
+     "hedef_madde": "madde 15",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (null; açılış düştüğü için DK tanımsız)"
+    },
+    {
+     "test": "02_depolama_kapali.js",
+     "kimlik": "DK11",
+     "hedef_madde": "madde 15",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (false)"
+    },
+    {
+     "test": "02_depolama_kapali.js",
+     "kimlik": "DK12",
+     "hedef_madde": "madde 15 (ONLINE → Oda kur; B0-I17)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (false)"
+    },
+    {
+     "test": "02_depolama_kapali.js",
+     "kimlik": "DK13",
+     "hedef_madde": "madde 15 (oda kurulur)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (zaman aşımı)"
+    },
+    {
+     "test": "02_depolama_kapali.js",
+     "kimlik": "DK14",
+     "hedef_madde": "madde 15 (startOnlineHost korumalı)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (null)"
+    },
+    {
+     "test": "02_depolama_kapali.js",
+     "kimlik": "DK15",
+     "hedef_madde": "madde 15 (çevrimiçi akışta SecurityError 0)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (false)"
+    },
+    {
+     "test": "02_acilis_akisi.js",
+     "kimlik": "AA01",
+     "hedef_madde": "madde 19 / 62-6",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (true)"
+    },
+    {
+     "test": "02_acilis_akisi.js",
+     "kimlik": "AA02",
+     "hedef_madde": "62-6",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (true)"
+    },
+    {
+     "test": "02_acilis_akisi.js",
+     "kimlik": "AA03",
+     "hedef_madde": "62-6",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (true)"
+    },
+    {
+     "test": "02_acilis_akisi.js",
+     "kimlik": "AA04",
+     "hedef_madde": "62-6",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (true)"
+    },
+    {
+     "test": "02_acilis_akisi.js",
+     "kimlik": "AA05",
+     "hedef_madde": "62-7",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (true)"
+    },
+    {
+     "test": "02_acilis_akisi.js",
+     "kimlik": "AA06",
+     "hedef_madde": "62-7",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (true)"
+    },
+    {
+     "test": "02_acilis_akisi.js",
+     "kimlik": "AA07",
+     "hedef_madde": "62-7",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (true)"
+    },
+    {
+     "test": "02_acilis_akisi.js",
+     "kimlik": "AA08",
+     "hedef_madde": "62-8",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (true)"
+    },
+    {
+     "test": "02_acilis_akisi.js",
+     "kimlik": "AA09",
+     "hedef_madde": "62-8",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (true)"
+    },
+    {
+     "test": "02_acilis_akisi.js",
+     "kimlik": "AA09b",
+     "hedef_madde": "madde 19 (menüde fare kilidi)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (false)"
+    },
+    {
+     "test": "02_acilis_akisi.js",
+     "kimlik": "AA10",
+     "hedef_madde": "62-8",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (true)"
+    },
+    {
+     "test": "02_acilis_akisi.js",
+     "kimlik": "AA11",
+     "hedef_madde": "62-8",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (true)"
+    },
+    {
+     "test": "02_acilis_akisi.js",
+     "kimlik": "AA18",
+     "hedef_madde": "önkoşul (B0-I07: birinci dünya uzak bölgede, içerik var)",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (true; Kuzeyfener'de 20 ağ, 2 düşman, 1 sandık)"
+    },
+    {
+     "test": "02_acilis_akisi.js",
+     "kimlik": "AA12",
+     "hedef_madde": "62-10",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (true)"
+    },
+    {
+     "test": "02_acilis_akisi.js",
+     "kimlik": "AA13",
+     "hedef_madde": "62-10",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (true)"
+    },
+    {
+     "test": "02_acilis_akisi.js",
+     "kimlik": "AA14",
+     "hedef_madde": "62-10",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (true)"
+    },
+    {
+     "test": "02_acilis_akisi.js",
+     "kimlik": "AA15",
+     "hedef_madde": "62-10 (kalıntı yok; düşman sayısı eklendi)",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (true)"
+    },
+    {
+     "test": "02_acilis_akisi.js",
+     "kimlik": "AA19",
+     "hedef_madde": "62-10 (eski bölgenin karoları yok)",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (0)"
+    },
+    {
+     "test": "02_acilis_akisi.js",
+     "kimlik": "AA20",
+     "hedef_madde": "62-10 (eski ada içeriği yok)",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (tamam)"
+    },
+    {
+     "test": "02_acilis_akisi.js",
+     "kimlik": "AA21",
+     "hedef_madde": "62-10 (eski düşman/sandık yok)",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (tamam)"
+    },
+    {
+     "test": "02_acilis_akisi.js",
+     "kimlik": "AA22",
+     "hedef_madde": "62-10 / 62-5 (derinlik yeni başlangıçta)",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (12)"
+    },
+    {
+     "test": "02_acilis_akisi.js",
+     "kimlik": "AA16",
+     "hedef_madde": "62-10",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (true)"
+    },
+    {
+     "test": "02_acilis_akisi.js",
+     "kimlik": "AA17",
+     "hedef_madde": "madde 19",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (true)"
+    },
+    {
+     "test": "02_arazi_yedek.js",
+     "kimlik": "AYK-01",
+     "hedef_madde": "madde 18a / KI-149",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (true); noworker: geçti (true); crash: geçti (true); badurl: geçti (true)"
+    },
+    {
+     "test": "02_arazi_yedek.js",
+     "kimlik": "AYK-02",
+     "hedef_madde": "madde 18a / KI-149 (B0-I06: crash/hang gözlenebilir ölçüt)",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (true); noworker: geçti (true); crash: geçti (true); badurl: geçti (true)"
+    },
+    {
+     "test": "02_arazi_yedek.js",
+     "kimlik": "AYS-01",
+     "hedef_madde": "madde 20 / KI-234 (B0-I01: çizim durdurulmuş kuyruk süresi)",
+     "once_v04": "YESIL",
+     "aciklama": "normal / noworker / crash / badurl: geçti — ZAMAN KONTROLÜ (oyun içinde, işaretçi kilitliyken; çizim durdurulmuş): son/ ortancaları normal 211, noworker 150, crash 181, badurl 151 ms. Kilit bırakılmış tanı: crash 150 ms, noworker 151 ms; kilitli + sayaçlı crash 151 ms. Kilit seli sonucu değiştirmiyor, YESIL oyun davranışı (KI-234 v0.4'te kuyruk kusuru değil)."
+    },
+    {
+     "test": "02_arazi_yedek.js",
+     "kimlik": "AYS-02",
+     "hedef_madde": "madde 3 / A-05, A-15 (iş başına gönderim ≤ 3)",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (1); noworker: geçti (0); crash: geçti (1); badurl: geçti (1)"
+    },
+    {
+     "test": "02_arazi_yedek.js",
+     "kimlik": "eski 12 kontrol (Sayfa hazır … Kuyruk ilerliyor)",
+     "hedef_madde": "62-1..5 (eski kontroller; gerileme koruması)",
+     "once_v04": "YESIL",
+     "aciklama": "12 eski kontrolün hepsi dört kipte (normal, noworker, crash, badurl) geçti: Sayfa hazır; Menü sahnesinde karo ağları; Okyanus derinlik penceresi; Oyun başladı; Oyuncu zemine basıyor; Yüksek çözünürlüklü karolar; Uzak bölge prepare() sonuçlanıyor; Derinlik penceresi yeni bölgeye taşındı; Tuz Pazarı çevresinde karo ağları; Harita ızgarası isteği; Uzak adada yürüme; Kuyruk ilerliyor"
+    },
+    {
+     "test": "00_acilis.js",
+     "kimlik": "Ana menü görünür",
+     "hedef_madde": "eski (gerileme koruması)",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (true)"
+    },
+    {
+     "test": "00_acilis.js",
+     "kimlik": "Menü düğmeleri",
+     "hedef_madde": "eski",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (8)"
+    },
+    {
+     "test": "00_acilis.js",
+     "kimlik": "Oyun başladı",
+     "hedef_madde": "eski",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (playing)"
+    },
+    {
+     "test": "00_acilis.js",
+     "kimlik": "AC01",
+     "hedef_madde": "madde 17 / A-10 / KI-158",
+     "once_v04": "KIRMIZI",
+     "aciklama": "normal: KALDI (false)"
+    },
+    {
+     "test": "00_acilis.js",
+     "kimlik": "AC02",
+     "hedef_madde": "madde 6 / A-10 ('loading')",
+     "once_v04": "KIRMIZI",
+     "aciklama": "normal: KALDI (false)"
+    },
+    {
+     "test": "00_acilis.js",
+     "kimlik": "AC03",
+     "hedef_madde": "madde 6, 17 / A-10 (geçişte hazırlık bitmiş; B0-I09)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "normal: KALDI (surenPrepare 0, bitenPrepare 0, …)"
+    },
+    {
+     "test": "00_acilis.js",
+     "kimlik": "Oyuncu dünyada",
+     "hedef_madde": "eski",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (true)"
+    },
+    {
+     "test": "00_acilis.js",
+     "kimlik": "Arazi karoları yüklendi",
+     "hedef_madde": "eski",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (129)"
+    },
+    {
+     "test": "00_acilis.js",
+     "kimlik": "Arazi işçileri çalışıyor",
+     "hedef_madde": "eski",
+     "once_v04": "YESIL",
+     "aciklama": "normal: geçti (3)"
+    },
+    {
+     "test": "02_acilis_hatalari.js",
+     "kimlik": "AH00",
+     "hedef_madde": "kurulum",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (true)"
+    },
+    {
+     "test": "02_acilis_hatalari.js",
+     "kimlik": "AH01",
+     "hedef_madde": "kurulum (normal başvuru açılışı)",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (5993)"
+    },
+    {
+     "test": "02_acilis_hatalari.js",
+     "kimlik": "IZ01",
+     "hedef_madde": "madde 1 / A-02 / KI-034 (B0-I03)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (false)"
+    },
+    {
+     "test": "02_acilis_hatalari.js",
+     "kimlik": "IZ02",
+     "hedef_madde": "madde 1 / A-02",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (false)"
+    },
+    {
+     "test": "02_acilis_hatalari.js",
+     "kimlik": "IZ03",
+     "hedef_madde": "madde 1, 2 / A-02, A-04",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (Oyun başlatılamadı: test: enjekte ızgara hatası … WebGL)"
+    },
+    {
+     "test": "02_acilis_hatalari.js",
+     "kimlik": "IZ04",
+     "hedef_madde": "madde 1 / A-02 (harita ızgarası yerelde)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (64)"
+    },
+    {
+     "test": "02_acilis_hatalari.js",
+     "kimlik": "IZ05",
+     "hedef_madde": "madde 1, 3 / A-02, A-05",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (false)"
+    },
+    {
+     "test": "02_acilis_hatalari.js",
+     "kimlik": "IZ06",
+     "hedef_madde": "madde 1, 3",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (false)"
+    },
+    {
+     "test": "02_acilis_hatalari.js",
+     "kimlik": "IZ07",
+     "hedef_madde": "madde 3 / A-05",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (64)"
+    },
+    {
+     "test": "02_acilis_hatalari.js",
+     "kimlik": "AH02",
+     "hedef_madde": "madde 7 / A-11 (askı; B0-I11)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (false) — ZAMAN KONTROLÜ (açılışta, oyun oturumu ve işaretçi kilidi yokken): selden etkilenmez. Normal başvuru 5993 ms, askı 23 576 ms."
+    },
+    {
+     "test": "02_acilis_hatalari.js",
+     "kimlik": "AH03",
+     "hedef_madde": "madde 7 / A-11 (yükleme metni)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (false)"
+    },
+    {
+     "test": "02_acilis_hatalari.js",
+     "kimlik": "AH04",
+     "hedef_madde": "madde 7 / A-11 (hazır sinyali yok)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (false) — ZAMAN KONTROLÜ (açılışta, kilit yokken): selden etkilenmez. Normal başvuru 5993 ms, hazır sinyali yok 13 198 ms."
+    },
+    {
+     "test": "02_acilis_hatalari.js",
+     "kimlik": "AH05",
+     "hedef_madde": "madde 7 / A-11 (yükleme metni)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (false)"
+    },
+    {
+     "test": "02_acilis_hatalari.js",
+     "kimlik": "AH10",
+     "hedef_madde": "madde 7, 14 (?terrain=hang)",
+     "once_v04": "UYGULANAMAZ",
+     "aciklama": "v0.4: KALDI (false) — ?terrain=hang kipi v0.4'te yok (kip dizgesi saklanır, davranış normal, 5696 ms); aynı davranış AH02'de sarmalayıcıyla ölçüldü"
+    },
+    {
+     "test": "02_acilis_hatalari.js",
+     "kimlik": "AH11",
+     "hedef_madde": "madde 7, 14 (?terrain=noready)",
+     "once_v04": "UYGULANAMAZ",
+     "aciklama": "v0.4: KALDI (false) — ?terrain=noready kipi v0.4'te yok (davranış normal, 5444 ms); aynı davranış AH04'te sarmalayıcıyla ölçüldü"
+    },
+    {
+     "test": "02_acilis_hatalari.js",
+     "kimlik": "AH06",
+     "hedef_madde": "madde 2 / A-04 (WebGL iletisi; B0-I10)",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (true)"
+    },
+    {
+     "test": "02_acilis_hatalari.js",
+     "kimlik": "AH07",
+     "hedef_madde": "madde 2 / A-04 (import map)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (false)"
+    },
+    {
+     "test": "02_acilis_hatalari.js",
+     "kimlik": "AH08",
+     "hedef_madde": "madde 2 / A-04 (modül 404)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (false) — ZAMAN KONTROLÜ (açılışta, kilit yokken): selden etkilenmez."
+    },
+    {
+     "test": "02_acilis_hatalari.js",
+     "kimlik": "AH09",
+     "hedef_madde": "madde 2 / A-04 (__ready uyarısı)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (false) — ZAMAN KONTROLÜ (açılışta, kilit yokken): selden etkilenmez."
+    },
+    {
+     "test": "02_yukleme_bekleme.js",
+     "kimlik": "YB00",
+     "hedef_madde": "kurulum (test verisi)",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (true)"
+    },
+    {
+     "test": "02_yukleme_bekleme.js",
+     "kimlik": "YB01",
+     "hedef_madde": "kurulum",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (true)"
+    },
+    {
+     "test": "02_yukleme_bekleme.js",
+     "kimlik": "YB02",
+     "hedef_madde": "önkoşul (kapı)",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (true)"
+    },
+    {
+     "test": "02_yukleme_bekleme.js",
+     "kimlik": "YB03",
+     "hedef_madde": "madde 6 / A-10 (yükleme katmanı; B0-I09)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (false)"
+    },
+    {
+     "test": "02_yukleme_bekleme.js",
+     "kimlik": "YB04",
+     "hedef_madde": "madde 6 / A-10 (G.state ≠ 'playing')",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (false)"
+    },
+    {
+     "test": "02_yukleme_bekleme.js",
+     "kimlik": "YB05",
+     "hedef_madde": "madde 6 / A-10 (Esc duraklatma açmaz)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (false)"
+    },
+    {
+     "test": "02_yukleme_bekleme.js",
+     "kimlik": "YB06",
+     "hedef_madde": "madde 6 / A-10 (iptal durum değiştirmez)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (false)"
+    },
+    {
+     "test": "02_yukleme_bekleme.js",
+     "kimlik": "YB07",
+     "hedef_madde": "madde 6 / A-10 (bildirim yok)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4: KALDI (false)"
+    },
+    {
+     "test": "02_yukleme_bekleme.js",
+     "kimlik": "YB08",
+     "hedef_madde": "madde 6 / A-10 (kayıt değişmez)",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4: geçti (true)"
+    },
+    {
+     "test": "02_tek_dosya_kipler.js",
+     "kimlik": "TK00",
+     "hedef_madde": "kurulum",
+     "once_v04": "YESIL",
+     "aciklama": "file:// v0.4 tek dosya: geçti (true)"
+    },
+    {
+     "test": "02_tek_dosya_kipler.js",
+     "kimlik": "TK01",
+     "hedef_madde": "madde 14 / A-17",
+     "once_v04": "YESIL",
+     "aciklama": "file:// v0.4 tek dosya: geçti (true)"
+    },
+    {
+     "test": "02_tek_dosya_kipler.js",
+     "kimlik": "TK02",
+     "hedef_madde": "madde 14 / A-17 / KI-165 (badurl data: altında gerçekten bozuk; B0-I12)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "file:// v0.4 tek dosya: KALDI (false; 3 işçi çalışıyor, yedek kapalı)"
+    },
+    {
+     "test": "02_tek_dosya_kipler.js",
+     "kimlik": "TK03",
+     "hedef_madde": "madde 14",
+     "once_v04": "YESIL",
+     "aciklama": "file:// v0.4 tek dosya: geçti (126)"
+    },
+    {
+     "test": "02_tek_dosya_blob.js",
+     "kimlik": "TB00",
+     "hedef_madde": "kurulum",
+     "once_v04": "YESIL",
+     "aciklama": "http v0.4 tek dosya: geçti (true)"
+    },
+    {
+     "test": "02_tek_dosya_blob.js",
+     "kimlik": "TB03",
+     "hedef_madde": "madde 13 (blob reddinde açılış tamamlanır)",
+     "once_v04": "YESIL",
+     "aciklama": "http v0.4 tek dosya: geçti (true; 7687 ms) — ZAMAN KONTROLÜ (açılışta, kilit yokken): selden etkilenmez."
+    },
+    {
+     "test": "02_tek_dosya_blob.js",
+     "kimlik": "TB01",
+     "hedef_madde": "madde 13 / A-16 (blob reddinde data: ile ikinci deneme; B0-I12)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "http v0.4 tek dosya: KALDI (false; 0 işçi, yedek açık, işçi oluşturulamadı)"
+    },
+    {
+     "test": "02_tek_dosya_blob.js",
+     "kimlik": "TB02",
+     "hedef_madde": "madde 13",
+     "once_v04": "YESIL",
+     "aciklama": "http v0.4 tek dosya: geçti (126)"
+    },
+    {
+     "test": "02_tek_dosya_cerceve.js",
+     "kimlik": "TC00",
+     "hedef_madde": "kurulum",
+     "once_v04": "YESIL",
+     "aciklama": "sandbox iframe, http v0.4 tek dosya: geçti (true)"
+    },
+    {
+     "test": "02_tek_dosya_cerceve.js",
+     "kimlik": "TC01",
+     "hedef_madde": "önkoşul (çerçeve kökeni 'null')",
+     "once_v04": "YESIL",
+     "aciklama": "sandbox iframe, http v0.4 tek dosya: geçti (null)"
+    },
+    {
+     "test": "02_tek_dosya_cerceve.js",
+     "kimlik": "TC02",
+     "hedef_madde": "madde 13 / A-16 (sandbox iframe açılışı; B0-I12)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "sandbox iframe: KALDI (false; localStorage SecurityError ile 'Oyun başlatılamadı … WebGL')"
+    },
+    {
+     "test": "02_tek_dosya_cerceve.js",
+     "kimlik": "TC03",
+     "hedef_madde": "madde 13 / A-16 (sandbox iframe ≥ 1 işçi çalışır)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "sandbox iframe: KALDI (false; hiçbir Worker kurulmadı)"
+    },
+    {
+     "test": "02_tek_dosya_cerceve.js",
+     "kimlik": "TC04",
+     "hedef_madde": "madde 13 (sandbox iframe ≥ 20 ağ)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "sandbox iframe: KALDI (çerçevede DK yok)"
+    },
+    {
+     "test": "02_arazi_yedek.js",
+     "kimlik": "AYK-01/AYK-02/AYS-01/AYS-02 (ctorthrow)",
+     "hedef_madde": "madde 14, 18a (yeni test kipi)",
+     "once_v04": "UYGULANAMAZ",
+     "aciklama": "?terrain=ctorthrow kipi v0.4'te yok (test API'si yok); önce koşusu yapılmadı (v0.4 eşdeğerleri 02_acilis_hatalari AH02–AH05'te ölçüldü)"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY00–LY16, LYK-09 (ctorthrow)",
+     "hedef_madde": "madde 14, 17 (yeni kiplerde açılış)",
+     "once_v04": "UYGULANAMAZ",
+     "aciklama": "?terrain=ctorthrow kipi v0.4'te yok (test API'si yok); önce koşusu yapılmadı"
+    },
+    {
+     "test": "02_arazi_yedek.js",
+     "kimlik": "AYK-01/AYK-02/AYS-01/AYS-02 (noready)",
+     "hedef_madde": "madde 14, 18a (yeni test kipi)",
+     "once_v04": "UYGULANAMAZ",
+     "aciklama": "?terrain=noready kipi v0.4'te yok (test API'si yok); önce koşusu yapılmadı (v0.4 eşdeğeri AH04)"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY00–LY16, LYK-09 (noready)",
+     "hedef_madde": "madde 14, 17 (yeni kiplerde açılış)",
+     "once_v04": "UYGULANAMAZ",
+     "aciklama": "?terrain=noready kipi v0.4'te yok (test API'si yok); önce koşusu yapılmadı"
+    },
+    {
+     "test": "02_arazi_yedek.js",
+     "kimlik": "AYK-01/AYK-02/AYS-01/AYS-02 (hang)",
+     "hedef_madde": "madde 14, 18a (yeni test kipi)",
+     "once_v04": "UYGULANAMAZ",
+     "aciklama": "?terrain=hang kipi v0.4'te yok (test API'si yok); önce koşusu yapılmadı (v0.4 eşdeğeri AH02)"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY00–LY16, LYK-09 (hang)",
+     "hedef_madde": "madde 14, 17 (yeni kiplerde açılış)",
+     "once_v04": "UYGULANAMAZ",
+     "aciklama": "?terrain=hang kipi v0.4'te yok (test API'si yok); önce koşusu yapılmadı"
+    },
+    {
+     "test": "02_arazi_yedek.js",
+     "kimlik": "AYK-01/AYK-02/AYS-01/AYS-02 (crash1)",
+     "hedef_madde": "madde 14, 18a (yeni test kipi)",
+     "once_v04": "UYGULANAMAZ",
+     "aciklama": "?terrain=crash1 kipi v0.4'te yok (test API'si yok); önce koşusu yapılmadı"
+    },
+    {
+     "test": "02_arazi_yasam.js",
+     "kimlik": "LY00–LY16, LYK-09 (crash1)",
+     "hedef_madde": "madde 14, 17 (yeni kiplerde açılış)",
+     "once_v04": "UYGULANAMAZ",
+     "aciklama": "?terrain=crash1 kipi v0.4'te yok (test API'si yok); önce koşusu yapılmadı"
+    },
+    {
+     "test": "coop/02_hizli_yolculuk_konuk.cjs",
+     "kimlik": "HK00",
+     "hedef_madde": "kurulum (oda sahibi + konuk)",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4 co-op, 2 oyuncu: geçti (hOk true, gOk true)"
+    },
+    {
+     "test": "coop/02_hizli_yolculuk_konuk.cjs",
+     "kimlik": "HK01",
+     "hedef_madde": "önkoşul (konukta 'teleport' hazırlığı başladı)",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4 co-op: geçti (kuruldu; 1420 ms'de, 1 teleport)"
+    },
+    {
+     "test": "coop/02_hizli_yolculuk_konuk.cjs",
+     "kimlik": "HK02",
+     "hedef_madde": "önkoşul (ikinci 'teleport' bekleme sırasında ulaştı)",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4 co-op: geçti (2 teleport, ilk hazırlık bekliyor)"
+    },
+    {
+     "test": "coop/02_hizli_yolculuk_konuk.cjs",
+     "kimlik": "HK03",
+     "hedef_madde": "madde 5 / A-03 (konuk 'teleport' işleyicisinde travelBusy; B0-I17)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4 co-op: KALDI (ikinciHazirlik 1: ikinci bölgenin hazırlığı başladı)"
+    },
+    {
+     "test": "coop/02_hizli_yolculuk_konuk.cjs",
+     "kimlik": "HK04",
+     "hedef_madde": "madde 5 / A-03 (konuk bir kez ve ilk hedefe taşınır)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4 co-op: KALDI (konuk Kuzeyfener'de [289, -5003], A'ya 5978 m; iki 'vardınız')"
+    },
+    {
+     "test": "coop/02_hizli_yolculuk_konuk.cjs",
+     "kimlik": "HK05",
+     "hedef_madde": "önkoşul (ikinci yolculuk, bekleme penceresi)",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4 co-op: geçti (Zümrüt Koy, 1604 ms'de)"
+    },
+    {
+     "test": "coop/02_hizli_yolculuk_konuk.cjs",
+     "kimlik": "HK06",
+     "hedef_madde": "madde 5 / A-03 (menüye dönen konuk menüde kalır)",
+     "once_v04": "YESIL",
+     "aciklama": "v0.4 co-op: geçti (durum menu, menü açık, HUD kapalı) — gerileme koruması"
+    },
+    {
+     "test": "coop/02_hizli_yolculuk_konuk.cjs",
+     "kimlik": "HK07",
+     "hedef_madde": "madde 5 / A-03 (oturum belirteci: konuk taşınmaz, bildirim yok)",
+     "once_v04": "KIRMIZI",
+     "aciklama": "v0.4 co-op: KALDI (menüdeki konuk 10 046 m taşındı, 'vardınız' bildirimi geldi)"
+    }
+   ],
+   "kosular": [
+    {
+     "ne": "son/00_acilis (senaryo sha 9b8535d42868)",
+     "komut": "tk timeout 590 node tests/harness/run.cjs tests/scenarios/00_acilis.js --url 'http://localhost:8080/index.html' --size 640x360 --timeout 540 --report once_v04/son/00_acilis.json",
+     "sonuc": "KALDI (çıkış 1) kontrol 6/9 | FAIL: AC01, AC02, AC03"
+    },
+    {
+     "ne": "son/02_acilis_akisi (senaryo sha 1e20f2dc38df)",
+     "komut": "tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_acilis_akisi.js --url 'http://localhost:8080/index.html' --size 640x360 --timeout 540 --report once_v04/son/02_acilis_akisi.json",
+     "sonuc": "KALDI (çıkış 1) kontrol 22/23 | FAIL: AA09b"
+    },
+    {
+     "ne": "son/02_acilis_hatalari (senaryo sha 794dd6293f65)",
+     "komut": "tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_acilis_hatalari.js --url 'http://localhost:8080/index.html' --size 640x360 --timeout 540 --report once_v04/son/02_acilis_hatalari.json",
+     "sonuc": "KALDI (çıkış 1) kontrol 3/19 | izinsiz konsol 2 (açılış hataları), izinli konsol 3, ağ 1 | FAIL: IZ01–IZ07, AH02, AH03, AH04, AH05, AH10, AH11, AH07, AH08, AH09"
+    },
+    {
+     "ne": "son/02_arazi_isci_hata (senaryo sha 1477bbb33dfb)",
+     "komut": "tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_arazi_isci_hata.js --url 'http://localhost:8080/index.html' --size 640x360 --timeout 540 --report once_v04/son/02_arazi_isci_hata.json",
+     "sonuc": "KALDI (çıkış 1) kontrol 5/9 | izinli konsol 88 | FAIL: HI03, HI04, HI05, HI07"
+    },
+    {
+     "ne": "son/02_arazi_yasam_crash (senaryo sha 1f67faee95b8)",
+     "komut": "tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_arazi_yasam.js --url 'http://localhost:8080/index.html?terrain=crash' --size 640x360 --timeout 540 --report once_v04/son/02_arazi_yasam_crash.json",
+     "sonuc": "KALDI (çıkış 1) kontrol 13/18 | FAIL: LY05, LY10, LY11, LY14, LY09 | ölçüm: LY13 58 dilim, 1 aşım, p99 +2.6 / en uzun +8.8 ms"
+    },
+    {
+     "ne": "son/02_arazi_yasam_normal (senaryo sha 1f67faee95b8)",
+     "komut": "tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_arazi_yasam.js --url 'http://localhost:8080/index.html' --size 640x360 --timeout 540 --report once_v04/son/02_arazi_yasam_normal.json",
+     "sonuc": "KALDI (çıkış 1) kontrol 12/18 | FAIL: LY05, LY10, LY11, LY13, LY14, LY09 | ölçüm: LY13 63 dilim, 3 aşım, p99 +6 / en uzun +8.1 ms"
+    },
+    {
+     "ne": "son/02_arazi_yasam_noworker (senaryo sha 1f67faee95b8)",
+     "komut": "tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_arazi_yasam.js --url 'http://localhost:8080/index.html?terrain=noworker' --size 640x360 --timeout 540 --report once_v04/son/02_arazi_yasam_noworker.json",
+     "sonuc": "KALDI (çıkış 1) kontrol 12/18 | FAIL: LY05, LY10, LY11, LY13, LY14, LY09 | ölçüm: LY13 63 dilim, 6 aşım, p99 +15.9 / en uzun +17.3 ms"
+    },
+    {
+     "ne": "son/02_arazi_yedek_badurl (senaryo sha 7d4819041d89)",
+     "komut": "tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_arazi_yedek.js --url 'http://localhost:8080/index.html?terrain=badurl' --size 640x360 --timeout 540 --report once_v04/son/02_arazi_yedek_badurl.json --izin-hata 'terrainWorker.missing.js$ # badurl kipi işçi adresini kasıtlı olarak var olmayan dosyaya çevirir; 3 × 404 + 3 × requestfailed beklenir'",
+     "sonuc": "GECTI (çıkış 0) kontrol 16/16 | izinli ağ 6 | ölçüm: AYS-01 ortanca 151 ms [150, 151, 169]; Tuz Pazarı (çizim açık) 150 ms, 0 kare"
+    },
+    {
+     "ne": "son/02_arazi_yedek_crash (senaryo sha 7d4819041d89)",
+     "komut": "tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_arazi_yedek.js --url 'http://localhost:8080/index.html?terrain=crash' --size 640x360 --timeout 540 --report once_v04/son/02_arazi_yedek_crash.json",
+     "sonuc": "GECTI (çıkış 0) kontrol 16/16 | ölçüm: AYS-01 ortanca 181 ms [181, 241, 175]; Tuz Pazarı (çizim açık) 185 ms, 0 kare"
+    },
+    {
+     "ne": "son/02_arazi_yedek_normal (senaryo sha 7d4819041d89)",
+     "komut": "tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_arazi_yedek.js --url 'http://localhost:8080/index.html' --size 640x360 --timeout 540 --report once_v04/son/02_arazi_yedek_normal.json",
+     "sonuc": "GECTI (çıkış 0) kontrol 16/16 | ölçüm: AYS-01 ortanca 211 ms [211, 211, 181]; Tuz Pazarı (çizim açık) 273 ms, 9 kare"
+    },
+    {
+     "ne": "son/02_arazi_yedek_noworker (senaryo sha 7d4819041d89)",
+     "komut": "tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_arazi_yedek.js --url 'http://localhost:8080/index.html?terrain=noworker' --size 640x360 --timeout 540 --report once_v04/son/02_arazi_yedek_noworker.json",
+     "sonuc": "GECTI (çıkış 0) kontrol 16/16 | ölçüm: AYS-01 ortanca 150 ms [123, 150, 180]; Tuz Pazarı (çizim açık) 446 ms, 17 kare"
+    },
+    {
+     "ne": "son/02_ayar_lod (senaryo sha 19ff4ba33b1d)",
+     "komut": "tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_ayar_lod.js --url 'http://localhost:8080/index.html' --size 640x360 --timeout 540 --report once_v04/son/02_ayar_lod.json",
+     "sonuc": "KALDI (çıkış 1) kontrol 4/11 | FAIL: AL01, AL02, AL03, AL04, AL06, AL08, AL09"
+    },
+    {
+     "ne": "son/02_depolama_kapali (senaryo sha 08831f4b6de6)",
+     "komut": "tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_depolama_kapali.js --url 'http://localhost:8080/index.html' --size 640x360 --timeout 540 --report once_v04/son/02_depolama_kapali.json",
+     "sonuc": "KALDI (çıkış 1) kontrol 2/15 | izinsiz konsol 1 (açılış SecurityError), adım istisnası 10 (açılış düştüğü için DK tanımsız) | FAIL: DK03–DK15"
+    },
+    {
+     "ne": "son/02_hizli_yolculuk_normal (senaryo sha abf125923f9a)",
+     "komut": "tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_hizli_yolculuk.js --url 'http://localhost:8080/index.html' --size 640x360 --timeout 540 --report once_v04/son/02_hizli_yolculuk_normal.json",
+     "sonuc": "KALDI (çıkış 1) kontrol 23/34 | FAIL: HYS-02, HYU-02, HYU-05, HY10, HY11, HY13, HY14, HY17, HY18, HY19, HY21 | ölçüm: HYS-01 PASS 1810 ms (yolculuk anında kuyruk boş)"
+    },
+    {
+     "ne": "son/02_hizli_yolculuk_noworker (senaryo sha abf125923f9a)",
+     "komut": "tk timeout 950 node tests/harness/run.cjs tests/scenarios/02_hizli_yolculuk.js --url 'http://localhost:8080/index.html?terrain=noworker' --size 640x360 --timeout 900 --report once_v04/son/02_hizli_yolculuk_noworker.json",
+     "sonuc": "KALDI (çıkış 1) kontrol 22/34 | FAIL: HYS-01, HYS-02, HYU-02, HYU-05, HY10, HY11, HY13, HY14, HY17, HY18, HY19, HY21 | ölçüm: HYS-01 FAIL 30949 ms (yolculuk anında kuyruk boş: jobs 0, queue 0)"
+    },
+    {
+     "ne": "son/02_tek_dosya_blob (senaryo sha 749ec707f177)",
+     "komut": "tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_tek_dosya_blob.js --url 'http://127.0.0.1:8097/DenizKorsanlari-SonHazine.html' --size 640x360 --timeout 540 --report once_v04/son/02_tek_dosya_blob.json",
+     "sonuc": "KALDI (çıkış 1) kontrol 3/4 | FAIL: TB01"
+    },
+    {
+     "ne": "son/02_tek_dosya_cerceve (senaryo sha 93779e03fdf8)",
+     "komut": "tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_tek_dosya_cerceve.js --url 'http://127.0.0.1:8097/DenizKorsanlari-SonHazine.html' --size 640x360 --timeout 540 --report once_v04/son/02_tek_dosya_cerceve.json",
+     "sonuc": "KALDI (çıkış 1) kontrol 2/5 | izinsiz konsol 1 (çerçevedeki açılış hatası) | FAIL: TC02, TC03, TC04"
+    },
+    {
+     "ne": "son/02_tek_dosya_kipler (senaryo sha cc9671caf8ed)",
+     "komut": "tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_tek_dosya_kipler.js --url 'file:///tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/fb0/v04_tek/DenizKorsanlari-SonHazine.html' --size 640x360 --timeout 540 --report once_v04/son/02_tek_dosya_kipler.json",
+     "sonuc": "KALDI (çıkış 1) kontrol 3/4 | FAIL: TK02"
+    },
+    {
+     "ne": "son/02_yukleme_bekleme (senaryo sha c9439e8aad63)",
+     "komut": "tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_yukleme_bekleme.js --url 'http://localhost:8080/index.html' --size 640x360 --timeout 540 --report once_v04/son/02_yukleme_bekleme.json",
+     "sonuc": "KALDI (çıkış 1) kontrol 4/9 | FAIL: YB03, YB04, YB05, YB06, YB07"
+    },
+    {
+     "ne": "son/arazi_kuyruk (Node, sha 5bf96a733963)",
+     "komut": "tk node tests/node/arazi_kuyruk.mjs --kok /home/user/SON-HAZ-NE --rapor once_v04/son/arazi_kuyruk.json",
+     "sonuc": "KALDI (çıkış 1) denetim 69/92 | kalan: KY01d, KY03a, KY05a, KY06a, KY07c, KY09a, KY11a, KY11b, KY11-D, KY12a, KY13a, KY14a, KY14b, KY18, KY19b, KY20a, KY20b, KY20-D, KY21, KY22, KY23, KY24b, KY25"
+    },
+    {
+     "ne": "son/arazi_sozlesme (Node, sha 2789052b803f)",
+     "komut": "tk node tests/node/arazi_sozlesme.mjs --kok /home/user/SON-HAZ-NE --rapor once_v04/son/arazi_sozlesme.json",
+     "sonuc": "GECTI (çıkış 0) denetim 36/36"
+    },
+    {
+     "ne": "son/coop_02_hizli_yolculuk_konuk (senaryo sha 6cad74c81c36)",
+     "komut": "tk timeout 650 node tests/harness/coop.cjs tests/scenarios/coop/02_hizli_yolculuk_konuk.cjs --players 2 --size 640x360 --timeout 600 --url 'http://localhost:8080/index.html?peerhost=127.0.0.1&peerport=9000' --report once_v04/son/coop_02_hizli_yolculuk_konuk.json",
+     "sonuc": "KALDI (çıkış 1) kontrol 5/8 | FAIL: HK03, HK04, HK07"
+    },
+    {
+     "ne": "tanı (işaretçi kilidi): duzeltme3/isaretci/02_arazi_yasam_normal_birak (sha 1f67faee95b8)",
+     "komut": "tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_arazi_yasam.js --url 'http://localhost:8080/index.html' --size 640x360 --timeout 540 --report once_v04/duzeltme3/isaretci/02_arazi_yasam_normal_birak.json --baslatma …/b0d/isaretci_tani.js --degisken isaretci=birak",
+     "sonuc": "KALDI (çıkış 1) kontrol 13/18 | FAIL: LY05, LY10, LY11, LY14, LY09 | ölçüm: LY13 YESIL, 54 dilim, 0 aşım, p99 +3 / en uzun +3.8 ms; kilit 1 kez alındı ve hemen bırakıldı"
+    },
+    {
+     "ne": "tanı (işaretçi kilidi): duzeltme3/isaretci/02_arazi_yasam_noworker_birak (sha 1f67faee95b8)",
+     "komut": "tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_arazi_yasam.js --url 'http://localhost:8080/index.html?terrain=noworker' --size 640x360 --timeout 540 --report once_v04/duzeltme3/isaretci/02_arazi_yasam_noworker_birak.json --baslatma …/b0d/isaretci_tani.js --degisken isaretci=birak",
+     "sonuc": "KALDI (çıkış 1) kontrol 13/18 | FAIL: LY05, LY10, LY11, LY14, LY09 | ölçüm: LY13 YESIL, 47 dilim, 0 aşım, p99 +0.8 / en uzun +1.2 ms"
+    },
+    {
+     "ne": "tanı (işaretçi kilidi): duzeltme3/isaretci/02_arazi_yedek_crash_birak (sha 7d4819041d89)",
+     "komut": "tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_arazi_yedek.js --url 'http://localhost:8080/index.html?terrain=crash' --size 640x360 --timeout 540 --report once_v04/duzeltme3/isaretci/02_arazi_yedek_crash_birak.json --baslatma …/b0d/isaretci_tani.js --degisken isaretci=birak",
+     "sonuc": "GECTI (çıkış 0) kontrol 16/16 | ölçüm: AYS-01 ortanca 150 ms [150, 137, 162]; Tuz Pazarı (çizim açık) 270 ms, 13 kare (en uzun 31 ms)"
+    },
+    {
+     "ne": "tanı (işaretçi kilidi): duzeltme3/isaretci/02_arazi_yedek_crash_say (sha 7d4819041d89)",
+     "komut": "tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_arazi_yedek.js --url 'http://localhost:8080/index.html?terrain=crash' --size 640x360 --timeout 540 --report once_v04/duzeltme3/isaretci/02_arazi_yedek_crash_say.json --baslatma …/b0d/isaretci_tani.js --degisken isaretci=say",
+     "sonuc": "GECTI (çıkış 0) kontrol 16/16 | ölçüm: AYS-01 ortanca 151 ms [151, 151, 159]; Tuz Pazarı (çizim açık) 152 ms, 0 kare; kilitli 62 sn, sayfaya ulaşan mousemove 25 (kilitliyken 24)"
+    },
+    {
+     "ne": "tanı (işaretçi kilidi): duzeltme3/isaretci/02_arazi_yedek_noworker_birak (sha 7d4819041d89)",
+     "komut": "tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_arazi_yedek.js --url 'http://localhost:8080/index.html?terrain=noworker' --size 640x360 --timeout 540 --report once_v04/duzeltme3/isaretci/02_arazi_yedek_noworker_birak.json --baslatma …/b0d/isaretci_tani.js --degisken isaretci=birak",
+     "sonuc": "GECTI (çıkış 0) kontrol 16/16 | ölçüm: AYS-01 ortanca 151 ms [151, 181, 151]; Tuz Pazarı (çizim açık) 346 ms, 15 kare; koşu 65 sn (kilitli son/ koşusu 240 sn)"
+    },
+    {
+     "ne": "tanı (işaretçi kilidi): duzeltme3/isaretci/02_hizli_yolculuk_normal_birak (sha abf125923f9a)",
+     "komut": "tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_hizli_yolculuk.js --url 'http://localhost:8080/index.html' --size 640x360 --timeout 540 --report once_v04/duzeltme3/isaretci/02_hizli_yolculuk_normal_birak.json --baslatma …/b0d/isaretci_tani.js --degisken isaretci=birak",
+     "sonuc": "KALDI (çıkış 1) kontrol 23/34 | FAIL: son/ ile aynı 11 kontrol | ölçüm: HYS-01 PASS 2196 ms"
+    },
+    {
+     "ne": "tanı (işaretçi kilidi): duzeltme3/isaretci/02_hizli_yolculuk_noworker_birak (sha abf125923f9a)",
+     "komut": "tk timeout 950 node tests/harness/run.cjs tests/scenarios/02_hizli_yolculuk.js --url 'http://localhost:8080/index.html?terrain=noworker' --size 640x360 --timeout 900 --report once_v04/duzeltme3/isaretci/02_hizli_yolculuk_noworker_birak.json --baslatma …/b0d/isaretci_tani.js --degisken isaretci=birak",
+     "sonuc": "KALDI (çıkış 1) kontrol 22/34 | FAIL: son/ ile aynı 12 kontrol | ölçüm: HYS-01 FAIL 10274 ms (yolculuk anında kuyruk jobs 3, queue 2)"
+    },
+    {
+     "ne": "tanı (işaretçi kilidi): duzeltme3/isaretci/02_hizli_yolculuk_noworker_say (sha abf125923f9a)",
+     "komut": "tk timeout 950 node tests/harness/run.cjs tests/scenarios/02_hizli_yolculuk.js --url 'http://localhost:8080/index.html?terrain=noworker' --size 640x360 --timeout 900 --report once_v04/duzeltme3/isaretci/02_hizli_yolculuk_noworker_say.json --baslatma …/b0d/isaretci_tani.js --degisken isaretci=say",
+     "sonuc": "KALDI (çıkış 1) kontrol 22/34 | FAIL: son/ ile aynı 12 kontrol | ölçüm: HYS-01 FAIL 28677 ms (kuyruk boş); sayfa başına en çok ~20 mousemove"
+    },
+    {
+     "ne": "tanı/kanıt: duzeltme3/kesik/02_hizli_yolculuk_normal_abf125_sayfa_coktu_oom — SAYFA ÇÖKTÜ, GEÇERSİZ",
+     "komut": "tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_hizli_yolculuk.js --url 'http://localhost:8080/index.html' --size 640x360 --timeout 540 --report once_v04/son/02_hizli_yolculuk_normal.json (sonra kesik/'e taşındı)",
+     "sonuc": "ZAMAN_ASIMI (çıkış 1) kontrol 6/18: HY05'te Target crashed (cgroup OOM, renderer anon-rss 5,4 GB; dmesg kaydı yanında). HYS-01 o koşuda geçmişti (181 ms). 02:22'de yeniden koşuldu (son/)."
+    },
+    {
+     "ne": "tanı/kanıt: duzeltme3/hizli_604e10/02_hizli_yolculuk_noworker (sha 604e10f23ede, tanı eklenmeden önce)",
+     "komut": "tk timeout 950 node tests/harness/run.cjs tests/scenarios/02_hizli_yolculuk.js --url 'http://localhost:8080/index.html?terrain=noworker' --size 640x360 --timeout 900 --report once_v04/son/02_hizli_yolculuk_noworker.json (sonra hizli_604e10/'a taşındı)",
+     "sonuc": "KALDI (çıkış 1) kontrol 23/34 | ölçüm: HYS-01 PASS 366 ms (aykırı; 'm_once' adımı 4,7 sn sürdü) — kararsızlığın kanıtı"
+    },
+    {
+     "ne": "tanı/kanıt: duzeltme3/hizli_604e10/02_hizli_yolculuk_normal (sha 604e10f23ede)",
+     "komut": "tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_hizli_yolculuk.js --url 'http://localhost:8080/index.html' --size 640x360 --timeout 540 --report once_v04/son/02_hizli_yolculuk_normal.json (sonra hizli_604e10/'a taşındı)",
+     "sonuc": "KALDI (çıkış 1) kontrol 23/34 | ölçüm: HYS-01 PASS 1111 ms"
+    },
+    {
+     "ne": "tanı/kanıt: duzeltme2/02_arazi_yasam_mutA12_noworker (A-12 mutantı, 127.0.0.1:8098)",
+     "komut": "tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_arazi_yasam.js --url 'http://127.0.0.1:8098/index.html?terrain=noworker' --size 640x360 --timeout 540 --report once_v04/duzeltme2/02_arazi_yasam_mutA12_noworker.json",
+     "sonuc": "KALDI (çıkış 1) kontrol 14/18 | LY09 tamam (mutantta YESIL) | FAIL: LY05, LY10, LY11, LY14"
+    },
+    {
+     "ne": "tanı/kanıt: duzeltme2/02_arazi_yasam_mutA12_normal (A-12 mutantı)",
+     "komut": "tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_arazi_yasam.js --url 'http://127.0.0.1:8098/index.html' --size 640x360 --timeout 540 --report once_v04/duzeltme2/02_arazi_yasam_mutA12_normal.json",
+     "sonuc": "KALDI (çıkış 1) kontrol 13/18 | LY09 tamam (mutantta YESIL) | FAIL: LY05, LY10, LY11, LY13, LY14"
+    },
+    {
+     "ne": "tanı/kanıt: duzeltme2/coop_02_hizli_yolculuk_konuk_deneme1 (sha 6cad74c81c36)",
+     "komut": "tk timeout 650 node tests/harness/coop.cjs tests/scenarios/coop/02_hizli_yolculuk_konuk.cjs --players 2 --size 640x360 --timeout 600 --url 'http://localhost:8080/index.html?peerhost=127.0.0.1&peerport=9000' --report once_v04/duzeltme2/coop_02_hizli_yolculuk_konuk_deneme1.json",
+     "sonuc": "KALDI (çıkış 1) kontrol 5/8 | FAIL: HK03, HK04, HK07 (son/ koşusuyla aynı)"
+    },
+    {
+     "ne": "tanı/kanıt: duzeltme2/KY25_dogrulama (Node, sha 5bf96a733963)",
+     "komut": "tk timeout 300 node tests/node/arazi_kuyruk.mjs --kok <kök> --sadece KY25; kökler /home/user/SON-HAZ-NE ve scratchpad/b0d/mut_a06 (v0.4 + terrainGen her satırda yield)",
+     "sonuc": "v0.4: KALDI denetim 2/3 (KY25 p99 +89,9 ms, 39 dilim) || mut_a06: GECTI denetim 3/3 (KY25 p99 +2,5 ms, 174 dilim)"
+    },
+    {
+     "ne": "tanı/kanıt: duzeltme2/B0-I14_ly08_ly07_mutasyon_yeniden (Node eşdeğerleri)",
+     "komut": "node scratchpad/fb0/ly08b eşdeğer betikleri; kökler v0.4 ve m8 (geç sonuç denetimi kaldırılmış v0.4), işçili ve işçisiz kip",
+     "sonuc": "v0.4 işçili/işçisiz: LY08 tamam, LY07 tamam; m8 işçili/işçisiz: LY08 geç sonuç silinen karoya yazıldı, LY07 ezildi ya da eksik"
+    }
+   ]
+  }
+ }
+}

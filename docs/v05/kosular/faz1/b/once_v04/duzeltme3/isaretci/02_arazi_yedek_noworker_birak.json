@@ -1,0 +1,959 @@
+{
+ "scenario": "tests/scenarios/02_arazi_yedek.js",
+ "url": "http://localhost:8080/index.html?terrain=noworker",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "AYK-01 Etkin arazi kipi URL ile aynı (?terrain → DK.terrain.mode)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 14
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "AYK-02 Kipin beklenen işçi/yedek durumu (normal: işçi ≥ 1, yedek kapalı, hata yok; noworker: işçi 0 + yedek; ctorthrow/badurl: işçi 0 + yedek + hata kaydı; crash/hang: hata kaydı, iş alıp yanıt vermeyen her işçi sonlandırılmış, kurulan işçi ≤ 9; crash1: yedek kapalı + çökme kaydı; noready: zaman aşımı kaydı + yedek)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 4
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": {
+    "k": "noworker",
+    "mode": "noworker",
+    "workers": 0,
+    "fallback": true,
+    "failures": [
+     "test kipi: işçi yok"
+    ],
+    "beklemeMs": 0,
+    "isciler": []
+   },
+   "ms": 2
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "Sayfa hazır (yükleme ekranı aşıldı)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 3
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": {
+    "mode": "noworker",
+    "workers": 0,
+    "fallback": true,
+    "failures": [
+     "test kipi: işçi yok"
+    ],
+    "stats": {
+     "tiles": 125,
+     "meshes": 125,
+     "hires": 15,
+     "tris": 311168,
+     "queue": 0,
+     "jobs": 0,
+     "workers": 0,
+     "fallback": true,
+     "failures": 1,
+     "mode": "noworker"
+    }
+   },
+   "ms": 2
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "Menü sahnesinde karo ağları üretildi",
+    "ok": true,
+    "value": 125
+   },
+   "ms": 2
+  },
+  {
+   "n": 7,
+   "label": null,
+   "expect": {
+    "label": "Okyanus derinlik penceresi hazır",
+    "ok": true,
+    "value": true
+   },
+   "ms": 3
+  },
+  {
+   "n": 8,
+   "label": null,
+   "result": "ok",
+   "ms": 17
+  },
+  {
+   "n": 9,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   },
+   "ms": 8618
+  },
+  {
+   "n": 10,
+   "label": null,
+   "result": {
+    "startMs": 200,
+    "pendingJobs": 3,
+    "queue": 2
+   },
+   "ms": 9
+  },
+  {
+   "n": 11,
+   "label": null,
+   "expect": {
+    "label": "Oyuncu zemine basıyor",
+    "ok": true,
+    "value": true
+   },
+   "ms": 242
+  },
+  {
+   "n": 12,
+   "label": null,
+   "expect": {
+    "label": "Yüksek çözünürlüklü karolar (yükseklik ızgarası + ağ)",
+    "ok": true,
+    "value": 24
+   },
+   "ms": 55
+  },
+  {
+   "n": 13,
+   "label": null,
+   "result": {
+    "r": 300,
+    "fpsLimitVar": true,
+    "olcumler": [
+     {
+      "bolge": [
+       282,
+       -5006
+      ],
+      "ms": 151,
+      "oncekiIs": 0,
+      "cizim": 0,
+      "donus": "undefined",
+      "ag": 12
+     },
+     {
+      "bolge": [
+       5300,
+       400
+      ],
+      "ms": 181,
+      "oncekiIs": 0,
+      "cizim": 0,
+      "donus": "undefined",
+      "ag": 12
+     },
+     {
+      "bolge": [
+       -5300,
+       700
+      ],
+      "ms": 151,
+      "oncekiIs": 0,
+      "cizim": 0,
+      "donus": "undefined",
+      "ag": 11
+     }
+    ],
+    "ms": 151,
+    "cizimSirasinda": 0,
+    "cizimDurdu": true,
+    "ag": 11
+   },
+   "ms": 3149
+  },
+  {
+   "n": 14,
+   "label": null,
+   "expect": {
+    "label": "AYS-01 Uzak bölge hazırlığı r300, çizim durdurulmuşken (kuyruğun kendi süresi; üç ayrı uzak ada bölgesi — Kuzeyfener, Kül Limanı, Kumsaati — ortanca süre) kip sınırı içinde ve her bölgede ≥ 6 karo ağı: normal ≤ 2 sn, işçisiz/çöken kiplerde (crash, crash1 dahil) ≤ 3 sn (KI-234, A-15: yeniden başlatılan işçilere iş sektirme/bekleme yok)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 22
+  },
+  {
+   "n": 15,
+   "label": null,
+   "result": {
+    "r": 300,
+    "fpsLimitVar": true,
+    "olcumler": [
+     {
+      "bolge": [
+       282,
+       -5006
+      ],
+      "ms": 151,
+      "oncekiIs": 0,
+      "cizim": 0,
+      "donus": "undefined",
+      "ag": 12
+     },
+     {
+      "bolge": [
+       5300,
+       400
+      ],
+      "ms": 181,
+      "oncekiIs": 0,
+      "cizim": 0,
+      "donus": "undefined",
+      "ag": 12
+     },
+     {
+      "bolge": [
+       -5300,
+       700
+      ],
+      "ms": 151,
+      "oncekiIs": 0,
+      "cizim": 0,
+      "donus": "undefined",
+      "ag": 11
+     }
+    ],
+    "ms": 151,
+    "cizimSirasinda": 0,
+    "cizimDurdu": true,
+    "ag": 11,
+    "sinir": 3000
+   },
+   "ms": 13
+  },
+  {
+   "n": 16,
+   "label": null,
+   "result": {
+    "jobs": 0,
+    "kuyruk": 0,
+    "kuyrukTur": [],
+    "seritler": [
+     null,
+     null
+    ],
+    "isci": []
+   },
+   "ms": 2
+  },
+  {
+   "n": 17,
+   "label": null,
+   "expect": {
+    "label": "Uzak bölge prepare() sonuçlanıyor (askıda kalmıyor)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 370
+  },
+  {
+   "n": 18,
+   "label": null,
+   "result": {
+    "prepMs": 346,
+    "dilimSayisi": 12,
+    "dilimToplamMs": 134,
+    "enUzunDilim": 15.1,
+    "boslukToplamMs": 200,
+    "enUzunBosluk": 38.1,
+    "kareSayisi": 15,
+    "enUzunKareMs": 46,
+    "once": {
+     "jobs": 0,
+     "kuyruk": 0,
+     "kuyrukTur": [],
+     "seritler": [
+      null,
+      null
+     ],
+     "isci": []
+    }
+   },
+   "ms": 10
+  },
+  {
+   "n": 19,
+   "label": null,
+   "result": {
+    "hamMs": 346,
+    "netMs": 346,
+    "aracDisiUzunGorevMs": 0,
+    "uzunGorev": 0,
+    "enUzunAracDisiMs": 0,
+    "uzunGorevIciDilimMs": 0,
+    "dilimToplamMs": 134,
+    "uzunGorevOrnek": [],
+    "gozlemci": "longtask"
+   },
+   "ms": 2
+  },
+  {
+   "n": 20,
+   "label": null,
+   "expect": {
+    "label": "Derinlik penceresi yeni bölgeye taşındı",
+    "ok": true,
+    "value": true
+   },
+   "ms": 12
+  },
+  {
+   "n": 21,
+   "label": null,
+   "result": {
+    "prepMs": 346,
+    "prepUnder45s": true,
+    "stats": {
+     "tiles": 129,
+     "meshes": 129,
+     "hires": 31,
+     "tris": 518400,
+     "queue": 0,
+     "jobs": 0,
+     "workers": 0,
+     "fallback": true,
+     "failures": 1,
+     "mode": "noworker"
+    }
+   },
+   "ms": 16
+  },
+  {
+   "n": 22,
+   "label": null,
+   "result": {
+    "kip": "noworker",
+    "tani": "Tuz Pazarı prepare (çizim açık): ham süre ve uzun görev bileşimi",
+    "hamMs": 346,
+    "netMs": 346,
+    "aracDisiUzunGorevMs": 0,
+    "uzunGorev": 0,
+    "enUzunAracDisiMs": 0,
+    "uzunGorevIciDilimMs": 0,
+    "dilimToplamMs": 134,
+    "uzunGorevOrnek": [],
+    "gozlemci": "longtask"
+   },
+   "ms": 5
+  },
+  {
+   "n": 23,
+   "label": null,
+   "expect": {
+    "label": "AYS-02 Hiçbir arazi işi işçilere MAX_TRIES (3) kezden fazla gönderilmez (yeniden başlatılan işçilere iş sektirme yok; A-05, A-15, KI-234)",
+    "ok": true,
+    "value": 0
+   },
+   "ms": 16
+  },
+  {
+   "n": 24,
+   "label": null,
+   "result": {
+    "is": 0,
+    "toplam": 0,
+    "enCok": 0,
+    "enCokIs": null,
+    "isciler": []
+   },
+   "ms": 2
+  },
+  {
+   "n": 25,
+   "label": null,
+   "expect": {
+    "label": "Tuz Pazarı çevresinde karo ağları var",
+    "ok": true,
+    "value": 21
+   },
+   "ms": 10
+  },
+  {
+   "n": 26,
+   "label": null,
+   "expect": {
+    "label": "Harita ızgarası isteği sonuçlanıyor",
+    "ok": true,
+    "value": true
+   },
+   "ms": 47
+  },
+  {
+   "n": 27,
+   "label": null,
+   "expect": {
+    "label": "Uzak adada yürüme (zemin sorgusu tutarlı)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 2546
+  },
+  {
+   "n": 28,
+   "label": null,
+   "result": "ok",
+   "ms": 34
+  },
+  {
+   "n": 29,
+   "label": null,
+   "expect": {
+    "label": "Kuyruk ilerliyor (askıda iş yok)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 9302
+  },
+  {
+   "n": 30,
+   "label": null,
+   "result": {
+    "jobsBefore": 124,
+    "jobsAfter8s": 110,
+    "fallback": true
+   },
+   "ms": 32
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 5030,
+ "ms": 34216,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/scenarios/02_arazi_yedek.js",
+ "meta": {
+  "testler": [
+   "1 Normal Worker açılışı",
+   "2 Worker bulunamadığında",
+   "3 Worker çöktüğünde",
+   "4 Arazi mesh oluşturulması",
+   "5 Harita derinliği hazırlanması",
+   "KI-149",
+   "KI-234",
+   "A-05",
+   "A-15",
+   "A-17"
+  ],
+  "dosyalar": [
+   "js/world/terrain.js",
+   "js/world/terrainWorker.js",
+   "js/game/game.js"
+  ],
+  "baslatma": "(() => {\n     const U = window.__uzunGorev = [];\n     const al = (l) => { for (const e of l.getEntries()) if (U.length < 50000) U.push([e.startTime, e.duration, e.entryType]); };\n     try { if (!(PerformanceObserver.supportedEntryTypes || []).includes('longtask')) throw new Error('longtask desteklenmiyor'); new PerformanceObserver(al).observe({ type: 'longtask', buffered: true }); window.__uzunGorevVar = true; } catch (e) { window.__uzunGorevVar = false; window.__uzunGorevHata = String(e && e.message || e); }\n     const W = window.Worker; if (typeof W !== 'function') return;\n     const I = window.__isciler = []; const G = window.__isGonderim = new Map();\n     function Sarili(url, opts) {\n       const w = new W(url, opts); const k = { no: I.length, ad: opts && opts.name, t0: Math.round(performance.now()), is: 0, yanit: 0, hata: 0, sonlandi: false };\n       I.push(k);\n       const post = w.postMessage.bind(w);\n       w.postMessage = function (m, tr) { try { if (m && m.t && m.id != null) { k.is++; G.set(m.id, (G.get(m.id) || 0) + 1); } } catch (e) { /* yoksay */ } return post(m, tr); };\n       const son = w.terminate.bind(w); w.terminate = function () { k.sonlandi = true; return son(); };\n       // yanıt/hata sayımı ek dinleyiciyle değil, oyunun kendi onmessage/onerror işleyicisi sarılarak yapılır (iletiye ikinci dinleyici\n       // eklenmez). Not (FB0): 02_arazi_yasam'daki sayfa çökmeleri önce ek dinleyiciye bağlanmıştı; sonra cgroup OOM öldürmesi olduğu\n       // görüldü (dmesg), dinleyiciyle ilgisi yok.\n       for (const [ad, say] of [['onmessage', (e) => { if (e && e.data && e.data.t && e.data.t !== 'ready') k.yanit++; }], ['onerror', () => { k.hata++; }]]) {\n         const d = Object.getOwnPropertyDescriptor(W.prototype, ad); if (!d || !d.set) continue;\n         Object.defineProperty(w, ad, { configurable: true, get() { return d.get.call(w); }, set(fn) { d.set.call(w, typeof fn === 'function' ? function (e) { try { say(e); } catch (x) { /* yoksay */ } return fn.call(this, e); } : fn); } });\n       }\n       return w; }\n     Sarili.prototype = W.prototype; window.Worker = Sarili; })();"
+ },
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8080/index.html?terrain=noworker&test=1",
+  "verilenUrl": "http://localhost:8080/index.html?terrain=noworker",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "0140a050f840e78d8572e1b97356b4b9a1d0153b",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-15T02:14:33.428Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs /home/user/SON-HAZ-NE-w2/tests/scenarios/02_arazi_yedek.js --url 'http://localhost:8080/index.html?terrain=noworker' --size 640x360 --timeout 540 --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/duzeltme3/isaretci/02_arazi_yedek_noworker_birak.json --baslatma /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/b0d/isaretci_tani.js --degisken isaretci=birak",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://localhost:8080 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8080"
+  ],
+  "commit": "0140a050f840e78d8572e1b97356b4b9a1d0153b-kirli",
+  "senaryoSha256": "7d4819041d89390447299beebcdcad332e819a53fc7d3858c639430885217082",
+  "adim": null,
+  "url": "http://localhost:8080/index.html?terrain=noworker&test=1"
+ },
+ "kontroller": [
+  {
+   "n": 1,
+   "id": "AYK-01",
+   "etiket": "AYK-01 Etkin arazi kipi URL ile aynı (?terrain → DK.terrain.mode)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 11,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 2,
+   "id": "AYK-02",
+   "etiket": "AYK-02 Kipin beklenen işçi/yedek durumu (normal: işçi ≥ 1, yedek kapalı, hata yok; noworker: işçi 0 + yedek; ctorthrow/badurl: işçi 0 + yedek + hata kaydı; crash/hang: hata kaydı, iş alıp yanıt vermeyen her işçi sonlandırılmış, kurulan işçi ≤ 9; crash1: yedek kapalı + çökme kaydı; noready: zaman aşımı kaydı + yedek)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 4,
+   "id": "Sayfa hazır (yükleme ekranı aşıldı)",
+   "etiket": "Sayfa hazır (yükleme ekranı aşıldı)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 6,
+   "id": "Menü sahnesinde karo ağları üretildi",
+   "etiket": "Menü sahnesinde karo ağları üretildi",
+   "ok": true,
+   "deger": 125,
+   "beklenen": {
+    "gte": 20
+   },
+   "sure_ms": 1,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 7,
+   "id": "Okyanus derinlik penceresi hazır",
+   "etiket": "Okyanus derinlik penceresi hazır",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 9,
+   "id": "Oyun başladı",
+   "etiket": "Oyun başladı",
+   "ok": true,
+   "deger": "playing",
+   "beklenen": {
+    "eq": "playing"
+   },
+   "sure_ms": 4579,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 11,
+   "id": "Oyuncu zemine basıyor",
+   "etiket": "Oyuncu zemine basıyor",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 213,
+   "benzetim": {
+    "sim": 1,
+    "adim": 90,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 12,
+   "id": "Yüksek çözünürlüklü karolar (yükseklik ızgarası ",
+   "etiket": "Yüksek çözünürlüklü karolar (yükseklik ızgarası + ağ)",
+   "ok": true,
+   "deger": 24,
+   "beklenen": {
+    "gte": 4
+   },
+   "sure_ms": 44,
+   "benzetim": {
+    "sim": 1,
+    "adim": 90,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 14,
+   "id": "AYS-01",
+   "etiket": "AYS-01 Uzak bölge hazırlığı r300, çizim durdurulmuşken (kuyruğun kendi süresi; üç ayrı uzak ada bölgesi — Kuzeyfener, Kül Limanı, Kumsaati — ortanca süre) kip sınırı içinde ve her bölgede ≥ 6 karo ağı: normal ≤ 2 sn, işçisiz/çöken kiplerde (crash, crash1 dahil) ≤ 3 sn (KI-234, A-15: yeniden başlatılan işçilere iş sektirme/bekleme yok)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 1,
+    "adim": 90,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 17,
+   "id": "Uzak bölge prepare() sonuçlanıyor (askıda kalmıy",
+   "etiket": "Uzak bölge prepare() sonuçlanıyor (askıda kalmıyor)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 359,
+   "benzetim": {
+    "sim": 1,
+    "adim": 90,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 20,
+   "id": "Derinlik penceresi yeni bölgeye taşındı",
+   "etiket": "Derinlik penceresi yeni bölgeye taşındı",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 11,
+   "benzetim": {
+    "sim": 1,
+    "adim": 90,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 23,
+   "id": "AYS-02",
+   "etiket": "AYS-02 Hiçbir arazi işi işçilere MAX_TRIES (3) kezden fazla gönderilmez (yeniden başlatılan işçilere iş sektirme yok; A-05, A-15, KI-234)",
+   "ok": true,
+   "deger": 0,
+   "beklenen": {
+    "lte": 3
+   },
+   "sure_ms": 1,
+   "benzetim": {
+    "sim": 1,
+    "adim": 90,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 25,
+   "id": "Tuz Pazarı çevresinde karo ağları var",
+   "etiket": "Tuz Pazarı çevresinde karo ağları var",
+   "ok": true,
+   "deger": 21,
+   "beklenen": {
+    "gte": 6
+   },
+   "sure_ms": 8,
+   "benzetim": {
+    "sim": 1,
+    "adim": 90,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 26,
+   "id": "Harita ızgarası isteği sonuçlanıyor",
+   "etiket": "Harita ızgarası isteği sonuçlanıyor",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 29,
+   "benzetim": {
+    "sim": 1,
+    "adim": 90,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 27,
+   "id": "Uzak adada yürüme (zemin sorgusu tutarlı)",
+   "etiket": "Uzak adada yürüme (zemin sorgusu tutarlı)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 273,
+   "benzetim": {
+    "sim": 3,
+    "adim": 210,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 29,
+   "id": "Kuyruk ilerliyor (askıda iş yok)",
+   "etiket": "Kuyruk ilerliyor (askıda iş yok)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1262,
+   "benzetim": {
+    "sim": 3,
+    "adim": 210,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "Arazi üretimi ana iş parçacığına alındı (test kipi: işçi yok)",
+   "url": "http://localhost:8080/js/world/terrain.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 33
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 3,
+  "toplam": 35,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 198,
+ "sonuc": {
+  "durum": "GECTI",
+  "cikisKodu": 0,
+  "neden": [],
+  "onaySayisi": 16,
+  "kontrolSayisi": 16,
+  "gecen": 16,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": "tarayici+benzetim",
+  "turSayim": {
+   "tarayici": 6,
+   "tarayici+benzetim": 10
+  }
+ },
+ "sure": {
+  "hazirMs": 5030,
+  "toplamMs": 34216,
+  "yerlesmeMs": 1000
+ }
+}

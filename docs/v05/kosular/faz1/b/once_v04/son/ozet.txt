@@ -1,0 +1,32 @@
+00:23:08 02_arazi_yasam_noworker PASS=12 FAIL=6 sure=151s | SONUC: KALDI (çıkış 1) kontrol 12/18, onay 18 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 3 farklı/70 | neden: başarısız kontrol ya da adım: 6
+00:25:03 02_arazi_yasam_normal PASS=12 FAIL=6 sure=115s | SONUC: KALDI (çıkış 1) kontrol 12/18, onay 18 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 6 farklı/72 | neden: başarısız kontrol ya da adım: 6
+00:26:52 02_arazi_yasam_crash PASS=13 FAIL=5 sure=109s | SONUC: KALDI (çıkış 1) kontrol 13/18, onay 18 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 6 farklı/76 | neden: başarısız kontrol ya da adım: 5
+00:26:52 BITTI yasam_noworker yasam_normal yasam_crash
+00:37:41 02_acilis_hatalari PASS=3 FAIL=16 sure=327s | SONUC: KALDI (çıkış 1) kontrol 3/19, onay 19 | izinsiz konsol 2, ağ 0 | izinli konsol 3, ağ 1 | uyarı 14 farklı/316 | neden: başarısız kontrol ya da adım: 16; izinsiz konsol hatası: 2
+00:40:18 02_acilis_akisi PASS=22 FAIL=1 sure=157s | SONUC: KALDI (çıkış 1) kontrol 22/23, onay 23 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34 | neden: başarısız kontrol ya da adım: 1
+00:43:07 00_acilis PASS=6 FAIL=3 sure=169s | SONUC: KALDI (çıkış 1) kontrol 6/9, onay 9 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34 | neden: başarısız kontrol ya da adım: 3
+00:44:17 02_yukleme_bekleme PASS=4 FAIL=5 sure=70s | SONUC: KALDI (çıkış 1) kontrol 4/9, onay 9 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/68 | neden: başarısız kontrol ya da adım: 5
+00:48:19 02_depolama_kapali PASS=2 FAIL=13 sure=242s | SONUC: KALDI (çıkış 1) kontrol 2/15, onay 15 | izinsiz konsol 1, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34 | neden: başarısız kontrol ya da adım: 23; izinsiz konsol hatası: 1; adım istisnası (evalErrors): 10
+00:57:55 arazi_kuyruk SONUC: KALDI (çıkış 1) denetim 69/92 | kalan: KY01d, KY03a, KY05a, KY06a, KY07c, KY09a, KY11a, KY11b, KY11-D, KY12a, KY13a, KY14a, KY14b, KY18, KY19b, KY20a, KY20b, KY20-D, KY21, KY22, KY23, KY24b
+01:00:01 02_ayar_lod PASS=4 FAIL=7 sure=126s | SONUC: KALDI (çıkış 1) kontrol 4/11, onay 11 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/204 | neden: başarısız kontrol ya da adım: 7
+01:01:54 02_arazi_isci_hata PASS=5 FAIL=4 sure=113s | SONUC: KALDI (çıkış 1) kontrol 5/9, onay 9 | izinsiz konsol 0, ağ 0 | izinli konsol 88, ağ 0 | uyarı 7 farklı/73 | neden: başarısız kontrol ya da adım: 4
+01:01:54 BITTI ayar_lod isci_hata
+01:04:27 02_arazi_yedek_normal PASS=16 FAIL=0 sure=151s | SONUC: GECTI (çıkış 0) kontrol 16/16, onay 16 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34
+01:08:27 02_arazi_yedek_noworker PASS=16 FAIL=0 sure=240s | SONUC: GECTI (çıkış 0) kontrol 16/16, onay 16 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 3 farklı/35
+01:11:10 02_arazi_yedek_crash PASS=16 FAIL=0 sure=163s | SONUC: GECTI (çıkış 0) kontrol 16/16, onay 16 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 6 farklı/38
+01:15:13 02_arazi_yedek_badurl PASS=16 FAIL=0 sure=243s | SONUC: GECTI (çıkış 0) kontrol 16/16, onay 16 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 6 | uyarı 6 farklı/38
+01:15:13 BITTI yedek_normal yedek_noworker yedek_crash yedek_badurl
+01:20:43 02_hizli_yolculuk_normal PASS=23 FAIL=11 sure=330s | SONUC: KALDI (çıkış 1) kontrol 23/34, onay 34 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 3 farklı/171 | neden: başarısız kontrol ya da adım: 11
+01:27:31 02_hizli_yolculuk_noworker PASS=23 FAIL=11 sure=408s | SONUC: KALDI (çıkış 1) kontrol 23/34, onay 34 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 4 farklı/176 | neden: başarısız kontrol ya da adım: 11
+01:27:31 BITTI hizli_normal hizli_noworker
+01:29:45 02_tek_dosya_kipler PASS=3 FAIL=1 sure=134s | SONUC: KALDI (çıkış 1) kontrol 3/4, onay 4 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/68 | neden: başarısız kontrol ya da adım: 1
+01:33:13 02_tek_dosya_blob PASS=3 FAIL=1 sure=207s | SONUC: KALDI (çıkış 1) kontrol 3/4, onay 4 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 3 farklı/69 | neden: başarısız kontrol ya da adım: 1
+01:37:09 02_tek_dosya_cerceve PASS=2 FAIL=3 sure=235s | SONUC: KALDI (çıkış 1) kontrol 2/5, onay 5 | izinsiz konsol 1, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34 | neden: başarısız kontrol ya da adım: 3; izinsiz konsol hatası: 1
+01:37:09 BITTI tek_kipler tek_blob tek_cerceve
+01:41:45 coop_02_hizli_yolculuk_konuk PASS=5 FAIL=3 | SONUC: KALDI (çıkış 1) kontrol 5/8 | ev() istisnası 0, kapalı sayfa atlama 0, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 4 farklı/68 | neden: başarısız kontrol ya da ev() istisnası: 3
+01:48:00 02_hizli_yolculuk_noworker PASS=22 FAIL=12 sure=373s | SONUC: KALDI (çıkış 1) kontrol 22/34, onay 34 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 4 farklı/176 | neden: başarısız kontrol ya da adım: 12
+01:48:00 BITTI hizli_noworker
+02:03:19 02_hizli_yolculuk_normal PASS=6 FAIL=12 sure=566s | SONUC: ZAMAN_ASIMI (çıkış 1) kontrol 6/18, onay 34 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34 | neden: başarısız kontrol ya da adım: 20; sayfa hatası (pageerror): 1; adım istisnası (evalErrors): 8; zaman aşımı (540 sn)
+02:03:19 BITTI hizli_normal
+02:29:03 02_hizli_yolculuk_normal PASS=23 FAIL=11 sure=412s | SONUC: KALDI (çıkış 1) kontrol 23/34, onay 34 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 3 farklı/171 | neden: başarısız kontrol ya da adım: 11
+02:29:03 BITTI hizli_normal

@@ -1,0 +1,139 @@
+{
+ "scenario": "tests/scenarios/02_tek_dosya_blob.js",
+ "url": "http://127.0.0.1:8097/DenizKorsanlari-SonHazine.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": null,
+ "harnessError": "page.waitForFunction: Timeout 240000ms exceeded.",
+ "ms": 241396,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/scenarios/02_tek_dosya_blob.js",
+ "meta": {
+  "testler": [
+   "1 Normal Worker açılışı",
+   "tek dosya",
+   "A-16",
+   "brief madde 13"
+  ],
+  "dosyalar": [
+   "tools/build-single-html.mjs",
+   "js/world/terrain.js"
+  ],
+  "baslatma": "(() => { const W = window.Worker; if (typeof W !== 'function') return; const K = window.__isciKurulum = [];\n     function Sarili(url, opts) { const u = String(url); K.push(u.slice(0, 16)); if (/^blob:/i.test(u)) throw new DOMException('Test: blob işçisi reddedildi', 'SecurityError'); return new W(url, opts); }\n     Sarili.prototype = W.prototype; window.Worker = Sarili; })();"
+ },
+ "hedef": {
+  "tip": "tek-test",
+  "url": "http://127.0.0.1:8097/DenizKorsanlari-SonHazine.html?test=1",
+  "verilenUrl": "http://127.0.0.1:8097/DenizKorsanlari-SonHazine.html",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "29315b5c24bfc89ae51a6a156de961b98b08fb15",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T14:59:32.002Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs /home/user/SON-HAZ-NE-w2/tests/scenarios/02_tek_dosya_blob.js --url http://127.0.0.1:8097/DenizKorsanlari-SonHazine.html --size 640x360 --timeout 540 --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_tek_dosya_blob.json",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://127.0.0.1:8097 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8097"
+  ],
+  "commit": "29315b5c24bfc89ae51a6a156de961b98b08fb15-kirli",
+  "senaryoSha256": "357a110956f86a099cacf588a5affe9f26edae6bac0691ab872a1a6ec25c5e1c",
+  "adim": null,
+  "url": "http://127.0.0.1:8097/DenizKorsanlari-SonHazine.html?test=1"
+ },
+ "kontroller": [],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "Arazi işçisi başlatılamadı, ana iş parçacığında üretilecek SecurityError: Test: blob işçisi reddedildi",
+   "url": "http://127.0.0.1:8097/DenizKorsanlari-SonHazine.html?test=1",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 1,
+  "toplam": 1,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [
+  {
+   "ad": "son",
+   "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_tek_dosya_blob_2026-11-14T14-59-31-735Z_7371/son.png",
+   "tuval": null
+  }
+ ],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 27,
+ "sonuc": {
+  "durum": "KOSUCU_HATASI",
+  "cikisKodu": 1,
+  "neden": [
+   "koşucu hatası: page.waitForFunction: Timeout 240000ms exceeded."
+  ],
+  "onaySayisi": 3,
+  "kontrolSayisi": 0,
+  "gecen": 0,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": null,
+  "turSayim": {}
+ },
+ "sure": {
+  "hazirMs": null,
+  "toplamMs": 241396,
+  "yerlesmeMs": null
+ }
+}

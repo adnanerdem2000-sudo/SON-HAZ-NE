@@ -1,0 +1,6 @@
+# 2026-11-14T16:33:13Z LY08 son hâlinin Node eşdeğeri (FB0): yalnız düşürmeden SONRA gelen _apply sayılır + önkoşul (iş düşürmede kuyrukta değil, düşürmeden önce uygulama yok, sonuç düşürmeden sonra); kipler: isci (sahte işçi, ileti 1 sn gecikir) ve iscisiz (noworker; o işin _finish'i 1 sn geciktirilir)
+# betik: scratchpad/fb0/ly08b/ly08_v2_esdeger.mjs sha a504eee8792f; kökler: v0.4 (/home/user/SON-HAZ-NE 44d548c) ve mutasyon m8 (_requestTile geç sonuç denetimi kaldırılmış v0.4 kopyası)
+{"kok":"SON-HAZ-NE","kip":"isci","isci":3,"fallback":false,"LY08":"tamam","gecSonuc":true,"kuyruktaydi":false,"onceki":0,"sonucMs":1004,"applySonra":0,"yeniGeo":0}
+{"kok":"SON-HAZ-NE","kip":"iscisiz","isci":0,"fallback":true,"LY08":"tamam","gecSonuc":true,"kuyruktaydi":false,"onceki":0,"sonucMs":1000,"applySonra":0,"yeniGeo":0}
+{"kok":"m8","kip":"isci","isci":3,"fallback":false,"LY08":"geç sonuç silinen karoya yazıldı","gecSonuc":true,"kuyruktaydi":false,"onceki":0,"sonucMs":1002,"applySonra":1,"yeniGeo":1}
+{"kok":"m8","kip":"iscisiz","isci":0,"fallback":true,"LY08":"geç sonuç silinen karoya yazıldı","gecSonuc":true,"kuyruktaydi":false,"onceki":0,"sonucMs":1001,"applySonra":1,"yeniGeo":1}

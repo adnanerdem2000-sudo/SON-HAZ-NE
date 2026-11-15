@@ -1,0 +1,5 @@
+13:51:34 02_arazi_yedek_crash_d1 PASS=16 FAIL=0 sure=84s | SONUC: GECTI (çıkış 0) kontrol 16/16, onay 16 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 6 farklı/38
+13:52:54 02_arazi_yedek_noworker_d1 PASS=16 FAIL=0 sure=80s | SONUC: GECTI (çıkış 0) kontrol 16/16, onay 16 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 3 farklı/35
+13:55:48 02_arazi_yedek_crash_d2 PASS=15 FAIL=1 sure=174s | SONUC: KALDI (çıkış 1) kontrol 15/16, onay 16 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 6 farklı/38 | neden: başarısız kontrol ya da adım: 1
+13:55:48 BITTI yedek_crash_d1 yedek_noworker_d1 yedek_crash_d2
+14:04:53 02_arazi_yedek_crash_d3 PASS=16 FAIL=0 sure=113s | SONUC: GECTI (çıkış 0) kontrol 16/16, onay 16 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 6 farklı/38

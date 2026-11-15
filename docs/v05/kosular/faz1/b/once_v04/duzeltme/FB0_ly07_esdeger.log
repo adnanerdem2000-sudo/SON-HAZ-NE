@@ -1,0 +1,6 @@
+# 2026-11-14T16:56:27Z LY07 son hâlinin Node eşdeğeri (FB0 ek bulgusu): önkoşul seg-80 istendiğinde seg-32 işi uçuşta; işçisiz kipte seg-32 işinin _finish'i 1,5 sn geciktirilir
+# betik: scratchpad/fb0/ly08b/ly07_esdeger.mjs sha 09ec56333c1c; kökler: v0.4 (44d548c) ve m8 (_requestTile geç sonuç denetimi kaldırılmış v0.4 kopyası; LOD yarışı korumasız)
+{"kok":"SON-HAZ-NE","kip":"isci","isci":3,"LY07":"tamam","ucusta32":true,"segP32":80,"sonSeg":80,"idx":40320,"eskiSonraBitti":true}
+{"kok":"SON-HAZ-NE","kip":"iscisiz","isci":0,"LY07":"tamam","ucusta32":true,"segP32":80,"sonSeg":80,"idx":40320,"eskiSonraBitti":true}
+{"kok":"m8","kip":"isci","isci":3,"LY07":"ezildi ya da eksik","ucusta32":true,"segP32":32,"sonSeg":32,"idx":6912,"eskiSonraBitti":true}
+{"kok":"m8","kip":"iscisiz","isci":0,"LY07":"ezildi ya da eksik","ucusta32":true,"segP32":32,"sonSeg":32,"idx":6912,"eskiSonraBitti":true}

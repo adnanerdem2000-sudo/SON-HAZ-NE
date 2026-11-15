@@ -1,0 +1,31 @@
+# 2026-11-15T01:37:10Z koşucu coop.cjs a6e0e14c4bd1 ortak.cjs df191a997375; senaryo tests/scenarios/coop/02_hizli_yolculuk_konuk.cjs 6cad74c81c36; hedef http://localhost:8080/index.html?peerhost=127.0.0.1&peerport=9000; v0.4 44d548c
+# komut: /home/user/devtools/tk timeout 650 node tests/harness/coop.cjs tests/scenarios/coop/02_hizli_yolculuk_konuk.cjs --players 2 --size 640x360 --timeout 600 --url 'http://localhost:8080/index.html?peerhost=127.0.0.1&peerport=9000' --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/coop_02_hizli_yolculuk_konuk.json 
+Kaptan/host {"code":"P2EVKL"}
+Tayfa/join {"room":"Teleport Odası"}
+Kaptan/hs "host-started"
+Tayfa/gs "guest-started"
+PASS HK00 İki oyuncu çevrimiçi oyunda (oda sahibi + konuk) → {"hOk":true,"gOk":true}
+Kaptan/limanlar {"A":{"id":"tuz_pazari_port_0","x":1762,"z":867,"bx":1675.9785614307027,"bz":812.1952284521957},"B":{"id":"kuzeyfener_port_0","x":295,"z":-5118,"bx":288.7288505086093,"bz":-5003.202558654656},"C":{"id":"zumrut_koy_port_0","x":-305,"z":5125,"bx":-305.4309772649465,"bz":5025.041340405603}}
+Tayfa/g-kur "kuruldu"
+Tayfa/g-oncesi1 [6,214]
+Kaptan/h-ft1 "yola çıkıldı"
+Tayfa/g-ilk {"ms":1420,"teleport":1}
+PASS HK01 Önkoşul: oda sahibinin hızlı yolculuğu konuğa ulaştı ('teleport' iletisi) ve konukta varış bölgesinin hazırlığı başladı (bekleme penceresi açık) → {"kur":"kuruldu","ilk":{"ms":1420,"teleport":1}}
+Kaptan/h-ikinci "ikinci teleport yayınlandı"
+Tayfa/g-ikinci {"teleport":[[1676,812],[289,-5003]],"cagri":[[1676,812,400,"bekliyor"],[289,-5003,400,"bekliyor"]],"ilkBekliyor":true,"ikinciHazirlik":1}
+PASS HK02 Önkoşul: ikinci 'teleport' iletisi konuğa, ilk hazırlık hâlâ beklerken ulaştı → {"teleport":[[1676,812],[289,-5003]],"cagri":[[1676,812,400,"bekliyor"],[289,-5003,400,"bekliyor"]],"ilkBekliyor":true,"ikinciHazirlik":1}
+FAIL HK03 Bekleme sırasında gelen ikinci 'teleport' iletisi yok sayılır: konukta ikinci bölgenin hazırlığı başlamaz (brief madde 5: konuk işleyicisinde travelBusy) → {"ikinciHazirlik":1,"cagri":[[1676,812,400,"bekliyor"],[289,-5003,400,"bekliyor"]]}
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_hizli_yolculuk_konuk_2026-11-15T01-39-48-802Z_11420/ilk_kalan_Kaptan.png
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_hizli_yolculuk_konuk_2026-11-15T01-39-48-802Z_11420/ilk_kalan_Tayfa.png
+Tayfa/g-son1 {"ayniOyuncu":true,"konum":[289,-5003],"aUzaklik":5978,"bUzaklik":1,"varisBildirimi":["Kaptan rotayı kırdı: yeni limana vardınız!","Kaptan rotayı kırdı: yeni limana vardınız!"],"durum":"playing"}
+FAIL HK04 Kapı açılınca konuk bir kez ve ilk hedefe taşınır: konuk Tuz Pazarı biniş noktasında (≤ 30 m), tek "vardınız" bildirimi (ikinci ileti konuğu Kuzeyfener'e taşımaz) → {"ayniOyuncu":true,"konum":[289,-5003],"aUzaklik":5978,"bUzaklik":1,"varisBildirimi":["Kaptan rotayı kırdı: yeni limana vardınız!","Kaptan rotayı kırdı: yeni limana vardınız!"],"durum":"playing"}
+Tayfa/g-oncesi2 {"konum":[289,-5003],"durum":"playing"}
+Kaptan/h-ft2 "yola çıkıldı: zumrut_koy_port_0"
+Tayfa/g-ilk2 {"ms":1604}
+PASS HK05 Önkoşul: ikinci hızlı yolculuk konuğa ulaştı, konukta hazırlık başladı (bekleme penceresi açık) → {"C":{"id":"zumrut_koy_port_0","x":-305,"z":5125,"bx":-305.4309772649465,"bz":5025.041340405603},"ilk2":{"ms":1604},"oncesi2":{"konum":[289,-5003],"durum":"playing"}}
+Tayfa/g-son2 {"durum":"menu","menu":true,"hud":false,"oyuncuKaydi":10046,"cUzaklik":1,"bildirimSonra":["Kaptan rotayı kırdı: yeni limana vardınız!"]}
+PASS HK06 Bekleme sırasında menüye dönen konuk: hazırlık bitince durum 'menu', ana menü açık, HUD kapalı (brief madde 5: oturum belirteci) → {"durum":"menu","menu":true,"hud":false,"oyuncuKaydi":10046,"cUzaklik":1,"bildirimSonra":["Kaptan rotayı kırdı: yeni limana vardınız!"]}
+FAIL HK07 Bekleme sırasında menüye dönen konuk: devam kodu oyuncuyu varış limanına taşımaz ve "vardınız" bildirimi üretmez → {"durum":"menu","menu":true,"hud":false,"oyuncuKaydi":10046,"cUzaklik":1,"bildirimSonra":["Kaptan rotayı kırdı: yeni limana vardınız!"]}
+checks: 8 fails: 3 pageErrors: 0 (116.7 s)
+SONUC: KALDI (çıkış 1) kontrol 5/8 | ev() istisnası 0, kapalı sayfa atlama 0, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 4 farklı/68 | neden: başarısız kontrol ya da ev() istisnası: 3
+# çıkış 1 2026-11-15T01:41:45Z

@@ -1,0 +1,34 @@
+# 2026-11-15T00:44:38Z Node testi tests/node/arazi_kuyruk.mjs 5bf96a733963; kök /home/user/SON-HAZ-NE (v0.4 44d548c); Node v22.22.0; tarayıcı kilidiyle (tk) koşuldu: tarayıcı koşularıyla CPU paylaşmasın
+# komut: /home/user/devtools/tk node tests/node/arazi_kuyruk.mjs --kok /home/user/SON-HAZ-NE --rapor docs/v05/kosular/faz1/b/once_v04/son/arazi_kuyruk.json
+BILGI kök /home/user/SON-HAZ-NE; Node v22.22.0
+BILGI KY01 {"prepMs":348,"stats":{"tiles":125,"meshes":125,"hires":15,"tris":311168,"queue":0,"jobs":0,"workers":3,"fallback":false,"failures":0,"mode":""}}
+PASS KY01a normal açılış: prepare(160,470,r900) ≤ 10 sn içinde sonuçlanır → {"ms":348}
+PASS KY01b normal açılış: ≥ 100 karo ağı, derinlik penceresi açılış noktasında, dünya ızgarası (256²) geldi → {"meshes":125,"depth":{"x":160,"z":480},"izgara":"tamam"}
+PASS KY01c normal açılış: 3 işçi canlı, yedek kip kapalı, failures boş → {"workers":3,"fallback":false,"failures":0}
+FAIL KY01d prepare dönüş değeri 'ok' (A-11: sonuç çağırana iletilir) → {"donus":"undefined"}
+PASS KY01-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":10,"ihlal":0,"ilk":[],"enFazlaFailures":0}
+PASS KY01-S bütün iş sözleri 15 sn sınırı içinde sonuçlandı → {"is":127,"acik":0,"acikOrnek":[],"enUzunMs":406,"cozuldu":127,"reddedildi":0}
+PASS KY02a kurucu hatası: işçi yok, yedek kip açık, hata kaydı var → {"workers":0,"fallback":true,"failures":["işçi oluşturulamadı: Sahte: Worker oluşturulamadı"]}
+PASS KY02b kurucu hatası: açılış hazırlığı ≤ normal + 5 sn (5348 ms) → {"ms":308}
+PASS KY02c kurucu hatası: ≥ 100 karo ağı, derinlik penceresi, dünya ızgarası (yerel yedekte) → {"meshes":125,"izgara":"tamam"}
+PASS KY02-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":2,"ihlal":0,"ilk":[],"enFazlaFailures":1}
+PASS KY02-S bütün iş sözleri 15 sn sınırı içinde sonuçlandı → {"is":127,"acik":0,"acikOrnek":[],"enUzunMs":309,"cozuldu":127,"reddedildi":0}
+FAIL KY03a kısmi kurucu hatası (A-15): kurulabilen işçi çalışır, yedek kip işareti KAPALI (fallback=false, ≥ 1 işçi) → {"workers":1,"fallback":true,"failures":["işçi oluşturulamadı: Sahte: Worker oluşturulamadı"]}
+PASS KY03b kısmi kurucu hatası: açılış tamamlanır (≥ 100 ağ, derinlik, ızgara) → {"meshes":125,"izgara":"tamam","ms":327}
+PASS KY03-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":26,"ihlal":0,"ilk":[],"enFazlaFailures":1}
+PASS KY03-S bütün iş sözleri 15 sn sınırı içinde sonuçlandı → {"is":127,"acik":0,"acikOrnek":[],"enUzunMs":446,"cozuldu":127,"reddedildi":0}
+PASS KY04a yükleme hatası (404): işçiler devre dışı, yedek kip açık, hata kaydı var → {"workers":0,"fallback":true,"failures":4}
+PASS KY04b yükleme hatası: açılış hazırlığı ≤ normal + 5 sn (5348 ms) → {"ms":291}
+PASS KY04c yükleme hatası: ≥ 100 karo ağı, derinlik, dünya ızgarası → {"meshes":125,"izgara":"tamam"}
+PASS KY04-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":2,"ihlal":0,"ilk":[],"enFazlaFailures":4}
+PASS KY04-S bütün iş sözleri 15 sn sınırı içinde sonuçlandı → {"is":127,"acik":0,"acikOrnek":[],"enUzunMs":292,"cozuldu":127,"reddedildi":0}
+FAIL KY05a hazır sinyali yok (A-11): açılış hazırlığı ≤ normal + 5 sn (5348 ms) → {"ms":8325}
+PASS KY05b hazır sinyali yok: açılış tamamlanır (≥ 100 ağ, derinlik, ızgara) ve hata kaydı var → {"meshes":125,"izgara":"tamam","failures":["işçi 0: hazır sinyali gelmedi"]}
+PASS KY05-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":793,"ihlal":0,"ilk":[],"enFazlaFailures":4}
+PASS KY05-S bütün iş sözleri 45 sn sınırı içinde sonuçlandı → {"is":127,"acik":0,"acikOrnek":[],"enUzunMs":8326,"cozuldu":127,"reddedildi":0}
+FAIL KY06a askıdaki işçi (A-11): açılış hazırlığı ≤ normal + 5 sn (5348 ms) → {"ms":20270}
+PASS KY06b askıdaki işçi: açılış tamamlanır (≥ 100 ağ, derinlik, ızgara) ve hata kaydı var → {"meshes":125,"izgara":"tamam","failures":["işçi 0: tile işi 20 sn içinde bitmedi"]}
+PASS KY06-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":1979,"ihlal":0,"ilk":[],"enFazlaFailures":4}
+PASS KY06-S bütün iş sözleri 65 sn sınırı içinde sonuçlandı → {"is":127,"acik":0,"acikOrnek":[],"enUzunMs":20272,"cozuldu":127,"reddedildi":0}
+PASS KY07a tek işçi çökmesi: işler kaybolmaz, açılış tamamlanır (≥ 100 ağ, derinlik, ızgara) → {"coktu":true,"meshes":125,"izgara":"tamam","ms":308}
+PASS KY07b tek işçi çökmesi: kalan işçiler çalışır, yedek kip açılmaz → {"workers":2,"fallback":false}

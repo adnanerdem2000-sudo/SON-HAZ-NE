@@ -1,0 +1,95 @@
+BILGI kök /home/user/SON-HAZ-NE; Node v22.22.0
+BILGI KY01 {"prepMs":458,"stats":{"tiles":125,"meshes":125,"hires":15,"tris":311168,"queue":0,"jobs":0,"workers":3,"fallback":false,"failures":0,"mode":""}}
+PASS KY01a normal açılış: prepare(160,470,r900) ≤ 10 sn içinde sonuçlanır → {"ms":458}
+PASS KY01b normal açılış: ≥ 100 karo ağı, derinlik penceresi açılış noktasında, dünya ızgarası (256²) geldi → {"meshes":125,"depth":{"x":160,"z":480},"izgara":"tamam"}
+PASS KY01c normal açılış: 3 işçi canlı, yedek kip kapalı, failures boş → {"workers":3,"fallback":false,"failures":0}
+FAIL KY01d prepare dönüş değeri 'ok' (A-11: sonuç çağırana iletilir) → {"donus":"undefined"}
+PASS KY01-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":12,"ihlal":0,"ilk":[],"enFazlaFailures":0}
+PASS KY01-S bütün iş sözleri 15 sn sınırı içinde sonuçlandı → {"is":127,"acik":0,"acikOrnek":[],"enUzunMs":545,"cozuldu":127,"reddedildi":0}
+PASS KY02a kurucu hatası: işçi yok, yedek kip açık, hata kaydı var → {"workers":0,"fallback":true,"failures":["işçi oluşturulamadı: Sahte: Worker oluşturulamadı"]}
+PASS KY02b kurucu hatası: açılış hazırlığı ≤ normal + 5 sn (5458 ms) → {"ms":398}
+PASS KY02c kurucu hatası: ≥ 100 karo ağı, derinlik penceresi, dünya ızgarası (yerel yedekte) → {"meshes":125,"izgara":"tamam"}
+PASS KY02-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":2,"ihlal":0,"ilk":[],"enFazlaFailures":1}
+PASS KY02-S bütün iş sözleri 15 sn sınırı içinde sonuçlandı → {"is":127,"acik":0,"acikOrnek":[],"enUzunMs":399,"cozuldu":127,"reddedildi":0}
+FAIL KY03a kısmi kurucu hatası (A-15): kurulabilen işçi çalışır, yedek kip işareti KAPALI (fallback=false, ≥ 1 işçi) → {"workers":1,"fallback":true,"failures":["işçi oluşturulamadı: Sahte: Worker oluşturulamadı"]}
+PASS KY03b kısmi kurucu hatası: açılış tamamlanır (≥ 100 ağ, derinlik, ızgara) → {"meshes":125,"izgara":"tamam","ms":360}
+PASS KY03-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":26,"ihlal":0,"ilk":[],"enFazlaFailures":1}
+PASS KY03-S bütün iş sözleri 15 sn sınırı içinde sonuçlandı → {"is":127,"acik":0,"acikOrnek":[],"enUzunMs":489,"cozuldu":127,"reddedildi":0}
+PASS KY04a yükleme hatası (404): işçiler devre dışı, yedek kip açık, hata kaydı var → {"workers":0,"fallback":true,"failures":4}
+PASS KY04b yükleme hatası: açılış hazırlığı ≤ normal + 5 sn (5458 ms) → {"ms":343}
+PASS KY04c yükleme hatası: ≥ 100 karo ağı, derinlik, dünya ızgarası → {"meshes":125,"izgara":"tamam"}
+PASS KY04-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":2,"ihlal":0,"ilk":[],"enFazlaFailures":4}
+PASS KY04-S bütün iş sözleri 15 sn sınırı içinde sonuçlandı → {"is":127,"acik":0,"acikOrnek":[],"enUzunMs":343,"cozuldu":127,"reddedildi":0}
+FAIL KY05a hazır sinyali yok (A-11): açılış hazırlığı ≤ normal + 5 sn (5458 ms) → {"ms":8316}
+PASS KY05b hazır sinyali yok: açılış tamamlanır (≥ 100 ağ, derinlik, ızgara) ve hata kaydı var → {"meshes":125,"izgara":"tamam","failures":["işçi 0: hazır sinyali gelmedi"]}
+PASS KY05-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":790,"ihlal":0,"ilk":[],"enFazlaFailures":4}
+PASS KY05-S bütün iş sözleri 45 sn sınırı içinde sonuçlandı → {"is":127,"acik":0,"acikOrnek":[],"enUzunMs":8319,"cozuldu":127,"reddedildi":0}
+FAIL KY06a askıdaki işçi (A-11): açılış hazırlığı ≤ normal + 5 sn (5458 ms) → {"ms":20291}
+PASS KY06b askıdaki işçi: açılış tamamlanır (≥ 100 ağ, derinlik, ızgara) ve hata kaydı var → {"meshes":125,"izgara":"tamam","failures":["işçi 0: tile işi 20 sn içinde bitmedi"]}
+PASS KY06-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":1973,"ihlal":0,"ilk":[],"enFazlaFailures":4}
+PASS KY06-S bütün iş sözleri 65 sn sınırı içinde sonuçlandı → {"is":127,"acik":0,"acikOrnek":[],"enUzunMs":20292,"cozuldu":127,"reddedildi":0}
+PASS KY07a tek işçi çökmesi: işler kaybolmaz, açılış tamamlanır (≥ 100 ağ, derinlik, ızgara) → {"coktu":true,"meshes":125,"izgara":"tamam","ms":335}
+PASS KY07b tek işçi çökmesi: kalan işçiler çalışır, yedek kip açılmaz → {"workers":2,"fallback":false}
+FAIL KY07c tek işçi çökmesi (A-15): ölen işçi 30 sn içinde yeniden başlatılır (işçi sayısı 3'e döner) → {"ms":null,"workers":2,"kurulan":3}
+PASS KY07-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":2970,"ihlal":0,"ilk":[],"enFazlaFailures":1}
+PASS KY07-S bütün iş sözleri 15 sn sınırı içinde sonuçlandı → {"is":127,"acik":0,"acikOrnek":[],"enUzunMs":424,"cozuldu":127,"reddedildi":0}
+BILGI KY08 karşılaştırma: işçisiz kipte uzak prepare(1900,950,r300) 167 ms
+PASS KY08a bütün işçiler her işte çöker: iş alan her işçi sonlandırılmış, hiçbir iş 3 (MAX_TRIES) kezden fazla gönderilmemiş, kurulan işçi ≤ 9, hata kaydı var, açılış tamamlanır (≥ 100 ağ, derinlik, ızgara) → {"isAlan":3,"isAlanCanli":0,"enCokGonderim":1,"kurulan":3,"workers":0,"fallback":true,"failures":4,"meshes":125,"izgara":"tamam","ms":319}
+PASS KY08b bütün işçiler çöktükten sonra uzak bölge prepare(1900,950,r300) ≤ 3 sn (KI-234; işçisiz kipe yakın) → {"ms":136,"isciSizMs":167,"ag":21}
+PASS KY08-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":3,"ihlal":0,"ilk":[],"enFazlaFailures":4}
+PASS KY08-S bütün iş sözleri 20 sn sınırı içinde sonuçlandı → {"is":137,"acik":0,"acikOrnek":[],"enUzunMs":321,"cozuldu":137,"reddedildi":0}
+FAIL KY09a MAX_TRIES (A-05): ızgara işini alan her işçi öldüğünde iş yerel yedekte üretilir (söz reddedilmez) → {"izgara":"RED: Arazi işi grid tekrarlanan işçi hatası","ms":11,"workers":0,"fallback":true,"gridDenemesi":3}
+PASS KY09b MAX_TRIES sonrası karo işleri sürer (≥ 100 ağ) → {"meshes":125}
+PASS KY09-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":10,"ihlal":0,"ilk":[],"enFazlaFailures":4}
+PASS KY09-S bütün iş sözleri 20 sn sınırı içinde sonuçlandı → {"is":127,"acik":0,"acikOrnek":[],"enUzunMs":346,"cozuldu":126,"reddedildi":1}
+PASS KY10a işçinin 'error' iletisi: ızgara sözü ≤ 2 sn içinde sonuçlanır (asılı kalmaz) → {"izgara":"RED: sahte üretim hatası","ms":3}
+PASS KY10b işçinin 'error' iletisi işçiyi öldürmez: 3 işçi canlı, yedek kip kapalı, karo işleri sürer → {"workers":3,"fallback":false,"meshes":125}
+PASS KY10-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":12,"ihlal":0,"ilk":[],"enFazlaFailures":0}
+PASS KY10-S bütün iş sözleri 20 sn sınırı içinde sonuçlandı → {"is":127,"acik":0,"acikOrnek":[],"enUzunMs":346,"cozuldu":126,"reddedildi":1}
+FAIL KY11a kalıcı hatalı karo (A-05): 3 sn içinde aynı karo en çok 3 kez yeniden istenir (üstel geri çekilme) → {"ilkIstek":1,"sonraki3snIstek":60,"konsolHatasi3sn":60}
+FAIL KY11b kalıcı hatalı karo (A-05): failures.length ≤ 50 → {"failures":61}
+PASS KY11c kalıcı hatalı karo: diğer karolar tamamlanır (≥ 100 ağ) → {"meshes":118}
+FAIL KY11-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":308,"ihlal":1,"ilk":["failures 51 > 50"],"enFazlaFailures":61}
+PASS KY11-S bütün iş sözleri 20 sn sınırı içinde sonuçlandı → {"is":179,"acik":0,"acikOrnek":[],"enUzunMs":315,"cozuldu":118,"reddedildi":61}
+FAIL KY12a şeritteki iş (A-08): _drop sonrası iş sonuna kadar üretilmez, söz ilk dilimde sonuçsuz sonlanır → {"seg":80,"sonucUretildi":true,"durum":"cozuldu","sonlanmaDilim":1}
+PASS KY12-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":3,"ihlal":0,"ilk":[],"enFazlaFailures":1}
+PASS KY12-S bütün iş sözleri 20 sn sınırı içinde sonuçlandı → {"is":245,"acik":0,"acikOrnek":[],"enUzunMs":227,"cozuldu":245,"reddedildi":0}
+FAIL KY13a işçideki iş (A-08): karo düşürülünce iş sözü ≤ 50 ms içinde sonuçsuz sonlanır (işçinin geç sonucu kullanılmaz) → {"isciTutuyor":true,"sonlanmaMs":381,"sonucUretildi":true}
+PASS KY13-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":51,"ihlal":0,"ilk":[],"enFazlaFailures":0}
+PASS KY13-S bütün iş sözleri 20 sn sınırı içinde sonuçlandı → {"is":126,"acik":0,"acikOrnek":[],"enUzunMs":402,"cozuldu":126,"reddedildi":0}
+FAIL KY14a requestDepth (A-08, işçi kipi): yeni zorunlu istek eski derinlik işini iptal eder (eski iş ≤ 50 ms içinde sonuçsuz sonlanır) → {"sonlanmaMs":381,"eskiSonucUretildi":true}
+PASS KY15 _depthSeq: yavaş gelen eski derinlik yanıtı yeni pencereyi ezmez (depthWin ve son onDepth yeni bölgede) → {"depthWin":{"x":1920,"z":960},"sonOnDepth":{"x":1920,"z":960}}
+PASS KY14-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 (işçi kipi) → {"ornek":24,"ihlal":0,"ilk":[],"enFazlaFailures":0}
+PASS KY14-S bütün iş sözleri 10 sn sınırı içinde sonuçlandı → {"is":2,"acik":0,"acikOrnek":[],"enUzunMs":401,"cozuldu":2,"reddedildi":0}
+FAIL KY14b requestDepth (A-08, yerel şerit): eski derinlik işi şeritte yarımken yeni zorunlu istek gelince sonuna kadar hesaplanmaz (sonuçsuz sonlanır) → {"eskiSonucUretildi":true,"durum":"cozuldu","depthWin":{"x":1920,"z":960}}
+PASS KY14y-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 (yerel şerit) → {"ornek":2,"ihlal":0,"ilk":[],"enFazlaFailures":1}
+PASS KY14y-S bütün iş sözleri 10 sn sınırı içinde sonuçlandı → {"is":2,"acik":0,"acikOrnek":[],"enUzunMs":159,"cozuldu":2,"reddedildi":0}
+PASS KY16 odak bastırması: prepare odağı etkinken uzak kameranın derinlik isteği yeni iş açmaz, pencere odakta kalır → {"yeniDerinlikIsi":0,"depthWin":{"x":280,"z":-5000}}
+PASS KY17 prepare odak koruması: kamera ~5,5 km uzakta güncellenirken odak bölgesinde ≥ 6 karo ağı korunur, ≥ 1 karo seg 80 → {"odakAg":20,"odakHires":15}
+PASS KY16-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":21,"ihlal":0,"ilk":[],"enFazlaFailures":0}
+PASS KY16-S bütün iş sözleri 15 sn sınırı içinde sonuçlandı → {"is":146,"acik":0,"acikOrnek":[],"enUzunMs":282,"cozuldu":146,"reddedildi":0}
+FAIL KY18 örtüşen prepare (A-12): önce biten A, B'nin odağını kısaltmaz; B bitince B bölgesinde ≥ 6 karo ağı ve derinlik penceresi B'de → {"aMs":132,"bMs":12268,"odakAg":0,"yavasIs":3,"depthWin":{"x":280,"z":-5000}}
+PASS KY18-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":1264,"ihlal":0,"ilk":[],"enFazlaFailures":0}
+PASS KY18-S bütün iş sözleri 25 sn sınırı içinde sonuçlandı → {"is":147,"acik":0,"acikOrnek":[],"enUzunMs":13035,"cozuldu":147,"reddedildi":0}
+PASS KY19a prepare zaman aşımı dalı: askıdaki işçide 400 ms sınırıyla ≤ 1,5 sn içinde sonuçlanır (asılı kalmaz) → {"ms":400}
+FAIL KY19b prepare zaman aşımı dalı (A-11): dönüş değeri 'timeout' (çağırana bildirilir) → {"donus":"undefined"}
+FAIL KY20a terminate sonrası geç ileti (A-09): işler bitince hayalet iş yuvası kalmaz → {"hayalet":2,"isciYuvalari":[[1,2],[2,0]]}
+FAIL KY20b terminate sonrası geç ileti (A-09): sonraki iş dalgasında, dalgadan önce canlı olan her işçi ≥ 1 iş alır (paralellik düşmez) → {"yeniIleti":[[1,0],[2,94]],"dalgadaOlen":0,"dalgadaKurulan":0}
+FAIL KY20-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":48,"ihlal":138,"ilk":["hayalet yuva: işçi 1 iş 127","hayalet yuva: işçi 1 iş 126","hayalet yuva: işçi 1 iş 127","hayalet yuva: işçi 1 iş 126","hayalet yuva: işçi 1 iş 127","hayalet yuva: işçi 1 iş 126"],"enFazlaFailures":1}
+PASS KY20-S bütün iş sözleri 10 sn sınırı içinde sonuçlandı → {"is":221,"acik":0,"acikOrnek":[],"enUzunMs":238,"cozuldu":221,"reddedildi":0}
+FAIL KY21 _workerFailed (A-08): düşürülmüş karonun işi çöken işçiden sonra yeniden üretilmez (başka işçiye gönderilmez) → {"seg32Gonderim":3,"workers":0}
+PASS KY21-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":40,"ihlal":0,"ilk":[],"enFazlaFailures":5}
+PASS KY21-S bütün iş sözleri 10 sn sınırı içinde sonuçlandı → {"is":126,"acik":0,"acikOrnek":[],"enUzunMs":242,"cozuldu":125,"reddedildi":1}
+FAIL KY22 LOD histerezisi (A-07): 380 m LOD sınırında ±20 m salınımda (3 tur) karo yeniden üretilmez → {"baslangicSeg":80,"salinimdakiIstek":6,"sonSeg":80}
+PASS KY22-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":22,"ihlal":0,"ilk":[],"enFazlaFailures":0}
+PASS KY22-S bütün iş sözleri 10 sn sınırı içinde sonuçlandı → {"is":149,"acik":0,"acikOrnek":[],"enUzunMs":260,"cozuldu":149,"reddedildi":0}
+FAIL KY23 derin deniz karoları (A-07): 8 km açık deniz dolaşımında 600 m ötesindeki derin karo sayısı ≤ 10 → {"enCok":81,"enCokNokta_x":6200,"adim":41,"ic":"_land","toplamKaro":110}
+PASS KY23-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":84,"ihlal":0,"ilk":[],"enFazlaFailures":0}
+PASS KY23-S bütün iş sözleri 15 sn sınırı içinde sonuçlandı → {"is":715,"acik":0,"acikOrnek":[],"enUzunMs":94,"cozuldu":715,"reddedildi":0}
+PASS KY24a ızgara önbelleği: bekleyen aynı istek tek sözde birleşir → {"ayniSoz":true}
+FAIL KY24b ızgara önbelleği (A-13): 26 farklı ızgara çözüldükten sonra önbellekte çözülmüş kayıt ≤ 2 → {"onbellek":24}
+PASS KY24-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":2,"ihlal":0,"ilk":[],"enFazlaFailures":0}
+PASS KY24-S bütün iş sözleri 10 sn sınırı içinde sonuçlandı → {"is":26,"acik":0,"acikOrnek":[],"enUzunMs":19,"cozuldu":26,"reddedildi":0}
+BILGI oyun konsolu: uyarı 32, hata 62
+SONUC: KALDI (çıkış 1) denetim 67/89 | kalan: KY01d, KY03a, KY05a, KY06a, KY07c, KY09a, KY11a, KY11b, KY11-D, KY12a, KY13a, KY14a, KY14b, KY18, KY19b, KY20a, KY20b, KY20-D, KY21, KY22, KY23, KY24b | kök /home/user/SON-HAZ-NE
+# çıkış 1

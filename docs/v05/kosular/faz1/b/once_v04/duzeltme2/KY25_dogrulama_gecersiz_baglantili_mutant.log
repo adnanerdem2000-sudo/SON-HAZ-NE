@@ -1,0 +1,17 @@
+# 2026-11-15T00:33:01Z KY25 doğrulaması (yalnız KY25; tarayıcı kilidiyle, başka koşuyla çakışmasın): v0.4 ve mut_a06 (v0.4 + terrainGen her satırda yield); senaryo tests/node/arazi_kuyruk.mjs f2f7d836e5c4
+## kök /home/user/SON-HAZ-NE
+BILGI kök /home/user/SON-HAZ-NE; Node v22.22.0
+FAIL KY25 yerel yedek, yükseklik işlevi çağrı başına 5 µs yavaşlatılmışken: dilimlerin p99'u ≤ bütçe + 4 ms ve en uzunu ≤ bütçe + 15 ms (A-06, KI-154: dilimi parça boyu değil süre keser; makine hızından bağımsız) → {"dilim":39,"p99Fark":90.6,"enUzunFark":90.6,"asim":32,"ornek":[[90,10],[97.6,10],[99.2,10],[99.2,10],[100.6,10],[100.6,10]],"butce":10,"butceKaynagi":"v0.4 kuralı (terrain.js:162)","prepMs":1870,"acilisMs":384,"workers":0,"fallback":true}
+PASS KY25-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":3,"ihlal":0,"ilk":[],"enFazlaFailures":1}
+PASS KY25-S bütün iş sözleri 180 sn sınırı içinde sonuçlandı → {"is":140,"acik":0,"acikOrnek":[],"enUzunMs":1870,"cozuldu":140,"reddedildi":0}
+BILGI oyun konsolu: uyarı 1, hata 0
+SONUC: KALDI (çıkış 1) denetim 2/3 | kalan: KY25 | kök /home/user/SON-HAZ-NE
+# çıkış 1
+## kök /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/b0d/mut_a06
+BILGI kök /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/b0d/mut_a06; Node v22.22.0
+PASS KY25 yerel yedek, yükseklik işlevi çağrı başına 5 µs yavaşlatılmışken: dilimlerin p99'u ≤ bütçe + 4 ms ve en uzunu ≤ bütçe + 15 ms (A-06, KI-154: dilimi parça boyu değil süre keser; makine hızından bağımsız) → {"dilim":12,"p99Fark":2.9,"enUzunFark":3.7,"asim":0,"ornek":[],"butce":10,"butceKaynagi":"v0.4 kuralı (terrain.js:162)","prepMs":135,"acilisMs":341,"workers":0,"fallback":true}
+PASS KY25-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":3,"ihlal":0,"ilk":[],"enFazlaFailures":1}
+PASS KY25-S bütün iş sözleri 180 sn sınırı içinde sonuçlandı → {"is":140,"acik":0,"acikOrnek":[],"enUzunMs":344,"cozuldu":140,"reddedildi":0}
+BILGI oyun konsolu: uyarı 1, hata 0
+SONUC: GECTI (çıkış 0) denetim 3/3 | kök /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/b0d/mut_a06
+# çıkış 0

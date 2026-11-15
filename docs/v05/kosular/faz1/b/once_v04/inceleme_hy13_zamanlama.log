@@ -1,0 +1,14 @@
+# 2026-11-14T13:16:46Z inceleme (B0 test kalitesi) tanı koşusu; senaryo /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_b0/inceleme_hy13_zamanlama.js (git dışı, scratchpad) sha ffa96d27b9e4; hedef http://localhost:8080/index.html; v0.4 44d548c
+ready in 6.6 s
+R: ["bekle","agYakin","derinlikUzak","ortu","odak","ilkKare"]
+PASS T01 Yeni oyun başladı → true
+R: {"ms":299,"odak":{"x":2,"z":212,"r":500,"kalanMs":11987}}
+R: {"gemi":[4000,-4000],"mod":"deck","odak":{"x":2,"z":212,"r":500,"kalanMs":-2526}}
+R: {"x":4000,"z":-4006,"kirlangicaUzaklik":5814,"kirlangicCevresiAg":11,"derinlikKirlangicaUzak":4848,"odak":{"x":2,"z":212,"r":500,"kalanMs":-7432}}
+FAIL T02 (HY13 ifadesi; ölüm 1 sn sonra) uyanışın ilk karesinde oyuncu çevresinde ≥ 6 karo ağı → 0
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/goruntu/inceleme_hy13_zamanlama_2026-11-14T13-16-47-171Z_9785/ilk_kalan.png
+FAIL T03 (HY14 ifadesi; ölüm 1 sn sonra) uyanışın ilk karesinde derinlik penceresi uyanma noktasında → 5635
+R: {"bas":{"ms":299,"odak":{"x":2,"z":212,"r":500,"kalanMs":11987}},"olum":{"x":4000,"z":-4006,"kirlangicaUzaklik":5814,"kirlangicCevresiAg":11,"derinlikKirlangicaUzak":4848,"odak":{"x":2,"z":212,"r":500,"kalanMs":-7432}},"dogus":{"ms":2882,"ag300":0,"derinlikUzak":5635,"odak":null,"x":4,"z":210}}
+errors: 0 pageErrors: 0 fails: 2 (60.7 s)
+SONUC: KALDI (çıkış 1) kontrol 1/3, onay 3 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34 | neden: başarısız kontrol ya da adım: 2
+# çıkış 1 2026-11-14T13:17:56Z

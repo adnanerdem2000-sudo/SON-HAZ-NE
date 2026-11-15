@@ -1,0 +1,35 @@
+# 2026-11-15T00:57:55Z deneme 1; koşucu run.cjs 591dff27aa01 ortak.cjs df191a997375; senaryo tests/scenarios/02_ayar_lod.js 19ff4ba33b1d; hedef http://localhost:8080/index.html; v0.4 44d548c
+# komut: /home/user/devtools/tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_ayar_lod.js --url 'http://localhost:8080/index.html' --size 640x360 --timeout 540 --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_ayar_lod.json 
+başlatma betiği: 1 meta, 0 dosya
+ready in 6.4 s
+PASS AL00 Varsayılan ayarlarla (yüksek, görüş %100) açılışta lodScale = 1 → 1
+GOTO http://localhost:8080/index.html?ayar=dusuk30&test=1
+R: {"profil":"dusuk30","ayar":{"q":"low","vd":0.3,"sh":"medium"},"lodScale":0.7,"baseLod":1,"stats":{"tiles":90,"meshes":90,"hires":12,"tris":232704,"queue":0,"jobs":0,"workers":3,"fallback":false,"failures":0,"mode":""}}
+FAIL AL01 Kalite düşük + görüş %30 kayıtlıyken açılışta lodScale ≈ 0,553 (0,7 × (0,7 + 0,3 × 0,3)) → 0.7
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_ayar_lod_2026-11-15T00-58-43-221Z_1974/ilk_kalan.png
+DEGISKEN karo30 = 90
+DEGISKEN lodOnce = 0.7
+R: {"master":0,"lodScale":0.7899999999999999}
+FAIL AL02 Ayarlar panelinde ses değişimi (Ana ses → %0) lodScale'i değiştirmez → false
+R: {"viewDistance":1,"lodScale":1}
+FAIL AL03 Kalite düşükken görüş %100 seçilince lodScale ≈ 0,7 → 1
+R: {"viewDistance":0.3,"kayit":0.3}
+GOTO http://localhost:8080/index.html?test=1
+R: {"ayar":{"q":"low","vd":0.3},"lodScale":0.7}
+FAIL AL04 Panelden kaydedilen (düşük, %30) ayarlarla sayfa yenilenince lodScale ≈ 0,553 → 0.7
+GOTO http://localhost:8080/index.html?ayar=dusuk100&test=1
+R: {"ayar":{"q":"low","vd":1},"lodScale":0.7,"stats":{"tiles":90,"meshes":90,"hires":12,"tris":232704,"queue":0,"jobs":0,"workers":3,"fallback":false,"failures":0,"mode":""}}
+PASS AL05 Kalite düşük + görüş %100 kayıtlıyken açılışta lodScale ≈ 0,7 → 0.7
+DEGISKEN karo100 = 90
+FAIL AL06 Görüş %30 ile açılışta karo sayısı görüş %100'e göre belirgin az (≤ %85) → false
+R: {"yuzde30":90,"yuzde100":90,"oran":1}
+GOTO http://localhost:8080/index.html?ayar=yuksek100&test=1
+R: {"ayar":{"q":"high","vd":1,"sh":"medium"},"lodScale":1,"golge":2048,"golgeAcik":true}
+PASS AL07 Yüksek kalite + görüş %100 kayıtlıyken açılışta lodScale = 1 → 1
+FAIL AL08 Gölgeler 'orta' kayıtlıyken açılışta güneş gölge haritası 1024 (yüksek kalitede bile) → 2048
+GOTO http://localhost:8080/index.html?test=1
+FAIL AL09 Sayfa yenilendikten sonra da gölgeler 'orta' → güneş gölge haritası 1024 → 2048
+PASS AL10 Sayfa yenilendikten sonra yüksek kalite + %100 → lodScale = 1 → 1
+errors: 0 pageErrors: 0 fails: 7 (74.8 s)
+SONUC: KALDI (çıkış 1) kontrol 4/11, onay 11 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/204 | neden: başarısız kontrol ya da adım: 7
+# çıkış 1 2026-11-15T01:00:01Z

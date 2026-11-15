@@ -1,0 +1,22 @@
+# 2026-11-15T01:33:14Z deneme 1; koşucu run.cjs 591dff27aa01 ortak.cjs df191a997375; senaryo tests/scenarios/02_tek_dosya_cerceve.js 93779e03fdf8; hedef http://127.0.0.1:8097/DenizKorsanlari-SonHazine.html; v0.4 44d548c
+# komut: /home/user/devtools/tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_tek_dosya_cerceve.js --url 'http://127.0.0.1:8097/DenizKorsanlari-SonHazine.html' --size 640x360 --timeout 540 --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_tek_dosya_cerceve.json 
+başlatma betiği: 1 meta, 0 dosya
+ready in 5.0 s
+PASS TC00 Tek dosya http(s) altında açıldı (üst sayfa, parametresiz) → true
+R: {"src":"http://127.0.0.1:8097/DenizKorsanlari-SonHazine.html?test=1","sandbox":"allow-scripts"}
+ERR: SecurityError: Failed to read the 'localStorage' property from 'Window': The document is sandboxed and lacks the 'allow-same-origin' flag.
+    at hC (http://127.0.0.1:8097/DenizKorsanlari-SonHazine.html?test=1:5658:9143)
+    at http://127.0.0.1:8097/DenizKorsanlari-SonHazine.html?test=1:5658:21643
+    at http://127.0.0.1:8097/DenizKorsanlari-SonHazine.html?test=1:5658:21862
+PASS TC01 Önkoşul: tek dosya sandbox'lı iframe'de (allow-scripts, allow-same-origin yok) yüklendi, köken 'null' → "null"
+FAIL TC02 Sandbox'lı iframe'de açılış tamamlanır (window.__ready, 120 sn içinde) → false
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_tek_dosya_cerceve_2026-11-15T01-34-20-016Z_10610/ilk_kalan.png
+R: {"__fb0Cerceve":true,"koken":"null","ready":false,"dk":false,"workers":null,"fallback":null,"failures":null,"meshes":null,"yukleme":"Oyun başlatılamadı: Failed to read the 'localStorage' property from 'Window': The document is sandboxed and lacks the 'allow-same-origin' flag.WebGL destekli gü","isci":{"kurulan":[],"kurucuHata":[],"hazir":0,"yanit":0,"hata":[]},"hatalar":[]}
+FAIL TC03 Sandbox'lı iframe'de en az 1 arazi işçisi çalışır: işçiden 'ready' ve iş yanıtı geldi; DK varsa DK.terrain.workers ≥ 1 ve yedek kapalı (A-16) → false
+R: {"__fb0Cerceve":true,"koken":"null","ready":false,"dk":false,"workers":null,"fallback":null,"failures":null,"meshes":null,"yukleme":"Oyun başlatılamadı: Failed to read the 'localStorage' property from 'Window': The document is sandboxed and lacks the 'allow-same-origin' flag.WebGL destekli gü","isci":{"kurulan":[],"kurucuHata":[],"hazir":0,"yanit":0,"hata":[]},"hatalar":[]}
+FAIL TC04 Sandbox'lı iframe'de arazi karoları üretildi (≥ 20 ağ) → "çerçevede DK yok"
+errors: 1 pageErrors: 0 fails: 3 (166.6 s)
+IZINSIZ KONSOL ×1: SecurityError: Failed to read the 'localStorage' property from 'Window': The document is sandboxed and lacks the 'allow-same-origin' flag.
+    at hC (http://127.0.0.1:8097/DenizKorsanlari-SonHazine.ht @ http://127.0.0.1:8097/DenizKorsanlari-SonHazine.html?test=1
+SONUC: KALDI (çıkış 1) kontrol 2/5, onay 5 | izinsiz konsol 1, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34 | neden: başarısız kontrol ya da adım: 3; izinsiz konsol hatası: 1
+# çıkış 1 2026-11-15T01:37:09Z

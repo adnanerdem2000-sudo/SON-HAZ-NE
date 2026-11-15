@@ -1,0 +1,89 @@
+# 2026-11-14T16:00:35Z deneme 1; koşucu run.cjs 591dff27aa01 ortak.cjs df191a997375; senaryo tests/scenarios/02_arazi_isci_hata.js 1477bbb33dfb; hedef http://localhost:8080/index.html; v0.4 44d548c
+# komut: /home/user/devtools/tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_arazi_isci_hata.js --url 'http://localhost:8080/index.html' --size 640x360 --timeout 540 --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_arazi_isci_hata.json 
+başlatma betiği: 1 meta, 0 dosya
+ready in 7.4 s
+PASS HI00 Senaryo işçili kipte: en az bir arazi işçisi çalışıyor, yedek kip kapalı → true
+R: {"mode":"","workers":3,"fallback":false,"failures":0}
+ERR: Arazi işçisi: test: enjekte üretim hatası
+PASS HI01 İşçinin 'error' iletisi: ızgara sözü ≤ 3 sn içinde sonuçlanır, işçi ölmez, yedek kip açılmaz → true
+R: {"sonuc":"RED: test: enjekte üretim hatası","ms":6,"workersOnce":3,"workersSonra":3,"fallback":false}
+R: "başlatıldı"
+PASS HI02 Oyun başladı → true
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+ERR: Arazi işçisi: test: enjekte üretim hatası
+FAIL HI03 Kalıcı hatalı karo (A-05): 12 sn içinde (10 güncelleme/sn) aynı karo en çok 5 kez istenir (üstel geri çekilme) → 61
+ERR: Arazi işçisi: test: enjekte üretim hatası
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_arazi_isci_hata_2026-11-14T16-12-25-610Z_1358/ilk_kalan.png
+R: {"key":63551,"istek12sn":61,"failuresArtis":60,"failures":60}
+FAIL HI04 Kalıcı hatalı karodan sonra failures.length ≤ 50 (A-05) → 61
+FAIL HI05 MAX_TRIES (A-05): ızgara işini alan her işçi çökse de iş yerel yedekte üretilir (söz reddedilmez) → "RED: Arazi işi grid tekrarlanan işçi hatası"
+R: {"sonuc":"RED: Arazi işi grid tekrarlanan işçi hatası","ms":26,"workers":0,"fallback":true,"gridGonderim":3,"failures":["işçi 0: hata: test: enjekte işçi çökmesi","işçi 1: hata: test: enjekte işçi çökmesi","işçi 2: hata: test: enjekte işçi çökmesi","hata: test: enjekte işçi çökmesi"]}
+PASS HI06 İşçiler çöktükten sonra kalan bütün arazi işleri 30 sn içinde sonuçlanır → 0
+DIALOG beforeunload kabul edildi 
+GOTO http://localhost:8080/index.html?kurucu2=1&test=1
+R: {"workers":1,"fallback":true,"failures":["işçi oluşturulamadı: Test: ikinci işçi kurulamadı"],"meshes":80}
+FAIL HI07 Kısmi kurucu hatası (A-15): kurulabilen işçi çalışır ve yedek kip işareti KAPALI kalır (fallback=false) → false
+PASS HI08 Kısmi kurucu hatasında açılış tamamlanır (≥ 20 karo ağı) → 112
+errors: 62 pageErrors: 0 fails: 4 (113.4 s)
+IZINLI ×62 (Arazi işçisi: .*test: enjekte üretim hatası): Arazi işçisi: test: enjekte üretim hatası
+IZIN ×62 (meta, konsol) Arazi işçisi: .*test: enjekte üretim hatası — HI01/HI03 kasıtlı enjekte edilen işçi 'error' iletisi; v0.4 terrain._onMsg bunu console.error ile günlüğe yazar (beklenen tepki)
+SONUC: KALDI (çıkış 1) kontrol 5/9, onay 9 | izinsiz konsol 0, ağ 0 | izinli konsol 62, ağ 0 | uyarı 7 farklı/73 | neden: başarısız kontrol ya da adım: 4
+# çıkış 1 2026-11-14T16:14:22Z

@@ -1,0 +1,1069 @@
+{
+ "scenario": "tests/scenarios/02_arazi_yasam.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": [
+    "bekle",
+    "kosul",
+    "agYakin",
+    "hayalet",
+    "sessizIsci",
+    "derinMi",
+    "gemiyleGit"
+   ],
+   "ms": 2
+  },
+  {
+   "n": 2,
+   "label": null,
+   "degisken": {
+    "ad": "kip",
+    "deger": ""
+   },
+   "ms": 5
+  },
+  {
+   "n": 3,
+   "label": null,
+   "expect": {
+    "label": "LY00 Kip denetimi: URL ?terrain = DK.terrain.mode ve kipin beklenen işçi/yedek durumu (normal: işçi ≥ 1; noworker/ctorthrow/badurl: işçi 0 + yedek; crash/hang: hata kaydı, iş alıp yanıt vermeyen her işçi sonlandırılmış, kurulan işçi ≤ 9; crash1: yedek kapalı + çökme kaydı; noready: zaman aşımı kaydı + yedek)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 5
+  },
+  {
+   "n": 4,
+   "label": null,
+   "result": {
+    "k": "",
+    "mode": "",
+    "workers": 3,
+    "fallback": false,
+    "failures": [],
+    "beklemeMs": 0,
+    "isciler": [
+     [
+      0,
+      6,
+      6,
+      0,
+      "canli"
+     ],
+     [
+      1,
+      54,
+      54,
+      0,
+      "canli"
+     ],
+     [
+      2,
+      67,
+      67,
+      0,
+      "canli"
+     ]
+    ]
+   },
+   "ms": 2
+  },
+  {
+   "n": 5,
+   "label": null,
+   "expect": {
+    "label": "LY01 Açılış tamamlandı (window.__ready, yükleme ekranı kapalı)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 3
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "LY02 Menü sahnesinde ≥ 20 karo ağı",
+    "ok": true,
+    "value": 125
+   },
+   "ms": 4
+  },
+  {
+   "n": 7,
+   "label": null,
+   "expect": {
+    "label": "LY03 Okyanus derinlik penceresi hazır ve açılış noktasında (≤ 600 m)",
+    "ok": true,
+    "value": 10
+   },
+   "ms": 2
+  },
+  {
+   "n": 8,
+   "label": null,
+   "expect": {
+    "label": "LY04 Harita ızgarası (256²) isteği sonuçlanıyor",
+    "ok": true,
+    "value": "tamam"
+   },
+   "ms": 40
+  },
+  {
+   "n": 9,
+   "label": null,
+   "expect": {
+    "label": "LY05 prepare dönüş değeri 'ok' (A-11: sonuç çağırana iletilir)",
+    "ok": false,
+    "value": "undefined"
+   },
+   "ms": 7320
+  },
+  {
+   "n": 10,
+   "label": null,
+   "result": "başlatıldı",
+   "ms": 27
+  },
+  {
+   "n": 11,
+   "label": null,
+   "expect": {
+    "label": "LY06 Oyun başladı",
+    "ok": true,
+    "value": true
+   },
+   "ms": 490
+  },
+  {
+   "n": 12,
+   "label": null,
+   "result": {
+    "izlenen": 126
+   },
+   "ms": 418
+  },
+  {
+   "n": 13,
+   "label": null,
+   "expect": {
+    "label": "LY07 LOD yarışı: yavaşlatılan eski seg-32 sonucu, yeni seg-80 geometriyi ezmez (önkoşul: seg-80 istendiğinde seg-32 işi uçuşta; son seg 80, indeks 40 320)",
+    "ok": true,
+    "value": "tamam"
+   },
+   "ms": 25991
+  },
+  {
+   "n": 14,
+   "label": null,
+   "result": {
+    "key": 63551,
+    "isci": true,
+    "ucusta32": true,
+    "p80": 43125.69999999553,
+    "p32": 43748.10000000149,
+    "segP32": 80,
+    "sonSeg": 80,
+    "idx": 40320,
+    "eskiSonraBitti": true
+   },
+   "ms": 28
+  },
+  {
+   "n": 15,
+   "label": null,
+   "expect": {
+    "label": "LY08 Silinen karonun geç gelen sonucu yok sayılır (önkoşul: sonuç düşürmeden sonra geldi; sahne grubunda sahipsiz ağ kalmaz; düşürülen karo nesnesine yeni geometri yazılmaz)",
+    "ok": true,
+    "value": "tamam"
+   },
+   "ms": 1428
+  },
+  {
+   "n": 16,
+   "label": null,
+   "result": {
+    "key": 62525,
+    "isci": true,
+    "gecSonucOldu": true,
+    "dusurmedeKuyruktaydi": false,
+    "dusurmedenOnceApply": 0,
+    "sonucDusurmedenSonraMs": 930,
+    "karoYenidenIstendi": true,
+    "ilgiliAg": 0,
+    "ilgiliAgKarosu": [],
+    "silinenKaroyaApply": 0,
+    "silinenKaroyaYeniGeometri": 0,
+    "silinenKaroGeometrisiAyni": true
+   },
+   "ms": 3
+  },
+  {
+   "n": 17,
+   "label": null,
+   "expect": {
+    "label": "LY10 26 farklı harita ızgarası çözüldükten sonra önbellekte ≤ 2 çözülmüş kayıt (A-13)",
+    "ok": false,
+    "value": 24
+   },
+   "ms": 258
+  },
+  {
+   "n": 18,
+   "label": null,
+   "result": {
+    "fpsLimitVar": true,
+    "fps0": 0,
+    "renderSayaci": true
+   },
+   "ms": 2
+  },
+  {
+   "n": 19,
+   "label": null,
+   "result": {
+    "adim": 33,
+    "derinEnCok": 83,
+    "derinNokta": 6500,
+    "hayaletEnCok": 0,
+    "failuresEnCok": 0,
+    "beklemeMs": 54,
+    "ms": 7314,
+    "stats": {
+     "tiles": 110,
+     "meshes": 110,
+     "hires": 0,
+     "tris": 24256,
+     "queue": 0,
+     "jobs": 0,
+     "workers": 3,
+     "fallback": false,
+     "failures": 0,
+     "mode": ""
+    },
+    "ic": "_land"
+   },
+   "ms": 7319
+  },
+  {
+   "n": 20,
+   "label": null,
+   "expect": {
+    "label": "LY11 8 km açık deniz dolaşımında 600 m ötesindeki derin deniz karosu ≤ 10 (A-07)",
+    "ok": false,
+    "value": 83
+   },
+   "ms": 7
+  },
+  {
+   "n": 21,
+   "label": null,
+   "expect": {
+    "label": "LY12 Dolaşım boyunca değişmezler: hayalet iş yuvası 0 (işçi kayıtlarının işleri _jobs içinde), failures ≤ 50",
+    "ok": true,
+    "value": true
+   },
+   "ms": 6
+  },
+  {
+   "n": 22,
+   "label": null,
+   "result": {
+    "isciVardi": 3,
+    "workers": 0,
+    "fallback": true
+   },
+   "ms": 6
+  },
+  {
+   "n": 23,
+   "label": null,
+   "result": {
+    "dolasim": {
+     "adim": 33,
+     "derinEnCok": 83,
+     "failuresEnCok": 4,
+     "ms": 5041
+    },
+    "dilim": {
+     "dilim": 84,
+     "enUzun": 32.6,
+     "asim": 4,
+     "enUzunBut": 10,
+     "ornek": [
+      [
+       14.5,
+       10
+      ],
+      [
+       32.6,
+       10
+      ],
+      [
+       21.7,
+       10
+      ],
+      [
+       14.5,
+       10
+      ]
+     ],
+     "isciVardi": 3,
+     "butceKaynagi": "v0.4 kuralı (terrain.js:162)",
+     "p99Fark": 22.6,
+     "enBuyukFark": 22.6,
+     "asimOrani": 0.048
+    }
+   },
+   "ms": 5058
+  },
+  {
+   "n": 24,
+   "label": null,
+   "expect": {
+    "label": "LY13 Ana iş parçacığı yedeğinde 8 km dolaşım: yerel dilimlerin p99'u bütçe + 4 ms'yi, en uzunu bütçe + 15 ms'yi aşmaz (A-06; tek GC duraklamasına dayanıklı dağılım ölçümü)",
+    "ok": false,
+    "value": "p99 bütçe+22.6 ms, en uzun bütçe+22.6 ms"
+   },
+   "ms": 5
+  },
+  {
+   "n": 25,
+   "label": null,
+   "expect": {
+    "label": "LY14 Yedek kipte 8 km dönüş dolaşımında 600 m ötesindeki derin deniz karosu ≤ 10 (A-07)",
+    "ok": false,
+    "value": 83
+   },
+   "ms": 4
+  },
+  {
+   "n": 26,
+   "label": null,
+   "expect": {
+    "label": "LY15 Dolaşımlardan sonra bütün arazi işleri 30 sn içinde sonuçlanır (askıda iş yok)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 6
+  },
+  {
+   "n": 27,
+   "label": null,
+   "expect": {
+    "label": "LY16 Karo oluşturma/kaldırma döngüsünde geometri sızıntısı yok: canlı (atılmamış) karo geometrisi = karo ağı sayısı, grupta sahipsiz ağ yok",
+    "ok": true,
+    "value": "tamam"
+   },
+   "ms": 7
+  },
+  {
+   "n": 28,
+   "label": null,
+   "result": {
+    "izlenen": 1470,
+    "atilan": 1229,
+    "canli": 241,
+    "karoAgi": 241,
+    "grupCocuk": 241,
+    "sahipsizCanli": 0
+   },
+   "ms": 7
+  },
+  {
+   "n": 29,
+   "label": null,
+   "result": {
+    "dolasimdaCizilenKare": 0,
+    "fpsLimit": 0
+   },
+   "ms": 7
+  },
+  {
+   "n": 30,
+   "label": null,
+   "goto": {
+    "url": "http://localhost:8080/index.html?test=1"
+   },
+   "ms": 15225
+  },
+  {
+   "n": 31,
+   "label": null,
+   "expect": {
+    "label": "LYK-09 (LY09 sayfası) Arazi kipi gezinmeden sonra korundu (ilk sayfanın ?terrain değeri)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 43
+  },
+  {
+   "n": 32,
+   "label": null,
+   "result": [
+    "bekle",
+    "kosul",
+    "agYakin",
+    "hayalet",
+    "sessizIsci",
+    "derinMi",
+    "gemiyleGit"
+   ],
+   "ms": 2
+  },
+  {
+   "n": 33,
+   "label": null,
+   "result": {
+    "basladi": true,
+    "oyuncu": [
+     2,
+     212
+    ],
+    "workers": 3
+   },
+   "ms": 14142
+  },
+  {
+   "n": 34,
+   "label": null,
+   "expect": {
+    "label": "LY09 Örtüşen iki prepare: önce biten A, sonra başlayan B'nin odağını kısaltmaz (işçili kipte: B'nin karo işleri 14 sn gecikirken B bitince B bölgesinde ≥ 6 ağ ve derinlik penceresi B'de; işçisiz kipte: A bitince B odağının kalan süresi ≥ 60 sn; A-12)",
+    "ok": false,
+    "value": "B odağı kısaldı: B bölgesinde 20 ağ, derinlik 5214 m"
+   },
+   "ms": 14322
+  },
+  {
+   "n": 35,
+   "label": null,
+   "result": {
+    "yontem": "gözlenebilir (işçi gecikmesi)",
+    "aMs": 377,
+    "bMs": 14073,
+    "yavasIs": 3,
+    "bAg": 20,
+    "bDerinlikUzak": 5214
+   },
+   "ms": 1
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 6,
+ "evalErrors": 0,
+ "readyMs": 6431,
+ "ms": 103279,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/scenarios/02_arazi_yasam.js",
+ "meta": {
+  "testler": [
+   "1 Normal Worker açılışı",
+   "2 Worker bulunamadığında",
+   "3 Worker çöktüğünde",
+   "4 Arazi mesh oluşturulması",
+   "5 Harita derinliği",
+   "KI-154",
+   "KI-155",
+   "KI-156",
+   "KI-157",
+   "KI-159",
+   "KI-160",
+   "KI-161",
+   "KI-165",
+   "A-06",
+   "A-07",
+   "A-08",
+   "A-09",
+   "A-11",
+   "A-12",
+   "A-13",
+   "A-17"
+  ],
+  "dosyalar": [
+   "js/world/terrain.js",
+   "js/world/terrainGen.js",
+   "js/world/terrainWorker.js",
+   "js/game/game.js",
+   "js/world/ocean.js"
+  ],
+  "baslatma": [
+   "(() => { try { const q = new URLSearchParams(location.search); const k = q.get('terrain'); if (k !== null) sessionStorage.setItem('__fb0_arazi_kipi', k); else { const s = sessionStorage.getItem('__fb0_arazi_kipi'); if (s) { q.set('terrain', s); history.replaceState(history.state, '', location.pathname + '?' + q.toString() + location.hash); window.__kipKorundu = s; } } } catch (e) { /* oturum deposu yok: kip korunamaz, HYK/LYK kontrolleri yakalar */ } })();",
+   "(() => { const W = window.Worker; if (typeof W !== 'function') return;\n     const kayit = window.__isciIleti = []; const I = window.__isciler = [];\n     function Sarili(url, opts) { const w = new W(url, opts); const post = w.postMessage.bind(w);\n       const ik = { no: I.length, is: 0, yanit: 0, hata: 0, sonlandi: false }; I.push(ik);\n       const son = w.terminate.bind(w); w.terminate = function () { ik.sonlandi = true; return son(); };\n       // yanıt/hata sayımı ek dinleyiciyle değil, oyunun kendi onmessage/onerror işleyicisi sarılarak yapılır (iletiye ikinci dinleyici\n       // eklenmez). FB0'daki sayfa çökmeleri izleyiciyle ilgili değil (izleyicisiz de çöktü; cgroup OOM, aşağıdaki başlık notu).\n       for (const [ad, say] of [['onmessage', (e) => { if (e && e.data && e.data.t && e.data.t !== 'ready') ik.yanit++; }], ['onerror', () => { ik.hata++; }]]) {\n         const d = Object.getOwnPropertyDescriptor(W.prototype, ad); if (!d || !d.set) continue;\n         Object.defineProperty(w, ad, { configurable: true, get() { return d.get.call(w); }, set(fn) { d.set.call(w, typeof fn === 'function' ? function (e) { try { say(e); } catch (x) { /* yoksay */ } return fn.call(this, e); } : fn); } });\n       }\n       w.postMessage = function (m, tr) { try { if (m && m.t && m.id != null) ik.is++; if (m && m.t && kayit.length < 50000) kayit.push({ t: m.t, key: m.key, seg: m.seg, res: m.res, id: m.id }); } catch (e) { /* yoksay */ }\n         const k = typeof window.__isciKanca === 'function' ? window.__isciKanca(m) : null;\n         if (k && k.gecikme > 0) { setTimeout(() => { try { post(m, tr); } catch (e) { /* işçi kapatılmış */ } }, k.gecikme); return; }\n         return post(m, tr); };\n       return w; }\n     Sarili.prototype = W.prototype; window.Worker = Sarili; })();"
+  ]
+ },
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8080/index.html?test=1",
+  "verilenUrl": "http://localhost:8080/index.html",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "6e637caf5fabae6fc7cc5f2a8abbd3f45cc1bb2f",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T17:34:54.886Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs /home/user/SON-HAZ-NE-w2/tests/scenarios/02_arazi_yasam.js --url http://localhost:8080/index.html --size 640x360 --timeout 540 --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_arazi_yasam_normal.json",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://localhost:8080 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8080"
+  ],
+  "commit": "6e637caf5fabae6fc7cc5f2a8abbd3f45cc1bb2f-kirli",
+  "senaryoSha256": "c4829663bcf239a779b09c003cb7f762cc93459bfe7d3b541d518b5eb8ae24fe",
+  "adim": {
+   "n": 9,
+   "js": "(async()=>{ const r = await DK.terrain.prepare(160, 470, { radius: 300 }); window.__prepDonus = r === undefined ? 'undefined' : r; return window.__prepDonus; })()"
+  },
+  "url": "http://localhost:8080/index.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 3,
+   "id": "LY00",
+   "etiket": "LY00 Kip denetimi: URL ?terrain = DK.terrain.mode ve kipin beklenen işçi/yedek durumu (normal: işçi ≥ 1; noworker/ctorthrow/badurl: işçi 0 + yedek; crash/hang: hata kaydı, iş alıp yanıt vermeyen her işçi sonlandırılmış, kurulan işçi ≤ 9; crash1: yedek kapalı + çökme kaydı; noready: zaman aşımı kaydı + yedek)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 5,
+   "id": "LY01",
+   "etiket": "LY01 Açılış tamamlandı (window.__ready, yükleme ekranı kapalı)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 6,
+   "id": "LY02",
+   "etiket": "LY02 Menü sahnesinde ≥ 20 karo ağı",
+   "ok": true,
+   "deger": 125,
+   "beklenen": {
+    "gte": 20
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 7,
+   "id": "LY03",
+   "etiket": "LY03 Okyanus derinlik penceresi hazır ve açılış noktasında (≤ 600 m)",
+   "ok": true,
+   "deger": 10,
+   "beklenen": {
+    "lte": 600
+   },
+   "sure_ms": 1,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 8,
+   "id": "LY04",
+   "etiket": "LY04 Harita ızgarası (256²) isteği sonuçlanıyor",
+   "ok": true,
+   "deger": "tamam",
+   "beklenen": {
+    "eq": "tamam"
+   },
+   "sure_ms": 38,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 9,
+   "id": "LY05",
+   "etiket": "LY05 prepare dönüş değeri 'ok' (A-11: sonuç çağırana iletilir)",
+   "ok": false,
+   "deger": "undefined",
+   "beklenen": {
+    "eq": "ok"
+   },
+   "sure_ms": 105,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"eq\":\"ok\"}, gelen \"undefined\" (sağlanmayan: eq \"ok\")",
+   "goruntu": {
+    "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_arazi_yasam_2026-11-14T17-34-54-715Z_10836/ilk_kalan.png",
+    "tuval": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_arazi_yasam_2026-11-14T17-34-54-715Z_10836/ilk_kalan_tuval.jpg"
+   }
+  },
+  {
+   "n": 11,
+   "id": "LY06",
+   "etiket": "LY06 Oyun başladı",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 297,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 13,
+   "id": "LY07",
+   "etiket": "LY07 LOD yarışı: yavaşlatılan eski seg-32 sonucu, yeni seg-80 geometriyi ezmez (önkoşul: seg-80 istendiğinde seg-32 işi uçuşta; son seg 80, indeks 40 320)",
+   "ok": true,
+   "deger": "tamam",
+   "beklenen": {
+    "eq": "tamam"
+   },
+   "sure_ms": 25982,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 15,
+   "id": "LY08",
+   "etiket": "LY08 Silinen karonun geç gelen sonucu yok sayılır (önkoşul: sonuç düşürmeden sonra geldi; sahne grubunda sahipsiz ağ kalmaz; düşürülen karo nesnesine yeni geometri yazılmaz)",
+   "ok": true,
+   "deger": "tamam",
+   "beklenen": {
+    "eq": "tamam"
+   },
+   "sure_ms": 1425,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 17,
+   "id": "LY10",
+   "etiket": "LY10 26 farklı harita ızgarası çözüldükten sonra önbellekte ≤ 2 çözülmüş kayıt (A-13)",
+   "ok": false,
+   "deger": 24,
+   "beklenen": {
+    "lte": 2
+   },
+   "sure_ms": 256,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"lte\":2}, gelen 24 (sağlanmayan: lte 2)",
+   "goruntu": null
+  },
+  {
+   "n": 20,
+   "id": "LY11",
+   "etiket": "LY11 8 km açık deniz dolaşımında 600 m ötesindeki derin deniz karosu ≤ 10 (A-07)",
+   "ok": false,
+   "deger": 83,
+   "beklenen": {
+    "lte": 10
+   },
+   "sure_ms": 4,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"lte\":10}, gelen 83 (sağlanmayan: lte 10)",
+   "goruntu": null
+  },
+  {
+   "n": 21,
+   "id": "LY12",
+   "etiket": "LY12 Dolaşım boyunca değişmezler: hayalet iş yuvası 0 (işçi kayıtlarının işleri _jobs içinde), failures ≤ 50",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 4,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 24,
+   "id": "LY13",
+   "etiket": "LY13 Ana iş parçacığı yedeğinde 8 km dolaşım: yerel dilimlerin p99'u bütçe + 4 ms'yi, en uzunu bütçe + 15 ms'yi aşmaz (A-06; tek GC duraklamasına dayanıklı dağılım ölçümü)",
+   "ok": false,
+   "deger": "p99 bütçe+22.6 ms, en uzun bütçe+22.6 ms",
+   "beklenen": {
+    "eq": "tamam"
+   },
+   "sure_ms": 3,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"eq\":\"tamam\"}, gelen \"p99 bütçe+22.6 ms, en uzun bütçe+22.6 ms\" (sağlanmayan: eq \"tamam\")",
+   "goruntu": null
+  },
+  {
+   "n": 25,
+   "id": "LY14",
+   "etiket": "LY14 Yedek kipte 8 km dönüş dolaşımında 600 m ötesindeki derin deniz karosu ≤ 10 (A-07)",
+   "ok": false,
+   "deger": 83,
+   "beklenen": {
+    "lte": 10
+   },
+   "sure_ms": 3,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"lte\":10}, gelen 83 (sağlanmayan: lte 10)",
+   "goruntu": null
+  },
+  {
+   "n": 26,
+   "id": "LY15",
+   "etiket": "LY15 Dolaşımlardan sonra bütün arazi işleri 30 sn içinde sonuçlanır (askıda iş yok)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 4,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 27,
+   "id": "LY16",
+   "etiket": "LY16 Karo oluşturma/kaldırma döngüsünde geometri sızıntısı yok: canlı (atılmamış) karo geometrisi = karo ağı sayısı, grupta sahipsiz ağ yok",
+   "ok": true,
+   "deger": "tamam",
+   "beklenen": {
+    "eq": "tamam"
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 31,
+   "id": "LYK-09",
+   "etiket": "LYK-09 (LY09 sayfası) Arazi kipi gezinmeden sonra korundu (ilk sayfanın ?terrain değeri)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "eq": true
+   },
+   "sure_ms": 22,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 34,
+   "id": "LY09",
+   "etiket": "LY09 Örtüşen iki prepare: önce biten A, sonra başlayan B'nin odağını kısaltmaz (işçili kipte: B'nin karo işleri 14 sn gecikirken B bitince B bölgesinde ≥ 6 ağ ve derinlik penceresi B'de; işçisiz kipte: A bitince B odağının kalan süresi ≥ 60 sn; A-12)",
+   "ok": false,
+   "deger": "B odağı kısaldı: B bölgesinde 20 ağ, derinlik 5214 m",
+   "beklenen": {
+    "eq": "tamam"
+   },
+   "sure_ms": 14318,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"eq\":\"tamam\"}, gelen \"B odağı kısaldı: B bölgesinde 20 ağ, derinlik 5214 m\" (sağlanmayan: eq \"tamam\")",
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 66
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 2
+  },
+  {
+   "oyuncu": null,
+   "ileti": "Arazi işçisi 0 devre dışı (test: işçi sonlandırıldı); 0 iş yeniden kuyruğa alınıyor",
+   "url": "http://localhost:8080/js/world/terrain.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "Arazi işçisi 1 devre dışı (test: işçi sonlandırıldı); 0 iş yeniden kuyruğa alınıyor",
+   "url": "http://localhost:8080/js/world/terrain.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "Arazi işçisi 2 devre dışı (test: işçi sonlandırıldı); 0 iş yeniden kuyruğa alınıyor",
+   "url": "http://localhost:8080/js/world/terrain.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "Arazi üretimi ana iş parçacığına alındı (test: işçi sonlandırıldı)",
+   "url": "http://localhost:8080/js/world/terrain.js",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 6,
+  "toplam": 72,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [
+  {
+   "tur": "beforeunload",
+   "ileti": "",
+   "adim": 30,
+   "kabul": true
+  }
+ ],
+ "goruntuler": [
+  {
+   "ad": "ilk_kalan",
+   "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_arazi_yasam_2026-11-14T17-34-54-715Z_10836/ilk_kalan.png",
+   "tuval": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_arazi_yasam_2026-11-14T17-34-54-715Z_10836/ilk_kalan_tuval.jpg"
+  }
+ ],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 432,
+ "sonuc": {
+  "durum": "KALDI",
+  "cikisKodu": 1,
+  "neden": [
+   "başarısız kontrol ya da adım: 6"
+  ],
+  "onaySayisi": 18,
+  "kontrolSayisi": 18,
+  "gecen": 12,
+  "kalan": 6,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": "tarayici",
+  "turSayim": {
+   "tarayici": 18
+  }
+ },
+ "sure": {
+  "hazirMs": 6431,
+  "toplamMs": 103279,
+  "yerlesmeMs": 1002
+ }
+}

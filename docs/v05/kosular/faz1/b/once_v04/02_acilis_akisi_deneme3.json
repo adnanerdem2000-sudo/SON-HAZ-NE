@@ -1,0 +1,1141 @@
+{
+ "scenario": "tests/scenarios/02_acilis_akisi.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": [
+    "bekle",
+    "oyunda",
+    "envanter",
+    "olcum",
+    "zeminde"
+   ],
+   "ms": 12
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "AA01 Ana menü görünür; YENİ MACERA, DÜNYALAR, ONLINE, AYARLAR, KREDİLER düğmeleri var",
+    "ok": true,
+    "value": true
+   },
+   "ms": 4
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": [
+    "YENİ MACERA",
+    "DÜNYALAR",
+    "ONLINE",
+    "KORSANIM",
+    "KORSAN DEFTERİ",
+    "AYARLAR",
+    "KREDİLER",
+    "ÇIKIŞ"
+   ],
+   "ms": 1
+  },
+  {
+   "n": 4,
+   "label": null,
+   "tikla": {
+    "metin": "KREDİLER"
+   },
+   "ms": 1133
+  },
+  {
+   "n": 5,
+   "label": null,
+   "expect": {
+    "label": "AA02 KREDİLER düğmesi Krediler panelini açar",
+    "ok": true,
+    "value": true
+   },
+   "ms": 8
+  },
+  {
+   "n": 6,
+   "label": null,
+   "tikla": {
+    "secici": "#modal .close-x"
+   },
+   "ms": 262
+  },
+  {
+   "n": 7,
+   "label": null,
+   "tikla": {
+    "metin": "AYARLAR"
+   },
+   "ms": 129
+  },
+  {
+   "n": 8,
+   "label": null,
+   "expect": {
+    "label": "AA03 AYARLAR düğmesi Ayarlar panelini (≥ 4 sekme) açar",
+    "ok": true,
+    "value": true
+   },
+   "ms": 6
+  },
+  {
+   "n": 9,
+   "label": null,
+   "tikla": {
+    "secici": "#modal .close-x"
+   },
+   "ms": 1300
+  },
+  {
+   "n": 10,
+   "label": null,
+   "expect": {
+    "label": "AA04 Paneller kapanınca ana menüye dönülür",
+    "ok": true,
+    "value": true
+   },
+   "ms": 2
+  },
+  {
+   "n": 11,
+   "label": null,
+   "tikla": {
+    "metin": "YENİ MACERA"
+   },
+   "ms": 1411
+  },
+  {
+   "n": 12,
+   "label": null,
+   "expect": {
+    "label": "AA05 YENİ MACERA karakter oluşturucuyu açar (önizleme tuvali ve ad kutusu)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 19
+  },
+  {
+   "n": 13,
+   "label": null,
+   "result": "Kaptan Bir",
+   "ms": 5
+  },
+  {
+   "n": 14,
+   "label": null,
+   "tikla": {
+    "metin": "Kadın"
+   },
+   "ms": 4464
+  },
+  {
+   "n": 15,
+   "label": null,
+   "tikla": {
+    "metin": "Maceraya Başla"
+   },
+   "ms": 5632
+  },
+  {
+   "n": 16,
+   "label": null,
+   "expect": {
+    "label": "AA06 Maceraya Başla ile oyun başlar (G.state playing, oyuncu var, menü kapalı)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 652
+  },
+  {
+   "n": 17,
+   "label": null,
+   "expect": {
+    "label": "AA07 Yeni oyun: oluşturucudaki ad ve cinsiyet uygulandı, yuva 1, HUD açık, ≥ 6 karo ağı, derinlik penceresi hazır, oyuncu zeminde",
+    "ok": true,
+    "value": true
+   },
+   "ms": 19257
+  },
+  {
+   "n": 18,
+   "label": null,
+   "result": {
+    "ad": "Kaptan Bir",
+    "cinsiyet": "f",
+    "slot": 0,
+    "hud": true,
+    "ag400": 19,
+    "derinlikUzak": 12,
+    "zeminde": true,
+    "olcum": {
+     "karo": 126,
+     "ag": 126,
+     "grupAg": 126,
+     "sahneCocuk": 329,
+     "geometri": 754,
+     "doku": 199,
+     "gemi": 1,
+     "dusman": 0,
+     "sandik": 0,
+     "kese": 0,
+     "oyuncu": [
+      2,
+      212
+     ]
+    }
+   },
+   "ms": 10
+  },
+  {
+   "n": 19,
+   "label": null,
+   "ms": 180
+  },
+  {
+   "n": 20,
+   "label": null,
+   "ms": 1203
+  },
+  {
+   "n": 21,
+   "label": null,
+   "ms": 107
+  },
+  {
+   "n": 22,
+   "label": null,
+   "result": {
+    "konum": [
+     2,
+     206.92406760779883
+    ],
+    "altin": 777
+   },
+   "ms": 33
+  },
+  {
+   "n": 23,
+   "label": null,
+   "ms": 1257
+  },
+  {
+   "n": 24,
+   "label": null,
+   "tikla": {
+    "metin": "Kaydet"
+   },
+   "ms": 407
+  },
+  {
+   "n": 25,
+   "label": null,
+   "expect": {
+    "label": "AA08 Duraklatma menüsündeki Kaydet yuva 1'e yazar (ad, altın, konum)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 307
+  },
+  {
+   "n": 26,
+   "label": null,
+   "result": {
+    "kayit": {
+     "ad": "Kaptan Bir",
+     "altin": 777,
+     "konum": [
+      2,
+      206.79734220188084
+     ],
+     "envanter": "{\"stacks\":[{\"id\":\"kilic\",\"n\":1},{\"id\":\"tabanca\",\"n\":1},{\"id\":\"mermi\",\"n\":12},{\"id\":\"kurek\",\"n\":1},{\"id\":\"olta\",\"n\":1},{\"id\":\"yem_solucan\",\"n\":10},{\"id\":\"fener\",\"n\":1},{\"id\":\"pusula\",\"n\":1},{\"id\":\"muz\",\"n\":8},{\"id\":\"ekmek\",\"n\":2}],\"gold\":777,\"capacity\":45}"
+    },
+    "oyun": {
+     "altin": 777,
+     "konum": [
+      2,
+      206.79734220188084
+     ],
+     "envanter": "{\"stacks\":[{\"id\":\"kilic\",\"n\":1},{\"id\":\"tabanca\",\"n\":1},{\"id\":\"mermi\",\"n\":12},{\"id\":\"kurek\",\"n\":1},{\"id\":\"olta\",\"n\":1},{\"id\":\"yem_solucan\",\"n\":10},{\"id\":\"fener\",\"n\":1},{\"id\":\"pusula\",\"n\":1},{\"id\":\"muz\",\"n\":8},{\"id\":\"ekmek\",\"n\":2}],\"gold\":777,\"capacity\":45}"
+    }
+   },
+   "ms": 2
+  },
+  {
+   "n": 27,
+   "label": null,
+   "tikla": {
+    "metin": "Ana menüye dön"
+   },
+   "ms": 698
+  },
+  {
+   "n": 28,
+   "label": null,
+   "tikla": {
+    "metin": "Evet"
+   },
+   "ms": 1706
+  },
+  {
+   "n": 29,
+   "label": null,
+   "expect": {
+    "label": "AA09 Ana menüye dönüş: menü ve son macera kartı (Kaptan Bir) görünür, HUD kapalı",
+    "ok": true,
+    "value": true
+   },
+   "ms": 3
+  },
+  {
+   "n": 30,
+   "label": null,
+   "expect": {
+    "label": "AA09b Ana menüye dönüşten 1,5 sn sonra fare kilidi yok (document.pointerLockElement; kilitliyken menü düğmelerine tıklanamaz)",
+    "ok": false,
+    "value": false
+   },
+   "ms": 32129
+  },
+  {
+   "n": 31,
+   "label": null,
+   "ms": 10514
+  },
+  {
+   "n": 32,
+   "label": null,
+   "error": "locator.click: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByText('DEVAM ET', { exact: true })\n    - locator resolved to <span class=\"mlabel\">DEVAM ET</span>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - performing click action\n      - <section id=\"menu\" class=\"screen active\">…</section> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    - waiting for element to be visible, enabled and stable\n    - e",
+   "ms": 10603
+  },
+  {
+   "n": 33,
+   "label": null,
+   "expect": {
+    "label": "AA10 DEVAM ET ile kayıtlı oyun yüklenir",
+    "ok": false,
+    "value": false
+   },
+   "ms": 60274
+  },
+  {
+   "n": 34,
+   "label": null,
+   "expect": {
+    "label": "AA11 Yüklenen oyun (yeni oyuncu nesnesi, durum playing) aynı yuva: konum (≤ 1 m), altın, envanter ve ad kayıttakiyle aynı",
+    "ok": false,
+    "value": false
+   },
+   "ms": 1021
+  },
+  {
+   "n": 35,
+   "label": null,
+   "result": {
+    "durum": "menu",
+    "yeniOyuncu": false,
+    "slot": 0,
+    "ad": "Kaptan Bir",
+    "altin": 777,
+    "konumFark": 0,
+    "envanterAyni": true
+   },
+   "ms": 1
+  },
+  {
+   "n": 36,
+   "label": null,
+   "ms": 1201
+  },
+  {
+   "n": 37,
+   "label": null,
+   "error": "locator.click: Timeout 15000ms exceeded.\nCall log:\n  - waiting for getByText('Ana menüye dön', { exact: true })\n",
+   "ms": 15001
+  },
+  {
+   "n": 38,
+   "label": null,
+   "error": "locator.click: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByText('Evet', { exact: true })\n",
+   "ms": 10000
+  },
+  {
+   "n": 39,
+   "label": null,
+   "ms": 1851
+  },
+  {
+   "n": 40,
+   "label": null,
+   "error": "locator.click: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByText('DÜNYALAR', { exact: true })\n    - locator resolved to <span class=\"mlabel\">DÜNYALAR</span>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - performing click action\n      - <section id=\"menu\" class=\"screen active\">…</section> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    - waiting for element to be visible, enabled and stable\n    - e",
+   "ms": 10604
+  },
+  {
+   "n": 41,
+   "label": null,
+   "expect": {
+    "label": "AA12 DÜNYALAR yuva listesini gösterir: yuva 1 Kaptan Bir, yuva 2 boş",
+    "ok": false,
+    "value": false
+   },
+   "ms": 273
+  },
+  {
+   "n": 42,
+   "label": null,
+   "result": [],
+   "ms": 2
+  },
+  {
+   "n": 43,
+   "label": null,
+   "error": "locator.click: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByText('Yuva 2 — Yeni macera başlat', { exact: true })\n",
+   "ms": 10001
+  },
+  {
+   "n": 44,
+   "label": null,
+   "error": "page.evaluate: TypeError: Cannot read properties of null (reading 'focus')\n    at eval (eval at evaluate (:311:30), <anonymous>:1:80)\n    at eval (eval at evaluate (:311:30), <anonymous>:1:187)\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:311:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+   "ms": 3
+  },
+  {
+   "n": 45,
+   "label": null,
+   "error": "locator.click: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByText('Erkek', { exact: true })\n",
+   "ms": 10001
+  },
+  {
+   "n": 46,
+   "label": null,
+   "error": "locator.click: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByText('Maceraya Başla', { exact: true })\n",
+   "ms": 10000
+  },
+  {
+   "n": 47,
+   "label": null,
+   "expect": {
+    "label": "AA13 Yuva 2 seçilip oluşturucudan yeni dünya başlar",
+    "ok": false,
+    "value": false
+   },
+   "ms": 60017
+  },
+  {
+   "n": 48,
+   "label": null,
+   "expect": {
+    "label": "AA14 Yeni dünyaya önceki yuvanın verisi sızmıyor: yuva 2, ad Kaptan İki, başlangıç altını 150, başlangıç envanteri (3 muz), başlangıç noktası",
+    "ok": false,
+    "value": false
+   },
+   "ms": 2510
+  },
+  {
+   "n": 49,
+   "label": null,
+   "result": {
+    "durum": "menu",
+    "yeniOyuncu": false,
+    "slot": 0,
+    "ad": "Kaptan Bir",
+    "altin": 777,
+    "muz": 8,
+    "konumYeniBaslangic": true
+   },
+   "ms": 2
+  },
+  {
+   "n": 50,
+   "label": null,
+   "expect": {
+    "label": "AA15 Dünya değişiminde önceki dünyanın kalıntısı yok: karo/ağ, sahne nesnesi, geometri/doku, gemi, sandık ve kese sayıları ilk açılışla aynı düzeyde",
+    "ok": false,
+    "value": false
+   },
+   "ms": 4
+  },
+  {
+   "n": 51,
+   "label": null,
+   "result": {
+    "ilk": {
+     "karo": 126,
+     "ag": 126,
+     "grupAg": 126,
+     "sahneCocuk": 329,
+     "geometri": 754,
+     "doku": 199,
+     "gemi": 1,
+     "dusman": 0,
+     "sandik": 0,
+     "kese": 0,
+     "oyuncu": [
+      2,
+      212
+     ]
+    },
+    "simdi": {
+     "karo": 131,
+     "ag": 131,
+     "grupAg": 131,
+     "sahneCocuk": 301,
+     "geometri": 559,
+     "doku": 182,
+     "gemi": 1,
+     "dusman": 0,
+     "sandik": 0,
+     "kese": 0,
+     "oyuncu": [
+      2,
+      207
+     ]
+    },
+    "ok": {
+     "yeniDunyada": false,
+     "karoMakul": true,
+     "grupAg": true,
+     "sahne": true,
+     "geometri": true,
+     "doku": true,
+     "gemi": true,
+     "sandik": true,
+     "kese": true
+    }
+   },
+   "ms": 2
+  },
+  {
+   "n": 52,
+   "label": null,
+   "expect": {
+    "label": "AA16 Yeni dünya önceki yuvanın kaydını bozmaz (yuva 1: Kaptan Bir, 777 altın)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 2
+  },
+  {
+   "n": 53,
+   "label": null,
+   "expect": {
+    "label": "AA17 Bütün akış sayfa yeniden yüklenmeden tamamlandı",
+    "ok": true,
+    "value": true
+   },
+   "ms": 3
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 15,
+ "evalErrors": 8,
+ "readyMs": 6513,
+ "ms": 297358,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/scenarios/02_acilis_akisi.js",
+ "meta": {
+  "testler": [
+   "6 Ana menü",
+   "7 Yeni oyun",
+   "8 Kayıt yükleme",
+   "10 Dünya değişimi",
+   "brief madde 19"
+  ],
+  "dosyalar": [
+   "js/ui/menu.js",
+   "js/ui/creator.js",
+   "js/ui/ui.js",
+   "js/main.js",
+   "js/game/game.js",
+   "js/core/save.js",
+   "js/world/terrain.js"
+  ]
+ },
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8080/index.html?test=1",
+  "verilenUrl": "http://localhost:8080/index.html",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "29315b5c24bfc89ae51a6a156de961b98b08fb15",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T12:45:05.768Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs /home/user/SON-HAZ-NE-w2/tests/scenarios/02_acilis_akisi.js --url http://localhost:8080/index.html --size 640x360 --timeout 540 --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/02_acilis_akisi.json",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://localhost:8080 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8080"
+  ],
+  "commit": "29315b5c24bfc89ae51a6a156de961b98b08fb15-kirli",
+  "senaryoSha256": "042e694418923f7190aac669c5f8625beef772798e9ce828703d00416eaaf0aa",
+  "adim": {
+   "n": 30,
+   "js": "!document.pointerLockElement"
+  },
+  "url": "http://localhost:8080/index.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 2,
+   "id": "AA01",
+   "etiket": "AA01 Ana menü görünür; YENİ MACERA, DÜNYALAR, ONLINE, AYARLAR, KREDİLER düğmeleri var",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 5,
+   "id": "AA02",
+   "etiket": "AA02 KREDİLER düğmesi Krediler panelini açar",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 6,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 8,
+   "id": "AA03",
+   "etiket": "AA03 AYARLAR düğmesi Ayarlar panelini (≥ 4 sekme) açar",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 4,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 10,
+   "id": "AA04",
+   "etiket": "AA04 Paneller kapanınca ana menüye dönülür",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 12,
+   "id": "AA05",
+   "etiket": "AA05 YENİ MACERA karakter oluşturucuyu açar (önizleme tuvali ve ad kutusu)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 17,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 16,
+   "id": "AA06",
+   "etiket": "AA06 Maceraya Başla ile oyun başlar (G.state playing, oyuncu var, menü kapalı)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 376,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 17,
+   "id": "AA07",
+   "etiket": "AA07 Yeni oyun: oluşturucudaki ad ve cinsiyet uygulandı, yuva 1, HUD açık, ≥ 6 karo ağı, derinlik penceresi hazır, oyuncu zeminde",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 16463,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 25,
+   "id": "AA08",
+   "etiket": "AA08 Duraklatma menüsündeki Kaydet yuva 1'e yazar (ad, altın, konum)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 303,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 29,
+   "id": "AA09",
+   "etiket": "AA09 Ana menüye dönüş: menü ve son macera kartı (Kaptan Bir) görünür, HUD kapalı",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 30,
+   "id": "AA09b",
+   "etiket": "AA09b Ana menüye dönüşten 1,5 sn sonra fare kilidi yok (document.pointerLockElement; kilitliyken menü düğmelerine tıklanamaz)",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 3397,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": {
+    "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_acilis_akisi_2026-11-14T12-45-05-619Z_5109/ilk_kalan.png",
+    "tuval": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_acilis_akisi_2026-11-14T12-45-05-619Z_5109/ilk_kalan_tuval.jpg"
+   }
+  },
+  {
+   "n": 33,
+   "id": "AA10",
+   "etiket": "AA10 DEVAM ET ile kayıtlı oyun yüklenir",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 60270,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 34,
+   "id": "AA11",
+   "etiket": "AA11 Yüklenen oyun (yeni oyuncu nesnesi, durum playing) aynı yuva: konum (≤ 1 m), altın, envanter ve ad kayıttakiyle aynı",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 16,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 41,
+   "id": "AA12",
+   "etiket": "AA12 DÜNYALAR yuva listesini gösterir: yuva 1 Kaptan Bir, yuva 2 boş",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 271,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 47,
+   "id": "AA13",
+   "etiket": "AA13 Yuva 2 seçilip oluşturucudan yeni dünya başlar",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 60005,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 48,
+   "id": "AA14",
+   "etiket": "AA14 Yeni dünyaya önceki yuvanın verisi sızmıyor: yuva 2, ad Kaptan İki, başlangıç altını 150, başlangıç envanteri (3 muz), başlangıç noktası",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 50,
+   "id": "AA15",
+   "etiket": "AA15 Dünya değişiminde önceki dünyanın kalıntısı yok: karo/ağ, sahne nesnesi, geometri/doku, gemi, sandık ve kese sayıları ilk açılışla aynı düzeyde",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 52,
+   "id": "AA16",
+   "etiket": "AA16 Yeni dünya önceki yuvanın kaydını bozmaz (yuva 1: Kaptan Bir, 777 altın)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 53,
+   "id": "AA17",
+   "etiket": "AA17 Bütün akış sayfa yeniden yüklenmeden tamamlandı",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [
+   {
+    "n": 32,
+    "tur": "tikla",
+    "hata": "locator.click: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByText('DEVAM ET', { exact: true })\n    - locator resolved to <span class=\"mlabel\">DEVAM ET</span>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - performing click action\n      - <section id=\"menu\" class=\"screen active\">…</section> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    - waiting for element to be visible, enabled and stable\n    - e"
+   },
+   {
+    "n": 37,
+    "tur": "tikla",
+    "hata": "locator.click: Timeout 15000ms exceeded.\nCall log:\n  - waiting for getByText('Ana menüye dön', { exact: true })\n"
+   },
+   {
+    "n": 38,
+    "tur": "tikla",
+    "hata": "locator.click: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByText('Evet', { exact: true })\n"
+   },
+   {
+    "n": 40,
+    "tur": "tikla",
+    "hata": "locator.click: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByText('DÜNYALAR', { exact: true })\n    - locator resolved to <span class=\"mlabel\">DÜNYALAR</span>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - performing click action\n      - <section id=\"menu\" class=\"screen active\">…</section> intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    - waiting for element to be visible, enabled and stable\n    - e"
+   },
+   {
+    "n": 43,
+    "tur": "tikla",
+    "hata": "locator.click: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByText('Yuva 2 — Yeni macera başlat', { exact: true })\n"
+   },
+   {
+    "n": 44,
+    "tur": "js",
+    "hata": "page.evaluate: TypeError: Cannot read properties of null (reading 'focus')\n    at eval (eval at evaluate (:311:30), <anonymous>:1:80)\n    at eval (eval at evaluate (:311:30), <anonymous>:1:187)\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:311:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+   },
+   {
+    "n": 45,
+    "tur": "tikla",
+    "hata": "locator.click: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByText('Erkek', { exact: true })\n"
+   },
+   {
+    "n": 46,
+    "tur": "tikla",
+    "hata": "locator.click: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByText('Maceraya Başla', { exact: true })\n"
+   }
+  ],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 33
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 2,
+  "toplam": 34,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [
+  {
+   "ad": "ilk_kalan",
+   "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_acilis_akisi_2026-11-14T12-45-05-619Z_5109/ilk_kalan.png",
+   "tuval": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_acilis_akisi_2026-11-14T12-45-05-619Z_5109/ilk_kalan_tuval.jpg"
+  }
+ ],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 236,
+ "sonuc": {
+  "durum": "KALDI",
+  "cikisKodu": 1,
+  "neden": [
+   "başarısız kontrol ya da adım: 15",
+   "adım istisnası (evalErrors): 8"
+  ],
+  "onaySayisi": 18,
+  "kontrolSayisi": 18,
+  "gecen": 11,
+  "kalan": 7,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": "tarayici",
+  "turSayim": {
+   "tarayici": 18
+  }
+ },
+ "sure": {
+  "hazirMs": 6513,
+  "toplamMs": 297358,
+  "yerlesmeMs": 1001
+ }
+}

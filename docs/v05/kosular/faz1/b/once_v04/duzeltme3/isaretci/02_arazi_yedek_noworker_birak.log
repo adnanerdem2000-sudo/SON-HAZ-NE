@@ -1,0 +1,40 @@
+# 2026-11-15T02:14:09Z deneme 1; koşucu run.cjs 591dff27aa01 ortak.cjs df191a997375; senaryo tests/scenarios/02_arazi_yedek.js 7d4819041d89; hedef http://localhost:8080/index.html?terrain=noworker; v0.4 44d548c
+# komut: /home/user/devtools/tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_arazi_yedek.js --url 'http://localhost:8080/index.html?terrain=noworker' --size 640x360 --timeout 540 --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/duzeltme3/isaretci/02_arazi_yedek_noworker_birak.json --baslatma /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/b0d/isaretci_tani.js --degisken isaretci=birak
+başlatma betiği: 1 meta, 1 dosya
+ready in 5.0 s
+PASS AYK-01 Etkin arazi kipi URL ile aynı (?terrain → DK.terrain.mode) → true
+PASS AYK-02 Kipin beklenen işçi/yedek durumu (normal: işçi ≥ 1, yedek kapalı, hata yok; noworker: işçi 0 + yedek; ctorthrow/badurl: işçi 0 + yedek + hata kaydı; crash/hang: hata kaydı, iş alıp yanıt vermeyen her işçi sonlandırılmış, kurulan işçi ≤ 9; crash1: yedek kapalı + çökme kaydı; noready: zaman aşımı kaydı + yedek) → true
+R: {"k":"noworker","mode":"noworker","workers":0,"fallback":true,"failures":["test kipi: işçi yok"],"beklemeMs":0,"isciler":[]}
+PASS Sayfa hazır (yükleme ekranı aşıldı) → true
+R: {"mode":"noworker","workers":0,"fallback":true,"failures":["test kipi: işçi yok"],"stats":{"tiles":125,"meshes":125,"hires":15,"tris":311168,"queue":0,"jobs":0,"workers":0,"fallback":true,"failures":1,"mode":"noworker"}}
+PASS Menü sahnesinde karo ağları üretildi → 125
+PASS Okyanus derinlik penceresi hazır → true
+R: "ok"
+PASS Oyun başladı → "playing"
+[test] isaretci {"kip":"birak","t":17,"kilitli":false,"kilit":1,"birakma":1,"mm":1,"mmKilitli":0,"mmSn":0,"kilitliSn":0}
+R: {"startMs":200,"pendingJobs":3,"queue":2}
+PASS Oyuncu zemine basıyor → true
+PASS Yüksek çözünürlüklü karolar (yükseklik ızgarası + ağ) → 24
+[test] isaretci {"kip":"birak","t":20,"kilitli":false,"kilit":1,"birakma":1,"mm":1,"mmKilitli":0,"mmSn":0,"kilitliSn":0}
+R: {"r":300,"fpsLimitVar":true,"olcumler":[{"bolge":[282,-5006],"ms":151,"oncekiIs":0,"cizim":0,"donus":"undefined","ag":12},{"bolge":[5300,400],"ms":181,"oncekiIs":0,"cizim":0,"donus":"undefined","ag":12},{"bolge":[-5300,700],"ms":151,"oncekiIs":0,"cizim":0,"donus":"undefined","ag":11}],"ms":151,"cizimSirasinda":0,"cizimDurdu":true,"ag":11}
+PASS AYS-01 Uzak bölge hazırlığı r300, çizim durdurulmuşken (kuyruğun kendi süresi; üç ayrı uzak ada bölgesi — Kuzeyfener, Kül Limanı, Kumsaati — ortanca süre) kip sınırı içinde ve her bölgede ≥ 6 karo ağı: normal ≤ 2 sn, işçisiz/çöken kiplerde (crash, crash1 dahil) ≤ 3 sn (KI-234, A-15: yeniden başlatılan işçilere iş sektirme/bekleme yok) → true
+R: {"r":300,"fpsLimitVar":true,"olcumler":[{"bolge":[282,-5006],"ms":151,"oncekiIs":0,"cizim":0,"donus":"undefined","ag":12},{"bolge":[5300,400],"ms":181,"oncekiIs":0,"cizim":0,"donus":"undefined","ag":12},{"bolge":[-5300,700],"ms":151,"oncekiIs":0,"cizim":0,"donus":"undefined","ag":11}],"ms":151,"cizimSirasinda":0,"cizimDurdu":true,"ag":11,"sinir":3000}
+R: {"jobs":0,"kuyruk":0,"kuyrukTur":[],"seritler":[null,null],"isci":[]}
+PASS Uzak bölge prepare() sonuçlanıyor (askıda kalmıyor) → true
+R: {"prepMs":346,"dilimSayisi":12,"dilimToplamMs":134,"enUzunDilim":15.1,"boslukToplamMs":200,"enUzunBosluk":38.1,"kareSayisi":15,"enUzunKareMs":46,"once":{"jobs":0,"kuyruk":0,"kuyrukTur":[],"seritler":[null,null],"isci":[]}}
+R: {"hamMs":346,"netMs":346,"aracDisiUzunGorevMs":0,"uzunGorev":0,"enUzunAracDisiMs":0,"uzunGorevIciDilimMs":0,"dilimToplamMs":134,"uzunGorevOrnek":[],"gozlemci":"longtask"}
+PASS Derinlik penceresi yeni bölgeye taşındı → true
+R: {"prepMs":346,"prepUnder45s":true,"stats":{"tiles":129,"meshes":129,"hires":31,"tris":518400,"queue":0,"jobs":0,"workers":0,"fallback":true,"failures":1,"mode":"noworker"}}
+R: {"kip":"noworker","tani":"Tuz Pazarı prepare (çizim açık): ham süre ve uzun görev bileşimi","hamMs":346,"netMs":346,"aracDisiUzunGorevMs":0,"uzunGorev":0,"enUzunAracDisiMs":0,"uzunGorevIciDilimMs":0,"dilimToplamMs":134,"uzunGorevOrnek":[],"gozlemci":"longtask"}
+PASS AYS-02 Hiçbir arazi işi işçilere MAX_TRIES (3) kezden fazla gönderilmez (yeniden başlatılan işçilere iş sektirme yok; A-05, A-15, KI-234) → 0
+R: {"is":0,"toplam":0,"enCok":0,"enCokIs":null,"isciler":[]}
+PASS Tuz Pazarı çevresinde karo ağları var → 21
+PASS Harita ızgarası isteği sonuçlanıyor → true
+PASS Uzak adada yürüme (zemin sorgusu tutarlı) → true
+R: "ok"
+PASS Kuyruk ilerliyor (askıda iş yok) → true
+[test] isaretci {"kip":"birak","t":33,"kilitli":false,"kilit":1,"birakma":1,"mm":1,"mmKilitli":0,"mmSn":0,"kilitliSn":0}
+R: {"jobsBefore":124,"jobsAfter8s":110,"fallback":true}
+errors: 0 pageErrors: 0 fails: 0 (34.2 s)
+SONUC: GECTI (çıkış 0) kontrol 16/16, onay 16 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 3 farklı/35
+# çıkış 0 2026-11-15T02:15:14Z

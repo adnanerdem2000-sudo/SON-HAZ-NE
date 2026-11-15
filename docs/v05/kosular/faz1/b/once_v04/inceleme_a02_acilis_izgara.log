@@ -1,0 +1,22 @@
+# 2026-11-14T13:27:09Z inceleme (B0 test kalitesi) tanı koşusu; senaryo /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/inceleme_b0/inceleme_a02_acilis_izgara.js (git dışı, scratchpad) sha 36e5edeefe2d; hedef http://localhost:8080/index.html; v0.4 44d548c
+başlatma betiği: 1 meta, 0 dosya
+ready in 6.9 s
+PASS T00 Normal açılış (enjeksiyonsuz) tamam → true
+GOTO http://localhost:8080/index.html?izgarahata=1&test=1
+ERR: Arazi işçisi: inceleme: enjekte ızgara hatası
+ERR: Error: inceleme: enjekte ızgara hatası
+    at Object._onMsg (http://localhost:8080/js/world/terrain.js:108:91)
+    at w.onmessage (http://localhost:8080/js/world/terrain.js:72:33)
+    at <anonymous>:4:97
+FAIL T01 (A-02 kabulü) açılıştaki dünya ızgarası işi işçiden 'error' alınca da window.__ready ve menü gelir → false
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/goruntu/inceleme_a02_acilis_izgara_2026-11-14T13-27-09-524Z_13091/ilk_kalan.png
+R: {"ready":false,"ms":3250,"yuklemeMetni":"Oyun başlatılamadı: inceleme: enjekte ızgara hatasıWebGL destekli güncel bir tarayıcı (Chrome, Edge, Firefox) gerekiyor.","menu":false}
+errors: 2 pageErrors: 0 fails: 1 (19.9 s)
+IZINSIZ KONSOL ×1: Error: inceleme: enjekte ızgara hatası
+    at Object._onMsg (http://localhost:8080/js/world/terrain.js:108:91)
+    at w.onmessage (http://localhost:8080/js/world/terrain.js:72:33)
+    at <anonymous>:4 @ http://localhost:8080/js/main.js
+IZINLI ×1 (Arazi işçisi: .*inceleme: enjekte ızgara hatası): Arazi işçisi: inceleme: enjekte ızgara hatası
+IZIN ×1 (meta, konsol) Arazi işçisi: .*inceleme: enjekte ızgara hatası — inceleme: kasıtlı enjekte edilen işçi error iletisi (v0.4 terrain._onMsg console.error ile yazar)
+SONUC: KALDI (çıkış 1) kontrol 1/2, onay 2 | izinsiz konsol 1, ağ 0 | izinli konsol 1, ağ 0 | uyarı 2 farklı/67 | neden: başarısız kontrol ya da adım: 1; izinsiz konsol hatası: 1
+# çıkış 1 2026-11-14T13:27:31Z

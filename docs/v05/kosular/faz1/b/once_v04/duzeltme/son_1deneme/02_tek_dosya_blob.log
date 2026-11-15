@@ -1,0 +1,16 @@
+# 2026-11-14T16:12:54Z deneme 1; koşucu run.cjs 591dff27aa01 ortak.cjs df191a997375; senaryo tests/scenarios/02_tek_dosya_blob.js 749ec707f177; hedef http://127.0.0.1:8097/DenizKorsanlari-SonHazine.html; v0.4 44d548c
+# komut: /home/user/devtools/tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_tek_dosya_blob.js --url 'http://127.0.0.1:8097/DenizKorsanlari-SonHazine.html' --size 640x360 --timeout 540 --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_tek_dosya_blob.json 
+başlatma betiği: 1 meta, 0 dosya
+ready in 7.5 s
+PASS TB00 Tek dosya http(s) altında açıldı (parametresiz) → true
+R: {"url":"blob:http://127.0.0.1:8097/b4648e0b-891c","workers":3,"fallback":false}
+GOTO http://127.0.0.1:8097/DenizKorsanlari-SonHazine.html?blob=red&test=1
+PASS TB03 blob: işçisi kurulamazken tek dosyanın açılışı tamamlanır (window.__ready, 120 sn içinde) → true
+R: {"ready":true,"ms":9750,"yukleme":"Hazır!","kurulum":["blob:http://127."]}
+FAIL TB01 blob: işçisi kurulamazsa data: ile ikinci deneme yapılır: en az 1 işçi çalışır, yedek kip kapalı (A-16) → false
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_tek_dosya_blob_2026-11-14T16-21-42-994Z_3949/ilk_kalan.png
+R: {"kurulum":["blob:http://127."],"workers":0,"fallback":true,"failures":["işçi oluşturulamadı: Test: blob işçisi reddedildi"]}
+PASS TB02 Tek dosyada arazi karoları üretildi (≥ 20 ağ) → 126
+errors: 0 pageErrors: 0 fails: 1 (55.5 s)
+SONUC: KALDI (çıkış 1) kontrol 3/4, onay 4 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 3 farklı/69 | neden: başarısız kontrol ya da adım: 1
+# çıkış 1 2026-11-14T16:22:45Z

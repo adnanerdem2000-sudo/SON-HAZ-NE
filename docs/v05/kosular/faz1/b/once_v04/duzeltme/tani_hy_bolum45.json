@@ -1,0 +1,263 @@
+{
+ "scenario": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/fb0/tani/hy_bolum45.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "degisken": {
+    "ad": "dene",
+    "deger": "(async()=>{ const bekle = (ms) => new Promise((r) => setTimeout(r, ms)); DK.G.noAutoPause = true; await DK.handlers.startGame({ kind: 'solo', slot: 0, data: null }); for (let i = 0; i < 100 && !(DK.G.state === 'playing' && DK.G.player); i++) await bekle(100); const p = DK.G.player; p.inv.gold = 2000;\n   const B = []; DK.G.on('notify', (n) => B.push(n.text + ' [' + n.kind + ']'));\n   const T = DK.terrain, PR = []; const o = T.prepare; T.prepare = function () { PR.push([Math.round(arguments[0]), Math.round(arguments[1])]); return o.apply(this, arguments); };\n   const once = { inCombat: DK.G.inCombat, gemi: !!DK.G.ship, batik: DK.G.ship && DK.G.ship.sunk, online: DK.G.online, host: DK.G.isHost, tasiyor: !!p.carrying, durum: DK.G.state, altin: p.inv.gold, mod: p.mode, paused: DK.G.paused };\n   let hata = null; const eh = (e) => { hata = String(e.reason && e.reason.stack || e.reason).slice(0, 300); }; window.addEventListener('unhandledrejection', eh);\n   DK.G.emit('fastTravel', { to: 'tuz_pazari_port_0', from: 'kirlangic_limani', cost: 72 });\n   await bekle(4000);\n   return { once, perde: !!document.querySelector('#sleep-fade.on'), bildirim: B, prepare: PR, gemi: [Math.round(DK.G.ship.x), Math.round(DK.G.ship.z)], altinSonra: p.inv.gold, hata }; })()"
+   },
+   "ms": 4
+  },
+  {
+   "n": 2,
+   "label": null,
+   "result": {
+    "once": {
+     "gemi": true,
+     "batik": false,
+     "online": false,
+     "host": true,
+     "tasiyor": false,
+     "durum": "playing",
+     "altin": 2000,
+     "mod": "ground"
+    },
+    "perde": true,
+    "bildirim": [
+     "Keşfedildi: Kırlangıç Adası [discover]",
+     "Keşfedildi: Kırlangıç Limanı [discover]",
+     "Hedef: Hanın önündeki Yaşlı Kaptan Tuzla ile konuş. (J: Korsan Defteri) [quest]"
+    ],
+    "prepare": [
+     [
+      1682,
+      808
+     ]
+    ],
+    "gemi": [
+     10,
+     285
+    ],
+    "altinSonra": 1928,
+    "hata": null
+   },
+   "ms": 10721
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": {
+    "gemi": [
+     4000,
+     -4000
+    ],
+    "mod": "deck"
+   },
+   "ms": 1013
+  },
+  {
+   "n": 4,
+   "label": null,
+   "result": "öldü",
+   "ms": 8011
+  },
+  {
+   "n": 5,
+   "label": null,
+   "tikla": {
+    "metin": "Kırlangıç Limanı'nda uyan"
+   },
+   "ms": 6412
+  },
+  {
+   "n": 6,
+   "label": null,
+   "result": {
+    "durum": "playing",
+    "mod": "ground",
+    "inCombat": false
+   },
+   "ms": 3194
+  },
+  {
+   "n": 7,
+   "label": null,
+   "goto": {
+    "url": "http://localhost:8080/index.html?test=1"
+   },
+   "ms": 14118
+  },
+  {
+   "n": 8,
+   "label": null,
+   "result": {
+    "once": {
+     "gemi": true,
+     "batik": false,
+     "online": false,
+     "host": true,
+     "tasiyor": false,
+     "durum": "playing",
+     "altin": 2000,
+     "mod": "ground"
+    },
+    "perde": true,
+    "bildirim": [
+     "Keşfedildi: Kırlangıç Adası [discover]",
+     "Keşfedildi: Kırlangıç Limanı [discover]",
+     "Hedef: Hanın önündeki Yaşlı Kaptan Tuzla ile konuş. (J: Korsan Defteri) [quest]"
+    ],
+    "prepare": [
+     [
+      1682,
+      808
+     ]
+    ],
+    "gemi": [
+     10,
+     285
+    ],
+    "altinSonra": 1928,
+    "hata": null
+   },
+   "ms": 13447
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 5086,
+ "ms": 67412,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "../../../tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/fb0/tani/hy_bolum45.js",
+ "meta": {
+  "testler": [
+   "tanı"
+  ],
+  "dosyalar": [
+   "js/main.js"
+  ],
+  "olcum": true
+ },
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8080/index.html?test=1",
+  "verilenUrl": "http://localhost:8080/index.html",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "29315b5c24bfc89ae51a6a156de961b98b08fb15",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T14:27:04.528Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/fb0/tani/hy_bolum45.js --url http://localhost:8080/index.html --size 640x360 --timeout 540 --report /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/fb0/tani/hy_bolum45.json",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://localhost:8080 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8080"
+  ],
+  "commit": "29315b5c24bfc89ae51a6a156de961b98b08fb15-kirli",
+  "senaryoSha256": "2d0f422a3da51a189a7b9493fc9771a1ee132250cf77e0d76fa70f6f50765835",
+  "adim": null,
+  "url": "http://localhost:8080/index.html?test=1"
+ },
+ "kontroller": [],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 66
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 2
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 2,
+  "toplam": 68,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [
+  {
+   "tur": "beforeunload",
+   "ileti": "",
+   "adim": 7,
+   "kabul": true
+  }
+ ],
+ "goruntuler": [],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 449,
+ "sonuc": {
+  "durum": "OLCUM",
+  "cikisKodu": 0,
+  "neden": [],
+  "onaySayisi": 0,
+  "kontrolSayisi": 0,
+  "gecen": 0,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": null,
+  "turSayim": {}
+ },
+ "sure": {
+  "hazirMs": 5086,
+  "toplamMs": 67412,
+  "yerlesmeMs": 1002
+ }
+}

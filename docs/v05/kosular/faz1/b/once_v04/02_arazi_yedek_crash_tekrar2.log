@@ -1,0 +1,31 @@
+# 2026-11-14T12:31:47Z deneme 1; koşucu run.cjs 591dff27aa01 ortak.cjs df191a997375; senaryo tests/scenarios/02_arazi_yedek.js 5fa025166c35; hedef http://localhost:8080/index.html?terrain=crash; v0.4 44d548c
+# komut: timeout 590 /home/user/devtools/tk node tests/harness/run.cjs tests/scenarios/02_arazi_yedek.js --url 'http://localhost:8080/index.html?terrain=crash' --size 640x360 --timeout 540 --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/02_arazi_yedek_crash_tekrar2.json 
+ready in 5.7 s
+PASS AYK-01 Etkin arazi kipi URL ile aynı (?terrain → DK.terrain.mode) → true
+PASS AYK-02 Kipin beklenen işçi/yedek durumu (normal: işçi ≥ 1, yedek kapalı, hata yok; noworker: işçi 0 + yedek; ctorthrow/badurl/crash: işçi 0 + yedek + hata kaydı; crash1: yedek kapalı + çökme kaydı; hang/noready: zaman aşımı kaydı + yedek) → true
+R: {"k":"crash","mode":"crash","workers":0,"fallback":true,"failures":["işçi 0: hata: Uncaught Error: Test: arazi işçisi çökmesi","işçi 2: hata: Uncaught Error: Test: arazi işçisi çökmesi","işçi 1: hata: Uncaught Error: Test: arazi işçisi çökmesi","hata: Uncaught Error: Test: arazi işçisi çökmesi"],"beklemeMs":0}
+PASS Sayfa hazır (yükleme ekranı aşıldı) → true
+R: {"mode":"crash","workers":0,"fallback":true,"failures":["işçi 0: hata: Uncaught Error: Test: arazi işçisi çökmesi","işçi 2: hata: Uncaught Error: Test: arazi işçisi çökmesi","işçi 1: hata: Uncaught Error: Test: arazi işçisi çökmesi","hata: Uncaught Error: Test: arazi işçisi çökmesi"],"stats":{"tiles":125,"meshes":125,"hires":15,"tris":311168,"queue":0,"jobs":0,"workers":0,"fallback":true,"failures":4,"mode":"crash"}}
+PASS Menü sahnesinde karo ağları üretildi → 125
+PASS Okyanus derinlik penceresi hazır → true
+R: "ok"
+PASS Oyun başladı → "playing"
+R: {"startMs":234,"pendingJobs":3,"queue":2}
+PASS Oyuncu zemine basıyor → true
+PASS Yüksek çözünürlüklü karolar (yükseklik ızgarası + ağ) → 25
+R: {"jobs":26,"kuyruk":24,"kuyrukTur":["grid:512","tile:32","tile:8"],"seritler":[null,null],"isci":[]}
+PASS Uzak bölge prepare() sonuçlanıyor (askıda kalmıyor) → true
+R: {"prepMs":36481,"dilimSayisi":52,"dilimToplamMs":655,"enUzunDilim":22,"boslukToplamMs":35967,"enUzunBosluk":18513.6,"kareSayisi":44,"enUzunKareMs":18529,"once":{"jobs":26,"kuyruk":24,"kuyrukTur":["grid:512","tile:32","tile:8"],"seritler":[null,null],"isci":[]}}
+PASS Derinlik penceresi yeni bölgeye taşındı → true
+R: {"prepMs":36481,"prepUnder45s":true,"stats":{"tiles":129,"meshes":129,"hires":31,"tris":518400,"queue":0,"jobs":0,"workers":0,"fallback":true,"failures":4,"mode":"crash"}}
+FAIL AYS-01 Uzak bölge prepare(1900, 950, r300) süresi kip sınırı içinde: normal ≤ 2 sn; işçisiz/çöken kiplerde (crash, crash1 dahil) ≤ 3 sn (KI-234: v0.4 crash 28,8 sn, badurl 13,9 sn ölçülmüştü) → false
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_arazi_yedek_2026-11-14T12-33-02-830Z_2083/ilk_kalan.png
+PASS Tuz Pazarı çevresinde karo ağları var → 21
+PASS Harita ızgarası isteği sonuçlanıyor → true
+PASS Uzak adada yürüme (zemin sorgusu tutarlı) → true
+R: "ok"
+PASS Kuyruk ilerliyor (askıda iş yok) → true
+R: {"jobsBefore":120,"jobsAfter8s":0,"fallback":true}
+errors: 0 pageErrors: 0 fails: 1 (136.5 s)
+SONUC: KALDI (çıkış 1) kontrol 14/15, onay 15 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 6 farklı/38 | neden: başarısız kontrol ya da adım: 1
+# çıkış 1 2026-11-14T12:35:27Z

@@ -1,0 +1,545 @@
+{
+ "scenario": "tests/scenarios/02_depolama_kapali.js",
+ "url": "http://localhost:8080/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "DK01 Normal depolamayla açılış: ana menü görünür, ≥ 8 düğme",
+    "ok": true,
+    "value": true
+   },
+   "ms": 4
+  },
+  {
+   "n": 2,
+   "label": null,
+   "goto": {
+    "url": "http://localhost:8080/index.html?depolama=kapali&test=1"
+   },
+   "ms": 2021
+  },
+  {
+   "n": 3,
+   "label": null,
+   "expect": {
+    "label": "DK02 Kurulum: bu sayfada localStorage erişimi SecurityError atıyor",
+    "ok": true,
+    "value": "SecurityError"
+   },
+   "ms": 3
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "DK03 Site verisi engelliyken açılış tamamlanır (window.__ready)",
+    "ok": false,
+    "value": false
+   },
+   "ms": 5600
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": {
+    "ready": false,
+    "ms": 5052,
+    "yuklemeMetni": "Oyun başlatılamadı: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.WebGL destekli güncel bir tarayıcı (Chrome, Edge, Firefox) gerekiyor."
+   },
+   "ms": 2
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "DK04 Site verisi engelliyken ana menü görünür (≥ 8 düğme), yükleme ekranı kapalı",
+    "ok": false,
+    "value": false
+   },
+   "ms": 4
+  },
+  {
+   "n": 7,
+   "label": null,
+   "expect": {
+    "label": "DK05 Yükleme ekranında yanıltıcı 'Oyun başlatılamadı … WebGL' metni yok",
+    "ok": false,
+    "value": false
+   },
+   "ms": 2
+  },
+  {
+   "n": 8,
+   "label": null,
+   "expect": {
+    "label": "DK06 Menüde görünür \"tarayıcı kayda izin vermiyor / kayıt yapılamıyor\" bildirimi var",
+    "ok": false,
+    "value": false
+   },
+   "ms": 4
+  },
+  {
+   "n": 9,
+   "label": null,
+   "error": "locator.click: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByText('YENİ MACERA', { exact: true })\n",
+   "ms": 10001
+  },
+  {
+   "n": 10,
+   "label": null,
+   "error": "locator.click: Timeout 15000ms exceeded.\nCall log:\n  - waiting for getByText('Maceraya Başla', { exact: true })\n",
+   "ms": 15001
+  },
+  {
+   "n": 11,
+   "label": null,
+   "expect": {
+    "label": "DK07 Site verisi engelliyken arayüzden yeni oyun başlar (YENİ MACERA → Maceraya Başla)",
+    "ok": false,
+    "value": false
+   },
+   "ms": 30106
+  },
+  {
+   "n": 12,
+   "label": null,
+   "error": "page.evaluate: ReferenceError: DK is not defined\n    at eval (eval at evaluate (:311:30), <anonymous>:1:8)\n    at eval (eval at evaluate (:311:30), <anonymous>:1:133)\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:311:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+   "ms": 4
+  },
+  {
+   "n": 13,
+   "label": null,
+   "expect": {
+    "label": "DK08 Kayıt denemesi \"tarayıcı kayda izin vermiyor / kayıt yapılamıyor\" bildirimi verir",
+    "ok": false,
+    "value": false
+   },
+   "ms": 303
+  },
+  {
+   "n": 14,
+   "label": null,
+   "result": "",
+   "ms": 3
+  },
+  {
+   "n": 15,
+   "label": null,
+   "error": "page.evaluate: ReferenceError: DK is not defined\n    at eval (eval at evaluate (:311:30), <anonymous>:1:8)\n    at eval (eval at evaluate (:311:30), <anonymous>:1:133)\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:311:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+   "ms": 1
+  },
+  {
+   "n": 16,
+   "label": null,
+   "expect": {
+    "label": "DK09 Site verisi engelliyken menüye dönüş ve menü yeniden çizimi çalışır",
+    "ok": false,
+    "error": "page.evaluate: ReferenceError: DK is not defined\n    at eval (eval at evaluate (:311:30), <anonymous>:1:1)\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:311:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+   },
+   "ms": 4
+  },
+  {
+   "n": 17,
+   "label": null,
+   "error": "page.evaluate: ReferenceError: DK is not defined\n    at eval (eval at evaluate (:311:30), <anonymous>:1:1)\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:311:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+   "ms": 1
+  },
+  {
+   "n": 18,
+   "label": null,
+   "expect": {
+    "label": "DK10 Site verisi engelliyken DK.handlers.startGame({kind:\"solo\", slot:0}) ile oyun başlar",
+    "ok": false,
+    "error": "page.evaluate: ReferenceError: DK is not defined\n    at eval (eval at evaluate (:311:30), <anonymous>:1:113)\n    at async <anonymous>:337:30"
+   },
+   "ms": 3
+  },
+  {
+   "n": 19,
+   "label": null,
+   "expect": {
+    "label": "DK11 Engelli açılış boyunca SecurityError/localStorage içeren konsol hatası ve sayfa hatası 0",
+    "ok": false,
+    "value": false
+   },
+   "ms": 3
+  },
+  {
+   "n": 20,
+   "label": null,
+   "result": {
+    "konsol": 1,
+    "sayfa": 0,
+    "ornek": [
+     "Failed to read the 'localStorage' property from 'Window': Access is denied for this document."
+    ]
+   },
+   "ms": 1
+  }
+ ],
+ "errors": [
+  "SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document."
+ ],
+ "pageErrors": [],
+ "fails": 14,
+ "evalErrors": 5,
+ "readyMs": 6968,
+ "ms": 74457,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/scenarios/02_depolama_kapali.js",
+ "meta": {
+  "testler": [
+   "6 Ana menü",
+   "7 Yeni oyun",
+   "KI-037",
+   "A-18 (doğrulama A-M01)"
+  ],
+  "dosyalar": [
+   "js/core/save.js",
+   "js/main.js",
+   "js/ui/menu.js",
+   "js/core/settings.js",
+   "index.html"
+  ],
+  "baslatma": "(() => { if (!/[?&]depolama=kapali/.test(location.search)) return;\n     Object.defineProperty(window, 'localStorage', { configurable: true, get() { throw new DOMException(\"Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\", 'SecurityError'); } });\n     const say = window.__guvenlik = { konsol: 0, sayfa: 0, ornek: [] };\n     const esles = (x) => { try { return /SecurityError|localStorage/i.test(String(x && ((x.name || '') + ' ' + (x.message || x)))); } catch (e) { return false; } };\n     const ce = console.error; console.error = function (...a) { if (a.some(esles)) { say.konsol++; if (say.ornek.length < 3) say.ornek.push(a.map((x) => String(x && (x.message || x))).join(' ').slice(0, 200)); } return ce.apply(this, a); };\n     window.addEventListener('error', (e) => { if (esles(e.error) || esles(e.message)) say.sayfa++; });\n     window.addEventListener('unhandledrejection', (e) => { if (esles(e.reason)) say.sayfa++; }); })();"
+ },
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8080/index.html?test=1",
+  "verilenUrl": "http://localhost:8080/index.html",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "5479e3b76bb33a517efa9ec60c418105a98bcec6",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-14T11:04:48.884Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs /home/user/SON-HAZ-NE-w2/tests/scenarios/02_depolama_kapali.js --url http://localhost:8080/index.html --size 640x360 --timeout 540 --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/02_depolama_kapali.json",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://localhost:8080 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8080"
+  ],
+  "commit": "5479e3b76bb33a517efa9ec60c418105a98bcec6-kirli",
+  "senaryoSha256": "262fadb3cd3ef0438c47007d39f089915f676e505d77d520430547420bfdbdfa",
+  "adim": {
+   "n": 4,
+   "js": "(async()=>{ const t0 = performance.now(); while (!window.__ready && performance.now() - t0 < 90000) { const t = document.getElementById('load-text'); if (t && /başlatılamadı/i.test(t.textContent) && performance.now() - t0 > 5000) break; await new Promise((r) => setTimeout(r, 250)); } window.__acilis = { ready: !!window.__ready, ms: Math.round(performance.now() - t0), yuklemeMetni: (document.getEle"
+  },
+  "url": "http://localhost:8080/index.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 1,
+   "id": "DK01",
+   "etiket": "DK01 Normal depolamayla açılış: ana menü görünür, ≥ 8 düğme",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 3,
+   "id": "DK02",
+   "etiket": "DK02 Kurulum: bu sayfada localStorage erişimi SecurityError atıyor",
+   "ok": true,
+   "deger": "SecurityError",
+   "beklenen": {
+    "eq": "SecurityError"
+   },
+   "sure_ms": 2,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 4,
+   "id": "DK03",
+   "etiket": "DK03 Site verisi engelliyken açılış tamamlanır (window.__ready)",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 5054,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": {
+    "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_depolama_kapali_2026-11-14T11-04-48-675Z_12984/ilk_kalan.png",
+    "tuval": null
+   }
+  },
+  {
+   "n": 6,
+   "id": "DK04",
+   "etiket": "DK04 Site verisi engelliyken ana menü görünür (≥ 8 düğme), yükleme ekranı kapalı",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 7,
+   "id": "DK05",
+   "etiket": "DK05 Yükleme ekranında yanıltıcı 'Oyun başlatılamadı … WebGL' metni yok",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 8,
+   "id": "DK06",
+   "etiket": "DK06 Menüde görünür \"tarayıcı kayda izin vermiyor / kayıt yapılamıyor\" bildirimi var",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 11,
+   "id": "DK07",
+   "etiket": "DK07 Site verisi engelliyken arayüzden yeni oyun başlar (YENİ MACERA → Maceraya Başla)",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 30103,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 13,
+   "id": "DK08",
+   "etiket": "DK08 Kayıt denemesi \"tarayıcı kayda izin vermiyor / kayıt yapılamıyor\" bildirimi verir",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 302,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 16,
+   "id": "DK09",
+   "etiket": "DK09 Site verisi engelliyken menüye dönüş ve menü yeniden çizimi çalışır",
+   "ok": false,
+   "deger": null,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": "istisna: page.evaluate: ReferenceError: DK is not defined\n    at eval (eval at evaluate (:311:30), <anonymous>:1:1)\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:311:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+   "goruntu": null
+  },
+  {
+   "n": 18,
+   "id": "DK10",
+   "etiket": "DK10 Site verisi engelliyken DK.handlers.startGame({kind:\"solo\", slot:0}) ile oyun başlar",
+   "ok": false,
+   "deger": null,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": "istisna: page.evaluate: ReferenceError: DK is not defined\n    at eval (eval at evaluate (:311:30), <anonymous>:1:113)\n    at async <anonymous>:337:30",
+   "goruntu": null
+  },
+  {
+   "n": 19,
+   "id": "DK11",
+   "etiket": "DK11 Engelli açılış boyunca SecurityError/localStorage içeren konsol hatası ve sayfa hatası 0",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [
+   {
+    "oyuncu": null,
+    "ileti": "SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.",
+    "url": null,
+    "satir": 5,
+    "isci": false,
+    "sayi": 1
+   }
+  ],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [
+   {
+    "n": 9,
+    "tur": "tikla",
+    "hata": "locator.click: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByText('YENİ MACERA', { exact: true })\n"
+   },
+   {
+    "n": 10,
+    "tur": "tikla",
+    "hata": "locator.click: Timeout 15000ms exceeded.\nCall log:\n  - waiting for getByText('Maceraya Başla', { exact: true })\n"
+   },
+   {
+    "n": 12,
+    "tur": "js",
+    "hata": "page.evaluate: ReferenceError: DK is not defined\n    at eval (eval at evaluate (:311:30), <anonymous>:1:8)\n    at eval (eval at evaluate (:311:30), <anonymous>:1:133)\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:311:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+   },
+   {
+    "n": 15,
+    "tur": "js",
+    "hata": "page.evaluate: ReferenceError: DK is not defined\n    at eval (eval at evaluate (:311:30), <anonymous>:1:8)\n    at eval (eval at evaluate (:311:30), <anonymous>:1:133)\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:311:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+   },
+   {
+    "n": 17,
+    "tur": "js",
+    "hata": "page.evaluate: ReferenceError: DK is not defined\n    at eval (eval at evaluate (:311:30), <anonymous>:1:1)\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:311:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+   }
+  ],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 33
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 2,
+  "toplam": 34,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [
+  {
+   "ad": "ilk_kalan",
+   "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/02_depolama_kapali_2026-11-14T11-04-48-675Z_12984/ilk_kalan.png",
+   "tuval": null
+  }
+ ],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 318,
+ "sonuc": {
+  "durum": "KALDI",
+  "cikisKodu": 1,
+  "neden": [
+   "başarısız kontrol ya da adım: 14",
+   "izinsiz konsol hatası: 1",
+   "adım istisnası (evalErrors): 5"
+  ],
+  "onaySayisi": 11,
+  "kontrolSayisi": 11,
+  "gecen": 2,
+  "kalan": 9,
+  "izinsizKonsol": 1,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": "tarayici",
+  "turSayim": {
+   "tarayici": 11
+  }
+ },
+ "sure": {
+  "hazirMs": 6968,
+  "toplamMs": 74457,
+  "yerlesmeMs": 1001
+ }
+}

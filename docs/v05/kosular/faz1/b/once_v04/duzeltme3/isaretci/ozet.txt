@@ -1,0 +1,13 @@
+01:53:53 02_hizli_yolculuk_noworker_birak PASS=22 FAIL=12 sure=353s | SONUC: KALDI (çıkış 1) kontrol 22/34, onay 34 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 4 farklı/176 | neden: başarısız kontrol ya da adım: 12
+01:53:53 BITTI hizli_noworker_birak
+02:05:11 02_arazi_yedek_crash_say PASS=16 FAIL=0 sure=112s | SONUC: GECTI (çıkış 0) kontrol 16/16, onay 16 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 6 farklı/38
+02:06:13 02_arazi_yedek_crash_birak PASS=16 FAIL=0 sure=62s | SONUC: GECTI (çıkış 0) kontrol 16/16, onay 16 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 6 farklı/38
+02:06:13 BITTI yedek_crash_say yedek_crash_birak
+02:08:00 02_arazi_yasam_normal_birak PASS=13 FAIL=5 sure=107s | SONUC: KALDI (çıkış 1) kontrol 13/18, onay 18 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 6 farklı/72 | neden: başarısız kontrol ya da adım: 5
+02:10:43 02_arazi_yasam_noworker_birak PASS=13 FAIL=5 sure=163s | SONUC: KALDI (çıkış 1) kontrol 13/18, onay 18 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 3 farklı/70 | neden: başarısız kontrol ya da adım: 5
+02:10:43 BITTI yasam_normal_birak yasam_noworker_birak
+02:14:09 02_hizli_yolculuk_normal_birak PASS=23 FAIL=11 sure=206s | SONUC: KALDI (çıkış 1) kontrol 23/34, onay 34 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 3 farklı/171 | neden: başarısız kontrol ya da adım: 11
+02:15:14 02_arazi_yedek_noworker_birak PASS=16 FAIL=0 sure=65s | SONUC: GECTI (çıkış 0) kontrol 16/16, onay 16 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 3 farklı/35
+02:15:14 BITTI hizli_normal_birak yedek_noworker_birak
+02:22:08 02_hizli_yolculuk_noworker_say PASS=22 FAIL=12 sure=414s | SONUC: KALDI (çıkış 1) kontrol 22/34, onay 34 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 4 farklı/176 | neden: başarısız kontrol ya da adım: 12
+02:22:08 BITTI hizli_noworker_say
