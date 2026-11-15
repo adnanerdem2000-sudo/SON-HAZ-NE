@@ -1,0 +1,28 @@
+# 2026-11-15T05:38:56Z komut: node docs/v05/kosular/faz1/sonra_b2/tani/betikler/save_depo.mjs /home/user/SON-HAZ-NE (v0.4, karşılaştırma)
+{"available":{"v":false},"profile":{"hata":"ReferenceError: localStorage is not defined"},"read":{"hata":"ReferenceError: localStorage is not defined"},"list":{"hata":"ReferenceError: localStorage is not defined"},"latest":{"hata":"ReferenceError: localStorage is not defined"},"write":{"v":false},"remove":{"hata":"ReferenceError: localStorage is not defined"},"writeProfile":{},"exportAll":{"hata":"ReferenceError: localStorage is not defined"},"importAll":{"hata":"ReferenceError: localStorage is not defined"}}
+KALDI D01 engelli: hiçbir çağrı istisna atmıyor
+GECTI D02 engelli: available false
+KALDI D03 engelli: profile/read/latest null
+KALDI D04 engelli: list 3 boş yuva
+KALDI D05 engelli: write false, importAll false, exportAll {}
+KALDI D06 engelli: console.error yok
+KALDI N01 normal: available true
+Kayıt hatası ReferenceError: localStorage is not defined
+    at Object.write (file:///home/user/SON-HAZ-NE/js/core/save.js?engelli:19:7)
+    at file:///home/user/SON-HAZ-NE-b2/docs/v05/kosular/faz1/sonra_b2/tani/betikler/save_depo.mjs:28:47
+KALDI N02 normal: write true + read aynı
+Kayıt hatası ReferenceError: localStorage is not defined
+    at Object.write (file:///home/user/SON-HAZ-NE/js/core/save.js?engelli:19:7)
+    at file:///home/user/SON-HAZ-NE-b2/docs/v05/kosular/faz1/sonra_b2/tani/betikler/save_depo.mjs:29:52
+KALDI N03 normal: ikinci yazımda .bak tutulur
+file:///home/user/SON-HAZ-NE/js/core/save.js?engelli:40
+    const d = safeParse(localStorage.getItem(k));
+                        ^
+
+ReferenceError: localStorage is not defined
+    at Object.read (file:///home/user/SON-HAZ-NE/js/core/save.js?engelli:40:25)
+    at Object.latest (file:///home/user/SON-HAZ-NE/js/core/save.js?engelli:64:22)
+    at file:///home/user/SON-HAZ-NE-b2/docs/v05/kosular/faz1/sonra_b2/tani/betikler/save_depo.mjs:30:36
+
+Node.js v22.22.0
+# çıkış 1

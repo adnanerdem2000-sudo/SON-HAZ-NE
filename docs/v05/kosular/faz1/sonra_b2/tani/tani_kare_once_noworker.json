@@ -1,0 +1,392 @@
+{
+ "scenario": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/b2_tani/tani_kare.js",
+ "url": "http://localhost:8085/index.html?terrain=noworker",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": "kuruldu",
+   "ms": 2
+  },
+  {
+   "n": 2,
+   "label": null,
+   "result": "playing",
+   "ms": 229
+  },
+  {
+   "n": 3,
+   "label": null,
+   "ms": 3005
+  },
+  {
+   "n": 4,
+   "label": null,
+   "result": {
+    "prepareMs": 211,
+    "ozet": {
+     "dilim": [
+      17,
+      198
+     ],
+     "apply": [
+      10,
+      0
+     ],
+     "derinlik": [
+      1,
+      0
+     ],
+     "cizim": [
+      1,
+      8,
+      8
+     ],
+     "guncelle": [
+      1,
+      0,
+      0
+     ]
+    },
+    "uzun": []
+   },
+   "ms": 8263
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": [
+    [
+     0,
+     "prepare-bas",
+     0,
+     null
+    ],
+    [
+     12,
+     "dilim",
+     11.4,
+     9
+    ],
+    [
+     29,
+     "dilim",
+     16.2,
+     9
+    ],
+    [
+     41,
+     "dilim",
+     12.3,
+     9
+    ],
+    [
+     54,
+     "dilim",
+     12.6,
+     9
+    ],
+    [
+     66,
+     "dilim",
+     12,
+     9
+    ],
+    [
+     80,
+     "dilim",
+     13.7,
+     9
+    ],
+    [
+     80,
+     "guncelle",
+     0,
+     null
+    ],
+    [
+     88,
+     "cizim",
+     8,
+     1
+    ],
+    [
+     105,
+     "dilim",
+     16.6,
+     9
+    ],
+    [
+     117,
+     "dilim",
+     11.2,
+     9
+    ],
+    [
+     132,
+     "dilim",
+     15,
+     9
+    ],
+    [
+     132,
+     "apply",
+     0,
+     80
+    ],
+    [
+     142,
+     "dilim",
+     10.5,
+     8
+    ],
+    [
+     153,
+     "dilim",
+     10.4,
+     8
+    ],
+    [
+     153,
+     "derinlik",
+     0.2,
+     null
+    ],
+    [
+     164,
+     "dilim",
+     10.7,
+     6
+    ],
+    [
+     164,
+     "apply",
+     0,
+     80
+    ],
+    [
+     164,
+     "apply",
+     0,
+     80
+    ],
+    [
+     174,
+     "dilim",
+     10.4,
+     5
+    ],
+    [
+     174,
+     "apply",
+     0.1,
+     80
+    ],
+    [
+     186,
+     "dilim",
+     11,
+     3
+    ],
+    [
+     186,
+     "apply",
+     0,
+     80
+    ],
+    [
+     186,
+     "apply",
+     0,
+     80
+    ],
+    [
+     196,
+     "dilim",
+     10.4,
+     2
+    ],
+    [
+     196,
+     "apply",
+     0,
+     80
+    ],
+    [
+     206,
+     "dilim",
+     10.4,
+     0
+    ],
+    [
+     206,
+     "apply",
+     0,
+     80
+    ],
+    [
+     206,
+     "apply",
+     0,
+     80
+    ],
+    [
+     210,
+     "dilim",
+     3.6,
+     0
+    ],
+    [
+     210,
+     "apply",
+     0,
+     80
+    ],
+    [
+     211,
+     "prepare-son",
+     0,
+     null
+    ]
+   ],
+   "ms": 34
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 5320,
+ "ms": 24493,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "../../../tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/b2_tani/tani_kare.js",
+ "meta": {
+  "olcum": true,
+  "testler": [
+   "B2 tanı: hızlı yolculuk kare zaman çizelgesi (madde 21)"
+  ]
+ },
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8085/index.html?terrain=noworker&test=1",
+  "verilenUrl": "http://localhost:8085/index.html?terrain=noworker",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "03b5c973bcc65adf48b63a1bd7746d43ee88ae6d",
+  "dal": "faz1-b2",
+  "kirli": true,
+  "tarih": "2026-11-15T03:50:36.514Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-b2/tests/harness/run.cjs /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/b2_tani/tani_kare.js --url 'http://localhost:8085/index.html?terrain=noworker' --size 640x360 --timeout 360 --report docs/v05/kosular/faz1/sonra_b2/tani/tani_kare_once_noworker.json",
+  "cwd": "/home/user/SON-HAZ-NE-b2",
+  "sunucular": [
+   "statik sunucu http://localhost:8085 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8085"
+  ],
+  "commit": "03b5c973bcc65adf48b63a1bd7746d43ee88ae6d-kirli",
+  "senaryoSha256": "1578b3d9610a7b62d58fe3638b413ef4cdce39d43047f4f25ac691a6fd56c380",
+  "adim": null,
+  "url": "http://localhost:8085/index.html?terrain=noworker&test=1"
+ },
+ "kontroller": [],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "Arazi üretimi ana iş parçacığına alındı (test kipi: işçi yok)",
+   "url": "http://localhost:8085/js/world/terrain.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8085/vendor/three/three.core.js",
+   "sayi": 33
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8085/vendor/three/three.core.js",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 3,
+  "toplam": 35,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 201,
+ "isaretciKilidi": {
+  "kip": "taklit",
+  "sayac": "okunamadı"
+ },
+ "kopma": null,
+ "sonuc": {
+  "durum": "OLCUM",
+  "cikisKodu": 0,
+  "neden": [],
+  "onaySayisi": 0,
+  "kontrolSayisi": 0,
+  "gecen": 0,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": null,
+  "turSayim": {},
+  "tarayiciKoptu": false,
+  "kopma": null
+ },
+ "sure": {
+  "hazirMs": 5320,
+  "toplamMs": 24493,
+  "yerlesmeMs": 1001
+ }
+}

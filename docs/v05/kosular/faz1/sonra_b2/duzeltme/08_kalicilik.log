@@ -1,0 +1,27 @@
+# 2026-11-15T09:53:27Z b2 ağacı 03b5c97+çalışma kopyası; koşucu ed8820b9 ortak.cjs b29886a4; senaryo tests/scenarios/08_kalicilik.js a74d32158779
+# sunulan oyun (/home/user/SON-HAZ-NE-b2): main.js 991d08ae game.js e13e82ef engine.js 0b59aa40 input.js 7c08c7c7
+# komut: /home/user/devtools/tk timeout 460 node tests/harness/run.cjs tests/scenarios/08_kalicilik.js --url 'http://localhost:8085/index.html' --size 640x360 --timeout 400 --report /home/user/SON-HAZ-NE-b2/docs/v05/kosular/faz1/sonra_b2/duzeltme/./08_kalicilik.json 
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+ready in 6.1 s
+R: "ok"
+PASS Oyun başladı → "playing"
+R: {"crId":"core_kamp_cr0","kgId":"core_kamp_keg0","carried":"ch0v0m69k","chests":1,"islandsSaved":true,"hazardsGone":3,"shipSunk":true,"campCd":222}
+PASS Kayıt verisi ada/tehlike/taşınan sandık/batık gemi/kamp durumunu içeriyor → true
+R: {"opened":true,"freed":true,"temple":true,"gone":true,"carried":true,"sunk":true,"camp":true}
+R: "reloading"
+PASS Kayıt yüklendi, oyun başladı → "playing"
+PASS B02/B-08 Ada ödülleri, tutsaklar ve tapınak mekanizması yüklemede geri geliyor → true
+PASS Kırılmış sandık ve patlamış fıçı yüklemede yeniden kurulmuyor → true
+R: {"crateStillThere":false,"kegStillThere":false,"gone":["core_kamp_cr0","core_kamp_keg0","core_kamp_cr1"]}
+PASS B04 Taşınan sandık kayıtta; yüklemede oyuncunun yanında yerde → true
+R: {"state":"ground","d":0.6}
+PASS E-13/A1 Batık gemi batık yüklenir, parça/direk/top hasarı korunur, oyuncu güverteye bindirilmez → true
+R: {"sunk":true,"visible":false,"pruva":50,"mast0":0,"cannon0":30,"hp":60,"playerMode":"ground"}
+PASS A5/F-07 Kamp bekleme süresi yüklemede korunur (yükleme sonrası geçen süre düşülür) → true
+PASS Sandık ve kese kimlikleri benzersiz → true
+PASS Bozuk kayıt dosyası güvenle reddedilir (null), liste çökmez → true
+PASS Bozuk ana kayıt varken .bak yedeği okunur → true
+PASS Oyun döngüsü yükleme sonrası hatasız sürüyor → true
+errors: 0 pageErrors: 0 fails: 0 (25.5 s)
+SONUC: GECTI (çıkış 0) kontrol 12/12, onay 12 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34
+# çıkış 0 2026-11-15T09:54:25Z

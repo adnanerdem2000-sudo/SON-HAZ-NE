@@ -1,0 +1,26 @@
+# 2026-11-15T09:26:54Z b2 ağacı 03b5c97+çalışma kopyası; koşucu ed8820b9 ortak.cjs b29886a4; senaryo tests/scenarios/02_yukleme_bekleme.js c9439e8aad63
+# sunulan oyun (/home/user/SON-HAZ-NE-b2): main.js 991d08ae game.js e13e82ef engine.js 0b59aa40 input.js 7c08c7c7
+# komut: /home/user/devtools/tk timeout 460 node tests/harness/run.cjs tests/scenarios/02_yukleme_bekleme.js --url 'http://localhost:8085/index.html' --size 640x360 --timeout 400 --report /home/user/SON-HAZ-NE-b2/docs/v05/kosular/faz1/sonra_b2/duzeltme/./02_yukleme_bekleme.json 
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+ready in 6.2 s
+PASS YB00 Test verisi: yuva 1'de Kuzeyfener'de (5,3 km) kayıt var, oyun menüde → true
+R: {"vardi":true,"mod":"ground","kayitKonum":[295,-5112],"durum":"menu"}
+DEGISKEN kayitOnce = "{\"version\":1,\"savedAt\":1794734945923,\"playTime\":1.866499999999995,\"name\":\"Kaptan Deniz\",\"player\":{\"pos\":{\"x\":294.8248028661923,\"y\":2.799999952316284,\"z\":-5112.0025583817505},\"hp\
+GOTO http://localhost:8085/index.html?test=1
+R: {"durum":"menu","oyuncu":false,"menu":true}
+PASS YB01 Yeniden yüklenen sayfada ana menü ve DEVAM ET düğmesi var, oyuncu yok → true
+PASS YB02 Önkoşul: DEVAM ET kayıttaki bölgenin (Kuzeyfener) hazırlığını başlattı ve start o hazırlığı bekliyor (kapı kapalı) → true
+R: {"cagri":[[295,-5112]],"kapida":true}
+PASS YB03 Bölge hazırlığı beklenirken yükleme katmanı görünür (#loading etkin ya da perde açık; A-10) → true
+R: {"yukleme":true,"perde":false,"menu":false,"hud":false,"durum":"loading"}
+PASS YB04 Bölge hazırlığı beklenirken oyun durumu 'playing' değil (A-10: G.state 'loading') → "oynanmıyor (loading)"
+PASS YB05 Bölge hazırlığı beklenirken Esc duraklatma menüsünü açmaz (A-10) → true
+R: {"paneller":[],"duraklatildi":false}
+R: {"durum":"menu"}
+R: {"durum":"menu","menu":true,"hud":false,"oyuncu":false,"bildirim":[],"kilit":false}
+PASS YB06 İptal edilen yükleme hiçbir durumu değiştirmez: hazırlık bittikten sonra da durum 'menu', ana menü açık, HUD kapalı, oyuncu kurulmamış (A-10, oturum belirteci) → true
+PASS YB07 İptal edilen yükleme 'Kayıt yüklendi' bildirimi üretmez (A-10) → true
+PASS YB08 İptal edilen yükleme kayıttaki veriyi değiştirmez (yuva 1 aynı) → true
+errors: 0 pageErrors: 0 fails: 0 (46.8 s)
+SONUC: GECTI (çıkış 0) kontrol 9/9, onay 9 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/68
+# çıkış 0 2026-11-15T09:29:34Z

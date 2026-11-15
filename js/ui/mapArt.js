@@ -1,4 +1,5 @@
 import { terrain } from '../world/terrain.js';
+import { generate } from '../world/terrainGen.js';
 import { ISLANDS, POIS, WORLD_SIZE } from '../world/worldData.js';
 import { REGIONS } from '../world/archipelago.js';
 import { parchmentCanvas } from '../core/textures.js';
@@ -111,19 +112,60 @@ function paint(heights, biomes, res, worldPx, seed = 3) {
 // süresini ~2 katına çıkardı (04_karakter: 1,2 → 2,0–2,9 GB), bu yüzden tuval yolu değiştirilmedi; yalnız piksel döngüleri
 // ayırmasız hale getirildi (çıktı birebir aynı). Kalıcı çözüm: boyamayı arazi işçisine taşımak (11. belge).
 
-// Dünya tabanı (yükleme sırasında işçiden)
-export async function initMapBase() {
-  if (baseCache) return baseCache;
-  const m = await terrain.requestGrid(-WORLD_SIZE / 2, -WORLD_SIZE / 2, WORLD_SIZE, N, -500);
+// Dünya tabanı (yükleme sırasında işçiden).
+// A-02: ızgara isteği reddedilirse (işçinin 'error' iletisi, tekrarlanan işçi ölümü) açılış düşmez: harita isteğe bağlı bir özelliktir.
+// Geçici parşömenle devam edilir; aynı üretim kodu (terrainGen.js gridGen, işçinin ve terrain.js yerel yedeğinin çalıştırdığı üreteç)
+// arka planda ana iş parçacığında, kareler arasına dilimlenerek yeniden çalıştırılır; bitince taban kendiliğinden yerine geçer.
+let baseRetry = null;
+function buildBase(m) {
   const { c, H } = paint(m.heights, m.biomes, N, WORLD_SIZE / N, 3);
   decorate(c, H);
   baseCache = c;
+  for (const fn of listeners) fn(-1, -1); // açık harita yeniden çizilsin
   return c;
 }
+export async function initMapBase() {
+  if (baseCache) return baseCache;
+  try {
+    return buildBase(await terrain.requestGrid(-WORLD_SIZE / 2, -WORLD_SIZE / 2, WORLD_SIZE, N, -500));
+  } catch (e) {
+    console.warn(`Dünya haritası ızgarası üretilemedi (${e?.message || e}); geçici parşömenle devam ediliyor, yerel yedekte yeniden deneniyor`);
+    retryBaseLocal();
+    return renderMapBase();
+  }
+}
+function retryBaseLocal() {
+  if (baseRetry || baseCache) return baseRetry;
+  baseRetry = gridLocal({ t: 'grid', x0: -WORLD_SIZE / 2, z0: -WORLD_SIZE / 2, size: WORLD_SIZE, res: N })
+    .then((m) => (baseCache ? baseCache : buildBase(m)))
+    .catch((e) => { console.error('Dünya haritası ızgarası yerel yedekte de üretilemedi:', e); return null; })
+    .finally(() => { baseRetry = null; });
+  return baseRetry;
+}
+// Üreteci ana iş parçacığında, makro görev başına ~8 ms'lik dilimlerle tüket (üreteç her 16 satırda bir yield eder)
+function gridLocal(msg, sliceMs = 8) {
+  return new Promise((resolve, reject) => {
+    let gen;
+    try { gen = generate(msg); } catch (e) { reject(e); return; }
+    const step = () => {
+      const t0 = performance.now();
+      try {
+        for (;;) {
+          const r = gen.next();
+          if (r.done) { resolve(r.value.out); return; }
+          if (performance.now() - t0 > sliceMs) break;
+        }
+      } catch (e) { reject(e); return; }
+      setTimeout(step, 0);
+    };
+    setTimeout(step, 0);
+  });
+}
+let tempBase = null;
 export function renderMapBase() {
   if (baseCache) return baseCache;
-  // henüz hazır değilse geçici boş parşömen
-  return parchmentCanvas(64, 64, 3);
+  // henüz hazır değilse geçici boş parşömen (her çağrıda yeni tuval üretilmez: mini harita bunu her karede ister)
+  return tempBase || (tempBase = parchmentCanvas(64, 64, 3));
 }
 
 // Ayrıntı karosu (i, j): yoksa üretimi başlatır ve null döner

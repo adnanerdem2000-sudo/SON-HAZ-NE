@@ -10,6 +10,62 @@
   <script type="importmap">
   { "imports": { "three": "./vendor/three/three.module.js", "three/addons/": "./vendor/three/addons/" } }
   </script>
+  <script>
+  // A-04: açılış hata yakalayıcısı. Klasik betik (ES5): oyun modülü hiç yüklenemese ya da tarayıcı import map desteklemese de çalışır.
+  // window.__ready gelene dek yakalanmamış hata, oyun modülünün yüklenememesi, import map desteğinin olmaması ve uzun süren yükleme
+  // yükleme ekranında (#load-text) anlaşılır bir iletiyle gösterilir. Açılış bittikten sonra hiçbir şey yapmaz.
+  (function () {
+    var TEK = 'tek dosya sürümünü (DenizKorsanlari-SonHazine.html)';
+    var bitti = function () { return !!window.__ready; };
+    var yaz = function (ileti, oneri, kalici) {
+      var t = document.getElementById('load-text');
+      if (!t) { document.addEventListener('DOMContentLoaded', function () { yaz(ileti, oneri, kalici); }); return; }
+      if (bitti() || (window.__dkAcilisHatasi && !kalici)) return;
+      if (kalici) window.__dkAcilisHatasi = true;
+      t.textContent = ileti;
+      if (oneri) { t.appendChild(document.createElement('br')); var s = document.createElement('small'); s.textContent = oneri; t.appendChild(s); }
+    };
+    var metin = function (x) { try { return String((x && (x.message || x)) || 'bilinmeyen hata').slice(0, 200); } catch (e) { return 'bilinmeyen hata'; } };
+    var modulHatasi = function (m) { return /import|module|specifier|modül/i.test(m); };
+    // import map desteği (HTMLScriptElement.supports yoksa karar verilemez; o zaman modül çözümleme hatası aşağıda yakalanır).
+    // Tek dosya derlemesinde import map kaldırılır, denetim de atlanır.
+    try {
+      if (document.querySelector('script[type="importmap"]') && typeof HTMLScriptElement !== 'undefined' && typeof HTMLScriptElement.supports === 'function' && !HTMLScriptElement.supports('importmap')) {
+        yaz('Tarayıcın modül eşlemesini (import map) desteklemiyor; oyun bu adresten açılamıyor.', 'Tarayıcını güncelle (Chrome/Edge 89+, Firefox 108+, Safari 16.4+) ya da ' + TEK + ' indirip aç.', true);
+      }
+    } catch (e) { /* denetlenemedi */ }
+    window.addEventListener('error', function (e) {
+      if (bitti()) return;
+      var el = e && e.target;
+      if (el && el !== window && el.tagName) {
+        // kaynak hatası (yakalama evresinde görülür): yalnız oyunun modül betiği açılışı durdurur
+        if (el.tagName === 'SCRIPT' && (el.type === 'module' || /js\/main\.js/.test(el.src || ''))) {
+          yaz('Oyun dosyaları yüklenemedi: bir modül indirilemedi ya da bulunamadı (' + (el.getAttribute('src') || 'modül') + ').', 'Bağlantını denetleyip sayfayı yenile; sorun sürerse ' + TEK + ' kullan.', true);
+        }
+        return;
+      }
+      var m = metin(e && (e.error || e.message));
+      if (modulHatasi(m)) yaz('Oyun dosyaları yüklenemedi: modül çözümlenemedi (' + m + ').', 'Tarayıcını güncelle ya da ' + TEK + ' kullan.', true);
+      else yaz('Açılışta bir hata oluştu: ' + m, 'Sayfayı yenile; sorun sürerse ' + TEK + ' dene.');
+    }, true);
+    window.addEventListener('unhandledrejection', function (e) {
+      if (bitti()) return;
+      var m = metin(e && e.reason);
+      if (modulHatasi(m)) yaz('Oyun dosyaları yüklenemedi: modül yüklenemedi (' + m + ').', 'Bağlantını denetleyip sayfayı yenile; sorun sürerse ' + TEK + ' kullan.', true);
+      else yaz('Açılışta bir hata oluştu: ' + m, 'Sayfayı yenile; sorun sürerse ' + TEK + ' dene.');
+    });
+    // 30 sn içinde açılış bitmezse uyarı (yükleme metni ilerledikçe yeniden eklenir)
+    var uyar = function () {
+      if (bitti() || window.__dkAcilisHatasi) return;
+      var t = document.getElementById('load-text');
+      if (!t || t.querySelector('.yavas-uyari')) return;
+      var s = document.createElement('small'); s.className = 'yavas-uyari';
+      s.textContent = 'Yükleme beklenenden uzun sürüyor (30 sn+). İnternet bağlantını denetle; ilerlemezse sayfayı yenile ya da ' + TEK + ' kullan.';
+      t.appendChild(document.createElement('br')); t.appendChild(s);
+    };
+    setTimeout(function () { uyar(); var iv = setInterval(function () { if (bitti()) clearInterval(iv); else uyar(); }, 5000); }, 30000);
+  })();
+  </script>
 </head>
 <body>
   <div id="game"></div>

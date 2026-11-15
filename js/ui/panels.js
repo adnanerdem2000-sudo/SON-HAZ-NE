@@ -387,7 +387,6 @@ export const panels = {
     let zoom = this._mapZoom || 6, cx = 0, cz = 0;
     const p = G.player;
     if (p) { cx = p.pos.x; cz = p.pos.z; }
-    const base = renderMapBase();
     let raf = 0;
     const unsub = onMapDetail(() => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; if (cv.isConnected) draw(); }); });
     this._mapUnsub = unsub;
@@ -397,7 +396,8 @@ export const panels = {
       const scale = (W / WORLD_SIZE) * zoom;
       g.fillStyle = '#c9b48a'; g.fillRect(0, 0, W, H);
       g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high';
-      g.drawImage(base, W / 2 + (-WORLD_SIZE / 2 - cx) * scale, H / 2 + (-WORLD_SIZE / 2 - cz) * scale, WORLD_SIZE * scale, WORLD_SIZE * scale);
+      // taban her çizimde istenir: geçici parşömenle açılan harita, taban sonradan (A-02 yerel yeniden deneme) gelince yenilenir
+      g.drawImage(renderMapBase(), W / 2 + (-WORLD_SIZE / 2 - cx) * scale, H / 2 + (-WORLD_SIZE / 2 - cz) * scale, WORLD_SIZE * scale, WORLD_SIZE * scale);
       const toPx = (x, z) => [W / 2 + (x - cx) * scale, H / 2 + (z - cz) * scale];
       // yakınlaşınca ayrıntılı karolar
       if (scale > 1024 / WORLD_SIZE * 1.6) drawDetail(g, toPx, scale, cx - W / 2 / scale, cz - H / 2 / scale, cx + W / 2 / scale, cz + H / 2 / scale);

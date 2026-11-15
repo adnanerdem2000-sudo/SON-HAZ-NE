@@ -1,0 +1,12 @@
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+Kaptan/host {"code":"V7MU4F"}
+Tayfa/join {"room":"Tanı Odası"}
+Kaptan/hs "host-started"
+Tayfa/gs "guest-started"
+Tayfa/g-kur "playing"
+PASS TK00 İki oyuncu oyunda, konukta prepare sarıldı → {"kur":"playing"}
+Kaptan/h-ft {"bx":1675.2568595101525,"bz":813.3948727069121}
+Tayfa/g-son {"uzaklik":0,"bildirim":[["warn","Varış limanının çevresi zamanında hazırlanamadı; eksik arazi arka planda yükleniyor."],["good","Kaptan rotayı kırdı: yeni limana vardınız!"]]}
+PASS TK01 Konuk ışınlanmasında prepare 'timeout' → konuk taşınır ve 'warn' türünde hazırlık uyarısı alır (vardınız içermez) → {"uzaklik":0,"bildirim":[["warn","Varış limanının çevresi zamanında hazırlanamadı; eksik arazi arka planda yükleniyor."],["good","Kaptan rotayı kırdı: yeni limana vardınız!"]]}
+checks: 2 fails: 0 pageErrors: 0 (106.8 s)
+SONUC: OLCUM (çıkış 0) kontrol 2/2 | ev() istisnası 0, kapalı sayfa atlama 0, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 4 farklı/68

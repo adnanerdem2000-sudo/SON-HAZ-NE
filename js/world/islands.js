@@ -308,6 +308,23 @@ export const islands = {
     for (const b of this.built.values()) for (const fn of b.tick) fn(dt);
   },
 
+  // KI-236: ışınlanma, hızlı yolculuk ve uzak uyanışta oyuncu (x, z)'ye konmadan HEMEN ÖNCE çağrılır: nokta bir adanın kıyısına
+  // NEAR_D'den yakınsa o adanın içeriği (iskele platformu, çarpıştırıcılar) beklemeden kurulur. Önce oyuncu konuyor, ada bir sonraki
+  // denetimde (en çok 0,4 sn oyun zamanı sonra) kuruluyordu; iskelenin 0,5 m üstüne bırakılan oyuncu platform oluştuğunda güvertenin
+  // altında kalıp suya düşüyordu (işçisiz kipte kare kare tanı: platform oyuncu y = 2,24 iken geldi, güverte 2,9). update'teki
+  // eşzamanlı yolun aynısıdır (en yakın kurulmamış ada; hata olursa ada bu oturumda yeniden denenmez).
+  buildNear(x, z) {
+    if (!this.ready) return;
+    let best = null, bd = NEAR_D;
+    for (const I of EXTRA_ISLANDS) {
+      if (this.built.has(I.id) || this.failed?.has(I.id)) continue;
+      const d = Math.hypot(I.x - x, I.z - z) - I.r;
+      if (d < bd) { bd = d; best = I; }
+    }
+    if (!best) return;
+    try { this._build(best); } catch (e) { console.error('Ada kurulamadı', best.id, e); this.failed?.add(best.id); }
+  },
+
   // ---------------------------------------------------------------------------
   // Eşzamanlı kurulum (testler, ışınlanma/yükleme): aynı adanın yarım kalmış arka plan işi varsa o tamamlanır.
   // Hata olursa yarım içerik bırakılır ve hata yukarı iletilir (update yakalayıp adayı bu oturumda yeniden denemez).

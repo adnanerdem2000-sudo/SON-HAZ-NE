@@ -61,13 +61,22 @@ export const ui = {
     } else {
       this.modal.classList.remove('active');
       this.modal.classList.remove('clear');
-      if (G.state === 'playing') { G.uiOpen = false; setTimeout(() => input.lockPointer(), 30); }
+      if (G.state === 'playing') {
+        G.uiOpen = false;
+        // KI-235: kilit 30 ms sonra, o anda hâlâ oyundaysak ve bu arada yeni bir panel açılmadıysa istenir. Önce koşulsuzdu: onay
+        // penceresinin "Evet"i (close → toMenu) menüye dönüldükten sonra kilidi menüde yeniden alıyor, menü düğmelerine
+        // tıklanamıyordu (AA09b); 30 ms içinde açılan bir panelde de kilit kalıyordu.
+        clearTimeout(this._kilitT);
+        this._kilitT = setTimeout(() => { this._kilitT = 0; if (G.state === 'playing' && !this.stack.length && !G.uiOpen) input.lockPointer(); }, 30);
+      }
     }
     this.hideTip();
     if (!silent) audio.play('ui', { vol: 0.15, rate: 0.8 });
   },
 
   closeAll() { while (this.stack.length) this.close(true); },
+  // bekleyen kilit isteğini iptal et (oyundan çıkarken; KI-235)
+  cancelRelock() { clearTimeout(this._kilitT); this._kilitT = 0; },
   isOpen() { return this.stack.length > 0; },
   topIs(kind) { return this.stack.length && this.stack[this.stack.length - 1].kind === kind; },
 

@@ -1,0 +1,1647 @@
+{
+ "scenario": "tests/scenarios/02_acilis_hatalari.js",
+ "url": "http://localhost:8085/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "degisken": {
+    "ad": "yardimci",
+    "deger": "(()=>{ const A = window.__A = {};\n   A.bekle = (ms) => new Promise((r) => setTimeout(r, ms));\n   A.metin = () => ((document.getElementById('load-text') || {}).textContent || '').trim();\n   A.metinler = () => (window.__yuklemeMetinleri || []).map((x) => x[1]);\n   A.normal = () => { try { return JSON.parse(window.__KOSUCU.normalMetinler || '[]'); } catch (e) { return []; } };\n   A.yeniMetinler = () => { const N = new Set(A.normal()); return (window.__yuklemeMetinleri || []).filter((x) => !N.has(x[1])); };\n   // açılış: __ready gelene, \"başlatılamadı\" metni 3 sn kalana ya da sınır (belge zamanı, ms) dolana kadar; __ready'nin görüldüğü an\n   A.acilis = async (sinir) => { let bas = null, ready = null; while (performance.now() < sinir) { if (window.__ready) { ready = window.__readyAni !== undefined ? window.__readyAni : Math.round(performance.now()); break; } if (/başlatılamadı/i.test(A.metin())) { if (bas === null) bas = performance.now(); if (performance.now() - bas > 3000) break; } await A.bekle(100); }\n     return { ready: !!window.__ready, readyMs: ready, menu: !!document.getElementById('menu')?.classList.contains('active'), yukleme: !!document.getElementById('loading')?.classList.contains('active'), sonMetin: A.metin(), metinler: (window.__yuklemeMetinleri || []).slice(-8) }; };\n   A.harita = async (ms) => { const t0 = performance.now(); let c = null; const mod = await import(new URL('js/ui/mapArt.js', location.href).href); while (performance.now() - t0 < ms) { try { c = mod.renderMapBase(); } catch (e) { c = null; } if (c && c.width > 64) break; await A.bekle(250); } return { genislik: c ? c.width : null, yukseklik: c ? c.height : null }; };\n   return Object.keys(A); })()"
+   },
+   "ms": 4
+  },
+  {
+   "n": 2,
+   "label": null,
+   "result": [
+    "bekle",
+    "metin",
+    "metinler",
+    "normal",
+    "yeniMetinler",
+    "acilis",
+    "harita"
+   ],
+   "ms": 2
+  },
+  {
+   "n": 3,
+   "label": null,
+   "expect": {
+    "label": "AH00 Normal açılış (parametresiz): window.__ready ve ana menü",
+    "ok": true,
+    "value": true
+   },
+   "ms": 4
+  },
+  {
+   "n": 4,
+   "label": null,
+   "goto": {
+    "url": "http://localhost:8085/index.html?test=1"
+   },
+   "ms": 2521
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": [
+    "bekle",
+    "metin",
+    "metinler",
+    "normal",
+    "yeniMetinler",
+    "acilis",
+    "harita"
+   ],
+   "ms": 208
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "AH01 Normal başvuru açılışı (sıcak önbellek) tamamlanır; süre ölçülür",
+    "ok": true,
+    "value": 7346
+   },
+   "ms": 6779
+  },
+  {
+   "n": 7,
+   "label": null,
+   "degisken": {
+    "ad": "normalAcilisMs",
+    "deger": 7346
+   },
+   "ms": 5
+  },
+  {
+   "n": 8,
+   "label": null,
+   "degisken": {
+    "ad": "normalMetinler",
+    "deger": "[\"Modeller yükleniyor…\",\"Takımadalar oluşturuluyor…\",\"Okyanus dolduruluyor…\",\"Arazi örülüyor…\",\"Ormanlar büyütülüyor…\",\"Kırlangıç Limanı kuruluyor…\",\"Canlılar uyanıyor…\",\"Hazır!\",\"Deniz haritası çiziliyor…\",\"Gölgelendiriciler hazırlanıyor…\",\"Hazır!\"]"
+   },
+   "ms": 3
+  },
+  {
+   "n": 9,
+   "label": null,
+   "result": {
+    "normal": {
+     "ready": true,
+     "readyMs": 7346,
+     "menu": true,
+     "yukleme": false,
+     "sonMetin": "Hazır!",
+     "metinler": [
+      [
+       2935,
+       "Arazi örülüyor…"
+      ],
+      [
+       4035,
+       "Ormanlar büyütülüyor…"
+      ],
+      [
+       4156,
+       "Kırlangıç Limanı kuruluyor…"
+      ],
+      [
+       4253,
+       "Canlılar uyanıyor…"
+      ],
+      [
+       4509,
+       "Hazır!"
+      ],
+      [
+       4509,
+       "Deniz haritası çiziliyor…"
+      ],
+      [
+       7321,
+       "Gölgelendiriciler hazırlanıyor…"
+      ],
+      [
+       7345,
+       "Hazır!"
+      ]
+     ]
+    },
+    "metinler": [
+     "Modeller yükleniyor…",
+     "Takımadalar oluşturuluyor…",
+     "Okyanus dolduruluyor…",
+     "Arazi örülüyor…",
+     "Ormanlar büyütülüyor…",
+     "Kırlangıç Limanı kuruluyor…",
+     "Canlılar uyanıyor…",
+     "Hazır!",
+     "Deniz haritası çiziliyor…",
+     "Gölgelendiriciler hazırlanıyor…",
+     "Hazır!"
+    ]
+   },
+   "ms": 2
+  },
+  {
+   "n": 10,
+   "label": null,
+   "goto": {
+    "url": "http://localhost:8085/index.html?izgara=hata&test=1"
+   },
+   "ms": 2217
+  },
+  {
+   "n": 11,
+   "label": null,
+   "result": [
+    "bekle",
+    "metin",
+    "metinler",
+    "normal",
+    "yeniMetinler",
+    "acilis",
+    "harita"
+   ],
+   "ms": 13
+  },
+  {
+   "n": 12,
+   "label": null,
+   "expect": {
+    "label": "IZ01 Açılıştaki dünya ızgarası işi işçiden 'error' alsa da açılış tamamlanır (window.__ready; A-02)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 5443
+  },
+  {
+   "n": 13,
+   "label": null,
+   "result": {
+    "ready": true,
+    "readyMs": 4102,
+    "menu": true,
+    "yukleme": false,
+    "sonMetin": "Hazır!",
+    "metinler": [
+     [
+      2701,
+      "Arazi örülüyor…"
+     ],
+     [
+      3480,
+      "Ormanlar büyütülüyor…"
+     ],
+     [
+      3576,
+      "Kırlangıç Limanı kuruluyor…"
+     ],
+     [
+      3683,
+      "Canlılar uyanıyor…"
+     ],
+     [
+      3927,
+      "Hazır!"
+     ],
+     [
+      3927,
+      "Deniz haritası çiziliyor…"
+     ],
+     [
+      4037,
+      "Gölgelendiriciler hazırlanıyor…"
+     ],
+     [
+      4101,
+      "Hazır!"
+     ]
+    ]
+   },
+   "ms": 18
+  },
+  {
+   "n": 14,
+   "label": null,
+   "expect": {
+    "label": "IZ02 Izgara hatasında ana menü açılır, yükleme ekranı kapanır",
+    "ok": true,
+    "value": true
+   },
+   "ms": 15
+  },
+  {
+   "n": 15,
+   "label": null,
+   "expect": {
+    "label": "IZ03 Izgara hatasında yükleme ekranında 'Oyun başlatılamadı' ya da yanıltıcı WebGL iddiası hiç görünmez",
+    "ok": true,
+    "value": "yok"
+   },
+   "ms": 26
+  },
+  {
+   "n": 16,
+   "label": null,
+   "expect": {
+    "label": "IZ04 Izgara hatasından sonra dünya haritası ızgarası 60 sn içinde (yerel yedekte) üretilir: renderMapBase geçici parşömenden büyük (A-02)",
+    "ok": true,
+    "value": 1024
+   },
+   "ms": 4740
+  },
+  {
+   "n": 17,
+   "label": null,
+   "result": {
+    "genislik": 1024,
+    "yukseklik": 1024
+   },
+   "ms": 3
+  },
+  {
+   "n": 18,
+   "label": null,
+   "goto": {
+    "url": "http://localhost:8085/index.html?izgara=cok&test=1"
+   },
+   "ms": 1993
+  },
+  {
+   "n": 19,
+   "label": null,
+   "result": [
+    "bekle",
+    "metin",
+    "metinler",
+    "normal",
+    "yeniMetinler",
+    "acilis",
+    "harita"
+   ],
+   "ms": 90
+  },
+  {
+   "n": 20,
+   "label": null,
+   "expect": {
+    "label": "IZ05 Açılıştaki ızgara işini alan her işçi çökse de (MAX_TRIES) açılış tamamlanır (A-05, A-02)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 5546
+  },
+  {
+   "n": 21,
+   "label": null,
+   "result": {
+    "acilis": {
+     "ready": true,
+     "readyMs": 3959,
+     "menu": true,
+     "yukleme": false,
+     "sonMetin": "Hazır!",
+     "metinler": [
+      [
+       2342,
+       "Arazi örülüyor…"
+      ],
+      [
+       2735,
+       "Ormanlar büyütülüyor…"
+      ],
+      [
+       2856,
+       "Kırlangıç Limanı kuruluyor…"
+      ],
+      [
+       3506,
+       "Canlılar uyanıyor…"
+      ],
+      [
+       3752,
+       "Hazır!"
+      ],
+      [
+       3752,
+       "Deniz haritası çiziliyor…"
+      ],
+      [
+       3904,
+       "Gölgelendiriciler hazırlanıyor…"
+      ],
+      [
+       3958,
+       "Hazır!"
+      ]
+     ]
+    },
+    "workers": 0,
+    "fallback": true,
+    "failures": [
+     "işçi 0: hata: test: enjekte işçi çökmesi (ızgara)",
+     "işçi 1: hata: test: enjekte işçi çökmesi (ızgara)",
+     "işçi 2: hata: test: enjekte işçi çökmesi (ızgara)",
+     "hata: test: enjekte işçi çökmesi (ızgara)"
+    ]
+   },
+   "ms": 29
+  },
+  {
+   "n": 22,
+   "label": null,
+   "expect": {
+    "label": "IZ06 İşçi çökmesinde ana menü açılır, yükleme ekranı kapanır, 'başlatılamadı'/WebGL iletisi görünmez",
+    "ok": true,
+    "value": true
+   },
+   "ms": 14
+  },
+  {
+   "n": 23,
+   "label": null,
+   "expect": {
+    "label": "IZ07 İşçi çökmesinden sonra dünya haritası ızgarası 60 sn içinde yerel yedekte üretilir (A-05: iş yerel şeride devredilir)",
+    "ok": true,
+    "value": 1024
+   },
+   "ms": 4393
+  },
+  {
+   "n": 24,
+   "label": null,
+   "goto": {
+    "url": "http://localhost:8085/index.html?isci=hang&test=1"
+   },
+   "ms": 1619
+  },
+  {
+   "n": 25,
+   "label": null,
+   "result": [
+    "bekle",
+    "metin",
+    "metinler",
+    "normal",
+    "yeniMetinler",
+    "acilis",
+    "harita"
+   ],
+   "ms": 17
+  },
+  {
+   "n": 26,
+   "label": null,
+   "expect": {
+    "label": "AH02 Yanıt vermeyen (askıdaki) işçide açılış ≤ normal + 5 sn (A-11: ilk iş için kısa gözetim, yerel şerit paralel)",
+    "ok": false,
+    "value": false
+   },
+   "ms": 32532
+  },
+  {
+   "n": 27,
+   "label": null,
+   "result": {
+    "ready": true,
+    "readyMs": 25112,
+    "menu": true,
+    "yukleme": false,
+    "sonMetin": "Hazır!",
+    "metinler": [
+     [
+      1763,
+      "Arazi örülüyor…"
+     ],
+     [
+      22261,
+      "Ormanlar büyütülüyor…"
+     ],
+     [
+      22388,
+      "Kırlangıç Limanı kuruluyor…"
+     ],
+     [
+      22512,
+      "Canlılar uyanıyor…"
+     ],
+     [
+      22773,
+      "Hazır!"
+     ],
+     [
+      22773,
+      "Deniz haritası çiziliyor…"
+     ],
+     [
+      25085,
+      "Gölgelendiriciler hazırlanıyor…"
+     ],
+     [
+      25111,
+      "Hazır!"
+     ]
+    ],
+    "normalMs": 7346
+   },
+   "ms": 11
+  },
+  {
+   "n": 28,
+   "label": null,
+   "expect": {
+    "label": "AH03 Askıdaki işçide yükleme ekranı gecikmenin nedenini gösterir (normal açılışta görünmeyen, işçi/yedek/zaman aşımı anlatan bir metin; A-11)",
+    "ok": false,
+    "value": false
+   },
+   "ms": 16
+  },
+  {
+   "n": 29,
+   "label": null,
+   "goto": {
+    "url": "http://localhost:8085/index.html?isci=noready&test=1"
+   },
+   "ms": 1831
+  },
+  {
+   "n": 30,
+   "label": null,
+   "result": [
+    "bekle",
+    "metin",
+    "metinler",
+    "normal",
+    "yeniMetinler",
+    "acilis",
+    "harita"
+   ],
+   "ms": 172
+  },
+  {
+   "n": 31,
+   "label": null,
+   "expect": {
+    "label": "AH04 Hazır sinyali gelmeyen işçide açılış ≤ normal + 5 sn (A-11)",
+    "ok": false,
+    "value": false
+   },
+   "ms": 14062
+  },
+  {
+   "n": 32,
+   "label": null,
+   "result": {
+    "ready": true,
+    "readyMs": 13437,
+    "menu": true,
+    "yukleme": false,
+    "sonMetin": "Hazır!",
+    "metinler": [
+     [
+      2229,
+      "Arazi örülüyor…"
+     ],
+     [
+      10621,
+      "Ormanlar büyütülüyor…"
+     ],
+     [
+      10723,
+      "Kırlangıç Limanı kuruluyor…"
+     ],
+     [
+      10824,
+      "Canlılar uyanıyor…"
+     ],
+     [
+      11073,
+      "Hazır!"
+     ],
+     [
+      11073,
+      "Deniz haritası çiziliyor…"
+     ],
+     [
+      13411,
+      "Gölgelendiriciler hazırlanıyor…"
+     ],
+     [
+      13436,
+      "Hazır!"
+     ]
+    ],
+    "normalMs": 7346
+   },
+   "ms": 2
+  },
+  {
+   "n": 33,
+   "label": null,
+   "expect": {
+    "label": "AH05 Hazır sinyali gelmeyen işçide yükleme ekranı gecikmenin nedenini gösterir (A-11)",
+    "ok": false,
+    "value": false
+   },
+   "ms": 3
+  },
+  {
+   "n": 34,
+   "label": null,
+   "goto": {
+    "url": "http://localhost:8085/index.html?terrain=hang&test=1"
+   },
+   "ms": 2338
+  },
+  {
+   "n": 35,
+   "label": null,
+   "result": [
+    "bekle",
+    "metin",
+    "metinler",
+    "normal",
+    "yeniMetinler",
+    "acilis",
+    "harita"
+   ],
+   "ms": 6
+  },
+  {
+   "n": 36,
+   "label": null,
+   "expect": {
+    "label": "AH10 ?terrain=hang kipinde açılış ≤ normal + 5 sn ve kipin zaman aşımı kaydı var (A-11, A-17)",
+    "ok": false,
+    "value": false
+   },
+   "ms": 6521
+  },
+  {
+   "n": 37,
+   "label": null,
+   "result": {
+    "ready": true,
+    "readyMs": 6754,
+    "menu": true,
+    "yukleme": false,
+    "sonMetin": "Hazır!",
+    "metinler": [
+     [
+      2835,
+      "Arazi örülüyor…"
+     ],
+     [
+      3171,
+      "Ormanlar büyütülüyor…"
+     ],
+     [
+      3315,
+      "Kırlangıç Limanı kuruluyor…"
+     ],
+     [
+      3996,
+      "Canlılar uyanıyor…"
+     ],
+     [
+      4196,
+      "Hazır!"
+     ],
+     [
+      4196,
+      "Deniz haritası çiziliyor…"
+     ],
+     [
+      6729,
+      "Gölgelendiriciler hazırlanıyor…"
+     ],
+     [
+      6753,
+      "Hazır!"
+     ]
+    ],
+    "normalMs": 7346,
+    "mode": "hang",
+    "failures": []
+   },
+   "ms": 2
+  },
+  {
+   "n": 38,
+   "label": null,
+   "goto": {
+    "url": "http://localhost:8085/index.html?terrain=noready&test=1"
+   },
+   "ms": 2990
+  },
+  {
+   "n": 39,
+   "label": null,
+   "result": [
+    "bekle",
+    "metin",
+    "metinler",
+    "normal",
+    "yeniMetinler",
+    "acilis",
+    "harita"
+   ],
+   "ms": 19
+  },
+  {
+   "n": 40,
+   "label": null,
+   "expect": {
+    "label": "AH11 ?terrain=noready kipinde açılış ≤ normal + 5 sn ve kipin hazır-sinyali-yok kaydı var (A-11, A-17)",
+    "ok": false,
+    "value": false
+   },
+   "ms": 6741
+  },
+  {
+   "n": 41,
+   "label": null,
+   "result": {
+    "ready": true,
+    "readyMs": 7570,
+    "menu": true,
+    "yukleme": false,
+    "sonMetin": "Hazır!",
+    "metinler": [
+     [
+      3455,
+      "Arazi örülüyor…"
+     ],
+     [
+      4455,
+      "Ormanlar büyütülüyor…"
+     ],
+     [
+      4558,
+      "Kırlangıç Limanı kuruluyor…"
+     ],
+     [
+      4651,
+      "Canlılar uyanıyor…"
+     ],
+     [
+      4969,
+      "Hazır!"
+     ],
+     [
+      4969,
+      "Deniz haritası çiziliyor…"
+     ],
+     [
+      7516,
+      "Gölgelendiriciler hazırlanıyor…"
+     ],
+     [
+      7569,
+      "Hazır!"
+     ]
+    ],
+    "normalMs": 7346,
+    "mode": "noready",
+    "failures": []
+   },
+   "ms": 7
+  },
+  {
+   "n": 42,
+   "label": null,
+   "goto": {
+    "url": "http://localhost:8085/index.html?webgl=yok&test=1"
+   },
+   "ms": 2252
+  },
+  {
+   "n": 43,
+   "label": null,
+   "result": [
+    "bekle",
+    "metin",
+    "metinler",
+    "normal",
+    "yeniMetinler",
+    "acilis",
+    "harita"
+   ],
+   "ms": 1
+  },
+  {
+   "n": 44,
+   "label": null,
+   "expect": {
+    "label": "AH06 WebGL yokken açılış durur ve ileti WebGL'i söyler (A-04: hata türüne göre ileti)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 3015
+  },
+  {
+   "n": 45,
+   "label": null,
+   "result": {
+    "acilis": {
+     "ready": false,
+     "readyMs": null,
+     "menu": false,
+     "yukleme": true,
+     "sonMetin": "Oyun başlatılamadı: tarayıcı WebGL grafik bağlamını açamadı (THREE.WebGLRenderer: Error creating WebGL context.).WebGL destekli güncel bir tarayıcı (Chrome, Edge, Firefox) kullan ve donanım hızlandırmasını aç.",
+     "metinler": [
+      [
+       2243,
+       "Oyun başlatılamadı: tarayıcı WebGL grafik bağlamını açamadı (THREE.WebGLRenderer: Error creating WebGL context.).WebGL destekli güncel bir tarayıcı (Chrome, Edge, Firefox) kullan ve donanım hızlandırmasını aç."
+      ]
+     ]
+    },
+    "yeni": [
+     [
+      2243,
+      "Oyun başlatılamadı: tarayıcı WebGL grafik bağlamını açamadı (THREE.WebGLRenderer: Error creating WebGL context.).WebGL destekli güncel bir tarayıcı (Chrome, Edge, Firefox) kullan ve donanım hızlandırmasını aç."
+     ]
+    ]
+   },
+   "ms": 2
+  },
+  {
+   "n": 46,
+   "label": null,
+   "goto": {
+    "url": "http://localhost:8085/index.html?importmap=yok&test=1"
+   },
+   "ms": 444
+  },
+  {
+   "n": 47,
+   "label": null,
+   "result": [
+    "bekle",
+    "metin",
+    "metinler",
+    "normal",
+    "yeniMetinler",
+    "acilis",
+    "harita"
+   ],
+   "ms": 85
+  },
+  {
+   "n": 48,
+   "label": null,
+   "expect": {
+    "label": "AH07 Tarayıcı import map desteklemiyorsa (HTMLScriptElement.supports('importmap') false) yükleme ekranında tek dosya sürümüne yönlendiren ileti görünür (A-04)",
+    "ok": true,
+    "value": "Tarayıcın modül eşlemesini (import map) desteklemiyor; oyun bu adresten açılamıyor.Tarayıcını güncelle (Chrome/Edge 89+, Firefox 108+, Safari 16.4+) ya da tek dosya sürümünü (DenizKorsanlari-SonHazine.html) indirip aç."
+   },
+   "ms": 17
+  },
+  {
+   "n": 49,
+   "label": null,
+   "result": {
+    "yeni": [
+     [
+      108,
+      "Tarayıcın modül eşlemesini (import map) desteklemiyor; oyun bu adresten açılamıyor.Tarayıcını güncelle (Chrome/Edge 89+, Firefox 108+, Safari 16.4+) ya da tek dosya sürümünü (DenizKorsanlari-SonHazine.html) indirip aç."
+     ]
+    ],
+    "ready": false
+   },
+   "ms": 87
+  },
+  {
+   "n": 50,
+   "label": null,
+   "goto": {
+    "url": "http://localhost:8085/index.html?modul=yok&test=1"
+   },
+   "ms": 93
+  },
+  {
+   "n": 51,
+   "label": null,
+   "result": [
+    "bekle",
+    "metin",
+    "metinler",
+    "normal",
+    "yeniMetinler",
+    "acilis",
+    "harita"
+   ],
+   "ms": 1
+  },
+  {
+   "n": 52,
+   "label": null,
+   "expect": {
+    "label": "AH08 Bir modül yüklenemezse (three 404) yükleme ekranında ~5 sn içinde modül/dosya yüklenemedi iletisi görünür (A-04)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 2
+  },
+  {
+   "n": 53,
+   "label": null,
+   "result": {
+    "importmapDegisti": true,
+    "importmapHata": null,
+    "ready": false,
+    "yeni": [
+     [
+      73,
+      "Oyun dosyaları yüklenemedi: bir modül indirilemedi ya da bulunamadı (js/main.js).Bağlantını denetleyip sayfayı yenile; sorun sürerse tek dosya sürümünü (DenizKorsanlari-SonHazine.html) kullan."
+     ]
+    ],
+    "sonMetin": "Oyun dosyaları yüklenemedi: bir modül indirilemedi ya da bulunamadı (js/main.js).Bağlantını denetleyip sayfayı yenile; sorun sürerse tek dosya sürümünü (DenizKorsanlari-SonHazine.html) kullan."
+   },
+   "ms": 2
+  },
+  {
+   "n": 54,
+   "label": null,
+   "goto": {
+    "url": "http://localhost:8085/index.html?askida=1&test=1"
+   },
+   "ms": 105
+  },
+  {
+   "n": 55,
+   "label": null,
+   "result": [
+    "bekle",
+    "metin",
+    "metinler",
+    "normal",
+    "yeniMetinler",
+    "acilis",
+    "harita"
+   ],
+   "ms": 4
+  },
+  {
+   "n": 56,
+   "label": null,
+   "expect": {
+    "label": "AH09 Açılış takılırsa (__ready 30–60 sn içinde gelmezse) yükleme ekranında uyarı görünür (normal açılışta görünmeyen yeni metin, 20–65 sn arasında; A-04)",
+    "ok": true,
+    "value": "30012 ms: Modeller yükleniyor…Yükleme beklenenden uzun sürüyor (30 sn+). İnternet bağlantını denetle; ilerlemezse sayfayı yenile ya da tek dosya sürümünü (DenizKorsanlari-SonHazine.html) kullan."
+   },
+   "ms": 30120
+  },
+  {
+   "n": 57,
+   "label": null,
+   "result": {
+    "ready": false,
+    "sonMetin": "Modeller yükleniyor…Yükleme beklenenden uzun sürüyor (30 sn+). İnternet bağlantını denetle; ilerlemezse sayfayı yenile ya da tek dosya sürümünü (DenizKorsanlari-SonHazine.html) kullan.",
+    "yeni": [
+     [
+      30012,
+      "Modeller yükleniyor…Yükleme beklenenden uzun sürüyor (30 sn+). İnternet bağlantını denetle; ilerlemezse sayfayı yenile ya da tek dosya sürümünü (DenizKorsanlari-SonHazine.html) kullan."
+     ]
+    ],
+    "simdi": 30225
+   },
+   "ms": 2
+  }
+ ],
+ "errors": [
+  "Arazi işçisi: test: enjekte ızgara hatası",
+  "THREE.WebGLRenderer: THREE.WebGLRenderer: Error creating WebGL context.",
+  "Error: THREE.WebGLRenderer: Error creating WebGL context.\n    at new WebGLRenderer (http://localhost:8085/vendor/three/three.module.js:16246:13)\n    at Object.init (http://localhost:8085/js/core/engine.js:20:15)\n    at boot (http://localhost:8085/js/main.js:108:10)\n    at http://localhost:8085/js/main.js:495:1",
+  "Failed to load resource: the server responded with a status of 404 (File not found)",
+  "NET http://localhost:8085/vendor/three/three.module.yok.js net::ERR_ABORTED"
+ ],
+ "pageErrors": [],
+ "fails": 6,
+ "evalErrors": 0,
+ "readyMs": 6950,
+ "ms": 150948,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/scenarios/02_acilis_hatalari.js",
+ "meta": {
+  "testler": [
+   "1 Normal Worker açılışı",
+   "2 Worker bulunamadığında",
+   "3 Worker çöktüğünde",
+   "5 Harita derinliği hazırlanması",
+   "KI-034",
+   "A-02",
+   "A-04",
+   "A-05",
+   "A-11",
+   "brief madde 1, 2, 3, 7"
+  ],
+  "dosyalar": [
+   "index.html",
+   "js/main.js",
+   "js/ui/mapArt.js",
+   "js/world/terrain.js",
+   "js/core/assets.js"
+  ],
+  "izinliHatalar": [
+   {
+    "desen": "Arazi işçisi: .*test: enjekte ızgara hatası",
+    "gerekce": "?izgara=hata: kasıtlı enjekte edilen işçi 'error' iletisi; terrain._onMsg bunu console.error ile yazar (beklenen tepki, açılış hatası DEĞİL)",
+    "tur": "konsol"
+   },
+   {
+    "desen": "Error creating WebGL context|WebGL context",
+    "gerekce": "?webgl=yok: getContext kasıtlı olarak null döner; three.js ve açılış hatası konsola yazılır (beklenen)",
+    "tur": "konsol"
+   },
+   {
+    "desen": "three\\.module\\.yok\\.js",
+    "gerekce": "?modul=yok: import map'teki 'three' girdisi kasıtlı olarak var olmayan dosyaya çevrilir; 404 ve modül yükleme hatası beklenir",
+    "tur": "hepsi"
+   }
+  ],
+  "baslatma": "(() => {\n     const q = location.search; const kip = (ad) => { const m = new RegExp('[?&]' + ad + '=([a-z0-9_]+)', 'i').exec(q); return m ? m[1] : null; };\n     // __ready'nin yazıldığı an (belge zamanı): koşucunun erişimcisi (varsa) korunarak sarılır; yoklama gecikmesinden bağımsız\n     const d = Object.getOwnPropertyDescriptor(window, '__ready'); const isaretle = (v) => { if (v && window.__readyAni === undefined) window.__readyAni = Math.round(performance.now()); };\n     if (d && d.configurable && typeof d.set === 'function') Object.defineProperty(window, '__ready', { configurable: true, enumerable: true, get: d.get, set(v) { isaretle(v); d.set.call(window, v); } });\n     else if (!d) { let h; Object.defineProperty(window, '__ready', { configurable: true, enumerable: true, get() { return h; }, set(v) { isaretle(v); h = v; } }); }\n     const L = window.__yuklemeMetinleri = [];\n     const izle = () => { const t = document.getElementById('load-text'); if (!t) return false; const kaydet = () => { const x = (t.textContent || '').trim(); if (x && (!L.length || L[L.length - 1][1] !== x) && L.length < 500) L.push([Math.round(performance.now()), x]); }; kaydet(); new MutationObserver(kaydet).observe(t, { childList: true, characterData: true, subtree: true }); return true; };\n     if (!izle()) document.addEventListener('DOMContentLoaded', izle);\n     const izgara = kip('izgara'), isci = kip('isci'); const W = window.Worker;\n     if (typeof W === 'function' && (izgara || isci)) {\n       function Sarili(url, opts) { const w = new W(url, opts); const post = w.postMessage.bind(w);\n         if (isci === 'noready') w.addEventListener('message', (e) => { if (e.data && e.data.t === 'ready') e.stopImmediatePropagation(); });\n         w.postMessage = function (m, tr) {\n           if (isci === 'hang' || isci === 'noready') return;\n           if (m && m.t === 'grid' && izgara === 'hata') { setTimeout(() => { try { w.dispatchEvent(new MessageEvent('message', { data: { t: 'error', id: m.id, msg: 'test: enjekte ızgara hatası' } })); } catch (e) { /* yoksay */ } }, 5); return; }\n           if (m && m.t === 'grid' && izgara === 'cok') { setTimeout(() => { try { w.dispatchEvent(new ErrorEvent('error', { message: 'test: enjekte işçi çökmesi (ızgara)', cancelable: true })); } catch (e) { /* yoksay */ } }, 5); return; }\n           return post(m, tr); };\n         return w; }\n       Sarili.prototype = W.prototype; window.Worker = Sarili;\n     }\n     if (kip('webgl') === 'yok') { const g = HTMLCanvasElement.prototype.getContext; HTMLCanvasElement.prototype.getContext = function (t) { if (/webgl/i.test(String(t))) return null; return g.apply(this, arguments); }; }\n     if (kip('importmap') === 'yok' && typeof HTMLScriptElement !== 'undefined') { const s0 = HTMLScriptElement.supports; HTMLScriptElement.supports = function (t) { return t === 'importmap' ? false : (s0 ? s0.call(HTMLScriptElement, t) : false); }; }\n     if (kip('modul') === 'yok') { const mo = new MutationObserver((kayitlar) => { for (const r of kayitlar) for (const n of r.addedNodes) if (n.tagName === 'SCRIPT' && n.type === 'importmap' && !n.__degisti) { try { const j = JSON.parse(n.textContent); if (j.imports && j.imports.three) { j.imports.three = j.imports.three.replace(/\\.js$/, '.yok.js'); n.textContent = JSON.stringify(j); n.__degisti = true; window.__importmapDegisti = true; } } catch (e) { window.__importmapHata = String(e); } } }); mo.observe(document, { childList: true, subtree: true }); }\n     if (kip('askida') === '1') { const f0 = window.fetch; window.fetch = function (u) { if (/\\.glb(\\?|$)/i.test(String(u && u.url || u))) return new Promise(() => {}); return f0.apply(this, arguments); }; }\n   })();"
+ },
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8085/index.html?test=1",
+  "verilenUrl": "http://localhost:8085/index.html",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "03b5c973bcc65adf48b63a1bd7746d43ee88ae6d",
+  "dal": "faz1-b2",
+  "kirli": true,
+  "tarih": "2026-11-15T05:29:21.191Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-b2/tests/harness/run.cjs /home/user/SON-HAZ-NE-b2/tests/scenarios/02_acilis_hatalari.js --url http://localhost:8085/index.html --size 640x360 --timeout 700 --report docs/v05/kosular/faz1/sonra_b2/ara/02_acilis_hatalari_ara3.json",
+  "cwd": "/home/user/SON-HAZ-NE-b2",
+  "sunucular": [
+   "statik sunucu http://localhost:8085 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8085"
+  ],
+  "commit": "03b5c973bcc65adf48b63a1bd7746d43ee88ae6d-kirli",
+  "senaryoSha256": "794dd6293f655cac2941239ff51cc1bbebe79f145e517a294b4b76e232f81eea",
+  "adim": {
+   "n": 26,
+   "js": "(async()=>{ const r = window.__hang = await window.__A.acilis(120000); const n = window.__KOSUCU.normalAcilisMs; r.normalMs = n; return r.ready && r.readyMs !== null && r.readyMs <= n + 5000; })()"
+  },
+  "url": "http://localhost:8085/index.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 3,
+   "id": "AH00",
+   "etiket": "AH00 Normal açılış (parametresiz): window.__ready ve ana menü",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 6,
+   "id": "AH01",
+   "etiket": "AH01 Normal başvuru açılışı (sıcak önbellek) tamamlanır; süre ölçülür",
+   "ok": true,
+   "deger": 7346,
+   "beklenen": {
+    "gte": 1
+   },
+   "sure_ms": 6777,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 12,
+   "id": "IZ01",
+   "etiket": "IZ01 Açılıştaki dünya ızgarası işi işçiden 'error' alsa da açılış tamamlanır (window.__ready; A-02)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 5413,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 14,
+   "id": "IZ02",
+   "etiket": "IZ02 Izgara hatasında ana menü açılır, yükleme ekranı kapanır",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 13,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 15,
+   "id": "IZ03",
+   "etiket": "IZ03 Izgara hatasında yükleme ekranında 'Oyun başlatılamadı' ya da yanıltıcı WebGL iddiası hiç görünmez",
+   "ok": true,
+   "deger": "yok",
+   "beklenen": {
+    "eq": "yok"
+   },
+   "sure_ms": 18,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 16,
+   "id": "IZ04",
+   "etiket": "IZ04 Izgara hatasından sonra dünya haritası ızgarası 60 sn içinde (yerel yedekte) üretilir: renderMapBase geçici parşömenden büyük (A-02)",
+   "ok": true,
+   "deger": 1024,
+   "beklenen": {
+    "gte": 128
+   },
+   "sure_ms": 4729,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 20,
+   "id": "IZ05",
+   "etiket": "IZ05 Açılıştaki ızgara işini alan her işçi çökse de (MAX_TRIES) açılış tamamlanır (A-05, A-02)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 5530,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 22,
+   "id": "IZ06",
+   "etiket": "IZ06 İşçi çökmesinde ana menü açılır, yükleme ekranı kapanır, 'başlatılamadı'/WebGL iletisi görünmez",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 11,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 23,
+   "id": "IZ07",
+   "etiket": "IZ07 İşçi çökmesinden sonra dünya haritası ızgarası 60 sn içinde yerel yedekte üretilir (A-05: iş yerel şeride devredilir)",
+   "ok": true,
+   "deger": 1024,
+   "beklenen": {
+    "gte": 128
+   },
+   "sure_ms": 4369,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 26,
+   "id": "AH02",
+   "etiket": "AH02 Yanıt vermeyen (askıdaki) işçide açılış ≤ normal + 5 sn (A-11: ilk iş için kısa gözetim, yerel şerit paralel)",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 25828,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": {
+    "sayfa": "/home/user/SON-HAZ-NE-b2/tests/out/goruntu/02_acilis_hatalari_2026-11-15T05-29-21-023Z_4992/ilk_kalan.png",
+    "tuval": "/home/user/SON-HAZ-NE-b2/tests/out/goruntu/02_acilis_hatalari_2026-11-15T05-29-21-023Z_4992/ilk_kalan_tuval.jpg"
+   }
+  },
+  {
+   "n": 28,
+   "id": "AH03",
+   "etiket": "AH03 Askıdaki işçide yükleme ekranı gecikmenin nedenini gösterir (normal açılışta görünmeyen, işçi/yedek/zaman aşımı anlatan bir metin; A-11)",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 8,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 31,
+   "id": "AH04",
+   "etiket": "AH04 Hazır sinyali gelmeyen işçide açılış ≤ normal + 5 sn (A-11)",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 14046,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 33,
+   "id": "AH05",
+   "etiket": "AH05 Hazır sinyali gelmeyen işçide yükleme ekranı gecikmenin nedenini gösterir (A-11)",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 36,
+   "id": "AH10",
+   "etiket": "AH10 ?terrain=hang kipinde açılış ≤ normal + 5 sn ve kipin zaman aşımı kaydı var (A-11, A-17)",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 6512,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 40,
+   "id": "AH11",
+   "etiket": "AH11 ?terrain=noready kipinde açılış ≤ normal + 5 sn ve kipin hazır-sinyali-yok kaydı var (A-11, A-17)",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 6735,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 44,
+   "id": "AH06",
+   "etiket": "AH06 WebGL yokken açılış durur ve ileti WebGL'i söyler (A-04: hata türüne göre ileti)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 3013,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 48,
+   "id": "AH07",
+   "etiket": "AH07 Tarayıcı import map desteklemiyorsa (HTMLScriptElement.supports('importmap') false) yükleme ekranında tek dosya sürümüne yönlendiren ileti görünür (A-04)",
+   "ok": true,
+   "deger": "Tarayıcın modül eşlemesini (import map) desteklemiyor; oyun bu adresten açılamıyor.Tarayıcını güncelle (Chrome/Edge 89+, Firefox 108+, Safari 16.4+) ya da tek dosya sürümünü (DenizKorsanlari-SonHazine.html) indirip aç.",
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 10,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 52,
+   "id": "AH08",
+   "etiket": "AH08 Bir modül yüklenemezse (three 404) yükleme ekranında ~5 sn içinde modül/dosya yüklenemedi iletisi görünür (A-04)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 56,
+   "id": "AH09",
+   "etiket": "AH09 Açılış takılırsa (__ready 30–60 sn içinde gelmezse) yükleme ekranında uyarı görünür (normal açılışta görünmeyen yeni metin, 20–65 sn arasında; A-04)",
+   "ok": true,
+   "deger": "30012 ms: Modeller yükleniyor…Yükleme beklenenden uzun sürüyor (30 sn+). İnternet bağlantını denetle; ilerlemezse sayfayı yenile ya da tek dosya sürümünü (DenizKorsanlari-SonHazine.html) kullan.",
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 30118,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [
+   {
+    "oyuncu": null,
+    "ileti": "Arazi işçisi: test: enjekte ızgara hatası",
+    "url": "http://localhost:8085/js/world/terrain.js",
+    "satir": 108,
+    "isci": false,
+    "izin": "Arazi işçisi: .*test: enjekte ızgara hatası",
+    "sayi": 1
+   },
+   {
+    "oyuncu": null,
+    "ileti": "THREE.WebGLRenderer: THREE.WebGLRenderer: Error creating WebGL context.",
+    "url": "http://localhost:8085/vendor/three/three.core.js",
+    "satir": 2052,
+    "isci": false,
+    "izin": "Error creating WebGL context|WebGL context",
+    "sayi": 1
+   },
+   {
+    "oyuncu": null,
+    "ileti": "Error: THREE.WebGLRenderer: Error creating WebGL context.\n    at new WebGLRenderer (http://localhost:8085/vendor/three/three.module.js:16246:13)\n    at Object.init (http://localhost:8085/js/core/engine.js:20:15)\n    at boot (http://localhost:8085/js/main.js:108:10)\n    at http://localhost:8085/js/main.js:495:1",
+    "url": "http://localhost:8085/js/main.js",
+    "satir": 495,
+    "isci": false,
+    "izin": "Error creating WebGL context|WebGL context",
+    "sayi": 1
+   }
+  ],
+  "konsolAgEslesen": 1,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [
+   {
+    "oyuncu": null,
+    "tur": "yanit",
+    "url": "http://localhost:8085/vendor/three/three.module.yok.js",
+    "durum": 404,
+    "metin": "File not found",
+    "kaynakTuru": "script",
+    "izin": "three\\.module\\.yok\\.js",
+    "sayi": 1
+   }
+  ],
+  "agIptal": [
+   {
+    "oyuncu": null,
+    "tur": "basarisiz",
+    "url": "http://localhost:8085/vendor/three/three.module.yok.js",
+    "hata": "net::ERR_ABORTED",
+    "kaynakTuru": "script",
+    "yontem": "GET",
+    "neden": "koşucu gezinmesi",
+    "sayi": 1
+   }
+  ],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8085/vendor/three/three.core.js",
+   "sayi": 264
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8085/vendor/three/three.core.js",
+   "sayi": 8
+  },
+  {
+   "oyuncu": null,
+   "ileti": "Dünya haritası ızgarası üretilemedi (test: enjekte ızgara hatası); geçici parşömenle devam ediliyor, yerel yedekte yeniden deneniyor",
+   "url": "http://localhost:8085/js/ui/mapArt.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "Arazi işçisi 0 devre dışı (hata: test: enjekte işçi çökmesi (ızgara)); 1 iş yeniden kuyruğa alınıyor",
+   "url": "http://localhost:8085/js/world/terrain.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "Arazi işçisi 1 devre dışı (hata: test: enjekte işçi çökmesi (ızgara)); 1 iş yeniden kuyruğa alınıyor",
+   "url": "http://localhost:8085/js/world/terrain.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "Arazi işçisi 2 devre dışı (hata: test: enjekte işçi çökmesi (ızgara)); 1 iş yeniden kuyruğa alınıyor",
+   "url": "http://localhost:8085/js/world/terrain.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "Arazi üretimi ana iş parçacığına alındı (hata: test: enjekte işçi çökmesi (ızgara))",
+   "url": "http://localhost:8085/js/world/terrain.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "Dünya haritası ızgarası üretilemedi (Arazi işi grid tekrarlanan işçi hatası); geçici parşömenle devam ediliyor, yerel yedekte yeniden deneniyor",
+   "url": "http://localhost:8085/js/ui/mapArt.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "Arazi işçisi 0 devre dışı (tile işi 20 sn içinde bitmedi); 2 iş yeniden kuyruğa alınıyor",
+   "url": "http://localhost:8085/js/world/terrain.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "Arazi işçisi 1 devre dışı (tile işi 20 sn içinde bitmedi); 2 iş yeniden kuyruğa alınıyor",
+   "url": "http://localhost:8085/js/world/terrain.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "Arazi işçisi 2 devre dışı (tile işi 20 sn içinde bitmedi); 2 iş yeniden kuyruğa alınıyor",
+   "url": "http://localhost:8085/js/world/terrain.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "Arazi üretimi ana iş parçacığına alındı (tile işi 20 sn içinde bitmedi)",
+   "url": "http://localhost:8085/js/world/terrain.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "Arazi işçisi 0 devre dışı (hazır sinyali gelmedi); 2 iş yeniden kuyruğa alınıyor",
+   "url": "http://localhost:8085/js/world/terrain.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "Arazi işçisi 1 devre dışı (hazır sinyali gelmedi); 2 iş yeniden kuyruğa alınıyor",
+   "url": "http://localhost:8085/js/world/terrain.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "Arazi işçisi 2 devre dışı (hazır sinyali gelmedi); 2 iş yeniden kuyruğa alınıyor",
+   "url": "http://localhost:8085/js/world/terrain.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "Arazi üretimi ana iş parçacığına alındı (hazır sinyali gelmedi)",
+   "url": "http://localhost:8085/js/world/terrain.js",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 16,
+  "toplam": 286,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  },
+  {
+   "desen": "Arazi işçisi: .*test: enjekte ızgara hatası",
+   "gerekce": "?izgara=hata: kasıtlı enjekte edilen işçi 'error' iletisi; terrain._onMsg bunu console.error ile yazar (beklenen tepki, açılış hatası DEĞİL)",
+   "tur": "konsol",
+   "kaynak": "meta",
+   "eslesme": 1
+  },
+  {
+   "desen": "Error creating WebGL context|WebGL context",
+   "gerekce": "?webgl=yok: getContext kasıtlı olarak null döner; three.js ve açılış hatası konsola yazılır (beklenen)",
+   "tur": "konsol",
+   "kaynak": "meta",
+   "eslesme": 2
+  },
+  {
+   "desen": "three\\.module\\.yok\\.js",
+   "gerekce": "?modul=yok: import map'teki 'three' girdisi kasıtlı olarak var olmayan dosyaya çevrilir; 404 ve modül yükleme hatası beklenir",
+   "tur": "hepsi",
+   "kaynak": "meta",
+   "eslesme": 1
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [
+  {
+   "ad": "ilk_kalan",
+   "sayfa": "/home/user/SON-HAZ-NE-b2/tests/out/goruntu/02_acilis_hatalari_2026-11-15T05-29-21-023Z_4992/ilk_kalan.png",
+   "tuval": "/home/user/SON-HAZ-NE-b2/tests/out/goruntu/02_acilis_hatalari_2026-11-15T05-29-21-023Z_4992/ilk_kalan_tuval.jpg"
+  }
+ ],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 2253,
+ "isaretciKilidi": {
+  "kip": "taklit",
+  "sayac": {
+   "istek": 0,
+   "verildi": 0,
+   "hedefDegisti": 0,
+   "red": 0,
+   "jestsiz": 0,
+   "kisitli": 0,
+   "birakma": 0,
+   "birakildi": 0,
+   "iptal": 0,
+   "degisimOlayi": 0,
+   "hataOlayi": 0,
+   "yonlendirilen": 0,
+   "susturulan": 0
+  }
+ },
+ "kopma": null,
+ "sonuc": {
+  "durum": "KALDI",
+  "cikisKodu": 1,
+  "neden": [
+   "başarısız kontrol ya da adım: 6"
+  ],
+  "onaySayisi": 19,
+  "kontrolSayisi": 19,
+  "gecen": 13,
+  "kalan": 6,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 3,
+  "izinliAg": 1,
+  "tur": "tarayici",
+  "turSayim": {
+   "tarayici": 19
+  },
+  "tarayiciKoptu": false,
+  "kopma": null
+ },
+ "sure": {
+  "hazirMs": 6950,
+  "toplamMs": 150948,
+  "yerlesmeMs": 1001
+ }
+}

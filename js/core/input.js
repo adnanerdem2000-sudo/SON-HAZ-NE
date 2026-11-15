@@ -92,6 +92,28 @@ export const input = {
     window.addEventListener('gamepaddisconnected', () => { this.pad = null; });
   },
 
+  // Oyun girdisi kilidi (A-03): hızlı yolculuk perdesi ve uzak uyanış beklemesi gibi pencerelerde hareket, eylem ve kamera girdisi
+  // okunmaz. Kilit nedenlerle tutulur (iç içe kilitler birbirini açmaz); 'duraklat' (Esc) açık kalır: oyuncu bekleme sırasında
+  // duraklatma menüsünden ana menüye dönebilir (devam kodu oturum belirteciyle iptal olur). Basılı tuş durumu silinmez.
+  _blocks: new Set(),
+  block(why) { this._blocks.add(why); },
+  unblock(why) { if (this._blocks.delete(why) && !this._blocks.size) this._kilitSonu(); },
+  isBlocked() { return this._blocks.size > 0; },
+  // oturum bitince (game.stop) bütün oyun girdisi kilitleri kalkar
+  clearBlocks() { const vardi = this._blocks.size > 0; this._blocks.clear(); if (vardi) this._kilitSonu(); },
+  _gate(action) { return this._blocks.size > 0 && action !== 'duraklat'; },
+  // Son kilit kalkarken (karşıt denetim B2-D2): kilit sürerken basılan tuşların kenar tetikleyicileri (pressed), fare ve tekerlek
+  // birikimi silinir, kumandanın o anda basılı düğmeleri "önceden basılı" sayılır: kilit kalkınca ilk karede yeni basılmış görünüp
+  // işlenmesinler (kilit kalkışı kare arasında olur; perde altında basılan Tab varışta envanteri açıyordu). Esc (duraklat) kilitliyken
+  // de açık olduğu için korunur; basılı tuş durumu (down) silinmez.
+  _kilitSonu() {
+    const esc = this.bindings.duraklat;
+    for (const c of this.pressedSet) if (c !== esc) this.pressedSet.delete(c);
+    this.mouseDX = 0; this.mouseDY = 0; this.wheel = 0;
+    const p = this._padState();
+    if (p) this.padPrev = p.buttons.map((b) => b.pressed);
+  },
+
   lockPointer() {
     if (!this.pointerLocked && this.canvas && document.hasFocus()) {
       try { const p = this.canvas.requestPointerLock(); if (p && p.catch) p.catch(() => {}); } catch (e) { /* yoksay */ }
@@ -100,11 +122,12 @@ export const input = {
   unlockPointer() { if (document.pointerLockElement) document.exitPointerLock(); },
 
   isDown(action) {
+    if (this._gate(action)) return false;
     const c = this.bindings[action];
     return (c && this.down.has(c)) || this._padDown(action);
   },
   pressed(action) {
-    if (this.subframe) return false;
+    if (this.subframe || this._gate(action)) return false;
     const c = this.bindings[action];
     return (c && this.pressedSet.has(c)) || this._padPressed(action);
   },
@@ -132,6 +155,7 @@ export const input = {
 
   // Hareket ekseni (-1..1)
   moveAxis() {
+    if (this._blocks.size) return { x: 0, y: 0 };
     let x = 0, y = 0;
     if (this.isDown('ileri')) y += 1;
     if (this.isDown('geri')) y -= 1;
@@ -149,6 +173,7 @@ export const input = {
   },
 
   lookDelta() {
+    if (this._blocks.size) return { dx: 0, dy: 0 };
     let dx = this.mouseDX * 0.0022 * this.sensitivity, dy = this.mouseDY * 0.0022 * this.sensitivity;
     const p = this._padState();
     if (p) {

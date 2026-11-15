@@ -1,0 +1,49 @@
+# 2026-11-15T09:33:52Z b2 ağacı 03b5c97+çalışma kopyası; koşucu ed8820b9 ortak.cjs b29886a4; senaryo /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/faz1b_b2_denetim/kopya/tests/tani_b2_denetim.js 925373653576
+# sunulan oyun (/home/user/SON-HAZ-NE-b2): main.js 991d08ae game.js e13e82ef engine.js 0b59aa40 input.js 7c08c7c7
+# komut: /home/user/devtools/tk timeout 760 node tests/harness/run.cjs /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/faz1b_b2_denetim/kopya/tests/tani_b2_denetim.js --url 'http://localhost:8085/index.html' --size 640x360 --timeout 700 --report /home/user/SON-HAZ-NE-b2/docs/v05/kosular/faz1/sonra_b2/duzeltme/tani/denetci_tani_b2_denetim.json 
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+ready in 6.1 s
+PASS T00 b2: yeni oyun başladı → "playing"
+PASS T01 önkoşul: oyunda fare kilidi alındı → true
+PASS T02 KI-235: ana menüye dönüşten 1,5 sn sonra fare kilidi yok → true
+GOTO http://localhost:8080/index.html?test=1
+PASS T10 v0.4 (8080): yeni oyun başladı → "playing@8080"
+DEGISKEN v04kayit = "{\"version\":1,\"savedAt\":1794735310026,\"playTime\":0.11660000000000034,\"name\":\"Kaptan Deniz\",\"player\":{\"pos\":{\"x\":288.7288505086093,\"y\":3.4,\"z\":-5003.202558654656},\"hp\":77,\"inv\":
+R: {"anahtar":["version","savedAt","playTime","name","player","ship","world","misc","time","treasure","enemies","islands","hazards","bosses","quests","progress"],"oyuncu":["pos","hp","inv","onShip","lx","lz"],"uzunluk":16595,"konum":{"x":288.7288505086093,"y":3.4,"z":-5003.202558654656},"altin":1234}
+DIALOG beforeunload kabul edildi 
+GOTO http://localhost:8085/index.html?test=1
+PASS T11 v0.4 kaydı b2 save.write/read/list ile yazılıp okunuyor → true
+PASS T12 v0.4 kaydı b2de yüklenir: altın, can, gemi adı, konum (uzak iskele) aynı → true
+R: {"durum":"playing","yuklemeOrnekleri":[["menu",false],["loading",true]],"altin":1234,"can":77,"muz":7,"gemi":"Eski Kayıt","yatay":1.4,"y":3.9}
+FAIL T13 uzak iskelede kayıttan açılışta oyuncu 3 sn sonra iskelede (suya düşmedi) → false
+GORUNTU /home/user/SON-HAZ-NE-b2/tests/out/goruntu/tani_b2_denetim_2026-11-15T09-34-32-753Z_27848/ilk_kalan.png
+R: {"mod":"swim","y":-2.21,"zemin":-8.07}
+PASS T14 kayıt biçimi: v0.4 ile b2 serialize anahtarları (üst, oyuncu, gemi) ve sürüm aynı → true
+R: {"ust04":"bosses,enemies,hazards,islands,misc,name,playTime,player,progress,quests,savedAt,ship,time,treasure,version,world","ustB2":"bosses,enemies,hazards,islands,misc,name,playTime,player,progress,quests,savedAt,ship,time,treasure,version,world","oy04":"hp,inv,lx,lz,onShip,pos","oyB2":"hp,inv,lx,lz,onShip,pos","gemi04":"anchorState,cannonHp,cannonballs,hold,holes,hp,id,look,mastHp,name,parts,planks,sailTarget,sunk,typeId,upg,water,x,yaw,z","gemiB2":"anchorState,cannonHp,cannonballs,hold,holes,hp,id,look,mastHp,name,parts,planks,sailTarget,sunk,typeId,upg,water,x,yaw,z","surum":[1,1]}
+R: "kuruldu"
+R: {"busy":true,"fps":0,"butce":120}
+PASS T20 hızlı yolculuk tamamlandı (ölçüm: örtü süresince updaters/net.update çağrı sayısı) → true
+R: {"ortuSureMs":1424,"ortuIciTik":2,"ortuIciNetUpdate":2,"onceTikPerSn":13,"ortu":[["ac",34417,0,120,27],["ac",35617,0,120,29],["kapat",35798,0,120,29],["kapat",35798,0,10,29],["kapat",35841,0,10,29]],"varisMs":1425,"sonFps":0,"sonButce":10}
+PASS T21 örtü kapanınca engine.fpsLimit (0) ve terrain.localBudget (10) eski değerinde → true
+R: {"gemi":[4000,-4000],"mod":"ground","olu":true}
+R: {"uyanis":{"tok":1,"perde":{"f":"ref: <Node>","no":2},"ortu":{"o":{"n":1,"eski":10,"deger":120,"cEski":false},"acik":true},"iv":425},"oturum":1,"yavas":[{"t0":47927,"x":4000,"z":-4000}],"olu":true}
+PASS T30 menüye dönüş + yeni oyun (önceki oturumun uyanış hazırlığı sürerken) → "playing"
+R: {"menu":"menu","durum":"playing","oturum":3,"uyanis":null,"t":49562}
+R: {"olu":true,"uyanis":null,"oturum":3}
+PASS T31 A-14: yeni oturumda ölüm ekranından uyanış çalışır (önceki oturumdan kalan uyanış bayrağı engellemez) → true
+R: {"olu":false,"panelAcik":false,"uyanis":null,"oturum":3,"t":62560}
+PASS T32 eski hazırlık bittikten sonra oyuncu ya uyanmış ya da ölüm ekranı açık (kilitli kalmadı) → true
+R: {"olu":false,"panelAcik":false,"uyanis":false,"bitti":true,"t":63577}
+R: {"olu":false}
+R: {"olu":true,"gemi":[-4200,4200]}
+PASS T40 uyanış perdesi gemi adını düz metin olarak gösterir (HTML yorumlanmaz) → true
+R: {"b":false,"img":false,"xss":0,"metin":"<b id=\"perdeB\">K</b><img id=\"perdeImg\" src=\"data:,\" onerror=\"window.__perdeXss=(window.__perdeXss||0)+1\">Kendine gelmeye"}
+R: {"xss":0,"olu":false}
+PASS T50 önkoşul: oyuncu uyanık, bekleyen uyanış yok → true
+R: {"olu":true,"gemi":[4300,4300]}
+R: {"uyanis":true,"olu":true}
+PASS T51 A-14: gemide uyanış beklerken gemi batarsa oyuncu ya başka yerde uyanır ya da ölüm ekranı yeniden açılır (ölü ve ekransız kalmaz) → true
+R: {"olu":false,"panelAcik":false,"perde":false,"uyanis":false}
+errors: 0 pageErrors: 0 fails: 1 (138.8 s)
+SONUC: KALDI (çıkış 1) kontrol 15/16, onay 16 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/102 | neden: başarısız kontrol ya da adım: 1
+# çıkış 1 2026-11-15T09:36:56Z

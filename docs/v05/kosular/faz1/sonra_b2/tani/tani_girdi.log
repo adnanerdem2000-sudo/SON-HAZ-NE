@@ -1,0 +1,8 @@
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+ready in 5.8 s
+R: "playing"
+R: {"perdeAltinda":{"perdeAcik":true,"kilitli":true,"yuruyus":0,"panel":[],"uiOpen":false},"varistanSonra":{"kilitSonra":false,"yuruyusSonra":3.174,"mod":"ground","altin":1990}}
+PASS G1 Perde açıkken W/Tab/E: oyuncu yürümez, panel açılmaz (girdi kilitli) → true
+PASS G2 Varıştan sonra kilit kalkar: W ile yürünür; ücret bir kez (varışta) düşülmüş → true
+errors: 0 pageErrors: 0 fails: 0 (26.4 s)
+SONUC: OLCUM (çıkış 0) kontrol 2/2, onay 2 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34

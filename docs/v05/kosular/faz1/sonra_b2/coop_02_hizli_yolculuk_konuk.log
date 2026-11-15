@@ -1,0 +1,30 @@
+# 2026-11-15T06:24:01Z b2 ağacı 03b5c97+çalışma kopyası; koşucu 6243f043 ortak.cjs b29886a4; senaryo tests/scenarios/coop/02_hizli_yolculuk_konuk.cjs 6cad74c81c36
+# komut: /home/user/devtools/tk timeout 660 node tests/harness/coop.cjs tests/scenarios/coop/02_hizli_yolculuk_konuk.cjs --url 'http://localhost:8085/index.html?peerhost=127.0.0.1&peerport=9000' --size 640x360 --timeout 600 --report /home/user/SON-HAZ-NE-b2/docs/v05/kosular/faz1/sonra_b2/coop_02_hizli_yolculuk_konuk.json --players 2
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+Kaptan/host {"code":"4XMMAQ"}
+Tayfa/join {"room":"Teleport Odası"}
+Kaptan/hs "host-started"
+Tayfa/gs "guest-started"
+PASS HK00 İki oyuncu çevrimiçi oyunda (oda sahibi + konuk) → {"hOk":true,"gOk":true}
+Kaptan/limanlar {"A":{"id":"tuz_pazari_port_0","x":1762,"z":867,"bx":1675.2568595101525,"bz":813.3948727069121},"B":{"id":"kuzeyfener_port_0","x":295,"z":-5118,"bx":290.1282535528674,"bz":-5003.161679323434},"C":{"id":"zumrut_koy_port_0","x":-305,"z":5125,"bx":-306.8303803092046,"bz":5025.082219736824}}
+Tayfa/g-kur "kuruldu"
+Tayfa/g-oncesi1 [7,214]
+Kaptan/h-ft1 "yola çıkıldı"
+Tayfa/g-ilk {"ms":1405,"teleport":1}
+PASS HK01 Önkoşul: oda sahibinin hızlı yolculuğu konuğa ulaştı ('teleport' iletisi) ve konukta varış bölgesinin hazırlığı başladı (bekleme penceresi açık) → {"kur":"kuruldu","ilk":{"ms":1405,"teleport":1}}
+Kaptan/h-ikinci "ikinci teleport yayınlandı"
+Tayfa/g-ikinci {"teleport":[[1675,813],[290,-5003]],"cagri":[[1675,813,400,"bekliyor"]],"ilkBekliyor":true,"ikinciHazirlik":0}
+PASS HK02 Önkoşul: ikinci 'teleport' iletisi konuğa, ilk hazırlık hâlâ beklerken ulaştı → {"teleport":[[1675,813],[290,-5003]],"cagri":[[1675,813,400,"bekliyor"]],"ilkBekliyor":true,"ikinciHazirlik":0}
+PASS HK03 Bekleme sırasında gelen ikinci 'teleport' iletisi yok sayılır: konukta ikinci bölgenin hazırlığı başlamaz (brief madde 5: konuk işleyicisinde travelBusy) → {"ikinciHazirlik":0,"cagri":[[1675,813,400,"bekliyor"]]}
+Tayfa/g-son1 {"ayniOyuncu":true,"konum":[1675,814],"aUzaklik":1,"bUzaklik":5980,"varisBildirimi":["Kaptan rotayı kırdı: yeni limana vardınız!"],"durum":"playing"}
+PASS HK04 Kapı açılınca konuk bir kez ve ilk hedefe taşınır: konuk Tuz Pazarı biniş noktasında (≤ 30 m), tek "vardınız" bildirimi (ikinci ileti konuğu Kuzeyfener'e taşımaz) → {"ayniOyuncu":true,"konum":[1675,814],"aUzaklik":1,"bUzaklik":5980,"varisBildirimi":["Kaptan rotayı kırdı: yeni limana vardınız!"],"durum":"playing"}
+Tayfa/g-oncesi2 {"konum":[1675,814],"durum":"playing"}
+Kaptan/h-ft2 "yola çıkıldı: zumrut_koy_port_0"
+Tayfa/g-ilk2 {"ms":1607}
+PASS HK05 Önkoşul: ikinci hızlı yolculuk konuğa ulaştı, konukta hazırlık başladı (bekleme penceresi açık) → {"C":{"id":"zumrut_koy_port_0","x":-305,"z":5125,"bx":-306.8303803092046,"bz":5025.082219736824},"ilk2":{"ms":1607},"oncesi2":{"konum":[1675,814],"durum":"playing"}}
+Tayfa/g-son2 {"durum":"menu","menu":true,"hud":false,"oyuncuKaydi":0,"cUzaklik":4654,"bildirimSonra":[]}
+PASS HK06 Bekleme sırasında menüye dönen konuk: hazırlık bitince durum 'menu', ana menü açık, HUD kapalı (brief madde 5: oturum belirteci) → {"durum":"menu","menu":true,"hud":false,"oyuncuKaydi":0,"cUzaklik":4654,"bildirimSonra":[]}
+PASS HK07 Bekleme sırasında menüye dönen konuk: devam kodu oyuncuyu varış limanına taşımaz ve "vardınız" bildirimi üretmez → {"durum":"menu","menu":true,"hud":false,"oyuncuKaydi":0,"cUzaklik":4654,"bildirimSonra":[]}
+checks: 8 fails: 0 pageErrors: 0 (122.6 s)
+SONUC: GECTI (çıkış 0) kontrol 8/8 | ev() istisnası 0, kapalı sayfa atlama 0, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 4 farklı/68
+# çıkış 0 2026-11-15T06:28:21Z

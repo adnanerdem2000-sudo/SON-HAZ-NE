@@ -1,0 +1,32 @@
+# 2026-11-15T05:35:11Z b2 ağacı 03b5c97+çalışma kopyası; koşucu ed8820b9 ortak.cjs b29886a4; senaryo tests/scenarios/02_depolama_kapali.js 08831f4b6de6
+# komut: /home/user/devtools/tk timeout 460 node tests/harness/run.cjs tests/scenarios/02_depolama_kapali.js --url 'http://localhost:8085/index.html' --size 640x360 --timeout 400 --report /home/user/SON-HAZ-NE-b2/docs/v05/kosular/faz1/sonra_b2/02_depolama_kapali.json 
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+başlatma betiği: 1 meta, 0 dosya
+ready in 6.4 s
+PASS DK01 Normal depolamayla açılış: ana menü görünür, ≥ 8 düğme → true
+GOTO http://localhost:8085/index.html?depolama=kapali&peerhost=127.0.0.1&peerport=9000&test=1
+PASS DK02 Kurulum: bu sayfada localStorage erişimi SecurityError atıyor → "SecurityError"
+PASS DK03 Site verisi engelliyken açılış tamamlanır (window.__ready) → true
+R: {"ready":true,"ms":6852,"yuklemeMetni":"Hazır!"}
+PASS DK04 Site verisi engelliyken ana menü görünür (≥ 8 düğme), yükleme ekranı kapalı → true
+PASS DK05 Yükleme ekranında yanıltıcı 'Oyun başlatılamadı … WebGL' metni yok → true
+PASS DK06 Menüde görünür "tarayıcı kayda izin vermiyor / kayıt yapılamıyor" bildirimi var → true
+PASS DK07 Site verisi engelliyken arayüzden yeni oyun başlar (YENİ MACERA → Maceraya Başla) → true
+R: ["Keşfedildi: Kırlangıç Limanı","Hedef: Hanın önündeki Yaşlı Kaptan Tuzla ile konuş. (J: Korsan Defteri)","Tarayıcı kayda izin vermiyor (site verisi engelli): ilerleme kaydedilemiyor."]
+PASS DK08 Kayıt denemesi "tarayıcı kayda izin vermiyor / kayıt yapılamıyor" bildirimi verir → true
+R: "Kırlangıç Limanı'na hoş geldin, korsan! (Esc: menü · J: defter) | Tarayıcı kayda izin vermiyor (site verisi engelli): ilerleme kaydedilemiyor. | Keşfedildi: Kırlangıç Adası | Keşfedildi: Kırlangıç Limanı | Hedef: Hanın önündeki Yaşlı Kaptan Tuzla ile konuş. (J: Korsan Defteri) | Tarayıcı kayda izin vermiyor (site verisi engelli): ilerleme kaydedilemiyor."
+R: {"durum":"menu","menu":true}
+PASS DK09 Site verisi engelliyken menüye dönüş ve menü yeniden çizimi çalışır → true
+R: "başlatıldı"
+PASS DK10 Site verisi engelliyken DK.handlers.startGame({kind:"solo", slot:0}) ile oyun başlar → true
+PASS DK11 Engelli açılış boyunca SecurityError/localStorage içeren konsol hatası ve sayfa hatası 0 → true
+R: {"konsol":0,"sayfa":0,"ornek":[]}
+R: {"durum":"menu"}
+PASS DK12 Site verisi engelliyken ONLINE → Oda kur paneli açılır (yuva listesi okunabiliyor) → true
+PASS DK13 Site verisi engelliyken oda kurulur (yerel sinyal sunucusu), lobi açılır → "lobi"
+PASS DK14 Site verisi engelliyken çevrimiçi oyun (oda sahibi) başlar (startOnlineHost korumalı) → true
+PASS DK15 Çevrimiçi akış boyunca da SecurityError/localStorage içeren konsol hatası ve sayfa hatası 0 → true
+R: {"konsol":0,"sayfa":0,"ornek":[]}
+errors: 0 pageErrors: 0 fails: 0 (44.7 s)
+SONUC: GECTI (çıkış 0) kontrol 15/15, onay 15 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 3 farklı/69
+# çıkış 0 2026-11-15T05:39:09Z

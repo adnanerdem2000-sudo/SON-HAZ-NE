@@ -1,0 +1,1587 @@
+{
+ "scenario": "tests/scenarios/02_uyanis_ortu.js",
+ "url": "http://localhost:8098/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "degisken": {
+    "ad": "yardimci",
+    "deger": "(()=>{ const Y = window.__Y = {};\n   Y.bekle = (ms) => new Promise((r) => setTimeout(r, ms));\n   Y.perde = () => !!document.querySelector('#sleep-fade.on');\n   Y.yeniOyun = async (slot) => { DK.G.noAutoPause = true; await DK.handlers.startGame({ kind: 'solo', slot: slot || 0, data: null }); for (let i = 0; i < 100 && !(DK.G.state === 'playing' && DK.G.player); i++) await Y.bekle(100); return DK.G.state === 'playing' && !!DK.G.player; };\n   Y.gemiUzaga = (x, z) => { const s = DK.G.ship; s.x = x; s.z = z; s.vx = 0; s.vz = 0; s.speed = 0; s.anchored = true; s.anchorPt = null; s.updateTransform(0); return [s.x, s.z]; };\n   Y.geciktir = (ms) => { const T = DK.terrain, o = T.prepare; const D = window.__gecikme = { ms, basladi: null, bitti: false }; T.prepare = function (x, z, op) { if (op && op.radius === 400 && D.basladi === null) { T.prepare = o; D.basladi = Math.round(performance.now()); D.x = Math.round(x); D.z = Math.round(z); const self = this, args = arguments; return new Promise((r) => setTimeout(r, ms)).then(() => o.apply(self, args)).finally(() => { D.bitti = true; }); } return o.apply(this, arguments); }; return D; };\n   Y.uyanisBitti = async (sinir) => { const t0 = performance.now(); while (performance.now() - t0 < (sinir || 60000) && (DK.input.isBlocked() || Y.perde())) await Y.bekle(200); await Y.bekle(1000); };\n   Y.durum = () => { const p = DK.G.player, s = DK.G.ship, H = DK.ports.byId('kirlangic_limani'); return { olu: p.dead, mod: p.mode, panel: DK.ui.isOpen(), kilit: DK.input.isBlocked(), perde: Y.perde(), limanaUzaklik: Math.round(Math.hypot(p.pos.x - H.x, p.pos.z - H.z)), gemiyeUzaklik: s ? Math.round(Math.hypot(p.pos.x - s.x, p.pos.z - s.z)) : null, oturum: DK.G.session }; };\n   return Object.keys(Y); })()"
+   },
+   "ms": 7
+  },
+  {
+   "n": 2,
+   "label": null,
+   "result": [
+    "bekle",
+    "perde",
+    "yeniOyun",
+    "gemiUzaga",
+    "geciktir",
+    "uyanisBitti",
+    "durum"
+   ],
+   "ms": 2
+  },
+  {
+   "n": 3,
+   "label": null,
+   "expect": {
+    "label": "UO00 (bölüm 1) Yeni oyun başladı",
+    "ok": true,
+    "value": true
+   },
+   "ms": 1480
+  },
+  {
+   "n": 4,
+   "label": null,
+   "result": {
+    "kilitli": true,
+    "perde": true,
+    "fps0": 0,
+    "butce0": 10
+   },
+   "ms": 7481
+  },
+  {
+   "n": 5,
+   "label": null,
+   "ms": 698
+  },
+  {
+   "n": 6,
+   "label": null,
+   "ms": 15
+  },
+  {
+   "n": 7,
+   "label": null,
+   "ms": 6
+  },
+  {
+   "n": 8,
+   "label": null,
+   "ms": 2
+  },
+  {
+   "n": 9,
+   "label": null,
+   "expect": {
+    "label": "UO10 Önkoşul: dört tuş (Tab, M, E, Boşluk) gerçek klavye olayıyla, hızlı yolculuk perdesi açık ve oyun girdisi kilitliyken basıldı",
+    "ok": true,
+    "value": true
+   },
+   "ms": 14
+  },
+  {
+   "n": 10,
+   "label": null,
+   "result": [
+    {
+     "code": "Tab",
+     "kilit": true,
+     "perde": true,
+     "t": 20560
+    },
+    {
+     "code": "KeyM",
+     "kilit": true,
+     "perde": true,
+     "t": 20604
+    },
+    {
+     "code": "KeyE",
+     "kilit": true,
+     "perde": true,
+     "t": 20619
+    },
+    {
+     "code": "Space",
+     "kilit": true,
+     "perde": true,
+     "t": 20624
+    }
+   ],
+   "ms": 2
+  },
+  {
+   "n": 11,
+   "label": null,
+   "result": {
+    "varis": true,
+    "blokMs": 936,
+    "tik": 0,
+    "tikSn": 0,
+    "net": 0,
+    "cizimBlok": 0,
+    "cizimSonra": 17,
+    "olaySonra": [
+     "openInventory",
+     "openMap"
+    ],
+    "son": {
+     "panel": true,
+     "uiOpen": true,
+     "mod": "ground",
+     "fps": 0,
+     "butce": 10
+    }
+   },
+   "ms": 7172
+  },
+  {
+   "n": 12,
+   "label": null,
+   "expect": {
+    "label": "UO11 Hızlı yolculuk perdesi (girdi kilidi) süresince oyun döngüsü sürer: güncelleyiciler saniyede ≥ 5 kez ve net.update ≥ 5 kez çağrıldı (B2-D2; önce: örtü motorun kare sınırını 0,25 FPS yapıyor, 0 tik)",
+    "ok": false,
+    "value": false
+   },
+   "ms": 13677
+  },
+  {
+   "n": 13,
+   "label": null,
+   "expect": {
+    "label": "UO12 Perde altında gerçek klavyeyle basılan Tab/M/E/Boşluk varışta işlenmez: envanter/harita olayı yok, panel açık değil (B2-D2; önce: basışlar birikip kilit kalkınca ilk karede işleniyordu)",
+    "ok": false,
+    "value": false
+   },
+   "ms": 38
+  },
+  {
+   "n": 14,
+   "label": null,
+   "expect": {
+    "label": "UO14 Örtü süresince 3B sahne çizilmez (KI-237), örtü kapanınca çizim sürer; motorun kare sınırı ve yerel dilim bütçesi eski değerinde",
+    "ok": true,
+    "value": true
+   },
+   "ms": 41
+  },
+  {
+   "n": 15,
+   "label": null,
+   "result": "hazır",
+   "ms": 10
+  },
+  {
+   "n": 16,
+   "label": null,
+   "ms": 404
+  },
+  {
+   "n": 17,
+   "label": null,
+   "expect": {
+    "label": "UO13 Varıştan sonra girdi çalışır: gerçek klavyeyle Tab envanteri açar, kilit kalkmış",
+    "ok": true,
+    "value": true
+   },
+   "ms": 609
+  },
+  {
+   "n": 18,
+   "label": null,
+   "goto": {
+    "url": "http://localhost:8098/index.html?test=1"
+   },
+   "ms": 16657
+  },
+  {
+   "n": 19,
+   "label": null,
+   "result": [
+    "bekle",
+    "perde",
+    "yeniOyun",
+    "gemiUzaga",
+    "geciktir",
+    "uyanisBitti",
+    "durum"
+   ],
+   "ms": 24
+  },
+  {
+   "n": 20,
+   "label": null,
+   "expect": {
+    "label": "UO20 (bölüm 2) Yeni oyun başladı",
+    "ok": true,
+    "value": true
+   },
+   "ms": 266
+  },
+  {
+   "n": 21,
+   "label": null,
+   "result": {
+    "olu": true,
+    "mod": "ground",
+    "panel": false,
+    "kilit": false,
+    "perde": false,
+    "limanaUzaklik": 13,
+    "gemiyeUzaklik": 5807,
+    "oturum": 1
+   },
+   "ms": 4
+  },
+  {
+   "n": 22,
+   "label": null,
+   "tikla": {
+    "metin": "Gemide uyan"
+   },
+   "ms": 8096
+  },
+  {
+   "n": 23,
+   "label": null,
+   "result": {
+    "bekleyen": {
+     "olu": true,
+     "mod": "ground",
+     "panel": false,
+     "kilit": true,
+     "perde": true,
+     "limanaUzaklik": 13,
+     "gemiyeUzaklik": 5807,
+     "oturum": 1
+    },
+    "gecikme": {
+     "ms": 15000,
+     "basladi": 26204,
+     "bitti": false,
+     "x": 4000,
+     "z": -4000
+    }
+   },
+   "ms": 2006
+  },
+  {
+   "n": 24,
+   "label": null,
+   "expect": {
+    "label": "UO23 Önkoşul: eski oturumun gemide uyanışı beklerken (hazırlık 15 sn geciktirildi) menüye dönüldü ve yeni oyun başladı",
+    "ok": true,
+    "value": true
+   },
+   "ms": 1016
+  },
+  {
+   "n": 25,
+   "label": null,
+   "result": {
+    "olu": true,
+    "mod": "ground",
+    "panel": false,
+    "kilit": false,
+    "perde": false,
+    "limanaUzaklik": 13,
+    "gemiyeUzaklik": 73,
+    "oturum": 3
+   },
+   "ms": 19
+  },
+  {
+   "n": 26,
+   "label": null,
+   "tikla": {
+    "metin": "Kırlangıç Limanı'nda uyan"
+   },
+   "ms": 2665
+  },
+  {
+   "n": 27,
+   "label": null,
+   "expect": {
+    "label": "UO21 Yeni oturumda ölüm ekranından uyanış çalışır; önceki oturumdan kalan bekleyen uyanış onu yutmaz (B2-D1)",
+    "ok": false,
+    "value": false
+   },
+   "ms": 2510
+  },
+  {
+   "n": 28,
+   "label": null,
+   "expect": {
+    "label": "UO22 Eski oturumun hazırlığı bittikten sonra oyuncu uyanık ve limanda; girdi kilidi ve perde kalmadı (B2-D1)",
+    "ok": false,
+    "value": false
+   },
+   "ms": 9689
+  },
+  {
+   "n": 29,
+   "label": null,
+   "result": {
+    "bekleyen": {
+     "olu": true,
+     "mod": "ground",
+     "panel": false,
+     "kilit": true,
+     "perde": true,
+     "limanaUzaklik": 13,
+     "gemiyeUzaklik": 5807,
+     "oturum": 1
+    },
+    "gecikme": {
+     "ms": 15000,
+     "basladi": 26204,
+     "bitti": true,
+     "x": 4000,
+     "z": -4000
+    },
+    "menu": "menu",
+    "yeni": {
+     "olu": false,
+     "mod": "ground",
+     "panel": false,
+     "kilit": false,
+     "perde": false,
+     "limanaUzaklik": 13,
+     "gemiyeUzaklik": 73,
+     "oturum": 3
+    },
+    "ikinci": {
+     "olu": true,
+     "mod": "ground",
+     "panel": false,
+     "kilit": false,
+     "perde": false,
+     "limanaUzaklik": 13,
+     "gemiyeUzaklik": 73,
+     "oturum": 3
+    },
+    "son": {
+     "olu": true,
+     "mod": "ground",
+     "panel": false,
+     "kilit": false,
+     "perde": false,
+     "limanaUzaklik": 13,
+     "gemiyeUzaklik": 73,
+     "oturum": 3
+    }
+   },
+   "ms": 7
+  },
+  {
+   "n": 30,
+   "label": null,
+   "goto": {
+    "url": "http://localhost:8098/index.html?test=1"
+   },
+   "ms": 17963
+  },
+  {
+   "n": 31,
+   "label": null,
+   "result": [
+    "bekle",
+    "perde",
+    "yeniOyun",
+    "gemiUzaga",
+    "geciktir",
+    "uyanisBitti",
+    "durum"
+   ],
+   "ms": 20
+  },
+  {
+   "n": 32,
+   "label": null,
+   "expect": {
+    "label": "UO30 (bölüm 3) Yeni oyun başladı",
+    "ok": true,
+    "value": true
+   },
+   "ms": 1283
+  },
+  {
+   "n": 33,
+   "label": null,
+   "result": {
+    "olu": true,
+    "mod": "ground",
+    "panel": false,
+    "kilit": false,
+    "perde": false,
+    "limanaUzaklik": 13,
+    "gemiyeUzaklik": 5807,
+    "oturum": 1
+   },
+   "ms": 5664
+  },
+  {
+   "n": 34,
+   "label": null,
+   "tikla": {
+    "metin": "Gemide uyan"
+   },
+   "ms": 2660
+  },
+  {
+   "n": 35,
+   "label": null,
+   "result": {
+    "bekleyen": {
+     "olu": true,
+     "mod": "ground",
+     "panel": false,
+     "kilit": true,
+     "perde": true,
+     "limanaUzaklik": 13,
+     "gemiyeUzaklik": 5807,
+     "oturum": 1
+    },
+    "kaldirildi": true,
+    "ikinciOlum": true
+   },
+   "ms": 2009
+  },
+  {
+   "n": 36,
+   "label": null,
+   "expect": {
+    "label": "UO33 Önkoşul: gemide uyanış beklerken (hazırlık 12 sn geciktirildi) oyuncu kaldırıldı ve yeniden bayıldı",
+    "ok": true,
+    "value": true
+   },
+   "ms": 4
+  },
+  {
+   "n": 37,
+   "label": null,
+   "expect": {
+    "label": "UO34 Yeniden bayılınca bekleyen uyanışın perdesi ve girdi kilidi kalkar, yeni ölüm ekranı görünür (eski hazırlık sürerken; önce ölüm ekranı perdenin altında kalıyordu, B2-D1)",
+    "ok": false,
+    "value": false
+   },
+   "ms": 2709
+  },
+  {
+   "n": 38,
+   "label": null,
+   "tikla": {
+    "metin": "Kırlangıç Limanı'nda uyan"
+   },
+   "ms": 10865
+  },
+  {
+   "n": 39,
+   "label": null,
+   "expect": {
+    "label": "UO31 Aynı oturumda bekleyen uyanış sürerken yeni ölüm ekranındaki liman seçimi eski hazırlık bitmeden çalışır: oyuncu limanda uyanık (bekleyen uyanış yeni seçimi yutmaz ve engellemez, B2-D1)",
+    "ok": false,
+    "value": false
+   },
+   "ms": 2513
+  },
+  {
+   "n": 40,
+   "label": null,
+   "expect": {
+    "label": "UO32 Eski (gemi) hazırlığı bitince oyuncu limanda kalır: eski seçim oyuncuyu gemiye taşımaz; kilit ve perde kalmadı (B2-D1)",
+    "ok": false,
+    "value": false
+   },
+   "ms": 1505
+  },
+  {
+   "n": 41,
+   "label": null,
+   "result": {
+    "bekleyen": {
+     "olu": true,
+     "mod": "ground",
+     "panel": false,
+     "kilit": true,
+     "perde": true,
+     "limanaUzaklik": 13,
+     "gemiyeUzaklik": 5807,
+     "oturum": 1
+    },
+    "kaldirildi": true,
+    "ikinciOlum": true,
+    "ekran": {
+     "olum": true,
+     "perde": true,
+     "kilit": true,
+     "gecikmeBitti": false
+    },
+    "ikinci": {
+     "olu": false,
+     "mod": "deck",
+     "panel": false,
+     "kilit": false,
+     "perde": false,
+     "limanaUzaklik": 5808,
+     "gemiyeUzaklik": 2,
+     "oturum": 1
+    },
+    "son": {
+     "olu": false,
+     "mod": "deck",
+     "panel": false,
+     "kilit": false,
+     "perde": false,
+     "limanaUzaklik": 5808,
+     "gemiyeUzaklik": 2,
+     "oturum": 1
+    }
+   },
+   "ms": 5
+  },
+  {
+   "n": 42,
+   "label": null,
+   "goto": {
+    "url": "http://localhost:8098/index.html?test=1"
+   },
+   "ms": 11979
+  },
+  {
+   "n": 43,
+   "label": null,
+   "result": [
+    "bekle",
+    "perde",
+    "yeniOyun",
+    "gemiUzaga",
+    "geciktir",
+    "uyanisBitti",
+    "durum"
+   ],
+   "ms": 22
+  },
+  {
+   "n": 44,
+   "label": null,
+   "expect": {
+    "label": "UO40 (bölüm 4) Yeni oyun başladı",
+    "ok": true,
+    "value": true
+   },
+   "ms": 1209
+  },
+  {
+   "n": 45,
+   "label": null,
+   "result": {
+    "olu": true,
+    "mod": "ground",
+    "panel": false,
+    "kilit": false,
+    "perde": false,
+    "limanaUzaklik": 13,
+    "gemiyeUzaklik": 5932,
+    "oturum": 1
+   },
+   "ms": 5620
+  },
+  {
+   "n": 46,
+   "label": null,
+   "tikla": {
+    "metin": "Gemide uyan"
+   },
+   "ms": 2782
+  },
+  {
+   "n": 47,
+   "label": null,
+   "result": {
+    "bekleyen": {
+     "olu": true,
+     "mod": "ground",
+     "panel": false,
+     "kilit": true,
+     "perde": true,
+     "limanaUzaklik": 13,
+     "gemiyeUzaklik": 5932,
+     "oturum": 1
+    }
+   },
+   "ms": 305
+  },
+  {
+   "n": 48,
+   "label": null,
+   "expect": {
+    "label": "UO41 Gemide uyanış beklenirken gemi batarsa oyuncu en yakın keşfedilmiş limanda uyanır (ölü ve ekransız kalmaz; v0.4: batık gemide uyanış limana düşer) (B2-D1)",
+    "ok": false,
+    "value": false
+   },
+   "ms": 2937
+  },
+  {
+   "n": 49,
+   "label": null,
+   "result": {
+    "bekleyen": {
+     "olu": true,
+     "mod": "ground",
+     "panel": false,
+     "kilit": true,
+     "perde": true,
+     "limanaUzaklik": 13,
+     "gemiyeUzaklik": 5932,
+     "oturum": 1
+    },
+    "son": {
+     "olu": true,
+     "mod": "ground",
+     "panel": false,
+     "kilit": false,
+     "perde": false,
+     "limanaUzaklik": 13,
+     "gemiyeUzaklik": 5932,
+     "oturum": 1
+    }
+   },
+   "ms": 2
+  },
+  {
+   "n": 50,
+   "label": null,
+   "goto": {
+    "url": "http://localhost:8098/index.html?test=1"
+   },
+   "ms": 17249
+  },
+  {
+   "n": 51,
+   "label": null,
+   "result": [
+    "bekle",
+    "perde",
+    "yeniOyun",
+    "gemiUzaga",
+    "geciktir",
+    "uyanisBitti",
+    "durum"
+   ],
+   "ms": 19
+  },
+  {
+   "n": 52,
+   "label": null,
+   "expect": {
+    "label": "UO52 (bölüm 5) Yeni oyun başladı",
+    "ok": true,
+    "value": true
+   },
+   "ms": 243
+  },
+  {
+   "n": 53,
+   "label": null,
+   "result": {
+    "olu": true,
+    "mod": "ground",
+    "panel": false,
+    "kilit": false,
+    "perde": false,
+    "limanaUzaklik": 13,
+    "gemiyeUzaklik": 5793,
+    "oturum": 1
+   },
+   "ms": 3
+  },
+  {
+   "n": 54,
+   "label": null,
+   "tikla": {
+    "metin": "Gemide uyan"
+   },
+   "ms": 7209
+  },
+  {
+   "n": 55,
+   "label": null,
+   "expect": {
+    "label": "UO50 Uyanış perdesi gemi adını düz metin olarak gösterir: addaki HTML öğe olarak kurulmaz, betik çalışmaz (B2-D3)",
+    "ok": false,
+    "value": false
+   },
+   "ms": 818
+  },
+  {
+   "n": 56,
+   "label": null,
+   "result": {
+    "on": true,
+    "ogeler": [
+     "DIV.t1",
+     "B#perdeB",
+     "IMG#perdeImg",
+     "DIV.t2"
+    ],
+    "metin": "KKendine gelmeye çalışıyorsun…",
+    "xss": 1
+   },
+   "ms": 3
+  },
+  {
+   "n": 57,
+   "label": null,
+   "expect": {
+    "label": "UO51 Gemide uyanış tamamlanır (oyuncu uyanık, kilit ve perde kalmadı)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 13758
+  },
+  {
+   "n": 58,
+   "label": null,
+   "result": {
+    "olu": false,
+    "mod": "deck",
+    "panel": false,
+    "kilit": false,
+    "perde": false,
+    "limanaUzaklik": 5793,
+    "gemiyeUzaklik": 2,
+    "oturum": 1
+   },
+   "ms": 2
+  },
+  {
+   "n": 59,
+   "label": null,
+   "goto": {
+    "url": "http://localhost:8098/index.html?test=1"
+   },
+   "ms": 14133
+  },
+  {
+   "n": 60,
+   "label": null,
+   "result": [
+    "bekle",
+    "perde",
+    "yeniOyun",
+    "gemiUzaga",
+    "geciktir",
+    "uyanisBitti",
+    "durum"
+   ],
+   "ms": 16
+  },
+  {
+   "n": 61,
+   "label": null,
+   "expect": {
+    "label": "UO60 (bölüm 6) Yeni oyun başladı",
+    "ok": true,
+    "value": true
+   },
+   "ms": 268
+  },
+  {
+   "n": 62,
+   "label": null,
+   "result": {
+    "olu": true,
+    "mod": "ground",
+    "panel": false,
+    "kilit": false,
+    "perde": false,
+    "limanaUzaklik": 13,
+    "gemiyeUzaklik": 5807,
+    "oturum": 1
+   },
+   "ms": 2
+  },
+  {
+   "n": 63,
+   "label": null,
+   "tikla": {
+    "metin": "Gemide uyan"
+   },
+   "ms": 8098
+  },
+  {
+   "n": 64,
+   "label": null,
+   "result": {
+    "bekleyen": {
+     "olu": true,
+     "mod": "ground",
+     "panel": false,
+     "kilit": true,
+     "perde": true,
+     "limanaUzaklik": 13,
+     "gemiyeUzaklik": 5807,
+     "oturum": 1
+    },
+    "kaldirildi": true
+   },
+   "ms": 2006
+  },
+  {
+   "n": 65,
+   "label": null,
+   "expect": {
+    "label": "UO61 Bekleyen uyanış sırasında başka yoldan kaldırılan oyuncu eski hazırlık bitmeden perdeden ve girdi kilidinden kurtulur (B2-D1)",
+    "ok": false,
+    "value": false
+   },
+   "ms": 1533
+  },
+  {
+   "n": 66,
+   "label": null,
+   "expect": {
+    "label": "UO62 Eski (gemi) hazırlığı bitince kaldırılan oyuncu yerinde kalır (gemiye taşınmaz), kilit ve perde yok (B2-D1)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 12649
+  },
+  {
+   "n": 67,
+   "label": null,
+   "result": {
+    "bekleyen": {
+     "olu": true,
+     "mod": "ground",
+     "panel": false,
+     "kilit": true,
+     "perde": true,
+     "limanaUzaklik": 13,
+     "gemiyeUzaklik": 5807,
+     "oturum": 1
+    },
+    "kaldirildi": true,
+    "ilk": {
+     "olu": false,
+     "mod": "ground",
+     "panel": false,
+     "kilit": true,
+     "perde": true,
+     "limanaUzaklik": 13,
+     "gemiyeUzaklik": 5807,
+     "oturum": 1
+    },
+    "son": {
+     "olu": false,
+     "mod": "ground",
+     "panel": false,
+     "kilit": false,
+     "perde": false,
+     "limanaUzaklik": 13,
+     "gemiyeUzaklik": 5807,
+     "oturum": 1
+    }
+   },
+   "ms": 5
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 10,
+ "evalErrors": 0,
+ "readyMs": 7342,
+ "ms": 236838,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/scenarios/02_uyanis_ortu.js",
+ "meta": {
+  "testler": [
+   "B2-D1 uzak uyanış kilitlenmesi",
+   "B2-D2 örtü altında oyun döngüsü ve girdi",
+   "B2-D3 uyanış perdesi metni",
+   "A-14",
+   "A-03",
+   "KI-237"
+  ],
+  "dosyalar": [
+   "js/main.js",
+   "js/game/game.js",
+   "js/core/engine.js",
+   "js/core/input.js"
+  ],
+  "izinliHatalar": [
+   {
+    "desen": "data:,",
+    "gerekce": "Bölüm 5: gemi adına konan <img src=\"data:,\"> düzeltmeden önce HTML olarak yorumlanıp çözülemeyen görsel isteği üretir (perde HTML yorumlama tanısı)",
+    "tur": "hepsi"
+   }
+  ]
+ },
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8098/index.html?test=1",
+  "verilenUrl": "http://localhost:8098/index.html",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "03b5c973bcc65adf48b63a1bd7746d43ee88ae6d",
+  "dal": "faz1-b2",
+  "kirli": true,
+  "tarih": "2026-11-15T08:33:42.564Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-b2/tests/harness/run.cjs /home/user/SON-HAZ-NE-b2/tests/scenarios/02_uyanis_ortu.js --url http://localhost:8098/index.html --size 640x360 --timeout 600 --report /home/user/SON-HAZ-NE-b2/docs/v05/kosular/faz1/sonra_b2/duzeltme/once/02_uyanis_ortu_once.json",
+  "cwd": "/home/user/SON-HAZ-NE-b2",
+  "sunucular": [
+   "statik sunucu http://localhost:8098 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8098"
+  ],
+  "commit": "03b5c973bcc65adf48b63a1bd7746d43ee88ae6d-kirli",
+  "senaryoSha256": "81db48f02d90f0122e440d165d214fc521adf2c74d96ca1d099fffadf41235fd",
+  "adim": {
+   "n": 12,
+   "js": "(()=>{ const T = window.__T1; return !!T.varis && T.blokMs >= 1000 && T.tikSn >= 5 && T.net >= 5; })()"
+  },
+  "url": "http://localhost:8098/index.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 3,
+   "id": "UO00",
+   "etiket": "UO00 (bölüm 1) Yeni oyun başladı",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 327,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 9,
+   "id": "UO10",
+   "etiket": "UO10 Önkoşul: dört tuş (Tab, M, E, Boşluk) gerçek klavye olayıyla, hızlı yolculuk perdesi açık ve oyun girdisi kilitliyken basıldı",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 12,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 12,
+   "id": "UO11",
+   "etiket": "UO11 Hızlı yolculuk perdesi (girdi kilidi) süresince oyun döngüsü sürer: güncelleyiciler saniyede ≥ 5 kez ve net.update ≥ 5 kez çağrıldı (B2-D2; önce: örtü motorun kare sınırını 0,25 FPS yapıyor, 0 tik)",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 33,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": {
+    "sayfa": "/home/user/SON-HAZ-NE-b2/tests/out/goruntu/02_uyanis_ortu_2026-11-15T08-33-42-392Z_13747/ilk_kalan.png",
+    "tuval": "/home/user/SON-HAZ-NE-b2/tests/out/goruntu/02_uyanis_ortu_2026-11-15T08-33-42-392Z_13747/ilk_kalan_tuval.jpg"
+   }
+  },
+  {
+   "n": 13,
+   "id": "UO12",
+   "etiket": "UO12 Perde altında gerçek klavyeyle basılan Tab/M/E/Boşluk varışta işlenmez: envanter/harita olayı yok, panel açık değil (B2-D2; önce: basışlar birikip kilit kalkınca ilk karede işleniyordu)",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 27,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 14,
+   "id": "UO14",
+   "etiket": "UO14 Örtü süresince 3B sahne çizilmez (KI-237), örtü kapanınca çizim sürer; motorun kare sınırı ve yerel dilim bütçesi eski değerinde",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 30,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 17,
+   "id": "UO13",
+   "etiket": "UO13 Varıştan sonra girdi çalışır: gerçek klavyeyle Tab envanteri açar, kilit kalkmış",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 3,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 20,
+   "id": "UO20",
+   "etiket": "UO20 (bölüm 2) Yeni oyun başladı",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 264,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 24,
+   "id": "UO23",
+   "etiket": "UO23 Önkoşul: eski oturumun gemide uyanışı beklerken (hazırlık 15 sn geciktirildi) menüye dönüldü ve yeni oyun başladı",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 162,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 27,
+   "id": "UO21",
+   "etiket": "UO21 Yeni oturumda ölüm ekranından uyanış çalışır; önceki oturumdan kalan bekleyen uyanış onu yutmaz (B2-D1)",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 3,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 28,
+   "id": "UO22",
+   "etiket": "UO22 Eski oturumun hazırlığı bittikten sonra oyuncu uyanık ve limanda; girdi kilidi ve perde kalmadı (B2-D1)",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 9685,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 32,
+   "id": "UO30",
+   "etiket": "UO30 (bölüm 3) Yeni oyun başladı",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 298,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 36,
+   "id": "UO33",
+   "etiket": "UO33 Önkoşul: gemide uyanış beklerken (hazırlık 12 sn geciktirildi) oyuncu kaldırıldı ve yeniden bayıldı",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 37,
+   "id": "UO34",
+   "etiket": "UO34 Yeniden bayılınca bekleyen uyanışın perdesi ve girdi kilidi kalkar, yeni ölüm ekranı görünür (eski hazırlık sürerken; önce ölüm ekranı perdenin altında kalıyordu, B2-D1)",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 3,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 39,
+   "id": "UO31",
+   "etiket": "UO31 Aynı oturumda bekleyen uyanış sürerken yeni ölüm ekranındaki liman seçimi eski hazırlık bitmeden çalışır: oyuncu limanda uyanık (bekleyen uyanış yeni seçimi yutmaz ve engellemez, B2-D1)",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 4,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 40,
+   "id": "UO32",
+   "etiket": "UO32 Eski (gemi) hazırlığı bitince oyuncu limanda kalır: eski seçim oyuncuyu gemiye taşımaz; kilit ve perde kalmadı (B2-D1)",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1504,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 44,
+   "id": "UO40",
+   "etiket": "UO40 (bölüm 4) Yeni oyun başladı",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 228,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 48,
+   "id": "UO41",
+   "etiket": "UO41 Gemide uyanış beklenirken gemi batarsa oyuncu en yakın keşfedilmiş limanda uyanır (ölü ve ekransız kalmaz; v0.4: batık gemide uyanış limana düşer) (B2-D1)",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2911,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 52,
+   "id": "UO52",
+   "etiket": "UO52 (bölüm 5) Yeni oyun başladı",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 242,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 55,
+   "id": "UO50",
+   "etiket": "UO50 Uyanış perdesi gemi adını düz metin olarak gösterir: addaki HTML öğe olarak kurulmaz, betik çalışmaz (B2-D3)",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 5,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 57,
+   "id": "UO51",
+   "etiket": "UO51 Gemide uyanış tamamlanır (oyuncu uyanık, kilit ve perde kalmadı)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 13753,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 61,
+   "id": "UO60",
+   "etiket": "UO60 (bölüm 6) Yeni oyun başladı",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 267,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 65,
+   "id": "UO61",
+   "etiket": "UO61 Bekleyen uyanış sırasında başka yoldan kaldırılan oyuncu eski hazırlık bitmeden perdeden ve girdi kilidinden kurtulur (B2-D1)",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 4,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 66,
+   "id": "UO62",
+   "etiket": "UO62 Eski (gemi) hazırlığı bitince kaldırılan oyuncu yerinde kalır (gemiye taşınmaz), kilit ve perde yok (B2-D1)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 11667,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8098/vendor/three/three.core.js",
+   "sayi": 198
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8098/vendor/three/three.core.js",
+   "sayi": 6
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 2,
+  "toplam": 204,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  },
+  {
+   "desen": "data:,",
+   "gerekce": "Bölüm 5: gemi adına konan <img src=\"data:,\"> düzeltmeden önce HTML olarak yorumlanıp çözülemeyen görsel isteği üretir (perde HTML yorumlama tanısı)",
+   "tur": "hepsi",
+   "kaynak": "meta",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [
+  {
+   "tur": "beforeunload",
+   "ileti": "",
+   "adim": 18,
+   "kabul": true
+  },
+  {
+   "tur": "beforeunload",
+   "ileti": "",
+   "adim": 30,
+   "kabul": true
+  },
+  {
+   "tur": "beforeunload",
+   "ileti": "",
+   "adim": 42,
+   "kabul": true
+  },
+  {
+   "tur": "beforeunload",
+   "ileti": "",
+   "adim": 50,
+   "kabul": true
+  },
+  {
+   "tur": "beforeunload",
+   "ileti": "",
+   "adim": 59,
+   "kabul": true
+  }
+ ],
+ "goruntuler": [
+  {
+   "ad": "ilk_kalan",
+   "sayfa": "/home/user/SON-HAZ-NE-b2/tests/out/goruntu/02_uyanis_ortu_2026-11-15T08-33-42-392Z_13747/ilk_kalan.png",
+   "tuval": "/home/user/SON-HAZ-NE-b2/tests/out/goruntu/02_uyanis_ortu_2026-11-15T08-33-42-392Z_13747/ilk_kalan_tuval.jpg"
+  }
+ ],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 1416,
+ "isaretciKilidi": {
+  "kip": "taklit",
+  "sayac": {
+   "istek": 2,
+   "verildi": 2,
+   "hedefDegisti": 0,
+   "red": 0,
+   "jestsiz": 0,
+   "kisitli": 0,
+   "birakma": 1,
+   "birakildi": 1,
+   "iptal": 0,
+   "degisimOlayi": 3,
+   "hataOlayi": 0,
+   "yonlendirilen": 0,
+   "susturulan": 0
+  }
+ },
+ "kopma": null,
+ "sonuc": {
+  "durum": "KALDI",
+  "cikisKodu": 1,
+  "neden": [
+   "başarısız kontrol ya da adım: 10"
+  ],
+  "onaySayisi": 23,
+  "kontrolSayisi": 23,
+  "gecen": 13,
+  "kalan": 10,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": "tarayici",
+  "turSayim": {
+   "tarayici": 23
+  },
+  "tarayiciKoptu": false,
+  "kopma": null
+ },
+ "sure": {
+  "hazirMs": 7342,
+  "toplamMs": 236838,
+  "yerlesmeMs": 1002
+ }
+}

@@ -90,6 +90,10 @@ async function boot() {
   // kaldırılmadan önceki await'te yükselir (aşağıda; A2-UY-02).
   let kancaSozu = null;
   if (TEST) { kancaSozu = import('./test/kancalar.js'); kancaSozu.catch(() => {}); }
+  // A-18: depo erişimi en başta denetlenir. Site verisi engelliyse (localStorage okumak bile SecurityError atar) oyun kayıtsız açılır;
+  // menü ve kayıt denemeleri oyuncuya "tarayıcı kayda izin vermiyor" der (save.js bütün erişimleri korur, istisna buraya çıkmaz).
+  G.noStorage = !save.available();
+  if (G.noStorage) console.warn('localStorage kullanılamıyor; kayıt yapılamayacak.');
   settings.load();
   const prof = save.profile();
   G.profile = prof || { appearance: defaultAppearance('m'), unlocked: [], recentRooms: [] };
@@ -101,7 +105,6 @@ async function boot() {
   document.getElementById('load-tip').textContent = TIPS[Math.floor(Math.random() * TIPS.length)];
   const setLoad = (f, t) => { loadFill.style.width = Math.round(f * 100) + '%'; if (t) loadText.textContent = t; };
 
-  if (!save.available()) console.warn('localStorage kullanılamıyor; kayıt yapılamayacak.');
   engine.init(document.getElementById('game'));
   input.init(engine.renderer.domElement);
   G.scene = engine.scene; G.camera = engine.camera; G.renderer = engine.renderer;
@@ -129,7 +132,8 @@ async function boot() {
     game.update(dt);
     hud.update(dt);
     net.update(dt);
-    if (G.state === 'playing' && !G.uiOpen && input.pressed('duraklat') && !ui.isOpen() && performance.now() - (ui._justClosed || 0) > 200) { input.consume('duraklat'); menu.pause(handlers); }
+    // A-10: duraklatma yalnız kurulmuş oturumda (oyuncu var, yükleme katmanı kapalı)
+    if (G.state === 'playing' && G.player && !game.loading && !G.uiOpen && input.pressed('duraklat') && !ui.isOpen() && performance.now() - (ui._justClosed || 0) > 200) { input.consume('duraklat'); menu.pause(handlers); }
     input.endFrame();
   });
   engine.start();
@@ -170,7 +174,8 @@ const handlers = {
     ui.closeAll();
     G.saveKind = kind;
     const app = appearance || (data?.appearance) || G.profile.appearance;
-    await game.start({ appearance: app, save: data, slot, online: false, isHost: true });
+    // A-10: bölge hazırlığı sürerken menüye dönüldüyse start false döner: oturum kurulmadı, devam kodu (HUD, bildirim, kayıt) çalışmaz
+    if (!await game.start({ appearance: app, save: data, slot, online: false, isHost: true })) return;
     afterStart();
     if (!data) G.notify('Kırlangıç Limanı\'na hoş geldin, korsan! (Esc: menü · J: defter)', 'quest', 6000);
     else G.notify(`Kayıt yüklendi: ${data.name}`, 'good');
@@ -187,7 +192,7 @@ const handlers = {
     ui.closeAll();
     G.saveKind = 'online';
     const data = save.read('online', room.slot || 0);
-    await game.start({ appearance: G.profile.appearance, save: data, slot: room.slot || 0, online: true, isHost: true, difficulty: room.difficulty, friendlyFire: room.friendlyFire });
+    if (!await game.start({ appearance: G.profile.appearance, save: data, slot: room.slot || 0, online: true, isHost: true, difficulty: room.difficulty, friendlyFire: room.friendlyFire })) return; // A-10
     afterStart();
     net.startGame();
     setTimeout(() => net.sendWorldAll(), 400);
@@ -202,13 +207,19 @@ const handlers = {
     const guest = save.read('guest', 0);
     // konuk kaydı: envanter, rütbe/yetenek ve kişisel görev/keşif/koleksiyon durumu (hikâye aşaması ev sahibinden gelir)
     const data = guest ? { player: { inv: guest.inv, hp: 100 }, progress: guest.progress || null, quests: guest.quests || null } : null;
-    await game.start({ appearance: G.profile.appearance, save: data, online: true, isHost: false, difficulty: net.room?.difficulty });
+    if (!await game.start({ appearance: G.profile.appearance, save: data, online: true, isHost: false, difficulty: net.room?.difficulty })) return; // A-10
     afterStart();
     G.notify('Odaya katıldın! Dünya oda sahibinden yükleniyor…', 'good');
   },
 
   saveNow(manual = false) {
     if (G.state !== 'playing' || !G.player) return;
+    // A-18: depo yok (site verisi engelli): elle kayıtta her seferinde, otomatik kayıtta oturumda bir kez bildirilir
+    if (G.noStorage) {
+      if (manual || !G._depoUyarisi) G.notify('Tarayıcı kayda izin vermiyor (site verisi engelli): ilerleme kaydedilemiyor.', 'warn', 4500);
+      G._depoUyarisi = true;
+      return;
+    }
     if (!G.isHost) {
       // konuk: kişisel envanter + rütbe/yetenek ilerlemesi yerel olarak saklanır (odak kaybı/sekme kapanışı dahil)
       save.write('guest', 0, { inv: G.player.inv.toJSON(), progress: progress.save(), quests: quests.save(), savedAt: Date.now(), name: G.playerName });
@@ -226,31 +237,133 @@ const handlers = {
 
   toMenu() {
     ui.closeAll();
+    ui.cancelRelock(); // KI-235: son panelin kapanışı kilidi 30 ms sonra yeniden istemesin (menüde kilit kalıyordu)
     handlers.saveNow(false);
     game.stop();
+    uyanisBirak(); // B2-D1: bekleyen uzak uyanış yeni oturuma taşınmaz
     net.leave();
     hud.show(false);
     menu.show(true);
     input.unlockPointer();
   },
 
+  // A-14: uyanış yeri (gemi ya da en yakın keşfedilmiş liman) uzaktaysa arazisi hazır değildir: önce perde altında hazırlanır
+  // (await terrain.prepare, yarıçap 400), oyuncu ancak sonra diriltilip taşınır; uyanışın ilk karesinde karo ağları ve derinlik
+  // penceresi yerindedir. Uyanış yeri zaten hazırsa (yakın ölüm) v0.4'teki gibi hemen uyanılır. Bekleme sırasında oturum değişir
+  // ya da oyuncu başka yoldan kaldırılırsa (co-op) devam kodu hiçbir şey yapmaz.
+  // Karşıt denetim B2-D1: ölüm ekranının düğmeleri paneli kapatıp buraya gelir; bu yüzden hiçbir dal oyuncuyu ölü ve ekransız
+  // bırakmaz. (1) Bekleyen bir uyanış varsa bu çağrı onun yerine geçer (son seçim geçerli; eski devam kodu hiçbir şey yapmaz).
+  // Önce bekleyen kayıt oturuma bağlı değildi ve her çağrıyı yutuyordu: eski oturumdan kalan ya da aynı oturumda (co-op: kaldırılıp
+  // yeniden bayılma) bekleyen uyanış varken oyuncu ölü kalıyordu. Oturum bitince (toMenu, hostLeft) kayıt bırakılır. (2) Gemide
+  // uyanış beklenirken gemi batar ya da değişirse (konukta oda sahibinin gemisi) v0.4'teki gibi en yakın keşfedilmiş limanda
+  // uyanılır; önce devam kodu sessizce dönüyordu. (3) Bekleme sırasında oyuncu başka yoldan kaldırılır ya da yeniden bayılırsa
+  // bekleyen uyanış hemen biter (perde kalkar, yeni ölüm ekranı görünür); eski hazırlık bitince oyuncu eski seçime taşınmaz.
+  // (4) Hazırlık beklenmedik biçimde reddedilirse uyanış 'timeout' gibi sürer.
   respawn(where) {
     const p = G.player;
-    p.revive(100);
-    p.char.model.rotation.x = 0; p.char.model.position.y = 0;
+    if (!p) return;
+    const onceki = uyanisBirak();
     const s = G.ship;
-    if (where === 'ship' && s && !s.sunk) p.boardShip(s, s.model.stations.ladderTop.clone());
+    const gemide = where === 'ship' && s && !s.sunk;
+    let hx, hz, pt = null;
+    if (gemide) { hx = s.x; hz = s.z; }
     else {
-      p.mode = 'ground'; p.ship = null;
       // en yakın keşfedilmiş limanda uyan
-      const pt = ports.nearest(p.pos.x, p.pos.z, Infinity, (x) => x.core || quests.discovered[x.island]) || ports.list[0];
-      const sx = pt.core ? port.boardingPoint.x - 6 : pt.spawn.x, sz = pt.core ? port.shoreZ - 22 : pt.spawn.z;
-      p.pos.set(sx, terrain.heightAt(sx, sz) + 1, sz);
-      p.vel.set(0, 0, 0);
+      pt = ports.nearest(p.pos.x, p.pos.z, Infinity, (x) => x.core || quests.discovered[x.island]) || ports.list[0];
+      hx = pt.core ? port.boardingPoint.x - 6 : pt.spawn.x; hz = pt.core ? port.shoreZ - 22 : pt.spawn.z;
     }
-    G.notify('Gözlerini açtın. Biraz başın dönüyor…', 'info');
+    const uyan = (hazirlik) => {
+      p.revive(100);
+      p.char.model.rotation.x = 0; p.char.model.position.y = 0;
+      if (gemide) p.boardShip(s, s.model.stations.ladderTop.clone());
+      else {
+        p.mode = 'ground'; p.ship = null;
+        islands.buildNear(hx, hz); // KI-236: uyanış limanının yapıları/platformları oyuncu konmadan önce kurulu
+        p.pos.set(hx, terrain.heightAt(hx, hz) + 1, hz);
+        p.vel.set(0, 0, 0);
+      }
+      if (hazirlik === 'timeout') G.notify('Uyandığın yerin çevresi zamanında hazırlanamadı; eksik arazi arka planda yükleniyor.', 'warn', 6000);
+      G.notify('Gözlerini açtın. Biraz başın dönüyor…', 'info');
+    };
+    if (bolgeHazir(hx, hz)) { if (onceki) perdeKaldir(onceki.perde); uyan(); return; }
+    const tok = G.session;
+    const kayit = handlers._uyanis = { tok, perde: null, ortu: null, bitir: null, iv: 0 };
+    input.block('uyanis');
+    const h = kayit.perde = perde(gemide ? (s.name || 'Gemin') : pt.name, 'Kendine gelmeye çalışıyorsun…');
+    // KI-237: hızlı yolculuktaki gibi perde inmeye başladığı anda örtü açılır (3B sahne çizilmez); tutamak kayıttadır, uyanış nasıl
+    // biterse bitsin (uyanisBirak) kapanır. Hazırlık bu yüzden prepareCovered'sız çağrılır: uyanış erken biterse (aşağıda) arka planda
+    // süren hazırlık ekranı örtülü tutmasın.
+    kayit.ortu = game.ortuAc();
+    let limana = false;
+    // Bekleme kayıt bırakılınca (yeni seçim, oturum sonu, yeniden bayılma: uyanisBirak) ya da oyuncu başka yoldan kaldırılınca
+    // (co-op 'revive') hazırlığı beklemeden biter: kaldırılan oyuncu perdenin altında, girdisi kilitli kalmaz.
+    const iptal = new Promise((r) => { kayit.bitir = r; kayit.iv = setInterval(() => { if (!p.dead) r('kaldirildi'); }, 200); });
+    const hazirlik = new Promise((r) => setTimeout(r, 1200))
+      .then(() => (handlers._uyanis === kayit && tok === G.session && p.dead ? terrain.prepare(hx, hz, { radius: 400 }) : null))
+      .catch((e) => { console.error('Uyanış bölgesi hazırlanamadı:', e); return 'timeout'; });
+    Promise.race([hazirlik, iptal]).then((sonuc) => {
+      if (handlers._uyanis !== kayit) return; // yerine yeni bir uyanış seçimi geçti ya da uyanış bırakıldı
+      if (tok !== G.session || G.state !== 'playing' || G.player !== p || !p.dead) return; // oturum değişti ya da arkadaşın kaldırdı
+      if (gemide && (G.ship !== s || s.sunk)) { limana = true; return; } // gemi bekleme sırasında battı ya da değişti
+      uyan(sonuc);
+    }).finally(() => {
+      if (handlers._uyanis !== kayit) return; // perde, kilit ve örtü bırakan tarafından (uyanisBirak, game.stop) temizlendi
+      uyanisBirak();
+      if (limana) {
+        G.notify('Gemine ulaşılamadı; en yakın limanda uyanıyorsun.', 'warn', 4000);
+        handlers.respawn('port'); // gerekirse perde altında yeni hazırlık (perdeyi o devralır; aşağıdaki kaldırma etkisiz kalır)
+      }
+      perdeKaldir(h, 600);
+    });
   },
 };
+
+// A-14: (x, z) çevresi zaten hazır mı: 300 m içinde ≥ 6 karo ağı, orada ağı olmayan (bekleyen) karo yok ve okyanus derinlik
+// penceresi noktaya 520 m'den yakın (terrain.requestDepth'in yeniden istek eşiği). Hazırsa uyanış beklemeden yapılır.
+function bolgeHazir(x, z) {
+  const w = terrain.depthWin;
+  if (!w || Math.hypot(w.x0 + w.size / 2 - x, w.z0 + w.size / 2 - z) > 520) return false;
+  let ag = 0;
+  for (const t of terrain.tiles.values()) {
+    if (Math.hypot(t.x0 + terrain.TILE / 2 - x, t.z0 + terrain.TILE / 2 - z) >= 300) continue;
+    if (!t.mesh) return false;
+    ag++;
+  }
+  return ag >= 6;
+}
+
+// Kararma perdesi (#sleep-fade): uyuma, hızlı yolculuk ve uzak uyanış aynı öğeyi kullanır. Başlık ve alt satır DÜZ METİN olarak
+// yazılır (karşıt denetim B2-D3: gemi adını oyuncu, co-op'ta oda sahibi belirler; perde önce innerHTML kullanıyordu, addaki HTML ve
+// betik çalışıyordu). Dönen tutamak perdenin o anki sahibidir: perdeKaldir perdeyi yalnız hâlâ o çağrınınsa indirir (eski bir
+// zamanlayıcı ya da yerine başkası geçmiş bir uyanış, sonradan açılan perdeyi indirmesin). game.stop perdeyi koşulsuz kaldırır.
+let perdeSahibi = 0;
+function perde(baslik, alt) {
+  let f = document.getElementById('sleep-fade');
+  if (!f) { f = document.createElement('div'); f.id = 'sleep-fade'; document.body.appendChild(f); }
+  f.textContent = '';
+  f.append(el('div', { class: 't1' }, String(baslik ?? '')), el('div', { class: 't2' }, String(alt ?? '')));
+  f.classList.add('on');
+  return { f, no: ++perdeSahibi };
+}
+function perdeKaldir(h, ms = 0) {
+  if (!h) return;
+  const kaldir = () => { if (perdeSahibi === h.no) h.f.classList.remove('on'); };
+  if (ms > 0) setTimeout(kaldir, ms); else kaldir();
+}
+
+// Bekleyen uzak uyanışı bırak (B2-D1): kayıt silinir, beklemesi biter, örtüsü kapanır, girdi kilidi kalkar; o uyanışın devam kodu
+// artık hiçbir şey yapmaz. Uyanışın kendisi (bitince), yeni bir uyanış seçimi (respawn), yeniden bayılma (playerDied) ve oturumun
+// bitişi (toMenu, hostLeft) çağırır. Bırakılan kayıt döner; perdesini çağıran kaldırır ya da devralır.
+function uyanisBirak() {
+  const k = handlers._uyanis;
+  if (!k) return null;
+  handlers._uyanis = null;
+  clearInterval(k.iv);
+  k.bitir?.('birakildi');
+  game.ortuKapat(k.ortu);
+  input.unblock('uyanis');
+  return k;
+}
 
 function afterStart() {
   hud.show(true);
@@ -260,7 +373,13 @@ function afterStart() {
 
 function wire() {
   G.on('autosave', () => handlers.saveNow(false));
-  G.on('playerDied', (e) => setTimeout(() => menu.deathScreen(e.cause, handlers), 2200));
+  G.on('playerDied', (e) => {
+    // B2-D1: yeniden bayılma (co-op: kaldırılıp yeniden düşme) bekleyen uzak uyanışı geçersiz kılar. Perdesi hemen kalkar: yeni ölüm
+    // ekranı (z 40) önce perdenin (z 60) altında açılıyor, eski hazırlık bitip oyuncu eski seçime taşınana dek seçilemiyordu.
+    const k = uyanisBirak();
+    if (k) perdeKaldir(k.perde);
+    setTimeout(() => menu.deathScreen(e.cause, handlers), 2200);
+  });
   G.on('openJournal', () => openJournal());
   G.on('openSkills', () => openSkills());
   G.on('openDice', (npc) => { ui.closeAll(); openDice(npc); });
@@ -277,54 +396,74 @@ function wire() {
     G.emit('sleepFade', { day: time.day, hour: sky.hour, hours });
     if (G.online) net.broadcast({ t: 'sleep', day: time.day, hour: sky.hour, hours });
   });
-  // Hızlı yolculuk (rota kaptanı): ekran kararır, varış bölgesi hazırlanır, gemi ve oyuncu taşınır
+  // Hızlı yolculuk (rota kaptanı): ekran kararır, varış bölgesi hazırlanır, gemi ve oyuncu taşınır.
+  // A-03: tek seferde bir yolculuk (G.travelBusy, oturuma bağlı; bekleme sırasında gelen ikinci istek yok sayılır); perde süresince
+  // oyun girdisi kilitli (Esc açık); ücret VARIŞTA düşülür (bekleme sırasında alınan kayıt ya da menüye dönüş altını eksiltmez; kayıt
+  // biçimi aynı); devam kodu oturum belirteci ve G.state/G.player/G.ship/s.sunk/p.dead ile denetlenir: bekleme sırasında oturum ya
+  // da oyuncu/gemi değiştiyse hiçbir şey değişmez. Hazırlık 'timeout' dönerse oyuncu bilgilendirilir (brief madde 7, çağıran tarafı).
+  let yolculukNo = 0;
   G.on('fastTravel', async (e) => {
     const p = G.player, s = G.ship;
-    const to = ports.byId(e.to), from = ports.byId(e.from);
-    if (!to || !s || s.sunk) return;
+    const to = ports.byId(e?.to), from = ports.byId(e?.from);
+    if (G.state !== 'playing' || !p || p.dead || !to || !s || s.sunk) return;
+    if (G.travelBusy && G.travelBusy.tok === G.session) return;
     if (G.online && !G.isHost) { G.notify('Hızlı yolculuğu yalnız oda sahibi başlatabilir.', 'warn', 3000); return; }
     if (G.inCombat) { G.notify('Çatışma sürerken yola çıkılmaz!', 'warn'); return; }
-    if (p.inv.gold < e.cost) { G.notify('Yol parası için yeterli altının yok.', 'warn'); return; }
+    const cost = Math.max(0, Math.round(Number(e.cost) || 0)); // bozuk/eksik ücret altını NaN yapmasın
+    if (p.inv.gold < cost) { G.notify('Yol parası için yeterli altının yok.', 'warn'); return; }
     if (p.carrying) { G.notify('Önce taşıdığını bırak ya da ambara koy.', 'warn'); return; }
-    p.inv.gold -= e.cost;
-    let f = document.getElementById('sleep-fade');
-    if (!f) { f = document.createElement('div'); f.id = 'sleep-fade'; document.body.appendChild(f); }
+    const yol = G.travelBusy = { id: ++yolculukNo, tok: G.session };
+    const gecerli = () => yol.tok === G.session && G.state === 'playing' && G.player === p && G.ship === s && !s.sunk && !p.dead;
+    input.block('yolculuk');
     const d = from ? Math.hypot(to.x - from.x, to.z - from.z) : 3000;
     const hours = Math.max(1, Math.round(d / 2600));
-    f.innerHTML = `<div class="t1">${to.name}</div><div class="t2">Rota kaptanı dümende… ${hours} saatlik yolculuk.</div>`;
-    f.classList.add('on');
+    const f = perde(to.name, `Rota kaptanı dümende… ${hours} saatlik yolculuk.`);
+    const ortu = game.ortuAc(); // KI-237: perde inerken 3B sahne çizilmez (güncelleyiciler sürer), GPU birikimi erir; hazırlıktan hemen sonra kapanır
     audio.play('confirm', { vol: 0.3, rate: 0.7 });
-    await new Promise((r) => setTimeout(r, 1200));
-    await terrain.prepare(to.mooring.x, to.mooring.z, { radius: 450 });
-    s.x = to.mooring.x; s.z = to.mooring.z; s.yaw = to.mooring.yaw;
-    s.anchorPt = null; // eski çapa noktası kalmasın (zincir gemiyi kilometrelerce öteye çekmesin)
-    s.vx = 0; s.vz = 0; s.speed = 0; s.yawRate = 0;
-    s.anchorState = 'down'; s.anchorT = 1; s.anchored = true; s.sail = s.sailTarget = 0;
-    if (G.rowboat) G.rowboat.dock();
-    p.leaveShipToWorld(new THREE.Vector3(to.boarding.x, to.boarding.y + 0.3, to.boarding.z));
-    p.onGround = false; p.vel.set(0, 0, 0);
-    time.sleepUntil((sky.hour + hours) % 24);
-    time.addLog(`${from ? from.name : 'Liman'} → ${to.name} hızlı yolculuk (${e.cost} altın)`, 'info');
-    if (G.online) net.broadcast({ t: 'teleport', x: to.boarding.x, y: to.boarding.y + 0.3, z: to.boarding.z, ship: [s.x, s.z, s.yaw], hour: sky.hour, day: time.day });
-    setTimeout(() => f.classList.remove('on'), 900);
-    G.notify(`${to.name} limanına vardın.`, 'good', 3500);
-    G.emit('arrivedPort', { port: to.id });
+    let vardi = false;
+    try {
+      await new Promise((r) => setTimeout(r, 1200));
+      if (!gecerli()) return;
+      const hazirlik = await game.prepareCovered(to.mooring.x, to.mooring.z, { radius: 450 });
+      game.ortuKapat(ortu); // varış kareleri normal hızda çizilsin (perde 0,9 sn sonra kalkar)
+      if (!gecerli()) return;
+      p.inv.gold -= cost; // A-03: ücret varışta
+      s.x = to.mooring.x; s.z = to.mooring.z; s.yaw = to.mooring.yaw;
+      s.anchorPt = null; // eski çapa noktası kalmasın (zincir gemiyi kilometrelerce öteye çekmesin)
+      s.vx = 0; s.vz = 0; s.speed = 0; s.yawRate = 0;
+      s.anchorState = 'down'; s.anchorT = 1; s.anchored = true; s.sail = s.sailTarget = 0;
+      if (G.rowboat) G.rowboat.dock();
+      islands.buildNear(to.boarding.x, to.boarding.z); // KI-236: iskele platformu oyuncu konmadan önce kurulu
+      p.leaveShipToWorld(new THREE.Vector3(to.boarding.x, to.boarding.y + 0.3, to.boarding.z));
+      p.onGround = false; p.vel.set(0, 0, 0);
+      time.sleepUntil((sky.hour + hours) % 24);
+      time.addLog(`${from ? from.name : 'Liman'} → ${to.name} hızlı yolculuk (${cost} altın)`, 'info');
+      if (G.online) net.broadcast({ t: 'teleport', x: to.boarding.x, y: to.boarding.y + 0.3, z: to.boarding.z, ship: [s.x, s.z, s.yaw], hour: sky.hour, day: time.day });
+      vardi = true;
+      perdeKaldir(f, 900);
+      if (hazirlik === 'timeout') G.notify(`${to.name} çevresi zamanında hazırlanamadı; eksik arazi arka planda yükleniyor.`, 'warn', 6000);
+      G.notify(`${to.name} limanına vardın.`, 'good', 3500);
+      G.emit('arrivedPort', { port: to.id });
+    } finally {
+      game.ortuKapat(ortu);
+      if (G.travelBusy === yol) { G.travelBusy = null; input.unblock('yolculuk'); }
+      // aynı oturumda iptal (oyuncu bayıldı, gemi battı): perde kalkar, ücret alınmadı. Oturum bittiyse game.stop perdeyi kaldırdı.
+      if (!vardi && yol.tok === G.session) perdeKaldir(f);
+    }
   });
   G.on('sleepFade', (e) => {
-    let f = document.getElementById('sleep-fade');
-    if (!f) { f = document.createElement('div'); f.id = 'sleep-fade'; document.body.appendChild(f); }
-    f.innerHTML = `<div class="t1">Gün ${e.day} · ${time.hourString(e.hour)}</div><div class="t2">${e.hour < 12 ? 'Martı çığlıklarıyla uyandın. Yeni bir gün, yeni maceralar…' : 'Dinlendin; akşam rüzgârı limanı serinletiyor.'}</div>`;
-    f.classList.add('on');
+    const f = perde(`Gün ${e.day} · ${time.hourString(e.hour)}`, e.hour < 12 ? 'Martı çığlıklarıyla uyandın. Yeni bir gün, yeni maceralar…' : 'Dinlendin; akşam rüzgârı limanı serinletiyor.');
     audio.play('confirm', { vol: 0.3, rate: 0.6 });
-    setTimeout(() => f.classList.remove('on'), 2600);
+    perdeKaldir(f, 2600);
   });
   G.on('openTailor', () => {
     creator.open({ appearance: G.player.appearance, title: 'Terzi Lale — Gardırop', confirm: 'Giy', shopMode: true, onDone: (app) => { G.player.setAppearance(app); G.profile.appearance = app; G.emit('profileChanged'); if (G.online && !G.isHost) net.sendApp(); } });
   });
   G.on('hostLeft', (why) => {
-    if (G.state !== 'playing') return;
+    if (G.state !== 'playing' && G.state !== 'loading') return; // A-10: konuk yüklenirken oda kapanırsa da menüye dönülür
     handlers.saveNow(false);
-    game.stop(); net.leave(); hud.show(false); menu.show(true);
+    ui.cancelRelock();
+    game.stop(); uyanisBirak(); net.leave(); hud.show(false); menu.show(true); input.unlockPointer();
     ui.alert('Oturum sona erdi', (why || 'Oda sahibi oyundan ayrıldı ya da bağlantı koptu.') + '<br>Kişisel envanterin kaydedildi.');
   });
   // konuk: dünya verisi (oyun henüz başlamadıysa beklet)
@@ -385,7 +524,7 @@ function wire() {
   // işaretçi kilidi
   // Esc ile işaretçi kilidi bırakılınca duraklat menüsü
   document.addEventListener('pointerlockchange', () => {
-    if (!G.noAutoPause && !document.pointerLockElement && G.state === 'playing' && !ui.isOpen() && !G.uiOpen && performance.now() - (ui._justClosed || 0) > 300) menu.pause(handlers);
+    if (!G.noAutoPause && !document.pointerLockElement && G.state === 'playing' && G.player && !game.loading && !ui.isOpen() && !G.uiOpen && performance.now() - (ui._justClosed || 0) > 300) menu.pause(handlers);
   });
   engine.renderer.domElement.addEventListener('click', () => { if (G.state === 'playing' && !G.uiOpen && !ui.isOpen()) input.lockPointer(); });
   engine.renderer.domElement.addEventListener('webglcontextlost', (e) => { e.preventDefault(); handlers.saveNow(false); G.notify('Grafik bağlamı kaybedildi (sürücü/GPU). Oyun kaydedildi; sayfayı yenilemen gerekebilir.', 'warn', 10000); });
@@ -396,8 +535,24 @@ function wire() {
   document.addEventListener('visibilitychange', () => { if (document.hidden && G.state === 'playing') handlers.saveNow(false); });
 }
 
+// A-04: açılış hatası iletisi hata türüne göre ayrılır (önce her hata "WebGL destekli tarayıcı gerekiyor" diye WebGL'e bağlanıyordu;
+// site verisi engeli ya da arazi hatası yanıltıcı biçimde WebGL sorunu gibi görünüyordu)
+function acilisIletisi(e) {
+  const m = String((e && (e.message || e)) || 'bilinmeyen hata').slice(0, 240);
+  const tek = 'tek dosya sürümünü (DenizKorsanlari-SonHazine.html)';
+  if (/webgl|graphics context|getContext/i.test(m)) return { tur: 'WebGL', ileti: `Oyun başlatılamadı: tarayıcı WebGL grafik bağlamını açamadı (${m}).`, oneri: 'WebGL destekli güncel bir tarayıcı (Chrome, Edge, Firefox) kullan ve donanım hızlandırmasını aç.' };
+  if (/dynamically imported module|module script|importing a module|failed to fetch|networkerror|load failed|import/i.test(m)) return { tur: 'modül', ileti: `Oyun başlatılamadı: oyun dosyalarından biri yüklenemedi (${m}).`, oneri: `Bağlantını denetleyip sayfayı yenile; sorun sürerse ${tek} kullan.` };
+  if (/arazi|terrain|işçi|worker/i.test(m)) return { tur: 'arazi', ileti: `Oyun başlatılamadı: arazi üretimi başarısız oldu (${m}).`, oneri: `Sayfayı yenile; sorun sürerse ${tek} dene.` };
+  return { tur: 'bilinmeyen', ileti: `Oyun başlatılamadı: beklenmeyen bir hata oluştu (${m}).`, oneri: `Sayfayı yenile; sorun sürerse ${tek} dene ve bu iletiyi bildir.` };
+}
+
 boot().catch((e) => {
   console.error(e);
   const t = document.getElementById('load-text');
-  if (t) t.innerHTML = `Oyun başlatılamadı: ${e.message}<br><small>WebGL destekli güncel bir tarayıcı (Chrome, Edge, Firefox) gerekiyor.</small>`;
+  if (!t) return;
+  const r = acilisIletisi(e);
+  window.__dkAcilisHatasi = r.tur;
+  t.textContent = r.ileti;
+  t.appendChild(document.createElement('br'));
+  t.appendChild(el('small', {}, r.oneri));
 });

@@ -1,0 +1,20 @@
+# 2026-11-15T09:24:35Z b2 ağacı 03b5c97+çalışma kopyası; koşucu ed8820b9 ortak.cjs b29886a4; senaryo tests/scenarios/00_acilis.js 9b8535d42868
+# sunulan oyun (/home/user/SON-HAZ-NE-b2): main.js 991d08ae game.js e13e82ef engine.js 0b59aa40 input.js 7c08c7c7
+# komut: /home/user/devtools/tk timeout 460 node tests/harness/run.cjs tests/scenarios/00_acilis.js --url 'http://localhost:8085/index.html' --size 640x360 --timeout 400 --report /home/user/SON-HAZ-NE-b2/docs/v05/kosular/faz1/sonra_b2/duzeltme/./00_acilis.json 
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+ready in 6.7 s
+PASS Ana menü görünür → true
+PASS Menü düğmeleri → 8
+R: {"durum":"menu"}
+R: "ok"
+PASS Oyun başladı → "playing"
+R: [{"t":5,"from":"menu","to":"loading","oyuncu":false,"surenPrepare":0,"bitenPrepare":0,"isler":0,"bekleyenKaro":0},{"t":268,"from":"loading","to":"playing","oyuncu":true,"surenPrepare":0,"bitenPrepare":1,"isler":0,"bekleyenKaro":0}]
+PASS AC01 G.state 'playing'e yalnız oyuncu kurulduktan (bölge hazırlığı bittikten) sonra geçer (A-10; eski 'Oyun başladı' kontrolü prepare'den önce atanan değeri görüyordu) → true
+PASS AC02 Bölge hazırlığı (prepare) süresince G.state 'loading' (A-10) → true
+PASS AC03 G.state 'playing'e geçiş anında başlangıç bölgesi hazırlığı bitmiş: süren prepare yok, oyun başlatıldıktan sonra ≥ 1 prepare tamamlanmış, başlangıç noktasının 500 m içinde bekleyen karo yok (A-10) → "tamam"
+PASS Oyuncu dünyada → true
+PASS Arazi karoları yüklendi → 129
+PASS Arazi işçileri çalışıyor → 3
+errors: 0 pageErrors: 0 fails: 0 (22.0 s)
+SONUC: GECTI (çıkış 0) kontrol 9/9, onay 9 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34
+# çıkış 0 2026-11-15T09:26:54Z

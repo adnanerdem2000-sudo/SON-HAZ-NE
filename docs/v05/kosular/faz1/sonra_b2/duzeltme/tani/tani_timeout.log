@@ -1,0 +1,16 @@
+# 2026-11-15T09:32:21Z b2 ağacı 03b5c97+çalışma kopyası; koşucu ed8820b9 ortak.cjs b29886a4; senaryo docs/v05/kosular/faz1/sonra_b2/tani/betikler/tani_timeout.js a1609ff7d3bb
+# sunulan oyun (/home/user/SON-HAZ-NE-b2): main.js 991d08ae game.js e13e82ef engine.js 0b59aa40 input.js 7c08c7c7
+# komut: /home/user/devtools/tk timeout 500 node tests/harness/run.cjs docs/v05/kosular/faz1/sonra_b2/tani/betikler/tani_timeout.js --url 'http://localhost:8085/index.html' --size 640x360 --timeout 440 --report /home/user/SON-HAZ-NE-b2/docs/v05/kosular/faz1/sonra_b2/duzeltme/tani/tani_timeout.json 
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+ready in 6.1 s
+R: "sarıldı"
+R: {"durum":"playing","bildirim":[{"text":"Başlangıç bölgesi zamanında hazırlanamadı; eksik arazi arka planda yükleniyor.","kind":"warn","t":9846},{"text":"Kırlangıç Limanı'na hoş geldin, korsan! (Esc: menü · J: defter)","kind":"quest","t":9846.29999999702},{"text":"Otomatik kayıt yapıldı.","kind":"good","t":9848.29999999702}]}
+PASS T1 Oyun başlatmada prepare 'timeout' → uyarı bildirimi, oyun yine başlar → true
+R: {"vardi":true,"altin":1990,"bildirim":[{"text":"Keşfedildi: Kırlangıç Adası","kind":"discover","t":10009.199999999255},{"text":"Keşfedildi: Kırlangıç Limanı","kind":"discover","t":10009.5},{"text":"Hedef: Hanın önündeki Yaşlı Kaptan Tuzla ile konuş. (J: Korsan Defteri)","kind":"quest","t":14295.099999997765},{"text":"Tuz Pazarı Limanı çevresi zamanında hazırlanamadı; eksik arazi arka planda yükleniyor.","kind":"warn","t":14446.29999999702},{"text":"Tuz Pazarı Limanı limanına vardın.","kind":"good","t":14446.39999999851},{"text":"Keşfedildi: Tuz Pazarı","kind":"discover","t":15332.79999999702}]}
+PASS T2 Hızlı yolculukta prepare 'timeout' → uyarı bildirimi (vardın içermez), varış yine olur, ücret bir kez → true
+R: "öldü"
+R: {"olu":false,"konum":[1757,864],"bildirim":[{"text":"Uyandığın yerin çevresi zamanında hazırlanamadı; eksik arazi arka planda yükleniyor.","kind":"warn","t":29278.29999999702},{"text":"Gözlerini açtın. Biraz başın dönüyor…","kind":"info","t":29278.29999999702}]}
+PASS T3 Uzak uyanışta prepare 'timeout' → uyarı bildirimi, oyuncu yine uyanır → true
+errors: 0 pageErrors: 0 fails: 0 (31.9 s)
+SONUC: OLCUM (çıkış 0) kontrol 3/3, onay 3 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34
+# çıkış 0 2026-11-15T09:33:52Z

@@ -1,0 +1,23 @@
+# 2026-11-15T09:39:55Z b2 ağacı 03b5c97+çalışma kopyası; koşucu 6243f043 ortak.cjs b29886a4; senaryo /home/user/SON-HAZ-NE-b2/docs/v05/kosular/faz1/sonra_b2/duzeltme/tani/betikler/tani_coop_ortu.cjs c453fba2dab6
+# sunulan oyun (/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/b2duz_onceki_agac): main.js d8ce0d5b game.js 4294f73a engine.js aa93bfd9 input.js 7a674291
+# komut: /home/user/devtools/tk timeout 460 node tests/harness/coop.cjs /home/user/SON-HAZ-NE-b2/docs/v05/kosular/faz1/sonra_b2/duzeltme/tani/betikler/tani_coop_ortu.cjs --url 'http://localhost:8098/index.html?peerhost=127.0.0.1&peerport=9000' --size 640x360 --timeout 400 --report /home/user/SON-HAZ-NE-b2/docs/v05/kosular/faz1/sonra_b2/duzeltme/once/tani_coop_ortu_once.json --players 2
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+Kaptan/host {"code":"67LVVD"}
+Tayfa/join {"room":"Örtü Odası"}
+Kaptan/hs "host-started"
+Tayfa/gs "guest-started"
+PASS OK00 İki oyuncu çevrimiçi oyunda (oda sahibi + konuk) → {"hOk":true,"gOk":true}
+Tayfa/g-kur "kuruldu"
+Kaptan/h-yola {"kilit":true,"fps0":10,"fpsOrtu":0.25}
+Kaptan/h-son {"kilit":true,"blokMs":1430,"tik":0,"t0":1794735797089,"t1":1794735798519,"varis":true,"fps0":10,"fpsOrtu":0.25,"fpsSon":10}
+[test] oda sahibi: {"kilit":true,"blokMs":1430,"tik":0,"t0":1794735797089,"t1":1794735798519,"varis":true,"fps0":10,"fpsOrtu":0.25,"fpsSon":10}
+Tayfa/g-say {"kur":"kuruldu","icinde":0,"pencereMs":1180,"hz":0,"once3sn":5,"sonra1sn":0}
+[test] konuk: {"kur":"kuruldu","icinde":0,"pencereMs":1180,"hz":0,"once3sn":5,"sonra1sn":0}
+FAIL OK01 Önkoşul: oda sahibinin hızlı yolculuğu tamamlandı, perde (girdi kilidi) ≥ 1 sn sürdü; konuk yolculuktan önceki 3 sn'de ≥ 10 anlık görüntü aldı → {"H":{"kilit":true,"blokMs":1430,"tik":0,"t0":1794735797089,"t1":1794735798519,"varis":true,"fps0":10,"fpsOrtu":0.25,"fpsSon":10},"S":{"kur":"kuruldu","icinde":0,"pencereMs":1180,"hz":0,"once3sn":5,"sonra1sn":0}}
+FAIL OK02 Oda sahibinin hızlı yolculuk perdesi sürerken konuk anlık görüntü almayı sürdürür (≥ 5/sn; B2-D2: örtü yalnız çizimi atlar) → {"kur":"kuruldu","icinde":0,"pencereMs":1180,"hz":0,"once3sn":5,"sonra1sn":0}
+FAIL OK03 Oda sahibinin perde süresince döngüsü sürer (güncelleyici tiki ≥ 5) ve örtü motorun kare sınırına dokunmaz → {"tik":0,"fps0":10,"fpsOrtu":0.25,"fpsSon":10}
+GORUNTU /home/user/SON-HAZ-NE-b2/tests/out/goruntu/tani_coop_ortu_2026-11-15T09-41-18-439Z_29855/ilk_kalan_Kaptan.png
+GORUNTU /home/user/SON-HAZ-NE-b2/tests/out/goruntu/tani_coop_ortu_2026-11-15T09-41-18-439Z_29855/ilk_kalan_Tayfa.png
+checks: 4 fails: 3 pageErrors: 0 (145.5 s)
+SONUC: KALDI (çıkış 1) kontrol 1/4 | ev() istisnası 0, kapalı sayfa atlama 0, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 4 farklı/68 | neden: başarısız kontrol ya da ev() istisnası: 3
+# çıkış 1 2026-11-15T09:43:49Z

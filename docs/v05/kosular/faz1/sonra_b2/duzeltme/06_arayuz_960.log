@@ -1,0 +1,18 @@
+# 2026-11-15T10:00:07Z b2 ağacı 03b5c97+çalışma kopyası; koşucu ed8820b9 ortak.cjs b29886a4; senaryo tests/scenarios/06_arayuz_960.js a25492c2d6fe
+# sunulan oyun (/home/user/SON-HAZ-NE-b2): main.js 991d08ae game.js e13e82ef engine.js 0b59aa40 input.js 7c08c7c7
+# komut: /home/user/devtools/tk timeout 460 node tests/harness/run.cjs tests/scenarios/06_arayuz_960.js --url 'http://localhost:8085/index.html' --size 960x540 --timeout 400 --report /home/user/SON-HAZ-NE-b2/docs/v05/kosular/faz1/sonra_b2/duzeltme/./06_arayuz_960.json 
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+ready in 7.8 s
+PASS Sayfa hazır → true
+R: "online"
+R: {"found":true,"text":"Oda kur","buttons":11}
+PASS H05 960×540: Oda Kur panelinde "Odayı oluştur" düğmesi görünür alanda → true
+R: {"btn":{"x":689,"y":467,"w":141,"h":43,"bottom":510},"vh":540,"vw":960}
+R: "ok"
+PASS Oyun başladı → "playing"
+R: "ok"
+PASS H14 960×540: kalıcı HUD panelleri üst üste binmiyor (geçici bildirim↔sohbet/görev çakışması hariç) → true
+R: {"rects":{"ship-panel":[648,104,938,308],"quest-tracker":[22,250,342,320],"chat-box":[22,196,402,240],"time-panel":[650,12,942,99],"hotbar":[259,462,701,520],"minimap":[762,342,938,518]},"over":[],"vh":540,"vw":960}
+errors: 0 pageErrors: 0 fails: 0 (47.4 s)
+SONUC: GECTI (çıkış 0) kontrol 4/4, onay 4 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34
+# çıkış 0 2026-11-15T10:01:56Z

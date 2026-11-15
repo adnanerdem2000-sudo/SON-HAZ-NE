@@ -42,9 +42,12 @@ for (const I of EXTRA_ISLANDS) {
     const end = { x: I.x + dx * (coast + len), z: I.z + dz * (coast + len) };
     const px = -dz, pz = dx; // iskeleye dik
     f.pierStart = start; f.pierEnd = end; f.pierYaw = Math.atan2(dx, dz);
+    // KI-236: biniş noktası iskele platformunun ÜSTÜNDE olmalı. İskele güvertesi eksenden ±2,5 m (islands.js _pier → addPlatform
+    // yarı genişlik 2,5); önceki 2,6 m'lik yan uzaklık noktayı platformun 0,1 m dışına, suya koyuyordu (hızlı yolculuk varışı ve
+    // "İskeleye in" oyuncuyu suya bırakıyordu). 1,2 m: gemi tarafında, kenara 1,3 m pay (konuk ışınlanmasının ±0,6 m dağılımı dahil).
     ports.add({
       id: f.id, name: f.name, island: I.id, region: I.region, x: f.x, z: f.z,
-      boarding: { x: end.x + px * 2.6 - dx * 3, y: 3.1, z: end.z + pz * 2.6 - dz * 3 },
+      boarding: { x: end.x + px * 1.2 - dx * 3, y: 3.1, z: end.z + pz * 1.2 - dz * 3 },
       mooring: { x: end.x + px * 9 - dx * 6, z: end.z + pz * 9 - dz * 6, yaw: Math.atan2(dx, dz) },
       spawn: { x: f.x + dx * 6, z: f.z + dz * 6 },
       pierStart: start, pierEnd: end, style: f.style, size: f.size || 1,

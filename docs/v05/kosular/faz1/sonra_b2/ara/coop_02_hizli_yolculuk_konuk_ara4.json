@@ -1,0 +1,520 @@
+{
+ "scenario": "tests/scenarios/coop/02_hizli_yolculuk_konuk.cjs",
+ "players": 2,
+ "checks": [
+  {
+   "label": "HK00 İki oyuncu çevrimiçi oyunda (oda sahibi + konuk)",
+   "ok": true,
+   "detail": {
+    "hOk": true,
+    "gOk": true
+   }
+  },
+  {
+   "label": "HK01 Önkoşul: oda sahibinin hızlı yolculuğu konuğa ulaştı ('teleport' iletisi) ve konukta varış bölgesinin hazırlığı başladı (bekleme penceresi açık)",
+   "ok": true,
+   "detail": {
+    "kur": "kuruldu",
+    "ilk": {
+     "ms": 1602,
+     "teleport": 1
+    }
+   }
+  },
+  {
+   "label": "HK02 Önkoşul: ikinci 'teleport' iletisi konuğa, ilk hazırlık hâlâ beklerken ulaştı",
+   "ok": true,
+   "detail": {
+    "teleport": [
+     [
+      1675,
+      813
+     ],
+     [
+      290,
+      -5003
+     ]
+    ],
+    "cagri": [
+     [
+      1675,
+      813,
+      400,
+      "bekliyor"
+     ]
+    ],
+    "ilkBekliyor": true,
+    "ikinciHazirlik": 0
+   }
+  },
+  {
+   "label": "HK03 Bekleme sırasında gelen ikinci 'teleport' iletisi yok sayılır: konukta ikinci bölgenin hazırlığı başlamaz (brief madde 5: konuk işleyicisinde travelBusy)",
+   "ok": true,
+   "detail": {
+    "ikinciHazirlik": 0,
+    "cagri": [
+     [
+      1675,
+      813,
+      400,
+      "bekliyor"
+     ]
+    ]
+   }
+  },
+  {
+   "label": "HK04 Kapı açılınca konuk bir kez ve ilk hedefe taşınır: konuk Tuz Pazarı biniş noktasında (≤ 30 m), tek \"vardınız\" bildirimi (ikinci ileti konuğu Kuzeyfener'e taşımaz)",
+   "ok": true,
+   "detail": {
+    "ayniOyuncu": true,
+    "konum": [
+     1675,
+     814
+    ],
+    "aUzaklik": 0,
+    "bUzaklik": 5979,
+    "varisBildirimi": [
+     "Kaptan rotayı kırdı: yeni limana vardınız!"
+    ],
+    "durum": "playing"
+   }
+  },
+  {
+   "label": "HK05 Önkoşul: ikinci hızlı yolculuk konuğa ulaştı, konukta hazırlık başladı (bekleme penceresi açık)",
+   "ok": true,
+   "detail": {
+    "C": {
+     "id": "zumrut_koy_port_0",
+     "x": -305,
+     "z": 5125,
+     "bx": -306.8303803092046,
+     "bz": 5025.082219736824
+    },
+    "ilk2": {
+     "ms": 1607
+    },
+    "oncesi2": {
+     "konum": [
+      1675,
+      814
+     ],
+     "durum": "playing"
+    }
+   }
+  },
+  {
+   "label": "HK06 Bekleme sırasında menüye dönen konuk: hazırlık bitince durum 'menu', ana menü açık, HUD kapalı (brief madde 5: oturum belirteci)",
+   "ok": true,
+   "detail": {
+    "durum": "menu",
+    "menu": true,
+    "hud": false,
+    "oyuncuKaydi": 0,
+    "cUzaklik": 4654,
+    "bildirimSonra": []
+   }
+  },
+  {
+   "label": "HK07 Bekleme sırasında menüye dönen konuk: devam kodu oyuncuyu varış limanına taşımaz ve \"vardınız\" bildirimi üretmez",
+   "ok": true,
+   "detail": {
+    "durum": "menu",
+    "menu": true,
+    "hud": false,
+    "oyuncuKaydi": 0,
+    "cUzaklik": 4654,
+    "bildirimSonra": []
+   }
+  }
+ ],
+ "errors": {
+  "Kaptan": [],
+  "Tayfa": []
+ },
+ "pageErrors": {
+  "Kaptan": [],
+  "Tayfa": []
+ },
+ "fails": 0,
+ "evalErrors": [],
+ "kapaliAtlama": 0,
+ "kapaliIstisna": 0,
+ "kapananlar": [],
+ "ms": 127582,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/scenarios/coop/02_hizli_yolculuk_konuk.cjs",
+ "meta": {
+  "testler": [
+   "9 Hızlı yolculuk",
+   "co-op",
+   "A-03",
+   "KI-035",
+   "brief madde 5 (konuk 'teleport' işleyicisi)"
+  ],
+  "dosyalar": [
+   "js/net/net.js",
+   "js/main.js",
+   "js/world/terrain.js"
+  ]
+ },
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8085/index.html?peerhost=127.0.0.1&peerport=9000&test=1",
+  "verilenUrl": "http://localhost:8085/index.html?peerhost=127.0.0.1&peerport=9000",
+  "gorunum": [
+   640,
+   360
+  ],
+  "oyuncu": 2
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "03b5c973bcc65adf48b63a1bd7746d43ee88ae6d",
+  "dal": "faz1-b2",
+  "kirli": true,
+  "tarih": "2026-11-15T05:36:10.457Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-b2/tests/harness/coop.cjs /home/user/SON-HAZ-NE-b2/tests/scenarios/coop/02_hizli_yolculuk_konuk.cjs --players 2 --size 640x360 --timeout 600 --url 'http://localhost:8085/index.html?peerhost=127.0.0.1&peerport=9000' --report docs/v05/kosular/faz1/sonra_b2/ara/coop_02_hizli_yolculuk_konuk_ara4.json",
+  "cwd": "/home/user/SON-HAZ-NE-b2",
+  "sunucular": [
+   "statik sunucu http://localhost:8085 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8085",
+   "PeerJS sinyal sunucusu 127.0.0.1:9000 — node tests/peer-server.cjs (peer modülü NODE_PATH'te)"
+  ],
+  "commit": "03b5c973bcc65adf48b63a1bd7746d43ee88ae6d-kirli",
+  "senaryoSha256": "6cad74c81c36976bd8e743940dc708929dfb767350ba9b3c6b5416b329381ec2",
+  "adim": null,
+  "url": "http://localhost:8085/index.html?peerhost=127.0.0.1&peerport=9000&test=1"
+ },
+ "kontroller": [
+  {
+   "n": 1,
+   "id": "HK00",
+   "etiket": "HK00 İki oyuncu çevrimiçi oyunda (oda sahibi + konuk)",
+   "ok": true,
+   "deger": {
+    "hOk": true,
+    "gOk": true
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 20455,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 2,
+   "id": "HK01",
+   "etiket": "HK01 Önkoşul: oda sahibinin hızlı yolculuğu konuğa ulaştı ('teleport' iletisi) ve konukta varış bölgesinin hazırlığı başladı (bekleme penceresi açık)",
+   "ok": true,
+   "deger": {
+    "kur": "kuruldu",
+    "ilk": {
+     "ms": 1602,
+     "teleport": 1
+    }
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1621,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 3,
+   "id": "HK02",
+   "etiket": "HK02 Önkoşul: ikinci 'teleport' iletisi konuğa, ilk hazırlık hâlâ beklerken ulaştı",
+   "ok": true,
+   "deger": {
+    "teleport": [
+     [
+      1675,
+      813
+     ],
+     [
+      290,
+      -5003
+     ]
+    ],
+    "cagri": [
+     [
+      1675,
+      813,
+      400,
+      "bekliyor"
+     ]
+    ],
+    "ilkBekliyor": true,
+    "ikinciHazirlik": 0
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 3006,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 4,
+   "id": "HK03",
+   "etiket": "HK03 Bekleme sırasında gelen ikinci 'teleport' iletisi yok sayılır: konukta ikinci bölgenin hazırlığı başlamaz (brief madde 5: konuk işleyicisinde travelBusy)",
+   "ok": true,
+   "deger": {
+    "ikinciHazirlik": 0,
+    "cagri": [
+     [
+      1675,
+      813,
+      400,
+      "bekliyor"
+     ]
+    ]
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 0,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 5,
+   "id": "HK04",
+   "etiket": "HK04 Kapı açılınca konuk bir kez ve ilk hedefe taşınır: konuk Tuz Pazarı biniş noktasında (≤ 30 m), tek \"vardınız\" bildirimi (ikinci ileti konuğu Kuzeyfener'e taşımaz)",
+   "ok": true,
+   "deger": {
+    "ayniOyuncu": true,
+    "konum": [
+     1675,
+     814
+    ],
+    "aUzaklik": 0,
+    "bUzaklik": 5979,
+    "varisBildirimi": [
+     "Kaptan rotayı kırdı: yeni limana vardınız!"
+    ],
+    "durum": "playing"
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2104,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 6,
+   "id": "HK05",
+   "etiket": "HK05 Önkoşul: ikinci hızlı yolculuk konuğa ulaştı, konukta hazırlık başladı (bekleme penceresi açık)",
+   "ok": true,
+   "deger": {
+    "C": {
+     "id": "zumrut_koy_port_0",
+     "x": -305,
+     "z": 5125,
+     "bx": -306.8303803092046,
+     "bz": 5025.082219736824
+    },
+    "ilk2": {
+     "ms": 1607
+    },
+    "oncesi2": {
+     "konum": [
+      1675,
+      814
+     ],
+     "durum": "playing"
+    }
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2212,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 7,
+   "id": "HK06",
+   "etiket": "HK06 Bekleme sırasında menüye dönen konuk: hazırlık bitince durum 'menu', ana menü açık, HUD kapalı (brief madde 5: oturum belirteci)",
+   "ok": true,
+   "deger": {
+    "durum": "menu",
+    "menu": true,
+    "hud": false,
+    "oyuncuKaydi": 0,
+    "cUzaklik": 4654,
+    "bildirimSonra": []
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 4115,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 8,
+   "id": "HK07",
+   "etiket": "HK07 Bekleme sırasında menüye dönen konuk: devam kodu oyuncuyu varış limanına taşımaz ve \"vardınız\" bildirimi üretmez",
+   "ok": true,
+   "deger": {
+    "durum": "menu",
+    "menu": true,
+    "hud": false,
+    "oyuncuKaydi": 0,
+    "cUzaklik": 4654,
+    "bildirimSonra": []
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": "Kaptan",
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8085/vendor/three/three.core.js",
+   "sayi": 33
+  },
+  {
+   "oyuncu": "Kaptan",
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8085/vendor/three/three.core.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": "Tayfa",
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8085/vendor/three/three.core.js",
+   "sayi": 33
+  },
+  {
+   "oyuncu": "Tayfa",
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8085/vendor/three/three.core.js",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 4,
+  "toplam": 68,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "goruntuler": [],
+ "isaretciKilidi": {
+  "kip": "taklit",
+  "sayac": {
+   "Kaptan": {
+    "istek": 1,
+    "verildi": 1,
+    "hedefDegisti": 0,
+    "red": 0,
+    "jestsiz": 0,
+    "kisitli": 0,
+    "birakma": 0,
+    "birakildi": 0,
+    "iptal": 0,
+    "degisimOlayi": 1,
+    "hataOlayi": 0,
+    "yonlendirilen": 0,
+    "susturulan": 16
+   },
+   "Tayfa": {
+    "istek": 1,
+    "verildi": 1,
+    "hedefDegisti": 0,
+    "red": 0,
+    "jestsiz": 0,
+    "kisitli": 0,
+    "birakma": 1,
+    "birakildi": 1,
+    "iptal": 0,
+    "degisimOlayi": 2,
+    "hataOlayi": 0,
+    "yonlendirilen": 0,
+    "susturulan": 4
+   }
+  }
+ },
+ "kopma": null,
+ "sonuc": {
+  "durum": "GECTI",
+  "cikisKodu": 0,
+  "neden": [],
+  "onaySayisi": 8,
+  "kontrolSayisi": 8,
+  "gecen": 8,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "evalErrors": 0,
+  "kapaliAtlama": 0,
+  "kapaliIstisna": 0,
+  "tur": "tarayici+webrtc",
+  "tarayiciKoptu": false
+ },
+ "sure": {
+  "hazirMs": 93057,
+  "toplamMs": 127582,
+  "yerlesmeMs": 1001
+ }
+}

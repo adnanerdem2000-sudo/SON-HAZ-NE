@@ -9,6 +9,10 @@ export const engine = {
   timer: new THREE.Timer(),
   updaters: new Set(),
   fpsLimit: 0,
+  // Örtü (game.ortuAc; KI-237): ekran opak bir katmanla örtülüyken 3B sahne çizilmez, güncelleyiciler (benzetim, HUD, ağ, girdinin
+  // kare sonu) her karede sürer. Karşıt denetim B2-D2: örtü önce fpsLimit'i 0,25'e indirip bütün döngüyü durduruyordu (oda sahibinin
+  // anlık görüntüleri dahil); perde altında basılan tuşlar input.endFrame çalışmadığı için birikip varışın ilk karesinde işleniyordu.
+  skipRender: false,
   renderScale: 1,
   _last: 0,
   fps: 0,
@@ -65,7 +69,7 @@ export const engine = {
       for (const u of this.updaters) {
         try { u(dt); } catch (e) { console.error(e); }
       }
-      post.render();
+      if (!this.skipRender) post.render();
     };
     requestAnimationFrame(loop);
   },

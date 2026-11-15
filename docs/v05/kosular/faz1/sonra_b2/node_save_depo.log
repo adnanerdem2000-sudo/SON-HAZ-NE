@@ -1,0 +1,19 @@
+# 2026-11-15T05:38:56Z komut: node docs/v05/kosular/faz1/sonra_b2/tani/betikler/save_depo.mjs /home/user/SON-HAZ-NE-b2
+{"available":{"v":false},"profile":{"v":null},"read":{"v":null},"list":{"v":[{"slot":0,"empty":true},{"slot":1,"empty":true},{"slot":2,"empty":true}]},"latest":{"v":null},"write":{"v":false},"remove":{},"writeProfile":{},"exportAll":{"v":"{}"},"importAll":{"v":false}}
+GECTI D01 engelli: hiçbir çağrı istisna atmıyor
+GECTI D02 engelli: available false
+GECTI D03 engelli: profile/read/latest null
+GECTI D04 engelli: list 3 boş yuva
+GECTI D05 engelli: write false, importAll false, exportAll {}
+GECTI D06 engelli: console.error yok
+GECTI N01 normal: available true
+GECTI N02 normal: write true + read aynı
+GECTI N03 normal: ikinci yazımda .bak tutulur
+GECTI N04 normal: latest/list
+GECTI N05 normal: bozuk asıl kayıtta yedek okunur
+GECTI N06 normal: profil
+GECTI N07 normal: dışa/içe aktarma
+GECTI N08 normal: remove
+GECTI N09 kota dolu: write false, console.error 1 (gerçek yazma hatası görünür kalır)
+SONUC: 15/15
+# çıkış 0

@@ -1,0 +1,15 @@
+# 2026-11-15T10:12:12Z b2 ağacı 03b5c97+çalışma kopyası; koşucu ed8820b9 ortak.cjs b29886a4; senaryo tests/scenarios/02_tek_dosya.js 5402efe888f4
+# sunulan oyun (/home/user/SON-HAZ-NE-b2): main.js 991d08ae game.js e13e82ef engine.js 0b59aa40 input.js 7c08c7c7
+# komut: /home/user/devtools/tk timeout 360 node tests/harness/run.cjs tests/scenarios/02_tek_dosya.js --url 'file:///tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/b2duz_dist/DenizKorsanlari-SonHazine.html' --size 640x360 --timeout 300 --report /home/user/SON-HAZ-NE-b2/docs/v05/kosular/faz1/sonra_b2/duzeltme/./02_tek_dosya_b2duz.json 
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+ready in 6.6 s
+PASS Tek dosya: sayfa hazır → true
+R: {"proto":"file:","workers":3,"fallback":false,"failures":[],"url":"data:text/javascript;charset=utf-8,(()%3","stats":{"tiles":125,"meshes":125,"hires":15,"tris":311168,"queue":0,"jobs":0,"workers":3,"fallback":false,"failures":0,"mode":""}}
+PASS Tek dosya (file://): arazi işçileri çalışıyor → 3
+R: "ok"
+PASS Tek dosya: oyun başladı → "playing"
+PASS Tek dosya: oyuncu zemine basıyor → true
+R: {"tiles":129,"meshes":129,"hires":23,"tris":407680,"queue":8,"jobs":14,"workers":3,"fallback":false,"failures":0,"mode":""}
+errors: 0 pageErrors: 0 fails: 0 (19.7 s)
+SONUC: GECTI (çıkış 0) kontrol 4/4, onay 4 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34
+# çıkış 0 2026-11-15T10:16:49Z

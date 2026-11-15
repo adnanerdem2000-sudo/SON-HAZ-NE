@@ -1,0 +1,1853 @@
+{
+ "scenario": "tests/scenarios/02_hizli_yolculuk.js",
+ "url": "http://localhost:8085/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "degisken": {
+    "ad": "yardimci",
+    "deger": "(()=>{ const T = DK.terrain;\n   const Y = window.__Y = {};\n   Y.bekle = (ms) => new Promise((r) => setTimeout(r, ms));\n   Y.agYakin = (x, z, r) => [...T.tiles.values()].filter((t) => t.mesh && t.mesh.parent === T.group && Math.hypot(t.x0 + 80 - x, t.z0 + 80 - z) < r).length;\n   Y.derinlikUzak = (x, z) => { const w = T.depthWin; return w ? Math.round(Math.hypot(w.x0 + w.size / 2 - x, w.z0 + w.size / 2 - z)) : 1e9; };\n   Y.ortu = () => !!(document.querySelector('#sleep-fade.on') || document.querySelector('#loading.active'));\n   Y.yeniOyun = async () => { DK.G.noAutoPause = true; await DK.handlers.startGame({ kind: 'solo', slot: 0, data: null }); for (let i = 0; i < 100 && !(DK.G.state === 'playing' && DK.G.player); i++) await Y.bekle(100); const p = DK.G.player; p.inv.gold = 2000; return DK.G.state === 'playing' && !!p; };\n   Y.ucret = (a, b) => Math.round(25 + Math.hypot(b.x - a.x, b.z - a.z) / 40);\n   Y.prepareIzle = () => { const L = window.__prepler = []; const o = T.prepare; if (o.__izli) return; const f = async function (x, z, op) { const k = { x: Math.round(x), z: Math.round(z), r: op && op.radius, t0: performance.now() }; L.push(k); try { const r = await o.apply(this, arguments); k.donus = r === undefined ? 'undefined' : r; return r; } finally { k.ms = Math.round(performance.now() - k.t0); } }; f.__izli = true; T.prepare = f; };\n   Y.prepareBitti = () => (window.__prepler || []).every((k) => typeof k.ms === 'number');\n   Y.varisIzle = () => { if (window.__varislar) return; const V = window.__varislar = [], S = window.__sicramalar = []; DK.G.on('arrivedPort', (e) => V.push({ port: e && e.port, t: performance.now() }));\n     let onceki = null; const f = () => { const s = DK.G.ship; if (s) { if (onceki && Math.hypot(s.x - onceki.x, s.z - onceki.z) >= 300) S.push({ x: Math.round(s.x), z: Math.round(s.z), t: performance.now() }); onceki = { x: s.x, z: s.z }; } requestAnimationFrame(f); }; requestAnimationFrame(f); };\n   Y.bildirimIzle = () => { if (window.__bildirimler) return; const B = window.__bildirimler = []; DK.G.on('notify', (n) => B.push({ text: String(n && n.text), kind: n && n.kind, t: performance.now() })); };\n   Y.ucgenFark = (x, z) => {\n     const i = Math.floor((x + 10000) / 160), j = Math.floor((z + 10000) / 160), t = T.tiles.get(i * 1024 + j);\n     if (!t || !t.mesh) return { karo: false };\n     if (!t.heights) return { karo: true, hires: false, seg: t.seg };\n     const g = t.mesh.geometry, P = g.attributes.position.array, I = g.index.array, seg = t.seg, st = 160 / seg;\n     const dene = (q) => { const ia = I[q], ib = I[q + 1], ic = I[q + 2];\n       const ax = P[ia * 3], az = P[ia * 3 + 2], bx = P[ib * 3], bz = P[ib * 3 + 2], cx = P[ic * 3], cz = P[ic * 3 + 2];\n       const d1 = (x - bx) * (az - bz) - (ax - bx) * (z - bz), d2 = (x - cx) * (bz - cz) - (bx - cx) * (z - cz), d3 = (x - ax) * (cz - az) - (cx - ax) * (z - az);\n       if ((d1 < -1e-9 || d2 < -1e-9 || d3 < -1e-9) && (d1 > 1e-9 || d2 > 1e-9 || d3 > 1e-9)) return null;\n       const det = (bx - ax) * (cz - az) - (cx - ax) * (bz - az); if (Math.abs(det) < 1e-12) return null;\n       const u = ((x - ax) * (cz - az) - (cx - ax) * (z - az)) / det, v = ((bx - ax) * (z - az) - (x - ax) * (bz - az)) / det;\n       return P[ia * 3 + 1] + u * (P[ib * 3 + 1] - P[ia * 3 + 1]) + v * (P[ic * 3 + 1] - P[ia * 3 + 1]); };\n     const a = Math.min(seg - 1, Math.floor((x - t.x0) / st)), b = Math.min(seg - 1, Math.floor((z - t.z0) / st));\n     let y = dene((b * seg + a) * 6); if (y === null) y = dene((b * seg + a) * 6 + 3);\n     for (let q = 0; y === null && q < I.length; q += 3) y = dene(q);\n     if (y === null) return { karo: true, hires: true, ucgen: false };\n     return { karo: true, hires: true, ucgen: true, fark: Math.abs(T.heightAt(x, z) - y) };\n   };\n   Y.zeminTutarliligi = (x, z, r, n) => { let enBuyuk = 0, nokta = 0, ucgensiz = 0; for (let k = 0; k < n; k++) { const a = Math.random() * Math.PI * 2, d = Math.random() * r; const f = Y.ucgenFark(x + Math.cos(a) * d, z + Math.sin(a) * d); if (!f.hires) continue; if (!f.ucgen) { ucgensiz++; continue; } nokta++; enBuyuk = Math.max(enBuyuk, f.fark); } return { nokta, ucgensiz, enBuyuk: +enBuyuk.toFixed(5) }; };\n   Y.ilkKare = (ad, kosul) => { window[ad] = null; const t0 = performance.now(); const f = () => { const p = DK.G.player; if (p && !p.dead && kosul(p) && !Y.ortu()) { const alt = Y.ucgenFark(p.pos.x, p.pos.z); const V = window[ad] = { ms: Math.round(performance.now() - t0), ag300: Y.agYakin(p.pos.x, p.pos.z, 300), karoAltinda: alt, derinlikUzak: Y.derinlikUzak(p.pos.x, p.pos.z), x: Math.round(p.pos.x), z: Math.round(p.pos.z), y: +p.pos.y.toFixed(2), zemin: +DK.physics.floorAt(p.pos.x, p.pos.z, p.pos.y + 0.6).toFixed(2), sonra: [] }; const ax = p.pos.x, az = p.pos.z; for (const ms of [200, 500, 1000, 2000]) setTimeout(() => { const q = DK.G.player; if (q) V.sonra.push({ ms, y: +q.pos.y.toFixed(2), mod: q.mode, zemin: +DK.physics.floorAt(q.pos.x, q.pos.z, q.pos.y + 0.6).toFixed(2), varisNoktasiZemin: +DK.physics.floorAt(ax, az, 10).toFixed(2) }); }, ms); return; } if (performance.now() - t0 < 120000) requestAnimationFrame(f); }; requestAnimationFrame(f); };\n   Y.gorunurluk = async (from, to) => {\n     const THREE = DK.THREE, cam = DK.engine.camera;\n     const a = DK.snapFrom(from, to, 0.92); cam.updateMatrixWorld(true);\n     const fr = new THREE.Frustum().setFromProjectionMatrix(new THREE.Matrix4().multiplyMatrices(cam.projectionMatrix, cam.matrixWorldInverse));\n     const sahnede = T.group.visible && T.group.parent === DK.engine.scene;\n     const kare = T.group.children.filter((m) => m.visible && fr.intersectsObject(m)).length;\n     T.group.visible = false; let b; try { b = DK.snapFrom(from, to, 0.92); } finally { T.group.visible = true; }\n     const oku = async (u) => { const im = new Image(); im.src = u; await im.decode(); const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const g = c.getContext('2d'); g.drawImage(im, 0, 0); return g.getImageData(0, 0, c.width, c.height).data; };\n     const A = await oku(a), B = await oku(b); let fark = 0;\n     for (let i = 0; i < A.length; i += 4) if (Math.abs(A[i] - B[i]) + Math.abs(A[i + 1] - B[i + 1]) + Math.abs(A[i + 2] - B[i + 2]) > 60) fark++;\n     return { sahnede, kareIcindeAg: kare, pikselOrani: +(fark / (A.length / 4)).toFixed(4) };\n   };\n   return Object.keys(Y); })()"
+   },
+   "ms": 16
+  },
+  {
+   "n": 2,
+   "label": null,
+   "result": [
+    "bekle",
+    "agYakin",
+    "derinlikUzak",
+    "ortu",
+    "yeniOyun",
+    "ucret",
+    "prepareIzle",
+    "prepareBitti",
+    "varisIzle",
+    "bildirimIzle",
+    "ucgenFark",
+    "zeminTutarliligi",
+    "ilkKare",
+    "gorunurluk"
+   ],
+   "ms": 3
+  },
+  {
+   "n": 3,
+   "label": null,
+   "degisken": {
+    "ad": "kip",
+    "deger": ""
+   },
+   "ms": 4
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "HY00 Etkin arazi kipi URL ile aynı (normal: işçi ≥ 1, yedek kapalı; noworker: işçi 0, yedek açık)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 5
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": {
+    "k": "",
+    "mode": "",
+    "workers": 3,
+    "fallback": false
+   },
+   "ms": 1
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "HY01 Yeni oyun başladı, oyuncu Kırlangıç Limanı'nda",
+    "ok": true,
+    "value": true
+   },
+   "ms": 219
+  },
+  {
+   "n": 7,
+   "label": null,
+   "result": {
+    "hedef": {
+     "id": "kuzeyfener_port_0",
+     "mx": 282.41917801604757,
+     "mz": -5006.38815640651,
+     "bx": 290.1282535528674,
+     "bz": -5003.161679323434,
+     "ix": 300,
+     "iz": -5300,
+     "uzaklik": 5348
+    },
+    "ucret": 159
+   },
+   "ms": 3
+  },
+  {
+   "n": 8,
+   "label": null,
+   "expect": {
+    "label": "HY02 Hedef liman (Kuzeyfener) Kırlangıç Limanı'na ≥ 5 km uzakta",
+    "ok": true,
+    "value": 5348
+   },
+   "ms": 9
+  },
+  {
+   "n": 9,
+   "label": null,
+   "metrics": {
+    "label": "m_once",
+    "heapMB": 54.8,
+    "heapTotalMB": 96.8,
+    "backingMB": 65,
+    "embedderMB": 3.6,
+    "nodes": 903,
+    "listeners": 101,
+    "docs": 1,
+    "frames": 1
+   },
+   "ms": 8
+  },
+  {
+   "n": 10,
+   "label": null,
+   "result": "yola çıkıldı",
+   "ms": 2
+  },
+  {
+   "n": 11,
+   "label": null,
+   "expect": {
+    "label": "HY03 Gemi hedef limanın demir yerinde (≤ 5 m)",
+    "ok": true,
+    "value": 0.02
+   },
+   "ms": 7246
+  },
+  {
+   "n": 12,
+   "label": null,
+   "metrics": {
+    "label": "m_varis",
+    "heapMB": 40.3,
+    "heapTotalMB": 106,
+    "backingMB": 77.7,
+    "embedderMB": 5.5,
+    "nodes": 1001,
+    "listeners": 101,
+    "docs": 1,
+    "frames": 1
+   },
+   "ms": 10
+  },
+  {
+   "n": 13,
+   "label": null,
+   "result": {
+    "varisIlkKareMs": 7226,
+    "prepare": [
+     {
+      "x": 282,
+      "z": -5006,
+      "r": 450,
+      "t0": 10961.599999999627,
+      "donus": "undefined",
+      "ms": 241
+     }
+    ],
+    "varis": {
+     "ms": 7127,
+     "ag300": 11,
+     "karoAltinda": {
+      "karo": true,
+      "hires": true,
+      "ucgen": true,
+      "fark": 1.7763568394002505e-15
+     },
+     "derinlikUzak": 11,
+     "x": 290,
+     "z": -5003,
+     "y": 2.9,
+     "zemin": 2.9,
+     "sonra": []
+    },
+    "yolculukOncesiKuyruk": {
+     "jobs": 0,
+     "queue": 0,
+     "meshes": 125,
+     "sayfaMs": 9761
+    }
+   },
+   "ms": 3
+  },
+  {
+   "n": 14,
+   "label": null,
+   "expect": {
+    "label": "HYS-01 Hızlı yolculuktaki bölge hazırlığı (terrain.prepare, 5,3 km) ≤ 3 sn (normal kipte gerileme koruması; noworker kipindeki v0.4 kırmızısı KI-234 DEĞİL: işçisiz hızlı yolculuk 33–45 sn, 45 sn sınırına yakın — ayrı bilinen sorun adayı)",
+    "ok": true,
+    "value": 241
+   },
+   "ms": 14
+  },
+  {
+   "n": 15,
+   "label": null,
+   "expect": {
+    "label": "HYS-02 Hızlı yolculuktaki bölge hazırlığı 'ok' ile döner (A-11: sonuç çağırana iletilir; 'timeout' ile sessiz eksik varış yok)",
+    "ok": false,
+    "value": "undefined"
+   },
+   "ms": 13671
+  },
+  {
+   "n": 16,
+   "label": null,
+   "expect": {
+    "label": "HY04 Oyuncu hedef iskelede (biniş noktasına yatayda ≤ 3 m)",
+    "ok": true,
+    "value": 0
+   },
+   "ms": 69
+  },
+  {
+   "n": 17,
+   "label": null,
+   "expect": {
+    "label": "HY05 Gemi hızı < 1 m/s (demirli)",
+    "ok": true,
+    "value": 0.099
+   },
+   "ms": 164
+  },
+  {
+   "n": 18,
+   "label": null,
+   "expect": {
+    "label": "HY06 Derinlik penceresi hedefte (pencere merkezi demir yerine ≤ 60 m)",
+    "ok": true,
+    "value": 7
+   },
+   "ms": 20
+  },
+  {
+   "n": 19,
+   "label": null,
+   "expect": {
+    "label": "HY07 Hedefte ≥ 6 karo ağı (450 m içinde, sahne grubunda)",
+    "ok": true,
+    "value": 20
+   },
+   "ms": 3
+  },
+  {
+   "n": 20,
+   "label": null,
+   "expect": {
+    "label": "HY08 Yol parası bir kez düşüldü",
+    "ok": true,
+    "value": true
+   },
+   "ms": 27
+  },
+  {
+   "n": 21,
+   "label": null,
+   "expect": {
+    "label": "HYU-01 Uzak ada ışınlanması (≥ 5 km, hızlı yolculuk yolu): varışın ilk karesinde oyuncunun altında yükseklik ızgaralı karo ağı, çevrede ≥ 6 ağ, derinlik penceresi oyuncuyu kapsıyor, heightAt = çizilen ağ",
+    "ok": true,
+    "value": true
+   },
+   "ms": 4
+  },
+  {
+   "n": 22,
+   "label": null,
+   "expect": {
+    "label": "HYU-02 Varışta oyuncu zeminde: ilk karede zemin sorgusunun (physics.floorAt) 1,5 m içinde, 2 sn sonra yüzmüyor ve zeminde (suya düşmüyor) (v0.4 kırmızısının nedeni arazi değil: biniş noktası iskele platformunun dışında, bkz. HYU-05; hedef ports.js biniş noktası / islands.js iskele)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 14
+  },
+  {
+   "n": 23,
+   "label": null,
+   "result": {
+    "ilkKare": {
+     "y": 2.9,
+     "zemin": 2.9
+    },
+    "sonra": [
+     {
+      "ms": 200,
+      "y": 2.9,
+      "mod": "ground",
+      "zemin": 2.9,
+      "varisNoktasiZemin": 2.9
+     },
+     {
+      "ms": 500,
+      "y": 2.9,
+      "mod": "ground",
+      "zemin": 2.9,
+      "varisNoktasiZemin": 2.9
+     },
+     {
+      "ms": 1000,
+      "y": 2.9,
+      "mod": "ground",
+      "zemin": 2.9,
+      "varisNoktasiZemin": 2.9
+     },
+     {
+      "ms": 2000,
+      "y": 2.9,
+      "mod": "ground",
+      "zemin": 2.9,
+      "varisNoktasiZemin": 2.9
+     }
+    ]
+   },
+   "ms": 3
+  },
+  {
+   "n": 24,
+   "label": null,
+   "expect": {
+    "label": "HYU-03 Varış bölgesinde (220 m) zemin sorgusu = çizilen ağ: heightAt ile ağ üçgeni farkı < 1 cm",
+    "ok": true,
+    "value": true
+   },
+   "ms": 13
+  },
+  {
+   "n": 25,
+   "label": null,
+   "result": {
+    "nokta": 360,
+    "ucgensiz": 0,
+    "enBuyuk": 0
+   },
+   "ms": 2
+  },
+  {
+   "n": 26,
+   "label": null,
+   "expect": {
+    "label": "HYU-04 Arazi görünür: adaya bakan kamerada ≥ 6 karo ağı sahnede, görünür ve frustum içinde; arazi gizlenince piksellerin ≥ %5'i değişiyor",
+    "ok": true,
+    "value": true
+   },
+   "ms": 5869
+  },
+  {
+   "n": 27,
+   "label": null,
+   "result": {
+    "from": [
+     278.2352279705502,
+     32,
+     -4936.513307125693
+    ],
+    "to": [
+     300,
+     10,
+     -5300
+    ],
+    "sahnede": true,
+    "kareIcindeAg": 60,
+    "pikselOrani": 0.0636
+   },
+   "ms": 12
+  },
+  {
+   "n": 28,
+   "label": null,
+   "expect": {
+    "label": "HYU-05 Biniş noktası iskele platformunun üstünde: iskele kurulduktan sonra biniş noktasında zemin sorgusu (physics.floorAt) iskele ekseniyle aynı yükseklikte (HYU-02 kırmızısının nedeni; hedef ports.js biniş noktası / islands.js iskele genişliği)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 21
+  },
+  {
+   "n": 29,
+   "label": null,
+   "result": {
+    "yanUzaklik": 1.2,
+    "eksenZemin": 2.9,
+    "binisZemin": 2.9,
+    "binisY": 3.1
+   },
+   "ms": 1
+  },
+  {
+   "n": 30,
+   "label": null,
+   "goto": {
+    "url": "http://localhost:8085/index.html?test=1"
+   },
+   "ms": 9646
+  },
+  {
+   "n": 31,
+   "label": null,
+   "result": [
+    "bekle",
+    "agYakin",
+    "derinlikUzak",
+    "ortu",
+    "yeniOyun",
+    "ucret",
+    "prepareIzle",
+    "prepareBitti",
+    "varisIzle",
+    "bildirimIzle",
+    "ucgenFark",
+    "zeminTutarliligi",
+    "ilkKare",
+    "gorunurluk"
+   ],
+   "ms": 32
+  },
+  {
+   "n": 32,
+   "label": null,
+   "expect": {
+    "label": "HYK-2 (bölüm 2) Arazi kipi gezinmeden sonra korundu (ilk sayfanın ?terrain değeri)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 14
+  },
+  {
+   "n": 33,
+   "label": null,
+   "expect": {
+    "label": "HY09 (bölüm 2) Yeni oyun başladı",
+    "ok": true,
+    "value": true
+   },
+   "ms": 209
+  },
+  {
+   "n": 34,
+   "label": null,
+   "result": {
+    "a": {
+     "id": "tuz_pazari_port_0",
+     "mx": 1681.8484364704666,
+     "mz": 808.2576445460988,
+     "c": 72
+    },
+    "b": {
+     "id": "kuzeyfener_port_0",
+     "mx": 282.41917801604757,
+     "mz": -5006.38815640651,
+     "c": 159
+    },
+    "altin": 2000
+   },
+   "ms": 1
+  },
+  {
+   "n": 35,
+   "label": null,
+   "result": {
+    "a": {
+     "id": "tuz_pazari_port_0",
+     "mx": 1681.8484364704666,
+     "mz": 808.2576445460988,
+     "c": 72
+    },
+    "b": {
+     "id": "kuzeyfener_port_0",
+     "mx": 282.41917801604757,
+     "mz": -5006.38815640651,
+     "c": 159
+    },
+    "altin": 2000,
+    "yerlesti": true,
+    "son": "a",
+    "ms": 9082,
+    "altinSon": 1928,
+    "varislar": [
+     "tuz_pazari_port_0"
+    ],
+    "sicramalar": [
+     "a"
+    ],
+    "prepare": [
+     {
+      "x": 1682,
+      "z": 808,
+      "ms": 121,
+      "donus": "undefined"
+     }
+    ]
+   },
+   "ms": 9085
+  },
+  {
+   "n": 36,
+   "label": null,
+   "metrics": {
+    "label": "m_iki_emit",
+    "heapMB": 46.9,
+    "heapTotalMB": 118.8,
+    "backingMB": 78,
+    "embedderMB": 6.6,
+    "nodes": 1058,
+    "listeners": 103,
+    "docs": 1,
+    "frames": 1
+   },
+   "ms": 3
+  },
+  {
+   "n": 37,
+   "label": null,
+   "expect": {
+    "label": "HY10 Bekleme sırasında gelen ikinci hızlı yolculuk yok sayılır: bütün hazırlıklar bitip 5 sn sakin geçtiğinde tam bir varış olmuş (gemi sıçraması 1, arrivedPort ≤ 1), o varış ilk hedefe (Tuz Pazarı) ve gemi orada (A-03)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 10
+  },
+  {
+   "n": 38,
+   "label": null,
+   "expect": {
+    "label": "HY11 Bekleme sırasında ikinci emit: yol parası bir kez düşer (A-03)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 4
+  },
+  {
+   "n": 39,
+   "label": null,
+   "goto": {
+    "url": "http://localhost:8085/index.html?test=1"
+   },
+   "ms": 12431
+  },
+  {
+   "n": 40,
+   "label": null,
+   "result": [
+    "bekle",
+    "agYakin",
+    "derinlikUzak",
+    "ortu",
+    "yeniOyun",
+    "ucret",
+    "prepareIzle",
+    "prepareBitti",
+    "varisIzle",
+    "bildirimIzle",
+    "ucgenFark",
+    "zeminTutarliligi",
+    "ilkKare",
+    "gorunurluk"
+   ],
+   "ms": 21
+  },
+  {
+   "n": 41,
+   "label": null,
+   "expect": {
+    "label": "HYK-3 (bölüm 3) Arazi kipi gezinmeden sonra korundu (ilk sayfanın ?terrain değeri)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 9
+  },
+  {
+   "n": 42,
+   "label": null,
+   "expect": {
+    "label": "HY12 (bölüm 3) Yeni oyun başladı",
+    "ok": true,
+    "value": true
+   },
+   "ms": 1608
+  },
+  {
+   "n": 43,
+   "label": null,
+   "result": {
+    "gemi": [
+     4000,
+     -4000
+    ],
+    "mod": "deck"
+   },
+   "ms": 5250
+  },
+  {
+   "n": 44,
+   "label": null,
+   "expect": {
+    "label": "HY12b Önkoşul: ölümden önce Kırlangıç Limanı'nın 300 m içinde karo ağı yok ve derinlik penceresi 600 m'den uzak (60 sn içinde; sağlanmazsa HY13/HY14 kanıt değildir)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 6354
+  },
+  {
+   "n": 45,
+   "label": null,
+   "result": {
+    "ms": 5719,
+    "kirlangicCevresiAg": 0,
+    "derinlikKirlangicaUzak": 5809
+   },
+   "ms": 1
+  },
+  {
+   "n": 46,
+   "label": null,
+   "result": {
+    "x": 4000,
+    "z": -4006,
+    "kirlangicaUzaklik": 5814,
+    "kirlangicCevresiAg": 0,
+    "derinlikKirlangicaUzak": 5809
+   },
+   "ms": 4
+  },
+  {
+   "n": 47,
+   "label": null,
+   "tikla": {
+    "metin": "Kırlangıç Limanı'nda uyan"
+   },
+   "ms": 2781
+  },
+  {
+   "n": 48,
+   "label": null,
+   "expect": {
+    "label": "HY13 Uzak ölümden (Kırlangıç'a 5,8 km) sonra limanda uyanışın ilk karesinde oyuncu çevresinde ≥ 6 karo ağı (A-14)",
+    "ok": true,
+    "value": 10
+   },
+   "ms": 2828
+  },
+  {
+   "n": 49,
+   "label": null,
+   "expect": {
+    "label": "HY14 Uyanışın ilk karesinde derinlik penceresi uyanma noktasında (merkez ≤ 100 m, A-14)",
+    "ok": true,
+    "value": 11
+   },
+   "ms": 6
+  },
+  {
+   "n": 50,
+   "label": null,
+   "result": {
+    "olum": {
+     "x": 4000,
+     "z": -4006,
+     "kirlangicaUzaklik": 5814,
+     "kirlangicCevresiAg": 0,
+     "derinlikKirlangicaUzak": 5809
+    },
+    "dogus": {
+     "ms": 5532,
+     "ag300": 10,
+     "karoAltinda": {
+      "karo": true,
+      "hires": true,
+      "ucgen": true,
+      "fark": 0
+     },
+     "derinlikUzak": 11,
+     "x": 4,
+     "z": 210,
+     "y": 2.6,
+     "zemin": 2.6,
+     "sonra": []
+    }
+   },
+   "ms": 3
+  },
+  {
+   "n": 51,
+   "label": null,
+   "goto": {
+    "url": "http://localhost:8085/index.html?test=1"
+   },
+   "ms": 13535
+  },
+  {
+   "n": 52,
+   "label": null,
+   "result": [
+    "bekle",
+    "agYakin",
+    "derinlikUzak",
+    "ortu",
+    "yeniOyun",
+    "ucret",
+    "prepareIzle",
+    "prepareBitti",
+    "varisIzle",
+    "bildirimIzle",
+    "ucgenFark",
+    "zeminTutarliligi",
+    "ilkKare",
+    "gorunurluk"
+   ],
+   "ms": 23
+  },
+  {
+   "n": 53,
+   "label": null,
+   "expect": {
+    "label": "HYK-4 (bölüm 4) Arazi kipi gezinmeden sonra korundu (ilk sayfanın ?terrain değeri)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 8
+  },
+  {
+   "n": 54,
+   "label": null,
+   "expect": {
+    "label": "HY15 (bölüm 4) Yeni oyun başladı",
+    "ok": true,
+    "value": true
+   },
+   "ms": 1741
+  },
+  {
+   "n": 55,
+   "label": null,
+   "result": {
+    "hedef": {
+     "mx": 1681.8484364704666,
+     "mz": 808.2576445460988
+    },
+    "altinOnce": 2000,
+    "ucret": 72,
+    "gun": 1
+   },
+   "ms": 5232
+  },
+  {
+   "n": 56,
+   "label": null,
+   "result": {
+    "hedef": {
+     "mx": 1681.8484364704666,
+     "mz": 808.2576445460988
+    },
+    "altinOnce": 2000,
+    "ucret": 72,
+    "gun": 1,
+    "tasindi": false,
+    "prepare": [],
+    "izlemeMs": 15064,
+    "tur": 76,
+    "varisSonra": 0,
+    "bildirimSonra": [
+     "Otomatik kayıt yapıldı."
+    ],
+    "durum": "menu",
+    "menu": true,
+    "hud": false,
+    "kayitAltin": 2000,
+    "gunSon": 1
+   },
+   "ms": 15546
+  },
+  {
+   "n": 57,
+   "label": null,
+   "expect": {
+    "label": "HY16 Bekleme sırasında menüye dönüş: ana menü açık, HUD kapalı, durum menu",
+    "ok": true,
+    "value": true
+   },
+   "ms": 4
+  },
+  {
+   "n": 58,
+   "label": null,
+   "expect": {
+    "label": "HY17 Bekleme sırasında menüye dönüş: devam kodu menü gemisini hedef limana taşımaz (A-03)",
+    "ok": true,
+    "value": false
+   },
+   "ms": 4
+  },
+  {
+   "n": 59,
+   "label": null,
+   "expect": {
+    "label": "HY18 Bekleme sırasında menüye dönüş: kayıttaki altın yolculuk öncesiyle aynı (ücret iade / varışta düşülür, A-03)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 2
+  },
+  {
+   "n": 60,
+   "label": null,
+   "expect": {
+    "label": "HY19 Bekleme sırasında menüye dönüş: hazırlık bittikten (ya da hiç başlamadıysa ~15 sn) sonra devam kodu varış olayı (arrivedPort) ve \"limanına vardın\" bildirimi üretmez (oturum belirteci, A-03)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 2
+  },
+  {
+   "n": 61,
+   "label": null,
+   "result": {
+    "prepare": [],
+    "izlemeMs": 15064,
+    "varisSonra": 0,
+    "bildirimSonra": [
+     "Otomatik kayıt yapıldı."
+    ]
+   },
+   "ms": 2
+  },
+  {
+   "n": 62,
+   "label": null,
+   "goto": {
+    "url": "http://localhost:8085/index.html?test=1"
+   },
+   "ms": 12868
+  },
+  {
+   "n": 63,
+   "label": null,
+   "result": [
+    "bekle",
+    "agYakin",
+    "derinlikUzak",
+    "ortu",
+    "yeniOyun",
+    "ucret",
+    "prepareIzle",
+    "prepareBitti",
+    "varisIzle",
+    "bildirimIzle",
+    "ucgenFark",
+    "zeminTutarliligi",
+    "ilkKare",
+    "gorunurluk"
+   ],
+   "ms": 10
+  },
+  {
+   "n": 64,
+   "label": null,
+   "expect": {
+    "label": "HYK-5 (bölüm 5) Arazi kipi gezinmeden sonra korundu (ilk sayfanın ?terrain değeri)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 13
+  },
+  {
+   "n": 65,
+   "label": null,
+   "expect": {
+    "label": "HY20 (bölüm 5) Yeni oyun başladı",
+    "ok": true,
+    "value": true
+   },
+   "ms": 292
+  },
+  {
+   "n": 66,
+   "label": null,
+   "result": {
+    "hedef": {
+     "mx": 1681.8484364704666,
+     "mz": 808.2576445460988
+    },
+    "t0": 13181.699999999255
+   },
+   "ms": 2
+  },
+  {
+   "n": 67,
+   "label": null,
+   "result": {
+    "hedef": {
+     "mx": 1681.8484364704666,
+     "mz": 808.2576445460988
+    },
+    "t0": 13181.699999999255,
+    "zorlanan": {
+     "x": 1682,
+     "z": 808
+    },
+    "vardi": true,
+    "bildirimler": [
+     {
+      "text": "Tuz Pazarı Limanı limanına vardın.",
+      "kind": "good"
+     },
+     {
+      "text": "Keşfedildi: Tuz Pazarı",
+      "kind": "discover"
+     },
+     {
+      "text": "Hedef: Hanın önündeki Yaşlı Kaptan Tuzla ile konuş. (J: Korsan Defteri)",
+      "kind": "quest"
+     }
+    ]
+   },
+   "ms": 9058
+  },
+  {
+   "n": 68,
+   "label": null,
+   "expect": {
+    "label": "HY21 Hızlı yolculuktaki bölge hazırlığı zaman aşımına uğrarsa ('timeout') oyuncu bir uyarı bildirimi alır (brief madde 5, A-03/A-11)",
+    "ok": false,
+    "value": false
+   },
+   "ms": 9
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 2,
+ "evalErrors": 0,
+ "readyMs": 6255,
+ "ms": 146789,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/scenarios/02_hizli_yolculuk.js",
+ "meta": {
+  "baslatma": "(() => { try { const q = new URLSearchParams(location.search); const k = q.get('terrain'); if (k !== null) sessionStorage.setItem('__fb0_arazi_kipi', k); else { const s = sessionStorage.getItem('__fb0_arazi_kipi'); if (s) { q.set('terrain', s); history.replaceState(history.state, '', location.pathname + '?' + q.toString() + location.hash); window.__kipKorundu = s; } } } catch (e) { /* oturum deposu yok: kip korunamaz, HYK/LYK kontrolleri yakalar */ } })();",
+  "testler": [
+   "9 Hızlı yolculuk",
+   "4 Arazi mesh oluşturulması",
+   "5 Harita derinliği hazırlanması",
+   "Uzak ada ışınlanması (Faz 1 zorunlu)",
+   "KI-035",
+   "KI-162",
+   "KI-234",
+   "A-03",
+   "A-14"
+  ],
+  "dosyalar": [
+   "js/main.js",
+   "js/world/terrain.js",
+   "js/game/quests.js",
+   "js/world/ports.js",
+   "js/world/islands.js",
+   "js/ui/menu.js",
+   "js/game/game.js"
+  ]
+ },
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8085/index.html?test=1",
+  "verilenUrl": "http://localhost:8085/index.html",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "03b5c973bcc65adf48b63a1bd7746d43ee88ae6d",
+  "dal": "faz1-b2",
+  "kirli": true,
+  "tarih": "2026-11-15T05:59:14.815Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-b2/tests/harness/run.cjs /home/user/SON-HAZ-NE-b2/tests/scenarios/02_hizli_yolculuk.js --url http://localhost:8085/index.html --size 640x360 --timeout 900 --report /home/user/SON-HAZ-NE-b2/docs/v05/kosular/faz1/sonra_b2/02_hizli_yolculuk_normal.json",
+  "cwd": "/home/user/SON-HAZ-NE-b2",
+  "sunucular": [
+   "statik sunucu http://localhost:8085 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8085"
+  ],
+  "commit": "03b5c973bcc65adf48b63a1bd7746d43ee88ae6d-kirli",
+  "senaryoSha256": "abf125923f9ada795ee45e72443eaa7af28d98f01ab551da97019118349770f6",
+  "adim": {
+   "n": 15,
+   "js": "(()=>{ const L = (window.__prepler || []).filter((k) => Math.hypot(k.x - window.__hedef.mx, k.z - window.__hedef.mz) < 50 && typeof k.ms === 'number'); return L.length ? L.map((k) => k.donus).join(',') : 'prepare kaydı yok'; })()"
+  },
+  "url": "http://localhost:8085/index.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 4,
+   "id": "HY00",
+   "etiket": "HY00 Etkin arazi kipi URL ile aynı (normal: işçi ≥ 1, yedek kapalı; noworker: işçi 0, yedek açık)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 6,
+   "id": "HY01",
+   "etiket": "HY01 Yeni oyun başladı, oyuncu Kırlangıç Limanı'nda",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 211,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 8,
+   "id": "HY02",
+   "etiket": "HY02 Hedef liman (Kuzeyfener) Kırlangıç Limanı'na ≥ 5 km uzakta",
+   "ok": true,
+   "deger": 5348,
+   "beklenen": {
+    "gte": 5000
+   },
+   "sure_ms": 7,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 11,
+   "id": "HY03",
+   "etiket": "HY03 Gemi hedef limanın demir yerinde (≤ 5 m)",
+   "ok": true,
+   "deger": 0.02,
+   "beklenen": {
+    "lte": 5
+   },
+   "sure_ms": 7228,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 14,
+   "id": "HYS-01",
+   "etiket": "HYS-01 Hızlı yolculuktaki bölge hazırlığı (terrain.prepare, 5,3 km) ≤ 3 sn (normal kipte gerileme koruması; noworker kipindeki v0.4 kırmızısı KI-234 DEĞİL: işçisiz hızlı yolculuk 33–45 sn, 45 sn sınırına yakın — ayrı bilinen sorun adayı)",
+   "ok": true,
+   "deger": 241,
+   "beklenen": {
+    "gte": 0,
+    "lte": 3000
+   },
+   "sure_ms": 13,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 15,
+   "id": "HYS-02",
+   "etiket": "HYS-02 Hızlı yolculuktaki bölge hazırlığı 'ok' ile döner (A-11: sonuç çağırana iletilir; 'timeout' ile sessiz eksik varış yok)",
+   "ok": false,
+   "deger": "undefined",
+   "beklenen": {
+    "eq": "ok"
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"eq\":\"ok\"}, gelen \"undefined\" (sağlanmayan: eq \"ok\")",
+   "goruntu": {
+    "sayfa": "/home/user/SON-HAZ-NE-b2/tests/out/goruntu/02_hizli_yolculuk_2026-11-15T05-59-14-653Z_14300/ilk_kalan.png",
+    "tuval": "/home/user/SON-HAZ-NE-b2/tests/out/goruntu/02_hizli_yolculuk_2026-11-15T05-59-14-653Z_14300/ilk_kalan_tuval.jpg"
+   }
+  },
+  {
+   "n": 16,
+   "id": "HY04",
+   "etiket": "HY04 Oyuncu hedef iskelede (biniş noktasına yatayda ≤ 3 m)",
+   "ok": true,
+   "deger": 0,
+   "beklenen": {
+    "lte": 3
+   },
+   "sure_ms": 20,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 17,
+   "id": "HY05",
+   "etiket": "HY05 Gemi hızı < 1 m/s (demirli)",
+   "ok": true,
+   "deger": 0.099,
+   "beklenen": {
+    "lte": 1
+   },
+   "sure_ms": 138,
+   "benzetim": {
+    "sim": 1,
+    "adim": 30,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 18,
+   "id": "HY06",
+   "etiket": "HY06 Derinlik penceresi hedefte (pencere merkezi demir yerine ≤ 60 m)",
+   "ok": true,
+   "deger": 7,
+   "beklenen": {
+    "lte": 60
+   },
+   "sure_ms": 9,
+   "benzetim": {
+    "sim": 1,
+    "adim": 30,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 19,
+   "id": "HY07",
+   "etiket": "HY07 Hedefte ≥ 6 karo ağı (450 m içinde, sahne grubunda)",
+   "ok": true,
+   "deger": 20,
+   "beklenen": {
+    "gte": 6
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 1,
+    "adim": 30,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 20,
+   "id": "HY08",
+   "etiket": "HY08 Yol parası bir kez düşüldü",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 18,
+   "benzetim": {
+    "sim": 1,
+    "adim": 30,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 21,
+   "id": "HYU-01",
+   "etiket": "HYU-01 Uzak ada ışınlanması (≥ 5 km, hızlı yolculuk yolu): varışın ilk karesinde oyuncunun altında yükseklik ızgaralı karo ağı, çevrede ≥ 6 ağ, derinlik penceresi oyuncuyu kapsıyor, heightAt = çizilen ağ",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 1,
+    "adim": 30,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 22,
+   "id": "HYU-02",
+   "etiket": "HYU-02 Varışta oyuncu zeminde: ilk karede zemin sorgusunun (physics.floorAt) 1,5 m içinde, 2 sn sonra yüzmüyor ve zeminde (suya düşmüyor) (v0.4 kırmızısının nedeni arazi değil: biniş noktası iskele platformunun dışında, bkz. HYU-05; hedef ports.js biniş noktası / islands.js iskele)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 3,
+   "benzetim": {
+    "sim": 1,
+    "adim": 30,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 24,
+   "id": "HYU-03",
+   "etiket": "HYU-03 Varış bölgesinde (220 m) zemin sorgusu = çizilen ağ: heightAt ile ağ üçgeni farkı < 1 cm",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 3,
+   "benzetim": {
+    "sim": 1,
+    "adim": 30,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 26,
+   "id": "HYU-04",
+   "etiket": "HYU-04 Arazi görünür: adaya bakan kamerada ≥ 6 karo ağı sahnede, görünür ve frustum içinde; arazi gizlenince piksellerin ≥ %5'i değişiyor",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 5850,
+   "benzetim": {
+    "sim": 1,
+    "adim": 30,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 28,
+   "id": "HYU-05",
+   "etiket": "HYU-05 Biniş noktası iskele platformunun üstünde: iskele kurulduktan sonra biniş noktasında zemin sorgusu (physics.floorAt) iskele ekseniyle aynı yükseklikte (HYU-02 kırmızısının nedeni; hedef ports.js biniş noktası / islands.js iskele genişliği)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 10,
+   "benzetim": {
+    "sim": 1,
+    "adim": 30,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 32,
+   "id": "HYK-2",
+   "etiket": "HYK-2 (bölüm 2) Arazi kipi gezinmeden sonra korundu (ilk sayfanın ?terrain değeri)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "eq": true
+   },
+   "sure_ms": 12,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 33,
+   "id": "HY09",
+   "etiket": "HY09 (bölüm 2) Yeni oyun başladı",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 206,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 37,
+   "id": "HY10",
+   "etiket": "HY10 Bekleme sırasında gelen ikinci hızlı yolculuk yok sayılır: bütün hazırlıklar bitip 5 sn sakin geçtiğinde tam bir varış olmuş (gemi sıçraması 1, arrivedPort ≤ 1), o varış ilk hedefe (Tuz Pazarı) ve gemi orada (A-03)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 5,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 38,
+   "id": "HY11",
+   "etiket": "HY11 Bekleme sırasında ikinci emit: yol parası bir kez düşer (A-03)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 41,
+   "id": "HYK-3",
+   "etiket": "HYK-3 (bölüm 3) Arazi kipi gezinmeden sonra korundu (ilk sayfanın ?terrain değeri)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "eq": true
+   },
+   "sure_ms": 4,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 42,
+   "id": "HY12",
+   "etiket": "HY12 (bölüm 3) Yeni oyun başladı",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 236,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 44,
+   "id": "HY12b",
+   "etiket": "HY12b Önkoşul: ölümden önce Kırlangıç Limanı'nın 300 m içinde karo ağı yok ve derinlik penceresi 600 m'den uzak (60 sn içinde; sağlanmazsa HY13/HY14 kanıt değildir)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 6352,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 48,
+   "id": "HY13",
+   "etiket": "HY13 Uzak ölümden (Kırlangıç'a 5,8 km) sonra limanda uyanışın ilk karesinde oyuncu çevresinde ≥ 6 karo ağı (A-14)",
+   "ok": true,
+   "deger": 10,
+   "beklenen": {
+    "gte": 6
+   },
+   "sure_ms": 2825,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 49,
+   "id": "HY14",
+   "etiket": "HY14 Uyanışın ilk karesinde derinlik penceresi uyanma noktasında (merkez ≤ 100 m, A-14)",
+   "ok": true,
+   "deger": 11,
+   "beklenen": {
+    "lte": 100
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 53,
+   "id": "HYK-4",
+   "etiket": "HYK-4 (bölüm 4) Arazi kipi gezinmeden sonra korundu (ilk sayfanın ?terrain değeri)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "eq": true
+   },
+   "sure_ms": 6,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 54,
+   "id": "HY15",
+   "etiket": "HY15 (bölüm 4) Yeni oyun başladı",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 261,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 57,
+   "id": "HY16",
+   "etiket": "HY16 Bekleme sırasında menüye dönüş: ana menü açık, HUD kapalı, durum menu",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 3,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 58,
+   "id": "HY17",
+   "etiket": "HY17 Bekleme sırasında menüye dönüş: devam kodu menü gemisini hedef limana taşımaz (A-03)",
+   "ok": true,
+   "deger": false,
+   "beklenen": {
+    "eq": false
+   },
+   "sure_ms": 1,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 59,
+   "id": "HY18",
+   "etiket": "HY18 Bekleme sırasında menüye dönüş: kayıttaki altın yolculuk öncesiyle aynı (ücret iade / varışta düşülür, A-03)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 60,
+   "id": "HY19",
+   "etiket": "HY19 Bekleme sırasında menüye dönüş: hazırlık bittikten (ya da hiç başlamadıysa ~15 sn) sonra devam kodu varış olayı (arrivedPort) ve \"limanına vardın\" bildirimi üretmez (oturum belirteci, A-03)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 64,
+   "id": "HYK-5",
+   "etiket": "HYK-5 (bölüm 5) Arazi kipi gezinmeden sonra korundu (ilk sayfanın ?terrain değeri)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "eq": true
+   },
+   "sure_ms": 11,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 65,
+   "id": "HY20",
+   "etiket": "HY20 (bölüm 5) Yeni oyun başladı",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 290,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 68,
+   "id": "HY21",
+   "etiket": "HY21 Hızlı yolculuktaki bölge hazırlığı zaman aşımına uğrarsa ('timeout') oyuncu bir uyarı bildirimi alır (brief madde 5, A-03/A-11)",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 7,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8085/vendor/three/three.core.js",
+   "sayi": 165
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8085/vendor/three/three.core.js",
+   "sayi": 5
+  },
+  {
+   "oyuncu": null,
+   "ileti": "terrain.prepare: 45 sn zaman aşımı; eksik karolar arka planda tamamlanacak",
+   "url": "http://localhost:8085/js/world/terrain.js",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 3,
+  "toplam": 171,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [
+  {
+   "tur": "beforeunload",
+   "ileti": "",
+   "adim": 30,
+   "kabul": true
+  },
+  {
+   "tur": "beforeunload",
+   "ileti": "",
+   "adim": 39,
+   "kabul": true
+  },
+  {
+   "tur": "beforeunload",
+   "ileti": "",
+   "adim": 51,
+   "kabul": true
+  }
+ ],
+ "goruntuler": [
+  {
+   "ad": "ilk_kalan",
+   "sayfa": "/home/user/SON-HAZ-NE-b2/tests/out/goruntu/02_hizli_yolculuk_2026-11-15T05-59-14-653Z_14300/ilk_kalan.png",
+   "tuval": "/home/user/SON-HAZ-NE-b2/tests/out/goruntu/02_hizli_yolculuk_2026-11-15T05-59-14-653Z_14300/ilk_kalan_tuval.jpg"
+  }
+ ],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 1112,
+ "isaretciKilidi": {
+  "kip": "taklit",
+  "sayac": {
+   "istek": 1,
+   "verildi": 1,
+   "hedefDegisti": 0,
+   "red": 0,
+   "jestsiz": 0,
+   "kisitli": 0,
+   "birakma": 0,
+   "birakildi": 0,
+   "iptal": 0,
+   "degisimOlayi": 1,
+   "hataOlayi": 0,
+   "yonlendirilen": 0,
+   "susturulan": 0
+  }
+ },
+ "kopma": null,
+ "sonuc": {
+  "durum": "KALDI",
+  "cikisKodu": 1,
+  "neden": [
+   "başarısız kontrol ya da adım: 2"
+  ],
+  "onaySayisi": 34,
+  "kontrolSayisi": 34,
+  "gecen": 32,
+  "kalan": 2,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": "tarayici+benzetim",
+  "turSayim": {
+   "tarayici": 25,
+   "tarayici+benzetim": 9
+  },
+  "tarayiciKoptu": false,
+  "kopma": null
+ },
+ "sure": {
+  "hazirMs": 6255,
+  "toplamMs": 146789,
+  "yerlesmeMs": 1001
+ }
+}

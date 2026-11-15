@@ -1,0 +1,69 @@
+# 2026-11-15T08:37:48Z b2 ağacı 03b5c97+çalışma kopyası; koşucu ed8820b9 ortak.cjs b29886a4; senaryo tests/scenarios/02_uyanis_ortu.js 81db48f02d90
+# oyun: main.js 991d08ae game.js e13e82ef engine.js 0b59aa40 input.js 7c08c7c7
+# komut: /home/user/devtools/tk timeout 660 node tests/harness/run.cjs tests/scenarios/02_uyanis_ortu.js --url 'http://localhost:8085/index.html' --size 640x360 --timeout 600 --report /home/user/SON-HAZ-NE-b2/docs/v05/kosular/faz1/sonra_b2/duzeltme/./02_uyanis_ortu.json 
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+ready in 6.2 s
+DEGISKEN yardimci = "(()=>{ const Y = window.__Y = {};\n   Y.bekle = (ms) => new Promise((r) => setTimeout(r, ms));\n   Y.perde = () => !!document.querySelector('#sleep-fade.on');\n   Y.yeniOyun = async (slot) => { DK.G.
+R: ["bekle","perde","yeniOyun","gemiUzaga","geciktir","uyanisBitti","durum"]
+PASS UO00 (bölüm 1) Yeni oyun başladı → true
+R: {"kilitli":true,"perde":true,"fps0":0,"butce0":10}
+PASS UO10 Önkoşul: dört tuş (Tab, M, E, Boşluk) gerçek klavye olayıyla, hızlı yolculuk perdesi açık ve oyun girdisi kilitliyken basıldı → true
+R: [{"code":"Tab","kilit":true,"perde":true,"t":18481},{"code":"KeyM","kilit":true,"perde":true,"t":18547},{"code":"KeyE","kilit":true,"perde":true,"t":18554},{"code":"Space","kilit":true,"perde":true,"t":18557}]
+R: {"varis":true,"blokMs":831,"tik":36,"tikSn":43.3,"net":36,"cizimBlok":0,"cizimSonra":23,"olaySonra":[],"son":{"panel":false,"uiOpen":false,"mod":"ground","fps":0,"butce":10}}
+FAIL UO11 Hızlı yolculuk perdesi (girdi kilidi) süresince oyun döngüsü sürer: güncelleyiciler saniyede ≥ 5 kez ve net.update ≥ 5 kez çağrıldı (B2-D2; önce: örtü motorun kare sınırını 0,25 FPS yapıyor, 0 tik) → false
+GORUNTU /home/user/SON-HAZ-NE-b2/tests/out/goruntu/02_uyanis_ortu_2026-11-15T08-39-35-331Z_14851/ilk_kalan.png
+PASS UO12 Perde altında gerçek klavyeyle basılan Tab/M/E/Boşluk varışta işlenmez: envanter/harita olayı yok, panel açık değil (B2-D2; önce: basışlar birikip kilit kalkınca ilk karede işleniyordu) → true
+PASS UO14 Örtü süresince 3B sahne çizilmez (KI-237), örtü kapanınca çizim sürer; motorun kare sınırı ve yerel dilim bütçesi eski değerinde → true
+R: "hazır"
+PASS UO13 Varıştan sonra girdi çalışır: gerçek klavyeyle Tab envanteri açar, kilit kalkmış → true
+DIALOG beforeunload kabul edildi 
+GOTO http://localhost:8085/index.html?test=1
+R: ["bekle","perde","yeniOyun","gemiUzaga","geciktir","uyanisBitti","durum"]
+PASS UO20 (bölüm 2) Yeni oyun başladı → true
+R: {"olu":true,"mod":"ground","panel":false,"kilit":false,"perde":false,"limanaUzaklik":13,"gemiyeUzaklik":5807,"oturum":1}
+R: {"bekleyen":{"olu":true,"mod":"ground","panel":false,"kilit":true,"perde":true,"limanaUzaklik":13,"gemiyeUzaklik":5807,"oturum":1},"gecikme":{"ms":15000,"basladi":25121,"bitti":false,"x":4000,"z":-4000}}
+PASS UO23 Önkoşul: eski oturumun gemide uyanışı beklerken (hazırlık 15 sn geciktirildi) menüye dönüldü ve yeni oyun başladı → true
+R: {"olu":true,"mod":"ground","panel":false,"kilit":false,"perde":false,"limanaUzaklik":13,"gemiyeUzaklik":73,"oturum":3}
+PASS UO21 Yeni oturumda ölüm ekranından uyanış çalışır; önceki oturumdan kalan bekleyen uyanış onu yutmaz (B2-D1) → true
+PASS UO22 Eski oturumun hazırlığı bittikten sonra oyuncu uyanık ve limanda; girdi kilidi ve perde kalmadı (B2-D1) → true
+R: {"bekleyen":{"olu":true,"mod":"ground","panel":false,"kilit":true,"perde":true,"limanaUzaklik":13,"gemiyeUzaklik":5807,"oturum":1},"gecikme":{"ms":15000,"basladi":25121,"bitti":true,"x":4000,"z":-4000},"menu":"menu","yeni":{"olu":false,"mod":"ground","panel":false,"kilit":false,"perde":false,"limanaUzaklik":13,"gemiyeUzaklik":73,"oturum":3},"ikinci":{"olu":false,"mod":"ground","panel":false,"kilit":false,"perde":false,"limanaUzaklik":13,"gemiyeUzaklik":75,"oturum":3},"son":{"olu":false,"mod":"ground","panel":false,"kilit":false,"perde":false,"limanaUzaklik":13,"gemiyeUzaklik":75,"oturum":3}}
+DIALOG beforeunload kabul edildi 
+GOTO http://localhost:8085/index.html?test=1
+R: ["bekle","perde","yeniOyun","gemiUzaga","geciktir","uyanisBitti","durum"]
+PASS UO30 (bölüm 3) Yeni oyun başladı → true
+R: {"olu":true,"mod":"ground","panel":false,"kilit":false,"perde":false,"limanaUzaklik":13,"gemiyeUzaklik":5807,"oturum":1}
+R: {"bekleyen":{"olu":true,"mod":"ground","panel":false,"kilit":true,"perde":true,"limanaUzaklik":13,"gemiyeUzaklik":5807,"oturum":1},"kaldirildi":true,"ikinciOlum":true}
+PASS UO33 Önkoşul: gemide uyanış beklerken (hazırlık 12 sn geciktirildi) oyuncu kaldırıldı ve yeniden bayıldı → true
+PASS UO34 Yeniden bayılınca bekleyen uyanışın perdesi ve girdi kilidi kalkar, yeni ölüm ekranı görünür (eski hazırlık sürerken; önce ölüm ekranı perdenin altında kalıyordu, B2-D1) → true
+PASS UO31 Aynı oturumda bekleyen uyanış sürerken yeni ölüm ekranındaki liman seçimi eski hazırlık bitmeden çalışır: oyuncu limanda uyanık (bekleyen uyanış yeni seçimi yutmaz ve engellemez, B2-D1) → true
+PASS UO32 Eski (gemi) hazırlığı bitince oyuncu limanda kalır: eski seçim oyuncuyu gemiye taşımaz; kilit ve perde kalmadı (B2-D1) → true
+R: {"bekleyen":{"olu":true,"mod":"ground","panel":false,"kilit":true,"perde":true,"limanaUzaklik":13,"gemiyeUzaklik":5807,"oturum":1},"kaldirildi":true,"ikinciOlum":true,"ekran":{"olum":true,"perde":false,"kilit":false,"gecikmeBitti":false},"ikinci":{"olu":false,"mod":"ground","panel":false,"kilit":false,"perde":false,"limanaUzaklik":13,"gemiyeUzaklik":5805,"oturum":1},"son":{"olu":false,"mod":"ground","panel":false,"kilit":false,"perde":false,"limanaUzaklik":13,"gemiyeUzaklik":5805,"oturum":1}}
+DIALOG beforeunload kabul edildi 
+GOTO http://localhost:8085/index.html?test=1
+R: ["bekle","perde","yeniOyun","gemiUzaga","geciktir","uyanisBitti","durum"]
+PASS UO40 (bölüm 4) Yeni oyun başladı → true
+R: {"olu":true,"mod":"ground","panel":false,"kilit":false,"perde":false,"limanaUzaklik":13,"gemiyeUzaklik":5932,"oturum":1}
+R: {"bekleyen":{"olu":true,"mod":"ground","panel":false,"kilit":true,"perde":true,"limanaUzaklik":13,"gemiyeUzaklik":5932,"oturum":1}}
+PASS UO41 Gemide uyanış beklenirken gemi batarsa oyuncu en yakın keşfedilmiş limanda uyanır (ölü ve ekransız kalmaz; v0.4: batık gemide uyanış limana düşer) (B2-D1) → true
+R: {"bekleyen":{"olu":true,"mod":"ground","panel":false,"kilit":true,"perde":true,"limanaUzaklik":13,"gemiyeUzaklik":5932,"oturum":1},"son":{"olu":false,"mod":"ground","panel":false,"kilit":false,"perde":false,"limanaUzaklik":13,"gemiyeUzaklik":5932,"oturum":1}}
+DIALOG beforeunload kabul edildi 
+GOTO http://localhost:8085/index.html?test=1
+R: ["bekle","perde","yeniOyun","gemiUzaga","geciktir","uyanisBitti","durum"]
+PASS UO52 (bölüm 5) Yeni oyun başladı → true
+R: {"olu":true,"mod":"ground","panel":false,"kilit":false,"perde":false,"limanaUzaklik":13,"gemiyeUzaklik":5793,"oturum":1}
+PASS UO50 Uyanış perdesi gemi adını düz metin olarak gösterir: addaki HTML öğe olarak kurulmaz, betik çalışmaz (B2-D3) → true
+R: {"on":true,"ogeler":["DIV.t1","DIV.t2"],"metin":"<b id=\"perdeB\">K</b><img id=\"perdeImg\" src=\"data:,\" onerror=\"window.__perdeXss=(window.__perdeXss||0)+1\">Kendine gelmeye çalışıyorsun…","xss":0}
+PASS UO51 Gemide uyanış tamamlanır (oyuncu uyanık, kilit ve perde kalmadı) → true
+R: {"olu":false,"mod":"deck","panel":false,"kilit":false,"perde":false,"limanaUzaklik":5793,"gemiyeUzaklik":2,"oturum":1}
+DIALOG beforeunload kabul edildi 
+GOTO http://localhost:8085/index.html?test=1
+R: ["bekle","perde","yeniOyun","gemiUzaga","geciktir","uyanisBitti","durum"]
+PASS UO60 (bölüm 6) Yeni oyun başladı → true
+R: {"olu":true,"mod":"ground","panel":false,"kilit":false,"perde":false,"limanaUzaklik":13,"gemiyeUzaklik":5807,"oturum":1}
+R: {"bekleyen":{"olu":true,"mod":"ground","panel":false,"kilit":true,"perde":true,"limanaUzaklik":13,"gemiyeUzaklik":5807,"oturum":1},"kaldirildi":true}
+PASS UO61 Bekleyen uyanış sırasında başka yoldan kaldırılan oyuncu eski hazırlık bitmeden perdeden ve girdi kilidinden kurtulur (B2-D1) → true
+PASS UO62 Eski (gemi) hazırlığı bitince kaldırılan oyuncu yerinde kalır (gemiye taşınmaz), kilit ve perde yok (B2-D1) → true
+R: {"bekleyen":{"olu":true,"mod":"ground","panel":false,"kilit":true,"perde":true,"limanaUzaklik":13,"gemiyeUzaklik":5807,"oturum":1},"kaldirildi":true,"ilk":{"olu":false,"mod":"ground","panel":false,"kilit":false,"perde":false,"limanaUzaklik":13,"gemiyeUzaklik":5807,"oturum":1},"son":{"olu":false,"mod":"ground","panel":false,"kilit":false,"perde":false,"limanaUzaklik":13,"gemiyeUzaklik":5807,"oturum":1}}
+errors: 0 pageErrors: 0 fails: 1 (222.2 s)
+SONUC: KALDI (çıkış 1) kontrol 22/23, onay 23 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/204 | neden: başarısız kontrol ya da adım: 1
+# çıkış 1 2026-11-15T08:43:28Z

@@ -4,24 +4,33 @@ const PREFIX = 'dksh.';
 export const SLOT_COUNT = 3;
 
 function safeParse(s) { try { return JSON.parse(s); } catch (e) { return null; } }
+// A-18: tarayıcı site verisini engellediğinde (çerez/site verisi engeli, allow-same-origin'siz sandbox iframe) window.localStorage
+// özelliğini OKUMAK bile SecurityError atar. Bütün erişimler bu güvenli erişimciden ve try içinden geçer: depo yoksa okumalar
+// null/boş liste, yazmalar false döner; istisna çağırana (boot, menü, çevrimiçi akış) çıkmaz.
+function depo() { try { return window.localStorage || null; } catch (e) { return null; } }
+function oku(k) { const d = depo(); if (!d) return null; try { return d.getItem(k); } catch (e) { return null; } }
 
 export const save = {
   available() {
-    try { localStorage.setItem(PREFIX + 't', '1'); localStorage.removeItem(PREFIX + 't'); return true; } catch (e) { return false; }
+    const d = depo();
+    if (!d) return false;
+    try { d.setItem(PREFIX + 't', '1'); d.removeItem(PREFIX + 't'); return true; } catch (e) { return false; }
   },
 
   key(kind, slot) { return `${PREFIX}${kind}.${slot}`; },
 
   write(kind, slot, data) {
     const k = this.key(kind, slot);
+    const d = depo();
+    if (!d) return false; // A-18: depo yok (site verisi engelli): hata değil, beklenen durum; çağıran oyuncuya bildirir
     const json = JSON.stringify(data);
     try {
-      localStorage.setItem(k + '.tmp', json);
-      if (!safeParse(localStorage.getItem(k + '.tmp'))) throw new Error('doğrulama başarısız');
-      const prev = localStorage.getItem(k);
-      if (prev) localStorage.setItem(k + '.bak', prev);
-      localStorage.setItem(k, json);
-      localStorage.removeItem(k + '.tmp');
+      d.setItem(k + '.tmp', json);
+      if (!safeParse(d.getItem(k + '.tmp'))) throw new Error('doğrulama başarısız');
+      const prev = d.getItem(k);
+      if (prev) d.setItem(k + '.bak', prev);
+      d.setItem(k, json);
+      d.removeItem(k + '.tmp');
       return true;
     } catch (e) {
       console.error('Kayıt hatası', e);
@@ -37,16 +46,18 @@ export const save = {
   },
   read(kind, slot) {
     const k = this.key(kind, slot);
-    const d = safeParse(localStorage.getItem(k));
+    const d = safeParse(oku(k));
     if (this.valid(kind, d)) return d;
     // asıl kayıt bozuksa yedeği dene
-    for (const s of ['.bak', '.tmp']) { const b = safeParse(localStorage.getItem(k + s)); if (this.valid(kind, b)) return b; }
+    for (const s of ['.bak', '.tmp']) { const b = safeParse(oku(k + s)); if (this.valid(kind, b)) return b; }
     return null;
   },
 
   remove(kind, slot) {
     const k = this.key(kind, slot);
-    for (const s of ['', '.bak', '.tmp']) localStorage.removeItem(k + s);
+    const d = depo();
+    if (!d) return;
+    for (const s of ['', '.bak', '.tmp']) { try { d.removeItem(k + s); } catch (e) { /* depo kapalı/kilitli */ } }
   },
 
   list(kind) {
@@ -68,21 +79,27 @@ export const save = {
   },
 
   profile() {
-    return safeParse(localStorage.getItem(PREFIX + 'profile')) || null;
+    return safeParse(oku(PREFIX + 'profile')) || null;
   },
   writeProfile(p) {
-    try { localStorage.setItem(PREFIX + 'profile', JSON.stringify(p)); } catch (e) { /* yoksay */ }
+    const d = depo();
+    if (!d) return;
+    try { d.setItem(PREFIX + 'profile', JSON.stringify(p)); } catch (e) { /* yoksay */ }
   },
 
   exportAll() {
     const o = {};
-    for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k.startsWith(PREFIX)) o[k] = localStorage.getItem(k); }
+    const d = depo();
+    if (d) {
+      try { for (let i = 0; i < d.length; i++) { const k = d.key(i); if (k && k.startsWith(PREFIX)) o[k] = d.getItem(k); } } catch (e) { /* depo kapalı/kilitli */ }
+    }
     return JSON.stringify(o);
   },
   importAll(json) {
     const o = safeParse(json);
-    if (!o) return false;
-    for (const k in o) if (k.startsWith(PREFIX)) localStorage.setItem(k, o[k]);
+    const d = depo();
+    if (!o || !d) return false;
+    try { for (const k in o) if (k.startsWith(PREFIX)) d.setItem(k, o[k]); } catch (e) { return false; }
     return true;
   },
 };

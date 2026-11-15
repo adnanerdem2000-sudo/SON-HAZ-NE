@@ -1,0 +1,8 @@
+KALDI G01 kilitliyken basılan Tab/E/Boşluk ve fare hareketi kilit kalkınca ilk karede işlenmez → {"kilitli":{"envanter":false,"etkilesim":false,"zipla":false,"bakis":{"dx":0,"dy":0}},"ilkKare":{"envanter":true,"etkilesim":true,"zipla":true,"mouseDX":30,"mouseDY":-20}}
+GECTI G02 Esc kilitliyken okunur, kilit kalkışında korunur → {"escKilitli":true,"sonra":true}
+KALDI G03 iç içe kilitte biri kalkınca girdi hâlâ kilitli; son kilit kalkınca kilitliyken basılan Tab işlenmez → {"icIce":{"kilitli":true,"envanter":false},"sonra":true}
+KALDI G04 kilit sırasında basılıp tutulan W kilit kalkınca basılı (hareket ekseni 1), yeni basış değil → {"isDown":true,"pressed":true,"eksen":{"x":0,"y":1}}
+GECTI G05 kilit yokken Tab okunur, kare sonunda silinir → {"normal":true,"kareSonu":false}
+KALDI G06 clearBlocks kilitliyken basılanı siler; kilit yokken çağrılırsa yeni basışa dokunmaz → {"stopSonra":{"kilit":false,"harita":true},"kilitsiz":true}
+GECTI G07 kilit yokken unblock('yok') yeni basışı silmez → {"defter":true}
+{"gecen":3,"toplam":7}

@@ -1,0 +1,387 @@
+{
+ "scenario": "tests/scenarios/11_arayuz_sizinti.js",
+ "url": "http://localhost:8085/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": "ok",
+   "ms": 14
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   },
+   "ms": 9724
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": "ok",
+   "ms": 41
+  },
+  {
+   "n": 4,
+   "label": null,
+   "result": [
+    {
+     "opened": true,
+     "addedWhileOpen": 1,
+     "netAfterClose": 0
+    },
+    {
+     "opened": true,
+     "addedWhileOpen": 1,
+     "netAfterClose": 0
+    },
+    {
+     "opened": true,
+     "addedWhileOpen": 1,
+     "netAfterClose": 0
+    }
+   ],
+   "ms": 2526
+  },
+  {
+   "n": 5,
+   "label": null,
+   "expect": {
+    "label": "H24 Oluşturucu closeAll ile kapanınca window mouseup dinleyicisi kalmaz (3 açılış)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 67
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "H24 (kontrol) Oluşturucu açıkken rAF döngüsü çalışıyordu",
+    "ok": true,
+    "value": true
+   },
+   "ms": 57
+  },
+  {
+   "n": 7,
+   "label": null,
+   "result": "ok",
+   "ms": 2
+  },
+  {
+   "n": 8,
+   "label": null,
+   "ms": 702
+  },
+  {
+   "n": 9,
+   "label": null,
+   "expect": {
+    "label": "H24 Kapanıştan sonra oluşturucu rAF döngüsü durur (600 ms içinde çağrı yok)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 4
+  },
+  {
+   "n": 10,
+   "label": null,
+   "result": [
+    [
+     "loop:other",
+     23
+    ]
+   ],
+   "ms": 2
+  },
+  {
+   "n": 11,
+   "label": null,
+   "result": {
+    "maps": 1,
+    "top": "test",
+    "depth": 2
+   },
+   "ms": 16
+  },
+  {
+   "n": 12,
+   "label": null,
+   "expect": {
+    "label": "H23 Üstte panel varken ikinci harita açılmaz (yığında 1 harita)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 4
+  },
+  {
+   "n": 13,
+   "label": null,
+   "expect": {
+    "label": "Arayüz testlerinden sonra oyun açık, yığın boş",
+    "ok": true,
+    "value": true
+   },
+   "ms": 4
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 7092,
+ "ms": 28222,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/scenarios/11_arayuz_sizinti.js",
+ "meta": {},
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8085/index.html?test=1",
+  "verilenUrl": "http://localhost:8085/index.html",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "03b5c973bcc65adf48b63a1bd7746d43ee88ae6d",
+  "dal": "faz1-b2",
+  "kirli": true,
+  "tarih": "2026-11-15T06:35:12.874Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-b2/tests/harness/run.cjs /home/user/SON-HAZ-NE-b2/tests/scenarios/11_arayuz_sizinti.js --url http://localhost:8085/index.html --size 640x360 --timeout 400 --report /home/user/SON-HAZ-NE-b2/docs/v05/kosular/faz1/sonra_b2/11_arayuz_sizinti.json",
+  "cwd": "/home/user/SON-HAZ-NE-b2",
+  "sunucular": [
+   "statik sunucu http://localhost:8085 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8085"
+  ],
+  "commit": "03b5c973bcc65adf48b63a1bd7746d43ee88ae6d-kirli",
+  "senaryoSha256": "6f5e55fd47b45a53bad3f5fa5c29379e5fe75b8712458895af9139c0c726cae7",
+  "adim": null,
+  "url": "http://localhost:8085/index.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 2,
+   "id": "Oyun başladı",
+   "etiket": "Oyun başladı",
+   "ok": true,
+   "deger": "playing",
+   "beklenen": {
+    "eq": "playing"
+   },
+   "sure_ms": 5042,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 5,
+   "id": "H24",
+   "etiket": "H24 Oluşturucu closeAll ile kapanınca window mouseup dinleyicisi kalmaz (3 açılış)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 37,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 6,
+   "id": "H24",
+   "etiket": "H24 (kontrol) Oluşturucu açıkken rAF döngüsü çalışıyordu",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 30,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 9,
+   "id": "H24",
+   "etiket": "H24 Kapanıştan sonra oluşturucu rAF döngüsü durur (600 ms içinde çağrı yok)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 12,
+   "id": "H23",
+   "etiket": "H23 Üstte panel varken ikinci harita açılmaz (yığında 1 harita)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 13,
+   "id": "Arayüz testlerinden sonra oyun açık, yığın",
+   "etiket": "Arayüz testlerinden sonra oyun açık, yığın boş",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8085/vendor/three/three.core.js",
+   "sayi": 33
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8085/vendor/three/three.core.js",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 2,
+  "toplam": 34,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 219,
+ "isaretciKilidi": {
+  "kip": "taklit",
+  "sayac": "okunamadı"
+ },
+ "kopma": null,
+ "sonuc": {
+  "durum": "GECTI",
+  "cikisKodu": 0,
+  "neden": [],
+  "onaySayisi": 6,
+  "kontrolSayisi": 6,
+  "gecen": 6,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": "tarayici",
+  "turSayim": {
+   "tarayici": 6
+  },
+  "tarayiciKoptu": false,
+  "kopma": null
+ },
+ "sure": {
+  "hazirMs": 7092,
+  "toplamMs": 28222,
+  "yerlesmeMs": 1001
+ }
+}

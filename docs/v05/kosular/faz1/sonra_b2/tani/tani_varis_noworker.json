@@ -1,0 +1,402 @@
+{
+ "scenario": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/b2_tani/tani_varis.js",
+ "url": "http://localhost:8085/index.html?terrain=noworker",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": "playing",
+   "ms": 214
+  },
+  {
+   "n": 2,
+   "label": null,
+   "ms": 1501
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": {
+    "ada": "kuzeyfener",
+    "adaR": 260,
+    "binisUzaklik": 297,
+    "n": 19
+   },
+   "ms": 25604
+  },
+  {
+   "n": 4,
+   "label": null,
+   "result": [
+    {
+     "t": 0,
+     "olay": "arrivedPort",
+     "built": false,
+     "job": null,
+     "checkT": 0.3
+    },
+    {
+     "t": 108,
+     "dt": 0.1,
+     "y": 3.27,
+     "mod": "ground",
+     "zeminde": false,
+     "built": false,
+     "job": null,
+     "checkT": 0.2,
+     "zemin": -8.09,
+     "perde": true
+    },
+    {
+     "t": 140,
+     "dt": 0.1,
+     "y": 2.92,
+     "mod": "ground",
+     "zeminde": false,
+     "built": false,
+     "job": null,
+     "checkT": 0.1,
+     "zemin": -8.09,
+     "perde": true
+    },
+    {
+     "t": 162,
+     "dt": 0.033,
+     "y": 2.76,
+     "mod": "ground",
+     "zeminde": false,
+     "built": false,
+     "job": null,
+     "checkT": 0.07,
+     "zemin": -8.09,
+     "perde": true
+    },
+    {
+     "t": 195,
+     "dt": 0.017,
+     "y": 2.67,
+     "mod": "ground",
+     "zeminde": false,
+     "built": false,
+     "job": null,
+     "checkT": 0.05,
+     "zemin": -8.09,
+     "perde": true
+    },
+    {
+     "t": 234,
+     "dt": 0.033,
+     "y": 2.47,
+     "mod": "ground",
+     "zeminde": false,
+     "built": false,
+     "job": null,
+     "checkT": 0.02,
+     "zemin": -8.09,
+     "perde": true
+    },
+    {
+     "t": 315,
+     "olay": "_build kuzeyfener",
+     "ms": 67
+    },
+    {
+     "t": 580,
+     "dt": 0.033,
+     "y": 2.24,
+     "mod": "ground",
+     "zeminde": false,
+     "built": true,
+     "job": null,
+     "checkT": 0.4,
+     "zemin": 2.9,
+     "perde": true
+    },
+    {
+     "t": 647,
+     "dt": 0.1,
+     "y": 1.42,
+     "mod": "ground",
+     "zeminde": false,
+     "built": true,
+     "job": null,
+     "checkT": 0.3,
+     "zemin": 2.9,
+     "perde": true
+    },
+    {
+     "t": 685,
+     "dt": 0.067,
+     "y": 0.75,
+     "mod": "ground",
+     "zeminde": false,
+     "built": true,
+     "job": null,
+     "checkT": 0.23,
+     "zemin": 2.9,
+     "perde": true
+    },
+    {
+     "t": 731,
+     "dt": 0.033,
+     "y": 0.37,
+     "mod": "ground",
+     "zeminde": false,
+     "built": true,
+     "job": null,
+     "checkT": 0.2,
+     "zemin": 2.9,
+     "perde": true
+    },
+    {
+     "t": 781,
+     "dt": 0.05,
+     "y": -0.23,
+     "mod": "ground",
+     "zeminde": false,
+     "built": true,
+     "job": null,
+     "checkT": 0.15,
+     "zemin": 2.9,
+     "perde": true
+    },
+    {
+     "t": 821,
+     "dt": 0.05,
+     "y": -0.89,
+     "mod": "ground",
+     "zeminde": false,
+     "built": true,
+     "job": null,
+     "checkT": 0.1,
+     "zemin": 2.9,
+     "perde": true
+    },
+    {
+     "t": 6893,
+     "dt": 0.033,
+     "y": -1.36,
+     "mod": "ground",
+     "zeminde": false,
+     "built": true,
+     "job": null,
+     "checkT": 0.07,
+     "zemin": 2.9,
+     "perde": true
+    },
+    {
+     "t": 6939,
+     "dt": 0.1,
+     "y": -1.9,
+     "mod": "swim",
+     "zeminde": false,
+     "built": true,
+     "job": null,
+     "checkT": 0.4,
+     "zemin": 2.9,
+     "perde": false
+    },
+    {
+     "t": 6980,
+     "dt": 0.033,
+     "y": -1.98,
+     "mod": "swim",
+     "zeminde": false,
+     "built": true,
+     "job": null,
+     "checkT": 0.37,
+     "zemin": 2.9,
+     "perde": false
+    },
+    {
+     "t": 7026,
+     "dt": 0.05,
+     "y": -2.09,
+     "mod": "swim",
+     "zeminde": false,
+     "built": true,
+     "job": null,
+     "checkT": 0.32,
+     "zemin": 2.9,
+     "perde": false
+    },
+    {
+     "t": 7067,
+     "dt": 0.05,
+     "y": -2.18,
+     "mod": "swim",
+     "zeminde": false,
+     "built": true,
+     "job": null,
+     "checkT": 0.27,
+     "zemin": 2.9,
+     "perde": false
+    },
+    {
+     "t": 7098,
+     "dt": 0.033,
+     "y": -2.22,
+     "mod": "swim",
+     "zeminde": false,
+     "built": true,
+     "job": null,
+     "checkT": 0.23,
+     "zemin": 2.9,
+     "perde": false
+    }
+   ],
+   "ms": 24
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 6328,
+ "ms": 39043,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "../../../tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/b2_tani/tani_varis.js",
+ "meta": {
+  "olcum": true,
+  "testler": [
+   "B2 tanı: varış kareleri (HYU-02)"
+  ]
+ },
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8085/index.html?terrain=noworker&test=1",
+  "verilenUrl": "http://localhost:8085/index.html?terrain=noworker",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "03b5c973bcc65adf48b63a1bd7746d43ee88ae6d",
+  "dal": "faz1-b2",
+  "kirli": true,
+  "tarih": "2026-11-15T04:30:48.836Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-b2/tests/harness/run.cjs /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/b2_tani/tani_varis.js --url 'http://localhost:8085/index.html?terrain=noworker' --size 640x360 --timeout 360 --report docs/v05/kosular/faz1/sonra_b2/tani/tani_varis_noworker.json",
+  "cwd": "/home/user/SON-HAZ-NE-b2",
+  "sunucular": [
+   "statik sunucu http://localhost:8085 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8085"
+  ],
+  "commit": "03b5c973bcc65adf48b63a1bd7746d43ee88ae6d-kirli",
+  "senaryoSha256": "2d41f22c77c4f219521cd9992b0d84ba536358e9195e1b521306d070be9a2401",
+  "adim": null,
+  "url": "http://localhost:8085/index.html?terrain=noworker&test=1"
+ },
+ "kontroller": [],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "Arazi üretimi ana iş parçacığına alındı (test kipi: işçi yok)",
+   "url": "http://localhost:8085/js/world/terrain.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8085/vendor/three/three.core.js",
+   "sayi": 33
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8085/vendor/three/three.core.js",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 3,
+  "toplam": 35,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 201,
+ "isaretciKilidi": {
+  "kip": "taklit",
+  "sayac": {
+   "istek": 1,
+   "verildi": 1,
+   "hedefDegisti": 0,
+   "red": 0,
+   "jestsiz": 0,
+   "kisitli": 0,
+   "birakma": 0,
+   "birakildi": 0,
+   "iptal": 0,
+   "degisimOlayi": 1,
+   "hataOlayi": 0,
+   "yonlendirilen": 0,
+   "susturulan": 12
+  }
+ },
+ "kopma": null,
+ "sonuc": {
+  "durum": "OLCUM",
+  "cikisKodu": 0,
+  "neden": [],
+  "onaySayisi": 0,
+  "kontrolSayisi": 0,
+  "gecen": 0,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": null,
+  "turSayim": {},
+  "tarayiciKoptu": false,
+  "kopma": null
+ },
+ "sure": {
+  "hazirMs": 6328,
+  "toplamMs": 39043,
+  "yerlesmeMs": 1000
+ }
+}

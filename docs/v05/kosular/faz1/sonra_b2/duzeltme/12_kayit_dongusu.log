@@ -1,0 +1,15 @@
+# 2026-11-15T09:54:25Z b2 ağacı 03b5c97+çalışma kopyası; koşucu ed8820b9 ortak.cjs b29886a4; senaryo tests/scenarios/12_kayit_dongusu.js 858f00286a33
+# sunulan oyun (/home/user/SON-HAZ-NE-b2): main.js 991d08ae game.js e13e82ef engine.js 0b59aa40 input.js 7c08c7c7
+# komut: /home/user/devtools/tk timeout 460 node tests/harness/run.cjs tests/scenarios/12_kayit_dongusu.js --url 'http://localhost:8085/index.html' --size 640x360 --timeout 400 --report /home/user/SON-HAZ-NE-b2/docs/v05/kosular/faz1/sonra_b2/duzeltme/./12_kayit_dongusu.json 
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+ready in 6.7 s
+R: "ok"
+PASS Oyun başladı → "playing"
+PASS K01 Üç ardışık kayıt/yükleme döngüsünde oyuncu, gemi, ada, tehlike ve düşman grubu durumu korunur → true
+R: [{"k":1,"ok":true,"state":"playing","hp":65,"hpOk":true,"sword":true,"bait":11,"shipHp":51,"shipOk":true,"pruva":41,"pruvaOk":true,"opened":1,"openedOk":true,"gone":1,"campCd":100.00000000000006,"campOk":true,"pos":[-57,120],"posOk":true,"allOk":true},{"k":2,"ok":true,"state":"playing","hp":70,"hpOk":true,"sword":true,"bait":13,"shipHp":52,"shipOk":true,"pruva":42,"pruvaOk":true,"opened":2,"openedOk":true,"gone":2,"campCd":101.00000000000006,"campOk":true,"pos":[-54,120],"posOk":true,"sizePrev":16375,"size":16502,"allOk":true},{"k":3,"ok":true,"state":"playing","hp":75,"hpOk":true,"sword":true,"bait":16,"shipHp":53,"shipOk":true,"pruva":43,"pruvaOk":true,"opened":3,"openedOk":true,"gone":2,"campCd":102.00000000000006,"campOk":true,"pos":[-51,120],"posOk":true,"sizePrev":16502,"size":16529,"allOk":true}]
+PASS K02 Kayıt boyutu döngüler arasında kontrolsüz büyümez (3. ≤ 1,5 × 1.) → true
+R: [16375,16502,16529]
+PASS K03 Üçüncü yüklemeden sonra oyun açık, konum/sağlık geçerli → true
+errors: 0 pageErrors: 0 fails: 0 (22.3 s)
+SONUC: GECTI (çıkış 0) kontrol 4/4, onay 4 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34
+# çıkış 0 2026-11-15T09:57:50Z

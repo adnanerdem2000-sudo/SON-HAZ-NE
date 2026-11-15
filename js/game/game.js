@@ -105,19 +105,96 @@ export const game = {
     for (const sys of this.systems) if (sys.menuUpdate) sys.menuUpdate(dt);
   },
 
-  // Yeni oturum başlat
+  // Örtü (A-10, A-14, A-03; KI-237): ekran opak bir katmanla (yükleme katmanı, kararma perdesi) örtülüyken 3B sahne yeniden
+  // çizilmez (engine.skipRender) ve yerel dilim bütçesi artırılır; son örtü kapanınca (ya da stop'ta) ikisi de eski değerine döner:
+  // bütçe sabitle ezilmez, bu arada başka biri (ayarlar, test) değiştirdiyse dokunulmaz.
+  // Neden (B2 tanısı, işçisiz kip, Kuzeyfener hızlı yolculuğu): hazırlığın kendi üretimi ~0,6 sn; yazılımsal GPU'da her kare
+  // saniyelerce GPU işi bırakıyor ve hazırlık sırasında karo/derinlik güncellemesinin GL çağrıları (geometri/doku dispose) bu
+  // birikim bitene dek ana iş parçacığını bloke ediyordu (uzun görev: 124 ms'lik dilim + 6,1 sn bekleme). Hazırlık 3,6–7,7 sn
+  // sürüyordu. Örtü, perde inmeye başladığı anda açılır: perde inerken (1,2 sn) birikim erir, hazırlık sırasında yeni kare çizilmez.
+  // İşçi varken bütçe kullanılmaz.
+  // Karşıt denetim B2-D2: örtü önce motorun kare sınırını (fpsLimit) 0,25'e indiriyordu; bu yalnız çizimi değil bütün döngüyü
+  // durduruyordu: benzetim, HUD, net.update (oda sahibinin konuklara anlık görüntüleri) ve input.endFrame örtü boyunca çalışmıyor,
+  // perde altında basılan tuşlar birikip kilit kalkınca ilk karede işleniyordu. Kök neden çizilen karelerin GPU işi olduğu için
+  // artık yalnız çizim atlanır; güncelleyiciler her karede sürer, kare sınırına (oyuncunun FPS ayarı, testler) dokunulmaz.
+  ORTU_BUTCE: 120,
+  _ortu: null,
+  ortuAc() {
+    if (!this._ortu) {
+      const eski = terrain.localBudget, deger = Math.max(eski, this.ORTU_BUTCE);
+      const cEski = engine.skipRender;
+      terrain.localBudget = deger; engine.skipRender = true;
+      this._ortu = { n: 0, eski, deger, cEski };
+    }
+    this._ortu.n++;
+    return { o: this._ortu, acik: true };
+  },
+  ortuKapat(h) {
+    if (!h || !h.acik) return;
+    h.acik = false;
+    if (h.o === this._ortu && --h.o.n <= 0) this._ortuBitir();
+  },
+  _ortuBitir() {
+    const o = this._ortu;
+    if (!o) return;
+    if (terrain.localBudget === o.deger) terrain.localBudget = o.eski;
+    engine.skipRender = o.cEski;
+    this._ortu = null;
+  },
+  // örtü altında bölge hazırlığı; dönüş prepare'in sonucudur (çağıran yalnız 'timeout'u işler)
+  async prepareCovered(x, z, opts) {
+    const h = this.ortuAc();
+    try { return await terrain.prepare(x, z, opts); } finally { this.ortuKapat(h); }
+  },
+  // Oyun içi yükleme katmanı (A-10): açılıştaki yükleme ekranı (#loading) bölge hazırlığı süresince yeniden gösterilir
+  loading: false,
+  _yukleme(on, text) {
+    this.loading = on;
+    const L = document.getElementById('loading');
+    if (!L) return;
+    if (on) {
+      const t = document.getElementById('load-text'); if (t && text) t.textContent = text;
+      const f = document.getElementById('load-fill'); if (f) f.style.width = '100%';
+    }
+    L.classList.toggle('active', on);
+  },
+
+  // Yeni oturum başlat. Dönüş: oturum kurulduysa true; bölge hazırlığı sürerken menüye dönüldüyse (stop) ya da yeni bir start
+  // geldiyse false (A-10: iptal edilen start hiçbir oyun durumunu değiştirmez; çağıran devam kodunu çalıştırmaz).
   async start(opts) {
-    const scene = engine.scene;
-    G.state = 'playing';
+    // A-10: oturum belirteci. stop() ve sonraki start() artırır; beklemeden sonra eşleşmezse devam edilmez (hızlı yolculuk, yeniden
+    // doğma ve konuk ışınlanması da aynı belirteci denetler).
+    const tok = G.session = (G.session || 0) + 1;
+    // A-10: bölge hazırlığı süresince durum 'loading' (oyuncu henüz yok; game.update, duraklatma ve HUD 'playing' bekler)
+    G.state = 'loading';
     G.online = !!opts.online;
     G.isHost = opts.isHost !== false;
     G.slot = opts.slot ?? null;
     G.difficulty = opts.difficulty || 'normal';
     G.friendlyFire = !!opts.friendlyFire;
+    const data = opts.save || null;
+    const spawn = data?.player?.pos || { x: port.boardingPoint.x - 8, y: 3, z: port.shoreZ - 20 };
+    // uzak bir adada kaydedildiyse önce o bölgenin arazisini hazırla: yükleme katmanı altında, menü sahnesi ve önceki oturumun
+    // nesneleri henüz değiştirilmeden (iptal hiçbir şeyi değiştirmesin)
+    this._yukleme(true, data ? 'Kayıt yükleniyor: varış bölgesi hazırlanıyor…' : 'Kırlangıç Limanı hazırlanıyor…');
+    const hazirlik = await this.prepareCovered(spawn.x, spawn.z, { radius: 500 });
+    if (tok !== G.session) return false;
+    // katman, oturum kurulurken bir istisna çıksa da kalkar (oyuncu yükleme ekranında takılı kalmaz; istisna çağırana yükselir)
+    try { await this._kur(opts, data, spawn); } finally { if (tok === G.session) this._yukleme(false); }
+    if (tok !== G.session) return false; // sistemler kurulurken menüye dönüldü
+    // brief madde 7 (çağıran tarafı): hazırlık süre sınırına takıldıysa oyuncu bilgilendirilir (eksik karolar arka planda tamamlanır)
+    if (hazirlik === 'timeout') G.notify('Başlangıç bölgesi zamanında hazırlanamadı; eksik arazi arka planda yükleniyor.', 'warn', 6000);
+    G.emit('sessionStart', opts);
+    input.lockPointer();
+    return true;
+  },
+
+  // start'ın bölge hazırlığından sonraki kısmı (v0.4'teki sırayla): gemi, oyuncu, kayıt verisi, sistemler
+  async _kur(opts, data, spawn) {
+    const scene = engine.scene;
     sky.locked = false;
     G.spyglass = false;
     document.getElementById('spyglass')?.classList.add('hidden');
-    const data = opts.save || null;
     // gemi
     for (const s of G.ships) s.dispose();
     G.ships = [];
@@ -127,11 +204,10 @@ export const game = {
     // oyuncu
     if (G.player) { G.player.char.dispose(); G.player = null; }
     const app = opts.appearance;
-    const spawn = data?.player?.pos || { x: port.boardingPoint.x - 8, y: 3, z: port.shoreZ - 20 };
-    // uzak bir adada kaydedildiyse önce o bölgenin arazisini hazırla
-    await terrain.prepare(spawn.x, spawn.z, { radius: 500 });
     const p = new Player(scene, app, { x: spawn.x, y: spawn.y + 0.5, z: spawn.z, yaw: Math.PI });
     G.player = p;
+    // A-10: 'playing' yalnız bölge hazırlandıktan ve oyuncu kurulduktan sonra (sistemlerin start'ı v0.4'teki gibi 'playing' görür)
+    G.state = 'playing';
     G.playerName = app.name;
     if (data?.player) {
       p.inv.load(data.player.inv);
@@ -153,11 +229,16 @@ export const game = {
     // hava: kayıttan ya da açık havayla başla (takvim yüklendikten sonra tahmin kurulur)
     sky.setWeather(data?.world?.weather || 'acik', true);
     this.autosaveT = 0;
-    G.emit('sessionStart', opts);
-    input.lockPointer();
   },
 
   stop() {
+    // A-10, A-03, A-14: süren bölge hazırlıklarının devam kodu iptal edilir (belirteç), yükleme katmanı ve artırılmış bütçe geri alınır
+    G.session = (G.session || 0) + 1;
+    this._yukleme(false);
+    this._ortuBitir();
+    // oturuma bağlı geçici durum: bekleyen yolculuk/uyanışın girdi kilidi ve kararma perdesi menünün üstünde kalmaz
+    input.clearBlocks();
+    document.getElementById('sleep-fade')?.classList.remove('on');
     for (const s of this.systems) if (s.stop) s.stop();
     G.paused = false;
     G.state = 'menu';
@@ -205,7 +286,7 @@ export const game = {
     if (!G.uiOpen && !p.dead) this._globalKeys();
     const look = input.lookDelta();
     if (!G.uiOpen && p.mode !== 'cannon') tpCamera.rotate(look.dx, look.dy);
-    if (input.wheel && !G.uiOpen && !G.spyglass) tpCamera.zoom(input.wheel);
+    if (input.wheel && !G.uiOpen && !G.spyglass && !input.isBlocked()) tpCamera.zoom(input.wheel);
     const n = clamp(Math.ceil(dt / this.STEP - 1e-6), 1, this.MAX_SUB);
     const h = dt / n;
     for (let i = 0; i < n; i++) {

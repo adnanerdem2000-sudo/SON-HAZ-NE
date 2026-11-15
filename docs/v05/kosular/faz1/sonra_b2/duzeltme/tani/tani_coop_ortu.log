@@ -1,0 +1,22 @@
+# 2026-11-15T10:16:51Z b2 ağacı 03b5c97+çalışma kopyası; koşucu 6243f043 ortak.cjs b29886a4; senaryo /home/user/SON-HAZ-NE-b2/docs/v05/kosular/faz1/sonra_b2/duzeltme/tani/betikler/tani_coop_ortu.cjs d723903fb5e0
+# sunulan oyun (/home/user/SON-HAZ-NE-b2): main.js 991d08ae game.js e13e82ef engine.js 0b59aa40 input.js 7c08c7c7
+# komut: /home/user/devtools/tk timeout 460 node tests/harness/coop.cjs /home/user/SON-HAZ-NE-b2/docs/v05/kosular/faz1/sonra_b2/duzeltme/tani/betikler/tani_coop_ortu.cjs --url 'http://localhost:8085/index.html?peerhost=127.0.0.1&peerport=9000' --size 640x360 --timeout 400 --report /home/user/SON-HAZ-NE-b2/docs/v05/kosular/faz1/sonra_b2/duzeltme/tani/tani_coop_ortu.json --players 2
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+Kaptan/host {"code":"J7WU9R"}
+Tayfa/join {"room":"Örtü Odası"}
+Kaptan/hs "host-started"
+Tayfa/gs "guest-started"
+PASS OK00 İki oyuncu çevrimiçi oyunda (oda sahibi + konuk) → {"hOk":true,"gOk":true}
+Tayfa/g-kur "kuruldu"
+Kaptan/h-kur "kuruldu"
+Kaptan/h-yola {"kilit":true,"fps0":10,"fpsOrtu":10}
+Kaptan/h-son {"kilit":true,"blokMs":5510,"t0":1794738006004,"t1":1794738011514,"a":1794738007504,"b":1794738011414,"pencereSn":3.91,"varis":true,"fps0":10,"fpsOrtu":10,"fpsSon":10,"cizimOrtu":true,"tikOnceHz":3.7,"rafOnceHz":11.3,"tikPerdeHz":10,"rafPerdeHz":59.8}
+[test] oda sahibi: {"kilit":true,"blokMs":5510,"t0":1794738006004,"t1":1794738011514,"a":1794738007504,"b":1794738011414,"pencereSn":3.91,"varis":true,"fps0":10,"fpsOrtu":10,"fpsSon":10,"cizimOrtu":true,"tikOnceHz":3.7,"rafOnceHz":11.3,"tikPerdeHz":10,"rafPerdeHz":59.8}
+Tayfa/g-say {"kur":"kuruldu","icinde":39,"pencereSn":3.91,"hz":10,"onceHz":3.7}
+[test] konuk: {"kur":"kuruldu","icinde":39,"pencereSn":3.91,"hz":10,"onceHz":3.7}
+PASS OK01 Önkoşul: oda sahibinin hızlı yolculuğu tamamlandı, perde (girdi kilidi) ≥ 4 sn sürdü; oda sahibinde tarayıcı perde sırasında rAF karesi veriyor (≥ 5/sn) → {"H":{"kilit":true,"blokMs":5510,"t0":1794738006004,"t1":1794738011514,"a":1794738007504,"b":1794738011414,"pencereSn":3.91,"varis":true,"fps0":10,"fpsOrtu":10,"fpsSon":10,"cizimOrtu":true,"tikOnceHz":3.7,"rafOnceHz":11.3,"tikPerdeHz":10,"rafPerdeHz":59.8}}
+PASS OK02 Oda sahibinin perde süresince motor döngüsü sürer (≥ 5 tik/sn) ve örtü motorun kare sınırına dokunmaz (yalnız çizim atlanır) → {"tikPerdeHz":10,"rafPerdeHz":59.8,"fps0":10,"fpsOrtu":10,"cizimOrtu":true}
+PASS OK03 Oda sahibinin hızlı yolculuk perdesi sürerken konuk anlık görüntü almayı sürdürür (≥ 5/sn; B2-D2) → {"kur":"kuruldu","icinde":39,"pencereSn":3.91,"hz":10,"onceHz":3.7}
+checks: 4 fails: 0 pageErrors: 0 (131.6 s)
+SONUC: OLCUM (çıkış 0) kontrol 4/4 | ev() istisnası 0, kapalı sayfa atlama 0, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 4 farklı/68
+# çıkış 0 2026-11-15T10:20:24Z

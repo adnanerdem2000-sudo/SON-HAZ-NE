@@ -86,6 +86,8 @@ export const menu = {
     } else {
       card.appendChild(el('div', { class: 'save-card welcome' }, el('div', { class: 'sc-goal' }, 'Mavi Kırıklar\'ın sisli sularında Kaptan Mira Veyl\'in Son Hazinesi seni bekliyor. Gemini hazırla, korsan!')));
     }
+    // A-18: site verisi engelliyse oyun kayıtsız oynanır; oyuncu bunu menüde görür (kayıt denemesinde ayrıca bildirilir)
+    if (G.noStorage) card.appendChild(el('div', { class: 'save-card welcome' }, el('div', { class: 'sc-goal' }, 'Tarayıcı kayda izin vermiyor (site verisi engelli): oynayabilirsin, ama ilerleme kaydedilmez.')));
     this.buttons.innerHTML = '';
     const onlineSub = el('div', { class: 'msubrow hidden' },
       el('button', { class: 'chip', onclick: click(() => this.hostScreen()) }, 'Oda kur'),

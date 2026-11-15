@@ -1,0 +1,754 @@
+{
+ "scenario": "tests/scenarios/02_depolama_kapali.js",
+ "url": "http://localhost:8085/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "DK01 Normal depolamayla açılış: ana menü görünür, ≥ 8 düğme",
+    "ok": true,
+    "value": true
+   },
+   "ms": 19
+  },
+  {
+   "n": 2,
+   "label": null,
+   "goto": {
+    "url": "http://localhost:8085/index.html?depolama=kapali&peerhost=127.0.0.1&peerport=9000&test=1"
+   },
+   "ms": 3036
+  },
+  {
+   "n": 3,
+   "label": null,
+   "expect": {
+    "label": "DK02 Kurulum: bu sayfada localStorage erişimi SecurityError atıyor",
+    "ok": true,
+    "value": "SecurityError"
+   },
+   "ms": 289
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "DK03 Site verisi engelliyken açılış tamamlanır (window.__ready)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 6292
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": {
+    "ready": true,
+    "ms": 6263,
+    "yuklemeMetni": "Hazır!"
+   },
+   "ms": 1
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "DK04 Site verisi engelliyken ana menü görünür (≥ 8 düğme), yükleme ekranı kapalı",
+    "ok": true,
+    "value": true
+   },
+   "ms": 8
+  },
+  {
+   "n": 7,
+   "label": null,
+   "expect": {
+    "label": "DK05 Yükleme ekranında yanıltıcı 'Oyun başlatılamadı … WebGL' metni yok",
+    "ok": true,
+    "value": true
+   },
+   "ms": 15
+  },
+  {
+   "n": 8,
+   "label": null,
+   "expect": {
+    "label": "DK06 Menüde görünür \"tarayıcı kayda izin vermiyor / kayıt yapılamıyor\" bildirimi var",
+    "ok": true,
+    "value": true
+   },
+   "ms": 3
+  },
+  {
+   "n": 9,
+   "label": null,
+   "tikla": {
+    "metin": "YENİ MACERA"
+   },
+   "ms": 1390
+  },
+  {
+   "n": 10,
+   "label": null,
+   "tikla": {
+    "metin": "Maceraya Başla"
+   },
+   "ms": 6324
+  },
+  {
+   "n": 11,
+   "label": null,
+   "expect": {
+    "label": "DK07 Site verisi engelliyken arayüzden yeni oyun başlar (YENİ MACERA → Maceraya Başla)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 566
+  },
+  {
+   "n": 12,
+   "label": null,
+   "result": [
+    "Keşfedildi: Kırlangıç Adası",
+    "Keşfedildi: Kırlangıç Limanı",
+    "Tarayıcı kayda izin vermiyor (site verisi engelli): ilerleme kaydedilemiyor."
+   ],
+   "ms": 5
+  },
+  {
+   "n": 13,
+   "label": null,
+   "expect": {
+    "label": "DK08 Kayıt denemesi \"tarayıcı kayda izin vermiyor / kayıt yapılamıyor\" bildirimi verir",
+    "ok": true,
+    "value": true
+   },
+   "ms": 6444
+  },
+  {
+   "n": 14,
+   "label": null,
+   "result": "Kırlangıç Limanı'na hoş geldin, korsan! (Esc: menü · J: defter) | Tarayıcı kayda izin vermiyor (site verisi engelli): ilerleme kaydedilemiyor. | Keşfedildi: Kırlangıç Adası | Keşfedildi: Kırlangıç Limanı | Tarayıcı kayda izin vermiyor (site verisi engelli): ilerleme kaydedilemiyor.",
+   "ms": 2
+  },
+  {
+   "n": 15,
+   "label": null,
+   "result": {
+    "durum": "menu",
+    "menu": true
+   },
+   "ms": 10
+  },
+  {
+   "n": 16,
+   "label": null,
+   "expect": {
+    "label": "DK09 Site verisi engelliyken menüye dönüş ve menü yeniden çizimi çalışır",
+    "ok": true,
+    "value": true
+   },
+   "ms": 107
+  },
+  {
+   "n": 17,
+   "label": null,
+   "result": "başlatıldı",
+   "ms": 11
+  },
+  {
+   "n": 18,
+   "label": null,
+   "expect": {
+    "label": "DK10 Site verisi engelliyken DK.handlers.startGame({kind:\"solo\", slot:0}) ile oyun başlar",
+    "ok": true,
+    "value": true
+   },
+   "ms": 137
+  },
+  {
+   "n": 19,
+   "label": null,
+   "expect": {
+    "label": "DK11 Engelli açılış boyunca SecurityError/localStorage içeren konsol hatası ve sayfa hatası 0",
+    "ok": true,
+    "value": true
+   },
+   "ms": 18
+  },
+  {
+   "n": 20,
+   "label": null,
+   "result": {
+    "konsol": 0,
+    "sayfa": 0,
+    "ornek": []
+   },
+   "ms": 1
+  },
+  {
+   "n": 21,
+   "label": null,
+   "result": {
+    "durum": "menu"
+   },
+   "ms": 3
+  },
+  {
+   "n": 22,
+   "label": null,
+   "tikla": {
+    "metin": "ONLINE"
+   },
+   "ms": 178
+  },
+  {
+   "n": 23,
+   "label": null,
+   "tikla": {
+    "metin": "Oda kur"
+   },
+   "ms": 1137
+  },
+  {
+   "n": 24,
+   "label": null,
+   "expect": {
+    "label": "DK12 Site verisi engelliyken ONLINE → Oda kur paneli açılır (yuva listesi okunabiliyor)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 508
+  },
+  {
+   "n": 25,
+   "label": null,
+   "tikla": {
+    "metin": "Odayı oluştur"
+   },
+   "ms": 374
+  },
+  {
+   "n": 26,
+   "label": null,
+   "expect": {
+    "label": "DK13 Site verisi engelliyken oda kurulur (yerel sinyal sunucusu), lobi açılır",
+    "ok": true,
+    "value": "lobi"
+   },
+   "ms": 108
+  },
+  {
+   "n": 27,
+   "label": null,
+   "tikla": {
+    "secici": "#start-btn"
+   },
+   "ms": 1039
+  },
+  {
+   "n": 28,
+   "label": null,
+   "expect": {
+    "label": "DK14 Site verisi engelliyken çevrimiçi oyun (oda sahibi) başlar (startOnlineHost korumalı)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 206
+  },
+  {
+   "n": 29,
+   "label": null,
+   "expect": {
+    "label": "DK15 Çevrimiçi akış boyunca da SecurityError/localStorage içeren konsol hatası ve sayfa hatası 0",
+    "ok": true,
+    "value": true
+   },
+   "ms": 3
+  },
+  {
+   "n": 30,
+   "label": null,
+   "result": {
+    "konsol": 0,
+    "sayfa": 0,
+    "ornek": []
+   },
+   "ms": 2
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 6532,
+ "ms": 40660,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/scenarios/02_depolama_kapali.js",
+ "meta": {
+  "testler": [
+   "6 Ana menü",
+   "7 Yeni oyun",
+   "KI-037",
+   "A-18 (doğrulama A-M01)"
+  ],
+  "dosyalar": [
+   "js/core/save.js",
+   "js/main.js",
+   "js/ui/menu.js",
+   "js/core/settings.js",
+   "index.html"
+  ],
+  "baslatma": "(() => { if (!/[?&]depolama=kapali/.test(location.search)) return;\n     Object.defineProperty(window, 'localStorage', { configurable: true, get() { throw new DOMException(\"Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\", 'SecurityError'); } });\n     const say = window.__guvenlik = { konsol: 0, sayfa: 0, ornek: [] };\n     const esles = (x) => { try { return /SecurityError|localStorage/i.test(String(x && ((x.name || '') + ' ' + (x.message || x)))); } catch (e) { return false; } };\n     const ce = console.error; console.error = function (...a) { if (a.some(esles)) { say.konsol++; if (say.ornek.length < 3) say.ornek.push(a.map((x) => String(x && (x.message || x))).join(' ').slice(0, 200)); } return ce.apply(this, a); };\n     window.addEventListener('error', (e) => { if (esles(e.error) || esles(e.message)) say.sayfa++; });\n     window.addEventListener('unhandledrejection', (e) => { if (esles(e.reason)) say.sayfa++; }); })();"
+ },
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8085/index.html?test=1",
+  "verilenUrl": "http://localhost:8085/index.html",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "03b5c973bcc65adf48b63a1bd7746d43ee88ae6d",
+  "dal": "faz1-b2",
+  "kirli": true,
+  "tarih": "2026-11-15T10:04:20.249Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-b2/tests/harness/run.cjs /home/user/SON-HAZ-NE-b2/tests/scenarios/02_depolama_kapali.js --url http://localhost:8085/index.html --size 640x360 --timeout 400 --report /home/user/SON-HAZ-NE-b2/docs/v05/kosular/faz1/sonra_b2/duzeltme/./02_depolama_kapali.json",
+  "cwd": "/home/user/SON-HAZ-NE-b2",
+  "sunucular": [
+   "statik sunucu http://localhost:8085 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8085"
+  ],
+  "commit": "03b5c973bcc65adf48b63a1bd7746d43ee88ae6d-kirli",
+  "senaryoSha256": "08831f4b6de63ca43875565318c6c9778601c3029e869d7c59dcee55a1b61eed",
+  "adim": null,
+  "url": "http://localhost:8085/index.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 1,
+   "id": "DK01",
+   "etiket": "DK01 Normal depolamayla açılış: ana menü görünür, ≥ 8 düğme",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 16,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 3,
+   "id": "DK02",
+   "etiket": "DK02 Kurulum: bu sayfada localStorage erişimi SecurityError atıyor",
+   "ok": true,
+   "deger": "SecurityError",
+   "beklenen": {
+    "eq": "SecurityError"
+   },
+   "sure_ms": 180,
+   "benzetim": null,
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 4,
+   "id": "DK03",
+   "etiket": "DK03 Site verisi engelliyken açılış tamamlanır (window.__ready)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 6280,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 6,
+   "id": "DK04",
+   "etiket": "DK04 Site verisi engelliyken ana menü görünür (≥ 8 düğme), yükleme ekranı kapalı",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 7,
+   "id": "DK05",
+   "etiket": "DK05 Yükleme ekranında yanıltıcı 'Oyun başlatılamadı … WebGL' metni yok",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 14,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 8,
+   "id": "DK06",
+   "etiket": "DK06 Menüde görünür \"tarayıcı kayda izin vermiyor / kayıt yapılamıyor\" bildirimi var",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 11,
+   "id": "DK07",
+   "etiket": "DK07 Site verisi engelliyken arayüzden yeni oyun başlar (YENİ MACERA → Maceraya Başla)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 552,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 13,
+   "id": "DK08",
+   "etiket": "DK08 Kayıt denemesi \"tarayıcı kayda izin vermiyor / kayıt yapılamıyor\" bildirimi verir",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 5902,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 16,
+   "id": "DK09",
+   "etiket": "DK09 Site verisi engelliyken menüye dönüş ve menü yeniden çizimi çalışır",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 96,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 18,
+   "id": "DK10",
+   "etiket": "DK10 Site verisi engelliyken DK.handlers.startGame({kind:\"solo\", slot:0}) ile oyun başlar",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 110,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 19,
+   "id": "DK11",
+   "etiket": "DK11 Engelli açılış boyunca SecurityError/localStorage içeren konsol hatası ve sayfa hatası 0",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 14,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 24,
+   "id": "DK12",
+   "etiket": "DK12 Site verisi engelliyken ONLINE → Oda kur paneli açılır (yuva listesi okunabiliyor)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 503,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 26,
+   "id": "DK13",
+   "etiket": "DK13 Site verisi engelliyken oda kurulur (yerel sinyal sunucusu), lobi açılır",
+   "ok": true,
+   "deger": "lobi",
+   "beklenen": {
+    "eq": "lobi"
+   },
+   "sure_ms": 103,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 28,
+   "id": "DK14",
+   "etiket": "DK14 Site verisi engelliyken çevrimiçi oyun (oda sahibi) başlar (startOnlineHost korumalı)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 202,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 29,
+   "id": "DK15",
+   "etiket": "DK15 Çevrimiçi akış boyunca da SecurityError/localStorage içeren konsol hatası ve sayfa hatası 0",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8085/vendor/three/three.core.js",
+   "sayi": 66
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8085/vendor/three/three.core.js",
+   "sayi": 2
+  },
+  {
+   "oyuncu": null,
+   "ileti": "localStorage kullanılamıyor; kayıt yapılamayacak.",
+   "url": "http://localhost:8085/js/main.js",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 3,
+  "toplam": 69,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 457,
+ "isaretciKilidi": {
+  "kip": "taklit",
+  "sayac": {
+   "istek": 3,
+   "verildi": 3,
+   "hedefDegisti": 0,
+   "red": 0,
+   "jestsiz": 0,
+   "kisitli": 0,
+   "birakma": 2,
+   "birakildi": 2,
+   "iptal": 0,
+   "degisimOlayi": 5,
+   "hataOlayi": 0,
+   "yonlendirilen": 0,
+   "susturulan": 4
+  }
+ },
+ "kopma": null,
+ "sonuc": {
+  "durum": "GECTI",
+  "cikisKodu": 0,
+  "neden": [],
+  "onaySayisi": 15,
+  "kontrolSayisi": 15,
+  "gecen": 15,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": "tarayici",
+  "turSayim": {
+   "tarayici": 15
+  },
+  "tarayiciKoptu": false,
+  "kopma": null
+ },
+ "sure": {
+  "hazirMs": 6532,
+  "toplamMs": 40660,
+  "yerlesmeMs": 1001
+ }
+}

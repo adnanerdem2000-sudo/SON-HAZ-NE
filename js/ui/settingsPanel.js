@@ -75,7 +75,7 @@ export function openSettings() {
         } }, 'Kayıtları dışa aktar'),
         el('button', { class: 'btn small', onclick: () => {
           const f = el('input', { type: 'file', accept: '.json' });
-          f.addEventListener('change', async () => { const t = await f.files[0].text(); if (save.importAll(t)) G.notify('Kayıtlar içe aktarıldı.', 'good'); else G.notify('Dosya okunamadı.', 'warn'); });
+          f.addEventListener('change', async () => { const t = await f.files[0].text(); if (save.importAll(t)) G.notify('Kayıtlar içe aktarıldı.', 'good'); else G.notify(G.noStorage ? 'Tarayıcı kayda izin vermiyor: kayıtlar içe aktarılamadı.' : 'Dosya okunamadı.', 'warn'); });
           f.click();
         } }, 'Kayıtları içe aktar')));
       sc.appendChild(el('button', { class: 'btn small red', style: { marginTop: '10px' }, onclick: () => ui.confirm('Tüm ayarlar varsayılana dönsün mü?', () => { settings.reset(); render(); }) }, 'Ayarları sıfırla'));

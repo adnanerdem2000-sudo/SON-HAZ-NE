@@ -6,6 +6,7 @@ import { bosses } from '../game/bosses.js';
 import { isOnce } from '../core/kk.js';
 import { physics } from '../world/physics.js';
 import { terrain } from '../world/terrain.js';
+import { islands } from '../world/islands.js';
 import { animals } from '../wildlife/animals.js';
 import { megafauna } from '../wildlife/megafauna.js';
 import { hazards } from '../world/hazards.js';
@@ -552,13 +553,26 @@ export const net = {
       case 'floatGone': events.removeFloating(m.id); break;
       case 'give': if (Array.isArray(m.items)) treasure.giveItems(m.items, str(m.from, 40)); break;
       case 'teleport': {
-        // oda sahibi hızlı yolculuk yaptı: tayfa da varış limanına taşınır
+        // oda sahibi hızlı yolculuk yaptı: tayfa da varış limanına taşınır.
+        // A-03 (konuk): oturumda tek seferde bir taşınma; bekleme sırasında gelen ikinci ileti yok sayılır (bayrak oturuma bağlı). Devam
+        // kodu oturum belirteci, durum ve oyuncu denetimiyle çalışır: bekleme sırasında menüye dönüldüyse, oyuncu değiştiyse ya da
+        // bayıldıysa hiçbir şey değişmez. Hazırlık 'timeout' dönerse bilgilendirilir (brief madde 7). Koordinatı sayı olmayan ileti
+        // yok sayılır.
         const p = G.player;
-        terrain.prepare(m.x, m.z, { radius: 400 }).then(() => {
-          p.leaveShipToWorld(new THREE.Vector3(m.x + (Math.random() - 0.5) * 2, m.y, m.z + (Math.random() - 0.5) * 2));
+        if (G.state !== 'playing' || !p || (this._teleport && this._teleport.tok === G.session)) break;
+        if (![m.x, m.y, m.z].every(Number.isFinite)) break;
+        const x = num(m.x, -10000, 10000), y = num(m.y, -20, 120), z = num(m.z, -10000, 10000);
+        const tp = this._teleport = { tok: G.session };
+        terrain.prepare(x, z, { radius: 400 }).then((hazirlik) => {
+          if (tp.tok !== G.session || G.state !== 'playing' || G.player !== p || p.dead) return;
+          // iskele üstünde yan yana: ±0,6 m (biniş noktası iskele ekseninden 1,2 m; iskele yarı genişliği 2,5 m, KI-236); varış adasının
+          // iskele platformu oyuncu konmadan önce kurulur
+          islands.buildNear(x, z);
+          p.leaveShipToWorld(new THREE.Vector3(x + (Math.random() - 0.5) * 1.2, y, z + (Math.random() - 0.5) * 1.2));
           p.vel.set(0, 0, 0);
+          if (hazirlik === 'timeout') G.notify('Varış limanının çevresi zamanında hazırlanamadı; eksik arazi arka planda yükleniyor.', 'warn', 6000);
           G.notify('Kaptan rotayı kırdı: yeni limana vardınız!', 'good', 3500);
-        });
+        }).finally(() => { if (this._teleport === tp) this._teleport = null; });
         break;
       }
       case 'mapUsed': treasure.mapUsed(m.site); G.notify('Tayfa hazineyi buldu! Haritan kullanıldı.', 'good'); break;

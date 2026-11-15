@@ -1,0 +1,29 @@
+B2-D4 (karşıt denetim, düşük): uygulayıcının önce/sonra tablosundaki iki "önce" değeri gerçek işaretçi kilitli (selli) koşulardan
+alınmıştı. Ek not §5.2'ye göre kilide duyarlı testlerde "önce" değeri taklitli koşudan alınır. Düzeltilmiş satırlar (kaynak dosyalar
+yeniden okundu, 15 Kasım):
+
+1) HYS-01, 02_hizli_yolculuk NORMAL kip (gerileme koruması, ≤ 3 sn):
+   - Tablodaki "1810 ms'den 241 ms'ye": 1810 ms B0'ın gerçek kilitli son/ koşusundan (siniflandirma.json HYS-01 satırı).
+   - Doğru "önce" (v0.4, düzeltilmiş koşucu, işaretçi kilidi taklit): 782 ms
+     /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/kosucu17/son/b0/b0v04-02_hizli_yolculuk_T.json (isaretciKilidi.kip = taklit,
+     HYS-01 deger 782, ok true). Aynı dizindeki gerçek kilitli yineleme (b0v04-02_hizli_yolculuk_G.json): 3321 ms (KALDI).
+   - Sonra: uygulayıcı 241 ms (sonra_b2/02_hizli_yolculuk_normal.json); düzeltme sonrası değer aşağıda (DÜZELTME SONRASI).
+   - Okuma: v0.4 normal kipte de ≤ 3 sn (YEŞİL); B2'nin normal kipteki katkısı "gerileme yok"tur, 1810 → 241 değil 782 → 241.
+
+2) 17_kamera_kararma (gerileme koruması):
+   - Tablodaki "13/13 (v0.4 önce_tam'da gerçek kilitle 5/13)": 5/13, once_v04_tam/17_kamera_kararma.json (gerçek kilit;
+     hatalar.sayfa = ['SAYFA ÇÖKTÜ (renderer crash)']): ortam (bellek) çökmesi, işlevsel bir "önce" değeri değil.
+   - Doğru: önce/sonra 13/13. v0.4 taklitli 13/13 (kosucu17/son/olcum/17v04_T.json), w2 taklitli 13/13 (kosucu17/son/olcum/17w2_T.json),
+     w2 gerçek kilitli 13/13 (kosucu17/olcum/04_17w2_G.json). B2'nin bu senaryoda bir iyileştirmesi yok.
+
+3) HYS-01, 02_hizli_yolculuk NOWORKER kip (madde 21): uygulayıcının "önce" değeri 25 143 ms zaten taklitli koşudan
+   (sonra_b2/tani/once_v04_02_hizli_yolculuk_noworker.json): geçerli, değişmedi.
+
+DÜZELTME SONRASI (bu dizindeki koşular, B2-D2 düzeltmesiyle örtü artık yalnız çizimi atlıyor; düzeltilmiş koşucu, taklit kilit):
+   HYS-01 normal   : önce 782 ms (v0.4, taklit) → uygulayıcı 241 ms → düzeltme sonrası 151 ms (02_hizli_yolculuk_normal.json; 32/34,
+                     kalan HYS-02/HY21 = B1).
+   HYS-01 noworker : önce 25 143 ms (v0.4, taklit) → uygulayıcı 271 / 322 / 1653 ms → düzeltme sonrası 812 / 1333 / 826 ms
+                     (02_hizli_yolculuk_noworker_{1,2,3}.json; her biri 32/34, kalan HYS-02/HY21 = B1). Örtü altında güncelleyiciler artık
+                     her karede çalıştığı için (benzetim, HUD, net.update) işçisiz hazırlık uygulayıcının tasarımından biraz uzun; 3 sn sınırının
+                     altında.
+   17_kamera_kararma: gerileme koruması; düzeltme sonrası 13/13 (17_kamera_kararma.json). Önce/sonra 13/13.
