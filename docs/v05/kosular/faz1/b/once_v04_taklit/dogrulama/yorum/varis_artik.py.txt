@@ -1,0 +1,12 @@
+# Bulgu 4: uzak varış ilk karesinin (varisIlkKareMs) hazırlıktan SONRAKİ kısmı. v0.4 main.js:270-300: perde açılır, 1200 ms beklenir,
+# terrain.prepare (HYS-01'in ölçtüğü), ışınlama, perde 900 ms sonra kalkar; ilk kare ölçümü perde kalkınca ve oyuncu biniş noktasındayken.
+# artık = varisIlkKareMs − 1200 − HYS-01 − 900. hys_say.py çıktısını stdin'den okur.
+import json, sys
+for l in sys.stdin:
+    if not l.startswith('{'):
+        continue
+    r = json.loads(l)
+    if r['HYS01'] is None or r['varisIlkKareMs'] is None:
+        continue
+    artik = r['varisIlkKareMs'] - 1200 - r['HYS01'] - 900
+    print(f"{r['kip']:9s} {r['kilit']:12s} {r['tarih']}  HYS-01 {r['HYS01']/1000:6.1f} sn  ilk kare {r['varisIlkKareMs']/1000:6.1f} sn  hazırlık sonrası artık {artik/1000:6.1f} sn  {r['kayit']}")

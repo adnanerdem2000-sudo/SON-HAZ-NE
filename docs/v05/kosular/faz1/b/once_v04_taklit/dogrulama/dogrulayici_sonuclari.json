@@ -1,0 +1,223 @@
+{
+ "veri_butunlugu": {
+  "ozet": "Karşılaştırmayı ana oturumun betiğini kullanmadan, iki dizindeki ham .json/.log/_bellek.json dosyalarından ve örnekleyici CSV'lerinden baştan hesapladım. Hiçbir dosyayı değiştirmedim, tarayıcı koşusu yapmadım.\n\nBetikler /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69_dogrulama/veri_butunlugu/ altında: dogrula.py … dogrula8.py, çıktıları cikti*.txt ve sonuc.json. Hepsi python3 -I ile koşuldu.\n\nDoğrulananlar:\n- Ana oturumun bütün sayım iddiaları doğru: 24 koşu, durumu aynı 24, kontrol kontrol aynı 20, tek fark 4 koşuda LY13 false→true.\n- Ana oturumun bütün sayısal aralıkları doğru: HYS-01, LY13, varisIlkKareMs, VmHWM, süreler.\n- karsilastirma.json'ın 24 girdisi ve KARSILASTIRMA.md tablosu ham veriyle 0 uyuşmazlık veriyor.\n- Koşucu sha'ları, işaretçi kilidi kipi, komutlar, senaryo sha256'ları, hedef ağaç ve koşu sağlığı temiz. Koşu sırasında ikinci tarayıcı yok (5694 örnekte 0), OOM ya da yarım kalan koşu yok.\n\nBulgular:\n- VB-1: HK04 (coop) iki tarafta da kırmızı, ama kalma nedeni farklı. Taklitte konuk doğru limanda; kontrol yalnız çift \"vardınız\" bildirimi yüzünden kalıyor.\n- VB-2: crash kipi LY09'da kalma biçimi farklı (B0'da 20 ağ, taklitte 0 ağ).\n- VB-3: Aynı biçimde kalıp değeri değişen 6 kontrol var. karsilastirma.json kapının ihtiyaç duyacağı bu değerleri taşımıyor.\n- VB-4: varisIlkKareMs bölge hazırlığını da içeriyor. \"Sel kaynaklı değil\" çıkarımı, normal kipte sürenin yarıya indiğini gizliyor (26,5 → 14,9 sn).\n- VB-5: İki yeşil \"önce\" değeri tek örnekli ve eşiğe yakın. LY13 normal'de pay 0,4 ms, HYS-01 normal'de pay %20.\n- VB-6: README ve siniflandirma.json'daki \"sel ~3 kat\" ifadesi #69 verisiyle tutmuyor; #69'a göre çarpan 1,40–1,57.",
+  "bulgular": [
+   {
+    "kimlik": "VB-1",
+    "onem": "orta",
+    "baslik": "HK04 (coop) iki tarafta da KALDI, ama kalma nedeni farklı: taklitte konum alt koşulu sağlanıyor, kontrol yalnız çift 'vardınız' bildirimi yüzünden kalıyor",
+    "kanit": "Komut: python3 -I /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69_dogrulama/veri_butunlugu/dogrula.py (§4).\n\nÇıktı:\n- B0: `coop_02_hizli_yolculuk_konuk HK04: B0 deger={\"aUzaklik\": 5978, \"bUzaklik\": 1, \"konum\": [289, -5003], \"varisBildirimi\": [\"Kaptan rotayı kırdı: yeni limana vardınız!\" x2]}`\n- Taklit: `yeni deger={\"aUzaklik\": 1, \"bUzaklik\": 5979, \"konum\": [1676, 813], \"varisBildirimi\": [... x2]}`\n\nKontrolün tanımı (tests/scenarios/coop/02_hizli_yolculuk_konuk.cjs:60): `son1.aUzaklik <= 30 && son1.varisBildirimi.length === 1`. Satır 33'e göre A = tuz_pazari_port_0, B = kuzeyfener_port_0.\n- B0'da iki alt koşul da kalıyor: konuk Kuzeyfener'de ve iki bildirim var.\n- Taklitte konum alt koşulu SAĞLANIYOR: konuk Tuz Pazarı'nda, 1 m. Kontrol yalnız iki bildirim yüzünden kalıyor.\n- İki bildirim, iki varışın da işlendiğini gösteriyor; iki koşuda varışların bitiş sırası farklı.\n\nsiniflandirma.json HK04'ün önce kanıtı olarak B0 değerini yazıyor: 'KALDI ({ayniOyuncu: true, konum: [289, -5003], aUz…'.\n\nAna oturumun kaydı bu farkı göstermiyor:\n- karsilastirma.json coop girdisi: farklar [], ayni_kirmizi [HK03, HK04, HK07], secilmis_degerler {}.\n- KARSILASTIRMA.md: 'farklı kontroller: —'.",
+    "oneri": "Sonra kapısında HK04'ü alt koşullarıyla karşılaştır: aUzaklik ≤ 30 m ve tek 'vardınız'.\n\n'İkinci ileti konuğu Kuzeyfener'e taşır' alt kusurunun son konumla ölçülen önce kanıtı yalnız B0 (gerçek kilit) koşusunda var; taklit koşusunda görünmüyor. Bunu kapı notuna yaz.\n\nCoop senaryosunu taklitle birkaç kez daha koşup son konumun varış sırasına (yarışa) bağlı olup olmadığını ölç.\n\nkarsilastirma.json'a HK04 için eski ve yeni deger alanlarını ekle."
+   },
+   {
+    "kimlik": "VB-2",
+    "onem": "dusuk",
+    "baslik": "02_arazi_yasam_crash LY09: B0'da yalnız derinlik alt koşulu kalıyordu, taklitte ağ sayısı da kalıyor",
+    "kanit": "Komutlar: dogrula.py §4 ve dogrula2.py §F.\n\nÇıktı:\n- B0: 'B odağı kısaldı: B bittikten 5 sn sonra B bölgesinde 20 ağ, derinlik 5214 m'\n- Taklit: '… 0 ağ, derinlik 5214 m'\n\nGeçme koşulu (tests/scenarios/02_arazi_yasam.js:241): `O.bAg >= 6 && O.bDerinlikUzak < 80`.\n- B0 crash'te bAg=20, bu alt koşul sağlanıyor; yalnız derinlik kalıyor.\n- Taklitte iki alt koşul da kalıyor.\n\nAynı kontrol öbür kiplerde değişmedi:\n- normal ×2: '20 ağ' → '20 ağ'\n- noworker ×2: '0 ağ' → '0 ağ'\n\nYani crash kipi LY09'da taklitle işçisiz kipin biçimine geçti.",
+    "oneri": "Kapıda crash LY09'un önce değeri olarak taklit değerini kullan (bAg 0, derinlik 5214 m). Düzeltmeden sonra iki alt koşulun ayrı ayrı sağlandığını göster."
+   },
+   {
+    "kimlik": "VB-3",
+    "onem": "dusuk",
+    "baslik": "Aynı biçimde kalıp değeri değişen 6 kırmızı (kapının 'önce' değerleri): karsilastirma.json bunlardan yalnız HYS-01'i taşıyor",
+    "kanit": "Komut: dogrula.py §4. Çıktı: `aynı kırmızı sayısı: 129 Counter({'tam_ayni': 121, 'yalniz_sayi': 8})`. Bu 8'in ikisi VB-1 ve VB-2.\n\nKalan altısının kalma biçimi aynı, yalnız değerleri değişti:\n- HYS-01 işçisiz ×3: 30949 → 19730 / 20341 / 22172 (eşik lte 3000)\n- HI03: 87 → 120 (lte 5)\n- HI04: 87 → 120 (lte 50)\n- HK07: oyuncuKaydi 10046 → 4655. İki tarafta da cUzaklik 1 ve 'vardınız' var. Fark HK04'teki başlangıç konumundan geliyor (B0'da Kuzeyfener, taklitte Tuz Pazarı).\n\n02_arazi_isci_hata'da HI03/HI04 farkına eşlik eden değerler: izinler[1] (meta) eslesme 88 → 121, sonuc.izinliKonsol 88 → 121. Desen ve gerekçe aynı.\n\nkarsilastirma.json'da secilmis_degerler yalnız şu kimlikleri taşıyor: AC01, AC02, AC03, AYS-01, HY02, HY13, HY14, HYS-01, LY13, YB03. HI03, HI04, HK04, HK07 ve LY09 yok. ayni_kirmizi alanı yalnız kimlik listesi.",
+    "oneri": "Kapıda bu kontrollerin önce değeri olarak B0 değerlerini değil, taklit değerlerini kullan.\n\nkarsilastirma.json'daki ayni_kirmizi girdilerine eski ve yeni deger ile hata alanlarını ekle; 'tam aynı' ile 'biçim farklı' ayrımını da kaydet."
+   },
+   {
+    "kimlik": "VB-4",
+    "onem": "orta",
+    "baslik": "varisIlkKareMs bölge hazırlığını (HYS-01) içeriyor; 'sel kaynaklı değil' çıkarımı normal kipte yarıya inişi gizliyor, işçisiz kipteki 26–34 sn ise çoğunlukla HYS-01",
+    "kanit": "Ölçümün tanımı (tests/scenarios/02_hizli_yolculuk.js:93–96): window.__t0 fastTravel yayınından hemen önce alınıyor. varisIlkKareMs = (gemi demir yerinde VE oyuncunun hedefteki ilk karesi) − __t0. Yani süre hazırlığı da kapsıyor.\n\nKomut: python3 -I …/veri_butunlugu/dogrula4.py. Sütunlar: prep_ms / varisIlkKareMs / ilk kare − hazırlık bitişi / hazırlık payı.\n- normal B0: 1810 / 26498 / 14000 / 0.07\n- normal taklit: 2404 / 14862 / 10499 / 0.16\n- işçisiz B0: 30949 / 35181 / 2452 / 0.88\n- işçisiz taklit: 19730 / 26003 / 5004 / 0.76; 20341 / 29979 / 8419 / 0.68; 22172 / 33748 / 9333 / 0.66\n\nkosucu17 kayıtları aynı yönü gösteriyor (normal kip): b0v04-02_hizli_yolculuk_T (taklit) varisIlkKareMs 13722, _G (gerçek kilit) 34347.\n\nREADME:111'deki bulgu 4 normal kip için yazılmıştı ('Bölge hazırlığı ise 0,27–1,4 sn').",
+    "oneri": "İddiayı şöyle düzelt: normal kipte ilk kare gerçek kilitli iki kayıtta 26,5 ve 34,3 sn, taklitle 13,7–14,9 sn. Gecikme selsiz de uzun (hazırlık bittikten yaklaşık 10,5 sn sonra), ama sel bu süreyi yaklaşık iki katına çıkarıyordu. Kısacası gecikme 'yalnız sel kaynaklı değil'.\n\nİşçisiz kipte 26–34 sn'nin %66–76'sı HYS-01. Bu yüzden bulgu 4'ün kanıtı sayılmamalı; orada 'ilk kare − hazırlık bitişi' ayrıca yazılmalı (taklit 5,0–9,3 sn, B0 2,5 sn)."
+   },
+   {
+    "kimlik": "VB-5",
+    "onem": "dusuk",
+    "baslik": "İki yeşil 'önce' değeri tek örnekli ve eşiğe yakın: LY13 normal (pay 0,4 ms), HYS-01 normal (pay %20)",
+    "kanit": "Komut: dogrula3.py. LY13 dilim ölçümünde taklit p99Fark değerleri (eşik 4 ms):\n- normal: 3.6 (pay 0,4 ms) ve 1.4\n- noworker: 1.0 ve 1.1\n- crash: 2.0\n- B0 karşılıkları: normal 6, noworker 15.9, crash 2.6\n\nKomut: dogrula8.py. Çıktı: `02_hizli_yolculuk_normal HYS-01 taklit=2404 B0=1810 lte 3000 pay=20%`. Zamana bağlı yeşil kontroller arasında eşiğe bu kadar yakın tek değer bu.\n\nAynı kontrolün kosucu17 kayıtları (son/b0/b0v04-02_hizli_yolculuk_T ve _G):\n- taklit: HYS-01=782 ms, GEÇTİ\n- gerçek kilit: HYS-01=3321 ms, KALDI",
+    "oneri": "Sonra kapısında bu iki kontrol için tek bir önce değerine dayanarak gerileme hükmü verme. Normal HYS-01 için en az 3 taklit örneğinin aralığını kullan; şimdilik bu aralık 782–2404 ms."
+   },
+   {
+    "kimlik": "VB-6",
+    "onem": "dusuk",
+    "baslik": "README ve siniflandirma.json'daki 'selsiz 10,3 sn, sel ~3 kat' ifadesi #69 verisiyle tutmuyor",
+    "kanit": "Mevcut belge metni:\n- README.md:82: 'Kilit bırakılınca 10,3 sn sürdü. Sel gecikmeyi yaklaşık üç kat büyütüyor'\n- siniflandirma.json HYS-01 açıklaması: 'kilit bırakılmış 10 274 ms … sel gecikmeyi ~3 kat büyütüyor'\n\n#69 verisi (dogrula.py §6):\n- işçisiz taklit: 19730 / 20341 / 22172 ms\n- B0 son: 30949 ms\n- Çarpan: 30949/22172 = 1,40 ile 30949/19730 = 1,57 arası",
+    "oneri": "README'deki ortam uyarısını ve siniflandirma.json'daki HYS-01 açıklamasını #69 değerleriyle güncelle: selsiz 19,7–22,2 sn (3 örnek), sel çarpanı yaklaşık 1,4–1,6. 10,3 sn değerini tek tanı koşusu olarak not et."
+   }
+  ],
+  "dogrulanan": [
+   {
+    "iddia": "(1) Her taklitli koşu son koşucuyla alındı (run 285211cf, coop 9292115d, ortak 53358e1c)",
+    "sonuc": "DOĞRU.\n- sha256sum tests/harness: run.cjs 285211cfc04d…, coop.cjs 9292115d289e…, ortak.cjs 53358e1c91bd…\n- 24 günlüğün hepsinde '# koşucu (kosucu17 son): 285211cf 9292115d 53358e1c'.\n- zincir.log'un ZİNCİR BAŞLADI satırında ve 24 BİTTİ satırının hepsinde aynı kod.\n- w2 HEAD koşu sırasında 03b5c97 → 3211fb4 oldu (2586265 harness'ı 07:26'da commit'ledi), ama harness içeriğinin sha'sı baştan sona değişmedi.\n- Senaryolar ve koşucu dışına bağımlılık yok (senaryolarda require yok)."
+   },
+   {
+    "iddia": "(1) İşaretçi kilidi kipi taklit",
+    "sonuc": "DOĞRU.\n- 24 raporda isaretciKilidi.kip='taklit'. Coop raporunda sayaç oyuncu başına tutuluyor: Kaptan ve Tayfa için istek=1, verildi=1.\n- 24 günlükte 'işaretçi kilidi: taklit' satırı var.\n- 7 koşuda kilit hiç istenmedi (istek=0): acilis_hatalari, arazi_isci_hata, ayar_lod, depolama_kapali ve tek_dosya ×3. Bunlar kilide duyarsız; tekrarları tutarlılık denetimi işlevi görüyor."
+   },
+   {
+    "iddia": "(2) Komutlar B0'ınkilerle aynı (yalnız --report, --goruntu-dizin ve koşucu farklı)",
+    "sonuc": "DOĞRU.\n- 24/24 koşuda aynı: tk süresi (590/950/650), --url, --size 640x360, --timeout (540/900/600), --players 2.\n- --izin-hata deseni ve gerekçesi aynı.\n- tekrar.komut, rapor ve görüntü yolu dışında aynı (coop'ta yalnız seçenek sırası farklı).\n- Senaryo sha256 24/24 aynı.\n- hedef ve ortam aynı: Chromium 153.0.8010.12, Playwright 1.63.0, Node v22.22.0, SwiftShader."
+   },
+   {
+    "iddia": "(2) izinler[] dizisi aynı (badurl'de desen ve eşleşme)",
+    "sonuc": "DOĞRU.\n- badurl'de iki tarafta da: desen 'terrainWorker\\.missing\\.js$', tur 'hepsi', kaynak 'cli', eslesme 6; gerekçe aynı.\n- Tek fark 02_arazi_isci_hata'nın meta izni: eslesme 88 → 121 (desen ve gerekçe aynı), HI03/HI04'teki 87 → 120 ile tutarlı."
+   },
+   {
+    "iddia": "Hedef iki koşu takımında da aynı v0.4",
+    "sonuc": "DOĞRU.\n- :8080 sunucusu (pid 203) /home/user/SON-HAZ-NE'den sunuyor; HEAD 44d548c (reflog'a göre 9 Kasım'dan beri), git status temiz. Sunulan dosyalarda 10 Kasım'dan sonra değişiklik yok.\n- Tek dosya derlemesinin mtime'ı 14 Kasım 14:04 (B0'dan önce), sha 75587dd9…\n- tests/peer-server.cjs 31 Ekim'den beri değişmedi."
+   },
+   {
+    "iddia": "(3) 24 koşunun hepsinde durum (GECTI/KALDI) aynı",
+    "sonuc": "DOĞRU: 24/24 aynı. gecen, kontrolSayisi ve onaySayisi rapor içi sayımlarla da tutarlı."
+   },
+   {
+    "iddia": "(3) 20 koşu kontrol kontrol aynı; tek fark LY13 (dört koşuda KALDI → geçti)",
+    "sonuc": "DOĞRU.\n- Kimlik → ok eşlemesi 20 koşuda birebir aynı.\n- LY13 false → true şu dört koşuda: 02_arazi_yasam_normal, _normal_2, _noworker, _noworker_2. Bunlarda fails 6 → 5.\n- Yalnız bir tarafta bulunan kontrol yok; çift kimlik yok; kontrollerin sırası, etiketi ve beklenen değeri aynı; evalErrors aynı.\n- Toplam 406 kontrol: 273 aynı yeşil, 129 aynı kırmızı, 4 fark.\n- Not: dört taklit koşusu yalnız iki B0 koşusuyla (normal ve noworker, kip başına n=1) karşılaştırılıyor."
+   },
+   {
+    "iddia": "(4) 'Aynı kırmızı'larda kalma biçimi aynı",
+    "sonuc": "129 aynı kırmızının 121'inde deger ve hata birebir aynı.\n- 2'sinde kalma nedeni farklı: HK04 (VB-1) ve crash kipinde LY09 (VB-2).\n- 6'sında biçim aynı, yalnız değer değişti: HYS-01 ×3, HI03, HI04, HK07 (VB-3).\n- Hiçbirinde bir taraf sayı eşiğini aşarken öbür taraf undefined ya da istisna dönmüyor."
+   },
+   {
+    "iddia": "(5) Koşu sağlığı: kopma null, timeout/harnessError yok, hatalar.sayfa boş",
+    "sonuc": "DOĞRU (24/24).\n- kopma ve sonuc.kopma null; tarayiciKoptu false; timeout ve harnessError alanı yok.\n- hatalar.sayfa [], kesildi false, pageErrors boş.\n- Çıkış kodları yalnız 0 ve 1 (124 yok) ve rapordaki cikisKodu ile aynı.\n- Konsol, ağ ve değerlendirme hata listeleri B0 ile aynı. depolama_kapali'deki 10 evalErrors aynı adımlarda (n=9…27); yalnız yeni koşucu iletiye ek açıklama koyuyor."
+   },
+   {
+    "iddia": "(5) zincir.log'da YARIM KALMIŞ ya da oom_kill artışı yok; _bellek.json'larda oom_artislari boş",
+    "sonuc": "DOĞRU.\n- zincir.log: 24 BAŞLADI, 24 BİTTİ ve 'ZİNCİR BİTTİ' var; YARIM KALMIŞ yok; oom_kill bütün koşularda 0 → 0.\n- f69/kosu/gecersiz dizini yok (yeniden başlatılan koşu olmamış).\n- 24 _bellek.json'da oom_artislari [] ve oom_kill_basta = oom_kill_sonda = 0.\n- Raporların ortam.tarih değeri ve json mtime'ı zincirdeki kendi pencerelerinin içinde; bayat rapor yok.\n- Tarayıcı açıkken ağaç dışı chrome içeren örnek 0/5694: aynı anda ikinci tarayıcı çalışmamış, tk kilidi koşuları sıraya dizmiş."
+   },
+   {
+    "iddia": "(6) İşçisiz HYS-01 19,7–22,2 sn (B0: 30,9) ve kırmızı; normal HYS-01 2,4 sn (B0: 1,8)",
+    "sonuc": "DOĞRU.\n- İşçisiz: 19730 / 20341 / 22172 ms; üçü de lte 3000'i aşıyor. B0: 30949.\n- Normal: 2404 (B0: 1810).\n- Günlükteki R: satırında prepare.ms rapor değeriyle aynı."
+   },
+   {
+    "iddia": "(6) LY13 değerleri",
+    "sonuc": "DOĞRU.\n- B0 normal: 'p99 bütçe+6 ms, en uzun bütçe+8.1 ms'; B0 noworker: '+15.9 / +17.3' → taklitte dört koşu da 'tamam'.\n- crash iki tarafta da 'tamam'.\n- Ölçülen p99Fark (taklit): normal 3.6 / 1.4, noworker 1.0 / 1.1, crash 2.0. Normal'in ilk koşusunda eşiğe pay yalnız 0,4 ms (VB-5)."
+   },
+   {
+    "iddia": "(6) varisIlkKareMs taklitle 14,9 (normal) / 26–34 sn (işçisiz), yani sel kaynaklı değil",
+    "sonuc": "Sayılar doğru: normal 14862; işçisiz 26003 / 29979 / 33748 (B0: 26498 / 35181).\n\nÇıkarım kısmen yanlış:\n- Ölçüm hazırlığı da kapsıyor.\n- Normal kipte süre %44 düşüyor.\n- İşçisiz kipte sürenin %66–76'sı HYS-01.\n\nAyrıntı VB-4'te."
+   },
+   {
+    "iddia": "(6) Renderer VmHWM taklitle ≤ 0,85 GB, tarayıcı ~100 MB, OOM yok",
+    "sonuc": "DOĞRU.\n- Renderer VmHWM 398.9–850.3 MB; tepe 02_hizli_yolculuk_noworker_3'te. 850,3 MB = 0,83 GiB; '≤ 0,85 GB' ifadesi yuvarlamayla doğru.\n- Tarayıcı 96.0–113.2 MB; tek_dosya koşularında 110–113 MB.\n- OOM yok."
+   },
+   {
+    "iddia": "(6) karsilastirma.json ve KARSILASTIRMA.md ham veriyle tutarlı (süreler dahil)",
+    "sonuc": "DOĞRU.\n- karsilastirma.json'ın 24 girdisinde ham veriyle 0 uyuşmazlık. Denetlenen alanlar: durum, gecen, kontrol, sure_ms (= rapor ms, iki taraf), kopma, isaretci, 6 bellek alanı, farklar, ayni_kirmizi, ayni_yesil_sayisi, secilmis_degerler.\n- ozet alanı {kosu 24, durumu_ayni 24, kontrolleri_ayni 20} doğru.\n- KARSILASTIRMA.md'nin 24 satırı da aynı (durum, x/y, saniyeye yuvarlanmış süreler, VmHWM)."
+   },
+   {
+    "iddia": "B0'ın bütün tarayıcı koşuları yinelendi",
+    "sonuc": "DOĞRU.\n- once_v04/son'daki 22 raporun 20'si tarayıcı koşusu; hepsinin en az bir taklit karşılığı var.\n- Karşılığı olmayanlar yalnız Node testleri: arazi_kuyruk ve arazi_sozlesme.\n- once_v04/son commit'li ve değişmemiş (git status temiz)."
+   }
+  ]
+ },
+ "yorum": {
+  "ozet": "Salt okuma yaptım; hiçbir dosyayı değiştirmedim, tarayıcı da koşmadım. Betikler /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69_dogrulama/yorum/ altında, hepsi python3 -I ile çalıştı.\n\nAna oturumun sayısal iddiaları kayıtlarla tutuyor:\n- 24 koşunun hepsinde durum aynı; kontrol düzeyinde (ok) tek fark LY13, 4 koşuda.\n- İşçisiz HYS-01: 19 730 / 20 341 / 22 172 ms. Normal HYS-01: 2404 ms.\n- Uzak varış ilk karesi: normal 14 862 ms; işçisiz 26 003 / 29 979 / 33 748 ms.\n- Renderer belleği en çok 850,3 MB, tarayıcı 96–113 MB; 24 koşunun 24'ünde OOM yok.\n- KY25 v0.4'te kırmızı (p99 +90,2 ms), A-06 mutantında yeşil (+2,5 ms).\n\nYorumlarda düzeltilmesi gereken yerler:\n1. LY13 taklitle hedef kırmızı olmaktan çıkıp gerileme korumasına dönüşüyor. Payı en dar koşuda 0,4 ms. Denetimin kendi kabul ölçütüne göre bir taklit koşusu kalırdı. A-06'nın \"önce\" kanıtı yalnız KY25'te kalıyor.\n2. HYS-01 penceresi oyun başındaki çok saniyelik ana iş parçacığı tıkanmasını bazen içine alıyor, bazen dışarıda bırakıyor. Kilit bırakılan tanı koşusunun 10,3 sn'si bu yüzden taklitteki ~20 sn ile eşdeğer değil. Aynı pencerede selin etkisi ~3 kat değil ~2 kat. Normal kipteki 0,18–3,32 sn'lik dağılım da büyük ölçüde bundan geliyor.\n3. #69 penceresi, kilitten bağımsız sayfa açılışında ~%30 daha yavaştı (makine 03:27'de yeniden başladı). B0 ile taklit arasındaki zaman farkları bu yüzden yalnız sele bağlanamaz.\n4. HK04'ün kalma nedeni değişti: B0'da konuk yanlış hedefe gitti, taklitte doğru hedefte kaldı, kırmızı yalnız çift bildirimden geliyor. Karşılaştırma betiği yalnız ok bayrağına baktığı için bu görünmedi.\n5. Bulgu 4 selsiz de var, ama B0'daki büyüklüğü normal kipte ~2,5 kat selle şişmişti.\n6. Bulgu 5'te GB'lık büyüme selden geliyordu; ama taklitte de işçisiz kipte tek koşu içinde renderer belleği bölümden bölüme büyüyor (anon +200–300 MB).\n7. AA15'in ikinci ölçümü #69'da yükleme bitmeden alınmış; kontrol geçti ama duyarlılığı koşuya göre değişiyor.\n\nTaklidin bilinen farkları (sandbox'lı çerçeve, çerçeve başına kilit, kilit alınışında fare sıçraması) B0'ın hiçbir kontrolünün durumunu değiştirmiyor.",
+  "bulgular": [
+   {
+    "kimlik": "YORUM-1",
+    "onem": "orta",
+    "baslik": "LY13 tarayıcıda A-06'yı ayırt edemiyor: taklitli 'önce' ile hedef kırmızı değil, gerileme koruması oluyor ve payı en dar koşuda 0,4 ms",
+    "kanit": "Komut: `python3 -I ly13_say.py /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b | python3 -I ly13_ozet.py`. Toplam 36 kayıt (once_v04/ altında 31, taklit 5).\n\nonce_v04/ (duzeltme*/ dahil), v0.4 :8080, gerçek kilit, 27 kayıt:\n- LY13'ün ölçüldüğü 20 kayıtta 18 KALDI: normal 7/7, noworker 6/6, crash 5/7.\n- 2 GECTI, ikisi de crash kipinde: duzeltme/son_1deneme ve son/.\n- 7 kayıtta LY13 ölçülemedi (sayfa çöktü ya da OOM): 5 normal, 2 noworker.\n\nÖteki kayıtlar:\n- :8098 mutantı (A-12, gerçek kilit): normal KALDI (p99 +6,0), noworker GECTI (+3,6 / en büyük +13,1).\n- Kilit bırakan 'birak' tanısı: 2/2 GECTI (normal +3,0 / +3,8; noworker +0,8 / +1,2).\n- #69 taklit: 5/5 GECTI. p99 / en büyük fark: normal 3,6 / 4,2 ve 1,4 / 3,5; noworker 1,0 / 1,1 ve 1,1 / 3,3; crash 2,0 / 2,4 ms.\n\nSon tanımla (⌊(n−1)·0,99⌋, +4 / +15) gerçek kilitte yalnız son/ ölçüldü: 2/3 KALDI (+6,0; +15,9). Eski kayıtlar başka tanımlarla ölçülmüştü.\n\nEşik ve ölçüt farkı:\n- Eşik 02_arazi_yasam.js:194'te: `S.p99Fark <= 4 && S.enBuyukFark <= 15`. n ≤ 101 dilimde p99 sırası ikinci en büyük dilime denk geldiği için kontrol bir dilimin +4 ms'yi aşmasına izin veriyor.\n- Denetimin A-06 kabulü (audit_A.json) daha sıkı: \"en uzun yerel dilim ≤ bütçe + 4 ms (Node ve tarayıcı ölçümü)\". Bu ölçütle taklit normal koşusu (4,2 ms) kalırdı: selsiz 7 koşunun 1'i.\n\nSınıflandırma ve KY25:\n- siniflandirma.json LY13: hedef_madde \"madde 11 / A-06 / KI-154 (B0-I08: dağılım)\", once_v04 KIRMIZI. A-06'ya bağlı yalnız LY13 ve KY25 var. Sayım YESIL 142 / KIRMIZI 95 / UYGULANAMAZ 10.\n- KY25: once_v04/son/arazi_kuyruk.json FAIL (p99 +90,2, en uzun +90,2, 39 dilimin 32'si +4 ms'yi aşıyor). duzeltme2/KY25_dogrulama.log: v0.4 +89,9 FAIL, mut_a06 +2,5 PASS. arazi_kuyruk.mjs sha 5bf96a733963 (commit'teki ile aynı).",
+    "oneri": "siniflandirma.json'da LY13'ün taklitli 'önce'sini YESIL (gerileme koruması) yapın; sayılar 143/94/10 olur.\n\nREADME'deki \"hedeflenen bütün maddeler en az bir kontrolde kırmızı\" cümlesinde A-06'nın kırmızısının yalnız Node'daki KY25'ten geldiğini yazın.\n\nLY13 geçince değeri yalnız 'tamam' oluyor. Kayda p99Fark ve enBuyukFark değerlerini de yazın; pay görünür olsun.\n\nSonra kapısında:\n- LY13'ü tek koşuyla değerlendirmeyin.\n- Denetimin ölçütünü (en uzun ≤ +4 ms) ayrıca raporlayın.\n- LY13'ün yeşili A-06'nın düzeltildiğinin kanıtı sayılmasın; v0.4 de taklitle geçiyor.\n\nYorum notu: sel, A-06'nın uyardığı 'yavaş cihaz' koşulu gibi davranıyordu. Düzeltilmiş kodun sel altında yeşil olup olmayacağı ölçülmedi; bunu bir iddia olarak yazmayın."
+   },
+   {
+    "kimlik": "YORUM-2",
+    "onem": "orta",
+    "baslik": "HYS-01 penceresi oyun başındaki çok saniyelik ana iş parçacığı tıkanmasını bazen içeriyor, bazen dışarıda bırakıyor: 'birak' 10,3 sn ile taklit ~20 sn farkının çoğu ve normal kipteki 0,18–3,32 sn dağılımı bundan",
+    "kanit": "Ölçülen şey: v0.4 main.js:286, emit'ten 1200 ms sonra terrain.prepare'i başlatıyor. Çıkıştan hazırlığa geçen tıkanma = prepare.t0 − __ftOnce.sayfaMs − 1200.\n\nKomut: `python3 -I kalkis_gecikme.py /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1`.\n\nİşçisiz (noworker):\n- birak: tıkanma 4,9 sn, HYS-01 10,3, çıkıştan hazırlık sonuna 15,2 sn (kalkışta kuyrukta 3 iş + 2 bekleyen).\n- Gerçek kilit 'say': 0,6 / 28,7 / 29,3 sn.\n- Gerçek kilit son/: 0,6 / 30,9 / 31,5 sn.\n- Taklit: tıkanma 0,1 / 0,0 / 1,0 sn; HYS-01 19,7 / 20,3 / 22,2 sn; toplam 19,8 / 20,4 / 23,2 sn.\n\nNormal:\n- Tıkanma: kosucu17 T 6,1 sn (HYS-01 0,8), B0 son/ 9,5 sn (1,8), kosucu17 G 15,8 sn (3,3 → KALDI), birak 0,8 sn (2,2).\n- #69 taklit: tıkanma 0,8 sn (2,4), ama tıkanma kalkıştan önce yaşanmış: m_once adımı 8047 ms, 'yola çıkıldı' adımı 653 ms. Öteki koşularda bu adımlar 2–15 ms.\n- 366 ms'lik aykırı işçisiz koşuda da m_once 4711 ms sürmüş.\n\nAYS-01 (aynı Kuzeyfener bölgesi, çizim durdurulmuş, `python3 -I ek_degerler.py ...` (b)): B0 son/ ve taklit, dört kipte 123–241 ms. Kararlı.\n\nBütün v0.4 normal HYS-01 değerleri (`python3 -I hys_say.py`):\n- Gerçek kilit: 272, 2333, 1321, 1301, 1111, 181, 1810, 3321 ms.\n- birak: 2196 ms.\n- Taklit: 782 ms (T, 04:24, readyMs 5902) ve 2404 ms (#69, 07:49, readyMs 5797). Sayfa açılış hızı aynıyken 3 kat fark var.\n\nEşzamanlı tarayıcı yükü dışlandı (`python3 -I yuk.py .../f69/kosu`): 24 koşunun hiçbir örneğinde ağaç dışı chrome yok. Kilit beklemelerinde ise 22/24 beklemede vardı (2992 MB'a kadar).\n\nFare sıçraması (GZ-1) dışlandı: 02_hizli_yolculuk'taki tek tikla satır 151'de, bölüm 3'te; HYS-01 bölüm 1'de ölçülüyor.",
+    "oneri": "(2) README'deki \"kilit bırakılınca 10,3 sn; sel ~3 kat büyütüyor\" cümlesini değiştirin:\n- B0'ın penceresinde, çıkıştan hazırlık sonuna: gerçek kilit 29,3–31,5 sn, birak 15,2 sn (~2 kat).\n- #69 taklit: 19,8–23,2 sn.\n- KI-237'nin selden bağımsız olduğu sonucu geçerli: selsiz bütün değerler 3 sn'nin ≥ 3,4 katı.\n- Bulgu 3'teki \"45 sn zaman aşımına yakın\" ifadesi selden geliyordu (en çok 44,7 sn). Taklitte en çok 22,2 sn.\n\n(3) Normal HYS-01 gerileme koruması sonra kapısında kararsız kalabilir: bir v0.4 koşusu gerçek kilitte 3321 ms ile kaldı.\n- Senaryoda yola çıkmadan önce oyunun oturmasını bekleyin; ör. 2 sn boyunca rAF aralığı < 100 ms.\n- Ya da çıkıştan hazırlık sonuna kadar olan süreyi ölçün.\n- Kuyruk verimi için asıl korumayı çizim durdurulmuş AYS-01 yapın.\n- HYS-01'i kapıda en az 3 koşunun ortancası ve aynı pencerede v0.4 ile dönüşümlü A/B olarak değerlendirin; tek koşudaki 3 sn aşımı tek başına gerileme sayılmasın."
+   },
+   {
+    "kimlik": "YORUM-3",
+    "onem": "orta",
+    "baslik": "#69 penceresi kilitten bağımsız işte ~%30 yavaştı: B0 ile taklit arasındaki zaman farkları sel etkisiyle karışık okunuyor",
+    "kanit": "Kilit isteğinden önce ölçülen sayfa hazır süresi, taklit/B0 oranı (`python3 -I ek_degerler.py /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1`, (a)): ortanca 1,30. 24 eşin 21'inde ≥ 1,07, aralık 0,99–2,14.\n\nSaatlik ortancalar (`python3 -I hazir_zaman.py /home/user/SON-HAZ-NE-w2/docs/v05/kosular`):\n- 15 Kas 00–02 UTC: A1 4792–4876 ms; kosucu17 4727–5337 ms (aynı pencerede iki koşucu da hızlı, yani fark koşucudan değil).\n- 04–08 UTC: kosucu17 5797–6567 ms.\n- 14 Kas: 5227–6731 ms.\n\nMakine 2026-11-15 03:27:52'de yeniden başladı (`uptime -s`; sunucular 03:28:34'te). B0'ın son/ ve 'birak' koşuları hızlı pencerede (00:21–02:28), #69 sonra koşuldu.\n\nEşzamanlı tarayıcı yoktu (yuk.py). Tarayıcı dışı CPU yükü ölçülmedi.\n\nÖrnek: normal HYS-01'in 1,8 → 2,4 sn artışı sel kalkınca beklenen yönün tersine, pencerenin yavaşlığı yönünde.",
+    "oneri": "Sonra kapısında zaman kontrollerinin 'önce'si #69'un mutlak değerleri olmasın. w2 ile aynı pencerede, dönüşümlü koşulan v0.4 değerlerini kullanın: HYS-01, LY13 payı, AYS-01, varisIlkKareMs, bellek tepeleri.\n\nHer koşuya bir pencere göstergesi yazın: readyMs ve loadavg.\n\nREADME'de B0'dan taklide değişen süreleri yalnız sele bağlamayın.\n\nDurum vektörü (GECTI/KALDI) için taklitli kayıtlar doğru 'önce'dir; sonra kapısı da aynı koşucuyla koşulacak."
+   },
+   {
+    "kimlik": "YORUM-4",
+    "onem": "orta",
+    "baslik": "HK04'ün kalma nedeni değişti: B0'da konuk ikinci hedefe gitti, taklitte ilk hedefte kaldı; kırmızı yalnız çift bildirimden. Karşılaştırma yalnız ok bayrağına baktığı için görünmedi",
+    "kanit": "Komut: `python3 -I ek_degerler.py ...`, (d).\n- duzeltme2 deneme1: konum [289, −5003], aUzaklik 5979, bildirim 2.\n- B0 son/: konum [289, −5003], aUzaklik 5978, bildirim 2.\n- Taklit: konum [1676, 813], aUzaklik 1, bUzaklik 5979, bildirim 2.\n\nHK04'ün koşulu: `aUzaklik <= 30 && varisBildirimi.length === 1`. Taklitte ilk koşul geçiyor.\n\nHK03 iki tarafta da kırmızı (ikinciHazirlik 1).\n\nsiniflandirma.json'daki HK04 açıklaması B0 değerini aktarıyor (\"konum: [289, -5003], aUz…\").\n\nkarsilastir69.py yalnız şunu karşılaştırıyor: `elif a['ok'] != b['ok']`.\n\nAynı nedenle raporlanmayan öteki değer farkları (`python3 -I deger_farki.py ...`):\n- LY09 crash: \"B bölgesinde 20 ağ\" → \"0 ağ\".\n- AA15 yeni dünya geometrisi: 825 → 504.\n- AH01: 5993 → 7674 ms.",
+    "oneri": "Taklitli değeri eklerken siniflandirma.json'daki HK04 açıklamasını düzeltin. Konuğun yanlış limana taşınması v0.4'te yarışa bağlı; taklitte görülmedi. 'Önce' kırmızısı çift 'vardınız' bildiriminden geliyor. A-03'ün belirlenimli 'önce' kanıtı HK03.\n\nSonra kapısında HK04'ün geçmesi, yanlış hedef belirtisinin düzeldiğine tek başına kanıt sayılmasın.\n\nKarşılaştırma betiğine değer düzeyinde fark raporu ekleyin (alt koşul ya da sayı değişimi)."
+   },
+   {
+    "kimlik": "YORUM-5",
+    "onem": "orta",
+    "baslik": "Bulgu 4 (uzak varış ilk karesi) selsiz de var, ama B0'ın '26–37 sn'si normal kipte ~2,5 kat selle şişmişti; işçisiz kipte sürenin çoğu KI-237 hazırlığı",
+    "kanit": "v0.4 main.js:270-300 sırası: perde açılır → 1200 ms beklenir → prepare → ışınlama → perde 900 ms sonra kalkar. Hazırlıktan sonraki artık = varisIlkKareMs − 1200 − HYS-01 − 900.\n\nKomut: `python3 -I hys_say.py ... | python3 -I varis_artik.py`.\n\nNormal:\n- Selsiz: birak 13,7 sn (artık 9,4), kosucu17 T 13,7 (10,8), #69 14,9 (10,4).\n- Gerçek kilit: 17,1–34,3 sn (artık 13,9–29,1): son/ 26,5 (22,6), G 34,3 (28,9).\n- Aynı pencerede T/G (04:24 / 04:31): 13,7 → 34,3 sn, 2,5 kat.\n\nİşçisiz:\n- Taklit: 26,0 / 30,0 / 33,7 sn; bunun 19,7 / 20,3 / 22,2 sn'si hazırlık, artık 4,2 / 7,5 / 9,5 sn.\n- Gerçek kilit: artık 1,4–5,2 sn.",
+    "oneri": "README bulgu 4'ü şöyle yazın:\n- Normal: 13,7–14,9 sn, bunun ~9,4–10,8 sn'si hazırlıktan sonraki ilk kare.\n- İşçisiz: 26–34 sn, çoğu KI-237 hazırlığı.\n\n\"Sel kaynaklı değil\" yerine şunu yazın: \"selden bağımsız olarak var; sel aynı pencerede ~2,5 kat büyütüyordu\".\n\nFaz 8'de yalnız hazırlık sonrası artık ölçülsün."
+   },
+   {
+    "kimlik": "YORUM-6",
+    "onem": "dusuk",
+    "baslik": "Bulgu 5: GB'lık büyüme selden geliyordu, ama taklitte de işçisiz kipte tek koşu içinde renderer belleği bölümden bölüme büyüyor",
+    "kanit": "Komut: `python3 -I bellek_seri.py /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/kosu <koşu> ...`.\n\nHer bölümün oyun başında renderer anon belleği (MB):\n- noworker: 272 → 310 → 431 → 507 → 480\n- noworker_2: 272 → 309 → 326 → 422 → 570\n- noworker_3: 273 → 431 → 425 → 631 → 513\n- normal: 290 → 314 → 307 → 342 → 316\n\nRSS tepeleri: işçisiz 765 / 760 / 838 MB, normal 578 MB.\n\nAynı pencerede gerçek kilit ↔ taklit (kosucu17/son/b0/*_ozet.json): renderer VmHWM 3318,1 / 598,8 MB, tarayıcı 1470,1 / 101 MB. Yani GB'lık kısım selden.\n\n_bellek.json yalnız tepe değerleri tutuyor. Zaman serisi yalnız scratchpad'deki _ornek.csv ve _surec.csv dosyalarında.",
+    "oneri": "Bulgu 5'i 'kapandı' diye yazmayın. Şöyle yazın: \"GB'lık büyüme ve OOM selden; işçisiz kipte koşu başına +200–300 MB'lık büyüme kalıyor, sızıntı olup olmadığı Faz 8'de ayrıca ölçülecek\".\n\nBölüm başı özetini ya da ham CSV'leri docs altına taşıyın; scratchpad kalıcı değil."
+   },
+   {
+    "kimlik": "YORUM-7",
+    "onem": "dusuk",
+    "baslik": "AA15 taklitte de zamanlamaya duyarlı: #69'da yeni dünya ölçümü yükleme bitmeden alınmış (geometri 504 < taban 754)",
+    "kanit": "Komut: `python3 -I ek_degerler.py ...`, (c). Taban → şimdi (eşik):\n- B0 son/: 754 → 825 (992,5)\n- #69 taklit: 754 → 504 (992,5)\n- kosucu17 T: 754 → 830\n- V_acilis_T: 747 → 813\n- kosucu17 G (gerçek kilit): 514 → 606 (692,5)\n\n02_acilis_akisi.js'te iki ölçüm de sabit `{wait: 2500}` sonrası alınıyor (satır 47 ve 101).\n\nTaklitte taban kararlı (747–754), ama ikinci ölçüm koşuya göre değişiyor. Bu yüzden kalıntıya duyarlılık değişiyor: #69'da 488 geometriye kadar kalıntı fark edilmezdi, B0'da 167.",
+    "oneri": "İki ölçümü de yüklemenin bitmesini bekleyerek alın (KOSUCU17 GZ-5 önerisinin ikinci ölçüm noktasına uygulanması).\n\nSonra kapısında AA15'i taban ve şimdi sayılarıyla birlikte okuyun."
+   }
+  ],
+  "dogrulanan": [
+   {
+    "iddia": "24 koşunun hepsinde durum (GECTI/KALDI) aynı",
+    "sonuc": "Doğrulandı.\n\nKomut: `python3 -I deger_farki.py /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b`. 24 eşte durum aynı. Senaryo sha256 ve --timeout değerleri de eşit.\n\nHedefler:\n- :8080 → /home/user/SON-HAZ-NE (44d548c, temiz).\n- :8097 → fb0/v04_tek. Dosya 14 Kas 14:04'te yazılmış, B0'dan beri değişmemiş."
+   },
+   {
+    "iddia": "20 koşu kontrol kontrol aynı; tek fark LY13, dört koşuda KALDI → geçti",
+    "sonuc": "ok bayrağı düzeyinde doğrulandı: normal, normal_2, noworker ve noworker_2 koşularında LY13 farklı.\n\nDeğer düzeyinde aynı değil: HK04'ün kalma nedeni, LY09 crash (20 → 0 ağ), AA15 ikinci ölçüm (825 → 504) değişmiş (YORUM-4, YORUM-7)."
+   },
+   {
+    "iddia": "(1) LY13'ün v0.4'teki tarayıcı kırmızısı selden geliyordu",
+    "sonuc": "Desteklendi.\n\nonce_v04/ altında gerçek kilit, ölçülen 20 kayıt: 18 KALDI (normal 7/7, noworker 6/6, crash 5/7). 7 kayıtta ölçülemedi (çökme/OOM). :8098 mutantı 1/2 KALDI.\n\nSelsiz kayıtlar 7/7 GECTI (birak 2, taklit 5).\n\nNot: sel, A-06'nın 'yavaş cihaz' koşulu gibi davranıyordu. Düzeltilmiş kodun sel altındaki davranışı ölçülmedi. LY13 sel olmadan A-06'yı ayırt edemiyor (YORUM-1)."
+   },
+   {
+    "iddia": "siniflandirma.json'da LY13'ün hedef maddesi",
+    "sonuc": "Hedef madde: \"madde 11 / A-06 / KI-154 (B0-I08: dağılım)\", once_v04 KIRMIZI.\n\nA-06'ya bağlı yalnız iki satır var: LY13 ve KY25."
+   },
+   {
+    "iddia": "A-06'nın belirlenimli kanıtı Node'daki KY25",
+    "sonuc": "Doğrulandı.\n- once_v04/son/arazi_kuyruk.json (kök /home/user/SON-HAZ-NE): KY25 FAIL, p99 +90,2 ms.\n- KY25_dogrulama.log: v0.4 +89,9 FAIL; her satırda yield eden mutant +2,5 PASS.\n- Çağrı başına 5 µs yapay gecikme, 32 satırlık derinlik parçasını ~82 ms yapıyor; makine hızından bağımsız.\n- arazi_kuyruk.mjs sha 5bf96a733963, commit'teki ile aynı."
+   },
+   {
+    "iddia": "(2) İşçisiz HYS-01 (KI-237) selden bağımsız: taklitle 19,7–22,2 sn",
+    "sonuc": "Değerler doğrulandı: 19 730 / 20 341 / 22 172 ms; B0 son/ 30 949 ms.\n\nSelden bağımsız kırmızı olduğu desteklendi: selsiz bütün değerler 3 sn'nin çok üstünde.\n\nBirak tanısının 10,3 sn'si eşdeğer değil: hazırlık başlamadan 4,9 sn'lik tıkanma pencerenin dışında kalmış. Aynı pencerede selin etkisi ~2 kat (YORUM-2). Eşzamanlı tarayıcı yükü yoktu; pencere ~%30 daha yavaştı (YORUM-3)."
+   },
+   {
+    "iddia": "(3) Normal HYS-01 2,4 sn (B0 1,8) ve gerileme koruması",
+    "sonuc": "Değerler doğrulandı: 2404 ve 1810 ms.\n\nKararsız: v0.4'te 0,18–3,32 sn arası. Gerçek kilitli kosucu17 G koşusu 3321 ms ile kaldı. Aynı pencerede taklitli T 782 ms.\n\nDeğer, oyun başındaki tıkanmanın ölçüm penceresine düşüp düşmemesine bağlı. AYS-01 kararlı (123–241 ms). Öneriler YORUM-2'de."
+   },
+   {
+    "iddia": "(4) Uzak varış ilk karesi taklitle 14,9 (normal) / 26–34 sn (işçisiz), yani sel kaynaklı değil",
+    "sonuc": "Değerler doğrulandı: 14 862 ms; 26 003 / 29 979 / 33 748 ms.\n\nYorum kısmen çürütüldü: gecikme selsiz de var (hazırlık sonrası ~10 sn), ama aynı pencerede sel onu ~2,5 kat büyütüyordu (T 13,7 / G 34,3 sn). İşçisiz kipte sürenin çoğu hazırlık (YORUM-5)."
+   },
+   {
+    "iddia": "(4) Renderer belleği taklitle ≤ 0,85 GB, tarayıcı ~100 MB, OOM yok; bulgu 5 büyük ölçüde sel kaynaklı",
+    "sonuc": "Doğrulandı: 24 _bellek.json dosyasında renderer en çok 850,3 MB, tarayıcı 96–113,2 MB. zincir.log'da 24 koşunun 24'ünde oom_kill 0 → 0.\n\nAynı pencerede gerçek kilit ↔ taklit: renderer 3318 / 599 MB.\n\nAma işçisiz kipte koşu içi büyüme var: anon +200–300 MB (YORUM-6)."
+   },
+   {
+    "iddia": "(5) Taklidin bilinen farkları 02_tek_dosya_cerceve'yi etkilemiyor",
+    "sonuc": "Doğrulandı.\n- Çerçevedeki oyun v0.4'te hiç hazır olmuyor (TC02 iki tarafta da false; TC04 'çerçevede DK yok'), yani kilit isteyemez. v0.4'te kilit çağrıları yalnız oyun durumundayken: game.js:149, ui.js:64, main.js:359/379.\n- Üst çerçevedeki taklit sayaçları sıfır.\n- Konsol hatası iki tarafta aynı: localStorage SecurityError.\n- Sandbox yaklaşığı ve çerçeve başına kilit bu senaryoda devreye girmiyor."
+   },
+   {
+    "iddia": "(5) 02_acilis_akisi AA15 (GZ-5) ve kilit alınışında fare sıçraması (GZ-1)",
+    "sonuc": "AA15 iki tarafta da geçti; taklitte taban kararlı (747–754). İkinci ölçümün zamanlaması değişken (YORUM-7).\n\nGZ-1: 02_hizli_yolculuk bölüm 1–2'de fare adımı yok, ilk tikla bölüm 3'te, yani HYS-01'i etkileyemez. 02_acilis_akisi'nde yürüyüş yönü değişebilir, ama AA08 ve AA11 konumu kayıtla karşılaştırdığı için yönden etkilenmez. Hiçbir kontrolün durumu değişmedi."
+   },
+   {
+    "iddia": "(5) Taklitli sonuçlar sonra kapısı için doğru 'önce' değeri mi",
+    "sonuc": "Durum vektörü için evet: sonra kapısı da aynı koşucuyla koşulacak ve LY13 dışında bütün durumlar B0 ile aynı.\n\nZaman değerleri için hayır: pencereye bağlılar (YORUM-3). Kapıda aynı pencerede v0.4/w2 A/B gerekiyor."
+   },
+   {
+    "iddia": "(2) Yük: aynı anda koşan öteki ajanların tarayıcıları",
+    "sonuc": "Koşular sırasında yoktu: 24 koşunun hiçbir örneğinde ağaç dışı chrome yok.\n\nKilit beklemelerinde vardı (2992 MB'a kadar). Bekleme toplamı ~5420 sn, zincirin (8278 sn) ~%65'i.\n\nTarayıcı dışı CPU yükü ölçülmemiş."
+   }
+  ]
+ }
+}

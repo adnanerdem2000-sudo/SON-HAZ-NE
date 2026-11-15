@@ -1,0 +1,6085 @@
+{
+ "eslem": {
+  "00_acilis": "00_acilis",
+  "02_acilis_akisi": "02_acilis_akisi",
+  "02_acilis_hatalari": "02_acilis_hatalari",
+  "02_arazi_isci_hata": "02_arazi_isci_hata",
+  "02_arazi_yasam_crash": "02_arazi_yasam_crash",
+  "02_arazi_yasam_normal": "02_arazi_yasam_normal",
+  "02_arazi_yasam_normal_2": "02_arazi_yasam_normal",
+  "02_arazi_yasam_noworker": "02_arazi_yasam_noworker",
+  "02_arazi_yasam_noworker_2": "02_arazi_yasam_noworker",
+  "02_arazi_yedek_badurl": "02_arazi_yedek_badurl",
+  "02_arazi_yedek_crash": "02_arazi_yedek_crash",
+  "02_arazi_yedek_normal": "02_arazi_yedek_normal",
+  "02_arazi_yedek_noworker": "02_arazi_yedek_noworker",
+  "02_ayar_lod": "02_ayar_lod",
+  "02_depolama_kapali": "02_depolama_kapali",
+  "02_hizli_yolculuk_normal": "02_hizli_yolculuk_normal",
+  "02_hizli_yolculuk_noworker": "02_hizli_yolculuk_noworker",
+  "02_hizli_yolculuk_noworker_2": "02_hizli_yolculuk_noworker",
+  "02_hizli_yolculuk_noworker_3": "02_hizli_yolculuk_noworker",
+  "02_tek_dosya_blob": "02_tek_dosya_blob",
+  "02_tek_dosya_cerceve": "02_tek_dosya_cerceve",
+  "02_tek_dosya_kipler": "02_tek_dosya_kipler",
+  "02_yukleme_bekleme": "02_yukleme_bekleme",
+  "coop_02_hizli_yolculuk_konuk": "coop_02_hizli_yolculuk_konuk"
+ },
+ "kosucu": [
+  {
+   "ad": "00_acilis",
+   "kod": "285211cf 9292115d 53358e1c",
+   "kod_ok": true,
+   "kilit_log": [
+    "işaretçi kilidi: taklit (gerçek kilit is"
+   ],
+   "kip": "taklit",
+   "istek": 1,
+   "verildi": 1
+  },
+  {
+   "ad": "02_acilis_akisi",
+   "kod": "285211cf 9292115d 53358e1c",
+   "kod_ok": true,
+   "kilit_log": [
+    "işaretçi kilidi: taklit (gerçek kilit is"
+   ],
+   "kip": "taklit",
+   "istek": 5,
+   "verildi": 5
+  },
+  {
+   "ad": "02_acilis_hatalari",
+   "kod": "285211cf 9292115d 53358e1c",
+   "kod_ok": true,
+   "kilit_log": [
+    "işaretçi kilidi: taklit (gerçek kilit is"
+   ],
+   "kip": "taklit",
+   "istek": 0,
+   "verildi": 0
+  },
+  {
+   "ad": "02_arazi_isci_hata",
+   "kod": "285211cf 9292115d 53358e1c",
+   "kod_ok": true,
+   "kilit_log": [
+    "işaretçi kilidi: taklit (gerçek kilit is"
+   ],
+   "kip": "taklit",
+   "istek": 0,
+   "verildi": 0
+  },
+  {
+   "ad": "02_arazi_yasam_crash",
+   "kod": "285211cf 9292115d 53358e1c",
+   "kod_ok": true,
+   "kilit_log": [
+    "işaretçi kilidi: taklit (gerçek kilit is"
+   ],
+   "kip": "taklit",
+   "istek": 1,
+   "verildi": 1
+  },
+  {
+   "ad": "02_arazi_yasam_normal",
+   "kod": "285211cf 9292115d 53358e1c",
+   "kod_ok": true,
+   "kilit_log": [
+    "işaretçi kilidi: taklit (gerçek kilit is"
+   ],
+   "kip": "taklit",
+   "istek": 1,
+   "verildi": 1
+  },
+  {
+   "ad": "02_arazi_yasam_normal_2",
+   "kod": "285211cf 9292115d 53358e1c",
+   "kod_ok": true,
+   "kilit_log": [
+    "işaretçi kilidi: taklit (gerçek kilit is"
+   ],
+   "kip": "taklit",
+   "istek": 1,
+   "verildi": 1
+  },
+  {
+   "ad": "02_arazi_yasam_noworker",
+   "kod": "285211cf 9292115d 53358e1c",
+   "kod_ok": true,
+   "kilit_log": [
+    "işaretçi kilidi: taklit (gerçek kilit is"
+   ],
+   "kip": "taklit",
+   "istek": 1,
+   "verildi": 1
+  },
+  {
+   "ad": "02_arazi_yasam_noworker_2",
+   "kod": "285211cf 9292115d 53358e1c",
+   "kod_ok": true,
+   "kilit_log": [
+    "işaretçi kilidi: taklit (gerçek kilit is"
+   ],
+   "kip": "taklit",
+   "istek": 1,
+   "verildi": 1
+  },
+  {
+   "ad": "02_arazi_yedek_badurl",
+   "kod": "285211cf 9292115d 53358e1c",
+   "kod_ok": true,
+   "kilit_log": [
+    "işaretçi kilidi: taklit (gerçek kilit is"
+   ],
+   "kip": "taklit",
+   "istek": 1,
+   "verildi": 1
+  },
+  {
+   "ad": "02_arazi_yedek_crash",
+   "kod": "285211cf 9292115d 53358e1c",
+   "kod_ok": true,
+   "kilit_log": [
+    "işaretçi kilidi: taklit (gerçek kilit is"
+   ],
+   "kip": "taklit",
+   "istek": 1,
+   "verildi": 1
+  },
+  {
+   "ad": "02_arazi_yedek_normal",
+   "kod": "285211cf 9292115d 53358e1c",
+   "kod_ok": true,
+   "kilit_log": [
+    "işaretçi kilidi: taklit (gerçek kilit is"
+   ],
+   "kip": "taklit",
+   "istek": 1,
+   "verildi": 1
+  },
+  {
+   "ad": "02_arazi_yedek_noworker",
+   "kod": "285211cf 9292115d 53358e1c",
+   "kod_ok": true,
+   "kilit_log": [
+    "işaretçi kilidi: taklit (gerçek kilit is"
+   ],
+   "kip": "taklit",
+   "istek": 1,
+   "verildi": 1
+  },
+  {
+   "ad": "02_ayar_lod",
+   "kod": "285211cf 9292115d 53358e1c",
+   "kod_ok": true,
+   "kilit_log": [
+    "işaretçi kilidi: taklit (gerçek kilit is"
+   ],
+   "kip": "taklit",
+   "istek": 0,
+   "verildi": 0
+  },
+  {
+   "ad": "02_depolama_kapali",
+   "kod": "285211cf 9292115d 53358e1c",
+   "kod_ok": true,
+   "kilit_log": [
+    "işaretçi kilidi: taklit (gerçek kilit is"
+   ],
+   "kip": "taklit",
+   "istek": 0,
+   "verildi": 0
+  },
+  {
+   "ad": "02_hizli_yolculuk_normal",
+   "kod": "285211cf 9292115d 53358e1c",
+   "kod_ok": true,
+   "kilit_log": [
+    "işaretçi kilidi: taklit (gerçek kilit is"
+   ],
+   "kip": "taklit",
+   "istek": 1,
+   "verildi": 1
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker",
+   "kod": "285211cf 9292115d 53358e1c",
+   "kod_ok": true,
+   "kilit_log": [
+    "işaretçi kilidi: taklit (gerçek kilit is"
+   ],
+   "kip": "taklit",
+   "istek": 1,
+   "verildi": 1
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker_2",
+   "kod": "285211cf 9292115d 53358e1c",
+   "kod_ok": true,
+   "kilit_log": [
+    "işaretçi kilidi: taklit (gerçek kilit is"
+   ],
+   "kip": "taklit",
+   "istek": 1,
+   "verildi": 1
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker_3",
+   "kod": "285211cf 9292115d 53358e1c",
+   "kod_ok": true,
+   "kilit_log": [
+    "işaretçi kilidi: taklit (gerçek kilit is"
+   ],
+   "kip": "taklit",
+   "istek": 1,
+   "verildi": 1
+  },
+  {
+   "ad": "02_tek_dosya_blob",
+   "kod": "285211cf 9292115d 53358e1c",
+   "kod_ok": true,
+   "kilit_log": [
+    "işaretçi kilidi: taklit (gerçek kilit is"
+   ],
+   "kip": "taklit",
+   "istek": 0,
+   "verildi": 0
+  },
+  {
+   "ad": "02_tek_dosya_cerceve",
+   "kod": "285211cf 9292115d 53358e1c",
+   "kod_ok": true,
+   "kilit_log": [
+    "işaretçi kilidi: taklit (gerçek kilit is"
+   ],
+   "kip": "taklit",
+   "istek": 0,
+   "verildi": 0
+  },
+  {
+   "ad": "02_tek_dosya_kipler",
+   "kod": "285211cf 9292115d 53358e1c",
+   "kod_ok": true,
+   "kilit_log": [
+    "işaretçi kilidi: taklit (gerçek kilit is"
+   ],
+   "kip": "taklit",
+   "istek": 0,
+   "verildi": 0
+  },
+  {
+   "ad": "02_yukleme_bekleme",
+   "kod": "285211cf 9292115d 53358e1c",
+   "kod_ok": true,
+   "kilit_log": [
+    "işaretçi kilidi: taklit (gerçek kilit is"
+   ],
+   "kip": "taklit",
+   "istek": 1,
+   "verildi": 1
+  },
+  {
+   "ad": "coop_02_hizli_yolculuk_konuk",
+   "kod": "285211cf 9292115d 53358e1c",
+   "kod_ok": true,
+   "kilit_log": [
+    "işaretçi kilidi: taklit (gerçek kilit is"
+   ],
+   "kip": "taklit",
+   "istek": {
+    "Kaptan": 1,
+    "Tayfa": 1
+   },
+   "verildi": {
+    "Kaptan": 1,
+    "Tayfa": 1
+   }
+  }
+ ],
+ "komut": [
+  {
+   "ad": "00_acilis",
+   "komut_farklari": [],
+   "serbest": {
+    "--goruntu-dizin": [
+     null,
+     "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/goruntu/00_acilis"
+    ],
+    "--report": [
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/00_acilis.json",
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04_taklit/00_acilis.json"
+    ]
+   },
+   "tekrar_komut_farkli": false,
+   "senaryo_sha_ayni": true,
+   "sha": "9b8535d42868",
+   "izinler_ayni": true,
+   "izinler_e": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "izinler_y": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "hedef_ayni": true,
+   "hedef_fark": {},
+   "ortam_ayni": true,
+   "ortam_fark": {},
+   "on_e": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/00_acilis.js"
+   },
+   "on_y": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/00_acilis.js"
+   },
+   "secenek_e": {
+    "--url": "http://localhost:8080/index.html",
+    "--size": "640x360",
+    "--timeout": "540",
+    "--report": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/00_acilis.json"
+   },
+   "izin_e": []
+  },
+  {
+   "ad": "02_acilis_akisi",
+   "komut_farklari": [],
+   "serbest": {
+    "--goruntu-dizin": [
+     null,
+     "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/goruntu/02_acilis_akisi"
+    ],
+    "--report": [
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_acilis_akisi.json",
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04_taklit/02_acilis_akisi.json"
+    ]
+   },
+   "tekrar_komut_farkli": false,
+   "senaryo_sha_ayni": true,
+   "sha": "1e20f2dc38df",
+   "izinler_ayni": true,
+   "izinler_e": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "izinler_y": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "hedef_ayni": true,
+   "hedef_fark": {},
+   "ortam_ayni": true,
+   "ortam_fark": {},
+   "on_e": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_acilis_akisi.js"
+   },
+   "on_y": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_acilis_akisi.js"
+   },
+   "secenek_e": {
+    "--url": "http://localhost:8080/index.html",
+    "--size": "640x360",
+    "--timeout": "540",
+    "--report": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_acilis_akisi.json"
+   },
+   "izin_e": []
+  },
+  {
+   "ad": "02_acilis_hatalari",
+   "komut_farklari": [],
+   "serbest": {
+    "--goruntu-dizin": [
+     null,
+     "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/goruntu/02_acilis_hatalari"
+    ],
+    "--report": [
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_acilis_hatalari.json",
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04_taklit/02_acilis_hatalari.json"
+    ]
+   },
+   "tekrar_komut_farkli": false,
+   "senaryo_sha_ayni": true,
+   "sha": "794dd6293f65",
+   "izinler_ayni": true,
+   "izinler_e": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    },
+    {
+     "desen": "Arazi işçisi: .*test: enjekte ızgara hatası",
+     "gerekce": "?izgara=hata: kasıtlı enjekte edilen işçi 'error' iletisi; terrain._onMsg bunu console.error ile yazar (beklenen tepki, açılış hatası DEĞİL)",
+     "tur": "konsol",
+     "kaynak": "meta",
+     "eslesme": 1
+    },
+    {
+     "desen": "Error creating WebGL context|WebGL context",
+     "gerekce": "?webgl=yok: getContext kasıtlı olarak null döner; three.js ve açılış hatası konsola yazılır (beklenen)",
+     "tur": "konsol",
+     "kaynak": "meta",
+     "eslesme": 2
+    },
+    {
+     "desen": "three\\.module\\.yok\\.js",
+     "gerekce": "?modul=yok: import map'teki 'three' girdisi kasıtlı olarak var olmayan dosyaya çevrilir; 404 ve modül yükleme hatası beklenir",
+     "tur": "hepsi",
+     "kaynak": "meta",
+     "eslesme": 1
+    }
+   ],
+   "izinler_y": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    },
+    {
+     "desen": "Arazi işçisi: .*test: enjekte ızgara hatası",
+     "gerekce": "?izgara=hata: kasıtlı enjekte edilen işçi 'error' iletisi; terrain._onMsg bunu console.error ile yazar (beklenen tepki, açılış hatası DEĞİL)",
+     "tur": "konsol",
+     "kaynak": "meta",
+     "eslesme": 1
+    },
+    {
+     "desen": "Error creating WebGL context|WebGL context",
+     "gerekce": "?webgl=yok: getContext kasıtlı olarak null döner; three.js ve açılış hatası konsola yazılır (beklenen)",
+     "tur": "konsol",
+     "kaynak": "meta",
+     "eslesme": 2
+    },
+    {
+     "desen": "three\\.module\\.yok\\.js",
+     "gerekce": "?modul=yok: import map'teki 'three' girdisi kasıtlı olarak var olmayan dosyaya çevrilir; 404 ve modül yükleme hatası beklenir",
+     "tur": "hepsi",
+     "kaynak": "meta",
+     "eslesme": 1
+    }
+   ],
+   "hedef_ayni": true,
+   "hedef_fark": {},
+   "ortam_ayni": true,
+   "ortam_fark": {},
+   "on_e": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_acilis_hatalari.js"
+   },
+   "on_y": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_acilis_hatalari.js"
+   },
+   "secenek_e": {
+    "--url": "http://localhost:8080/index.html",
+    "--size": "640x360",
+    "--timeout": "540",
+    "--report": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_acilis_hatalari.json"
+   },
+   "izin_e": []
+  },
+  {
+   "ad": "02_arazi_isci_hata",
+   "komut_farklari": [],
+   "serbest": {
+    "--goruntu-dizin": [
+     null,
+     "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/goruntu/02_arazi_isci_hata"
+    ],
+    "--report": [
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_arazi_isci_hata.json",
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04_taklit/02_arazi_isci_hata.json"
+    ]
+   },
+   "tekrar_komut_farkli": false,
+   "senaryo_sha_ayni": true,
+   "sha": "1477bbb33dfb",
+   "izinler_ayni": false,
+   "izinler_e": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    },
+    {
+     "desen": "Arazi işçisi: .*test: enjekte üretim hatası",
+     "gerekce": "HI01/HI03 kasıtlı enjekte edilen işçi 'error' iletisi; v0.4 terrain._onMsg bunu console.error ile günlüğe yazar (beklenen tepki)",
+     "tur": "konsol",
+     "kaynak": "meta",
+     "eslesme": 88
+    }
+   ],
+   "izinler_y": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    },
+    {
+     "desen": "Arazi işçisi: .*test: enjekte üretim hatası",
+     "gerekce": "HI01/HI03 kasıtlı enjekte edilen işçi 'error' iletisi; v0.4 terrain._onMsg bunu console.error ile günlüğe yazar (beklenen tepki)",
+     "tur": "konsol",
+     "kaynak": "meta",
+     "eslesme": 121
+    }
+   ],
+   "hedef_ayni": true,
+   "hedef_fark": {},
+   "ortam_ayni": true,
+   "ortam_fark": {},
+   "on_e": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_arazi_isci_hata.js"
+   },
+   "on_y": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_arazi_isci_hata.js"
+   },
+   "secenek_e": {
+    "--url": "http://localhost:8080/index.html",
+    "--size": "640x360",
+    "--timeout": "540",
+    "--report": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_arazi_isci_hata.json"
+   },
+   "izin_e": []
+  },
+  {
+   "ad": "02_arazi_yasam_crash",
+   "komut_farklari": [],
+   "serbest": {
+    "--goruntu-dizin": [
+     null,
+     "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/goruntu/02_arazi_yasam_crash"
+    ],
+    "--report": [
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_arazi_yasam_crash.json",
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04_taklit/02_arazi_yasam_crash.json"
+    ]
+   },
+   "tekrar_komut_farkli": false,
+   "senaryo_sha_ayni": true,
+   "sha": "1f67faee95b8",
+   "izinler_ayni": true,
+   "izinler_e": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "izinler_y": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "hedef_ayni": true,
+   "hedef_fark": {},
+   "ortam_ayni": true,
+   "ortam_fark": {},
+   "on_e": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_arazi_yasam.js"
+   },
+   "on_y": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_arazi_yasam.js"
+   },
+   "secenek_e": {
+    "--url": "http://localhost:8080/index.html?terrain=crash",
+    "--size": "640x360",
+    "--timeout": "540",
+    "--report": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_arazi_yasam_crash.json"
+   },
+   "izin_e": []
+  },
+  {
+   "ad": "02_arazi_yasam_normal",
+   "komut_farklari": [],
+   "serbest": {
+    "--goruntu-dizin": [
+     null,
+     "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/goruntu/02_arazi_yasam_normal"
+    ],
+    "--report": [
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_arazi_yasam_normal.json",
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04_taklit/02_arazi_yasam_normal.json"
+    ]
+   },
+   "tekrar_komut_farkli": false,
+   "senaryo_sha_ayni": true,
+   "sha": "1f67faee95b8",
+   "izinler_ayni": true,
+   "izinler_e": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "izinler_y": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "hedef_ayni": true,
+   "hedef_fark": {},
+   "ortam_ayni": true,
+   "ortam_fark": {},
+   "on_e": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_arazi_yasam.js"
+   },
+   "on_y": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_arazi_yasam.js"
+   },
+   "secenek_e": {
+    "--url": "http://localhost:8080/index.html",
+    "--size": "640x360",
+    "--timeout": "540",
+    "--report": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_arazi_yasam_normal.json"
+   },
+   "izin_e": []
+  },
+  {
+   "ad": "02_arazi_yasam_normal_2",
+   "komut_farklari": [],
+   "serbest": {
+    "--goruntu-dizin": [
+     null,
+     "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/goruntu/02_arazi_yasam_normal_2"
+    ],
+    "--report": [
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_arazi_yasam_normal.json",
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04_taklit/02_arazi_yasam_normal_2.json"
+    ]
+   },
+   "tekrar_komut_farkli": false,
+   "senaryo_sha_ayni": true,
+   "sha": "1f67faee95b8",
+   "izinler_ayni": true,
+   "izinler_e": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "izinler_y": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "hedef_ayni": true,
+   "hedef_fark": {},
+   "ortam_ayni": true,
+   "ortam_fark": {},
+   "on_e": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_arazi_yasam.js"
+   },
+   "on_y": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_arazi_yasam.js"
+   },
+   "secenek_e": {
+    "--url": "http://localhost:8080/index.html",
+    "--size": "640x360",
+    "--timeout": "540",
+    "--report": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_arazi_yasam_normal.json"
+   },
+   "izin_e": []
+  },
+  {
+   "ad": "02_arazi_yasam_noworker",
+   "komut_farklari": [],
+   "serbest": {
+    "--goruntu-dizin": [
+     null,
+     "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/goruntu/02_arazi_yasam_noworker"
+    ],
+    "--report": [
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_arazi_yasam_noworker.json",
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04_taklit/02_arazi_yasam_noworker.json"
+    ]
+   },
+   "tekrar_komut_farkli": false,
+   "senaryo_sha_ayni": true,
+   "sha": "1f67faee95b8",
+   "izinler_ayni": true,
+   "izinler_e": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "izinler_y": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "hedef_ayni": true,
+   "hedef_fark": {},
+   "ortam_ayni": true,
+   "ortam_fark": {},
+   "on_e": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_arazi_yasam.js"
+   },
+   "on_y": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_arazi_yasam.js"
+   },
+   "secenek_e": {
+    "--url": "http://localhost:8080/index.html?terrain=noworker",
+    "--size": "640x360",
+    "--timeout": "540",
+    "--report": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_arazi_yasam_noworker.json"
+   },
+   "izin_e": []
+  },
+  {
+   "ad": "02_arazi_yasam_noworker_2",
+   "komut_farklari": [],
+   "serbest": {
+    "--goruntu-dizin": [
+     null,
+     "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/goruntu/02_arazi_yasam_noworker_2"
+    ],
+    "--report": [
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_arazi_yasam_noworker.json",
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04_taklit/02_arazi_yasam_noworker_2.json"
+    ]
+   },
+   "tekrar_komut_farkli": false,
+   "senaryo_sha_ayni": true,
+   "sha": "1f67faee95b8",
+   "izinler_ayni": true,
+   "izinler_e": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "izinler_y": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "hedef_ayni": true,
+   "hedef_fark": {},
+   "ortam_ayni": true,
+   "ortam_fark": {},
+   "on_e": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_arazi_yasam.js"
+   },
+   "on_y": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_arazi_yasam.js"
+   },
+   "secenek_e": {
+    "--url": "http://localhost:8080/index.html?terrain=noworker",
+    "--size": "640x360",
+    "--timeout": "540",
+    "--report": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_arazi_yasam_noworker.json"
+   },
+   "izin_e": []
+  },
+  {
+   "ad": "02_arazi_yedek_badurl",
+   "komut_farklari": [],
+   "serbest": {
+    "--goruntu-dizin": [
+     null,
+     "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/goruntu/02_arazi_yedek_badurl"
+    ],
+    "--report": [
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_arazi_yedek_badurl.json",
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04_taklit/02_arazi_yedek_badurl.json"
+    ]
+   },
+   "tekrar_komut_farkli": false,
+   "senaryo_sha_ayni": true,
+   "sha": "7d4819041d89",
+   "izinler_ayni": true,
+   "izinler_e": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    },
+    {
+     "desen": "terrainWorker\\.missing\\.js$",
+     "gerekce": "badurl kipi işçi adresini kasıtlı olarak var olmayan dosyaya çevirir; 3 × 404 + 3 × requestfailed beklenir",
+     "tur": "hepsi",
+     "kaynak": "cli",
+     "eslesme": 6
+    }
+   ],
+   "izinler_y": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    },
+    {
+     "desen": "terrainWorker\\.missing\\.js$",
+     "gerekce": "badurl kipi işçi adresini kasıtlı olarak var olmayan dosyaya çevirir; 3 × 404 + 3 × requestfailed beklenir",
+     "tur": "hepsi",
+     "kaynak": "cli",
+     "eslesme": 6
+    }
+   ],
+   "hedef_ayni": true,
+   "hedef_fark": {},
+   "ortam_ayni": true,
+   "ortam_fark": {},
+   "on_e": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_arazi_yedek.js"
+   },
+   "on_y": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_arazi_yedek.js"
+   },
+   "secenek_e": {
+    "--url": "http://localhost:8080/index.html?terrain=badurl",
+    "--size": "640x360",
+    "--timeout": "540",
+    "--report": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_arazi_yedek_badurl.json"
+   },
+   "izin_e": [
+    [
+     "terrainWorker\\.missing\\.js$",
+     "badurl kipi işçi adresini kasıtlı olarak var olmayan dosyaya çevirir; 3 × 404 + 3 × requestfailed beklenir"
+    ]
+   ]
+  },
+  {
+   "ad": "02_arazi_yedek_crash",
+   "komut_farklari": [],
+   "serbest": {
+    "--goruntu-dizin": [
+     null,
+     "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/goruntu/02_arazi_yedek_crash"
+    ],
+    "--report": [
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_arazi_yedek_crash.json",
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04_taklit/02_arazi_yedek_crash.json"
+    ]
+   },
+   "tekrar_komut_farkli": false,
+   "senaryo_sha_ayni": true,
+   "sha": "7d4819041d89",
+   "izinler_ayni": true,
+   "izinler_e": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "izinler_y": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "hedef_ayni": true,
+   "hedef_fark": {},
+   "ortam_ayni": true,
+   "ortam_fark": {},
+   "on_e": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_arazi_yedek.js"
+   },
+   "on_y": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_arazi_yedek.js"
+   },
+   "secenek_e": {
+    "--url": "http://localhost:8080/index.html?terrain=crash",
+    "--size": "640x360",
+    "--timeout": "540",
+    "--report": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_arazi_yedek_crash.json"
+   },
+   "izin_e": []
+  },
+  {
+   "ad": "02_arazi_yedek_normal",
+   "komut_farklari": [],
+   "serbest": {
+    "--goruntu-dizin": [
+     null,
+     "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/goruntu/02_arazi_yedek_normal"
+    ],
+    "--report": [
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_arazi_yedek_normal.json",
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04_taklit/02_arazi_yedek_normal.json"
+    ]
+   },
+   "tekrar_komut_farkli": false,
+   "senaryo_sha_ayni": true,
+   "sha": "7d4819041d89",
+   "izinler_ayni": true,
+   "izinler_e": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "izinler_y": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "hedef_ayni": true,
+   "hedef_fark": {},
+   "ortam_ayni": true,
+   "ortam_fark": {},
+   "on_e": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_arazi_yedek.js"
+   },
+   "on_y": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_arazi_yedek.js"
+   },
+   "secenek_e": {
+    "--url": "http://localhost:8080/index.html",
+    "--size": "640x360",
+    "--timeout": "540",
+    "--report": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_arazi_yedek_normal.json"
+   },
+   "izin_e": []
+  },
+  {
+   "ad": "02_arazi_yedek_noworker",
+   "komut_farklari": [],
+   "serbest": {
+    "--goruntu-dizin": [
+     null,
+     "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/goruntu/02_arazi_yedek_noworker"
+    ],
+    "--report": [
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_arazi_yedek_noworker.json",
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04_taklit/02_arazi_yedek_noworker.json"
+    ]
+   },
+   "tekrar_komut_farkli": false,
+   "senaryo_sha_ayni": true,
+   "sha": "7d4819041d89",
+   "izinler_ayni": true,
+   "izinler_e": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "izinler_y": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "hedef_ayni": true,
+   "hedef_fark": {},
+   "ortam_ayni": true,
+   "ortam_fark": {},
+   "on_e": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_arazi_yedek.js"
+   },
+   "on_y": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_arazi_yedek.js"
+   },
+   "secenek_e": {
+    "--url": "http://localhost:8080/index.html?terrain=noworker",
+    "--size": "640x360",
+    "--timeout": "540",
+    "--report": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_arazi_yedek_noworker.json"
+   },
+   "izin_e": []
+  },
+  {
+   "ad": "02_ayar_lod",
+   "komut_farklari": [],
+   "serbest": {
+    "--goruntu-dizin": [
+     null,
+     "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/goruntu/02_ayar_lod"
+    ],
+    "--report": [
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_ayar_lod.json",
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04_taklit/02_ayar_lod.json"
+    ]
+   },
+   "tekrar_komut_farkli": false,
+   "senaryo_sha_ayni": true,
+   "sha": "19ff4ba33b1d",
+   "izinler_ayni": true,
+   "izinler_e": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "izinler_y": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "hedef_ayni": true,
+   "hedef_fark": {},
+   "ortam_ayni": true,
+   "ortam_fark": {},
+   "on_e": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_ayar_lod.js"
+   },
+   "on_y": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_ayar_lod.js"
+   },
+   "secenek_e": {
+    "--url": "http://localhost:8080/index.html",
+    "--size": "640x360",
+    "--timeout": "540",
+    "--report": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_ayar_lod.json"
+   },
+   "izin_e": []
+  },
+  {
+   "ad": "02_depolama_kapali",
+   "komut_farklari": [],
+   "serbest": {
+    "--goruntu-dizin": [
+     null,
+     "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/goruntu/02_depolama_kapali"
+    ],
+    "--report": [
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_depolama_kapali.json",
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04_taklit/02_depolama_kapali.json"
+    ]
+   },
+   "tekrar_komut_farkli": false,
+   "senaryo_sha_ayni": true,
+   "sha": "08831f4b6de6",
+   "izinler_ayni": true,
+   "izinler_e": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "izinler_y": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "hedef_ayni": true,
+   "hedef_fark": {},
+   "ortam_ayni": true,
+   "ortam_fark": {},
+   "on_e": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_depolama_kapali.js"
+   },
+   "on_y": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_depolama_kapali.js"
+   },
+   "secenek_e": {
+    "--url": "http://localhost:8080/index.html",
+    "--size": "640x360",
+    "--timeout": "540",
+    "--report": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_depolama_kapali.json"
+   },
+   "izin_e": []
+  },
+  {
+   "ad": "02_hizli_yolculuk_normal",
+   "komut_farklari": [],
+   "serbest": {
+    "--goruntu-dizin": [
+     null,
+     "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/goruntu/02_hizli_yolculuk_normal"
+    ],
+    "--report": [
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_hizli_yolculuk_normal.json",
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04_taklit/02_hizli_yolculuk_normal.json"
+    ]
+   },
+   "tekrar_komut_farkli": false,
+   "senaryo_sha_ayni": true,
+   "sha": "abf125923f9a",
+   "izinler_ayni": true,
+   "izinler_e": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "izinler_y": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "hedef_ayni": true,
+   "hedef_fark": {},
+   "ortam_ayni": true,
+   "ortam_fark": {},
+   "on_e": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_hizli_yolculuk.js"
+   },
+   "on_y": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_hizli_yolculuk.js"
+   },
+   "secenek_e": {
+    "--url": "http://localhost:8080/index.html",
+    "--size": "640x360",
+    "--timeout": "540",
+    "--report": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_hizli_yolculuk_normal.json"
+   },
+   "izin_e": []
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker",
+   "komut_farklari": [],
+   "serbest": {
+    "--goruntu-dizin": [
+     null,
+     "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/goruntu/02_hizli_yolculuk_noworker"
+    ],
+    "--report": [
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_hizli_yolculuk_noworker.json",
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04_taklit/02_hizli_yolculuk_noworker.json"
+    ]
+   },
+   "tekrar_komut_farkli": false,
+   "senaryo_sha_ayni": true,
+   "sha": "abf125923f9a",
+   "izinler_ayni": true,
+   "izinler_e": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "izinler_y": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "hedef_ayni": true,
+   "hedef_fark": {},
+   "ortam_ayni": true,
+   "ortam_fark": {},
+   "on_e": {
+    "tk": "tk",
+    "tk_timeout": "950",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_hizli_yolculuk.js"
+   },
+   "on_y": {
+    "tk": "tk",
+    "tk_timeout": "950",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_hizli_yolculuk.js"
+   },
+   "secenek_e": {
+    "--url": "http://localhost:8080/index.html?terrain=noworker",
+    "--size": "640x360",
+    "--timeout": "900",
+    "--report": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_hizli_yolculuk_noworker.json"
+   },
+   "izin_e": []
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker_2",
+   "komut_farklari": [],
+   "serbest": {
+    "--goruntu-dizin": [
+     null,
+     "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/goruntu/02_hizli_yolculuk_noworker_2"
+    ],
+    "--report": [
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_hizli_yolculuk_noworker.json",
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04_taklit/02_hizli_yolculuk_noworker_2.json"
+    ]
+   },
+   "tekrar_komut_farkli": false,
+   "senaryo_sha_ayni": true,
+   "sha": "abf125923f9a",
+   "izinler_ayni": true,
+   "izinler_e": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "izinler_y": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "hedef_ayni": true,
+   "hedef_fark": {},
+   "ortam_ayni": true,
+   "ortam_fark": {},
+   "on_e": {
+    "tk": "tk",
+    "tk_timeout": "950",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_hizli_yolculuk.js"
+   },
+   "on_y": {
+    "tk": "tk",
+    "tk_timeout": "950",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_hizli_yolculuk.js"
+   },
+   "secenek_e": {
+    "--url": "http://localhost:8080/index.html?terrain=noworker",
+    "--size": "640x360",
+    "--timeout": "900",
+    "--report": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_hizli_yolculuk_noworker.json"
+   },
+   "izin_e": []
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker_3",
+   "komut_farklari": [],
+   "serbest": {
+    "--goruntu-dizin": [
+     null,
+     "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/goruntu/02_hizli_yolculuk_noworker_3"
+    ],
+    "--report": [
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_hizli_yolculuk_noworker.json",
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04_taklit/02_hizli_yolculuk_noworker_3.json"
+    ]
+   },
+   "tekrar_komut_farkli": false,
+   "senaryo_sha_ayni": true,
+   "sha": "abf125923f9a",
+   "izinler_ayni": true,
+   "izinler_e": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "izinler_y": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "hedef_ayni": true,
+   "hedef_fark": {},
+   "ortam_ayni": true,
+   "ortam_fark": {},
+   "on_e": {
+    "tk": "tk",
+    "tk_timeout": "950",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_hizli_yolculuk.js"
+   },
+   "on_y": {
+    "tk": "tk",
+    "tk_timeout": "950",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_hizli_yolculuk.js"
+   },
+   "secenek_e": {
+    "--url": "http://localhost:8080/index.html?terrain=noworker",
+    "--size": "640x360",
+    "--timeout": "900",
+    "--report": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_hizli_yolculuk_noworker.json"
+   },
+   "izin_e": []
+  },
+  {
+   "ad": "02_tek_dosya_blob",
+   "komut_farklari": [],
+   "serbest": {
+    "--goruntu-dizin": [
+     null,
+     "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/goruntu/02_tek_dosya_blob"
+    ],
+    "--report": [
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_tek_dosya_blob.json",
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04_taklit/02_tek_dosya_blob.json"
+    ]
+   },
+   "tekrar_komut_farkli": false,
+   "senaryo_sha_ayni": true,
+   "sha": "749ec707f177",
+   "izinler_ayni": true,
+   "izinler_e": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "izinler_y": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "hedef_ayni": true,
+   "hedef_fark": {},
+   "ortam_ayni": true,
+   "ortam_fark": {},
+   "on_e": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_tek_dosya_blob.js"
+   },
+   "on_y": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_tek_dosya_blob.js"
+   },
+   "secenek_e": {
+    "--url": "http://127.0.0.1:8097/DenizKorsanlari-SonHazine.html",
+    "--size": "640x360",
+    "--timeout": "540",
+    "--report": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_tek_dosya_blob.json"
+   },
+   "izin_e": []
+  },
+  {
+   "ad": "02_tek_dosya_cerceve",
+   "komut_farklari": [],
+   "serbest": {
+    "--goruntu-dizin": [
+     null,
+     "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/goruntu/02_tek_dosya_cerceve"
+    ],
+    "--report": [
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_tek_dosya_cerceve.json",
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04_taklit/02_tek_dosya_cerceve.json"
+    ]
+   },
+   "tekrar_komut_farkli": false,
+   "senaryo_sha_ayni": true,
+   "sha": "93779e03fdf8",
+   "izinler_ayni": true,
+   "izinler_e": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "izinler_y": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "hedef_ayni": true,
+   "hedef_fark": {},
+   "ortam_ayni": true,
+   "ortam_fark": {},
+   "on_e": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_tek_dosya_cerceve.js"
+   },
+   "on_y": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_tek_dosya_cerceve.js"
+   },
+   "secenek_e": {
+    "--url": "http://127.0.0.1:8097/DenizKorsanlari-SonHazine.html",
+    "--size": "640x360",
+    "--timeout": "540",
+    "--report": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_tek_dosya_cerceve.json"
+   },
+   "izin_e": []
+  },
+  {
+   "ad": "02_tek_dosya_kipler",
+   "komut_farklari": [],
+   "serbest": {
+    "--goruntu-dizin": [
+     null,
+     "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/goruntu/02_tek_dosya_kipler"
+    ],
+    "--report": [
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_tek_dosya_kipler.json",
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04_taklit/02_tek_dosya_kipler.json"
+    ]
+   },
+   "tekrar_komut_farkli": false,
+   "senaryo_sha_ayni": true,
+   "sha": "cc9671caf8ed",
+   "izinler_ayni": true,
+   "izinler_e": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "izinler_y": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "hedef_ayni": true,
+   "hedef_fark": {},
+   "ortam_ayni": true,
+   "ortam_fark": {},
+   "on_e": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_tek_dosya_kipler.js"
+   },
+   "on_y": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_tek_dosya_kipler.js"
+   },
+   "secenek_e": {
+    "--url": "file:///tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/fb0/v04_tek/DenizKorsanlari-SonHazine.html",
+    "--size": "640x360",
+    "--timeout": "540",
+    "--report": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_tek_dosya_kipler.json"
+   },
+   "izin_e": []
+  },
+  {
+   "ad": "02_yukleme_bekleme",
+   "komut_farklari": [],
+   "serbest": {
+    "--goruntu-dizin": [
+     null,
+     "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/goruntu/02_yukleme_bekleme"
+    ],
+    "--report": [
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_yukleme_bekleme.json",
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04_taklit/02_yukleme_bekleme.json"
+    ]
+   },
+   "tekrar_komut_farkli": false,
+   "senaryo_sha_ayni": true,
+   "sha": "c9439e8aad63",
+   "izinler_ayni": true,
+   "izinler_e": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "izinler_y": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "hedef_ayni": true,
+   "hedef_fark": {},
+   "ortam_ayni": true,
+   "ortam_fark": {},
+   "on_e": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_yukleme_bekleme.js"
+   },
+   "on_y": {
+    "tk": "tk",
+    "tk_timeout": "590",
+    "kosucu": "run.cjs",
+    "senaryo": "tests/scenarios/02_yukleme_bekleme.js"
+   },
+   "secenek_e": {
+    "--url": "http://localhost:8080/index.html",
+    "--size": "640x360",
+    "--timeout": "540",
+    "--report": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/02_yukleme_bekleme.json"
+   },
+   "izin_e": []
+  },
+  {
+   "ad": "coop_02_hizli_yolculuk_konuk",
+   "komut_farklari": [],
+   "serbest": {
+    "--goruntu-dizin": [
+     null,
+     "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/goruntu/coop_02_hizli_yolculuk_konuk"
+    ],
+    "--report": [
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/coop_02_hizli_yolculuk_konuk.json",
+     "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04_taklit/coop_02_hizli_yolculuk_konuk.json"
+    ]
+   },
+   "tekrar_komut_farkli": false,
+   "senaryo_sha_ayni": true,
+   "sha": "6cad74c81c36",
+   "izinler_ayni": true,
+   "izinler_e": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "izinler_y": [
+    {
+     "desen": "favicon\\.ico(\\?|$)",
+     "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+     "tur": "ag",
+     "kaynak": "varsayilan",
+     "eslesme": 0
+    }
+   ],
+   "hedef_ayni": true,
+   "hedef_fark": {},
+   "ortam_ayni": true,
+   "ortam_fark": {},
+   "on_e": {
+    "tk": "tk",
+    "tk_timeout": "650",
+    "kosucu": "coop.cjs",
+    "senaryo": "tests/scenarios/coop/02_hizli_yolculuk_konuk.cjs"
+   },
+   "on_y": {
+    "tk": "tk",
+    "tk_timeout": "650",
+    "kosucu": "coop.cjs",
+    "senaryo": "tests/scenarios/coop/02_hizli_yolculuk_konuk.cjs"
+   },
+   "secenek_e": {
+    "--players": "2",
+    "--size": "640x360",
+    "--timeout": "600",
+    "--url": "http://localhost:8080/index.html?peerhost=127.0.0.1&peerport=9000",
+    "--report": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04/son/coop_02_hizli_yolculuk_konuk.json"
+   },
+   "izin_e": []
+  }
+ ],
+ "kontrol": [
+  {
+   "ad": "00_acilis",
+   "durum_e": "KALDI",
+   "durum_y": "KALDI",
+   "gecen_e": 6,
+   "kontrol_e": 9,
+   "onay_e": 9,
+   "gecen_y": 6,
+   "kontrol_y": 9,
+   "onay_y": 9,
+   "sayim_tutarli": true,
+   "yalniz_eski": [],
+   "yalniz_yeni": [],
+   "ok_fark": [],
+   "cift_e": [],
+   "cift_y": [],
+   "sira_ayni": true,
+   "etiket_fark": [],
+   "beklenen_fark": [],
+   "fails_e": 3,
+   "fails_y": 3,
+   "eval_e": 0,
+   "eval_y": 0,
+   "neden_e": [
+    "başarısız kontrol ya da adım: 3"
+   ],
+   "neden_y": [
+    "başarısız kontrol ya da adım: 3"
+   ],
+   "izinsizKonsol": [
+    0,
+    0
+   ],
+   "izinsizAg": [
+    0,
+    0
+   ],
+   "izinliKonsol": [
+    0,
+    0
+   ],
+   "izinliAg": [
+    0,
+    0
+   ],
+   "kirmizi_e": [
+    "AC01",
+    "AC02",
+    "AC03"
+   ],
+   "kirmizi_y": [
+    "AC01",
+    "AC02",
+    "AC03"
+   ]
+  },
+  {
+   "ad": "02_acilis_akisi",
+   "durum_e": "KALDI",
+   "durum_y": "KALDI",
+   "gecen_e": 22,
+   "kontrol_e": 23,
+   "onay_e": 23,
+   "gecen_y": 22,
+   "kontrol_y": 23,
+   "onay_y": 23,
+   "sayim_tutarli": true,
+   "yalniz_eski": [],
+   "yalniz_yeni": [],
+   "ok_fark": [],
+   "cift_e": [],
+   "cift_y": [],
+   "sira_ayni": true,
+   "etiket_fark": [],
+   "beklenen_fark": [],
+   "fails_e": 1,
+   "fails_y": 1,
+   "eval_e": 0,
+   "eval_y": 0,
+   "neden_e": [
+    "başarısız kontrol ya da adım: 1"
+   ],
+   "neden_y": [
+    "başarısız kontrol ya da adım: 1"
+   ],
+   "izinsizKonsol": [
+    0,
+    0
+   ],
+   "izinsizAg": [
+    0,
+    0
+   ],
+   "izinliKonsol": [
+    0,
+    0
+   ],
+   "izinliAg": [
+    0,
+    0
+   ],
+   "kirmizi_e": [
+    "AA09b"
+   ],
+   "kirmizi_y": [
+    "AA09b"
+   ]
+  },
+  {
+   "ad": "02_acilis_hatalari",
+   "durum_e": "KALDI",
+   "durum_y": "KALDI",
+   "gecen_e": 3,
+   "kontrol_e": 19,
+   "onay_e": 19,
+   "gecen_y": 3,
+   "kontrol_y": 19,
+   "onay_y": 19,
+   "sayim_tutarli": true,
+   "yalniz_eski": [],
+   "yalniz_yeni": [],
+   "ok_fark": [],
+   "cift_e": [],
+   "cift_y": [],
+   "sira_ayni": true,
+   "etiket_fark": [],
+   "beklenen_fark": [],
+   "fails_e": 16,
+   "fails_y": 16,
+   "eval_e": 0,
+   "eval_y": 0,
+   "neden_e": [
+    "başarısız kontrol ya da adım: 16",
+    "izinsiz konsol hatası: 2"
+   ],
+   "neden_y": [
+    "başarısız kontrol ya da adım: 16",
+    "izinsiz konsol hatası: 2"
+   ],
+   "izinsizKonsol": [
+    2,
+    2
+   ],
+   "izinsizAg": [
+    0,
+    0
+   ],
+   "izinliKonsol": [
+    3,
+    3
+   ],
+   "izinliAg": [
+    1,
+    1
+   ],
+   "kirmizi_e": [
+    "AH02",
+    "AH03",
+    "AH04",
+    "AH05",
+    "AH07",
+    "AH08",
+    "AH09",
+    "AH10",
+    "AH11",
+    "IZ01",
+    "IZ02",
+    "IZ03",
+    "IZ04",
+    "IZ05",
+    "IZ06",
+    "IZ07"
+   ],
+   "kirmizi_y": [
+    "AH02",
+    "AH03",
+    "AH04",
+    "AH05",
+    "AH07",
+    "AH08",
+    "AH09",
+    "AH10",
+    "AH11",
+    "IZ01",
+    "IZ02",
+    "IZ03",
+    "IZ04",
+    "IZ05",
+    "IZ06",
+    "IZ07"
+   ]
+  },
+  {
+   "ad": "02_arazi_isci_hata",
+   "durum_e": "KALDI",
+   "durum_y": "KALDI",
+   "gecen_e": 5,
+   "kontrol_e": 9,
+   "onay_e": 9,
+   "gecen_y": 5,
+   "kontrol_y": 9,
+   "onay_y": 9,
+   "sayim_tutarli": true,
+   "yalniz_eski": [],
+   "yalniz_yeni": [],
+   "ok_fark": [],
+   "cift_e": [],
+   "cift_y": [],
+   "sira_ayni": true,
+   "etiket_fark": [],
+   "beklenen_fark": [],
+   "fails_e": 4,
+   "fails_y": 4,
+   "eval_e": 0,
+   "eval_y": 0,
+   "neden_e": [
+    "başarısız kontrol ya da adım: 4"
+   ],
+   "neden_y": [
+    "başarısız kontrol ya da adım: 4"
+   ],
+   "izinsizKonsol": [
+    0,
+    0
+   ],
+   "izinsizAg": [
+    0,
+    0
+   ],
+   "izinliKonsol": [
+    88,
+    121
+   ],
+   "izinliAg": [
+    0,
+    0
+   ],
+   "kirmizi_e": [
+    "HI03",
+    "HI04",
+    "HI05",
+    "HI07"
+   ],
+   "kirmizi_y": [
+    "HI03",
+    "HI04",
+    "HI05",
+    "HI07"
+   ]
+  },
+  {
+   "ad": "02_arazi_yasam_crash",
+   "durum_e": "KALDI",
+   "durum_y": "KALDI",
+   "gecen_e": 13,
+   "kontrol_e": 18,
+   "onay_e": 18,
+   "gecen_y": 13,
+   "kontrol_y": 18,
+   "onay_y": 18,
+   "sayim_tutarli": true,
+   "yalniz_eski": [],
+   "yalniz_yeni": [],
+   "ok_fark": [],
+   "cift_e": [],
+   "cift_y": [],
+   "sira_ayni": true,
+   "etiket_fark": [],
+   "beklenen_fark": [],
+   "fails_e": 5,
+   "fails_y": 5,
+   "eval_e": 0,
+   "eval_y": 0,
+   "neden_e": [
+    "başarısız kontrol ya da adım: 5"
+   ],
+   "neden_y": [
+    "başarısız kontrol ya da adım: 5"
+   ],
+   "izinsizKonsol": [
+    0,
+    0
+   ],
+   "izinsizAg": [
+    0,
+    0
+   ],
+   "izinliKonsol": [
+    0,
+    0
+   ],
+   "izinliAg": [
+    0,
+    0
+   ],
+   "kirmizi_e": [
+    "LY05",
+    "LY09",
+    "LY10",
+    "LY11",
+    "LY14"
+   ],
+   "kirmizi_y": [
+    "LY05",
+    "LY09",
+    "LY10",
+    "LY11",
+    "LY14"
+   ]
+  },
+  {
+   "ad": "02_arazi_yasam_normal",
+   "durum_e": "KALDI",
+   "durum_y": "KALDI",
+   "gecen_e": 12,
+   "kontrol_e": 18,
+   "onay_e": 18,
+   "gecen_y": 13,
+   "kontrol_y": 18,
+   "onay_y": 18,
+   "sayim_tutarli": true,
+   "yalniz_eski": [],
+   "yalniz_yeni": [],
+   "ok_fark": [
+    [
+     "LY13",
+     [
+      false
+     ],
+     [
+      true
+     ]
+    ]
+   ],
+   "cift_e": [],
+   "cift_y": [],
+   "sira_ayni": true,
+   "etiket_fark": [],
+   "beklenen_fark": [],
+   "fails_e": 6,
+   "fails_y": 5,
+   "eval_e": 0,
+   "eval_y": 0,
+   "neden_e": [
+    "başarısız kontrol ya da adım: 6"
+   ],
+   "neden_y": [
+    "başarısız kontrol ya da adım: 5"
+   ],
+   "izinsizKonsol": [
+    0,
+    0
+   ],
+   "izinsizAg": [
+    0,
+    0
+   ],
+   "izinliKonsol": [
+    0,
+    0
+   ],
+   "izinliAg": [
+    0,
+    0
+   ],
+   "kirmizi_e": [
+    "LY05",
+    "LY09",
+    "LY10",
+    "LY11",
+    "LY13",
+    "LY14"
+   ],
+   "kirmizi_y": [
+    "LY05",
+    "LY09",
+    "LY10",
+    "LY11",
+    "LY14"
+   ]
+  },
+  {
+   "ad": "02_arazi_yasam_normal_2",
+   "durum_e": "KALDI",
+   "durum_y": "KALDI",
+   "gecen_e": 12,
+   "kontrol_e": 18,
+   "onay_e": 18,
+   "gecen_y": 13,
+   "kontrol_y": 18,
+   "onay_y": 18,
+   "sayim_tutarli": true,
+   "yalniz_eski": [],
+   "yalniz_yeni": [],
+   "ok_fark": [
+    [
+     "LY13",
+     [
+      false
+     ],
+     [
+      true
+     ]
+    ]
+   ],
+   "cift_e": [],
+   "cift_y": [],
+   "sira_ayni": true,
+   "etiket_fark": [],
+   "beklenen_fark": [],
+   "fails_e": 6,
+   "fails_y": 5,
+   "eval_e": 0,
+   "eval_y": 0,
+   "neden_e": [
+    "başarısız kontrol ya da adım: 6"
+   ],
+   "neden_y": [
+    "başarısız kontrol ya da adım: 5"
+   ],
+   "izinsizKonsol": [
+    0,
+    0
+   ],
+   "izinsizAg": [
+    0,
+    0
+   ],
+   "izinliKonsol": [
+    0,
+    0
+   ],
+   "izinliAg": [
+    0,
+    0
+   ],
+   "kirmizi_e": [
+    "LY05",
+    "LY09",
+    "LY10",
+    "LY11",
+    "LY13",
+    "LY14"
+   ],
+   "kirmizi_y": [
+    "LY05",
+    "LY09",
+    "LY10",
+    "LY11",
+    "LY14"
+   ]
+  },
+  {
+   "ad": "02_arazi_yasam_noworker",
+   "durum_e": "KALDI",
+   "durum_y": "KALDI",
+   "gecen_e": 12,
+   "kontrol_e": 18,
+   "onay_e": 18,
+   "gecen_y": 13,
+   "kontrol_y": 18,
+   "onay_y": 18,
+   "sayim_tutarli": true,
+   "yalniz_eski": [],
+   "yalniz_yeni": [],
+   "ok_fark": [
+    [
+     "LY13",
+     [
+      false
+     ],
+     [
+      true
+     ]
+    ]
+   ],
+   "cift_e": [],
+   "cift_y": [],
+   "sira_ayni": true,
+   "etiket_fark": [],
+   "beklenen_fark": [],
+   "fails_e": 6,
+   "fails_y": 5,
+   "eval_e": 0,
+   "eval_y": 0,
+   "neden_e": [
+    "başarısız kontrol ya da adım: 6"
+   ],
+   "neden_y": [
+    "başarısız kontrol ya da adım: 5"
+   ],
+   "izinsizKonsol": [
+    0,
+    0
+   ],
+   "izinsizAg": [
+    0,
+    0
+   ],
+   "izinliKonsol": [
+    0,
+    0
+   ],
+   "izinliAg": [
+    0,
+    0
+   ],
+   "kirmizi_e": [
+    "LY05",
+    "LY09",
+    "LY10",
+    "LY11",
+    "LY13",
+    "LY14"
+   ],
+   "kirmizi_y": [
+    "LY05",
+    "LY09",
+    "LY10",
+    "LY11",
+    "LY14"
+   ]
+  },
+  {
+   "ad": "02_arazi_yasam_noworker_2",
+   "durum_e": "KALDI",
+   "durum_y": "KALDI",
+   "gecen_e": 12,
+   "kontrol_e": 18,
+   "onay_e": 18,
+   "gecen_y": 13,
+   "kontrol_y": 18,
+   "onay_y": 18,
+   "sayim_tutarli": true,
+   "yalniz_eski": [],
+   "yalniz_yeni": [],
+   "ok_fark": [
+    [
+     "LY13",
+     [
+      false
+     ],
+     [
+      true
+     ]
+    ]
+   ],
+   "cift_e": [],
+   "cift_y": [],
+   "sira_ayni": true,
+   "etiket_fark": [],
+   "beklenen_fark": [],
+   "fails_e": 6,
+   "fails_y": 5,
+   "eval_e": 0,
+   "eval_y": 0,
+   "neden_e": [
+    "başarısız kontrol ya da adım: 6"
+   ],
+   "neden_y": [
+    "başarısız kontrol ya da adım: 5"
+   ],
+   "izinsizKonsol": [
+    0,
+    0
+   ],
+   "izinsizAg": [
+    0,
+    0
+   ],
+   "izinliKonsol": [
+    0,
+    0
+   ],
+   "izinliAg": [
+    0,
+    0
+   ],
+   "kirmizi_e": [
+    "LY05",
+    "LY09",
+    "LY10",
+    "LY11",
+    "LY13",
+    "LY14"
+   ],
+   "kirmizi_y": [
+    "LY05",
+    "LY09",
+    "LY10",
+    "LY11",
+    "LY14"
+   ]
+  },
+  {
+   "ad": "02_arazi_yedek_badurl",
+   "durum_e": "GECTI",
+   "durum_y": "GECTI",
+   "gecen_e": 16,
+   "kontrol_e": 16,
+   "onay_e": 16,
+   "gecen_y": 16,
+   "kontrol_y": 16,
+   "onay_y": 16,
+   "sayim_tutarli": true,
+   "yalniz_eski": [],
+   "yalniz_yeni": [],
+   "ok_fark": [],
+   "cift_e": [],
+   "cift_y": [],
+   "sira_ayni": true,
+   "etiket_fark": [],
+   "beklenen_fark": [],
+   "fails_e": 0,
+   "fails_y": 0,
+   "eval_e": 0,
+   "eval_y": 0,
+   "neden_e": [],
+   "neden_y": [],
+   "izinsizKonsol": [
+    0,
+    0
+   ],
+   "izinsizAg": [
+    0,
+    0
+   ],
+   "izinliKonsol": [
+    0,
+    0
+   ],
+   "izinliAg": [
+    6,
+    6
+   ],
+   "kirmizi_e": [],
+   "kirmizi_y": []
+  },
+  {
+   "ad": "02_arazi_yedek_crash",
+   "durum_e": "GECTI",
+   "durum_y": "GECTI",
+   "gecen_e": 16,
+   "kontrol_e": 16,
+   "onay_e": 16,
+   "gecen_y": 16,
+   "kontrol_y": 16,
+   "onay_y": 16,
+   "sayim_tutarli": true,
+   "yalniz_eski": [],
+   "yalniz_yeni": [],
+   "ok_fark": [],
+   "cift_e": [],
+   "cift_y": [],
+   "sira_ayni": true,
+   "etiket_fark": [],
+   "beklenen_fark": [],
+   "fails_e": 0,
+   "fails_y": 0,
+   "eval_e": 0,
+   "eval_y": 0,
+   "neden_e": [],
+   "neden_y": [],
+   "izinsizKonsol": [
+    0,
+    0
+   ],
+   "izinsizAg": [
+    0,
+    0
+   ],
+   "izinliKonsol": [
+    0,
+    0
+   ],
+   "izinliAg": [
+    0,
+    0
+   ],
+   "kirmizi_e": [],
+   "kirmizi_y": []
+  },
+  {
+   "ad": "02_arazi_yedek_normal",
+   "durum_e": "GECTI",
+   "durum_y": "GECTI",
+   "gecen_e": 16,
+   "kontrol_e": 16,
+   "onay_e": 16,
+   "gecen_y": 16,
+   "kontrol_y": 16,
+   "onay_y": 16,
+   "sayim_tutarli": true,
+   "yalniz_eski": [],
+   "yalniz_yeni": [],
+   "ok_fark": [],
+   "cift_e": [],
+   "cift_y": [],
+   "sira_ayni": true,
+   "etiket_fark": [],
+   "beklenen_fark": [],
+   "fails_e": 0,
+   "fails_y": 0,
+   "eval_e": 0,
+   "eval_y": 0,
+   "neden_e": [],
+   "neden_y": [],
+   "izinsizKonsol": [
+    0,
+    0
+   ],
+   "izinsizAg": [
+    0,
+    0
+   ],
+   "izinliKonsol": [
+    0,
+    0
+   ],
+   "izinliAg": [
+    0,
+    0
+   ],
+   "kirmizi_e": [],
+   "kirmizi_y": []
+  },
+  {
+   "ad": "02_arazi_yedek_noworker",
+   "durum_e": "GECTI",
+   "durum_y": "GECTI",
+   "gecen_e": 16,
+   "kontrol_e": 16,
+   "onay_e": 16,
+   "gecen_y": 16,
+   "kontrol_y": 16,
+   "onay_y": 16,
+   "sayim_tutarli": true,
+   "yalniz_eski": [],
+   "yalniz_yeni": [],
+   "ok_fark": [],
+   "cift_e": [],
+   "cift_y": [],
+   "sira_ayni": true,
+   "etiket_fark": [],
+   "beklenen_fark": [],
+   "fails_e": 0,
+   "fails_y": 0,
+   "eval_e": 0,
+   "eval_y": 0,
+   "neden_e": [],
+   "neden_y": [],
+   "izinsizKonsol": [
+    0,
+    0
+   ],
+   "izinsizAg": [
+    0,
+    0
+   ],
+   "izinliKonsol": [
+    0,
+    0
+   ],
+   "izinliAg": [
+    0,
+    0
+   ],
+   "kirmizi_e": [],
+   "kirmizi_y": []
+  },
+  {
+   "ad": "02_ayar_lod",
+   "durum_e": "KALDI",
+   "durum_y": "KALDI",
+   "gecen_e": 4,
+   "kontrol_e": 11,
+   "onay_e": 11,
+   "gecen_y": 4,
+   "kontrol_y": 11,
+   "onay_y": 11,
+   "sayim_tutarli": true,
+   "yalniz_eski": [],
+   "yalniz_yeni": [],
+   "ok_fark": [],
+   "cift_e": [],
+   "cift_y": [],
+   "sira_ayni": true,
+   "etiket_fark": [],
+   "beklenen_fark": [],
+   "fails_e": 7,
+   "fails_y": 7,
+   "eval_e": 0,
+   "eval_y": 0,
+   "neden_e": [
+    "başarısız kontrol ya da adım: 7"
+   ],
+   "neden_y": [
+    "başarısız kontrol ya da adım: 7"
+   ],
+   "izinsizKonsol": [
+    0,
+    0
+   ],
+   "izinsizAg": [
+    0,
+    0
+   ],
+   "izinliKonsol": [
+    0,
+    0
+   ],
+   "izinliAg": [
+    0,
+    0
+   ],
+   "kirmizi_e": [
+    "AL01",
+    "AL02",
+    "AL03",
+    "AL04",
+    "AL06",
+    "AL08",
+    "AL09"
+   ],
+   "kirmizi_y": [
+    "AL01",
+    "AL02",
+    "AL03",
+    "AL04",
+    "AL06",
+    "AL08",
+    "AL09"
+   ]
+  },
+  {
+   "ad": "02_depolama_kapali",
+   "durum_e": "KALDI",
+   "durum_y": "KALDI",
+   "gecen_e": 2,
+   "kontrol_e": 15,
+   "onay_e": 15,
+   "gecen_y": 2,
+   "kontrol_y": 15,
+   "onay_y": 15,
+   "sayim_tutarli": true,
+   "yalniz_eski": [],
+   "yalniz_yeni": [],
+   "ok_fark": [],
+   "cift_e": [],
+   "cift_y": [],
+   "sira_ayni": true,
+   "etiket_fark": [],
+   "beklenen_fark": [],
+   "fails_e": 23,
+   "fails_y": 23,
+   "eval_e": 10,
+   "eval_y": 10,
+   "neden_e": [
+    "başarısız kontrol ya da adım: 23",
+    "izinsiz konsol hatası: 1",
+    "adım istisnası (evalErrors): 10"
+   ],
+   "neden_y": [
+    "başarısız kontrol ya da adım: 23",
+    "izinsiz konsol hatası: 1",
+    "adım istisnası (evalErrors): 10"
+   ],
+   "izinsizKonsol": [
+    1,
+    1
+   ],
+   "izinsizAg": [
+    0,
+    0
+   ],
+   "izinliKonsol": [
+    0,
+    0
+   ],
+   "izinliAg": [
+    0,
+    0
+   ],
+   "kirmizi_e": [
+    "DK03",
+    "DK04",
+    "DK05",
+    "DK06",
+    "DK07",
+    "DK08",
+    "DK09",
+    "DK10",
+    "DK11",
+    "DK12",
+    "DK13",
+    "DK14",
+    "DK15"
+   ],
+   "kirmizi_y": [
+    "DK03",
+    "DK04",
+    "DK05",
+    "DK06",
+    "DK07",
+    "DK08",
+    "DK09",
+    "DK10",
+    "DK11",
+    "DK12",
+    "DK13",
+    "DK14",
+    "DK15"
+   ]
+  },
+  {
+   "ad": "02_hizli_yolculuk_normal",
+   "durum_e": "KALDI",
+   "durum_y": "KALDI",
+   "gecen_e": 23,
+   "kontrol_e": 34,
+   "onay_e": 34,
+   "gecen_y": 23,
+   "kontrol_y": 34,
+   "onay_y": 34,
+   "sayim_tutarli": true,
+   "yalniz_eski": [],
+   "yalniz_yeni": [],
+   "ok_fark": [],
+   "cift_e": [],
+   "cift_y": [],
+   "sira_ayni": true,
+   "etiket_fark": [],
+   "beklenen_fark": [],
+   "fails_e": 11,
+   "fails_y": 11,
+   "eval_e": 0,
+   "eval_y": 0,
+   "neden_e": [
+    "başarısız kontrol ya da adım: 11"
+   ],
+   "neden_y": [
+    "başarısız kontrol ya da adım: 11"
+   ],
+   "izinsizKonsol": [
+    0,
+    0
+   ],
+   "izinsizAg": [
+    0,
+    0
+   ],
+   "izinliKonsol": [
+    0,
+    0
+   ],
+   "izinliAg": [
+    0,
+    0
+   ],
+   "kirmizi_e": [
+    "HY10",
+    "HY11",
+    "HY13",
+    "HY14",
+    "HY17",
+    "HY18",
+    "HY19",
+    "HY21",
+    "HYS-02",
+    "HYU-02",
+    "HYU-05"
+   ],
+   "kirmizi_y": [
+    "HY10",
+    "HY11",
+    "HY13",
+    "HY14",
+    "HY17",
+    "HY18",
+    "HY19",
+    "HY21",
+    "HYS-02",
+    "HYU-02",
+    "HYU-05"
+   ]
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker",
+   "durum_e": "KALDI",
+   "durum_y": "KALDI",
+   "gecen_e": 22,
+   "kontrol_e": 34,
+   "onay_e": 34,
+   "gecen_y": 22,
+   "kontrol_y": 34,
+   "onay_y": 34,
+   "sayim_tutarli": true,
+   "yalniz_eski": [],
+   "yalniz_yeni": [],
+   "ok_fark": [],
+   "cift_e": [],
+   "cift_y": [],
+   "sira_ayni": true,
+   "etiket_fark": [],
+   "beklenen_fark": [],
+   "fails_e": 12,
+   "fails_y": 12,
+   "eval_e": 0,
+   "eval_y": 0,
+   "neden_e": [
+    "başarısız kontrol ya da adım: 12"
+   ],
+   "neden_y": [
+    "başarısız kontrol ya da adım: 12"
+   ],
+   "izinsizKonsol": [
+    0,
+    0
+   ],
+   "izinsizAg": [
+    0,
+    0
+   ],
+   "izinliKonsol": [
+    0,
+    0
+   ],
+   "izinliAg": [
+    0,
+    0
+   ],
+   "kirmizi_e": [
+    "HY10",
+    "HY11",
+    "HY13",
+    "HY14",
+    "HY17",
+    "HY18",
+    "HY19",
+    "HY21",
+    "HYS-01",
+    "HYS-02",
+    "HYU-02",
+    "HYU-05"
+   ],
+   "kirmizi_y": [
+    "HY10",
+    "HY11",
+    "HY13",
+    "HY14",
+    "HY17",
+    "HY18",
+    "HY19",
+    "HY21",
+    "HYS-01",
+    "HYS-02",
+    "HYU-02",
+    "HYU-05"
+   ]
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker_2",
+   "durum_e": "KALDI",
+   "durum_y": "KALDI",
+   "gecen_e": 22,
+   "kontrol_e": 34,
+   "onay_e": 34,
+   "gecen_y": 22,
+   "kontrol_y": 34,
+   "onay_y": 34,
+   "sayim_tutarli": true,
+   "yalniz_eski": [],
+   "yalniz_yeni": [],
+   "ok_fark": [],
+   "cift_e": [],
+   "cift_y": [],
+   "sira_ayni": true,
+   "etiket_fark": [],
+   "beklenen_fark": [],
+   "fails_e": 12,
+   "fails_y": 12,
+   "eval_e": 0,
+   "eval_y": 0,
+   "neden_e": [
+    "başarısız kontrol ya da adım: 12"
+   ],
+   "neden_y": [
+    "başarısız kontrol ya da adım: 12"
+   ],
+   "izinsizKonsol": [
+    0,
+    0
+   ],
+   "izinsizAg": [
+    0,
+    0
+   ],
+   "izinliKonsol": [
+    0,
+    0
+   ],
+   "izinliAg": [
+    0,
+    0
+   ],
+   "kirmizi_e": [
+    "HY10",
+    "HY11",
+    "HY13",
+    "HY14",
+    "HY17",
+    "HY18",
+    "HY19",
+    "HY21",
+    "HYS-01",
+    "HYS-02",
+    "HYU-02",
+    "HYU-05"
+   ],
+   "kirmizi_y": [
+    "HY10",
+    "HY11",
+    "HY13",
+    "HY14",
+    "HY17",
+    "HY18",
+    "HY19",
+    "HY21",
+    "HYS-01",
+    "HYS-02",
+    "HYU-02",
+    "HYU-05"
+   ]
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker_3",
+   "durum_e": "KALDI",
+   "durum_y": "KALDI",
+   "gecen_e": 22,
+   "kontrol_e": 34,
+   "onay_e": 34,
+   "gecen_y": 22,
+   "kontrol_y": 34,
+   "onay_y": 34,
+   "sayim_tutarli": true,
+   "yalniz_eski": [],
+   "yalniz_yeni": [],
+   "ok_fark": [],
+   "cift_e": [],
+   "cift_y": [],
+   "sira_ayni": true,
+   "etiket_fark": [],
+   "beklenen_fark": [],
+   "fails_e": 12,
+   "fails_y": 12,
+   "eval_e": 0,
+   "eval_y": 0,
+   "neden_e": [
+    "başarısız kontrol ya da adım: 12"
+   ],
+   "neden_y": [
+    "başarısız kontrol ya da adım: 12"
+   ],
+   "izinsizKonsol": [
+    0,
+    0
+   ],
+   "izinsizAg": [
+    0,
+    0
+   ],
+   "izinliKonsol": [
+    0,
+    0
+   ],
+   "izinliAg": [
+    0,
+    0
+   ],
+   "kirmizi_e": [
+    "HY10",
+    "HY11",
+    "HY13",
+    "HY14",
+    "HY17",
+    "HY18",
+    "HY19",
+    "HY21",
+    "HYS-01",
+    "HYS-02",
+    "HYU-02",
+    "HYU-05"
+   ],
+   "kirmizi_y": [
+    "HY10",
+    "HY11",
+    "HY13",
+    "HY14",
+    "HY17",
+    "HY18",
+    "HY19",
+    "HY21",
+    "HYS-01",
+    "HYS-02",
+    "HYU-02",
+    "HYU-05"
+   ]
+  },
+  {
+   "ad": "02_tek_dosya_blob",
+   "durum_e": "KALDI",
+   "durum_y": "KALDI",
+   "gecen_e": 3,
+   "kontrol_e": 4,
+   "onay_e": 4,
+   "gecen_y": 3,
+   "kontrol_y": 4,
+   "onay_y": 4,
+   "sayim_tutarli": true,
+   "yalniz_eski": [],
+   "yalniz_yeni": [],
+   "ok_fark": [],
+   "cift_e": [],
+   "cift_y": [],
+   "sira_ayni": true,
+   "etiket_fark": [],
+   "beklenen_fark": [],
+   "fails_e": 1,
+   "fails_y": 1,
+   "eval_e": 0,
+   "eval_y": 0,
+   "neden_e": [
+    "başarısız kontrol ya da adım: 1"
+   ],
+   "neden_y": [
+    "başarısız kontrol ya da adım: 1"
+   ],
+   "izinsizKonsol": [
+    0,
+    0
+   ],
+   "izinsizAg": [
+    0,
+    0
+   ],
+   "izinliKonsol": [
+    0,
+    0
+   ],
+   "izinliAg": [
+    0,
+    0
+   ],
+   "kirmizi_e": [
+    "TB01"
+   ],
+   "kirmizi_y": [
+    "TB01"
+   ]
+  },
+  {
+   "ad": "02_tek_dosya_cerceve",
+   "durum_e": "KALDI",
+   "durum_y": "KALDI",
+   "gecen_e": 2,
+   "kontrol_e": 5,
+   "onay_e": 5,
+   "gecen_y": 2,
+   "kontrol_y": 5,
+   "onay_y": 5,
+   "sayim_tutarli": true,
+   "yalniz_eski": [],
+   "yalniz_yeni": [],
+   "ok_fark": [],
+   "cift_e": [],
+   "cift_y": [],
+   "sira_ayni": true,
+   "etiket_fark": [],
+   "beklenen_fark": [],
+   "fails_e": 3,
+   "fails_y": 3,
+   "eval_e": 0,
+   "eval_y": 0,
+   "neden_e": [
+    "başarısız kontrol ya da adım: 3",
+    "izinsiz konsol hatası: 1"
+   ],
+   "neden_y": [
+    "başarısız kontrol ya da adım: 3",
+    "izinsiz konsol hatası: 1"
+   ],
+   "izinsizKonsol": [
+    1,
+    1
+   ],
+   "izinsizAg": [
+    0,
+    0
+   ],
+   "izinliKonsol": [
+    0,
+    0
+   ],
+   "izinliAg": [
+    0,
+    0
+   ],
+   "kirmizi_e": [
+    "TC02",
+    "TC03",
+    "TC04"
+   ],
+   "kirmizi_y": [
+    "TC02",
+    "TC03",
+    "TC04"
+   ]
+  },
+  {
+   "ad": "02_tek_dosya_kipler",
+   "durum_e": "KALDI",
+   "durum_y": "KALDI",
+   "gecen_e": 3,
+   "kontrol_e": 4,
+   "onay_e": 4,
+   "gecen_y": 3,
+   "kontrol_y": 4,
+   "onay_y": 4,
+   "sayim_tutarli": true,
+   "yalniz_eski": [],
+   "yalniz_yeni": [],
+   "ok_fark": [],
+   "cift_e": [],
+   "cift_y": [],
+   "sira_ayni": true,
+   "etiket_fark": [],
+   "beklenen_fark": [],
+   "fails_e": 1,
+   "fails_y": 1,
+   "eval_e": 0,
+   "eval_y": 0,
+   "neden_e": [
+    "başarısız kontrol ya da adım: 1"
+   ],
+   "neden_y": [
+    "başarısız kontrol ya da adım: 1"
+   ],
+   "izinsizKonsol": [
+    0,
+    0
+   ],
+   "izinsizAg": [
+    0,
+    0
+   ],
+   "izinliKonsol": [
+    0,
+    0
+   ],
+   "izinliAg": [
+    0,
+    0
+   ],
+   "kirmizi_e": [
+    "TK02"
+   ],
+   "kirmizi_y": [
+    "TK02"
+   ]
+  },
+  {
+   "ad": "02_yukleme_bekleme",
+   "durum_e": "KALDI",
+   "durum_y": "KALDI",
+   "gecen_e": 4,
+   "kontrol_e": 9,
+   "onay_e": 9,
+   "gecen_y": 4,
+   "kontrol_y": 9,
+   "onay_y": 9,
+   "sayim_tutarli": true,
+   "yalniz_eski": [],
+   "yalniz_yeni": [],
+   "ok_fark": [],
+   "cift_e": [],
+   "cift_y": [],
+   "sira_ayni": true,
+   "etiket_fark": [],
+   "beklenen_fark": [],
+   "fails_e": 5,
+   "fails_y": 5,
+   "eval_e": 0,
+   "eval_y": 0,
+   "neden_e": [
+    "başarısız kontrol ya da adım: 5"
+   ],
+   "neden_y": [
+    "başarısız kontrol ya da adım: 5"
+   ],
+   "izinsizKonsol": [
+    0,
+    0
+   ],
+   "izinsizAg": [
+    0,
+    0
+   ],
+   "izinliKonsol": [
+    0,
+    0
+   ],
+   "izinliAg": [
+    0,
+    0
+   ],
+   "kirmizi_e": [
+    "YB03",
+    "YB04",
+    "YB05",
+    "YB06",
+    "YB07"
+   ],
+   "kirmizi_y": [
+    "YB03",
+    "YB04",
+    "YB05",
+    "YB06",
+    "YB07"
+   ]
+  },
+  {
+   "ad": "coop_02_hizli_yolculuk_konuk",
+   "durum_e": "KALDI",
+   "durum_y": "KALDI",
+   "gecen_e": 5,
+   "kontrol_e": 8,
+   "onay_e": 8,
+   "gecen_y": 5,
+   "kontrol_y": 8,
+   "onay_y": 8,
+   "sayim_tutarli": true,
+   "yalniz_eski": [],
+   "yalniz_yeni": [],
+   "ok_fark": [],
+   "cift_e": [],
+   "cift_y": [],
+   "sira_ayni": true,
+   "etiket_fark": [],
+   "beklenen_fark": [],
+   "fails_e": 3,
+   "fails_y": 3,
+   "eval_e": [],
+   "eval_y": [],
+   "neden_e": [
+    "başarısız kontrol ya da ev() istisnası: 3"
+   ],
+   "neden_y": [
+    "başarısız kontrol ya da ev() istisnası: 3"
+   ],
+   "izinsizKonsol": [
+    0,
+    0
+   ],
+   "izinsizAg": [
+    0,
+    0
+   ],
+   "izinliKonsol": [
+    0,
+    0
+   ],
+   "izinliAg": [
+    0,
+    0
+   ],
+   "kirmizi_e": [
+    "HK03",
+    "HK04",
+    "HK07"
+   ],
+   "kirmizi_y": [
+    "HK03",
+    "HK04",
+    "HK07"
+   ]
+  }
+ ],
+ "ayni_kirmizi": [
+  {
+   "ad": "00_acilis",
+   "id": "AC01",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "00_acilis",
+   "id": "AC02",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "00_acilis",
+   "id": "AC03",
+   "sinif": "tam_ayni",
+   "tur_e": "dizge",
+   "tur_y": "dizge",
+   "deger_e": "\"{\\\"surenPrepare\\\":0,\\\"bitenPrepare\\\":0,\\\"yakinBekleyenKaro\\\":0,\\\"isler\\\":0}\"",
+   "deger_y": "\"{\\\"surenPrepare\\\":0,\\\"bitenPrepare\\\":0,\\\"yakinBekleyenKaro\\\":0,\\\"isler\\\":0}\"",
+   "hata_e": "beklenen {\"eq\":\"tamam\"}, gelen \"{\\\"surenPrepare\\\":0,\\\"bitenPrepare\\\":0,\\\"yakinBekleyenKaro\\\":0,\\\"isler\\\":0}\" (sağlanmayan: eq \"tamam\")",
+   "hata_y": "beklenen {\"eq\":\"tamam\"}, gelen \"{\\\"surenPrepare\\\":0,\\\"bitenPrepare\\\":0,\\\"yakinBekleyenKaro\\\":0,\\\"isler\\\":0}\" (sağlanmayan: eq \"tamam\")"
+  },
+  {
+   "ad": "02_acilis_akisi",
+   "id": "AA09b",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_acilis_hatalari",
+   "id": "AH02",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_acilis_hatalari",
+   "id": "AH03",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_acilis_hatalari",
+   "id": "AH04",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_acilis_hatalari",
+   "id": "AH05",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_acilis_hatalari",
+   "id": "AH07",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_acilis_hatalari",
+   "id": "AH08",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_acilis_hatalari",
+   "id": "AH09",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_acilis_hatalari",
+   "id": "AH10",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_acilis_hatalari",
+   "id": "AH11",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_acilis_hatalari",
+   "id": "IZ01",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_acilis_hatalari",
+   "id": "IZ02",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_acilis_hatalari",
+   "id": "IZ03",
+   "sinif": "tam_ayni",
+   "tur_e": "dizge",
+   "tur_y": "dizge",
+   "deger_e": "\"Oyun başlatılamadı: test: enjekte ızgara hatasıWebGL destekli güncel bir tarayıcı (Chrome, Edge, Firefox) gerekiyor.\"",
+   "deger_y": "\"Oyun başlatılamadı: test: enjekte ızgara hatasıWebGL destekli güncel bir tarayıcı (Chrome, Edge, Firefox) gerekiyor.\"",
+   "hata_e": "beklenen {\"eq\":\"yok\"}, gelen \"Oyun başlatılamadı: test: enjekte ızgara hatasıWebGL destekli güncel bir tarayıcı (Chrome, Edge, Firefox) gerekiyor.\" (sağlanmayan: eq \"yok\")",
+   "hata_y": "beklenen {\"eq\":\"yok\"}, gelen \"Oyun başlatılamadı: test: enjekte ızgara hatasıWebGL destekli güncel bir tarayıcı (Chrome, Edge, Firefox) gerekiyor.\" (sağlanmayan: eq \"yok\")"
+  },
+  {
+   "ad": "02_acilis_hatalari",
+   "id": "IZ04",
+   "sinif": "tam_ayni",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "64",
+   "deger_y": "64",
+   "hata_e": "beklenen {\"gte\":128}, gelen 64 (sağlanmayan: gte 128)",
+   "hata_y": "beklenen {\"gte\":128}, gelen 64 (sağlanmayan: gte 128)"
+  },
+  {
+   "ad": "02_acilis_hatalari",
+   "id": "IZ05",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_acilis_hatalari",
+   "id": "IZ06",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_acilis_hatalari",
+   "id": "IZ07",
+   "sinif": "tam_ayni",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "64",
+   "deger_y": "64",
+   "hata_e": "beklenen {\"gte\":128}, gelen 64 (sağlanmayan: gte 128)",
+   "hata_y": "beklenen {\"gte\":128}, gelen 64 (sağlanmayan: gte 128)"
+  },
+  {
+   "ad": "02_arazi_isci_hata",
+   "id": "HI03",
+   "sinif": "yalniz_sayi",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "87",
+   "deger_y": "120",
+   "hata_e": "beklenen {\"lte\":5}, gelen 87 (sağlanmayan: lte 5)",
+   "hata_y": "beklenen {\"lte\":5}, gelen 120 (sağlanmayan: lte 5)"
+  },
+  {
+   "ad": "02_arazi_isci_hata",
+   "id": "HI04",
+   "sinif": "yalniz_sayi",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "87",
+   "deger_y": "120",
+   "hata_e": "beklenen {\"lte\":50}, gelen 87 (sağlanmayan: lte 50)",
+   "hata_y": "beklenen {\"lte\":50}, gelen 120 (sağlanmayan: lte 50)"
+  },
+  {
+   "ad": "02_arazi_isci_hata",
+   "id": "HI05",
+   "sinif": "tam_ayni",
+   "tur_e": "dizge",
+   "tur_y": "dizge",
+   "deger_e": "\"RED: Arazi işi grid tekrarlanan işçi hatası\"",
+   "deger_y": "\"RED: Arazi işi grid tekrarlanan işçi hatası\"",
+   "hata_e": "beklenen {\"eq\":\"tamam\"}, gelen \"RED: Arazi işi grid tekrarlanan işçi hatası\" (sağlanmayan: eq \"tamam\")",
+   "hata_y": "beklenen {\"eq\":\"tamam\"}, gelen \"RED: Arazi işi grid tekrarlanan işçi hatası\" (sağlanmayan: eq \"tamam\")"
+  },
+  {
+   "ad": "02_arazi_isci_hata",
+   "id": "HI07",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_arazi_yasam_crash",
+   "id": "LY05",
+   "sinif": "tam_ayni",
+   "tur_e": "dizge",
+   "tur_y": "dizge",
+   "deger_e": "\"undefined\"",
+   "deger_y": "\"undefined\"",
+   "hata_e": "beklenen {\"eq\":\"ok\"}, gelen \"undefined\" (sağlanmayan: eq \"ok\")",
+   "hata_y": "beklenen {\"eq\":\"ok\"}, gelen \"undefined\" (sağlanmayan: eq \"ok\")"
+  },
+  {
+   "ad": "02_arazi_yasam_crash",
+   "id": "LY09",
+   "sinif": "yalniz_sayi",
+   "tur_e": "dizge",
+   "tur_y": "dizge",
+   "deger_e": "\"B odağı kısaldı: B bittikten 5 sn sonra B bölgesinde 20 ağ, derinlik 5214 m\"",
+   "deger_y": "\"B odağı kısaldı: B bittikten 5 sn sonra B bölgesinde 0 ağ, derinlik 5214 m\"",
+   "hata_e": "beklenen {\"eq\":\"tamam\"}, gelen \"B odağı kısaldı: B bittikten 5 sn sonra B bölgesinde 20 ağ, derinlik 5214 m\" (sağlanmayan: eq \"tamam\")",
+   "hata_y": "beklenen {\"eq\":\"tamam\"}, gelen \"B odağı kısaldı: B bittikten 5 sn sonra B bölgesinde 0 ağ, derinlik 5214 m\" (sağlanmayan: eq \"tamam\")"
+  },
+  {
+   "ad": "02_arazi_yasam_crash",
+   "id": "LY10",
+   "sinif": "tam_ayni",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "24",
+   "deger_y": "24",
+   "hata_e": "beklenen {\"lte\":2}, gelen 24 (sağlanmayan: lte 2)",
+   "hata_y": "beklenen {\"lte\":2}, gelen 24 (sağlanmayan: lte 2)"
+  },
+  {
+   "ad": "02_arazi_yasam_crash",
+   "id": "LY11",
+   "sinif": "tam_ayni",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "83",
+   "deger_y": "83",
+   "hata_e": "beklenen {\"lte\":10}, gelen 83 (sağlanmayan: lte 10)",
+   "hata_y": "beklenen {\"lte\":10}, gelen 83 (sağlanmayan: lte 10)"
+  },
+  {
+   "ad": "02_arazi_yasam_crash",
+   "id": "LY14",
+   "sinif": "tam_ayni",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "83",
+   "deger_y": "83",
+   "hata_e": "beklenen {\"lte\":10}, gelen 83 (sağlanmayan: lte 10)",
+   "hata_y": "beklenen {\"lte\":10}, gelen 83 (sağlanmayan: lte 10)"
+  },
+  {
+   "ad": "02_arazi_yasam_normal",
+   "id": "LY05",
+   "sinif": "tam_ayni",
+   "tur_e": "dizge",
+   "tur_y": "dizge",
+   "deger_e": "\"undefined\"",
+   "deger_y": "\"undefined\"",
+   "hata_e": "beklenen {\"eq\":\"ok\"}, gelen \"undefined\" (sağlanmayan: eq \"ok\")",
+   "hata_y": "beklenen {\"eq\":\"ok\"}, gelen \"undefined\" (sağlanmayan: eq \"ok\")"
+  },
+  {
+   "ad": "02_arazi_yasam_normal",
+   "id": "LY09",
+   "sinif": "tam_ayni",
+   "tur_e": "dizge",
+   "tur_y": "dizge",
+   "deger_e": "\"B odağı kısaldı: B bittikten 5 sn sonra B bölgesinde 20 ağ, derinlik 5214 m\"",
+   "deger_y": "\"B odağı kısaldı: B bittikten 5 sn sonra B bölgesinde 20 ağ, derinlik 5214 m\"",
+   "hata_e": "beklenen {\"eq\":\"tamam\"}, gelen \"B odağı kısaldı: B bittikten 5 sn sonra B bölgesinde 20 ağ, derinlik 5214 m\" (sağlanmayan: eq \"tamam\")",
+   "hata_y": "beklenen {\"eq\":\"tamam\"}, gelen \"B odağı kısaldı: B bittikten 5 sn sonra B bölgesinde 20 ağ, derinlik 5214 m\" (sağlanmayan: eq \"tamam\")"
+  },
+  {
+   "ad": "02_arazi_yasam_normal",
+   "id": "LY10",
+   "sinif": "tam_ayni",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "24",
+   "deger_y": "24",
+   "hata_e": "beklenen {\"lte\":2}, gelen 24 (sağlanmayan: lte 2)",
+   "hata_y": "beklenen {\"lte\":2}, gelen 24 (sağlanmayan: lte 2)"
+  },
+  {
+   "ad": "02_arazi_yasam_normal",
+   "id": "LY11",
+   "sinif": "tam_ayni",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "83",
+   "deger_y": "83",
+   "hata_e": "beklenen {\"lte\":10}, gelen 83 (sağlanmayan: lte 10)",
+   "hata_y": "beklenen {\"lte\":10}, gelen 83 (sağlanmayan: lte 10)"
+  },
+  {
+   "ad": "02_arazi_yasam_normal",
+   "id": "LY14",
+   "sinif": "tam_ayni",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "83",
+   "deger_y": "83",
+   "hata_e": "beklenen {\"lte\":10}, gelen 83 (sağlanmayan: lte 10)",
+   "hata_y": "beklenen {\"lte\":10}, gelen 83 (sağlanmayan: lte 10)"
+  },
+  {
+   "ad": "02_arazi_yasam_normal_2",
+   "id": "LY05",
+   "sinif": "tam_ayni",
+   "tur_e": "dizge",
+   "tur_y": "dizge",
+   "deger_e": "\"undefined\"",
+   "deger_y": "\"undefined\"",
+   "hata_e": "beklenen {\"eq\":\"ok\"}, gelen \"undefined\" (sağlanmayan: eq \"ok\")",
+   "hata_y": "beklenen {\"eq\":\"ok\"}, gelen \"undefined\" (sağlanmayan: eq \"ok\")"
+  },
+  {
+   "ad": "02_arazi_yasam_normal_2",
+   "id": "LY09",
+   "sinif": "tam_ayni",
+   "tur_e": "dizge",
+   "tur_y": "dizge",
+   "deger_e": "\"B odağı kısaldı: B bittikten 5 sn sonra B bölgesinde 20 ağ, derinlik 5214 m\"",
+   "deger_y": "\"B odağı kısaldı: B bittikten 5 sn sonra B bölgesinde 20 ağ, derinlik 5214 m\"",
+   "hata_e": "beklenen {\"eq\":\"tamam\"}, gelen \"B odağı kısaldı: B bittikten 5 sn sonra B bölgesinde 20 ağ, derinlik 5214 m\" (sağlanmayan: eq \"tamam\")",
+   "hata_y": "beklenen {\"eq\":\"tamam\"}, gelen \"B odağı kısaldı: B bittikten 5 sn sonra B bölgesinde 20 ağ, derinlik 5214 m\" (sağlanmayan: eq \"tamam\")"
+  },
+  {
+   "ad": "02_arazi_yasam_normal_2",
+   "id": "LY10",
+   "sinif": "tam_ayni",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "24",
+   "deger_y": "24",
+   "hata_e": "beklenen {\"lte\":2}, gelen 24 (sağlanmayan: lte 2)",
+   "hata_y": "beklenen {\"lte\":2}, gelen 24 (sağlanmayan: lte 2)"
+  },
+  {
+   "ad": "02_arazi_yasam_normal_2",
+   "id": "LY11",
+   "sinif": "tam_ayni",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "83",
+   "deger_y": "83",
+   "hata_e": "beklenen {\"lte\":10}, gelen 83 (sağlanmayan: lte 10)",
+   "hata_y": "beklenen {\"lte\":10}, gelen 83 (sağlanmayan: lte 10)"
+  },
+  {
+   "ad": "02_arazi_yasam_normal_2",
+   "id": "LY14",
+   "sinif": "tam_ayni",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "83",
+   "deger_y": "83",
+   "hata_e": "beklenen {\"lte\":10}, gelen 83 (sağlanmayan: lte 10)",
+   "hata_y": "beklenen {\"lte\":10}, gelen 83 (sağlanmayan: lte 10)"
+  },
+  {
+   "ad": "02_arazi_yasam_noworker",
+   "id": "LY05",
+   "sinif": "tam_ayni",
+   "tur_e": "dizge",
+   "tur_y": "dizge",
+   "deger_e": "\"undefined\"",
+   "deger_y": "\"undefined\"",
+   "hata_e": "beklenen {\"eq\":\"ok\"}, gelen \"undefined\" (sağlanmayan: eq \"ok\")",
+   "hata_y": "beklenen {\"eq\":\"ok\"}, gelen \"undefined\" (sağlanmayan: eq \"ok\")"
+  },
+  {
+   "ad": "02_arazi_yasam_noworker",
+   "id": "LY09",
+   "sinif": "tam_ayni",
+   "tur_e": "dizge",
+   "tur_y": "dizge",
+   "deger_e": "\"B odağı kısaldı: B bittikten 5 sn sonra B bölgesinde 0 ağ, derinlik 5214 m\"",
+   "deger_y": "\"B odağı kısaldı: B bittikten 5 sn sonra B bölgesinde 0 ağ, derinlik 5214 m\"",
+   "hata_e": "beklenen {\"eq\":\"tamam\"}, gelen \"B odağı kısaldı: B bittikten 5 sn sonra B bölgesinde 0 ağ, derinlik 5214 m\" (sağlanmayan: eq \"tamam\")",
+   "hata_y": "beklenen {\"eq\":\"tamam\"}, gelen \"B odağı kısaldı: B bittikten 5 sn sonra B bölgesinde 0 ağ, derinlik 5214 m\" (sağlanmayan: eq \"tamam\")"
+  },
+  {
+   "ad": "02_arazi_yasam_noworker",
+   "id": "LY10",
+   "sinif": "tam_ayni",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "24",
+   "deger_y": "24",
+   "hata_e": "beklenen {\"lte\":2}, gelen 24 (sağlanmayan: lte 2)",
+   "hata_y": "beklenen {\"lte\":2}, gelen 24 (sağlanmayan: lte 2)"
+  },
+  {
+   "ad": "02_arazi_yasam_noworker",
+   "id": "LY11",
+   "sinif": "tam_ayni",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "83",
+   "deger_y": "83",
+   "hata_e": "beklenen {\"lte\":10}, gelen 83 (sağlanmayan: lte 10)",
+   "hata_y": "beklenen {\"lte\":10}, gelen 83 (sağlanmayan: lte 10)"
+  },
+  {
+   "ad": "02_arazi_yasam_noworker",
+   "id": "LY14",
+   "sinif": "tam_ayni",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "83",
+   "deger_y": "83",
+   "hata_e": "beklenen {\"lte\":10}, gelen 83 (sağlanmayan: lte 10)",
+   "hata_y": "beklenen {\"lte\":10}, gelen 83 (sağlanmayan: lte 10)"
+  },
+  {
+   "ad": "02_arazi_yasam_noworker_2",
+   "id": "LY05",
+   "sinif": "tam_ayni",
+   "tur_e": "dizge",
+   "tur_y": "dizge",
+   "deger_e": "\"undefined\"",
+   "deger_y": "\"undefined\"",
+   "hata_e": "beklenen {\"eq\":\"ok\"}, gelen \"undefined\" (sağlanmayan: eq \"ok\")",
+   "hata_y": "beklenen {\"eq\":\"ok\"}, gelen \"undefined\" (sağlanmayan: eq \"ok\")"
+  },
+  {
+   "ad": "02_arazi_yasam_noworker_2",
+   "id": "LY09",
+   "sinif": "tam_ayni",
+   "tur_e": "dizge",
+   "tur_y": "dizge",
+   "deger_e": "\"B odağı kısaldı: B bittikten 5 sn sonra B bölgesinde 0 ağ, derinlik 5214 m\"",
+   "deger_y": "\"B odağı kısaldı: B bittikten 5 sn sonra B bölgesinde 0 ağ, derinlik 5214 m\"",
+   "hata_e": "beklenen {\"eq\":\"tamam\"}, gelen \"B odağı kısaldı: B bittikten 5 sn sonra B bölgesinde 0 ağ, derinlik 5214 m\" (sağlanmayan: eq \"tamam\")",
+   "hata_y": "beklenen {\"eq\":\"tamam\"}, gelen \"B odağı kısaldı: B bittikten 5 sn sonra B bölgesinde 0 ağ, derinlik 5214 m\" (sağlanmayan: eq \"tamam\")"
+  },
+  {
+   "ad": "02_arazi_yasam_noworker_2",
+   "id": "LY10",
+   "sinif": "tam_ayni",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "24",
+   "deger_y": "24",
+   "hata_e": "beklenen {\"lte\":2}, gelen 24 (sağlanmayan: lte 2)",
+   "hata_y": "beklenen {\"lte\":2}, gelen 24 (sağlanmayan: lte 2)"
+  },
+  {
+   "ad": "02_arazi_yasam_noworker_2",
+   "id": "LY11",
+   "sinif": "tam_ayni",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "83",
+   "deger_y": "83",
+   "hata_e": "beklenen {\"lte\":10}, gelen 83 (sağlanmayan: lte 10)",
+   "hata_y": "beklenen {\"lte\":10}, gelen 83 (sağlanmayan: lte 10)"
+  },
+  {
+   "ad": "02_arazi_yasam_noworker_2",
+   "id": "LY14",
+   "sinif": "tam_ayni",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "83",
+   "deger_y": "83",
+   "hata_e": "beklenen {\"lte\":10}, gelen 83 (sağlanmayan: lte 10)",
+   "hata_y": "beklenen {\"lte\":10}, gelen 83 (sağlanmayan: lte 10)"
+  },
+  {
+   "ad": "02_ayar_lod",
+   "id": "AL01",
+   "sinif": "tam_ayni",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "0.7",
+   "deger_y": "0.7",
+   "hata_e": "beklenen {\"gte\":0.548,\"lte\":0.558}, gelen 0.7 (sağlanmayan: lte 0.558)",
+   "hata_y": "beklenen {\"gte\":0.548,\"lte\":0.558}, gelen 0.7 (sağlanmayan: lte 0.558)"
+  },
+  {
+   "ad": "02_ayar_lod",
+   "id": "AL02",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_ayar_lod",
+   "id": "AL03",
+   "sinif": "tam_ayni",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "1",
+   "deger_y": "1",
+   "hata_e": "beklenen {\"gte\":0.695,\"lte\":0.705}, gelen 1 (sağlanmayan: lte 0.705)",
+   "hata_y": "beklenen {\"gte\":0.695,\"lte\":0.705}, gelen 1 (sağlanmayan: lte 0.705)"
+  },
+  {
+   "ad": "02_ayar_lod",
+   "id": "AL04",
+   "sinif": "tam_ayni",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "0.7",
+   "deger_y": "0.7",
+   "hata_e": "beklenen {\"gte\":0.548,\"lte\":0.558}, gelen 0.7 (sağlanmayan: lte 0.558)",
+   "hata_y": "beklenen {\"gte\":0.548,\"lte\":0.558}, gelen 0.7 (sağlanmayan: lte 0.558)"
+  },
+  {
+   "ad": "02_ayar_lod",
+   "id": "AL06",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_ayar_lod",
+   "id": "AL08",
+   "sinif": "tam_ayni",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "2048",
+   "deger_y": "2048",
+   "hata_e": "beklenen {\"eq\":1024}, gelen 2048 (sağlanmayan: eq 1024)",
+   "hata_y": "beklenen {\"eq\":1024}, gelen 2048 (sağlanmayan: eq 1024)"
+  },
+  {
+   "ad": "02_ayar_lod",
+   "id": "AL09",
+   "sinif": "tam_ayni",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "2048",
+   "deger_y": "2048",
+   "hata_e": "beklenen {\"eq\":1024}, gelen 2048 (sağlanmayan: eq 1024)",
+   "hata_y": "beklenen {\"eq\":1024}, gelen 2048 (sağlanmayan: eq 1024)"
+  },
+  {
+   "ad": "02_depolama_kapali",
+   "id": "DK03",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_depolama_kapali",
+   "id": "DK04",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_depolama_kapali",
+   "id": "DK05",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_depolama_kapali",
+   "id": "DK06",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_depolama_kapali",
+   "id": "DK07",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_depolama_kapali",
+   "id": "DK08",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_depolama_kapali",
+   "id": "DK09",
+   "sinif": "tam_ayni",
+   "tur_e": "null",
+   "tur_y": "null",
+   "deger_e": "null",
+   "deger_y": "null",
+   "hata_e": "istisna: page.evaluate: ReferenceError: DK is not defined\n    at eval (eval at evaluate (:311:30), <anonymous>:1:1)\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:311:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+   "hata_y": "istisna: page.evaluate: ReferenceError: DK is not defined\n    at eval (eval at evaluate (:311:30), <anonymous>:1:1)\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:311:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+  },
+  {
+   "ad": "02_depolama_kapali",
+   "id": "DK10",
+   "sinif": "tam_ayni",
+   "tur_e": "null",
+   "tur_y": "null",
+   "deger_e": "null",
+   "deger_y": "null",
+   "hata_e": "istisna: page.evaluate: ReferenceError: DK is not defined\n    at eval (eval at evaluate (:311:30), <anonymous>:1:113)\n    at async <anonymous>:337:30",
+   "hata_y": "istisna: page.evaluate: ReferenceError: DK is not defined\n    at eval (eval at evaluate (:311:30), <anonymous>:1:113)\n    at async <anonymous>:337:30"
+  },
+  {
+   "ad": "02_depolama_kapali",
+   "id": "DK11",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_depolama_kapali",
+   "id": "DK12",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_depolama_kapali",
+   "id": "DK13",
+   "sinif": "tam_ayni",
+   "tur_e": "dizge",
+   "tur_y": "dizge",
+   "deger_e": "\"zaman aşımı\"",
+   "deger_y": "\"zaman aşımı\"",
+   "hata_e": "beklenen {\"eq\":\"lobi\"}, gelen \"zaman aşımı\" (sağlanmayan: eq \"lobi\")",
+   "hata_y": "beklenen {\"eq\":\"lobi\"}, gelen \"zaman aşımı\" (sağlanmayan: eq \"lobi\")"
+  },
+  {
+   "ad": "02_depolama_kapali",
+   "id": "DK14",
+   "sinif": "tam_ayni",
+   "tur_e": "null",
+   "tur_y": "null",
+   "deger_e": "null",
+   "deger_y": "null",
+   "hata_e": "istisna: page.evaluate: ReferenceError: DK is not defined\n    at eval (eval at evaluate (:311:30), <anonymous>:1:42)\n    at eval (eval at evaluate (:311:30), <anonymous>:1:211)\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:311:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+   "hata_y": "istisna: page.evaluate: ReferenceError: DK is not defined\n    at eval (eval at evaluate (:311:30), <anonymous>:1:42)\n    at eval (eval at evaluate (:311:30), <anonymous>:1:211)\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:311:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+  },
+  {
+   "ad": "02_depolama_kapali",
+   "id": "DK15",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_normal",
+   "id": "HY10",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_normal",
+   "id": "HY11",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_normal",
+   "id": "HY13",
+   "sinif": "tam_ayni",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "0",
+   "deger_y": "0",
+   "hata_e": "beklenen {\"gte\":6}, gelen 0 (sağlanmayan: gte 6)",
+   "hata_y": "beklenen {\"gte\":6}, gelen 0 (sağlanmayan: gte 6)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_normal",
+   "id": "HY14",
+   "sinif": "tam_ayni",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "5804",
+   "deger_y": "5804",
+   "hata_e": "beklenen {\"lte\":100}, gelen 5804 (sağlanmayan: lte 100)",
+   "hata_y": "beklenen {\"lte\":100}, gelen 5804 (sağlanmayan: lte 100)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_normal",
+   "id": "HY17",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "true",
+   "deger_y": "true",
+   "hata_e": "beklenen {\"eq\":false}, gelen true (sağlanmayan: eq false)",
+   "hata_y": "beklenen {\"eq\":false}, gelen true (sağlanmayan: eq false)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_normal",
+   "id": "HY18",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_normal",
+   "id": "HY19",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_normal",
+   "id": "HY21",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_normal",
+   "id": "HYS-02",
+   "sinif": "tam_ayni",
+   "tur_e": "dizge",
+   "tur_y": "dizge",
+   "deger_e": "\"undefined\"",
+   "deger_y": "\"undefined\"",
+   "hata_e": "beklenen {\"eq\":\"ok\"}, gelen \"undefined\" (sağlanmayan: eq \"ok\")",
+   "hata_y": "beklenen {\"eq\":\"ok\"}, gelen \"undefined\" (sağlanmayan: eq \"ok\")"
+  },
+  {
+   "ad": "02_hizli_yolculuk_normal",
+   "id": "HYU-02",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_normal",
+   "id": "HYU-05",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker",
+   "id": "HY10",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker",
+   "id": "HY11",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker",
+   "id": "HY13",
+   "sinif": "tam_ayni",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "0",
+   "deger_y": "0",
+   "hata_e": "beklenen {\"gte\":6}, gelen 0 (sağlanmayan: gte 6)",
+   "hata_y": "beklenen {\"gte\":6}, gelen 0 (sağlanmayan: gte 6)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker",
+   "id": "HY14",
+   "sinif": "tam_ayni",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "5804",
+   "deger_y": "5804",
+   "hata_e": "beklenen {\"lte\":100}, gelen 5804 (sağlanmayan: lte 100)",
+   "hata_y": "beklenen {\"lte\":100}, gelen 5804 (sağlanmayan: lte 100)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker",
+   "id": "HY17",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "true",
+   "deger_y": "true",
+   "hata_e": "beklenen {\"eq\":false}, gelen true (sağlanmayan: eq false)",
+   "hata_y": "beklenen {\"eq\":false}, gelen true (sağlanmayan: eq false)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker",
+   "id": "HY18",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker",
+   "id": "HY19",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker",
+   "id": "HY21",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker",
+   "id": "HYS-01",
+   "sinif": "yalniz_sayi",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "30949",
+   "deger_y": "19730",
+   "hata_e": "beklenen {\"gte\":0,\"lte\":3000}, gelen 30949 (sağlanmayan: lte 3000)",
+   "hata_y": "beklenen {\"gte\":0,\"lte\":3000}, gelen 19730 (sağlanmayan: lte 3000)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker",
+   "id": "HYS-02",
+   "sinif": "tam_ayni",
+   "tur_e": "dizge",
+   "tur_y": "dizge",
+   "deger_e": "\"undefined\"",
+   "deger_y": "\"undefined\"",
+   "hata_e": "beklenen {\"eq\":\"ok\"}, gelen \"undefined\" (sağlanmayan: eq \"ok\")",
+   "hata_y": "beklenen {\"eq\":\"ok\"}, gelen \"undefined\" (sağlanmayan: eq \"ok\")"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker",
+   "id": "HYU-02",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker",
+   "id": "HYU-05",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker_2",
+   "id": "HY10",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker_2",
+   "id": "HY11",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker_2",
+   "id": "HY13",
+   "sinif": "tam_ayni",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "0",
+   "deger_y": "0",
+   "hata_e": "beklenen {\"gte\":6}, gelen 0 (sağlanmayan: gte 6)",
+   "hata_y": "beklenen {\"gte\":6}, gelen 0 (sağlanmayan: gte 6)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker_2",
+   "id": "HY14",
+   "sinif": "tam_ayni",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "5804",
+   "deger_y": "5804",
+   "hata_e": "beklenen {\"lte\":100}, gelen 5804 (sağlanmayan: lte 100)",
+   "hata_y": "beklenen {\"lte\":100}, gelen 5804 (sağlanmayan: lte 100)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker_2",
+   "id": "HY17",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "true",
+   "deger_y": "true",
+   "hata_e": "beklenen {\"eq\":false}, gelen true (sağlanmayan: eq false)",
+   "hata_y": "beklenen {\"eq\":false}, gelen true (sağlanmayan: eq false)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker_2",
+   "id": "HY18",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker_2",
+   "id": "HY19",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker_2",
+   "id": "HY21",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker_2",
+   "id": "HYS-01",
+   "sinif": "yalniz_sayi",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "30949",
+   "deger_y": "20341",
+   "hata_e": "beklenen {\"gte\":0,\"lte\":3000}, gelen 30949 (sağlanmayan: lte 3000)",
+   "hata_y": "beklenen {\"gte\":0,\"lte\":3000}, gelen 20341 (sağlanmayan: lte 3000)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker_2",
+   "id": "HYS-02",
+   "sinif": "tam_ayni",
+   "tur_e": "dizge",
+   "tur_y": "dizge",
+   "deger_e": "\"undefined\"",
+   "deger_y": "\"undefined\"",
+   "hata_e": "beklenen {\"eq\":\"ok\"}, gelen \"undefined\" (sağlanmayan: eq \"ok\")",
+   "hata_y": "beklenen {\"eq\":\"ok\"}, gelen \"undefined\" (sağlanmayan: eq \"ok\")"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker_2",
+   "id": "HYU-02",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker_2",
+   "id": "HYU-05",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker_3",
+   "id": "HY10",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker_3",
+   "id": "HY11",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker_3",
+   "id": "HY13",
+   "sinif": "tam_ayni",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "0",
+   "deger_y": "0",
+   "hata_e": "beklenen {\"gte\":6}, gelen 0 (sağlanmayan: gte 6)",
+   "hata_y": "beklenen {\"gte\":6}, gelen 0 (sağlanmayan: gte 6)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker_3",
+   "id": "HY14",
+   "sinif": "tam_ayni",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "5804",
+   "deger_y": "5804",
+   "hata_e": "beklenen {\"lte\":100}, gelen 5804 (sağlanmayan: lte 100)",
+   "hata_y": "beklenen {\"lte\":100}, gelen 5804 (sağlanmayan: lte 100)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker_3",
+   "id": "HY17",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "true",
+   "deger_y": "true",
+   "hata_e": "beklenen {\"eq\":false}, gelen true (sağlanmayan: eq false)",
+   "hata_y": "beklenen {\"eq\":false}, gelen true (sağlanmayan: eq false)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker_3",
+   "id": "HY18",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker_3",
+   "id": "HY19",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker_3",
+   "id": "HY21",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker_3",
+   "id": "HYS-01",
+   "sinif": "yalniz_sayi",
+   "tur_e": "sayi",
+   "tur_y": "sayi",
+   "deger_e": "30949",
+   "deger_y": "22172",
+   "hata_e": "beklenen {\"gte\":0,\"lte\":3000}, gelen 30949 (sağlanmayan: lte 3000)",
+   "hata_y": "beklenen {\"gte\":0,\"lte\":3000}, gelen 22172 (sağlanmayan: lte 3000)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker_3",
+   "id": "HYS-02",
+   "sinif": "tam_ayni",
+   "tur_e": "dizge",
+   "tur_y": "dizge",
+   "deger_e": "\"undefined\"",
+   "deger_y": "\"undefined\"",
+   "hata_e": "beklenen {\"eq\":\"ok\"}, gelen \"undefined\" (sağlanmayan: eq \"ok\")",
+   "hata_y": "beklenen {\"eq\":\"ok\"}, gelen \"undefined\" (sağlanmayan: eq \"ok\")"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker_3",
+   "id": "HYU-02",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker_3",
+   "id": "HYU-05",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_tek_dosya_blob",
+   "id": "TB01",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_tek_dosya_cerceve",
+   "id": "TC02",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_tek_dosya_cerceve",
+   "id": "TC03",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_tek_dosya_cerceve",
+   "id": "TC04",
+   "sinif": "tam_ayni",
+   "tur_e": "dizge",
+   "tur_y": "dizge",
+   "deger_e": "\"çerçevede DK yok\"",
+   "deger_y": "\"çerçevede DK yok\"",
+   "hata_e": "beklenen {\"gte\":20}, gelen \"çerçevede DK yok\" (sağlanmayan: gte 20: değer sonlu bir sayı değil (string))",
+   "hata_y": "beklenen {\"gte\":20}, gelen \"çerçevede DK yok\" (sağlanmayan: gte 20: değer sonlu bir sayı değil (string))"
+  },
+  {
+   "ad": "02_tek_dosya_kipler",
+   "id": "TK02",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_yukleme_bekleme",
+   "id": "YB03",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_yukleme_bekleme",
+   "id": "YB04",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_yukleme_bekleme",
+   "id": "YB05",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_yukleme_bekleme",
+   "id": "YB06",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "02_yukleme_bekleme",
+   "id": "YB07",
+   "sinif": "tam_ayni",
+   "tur_e": "bool",
+   "tur_y": "bool",
+   "deger_e": "false",
+   "deger_y": "false",
+   "hata_e": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "hata_y": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)"
+  },
+  {
+   "ad": "coop_02_hizli_yolculuk_konuk",
+   "id": "HK03",
+   "sinif": "tam_ayni",
+   "tur_e": "nesne",
+   "tur_y": "nesne",
+   "deger_e": "{\"cagri\": [[1676, 812, 400, \"bekliyor\"], [289, -5003, 400, \"bekliyor\"]], \"ikinciHazirlik\": 1}",
+   "deger_y": "{\"cagri\": [[1676, 812, 400, \"bekliyor\"], [289, -5003, 400, \"bekliyor\"]], \"ikinciHazirlik\": 1}",
+   "hata_e": "kontrol yanlış (false) döndü",
+   "hata_y": "kontrol yanlış (false) döndü"
+  },
+  {
+   "ad": "coop_02_hizli_yolculuk_konuk",
+   "id": "HK04",
+   "sinif": "yalniz_sayi",
+   "tur_e": "nesne",
+   "tur_y": "nesne",
+   "deger_e": "{\"aUzaklik\": 5978, \"ayniOyuncu\": true, \"bUzaklik\": 1, \"durum\": \"playing\", \"konum\": [289, -5003], \"varisBildirimi\": [\"Kaptan rotayı kırdı: yeni limana vardınız!\", \"Kaptan rotayı kırdı: yeni limana vardınız!\"]}",
+   "deger_y": "{\"aUzaklik\": 1, \"ayniOyuncu\": true, \"bUzaklik\": 5979, \"durum\": \"playing\", \"konum\": [1676, 813], \"varisBildirimi\": [\"Kaptan rotayı kırdı: yeni limana vardınız!\", \"Kaptan rotayı kırdı: yeni limana vardınız!\"]}",
+   "hata_e": "kontrol yanlış (false) döndü",
+   "hata_y": "kontrol yanlış (false) döndü"
+  },
+  {
+   "ad": "coop_02_hizli_yolculuk_konuk",
+   "id": "HK07",
+   "sinif": "yalniz_sayi",
+   "tur_e": "nesne",
+   "tur_y": "nesne",
+   "deger_e": "{\"bildirimSonra\": [\"Kaptan rotayı kırdı: yeni limana vardınız!\"], \"cUzaklik\": 1, \"durum\": \"menu\", \"hud\": false, \"menu\": true, \"oyuncuKaydi\": 10046}",
+   "deger_y": "{\"bildirimSonra\": [\"Kaptan rotayı kırdı: yeni limana vardınız!\"], \"cUzaklik\": 1, \"durum\": \"menu\", \"hud\": false, \"menu\": true, \"oyuncuKaydi\": 4655}",
+   "hata_e": "kontrol yanlış (false) döndü",
+   "hata_y": "kontrol yanlış (false) döndü"
+  }
+ ],
+ "saglik": [
+  {
+   "ad": "00_acilis",
+   "kopma": null,
+   "sonuc_kopma": null,
+   "tarayiciKoptu": false,
+   "sus": [],
+   "hatalar_sayfa": [],
+   "kesildi": false,
+   "pageErrors_bos": true,
+   "errors_bos": true,
+   "degerlendirme": [],
+   "kapananlar": null,
+   "oom_artislari": [],
+   "oom_bas": 0,
+   "oom_son": 0,
+   "log_kotu": [],
+   "sonuc_satiri": true
+  },
+  {
+   "ad": "02_acilis_akisi",
+   "kopma": null,
+   "sonuc_kopma": null,
+   "tarayiciKoptu": false,
+   "sus": [],
+   "hatalar_sayfa": [],
+   "kesildi": false,
+   "pageErrors_bos": true,
+   "errors_bos": true,
+   "degerlendirme": [],
+   "kapananlar": null,
+   "oom_artislari": [],
+   "oom_bas": 0,
+   "oom_son": 0,
+   "log_kotu": [],
+   "sonuc_satiri": true
+  },
+  {
+   "ad": "02_acilis_hatalari",
+   "kopma": null,
+   "sonuc_kopma": null,
+   "tarayiciKoptu": false,
+   "sus": [],
+   "hatalar_sayfa": [],
+   "kesildi": false,
+   "pageErrors_bos": true,
+   "errors_bos": false,
+   "degerlendirme": [],
+   "kapananlar": null,
+   "oom_artislari": [],
+   "oom_bas": 0,
+   "oom_son": 0,
+   "log_kotu": [
+    "zaman aşımı",
+    "zaman aşımı"
+   ],
+   "sonuc_satiri": true
+  },
+  {
+   "ad": "02_arazi_isci_hata",
+   "kopma": null,
+   "sonuc_kopma": null,
+   "tarayiciKoptu": false,
+   "sus": [],
+   "hatalar_sayfa": [],
+   "kesildi": false,
+   "pageErrors_bos": true,
+   "errors_bos": false,
+   "degerlendirme": [],
+   "kapananlar": null,
+   "oom_artislari": [],
+   "oom_bas": 0,
+   "oom_son": 0,
+   "log_kotu": [],
+   "sonuc_satiri": true
+  },
+  {
+   "ad": "02_arazi_yasam_crash",
+   "kopma": null,
+   "sonuc_kopma": null,
+   "tarayiciKoptu": false,
+   "sus": [],
+   "hatalar_sayfa": [],
+   "kesildi": false,
+   "pageErrors_bos": true,
+   "errors_bos": true,
+   "degerlendirme": [],
+   "kapananlar": null,
+   "oom_artislari": [],
+   "oom_bas": 0,
+   "oom_son": 0,
+   "log_kotu": [
+    "zaman aşımı"
+   ],
+   "sonuc_satiri": true
+  },
+  {
+   "ad": "02_arazi_yasam_normal",
+   "kopma": null,
+   "sonuc_kopma": null,
+   "tarayiciKoptu": false,
+   "sus": [],
+   "hatalar_sayfa": [],
+   "kesildi": false,
+   "pageErrors_bos": true,
+   "errors_bos": true,
+   "degerlendirme": [],
+   "kapananlar": null,
+   "oom_artislari": [],
+   "oom_bas": 0,
+   "oom_son": 0,
+   "log_kotu": [
+    "zaman aşımı"
+   ],
+   "sonuc_satiri": true
+  },
+  {
+   "ad": "02_arazi_yasam_normal_2",
+   "kopma": null,
+   "sonuc_kopma": null,
+   "tarayiciKoptu": false,
+   "sus": [],
+   "hatalar_sayfa": [],
+   "kesildi": false,
+   "pageErrors_bos": true,
+   "errors_bos": true,
+   "degerlendirme": [],
+   "kapananlar": null,
+   "oom_artislari": [],
+   "oom_bas": 0,
+   "oom_son": 0,
+   "log_kotu": [
+    "zaman aşımı"
+   ],
+   "sonuc_satiri": true
+  },
+  {
+   "ad": "02_arazi_yasam_noworker",
+   "kopma": null,
+   "sonuc_kopma": null,
+   "tarayiciKoptu": false,
+   "sus": [],
+   "hatalar_sayfa": [],
+   "kesildi": false,
+   "pageErrors_bos": true,
+   "errors_bos": true,
+   "degerlendirme": [],
+   "kapananlar": null,
+   "oom_artislari": [],
+   "oom_bas": 0,
+   "oom_son": 0,
+   "log_kotu": [
+    "zaman aşımı"
+   ],
+   "sonuc_satiri": true
+  },
+  {
+   "ad": "02_arazi_yasam_noworker_2",
+   "kopma": null,
+   "sonuc_kopma": null,
+   "tarayiciKoptu": false,
+   "sus": [],
+   "hatalar_sayfa": [],
+   "kesildi": false,
+   "pageErrors_bos": true,
+   "errors_bos": true,
+   "degerlendirme": [],
+   "kapananlar": null,
+   "oom_artislari": [],
+   "oom_bas": 0,
+   "oom_son": 0,
+   "log_kotu": [
+    "zaman aşımı"
+   ],
+   "sonuc_satiri": true
+  },
+  {
+   "ad": "02_arazi_yedek_badurl",
+   "kopma": null,
+   "sonuc_kopma": null,
+   "tarayiciKoptu": false,
+   "sus": [],
+   "hatalar_sayfa": [],
+   "kesildi": false,
+   "pageErrors_bos": true,
+   "errors_bos": false,
+   "degerlendirme": [],
+   "kapananlar": null,
+   "oom_artislari": [],
+   "oom_bas": 0,
+   "oom_son": 0,
+   "log_kotu": [
+    "zaman aşımı"
+   ],
+   "sonuc_satiri": true
+  },
+  {
+   "ad": "02_arazi_yedek_crash",
+   "kopma": null,
+   "sonuc_kopma": null,
+   "tarayiciKoptu": false,
+   "sus": [],
+   "hatalar_sayfa": [],
+   "kesildi": false,
+   "pageErrors_bos": true,
+   "errors_bos": true,
+   "degerlendirme": [],
+   "kapananlar": null,
+   "oom_artislari": [],
+   "oom_bas": 0,
+   "oom_son": 0,
+   "log_kotu": [
+    "zaman aşımı"
+   ],
+   "sonuc_satiri": true
+  },
+  {
+   "ad": "02_arazi_yedek_normal",
+   "kopma": null,
+   "sonuc_kopma": null,
+   "tarayiciKoptu": false,
+   "sus": [],
+   "hatalar_sayfa": [],
+   "kesildi": false,
+   "pageErrors_bos": true,
+   "errors_bos": true,
+   "degerlendirme": [],
+   "kapananlar": null,
+   "oom_artislari": [],
+   "oom_bas": 0,
+   "oom_son": 0,
+   "log_kotu": [
+    "zaman aşımı"
+   ],
+   "sonuc_satiri": true
+  },
+  {
+   "ad": "02_arazi_yedek_noworker",
+   "kopma": null,
+   "sonuc_kopma": null,
+   "tarayiciKoptu": false,
+   "sus": [],
+   "hatalar_sayfa": [],
+   "kesildi": false,
+   "pageErrors_bos": true,
+   "errors_bos": true,
+   "degerlendirme": [],
+   "kapananlar": null,
+   "oom_artislari": [],
+   "oom_bas": 0,
+   "oom_son": 0,
+   "log_kotu": [
+    "zaman aşımı"
+   ],
+   "sonuc_satiri": true
+  },
+  {
+   "ad": "02_ayar_lod",
+   "kopma": null,
+   "sonuc_kopma": null,
+   "tarayiciKoptu": false,
+   "sus": [],
+   "hatalar_sayfa": [],
+   "kesildi": false,
+   "pageErrors_bos": true,
+   "errors_bos": true,
+   "degerlendirme": [],
+   "kapananlar": null,
+   "oom_artislari": [],
+   "oom_bas": 0,
+   "oom_son": 0,
+   "log_kotu": [],
+   "sonuc_satiri": true
+  },
+  {
+   "ad": "02_depolama_kapali",
+   "kopma": null,
+   "sonuc_kopma": null,
+   "tarayiciKoptu": false,
+   "sus": [],
+   "hatalar_sayfa": [],
+   "kesildi": false,
+   "pageErrors_bos": true,
+   "errors_bos": false,
+   "degerlendirme": [
+    {
+     "n": 9,
+     "tur": "tikla",
+     "hata": "locator.click: Timeout 10000ms exceeded. (koşucu: tıklanacak öğe bekleniyordu)\nCall log:\n  - waiting for getByText('YENİ MACERA', { exact: true })\n"
+    },
+    {
+     "n": 10,
+     "tur": "tikla",
+     "hata": "locator.click: Timeout 15000ms exceeded. (koşucu: tıklanacak öğe bekleniyordu)\nCall log:\n  - waiting for getByText('Maceraya Başla', { exact: true })\n"
+    },
+    {
+     "n": 12,
+     "tur": "js",
+     "hata": "page.evaluate: ReferenceError: DK is not defined\n    at eval (eval at evaluate (:311:30), <anonymous>:1:8)\n    at eval (eval at evaluate (:311:30), <anonymous>:1:133)\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:311:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+    },
+    {
+     "n": 15,
+     "tur": "js",
+     "hata": "page.evaluate: ReferenceError: DK is not defined\n    at eval (eval at evaluate (:311:30), <anonymous>:1:8)\n    at eval (eval at evaluate (:311:30), <anonymous>:1:133)\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:311:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+    },
+    {
+     "n": 17,
+     "tur": "js",
+     "hata": "page.evaluate: ReferenceError: DK is not defined\n    at eval (eval at evaluate (:311:30), <anonymous>:1:1)\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:311:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+    },
+    {
+     "n": 21,
+     "tur": "js",
+     "hata": "page.evaluate: ReferenceError: DK is not defined\n    at eval (eval at evaluate (:311:30), <anonymous>:1:8)\n    at eval (eval at evaluate (:311:30), <anonymous>:1:62)\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:311:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+    },
+    {
+     "n": 22,
+     "tur": "tikla",
+     "hata": "locator.click: Timeout 10000ms exceeded. (koşucu: tıklanacak öğe bekleniyordu)\nCall log:\n  - waiting for getByText('ONLINE', { exact: true })\n"
+    },
+    {
+     "n": 23,
+     "tur": "tikla",
+     "hata": "locator.click: Timeout 10000ms exceeded. (koşucu: tıklanacak öğe bekleniyordu)\nCall log:\n  - waiting for getByText('Oda kur', { exact: true })\n"
+    },
+    {
+     "n": 25,
+     "tur": "tikla",
+     "hata": "locator.click: Timeout 10000ms exceeded. (koşucu: tıklanacak öğe bekleniyordu)\nCall log:\n  - waiting for getByText('Odayı oluştur', { exact: true })\n"
+    },
+    {
+     "n": 27,
+     "tur": "tikla",
+     "hata": "locator.click: Timeout 10000ms exceeded. (koşucu: tıklanacak öğe bekleniyordu)\nCall log:\n  - waiting for locator('#start-btn')\n"
+    }
+   ],
+   "kapananlar": null,
+   "oom_artislari": [],
+   "oom_bas": 0,
+   "oom_son": 0,
+   "log_kotu": [
+    "zaman aşımı"
+   ],
+   "sonuc_satiri": true
+  },
+  {
+   "ad": "02_hizli_yolculuk_normal",
+   "kopma": null,
+   "sonuc_kopma": null,
+   "tarayiciKoptu": false,
+   "sus": [],
+   "hatalar_sayfa": [],
+   "kesildi": false,
+   "pageErrors_bos": true,
+   "errors_bos": true,
+   "degerlendirme": [],
+   "kapananlar": null,
+   "oom_artislari": [],
+   "oom_bas": 0,
+   "oom_son": 0,
+   "log_kotu": [
+    "zaman aşımı"
+   ],
+   "sonuc_satiri": true
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker",
+   "kopma": null,
+   "sonuc_kopma": null,
+   "tarayiciKoptu": false,
+   "sus": [],
+   "hatalar_sayfa": [],
+   "kesildi": false,
+   "pageErrors_bos": true,
+   "errors_bos": true,
+   "degerlendirme": [],
+   "kapananlar": null,
+   "oom_artislari": [],
+   "oom_bas": 0,
+   "oom_son": 0,
+   "log_kotu": [
+    "zaman aşımı"
+   ],
+   "sonuc_satiri": true
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker_2",
+   "kopma": null,
+   "sonuc_kopma": null,
+   "tarayiciKoptu": false,
+   "sus": [],
+   "hatalar_sayfa": [],
+   "kesildi": false,
+   "pageErrors_bos": true,
+   "errors_bos": true,
+   "degerlendirme": [],
+   "kapananlar": null,
+   "oom_artislari": [],
+   "oom_bas": 0,
+   "oom_son": 0,
+   "log_kotu": [
+    "zaman aşımı"
+   ],
+   "sonuc_satiri": true
+  },
+  {
+   "ad": "02_hizli_yolculuk_noworker_3",
+   "kopma": null,
+   "sonuc_kopma": null,
+   "tarayiciKoptu": false,
+   "sus": [],
+   "hatalar_sayfa": [],
+   "kesildi": false,
+   "pageErrors_bos": true,
+   "errors_bos": true,
+   "degerlendirme": [],
+   "kapananlar": null,
+   "oom_artislari": [],
+   "oom_bas": 0,
+   "oom_son": 0,
+   "log_kotu": [
+    "zaman aşımı"
+   ],
+   "sonuc_satiri": true
+  },
+  {
+   "ad": "02_tek_dosya_blob",
+   "kopma": null,
+   "sonuc_kopma": null,
+   "tarayiciKoptu": false,
+   "sus": [],
+   "hatalar_sayfa": [],
+   "kesildi": false,
+   "pageErrors_bos": true,
+   "errors_bos": true,
+   "degerlendirme": [],
+   "kapananlar": null,
+   "oom_artislari": [],
+   "oom_bas": 0,
+   "oom_son": 0,
+   "log_kotu": [],
+   "sonuc_satiri": true
+  },
+  {
+   "ad": "02_tek_dosya_cerceve",
+   "kopma": null,
+   "sonuc_kopma": null,
+   "tarayiciKoptu": false,
+   "sus": [],
+   "hatalar_sayfa": [],
+   "kesildi": false,
+   "pageErrors_bos": true,
+   "errors_bos": false,
+   "degerlendirme": [],
+   "kapananlar": null,
+   "oom_artislari": [],
+   "oom_bas": 0,
+   "oom_son": 0,
+   "log_kotu": [],
+   "sonuc_satiri": true
+  },
+  {
+   "ad": "02_tek_dosya_kipler",
+   "kopma": null,
+   "sonuc_kopma": null,
+   "tarayiciKoptu": false,
+   "sus": [],
+   "hatalar_sayfa": [],
+   "kesildi": false,
+   "pageErrors_bos": true,
+   "errors_bos": true,
+   "degerlendirme": [],
+   "kapananlar": null,
+   "oom_artislari": [],
+   "oom_bas": 0,
+   "oom_son": 0,
+   "log_kotu": [],
+   "sonuc_satiri": true
+  },
+  {
+   "ad": "02_yukleme_bekleme",
+   "kopma": null,
+   "sonuc_kopma": null,
+   "tarayiciKoptu": false,
+   "sus": [],
+   "hatalar_sayfa": [],
+   "kesildi": false,
+   "pageErrors_bos": true,
+   "errors_bos": true,
+   "degerlendirme": [],
+   "kapananlar": null,
+   "oom_artislari": [],
+   "oom_bas": 0,
+   "oom_son": 0,
+   "log_kotu": [],
+   "sonuc_satiri": true
+  },
+  {
+   "ad": "coop_02_hizli_yolculuk_konuk",
+   "kopma": null,
+   "sonuc_kopma": null,
+   "tarayiciKoptu": false,
+   "sus": [],
+   "hatalar_sayfa": [],
+   "kesildi": false,
+   "pageErrors_bos": true,
+   "errors_bos": true,
+   "degerlendirme": [],
+   "kapananlar": [],
+   "oom_artislari": [],
+   "oom_bas": 0,
+   "oom_son": 0,
+   "log_kotu": [
+    "oom"
+   ],
+   "sonuc_satiri": true
+  }
+ ],
+ "sayisal": {
+  "hys": {
+   "02_hizli_yolculuk_normal": [
+    1810,
+    true,
+    2404,
+    true
+   ],
+   "02_hizli_yolculuk_noworker": [
+    30949,
+    false,
+    19730,
+    false
+   ],
+   "02_hizli_yolculuk_noworker_2": [
+    30949,
+    false,
+    20341,
+    false
+   ],
+   "02_hizli_yolculuk_noworker_3": [
+    30949,
+    false,
+    22172,
+    false
+   ]
+  },
+  "ly": {
+   "02_arazi_yasam_crash": [
+    "tamam",
+    true,
+    "tamam",
+    true
+   ],
+   "02_arazi_yasam_normal": [
+    "p99 bütçe+6 ms, en uzun bütçe+8.1 ms",
+    false,
+    "tamam",
+    true
+   ],
+   "02_arazi_yasam_normal_2": [
+    "p99 bütçe+6 ms, en uzun bütçe+8.1 ms",
+    false,
+    "tamam",
+    true
+   ],
+   "02_arazi_yasam_noworker": [
+    "p99 bütçe+15.9 ms, en uzun bütçe+17.3 ms",
+    false,
+    "tamam",
+    true
+   ],
+   "02_arazi_yasam_noworker_2": [
+    "p99 bütçe+15.9 ms, en uzun bütçe+17.3 ms",
+    false,
+    "tamam",
+    true
+   ]
+  },
+  "vik": {
+   "02_hizli_yolculuk_normal": {
+    "log_e": [
+     26498
+    ],
+    "log_y": [
+     14862
+    ],
+    "json_e": [
+     26498
+    ],
+    "json_y": [
+     14862
+    ]
+   },
+   "02_hizli_yolculuk_noworker": {
+    "log_e": [
+     35181
+    ],
+    "log_y": [
+     26003
+    ],
+    "json_e": [
+     35181
+    ],
+    "json_y": [
+     26003
+    ]
+   },
+   "02_hizli_yolculuk_noworker_2": {
+    "log_e": [
+     35181
+    ],
+    "log_y": [
+     29979
+    ],
+    "json_e": [
+     35181
+    ],
+    "json_y": [
+     29979
+    ]
+   },
+   "02_hizli_yolculuk_noworker_3": {
+    "log_e": [
+     35181
+    ],
+    "log_y": [
+     33748
+    ],
+    "json_e": [
+     35181
+    ],
+    "json_y": [
+     33748
+    ]
+   },
+   "coop_02_hizli_yolculuk_konuk": {
+    "log_e": [],
+    "log_y": [],
+    "json_e": [],
+    "json_y": []
+   }
+  },
+  "bellek": {
+   "00_acilis": {
+    "renderer": 445.3,
+    "browser": 100.6,
+    "gpu": 506.9,
+    "chrome_top": 1195.6,
+    "cg": 3416,
+    "renderer_sayi": 1,
+    "kaybolan_renderer": [
+     {
+      "pid": 4723,
+      "tur": "renderer",
+      "zaman": "2026-11-15T08:06:23.544Z",
+      "t_ms": 185287,
+      "son_rss_MB": 430,
+      "son_hwm_MB": 445.3,
+      "son_anon_MB": 300.3,
+      "kalan_chrome": 5
+     }
+    ],
+    "chrome_son": "2026-11-15T08:06:31.554Z",
+    "bitis": "2026-11-15T08:06:32.060Z",
+    "kilit": "2026-11-15T08:05:48.490Z"
+   },
+   "02_acilis_akisi": {
+    "renderer": 451.1,
+    "browser": 101.5,
+    "gpu": 625.6,
+    "chrome_top": 1353.5,
+    "cg": 3614,
+    "renderer_sayi": 1,
+    "kaybolan_renderer": [
+     {
+      "pid": 5534,
+      "tur": "renderer",
+      "zaman": "2026-11-15T08:08:44.839Z",
+      "t_ms": 132710,
+      "son_rss_MB": 400.7,
+      "son_hwm_MB": 451.1,
+      "son_anon_MB": 256.3,
+      "kalan_chrome": 6
+     }
+    ],
+    "chrome_son": "2026-11-15T08:08:51.348Z",
+    "bitis": "2026-11-15T08:08:51.850Z",
+    "kilit": "2026-11-15T08:07:01.693Z"
+   },
+   "02_acilis_hatalari": {
+    "renderer": 792.6,
+    "browser": 99.8,
+    "gpu": 415.5,
+    "chrome_top": 1342.6,
+    "cg": 3655,
+    "renderer_sayi": 1,
+    "kaybolan_renderer": [
+     {
+      "pid": 6069,
+      "tur": "renderer",
+      "zaman": "2026-11-15T08:14:23.894Z",
+      "t_ms": 331994,
+      "son_rss_MB": 179.8,
+      "son_hwm_MB": 792.6,
+      "son_anon_MB": 61.1,
+      "kalan_chrome": 5
+     }
+    ],
+    "chrome_son": "2026-11-15T08:14:24.896Z",
+    "bitis": "2026-11-15T08:14:25.398Z",
+    "kilit": "2026-11-15T08:08:52.402Z"
+   },
+   "02_arazi_isci_hata": {
+    "renderer": 559.7,
+    "browser": 100.5,
+    "gpu": 530.9,
+    "chrome_top": 1229.4,
+    "cg": 3444,
+    "renderer_sayi": 1,
+    "kaybolan_renderer": [
+     {
+      "pid": 8336,
+      "tur": "renderer",
+      "zaman": "2026-11-15T08:16:49.168Z",
+      "t_ms": 143719,
+      "son_rss_MB": 547.9,
+      "son_hwm_MB": 559.7,
+      "son_anon_MB": 417.1,
+      "kalan_chrome": 5
+     }
+    ],
+    "chrome_son": "2026-11-15T08:16:52.672Z",
+    "bitis": "2026-11-15T08:16:53.174Z",
+    "kilit": "2026-11-15T08:15:44.063Z"
+   },
+   "02_arazi_yasam_crash": {
+    "renderer": 587.1,
+    "browser": 99.8,
+    "gpu": 522.9,
+    "chrome_top": 1295.9,
+    "cg": 2406,
+    "renderer_sayi": 1,
+    "kaybolan_renderer": [
+     {
+      "pid": 3077,
+      "tur": "renderer",
+      "zaman": "2026-11-15T08:03:08.688Z",
+      "t_ms": 213328,
+      "son_rss_MB": 464.9,
+      "son_hwm_MB": 587.1,
+      "son_anon_MB": 327.8,
+      "kalan_chrome": 5
+     }
+    ],
+    "chrome_son": "2026-11-15T08:03:17.704Z",
+    "bitis": "2026-11-15T08:03:18.206Z",
+    "kilit": "2026-11-15T08:01:33.050Z"
+   },
+   "02_arazi_yasam_normal": {
+    "renderer": 587.8,
+    "browser": 100.4,
+    "gpu": 526,
+    "chrome_top": 1208.7,
+    "cg": 2262,
+    "renderer_sayi": 1,
+    "kaybolan_renderer": [
+     {
+      "pid": 9250,
+      "tur": "renderer",
+      "zaman": "2026-11-15T06:54:04.748Z",
+      "t_ms": 424647,
+      "son_rss_MB": 387.9,
+      "son_hwm_MB": 587.8,
+      "son_anon_MB": 251.4,
+      "kalan_chrome": 5
+     }
+    ],
+    "chrome_son": "2026-11-15T06:54:15.263Z",
+    "bitis": "2026-11-15T06:54:15.765Z",
+    "kilit": "2026-11-15T06:52:52.142Z"
+   },
+   "02_arazi_yasam_normal_2": {
+    "renderer": 583,
+    "browser": 101.6,
+    "gpu": 544,
+    "chrome_top": 1359.5,
+    "cg": 2428,
+    "renderer_sayi": 1,
+    "kaybolan_renderer": [
+     {
+      "pid": 25313,
+      "tur": "renderer",
+      "zaman": "2026-11-15T07:27:28.036Z",
+      "t_ms": 1010090,
+      "son_rss_MB": 382.4,
+      "son_hwm_MB": 583,
+      "son_anon_MB": 245.9,
+      "kalan_chrome": 5
+     }
+    ],
+    "chrome_son": "2026-11-15T07:27:38.050Z",
+    "bitis": "2026-11-15T07:27:38.553Z",
+    "kilit": "2026-11-15T07:26:14.916Z"
+   },
+   "02_arazi_yasam_noworker": {
+    "renderer": 558.2,
+    "browser": 99.1,
+    "gpu": 530.3,
+    "chrome_top": 1293.7,
+    "cg": 2354,
+    "renderer_sayi": 1,
+    "kaybolan_renderer": [
+     {
+      "pid": 12572,
+      "tur": "renderer",
+      "zaman": "2026-11-15T07:02:10.543Z",
+      "t_ms": 474716,
+      "son_rss_MB": 461,
+      "son_hwm_MB": 558.2,
+      "son_anon_MB": 325,
+      "kalan_chrome": 5
+     }
+    ],
+    "chrome_son": "2026-11-15T07:02:20.559Z",
+    "bitis": "2026-11-15T07:02:21.062Z",
+    "kilit": "2026-11-15T07:00:41.408Z"
+   },
+   "02_arazi_yasam_noworker_2": {
+    "renderer": 603.7,
+    "browser": 99,
+    "gpu": 529,
+    "chrome_top": 1302.6,
+    "cg": 2405,
+    "renderer_sayi": 1,
+    "kaybolan_renderer": [
+     {
+      "pid": 26801,
+      "tur": "renderer",
+      "zaman": "2026-11-15T07:34:12.172Z",
+      "t_ms": 393570,
+      "son_rss_MB": 456.2,
+      "son_hwm_MB": 603.7,
+      "son_anon_MB": 320.4,
+      "kalan_chrome": 5
+     }
+    ],
+    "chrome_son": "2026-11-15T07:34:22.685Z",
+    "bitis": "2026-11-15T07:34:23.189Z",
+    "kilit": "2026-11-15T07:32:36.536Z"
+   },
+   "02_arazi_yedek_badurl": {
+    "renderer": 438,
+    "browser": 96.3,
+    "gpu": 553.2,
+    "chrome_top": 1231.5,
+    "cg": 3445,
+    "renderer_sayi": 2,
+    "kaybolan_renderer": [
+     {
+      "pid": 8859,
+      "tur": "renderer",
+      "zaman": "2026-11-15T08:17:35.796Z",
+      "t_ms": 42562,
+      "son_rss_MB": 80.5,
+      "son_hwm_MB": 80.5,
+      "son_anon_MB": 14.5,
+      "kalan_chrome": 6
+     },
+     {
+      "pid": 8878,
+      "tur": "renderer",
+      "zaman": "2026-11-15T08:18:19.360Z",
+      "t_ms": 86126,
+      "son_rss_MB": 412.7,
+      "son_hwm_MB": 438,
+      "son_anon_MB": 283.1,
+      "kalan_chrome": 5
+     }
+    ],
+    "chrome_son": "2026-11-15T08:18:24.867Z",
+    "bitis": "2026-11-15T08:18:25.369Z",
+    "kilit": "2026-11-15T08:17:35.295Z"
+   },
+   "02_arazi_yedek_crash": {
+    "renderer": 450.7,
+    "browser": 96.8,
+    "gpu": 552.7,
+    "chrome_top": 1249,
+    "cg": 3463,
+    "renderer_sayi": 2,
+    "kaybolan_renderer": [
+     {
+      "pid": 9236,
+      "tur": "renderer",
+      "zaman": "2026-11-15T08:18:27.434Z",
+      "t_ms": 2003,
+      "son_rss_MB": 73.7,
+      "son_hwm_MB": 73.7,
+      "son_anon_MB": 14.1,
+      "kalan_chrome": 6
+     },
+     {
+      "pid": 9257,
+      "tur": "renderer",
+      "zaman": "2026-11-15T08:19:13.019Z",
+      "t_ms": 47588,
+      "son_rss_MB": 450.2,
+      "son_hwm_MB": 450.7,
+      "son_anon_MB": 320.6,
+      "kalan_chrome": 5
+     }
+    ],
+    "chrome_son": "2026-11-15T08:19:20.025Z",
+    "bitis": "2026-11-15T08:19:20.528Z",
+    "kilit": "2026-11-15T08:18:26.933Z"
+   },
+   "02_arazi_yedek_normal": {
+    "renderer": 477.4,
+    "browser": 96.8,
+    "gpu": 533.5,
+    "chrome_top": 1256.3,
+    "cg": 3501,
+    "renderer_sayi": 1,
+    "kaybolan_renderer": [
+     {
+      "pid": 10229,
+      "tur": "renderer",
+      "zaman": "2026-11-15T08:22:06.866Z",
+      "t_ms": 166262,
+      "son_rss_MB": 366.3,
+      "son_hwm_MB": 477.4,
+      "son_anon_MB": 235.1,
+      "kalan_chrome": 5
+     }
+    ],
+    "chrome_son": "2026-11-15T08:22:15.380Z",
+    "bitis": "2026-11-15T08:22:15.882Z",
+    "kilit": "2026-11-15T08:21:23.296Z"
+   },
+   "02_arazi_yedek_noworker": {
+    "renderer": 432.5,
+    "browser": 96,
+    "gpu": 538.3,
+    "chrome_top": 1217.6,
+    "cg": 3468,
+    "renderer_sayi": 1,
+    "kaybolan_renderer": [
+     {
+      "pid": 11957,
+      "tur": "renderer",
+      "zaman": "2026-11-15T08:27:59.486Z",
+      "t_ms": 343550,
+      "son_rss_MB": 421.9,
+      "son_hwm_MB": 432.5,
+      "son_anon_MB": 294.1,
+      "kalan_chrome": 5
+     }
+    ],
+    "chrome_son": "2026-11-15T08:28:05.495Z",
+    "bitis": "2026-11-15T08:28:05.998Z",
+    "kilit": "2026-11-15T08:27:17.415Z"
+   },
+   "02_ayar_lod": {
+    "renderer": 698.3,
+    "browser": 101.1,
+    "gpu": 392.5,
+    "chrome_top": 1296.9,
+    "cg": 3521,
+    "renderer_sayi": 1,
+    "kaybolan_renderer": [
+     {
+      "pid": 12603,
+      "tur": "renderer",
+      "zaman": "2026-11-15T08:30:27.263Z",
+      "t_ms": 141212,
+      "son_rss_MB": 574.7,
+      "son_hwm_MB": 698.3,
+      "son_anon_MB": 445.5,
+      "kalan_chrome": 6
+     }
+    ],
+    "chrome_son": "2026-11-15T08:30:31.267Z",
+    "bitis": "2026-11-15T08:30:31.769Z",
+    "kilit": "2026-11-15T08:28:55.620Z"
+   },
+   "02_depolama_kapali": {
+    "renderer": 398.9,
+    "browser": 99.8,
+    "gpu": 333.7,
+    "chrome_top": 986.6,
+    "cg": 3266,
+    "renderer_sayi": 1,
+    "kaybolan_renderer": [
+     {
+      "pid": 13420,
+      "tur": "renderer",
+      "zaman": "2026-11-15T08:33:37.629Z",
+      "t_ms": 185802,
+      "son_rss_MB": 176,
+      "son_hwm_MB": 398.9,
+      "son_anon_MB": 61,
+      "kalan_chrome": 5
+     }
+    ],
+    "chrome_son": "2026-11-15T08:33:41.635Z",
+    "bitis": "2026-11-15T08:33:42.138Z",
+    "kilit": "2026-11-15T08:31:21.904Z"
+   },
+   "02_hizli_yolculuk_normal": {
+    "renderer": 595.4,
+    "browser": 100.7,
+    "gpu": 546,
+    "chrome_top": 1306.7,
+    "cg": 2367,
+    "renderer_sayi": 1,
+    "kaybolan_renderer": [
+     {
+      "pid": 31487,
+      "tur": "renderer",
+      "zaman": "2026-11-15T07:53:06.139Z",
+      "t_ms": 551859,
+      "son_rss_MB": 458.3,
+      "son_hwm_MB": 595.4,
+      "son_anon_MB": 314.4,
+      "kalan_chrome": 6
+     }
+    ],
+    "chrome_son": "2026-11-15T07:53:12.651Z",
+    "bitis": "2026-11-15T07:53:13.154Z",
+    "kilit": "2026-11-15T07:49:55.847Z"
+   },
+   "02_hizli_yolculuk_noworker": {
+    "renderer": 771.5,
+    "browser": 100.2,
+    "gpu": 532,
+    "chrome_top": 1491.3,
+    "cg": 2513,
+    "renderer_sayi": 1,
+    "kaybolan_renderer": [
+     {
+      "pid": 14780,
+      "tur": "renderer",
+      "zaman": "2026-11-15T07:10:32.387Z",
+      "t_ms": 491260,
+      "son_rss_MB": 619.8,
+      "son_hwm_MB": 771.5,
+      "son_anon_MB": 476.3,
+      "kalan_chrome": 6
+     }
+    ],
+    "chrome_son": "2026-11-15T07:10:37.393Z",
+    "bitis": "2026-11-15T07:10:37.896Z",
+    "kilit": "2026-11-15T07:06:58.557Z"
+   },
+   "02_hizli_yolculuk_noworker_2": {
+    "renderer": 777.2,
+    "browser": 100.7,
+    "gpu": 530.4,
+    "chrome_top": 1504.5,
+    "cg": 2566,
+    "renderer_sayi": 1,
+    "kaybolan_renderer": [
+     {
+      "pid": 29040,
+      "tur": "renderer",
+      "zaman": "2026-11-15T07:43:48.197Z",
+      "t_ms": 564925,
+      "son_rss_MB": 623.9,
+      "son_hwm_MB": 777.2,
+      "son_anon_MB": 480.4,
+      "kalan_chrome": 6
+     }
+    ],
+    "chrome_son": "2026-11-15T07:43:53.707Z",
+    "bitis": "2026-11-15T07:43:54.210Z",
+    "kilit": "2026-11-15T07:40:12.375Z"
+   },
+   "02_hizli_yolculuk_noworker_3": {
+    "renderer": 850.3,
+    "browser": 101.2,
+    "gpu": 534.4,
+    "chrome_top": 1608.4,
+    "cg": 2665,
+    "renderer_sayi": 1,
+    "kaybolan_renderer": [
+     {
+      "pid": 1077,
+      "tur": "renderer",
+      "zaman": "2026-11-15T07:59:28.251Z",
+      "t_ms": 375050,
+      "son_rss_MB": 657.4,
+      "son_hwm_MB": 850.3,
+      "son_anon_MB": 514.3,
+      "kalan_chrome": 6
+     }
+    ],
+    "chrome_son": "2026-11-15T07:59:34.261Z",
+    "bitis": "2026-11-15T07:59:35.264Z",
+    "kilit": "2026-11-15T07:55:42.921Z"
+   },
+   "02_tek_dosya_blob": {
+    "renderer": 618.6,
+    "browser": 112.6,
+    "gpu": 385.4,
+    "chrome_top": 1217.7,
+    "cg": 3477,
+    "renderer_sayi": 1,
+    "kaybolan_renderer": [
+     {
+      "pid": 14781,
+      "tur": "renderer",
+      "zaman": "2026-11-15T08:39:28.284Z",
+      "t_ms": 346092,
+      "son_rss_MB": 354.6,
+      "son_hwm_MB": 618.2,
+      "son_anon_MB": 232.2,
+      "kalan_chrome": 5
+     }
+    ],
+    "chrome_son": "2026-11-15T08:39:34.793Z",
+    "bitis": "2026-11-15T08:39:35.295Z",
+    "kilit": "2026-11-15T08:38:34.692Z"
+   },
+   "02_tek_dosya_cerceve": {
+    "renderer": 510.5,
+    "browser": 110.3,
+    "gpu": 400.4,
+    "chrome_top": 1078.1,
+    "cg": 3355,
+    "renderer_sayi": 1,
+    "kaybolan_renderer": [
+     {
+      "pid": 15761,
+      "tur": "renderer",
+      "zaman": "2026-11-15T08:47:11.076Z",
+      "t_ms": 455728,
+      "son_rss_MB": 378.4,
+      "son_hwm_MB": 510.5,
+      "son_anon_MB": 257.3,
+      "kalan_chrome": 5
+     }
+    ],
+    "chrome_son": "2026-11-15T08:47:14.081Z",
+    "bitis": "2026-11-15T08:47:15.084Z",
+    "kilit": "2026-11-15T08:44:19.813Z"
+   },
+   "02_tek_dosya_kipler": {
+    "renderer": 606.5,
+    "browser": 113.2,
+    "gpu": 385.7,
+    "chrome_top": 1090.8,
+    "cg": 3521,
+    "renderer_sayi": 1,
+    "kaybolan_renderer": [
+     {
+      "pid": 17050,
+      "tur": "renderer",
+      "zaman": "2026-11-15T08:52:02.634Z",
+      "t_ms": 287485,
+      "son_rss_MB": 362.8,
+      "son_hwm_MB": 606.5,
+      "son_anon_MB": 240.2,
+      "kalan_chrome": 5
+     }
+    ],
+    "chrome_son": "2026-11-15T08:52:09.644Z",
+    "bitis": "2026-11-15T08:52:10.148Z",
+    "kilit": "2026-11-15T08:50:59.548Z"
+   },
+   "02_yukleme_bekleme": {
+    "renderer": 489.9,
+    "browser": 101.6,
+    "gpu": 513.8,
+    "chrome_top": 1237.4,
+    "cg": 3510,
+    "renderer_sayi": 1,
+    "kaybolan_renderer": [
+     {
+      "pid": 18070,
+      "tur": "renderer",
+      "zaman": "2026-11-15T08:57:43.703Z",
+      "t_ms": 333505,
+      "son_rss_MB": 381.8,
+      "son_hwm_MB": 489.9,
+      "son_anon_MB": 245.5,
+      "kalan_chrome": 6
+     }
+    ],
+    "chrome_son": "2026-11-15T08:57:50.710Z",
+    "bitis": "2026-11-15T08:57:51.212Z",
+    "kilit": "2026-11-15T08:56:42.117Z"
+   },
+   "coop_02_hizli_yolculuk_konuk": {
+    "renderer": 406.8,
+    "browser": 103.3,
+    "gpu": 718,
+    "chrome_top": 1759.6,
+    "cg": 3913,
+    "renderer_sayi": 3,
+    "kaybolan_renderer": [
+     {
+      "pid": 19215,
+      "tur": "renderer",
+      "zaman": "2026-11-15T09:02:42.701Z",
+      "t_ms": 291440,
+      "son_rss_MB": 72.2,
+      "son_hwm_MB": 72.2,
+      "son_anon_MB": 13.9,
+      "kalan_chrome": 6
+     },
+     {
+      "pid": 19233,
+      "tur": "renderer",
+      "zaman": "2026-11-15T09:04:57.893Z",
+      "t_ms": 426632,
+      "son_rss_MB": 371.9,
+      "son_hwm_MB": 406.8,
+      "son_anon_MB": 240.9,
+      "kalan_chrome": 3
+     },
+     {
+      "pid": 19436,
+      "tur": "renderer",
+      "zaman": "2026-11-15T09:04:57.893Z",
+      "t_ms": 426632,
+      "son_rss_MB": 397.3,
+      "son_hwm_MB": 402.7,
+      "son_anon_MB": 267.4,
+      "kalan_chrome": 3
+     }
+    ],
+    "chrome_son": "2026-11-15T09:04:57.893Z",
+    "bitis": "2026-11-15T09:04:58.396Z",
+    "kilit": "2026-11-15T09:02:42.201Z"
+   }
+  }
+ },
+ "sure": {
+  "00_acilis": [
+   50023,
+   50023,
+   34542,
+   34542
+  ],
+  "02_acilis_akisi": [
+   133673,
+   133673,
+   102718,
+   102718
+  ],
+  "02_acilis_hatalari": [
+   308810,
+   308810,
+   331638,
+   331638
+  ],
+  "02_arazi_isci_hata": [
+   91696,
+   91696,
+   64463,
+   64463
+  ],
+  "02_arazi_yasam_crash": [
+   99737,
+   99737,
+   95360,
+   95360
+  ],
+  "02_arazi_yasam_normal": [
+   88911,
+   88911,
+   72414,
+   72414
+  ],
+  "02_arazi_yasam_normal_2": [
+   88911,
+   88911,
+   72803,
+   72803
+  ],
+  "02_arazi_yasam_noworker": [
+   115437,
+   115437,
+   88653,
+   88653
+  ],
+  "02_arazi_yasam_noworker_2": [
+   115437,
+   115437,
+   95178,
+   95178
+  ],
+  "02_arazi_yedek_badurl": [
+   83549,
+   83549,
+   43697,
+   43697
+  ],
+  "02_arazi_yedek_crash": [
+   88430,
+   88430,
+   46188,
+   46188
+  ],
+  "02_arazi_yedek_normal": [
+   80611,
+   80611,
+   42948,
+   42948
+  ],
+  "02_arazi_yedek_noworker": [
+   74612,
+   74612,
+   41628,
+   41628
+  ],
+  "02_ayar_lod": [
+   74779,
+   74779,
+   91390,
+   91390
+  ],
+  "02_depolama_kapali": [
+   132280,
+   132280,
+   135568,
+   135568
+  ],
+  "02_hizli_yolculuk_normal": [
+   264976,
+   264976,
+   189784,
+   189784
+  ],
+  "02_hizli_yolculuk_noworker": [
+   300983,
+   300983,
+   213772,
+   213772
+  ],
+  "02_hizli_yolculuk_noworker_2": [
+   300983,
+   300983,
+   215236,
+   215236
+  ],
+  "02_hizli_yolculuk_noworker_3": [
+   300983,
+   300983,
+   224995,
+   224995
+  ],
+  "02_tek_dosya_blob": [
+   46741,
+   46741,
+   53499,
+   53499
+  ],
+  "02_tek_dosya_cerceve": [
+   166600,
+   166600,
+   170647,
+   170647
+  ],
+  "02_tek_dosya_kipler": [
+   56679,
+   56679,
+   62726,
+   62726
+  ],
+  "02_yukleme_bekleme": [
+   62023,
+   62023,
+   61701,
+   61701
+  ],
+  "coop_02_hizli_yolculuk_konuk": [
+   116737,
+   116737,
+   135395,
+   135395
+  ]
+ }
+}

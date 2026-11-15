@@ -1,0 +1,53 @@
+# B0 son/ (gerçek kilit) ↔ once_v04_taklit/ : her eşte senaryo sha, URL, koşucu, kopma, işaretçi sayacı ve kontrol DEĞERLERİ (yalnız ok değil).
+# Salt okur. python3 -I deger_farki.py <b dizini>
+import json, os, re, sys, glob
+B = sys.argv[1]
+ESKI = os.path.join(B, 'once_v04', 'son'); YENI = os.path.join(B, 'once_v04_taklit')
+
+def oku(y):
+    with open(y, encoding='utf8') as f:
+        return json.load(f)
+
+def kontroller(r):
+    out = {}
+    for k in r.get('kontroller') or []:
+        kid = k.get('id') or (k.get('etiket') or '').split(' ')[0]
+        out[kid] = k
+    return out
+
+def sayi(v):
+    return isinstance(v, (int, float)) and not isinstance(v, bool)
+
+for y in sorted(glob.glob(os.path.join(YENI, '*.json'))):
+    ad = os.path.basename(y)[:-5]
+    if ad.endswith('_bellek') or ad == 'karsilastirma':
+        continue
+    taban = re.sub(r'_(\d)$', '', ad)
+    e = oku(os.path.join(ESKI, taban + '.json')); t = oku(y)
+    es, ts = (e.get('tekrar') or {}), (t.get('tekrar') or {})
+    bas = []
+    if es.get('senaryoSha256') != ts.get('senaryoSha256'): bas.append(f"SENARYO SHA FARKLI {es.get('senaryoSha256','')[:12]} / {ts.get('senaryoSha256','')[:12]}")
+    if (e.get('url') != t.get('url')): bas.append(f"URL FARKLI {e.get('url')} / {t.get('url')}")
+    ek = re.search(r'--timeout (\d+)', es.get('komut') or ''); tk = re.search(r'--timeout (\d+)', ts.get('komut') or '')
+    if (ek and ek.group(1)) != (tk and tk.group(1)): bas.append(f"--timeout {ek and ek.group(1)} / {tk and tk.group(1)}")
+    say = (t.get('isaretciKilidi') or {}).get('sayac') or {}
+    bas.append('kilit sayacı: ' + ','.join(f'{k}={v}' for k, v in say.items() if v))
+    if t.get('kopma'): bas.append('KOPMA ' + json.dumps(t.get('kopma'), ensure_ascii=False)[:200])
+    print(f"== {ad}  ({e['sonuc']['gecen']}/{e['sonuc']['kontrolSayisi']} -> {t['sonuc']['gecen']}/{t['sonuc']['kontrolSayisi']})  " + ' | '.join(bas))
+    ke, kt = kontroller(e), kontroller(t)
+    for kid in dict.fromkeys(list(ke) + list(kt)):
+        a, b = ke.get(kid), kt.get(kid)
+        if a is None or b is None:
+            print(f"   {kid}: yalnız birinde"); continue
+        va, vb = a.get('deger'), b.get('deger')
+        if va == vb and a.get('ok') == b.get('ok'):
+            continue
+        isaret = '' if a.get('ok') == b.get('ok') else '  <== DURUM'
+        if sayi(va) and sayi(vb):
+            r = (vb - va) / abs(va) if va else float('inf')
+            if abs(r) < 0.10 and not isaret:
+                continue
+            print(f"   {kid} ok {a.get('ok')}->{b.get('ok')} deger {va} -> {vb} ({r:+.0%}){isaret}")
+        else:
+            sa = json.dumps(va, ensure_ascii=False)[:230]; sb = json.dumps(vb, ensure_ascii=False)[:230]
+            print(f"   {kid} ok {a.get('ok')}->{b.get('ok')}{isaret}\n      B0: {sa}\n      T : {sb}")

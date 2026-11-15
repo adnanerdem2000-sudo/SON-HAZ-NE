@@ -1,0 +1,42 @@
+# Bulgu 5 (ardışık uzak varışlarda bellek büyümesi) için taklitli koşuların ham zaman serisi: her renderer ve tarayıcı sürecinin RSS/anon'u,
+# koşu günlüğündeki kontrol satırlarına (olay.csv) hizalanmış. Salt okur. python3 -I bellek_seri.py <f69/kosu dizini> <koşu adı> [<desen>...]
+import csv, sys, re, os
+from datetime import datetime
+K, AD = sys.argv[1], sys.argv[2]
+DESEN = sys.argv[3:] or [r'^(PASS|FAIL) (HY\S+|HYU\S+|HYS\S+|HYK\S+)']
+
+def t(s):
+    return datetime.fromisoformat(s.replace('Z', '+00:00')).timestamp()
+
+surec = {}  # pid -> list (t, tur, rss_MB, anon_MB, hwm_MB)
+with open(os.path.join(K, AD + '_surec.csv'), encoding='utf8') as f:
+    for r in csv.DictReader(f):
+        if r['tur'] not in ('renderer', 'browser', 'gpu-process'):
+            continue
+        surec.setdefault((r['pid'], r['tur']), []).append((t(r['zaman']), float(r['rss_kB']) / 1024, float(r['anon_kB']) / 1024, float(r['hwm_kB']) / 1024))
+olay = []
+with open(os.path.join(K, AD + '_olay.csv'), encoding='utf8') as f:
+    for r in csv.DictReader(f):
+        s = r['satir']
+        if any(re.search(d, s) for d in DESEN):
+            olay.append((t(r['zaman']), s[:70]))
+
+def deger(pid_tur, an):
+    L = surec[pid_tur]
+    best = min(L, key=lambda x: abs(x[0] - an))
+    return best
+
+anahtarlar = sorted(surec, key=lambda k: surec[k][0][0])
+print('süreçler:', ', '.join(f"{tur}:{pid} ({len(surec[(pid, tur)])} örnek, tepe RSS {max(x[1] for x in surec[(pid, tur)]):.0f} MB, son RSS {surec[(pid, tur)][-1][1]:.0f} MB)" for pid, tur in anahtarlar))
+rend = [k for k in anahtarlar if k[1] == 'renderer']
+ana = max(rend, key=lambda k: len(surec[k])) if rend else None
+br = [k for k in anahtarlar if k[1] == 'browser']
+gpu = [k for k in anahtarlar if k[1] == 'gpu-process']
+t0 = surec[ana][0][0]
+print(f"ana renderer {ana}; zaman t=0: ilk renderer örneği")
+print(f"{'t_sn':>6s} {'rend_RSS':>8s} {'rend_anon':>9s} {'tarayıcı':>8s} {'gpu':>6s}  olay")
+for an, s in olay:
+    if an < t0 - 5:
+        continue
+    r = deger(ana, an); b = deger(br[0], an) if br else (0, 0, 0, 0); g = deger(gpu[0], an) if gpu else (0, 0, 0, 0)
+    print(f"{an - t0:6.0f} {r[1]:8.0f} {r[2]:9.0f} {b[1]:8.0f} {g[1]:6.0f}  {s}")

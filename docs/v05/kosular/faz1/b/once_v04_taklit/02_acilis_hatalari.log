@@ -1,0 +1,100 @@
+# komut: /home/user/devtools/tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_acilis_hatalari.js  --url 'http://localhost:8080/index.html' --size 640x360 --timeout 540 --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04_taklit/02_acilis_hatalari.json --goruntu-dizin /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/goruntu/02_acilis_hatalari 
+# koşucu (kosucu17 son): 285211cf 9292115d 53358e1c 
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+başlatma betiği: 1 meta, 0 dosya
+ready in 7.0 s
+DEGISKEN yardimci = "(()=>{ const A = window.__A = {};\n   A.bekle = (ms) => new Promise((r) => setTimeout(r, ms));\n   A.metin = () => ((document.getElementById('load-text') || {}).textContent || '').trim();\n   A.metin
+R: ["bekle","metin","metinler","normal","yeniMetinler","acilis","harita"]
+PASS AH00 Normal açılış (parametresiz): window.__ready ve ana menü → true
+GOTO http://localhost:8080/index.html?test=1
+R: ["bekle","metin","metinler","normal","yeniMetinler","acilis","harita"]
+PASS AH01 Normal başvuru açılışı (sıcak önbellek) tamamlanır; süre ölçülür → 7674
+DEGISKEN normalAcilisMs = 7674
+DEGISKEN normalMetinler = "[\"Modeller yükleniyor…\",\"Takımadalar oluşturuluyor…\",\"Okyanus dolduruluyor…\",\"Arazi örülüyor…\",\"Ormanlar büyütülüyor…\",\"Kırlangıç Limanı kuruluyor…\",\"Canlılar uyanıyor…\",\"Hazır!\",\"De
+R: {"normal":{"ready":true,"readyMs":7674,"menu":true,"yukleme":false,"sonMetin":"Hazır!","metinler":[[2815,"Arazi örülüyor…"],[3178,"Ormanlar büyütülüyor…"],[3301,"Kırlangıç Limanı kuruluyor…"],[4250,"Canlılar uyanıyor…"],[4513,"Hazır!"],[4513,"Deniz haritası çiziliyor…"],[7648,"Gölgelendiriciler hazırlanıyor…"],[7674,"Hazır!"]]},"metinler":["Modeller yükleniyor…","Takımadalar oluşturuluyor…","Okyanus dolduruluyor…","Arazi örülüyor…","Ormanlar büyütülüyor…","Kırlangıç Limanı kuruluyor…","Canlılar uyanıyor…","Hazır!","Deniz haritası çiziliyor…","Gölgelendiriciler hazırlanıyor…","Hazır!"]}
+GOTO http://localhost:8080/index.html?izgara=hata&test=1
+R: ["bekle","metin","metinler","normal","yeniMetinler","acilis","harita"]
+ERR: Arazi işçisi: test: enjekte ızgara hatası
+ERR: Error: test: enjekte ızgara hatası
+    at Object._onMsg (http://localhost:8080/js/world/terrain.js:108:91)
+    at w.onmessage (http://localhost:8080/js/world/terrain.js:72:33)
+    at <anonymous>:17:87
+FAIL IZ01 Açılıştaki dünya ızgarası işi işçiden 'error' alsa da açılış tamamlanır (window.__ready; A-02) → false
+GORUNTU /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/goruntu/02_acilis_hatalari/ilk_kalan.png
+R: {"ready":false,"readyMs":null,"menu":false,"yukleme":true,"sonMetin":"Oyun başlatılamadı: test: enjekte ızgara hatasıWebGL destekli güncel bir tarayıcı (Chrome, Edge, Firefox) gerekiyor.","metinler":[[3374,"Okyanus dolduruluyor…"],[3393,"Arazi örülüyor…"],[4327,"Ormanlar büyütülüyor…"],[4432,"Kırlangıç Limanı kuruluyor…"],[4546,"Canlılar uyanıyor…"],[4862,"Hazır!"],[4862,"Deniz haritası çiziliyor…"],[4872,"Oyun başlatılamadı: test: enjekte ızgara hatasıWebGL destekli güncel bir tarayıcı (Chrome, Edge, Firefox) gerekiyor."]]}
+FAIL IZ02 Izgara hatasında ana menü açılır, yükleme ekranı kapanır → false
+FAIL IZ03 Izgara hatasında yükleme ekranında 'Oyun başlatılamadı' ya da yanıltıcı WebGL iddiası hiç görünmez → "Oyun başlatılamadı: test: enjekte ızgara hatasıWebGL destekli güncel bir tarayıcı (Chrome, Edge, Firefox) gerekiyor."
+FAIL IZ04 Izgara hatasından sonra dünya haritası ızgarası 60 sn içinde (yerel yedekte) üretilir: renderMapBase geçici parşömenden büyük (A-02) → 64
+R: {"genislik":64,"yukseklik":64}
+GOTO http://localhost:8080/index.html?izgara=cok&test=1
+R: ["bekle","metin","metinler","normal","yeniMetinler","acilis","harita"]
+ERR: Error: Arazi işi grid tekrarlanan işçi hatası
+    at Object._workerFailed (http://localhost:8080/js/world/terrain.js:97:59)
+    at w.onerror (http://localhost:8080/js/world/terrain.js:73:55)
+    at <anonymous>:18:86
+FAIL IZ05 Açılıştaki ızgara işini alan her işçi çökse de (MAX_TRIES) açılış tamamlanır (A-05, A-02) → false
+R: {"acilis":{"ready":false,"readyMs":null,"menu":false,"yukleme":true,"sonMetin":"Oyun başlatılamadı: Arazi işi grid tekrarlanan işçi hatasıWebGL destekli güncel bir tarayıcı (Chrome, Edge, Firefox) gerekiyor.","metinler":[[794,"Okyanus dolduruluyor…"],[809,"Arazi örülüyor…"],[4659,"Ormanlar büyütülüyor…"],[4786,"Kırlangıç Limanı kuruluyor…"],[4899,"Canlılar uyanıyor…"],[5171,"Hazır!"],[5171,"Deniz haritası çiziliyor…"],[5205,"Oyun başlatılamadı: Arazi işi grid tekrarlanan işçi hatasıWebGL destekli güncel bir tarayıcı (Chrome, Edge, Firefox) gerekiyor."]]},"workers":null,"fallback":null,"failures":null}
+FAIL IZ06 İşçi çökmesinde ana menü açılır, yükleme ekranı kapanır, 'başlatılamadı'/WebGL iletisi görünmez → false
+FAIL IZ07 İşçi çökmesinden sonra dünya haritası ızgarası 60 sn içinde yerel yedekte üretilir (A-05: iş yerel şeride devredilir) → 64
+GOTO http://localhost:8080/index.html?isci=hang&test=1
+R: ["bekle","metin","metinler","normal","yeniMetinler","acilis","harita"]
+FAIL AH02 Yanıt vermeyen (askıdaki) işçide açılış ≤ normal + 5 sn (A-11: ilk iş için kısa gözetim, yerel şerit paralel) → false
+R: {"ready":true,"readyMs":25086,"menu":true,"yukleme":false,"sonMetin":"Hazır!","metinler":[[771,"Arazi örülüyor…"],[21169,"Ormanlar büyütülüyor…"],[21317,"Kırlangıç Limanı kuruluyor…"],[21416,"Canlılar uyanıyor…"],[21724,"Hazır!"],[21724,"Deniz haritası çiziliyor…"],[25051,"Gölgelendiriciler hazırlanıyor…"],[25086,"Hazır!"]],"normalMs":7674}
+FAIL AH03 Askıdaki işçide yükleme ekranı gecikmenin nedenini gösterir (normal açılışta görünmeyen, işçi/yedek/zaman aşımı anlatan bir metin; A-11) → false
+GOTO http://localhost:8080/index.html?isci=noready&test=1
+R: ["bekle","metin","metinler","normal","yeniMetinler","acilis","harita"]
+FAIL AH04 Hazır sinyali gelmeyen işçide açılış ≤ normal + 5 sn (A-11) → false
+R: {"ready":true,"readyMs":14796,"menu":true,"yukleme":false,"sonMetin":"Hazır!","metinler":[[2988,"Arazi örülüyor…"],[11514,"Ormanlar büyütülüyor…"],[11616,"Kırlangıç Limanı kuruluyor…"],[11797,"Canlılar uyanıyor…"],[12080,"Hazır!"],[12080,"Deniz haritası çiziliyor…"],[14770,"Gölgelendiriciler hazırlanıyor…"],[14796,"Hazır!"]],"normalMs":7674}
+FAIL AH05 Hazır sinyali gelmeyen işçide yükleme ekranı gecikmenin nedenini gösterir (A-11) → false
+GOTO http://localhost:8080/index.html?terrain=hang&test=1
+R: ["bekle","metin","metinler","normal","yeniMetinler","acilis","harita"]
+FAIL AH10 ?terrain=hang kipinde açılış ≤ normal + 5 sn ve kipin zaman aşımı kaydı var (A-11, A-17) → false
+R: {"ready":true,"readyMs":7606,"menu":true,"yukleme":false,"sonMetin":"Hazır!","metinler":[[3543,"Arazi örülüyor…"],[4436,"Ormanlar büyütülüyor…"],[4525,"Kırlangıç Limanı kuruluyor…"],[4617,"Canlılar uyanıyor…"],[4853,"Hazır!"],[4853,"Deniz haritası çiziliyor…"],[7576,"Gölgelendiriciler hazırlanıyor…"],[7606,"Hazır!"]],"normalMs":7674,"mode":"hang","failures":[]}
+GOTO http://localhost:8080/index.html?terrain=noready&test=1
+R: ["bekle","metin","metinler","normal","yeniMetinler","acilis","harita"]
+FAIL AH11 ?terrain=noready kipinde açılış ≤ normal + 5 sn ve kipin hazır-sinyali-yok kaydı var (A-11, A-17) → false
+R: {"ready":true,"readyMs":7286,"menu":true,"yukleme":false,"sonMetin":"Hazır!","metinler":[[3538,"Arazi örülüyor…"],[3930,"Ormanlar büyütülüyor…"],[4052,"Kırlangıç Limanı kuruluyor…"],[4728,"Canlılar uyanıyor…"],[4979,"Hazır!"],[4979,"Deniz haritası çiziliyor…"],[7262,"Gölgelendiriciler hazırlanıyor…"],[7286,"Hazır!"]],"normalMs":7674,"mode":"noready","failures":[]}
+ERR: THREE.WebGLRenderer: THREE.WebGLRenderer: Error creating WebGL context.
+ERR: Error: THREE.WebGLRenderer: Error creating WebGL context.
+    at new WebGLRenderer (http://localhost:8080/vendor/three/three.module.js:16246:13)
+    at Object.init (http://localhost:8080/js/core/engine.js:20:15)
+    at boot (http://localhost:8080/js/main.js:94:10)
+    at http://localhost:8080/js/main.js:388:1
+GOTO http://localhost:8080/index.html?webgl=yok&test=1
+R: ["bekle","metin","metinler","normal","yeniMetinler","acilis","harita"]
+PASS AH06 WebGL yokken açılış durur ve ileti WebGL'i söyler (A-04: hata türüne göre ileti) → true
+R: {"acilis":{"ready":false,"readyMs":null,"menu":false,"yukleme":true,"sonMetin":"Oyun başlatılamadı: THREE.WebGLRenderer: Error creating WebGL context.WebGL destekli güncel bir tarayıcı (Chrome, Edge, Firefox) gerekiyor.","metinler":[[3249,"Oyun başlatılamadı: THREE.WebGLRenderer: Error creating WebGL context.WebGL destekli güncel bir tarayıcı (Chrome, Edge, Firefox) gerekiyor."]]},"yeni":[[3249,"Oyun başlatılamadı: THREE.WebGLRenderer: Error creating WebGL context.WebGL destekli güncel bir tarayıcı (Chrome, Edge, Firefox) gerekiyor."]]}
+GOTO http://localhost:8080/index.html?importmap=yok&test=1
+R: ["bekle","metin","metinler","normal","yeniMetinler","acilis","harita"]
+FAIL AH07 Tarayıcı import map desteklemiyorsa (HTMLScriptElement.supports('importmap') false) yükleme ekranında tek dosya sürümüne yönlendiren ileti görünür (A-04) → false
+R: {"yeni":[],"ready":true}
+HTTP 404 http://localhost:8080/vendor/three/three.module.yok.js
+ERR: Failed to load resource: the server responded with a status of 404 (File not found)
+NETFAIL: http://localhost:8080/vendor/three/three.module.yok.js (gezinme iptali; hata sayılmaz)
+GOTO http://localhost:8080/index.html?modul=yok&test=1
+R: ["bekle","metin","metinler","normal","yeniMetinler","acilis","harita"]
+FAIL AH08 Bir modül yüklenemezse (three 404) yükleme ekranında ~5 sn içinde modül/dosya yüklenemedi iletisi görünür (A-04) → false
+R: {"importmapDegisti":true,"importmapHata":null,"ready":false,"yeni":[[6509,"Rüzgâr bekleniyor…"]],"sonMetin":"Rüzgâr bekleniyor…"}
+GOTO http://localhost:8080/index.html?askida=1&test=1
+R: ["bekle","metin","metinler","normal","yeniMetinler","acilis","harita"]
+FAIL AH09 Açılış takılırsa (__ready 30–60 sn içinde gelmezse) yükleme ekranında uyarı görünür (normal açılışta görünmeyen yeni metin, 20–65 sn arasında; A-04) → false
+R: {"ready":false,"sonMetin":"Modeller yükleniyor…","yeni":[],"simdi":70484}
+errors: 7 pageErrors: 0 fails: 16 (331.6 s)
+IZINSIZ KONSOL ×1: Error: test: enjekte ızgara hatası
+    at Object._onMsg (http://localhost:8080/js/world/terrain.js:108:91)
+    at w.onmessage (http://localhost:8080/js/world/terrain.js:72:33)
+    at <anonymous>:17:87 @ http://localhost:8080/js/main.js
+IZINSIZ KONSOL ×1: Error: Arazi işi grid tekrarlanan işçi hatası
+    at Object._workerFailed (http://localhost:8080/js/world/terrain.js:97:59)
+    at w.onerror (http://localhost:8080/js/world/terrain.js:73:55)
+    at <a @ http://localhost:8080/js/main.js
+IZINLI ×1 (Arazi işçisi: .*test: enjekte ızgara hatası): Arazi işçisi: test: enjekte ızgara hatası
+IZINLI ×1 (Error creating WebGL context|WebGL context): THREE.WebGLRenderer: THREE.WebGLRenderer: Error creating WebGL context.
+IZINLI ×1 (Error creating WebGL context|WebGL context): Error: THREE.WebGLRenderer: Error creating WebGL context.
+    at new WebGLRenderer (http://localhost:8080/vendor/three/three.module.js:16246:13)
+    at Object.i
+IZINLI ×1 (three\.module\.yok\.js): 404 http://localhost:8080/vendor/three/three.module.yok.js
+IZIN ×1 (meta, konsol) Arazi işçisi: .*test: enjekte ızgara hatası — ?izgara=hata: kasıtlı enjekte edilen işçi 'error' iletisi; terrain._onMsg bunu console.error ile yazar (beklenen tepki, açılış hatası DEĞİL)
+IZIN ×2 (meta, konsol) Error creating WebGL context|WebGL context — ?webgl=yok: getContext kasıtlı olarak null döner; three.js ve açılış hatası konsola yazılır (beklenen)
+IZIN ×1 (meta, hepsi) three\.module\.yok\.js — ?modul=yok: import map'teki 'three' girdisi kasıtlı olarak var olmayan dosyaya çevrilir; 404 ve modül yükleme hatası beklenir
+SONUC: KALDI (çıkış 1) kontrol 3/19, onay 19 | izinsiz konsol 2, ağ 0 | izinli konsol 3, ağ 1 | uyarı 14 farklı/316 | neden: başarısız kontrol ya da adım: 16; izinsiz konsol hatası: 2

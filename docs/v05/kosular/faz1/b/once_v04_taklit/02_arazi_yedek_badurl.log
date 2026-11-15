@@ -1,0 +1,46 @@
+# komut: /home/user/devtools/tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_arazi_yedek.js  --url 'http://localhost:8080/index.html?terrain=badurl' --size 640x360 --timeout 540 --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04_taklit/02_arazi_yedek_badurl.json --goruntu-dizin /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/goruntu/02_arazi_yedek_badurl --izin-hata terrainWorker\.missing\.js$ # badurl kipi işçi adresini kasıtlı olarak var olmayan dosyaya çevirir; 3 × 404 + 3 × requestfailed beklenir
+# koşucu (kosucu17 son): 285211cf 9292115d 53358e1c 
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+başlatma betiği: 1 meta, 0 dosya
+HTTP 404 http://localhost:8080/js/world/terrainWorker.missing.js
+NETFAIL: http://localhost:8080/js/world/terrainWorker.missing.js
+HTTP 404 http://localhost:8080/js/world/terrainWorker.missing.js
+HTTP 404 http://localhost:8080/js/world/terrainWorker.missing.js
+NETFAIL: http://localhost:8080/js/world/terrainWorker.missing.js
+NETFAIL: http://localhost:8080/js/world/terrainWorker.missing.js
+ready in 6.7 s
+PASS AYK-01 Etkin arazi kipi URL ile aynı (?terrain → DK.terrain.mode) → true
+PASS AYK-02 Kipin beklenen işçi/yedek durumu (normal: işçi ≥ 1, yedek kapalı, hata yok; noworker: işçi 0 + yedek; ctorthrow/badurl: işçi 0 + yedek + hata kaydı; crash/hang: hata kaydı, iş alıp yanıt vermeyen her işçi sonlandırılmış, kurulan işçi ≤ 9; crash1: yedek kapalı + çökme kaydı; noready: zaman aşımı kaydı + yedek) → true
+R: {"k":"badurl","mode":"badurl","workers":0,"fallback":true,"failures":["işçi 2: hata: yükleme/çalışma hatası","işçi 1: hata: yükleme/çalışma hatası","işçi 0: hata: yükleme/çalışma hatası","hata: yükleme/çalışma hatası"],"beklemeMs":0,"isciler":[[0,2,0,1,"son"],[1,2,0,1,"son"],[2,2,0,1,"son"]]}
+PASS Sayfa hazır (yükleme ekranı aşıldı) → true
+R: {"mode":"badurl","workers":0,"fallback":true,"failures":["işçi 2: hata: yükleme/çalışma hatası","işçi 1: hata: yükleme/çalışma hatası","işçi 0: hata: yükleme/çalışma hatası","hata: yükleme/çalışma hatası"],"stats":{"tiles":125,"meshes":125,"hires":15,"tris":311168,"queue":0,"jobs":0,"workers":0,"fallback":true,"failures":4,"mode":"badurl"}}
+PASS Menü sahnesinde karo ağları üretildi → 125
+PASS Okyanus derinlik penceresi hazır → true
+R: "ok"
+PASS Oyun başladı → "playing"
+R: {"startMs":244,"pendingJobs":3,"queue":2}
+PASS Oyuncu zemine basıyor → true
+PASS Yüksek çözünürlüklü karolar (yükseklik ızgarası + ağ) → 25
+R: {"r":300,"fpsLimitVar":true,"olcumler":[{"bolge":[282,-5006],"ms":180,"oncekiIs":0,"cizim":0,"donus":"undefined","ag":12},{"bolge":[5300,400],"ms":191,"oncekiIs":0,"cizim":0,"donus":"undefined","ag":12},{"bolge":[-5300,700],"ms":212,"oncekiIs":0,"cizim":0,"donus":"undefined","ag":11}],"ms":191,"cizimSirasinda":0,"cizimDurdu":true,"ag":11}
+PASS AYS-01 Uzak bölge hazırlığı r300, çizim durdurulmuşken (kuyruğun kendi süresi; üç ayrı uzak ada bölgesi — Kuzeyfener, Kül Limanı, Kumsaati — ortanca süre) kip sınırı içinde ve her bölgede ≥ 6 karo ağı: normal ≤ 2 sn, işçisiz/çöken kiplerde (crash, crash1 dahil) ≤ 3 sn (KI-234, A-15: yeniden başlatılan işçilere iş sektirme/bekleme yok) → true
+R: {"r":300,"fpsLimitVar":true,"olcumler":[{"bolge":[282,-5006],"ms":180,"oncekiIs":0,"cizim":0,"donus":"undefined","ag":12},{"bolge":[5300,400],"ms":191,"oncekiIs":0,"cizim":0,"donus":"undefined","ag":12},{"bolge":[-5300,700],"ms":212,"oncekiIs":0,"cizim":0,"donus":"undefined","ag":11}],"ms":191,"cizimSirasinda":0,"cizimDurdu":true,"ag":11,"sinir":3000}
+R: {"jobs":0,"kuyruk":0,"kuyrukTur":[],"seritler":[null,null],"isci":[]}
+PASS Uzak bölge prepare() sonuçlanıyor (askıda kalmıyor) → true
+R: {"prepMs":614,"dilimSayisi":16,"dilimToplamMs":201,"enUzunDilim":19.3,"boslukToplamMs":349,"enUzunBosluk":30.5,"kareSayisi":21,"enUzunKareMs":44,"once":{"jobs":0,"kuyruk":0,"kuyrukTur":[],"seritler":[null,null],"isci":[]}}
+R: {"hamMs":614,"netMs":614,"aracDisiUzunGorevMs":0,"uzunGorev":0,"enUzunAracDisiMs":0,"uzunGorevIciDilimMs":0,"dilimToplamMs":201,"uzunGorevOrnek":[],"gozlemci":"longtask"}
+PASS Derinlik penceresi yeni bölgeye taşındı → true
+R: {"prepMs":614,"prepUnder45s":true,"stats":{"tiles":129,"meshes":129,"hires":31,"tris":518400,"queue":0,"jobs":0,"workers":0,"fallback":true,"failures":4,"mode":"badurl"}}
+R: {"kip":"badurl","tani":"Tuz Pazarı prepare (çizim açık): ham süre ve uzun görev bileşimi","hamMs":614,"netMs":614,"aracDisiUzunGorevMs":0,"uzunGorev":0,"enUzunAracDisiMs":0,"uzunGorevIciDilimMs":0,"dilimToplamMs":201,"uzunGorevOrnek":[],"gozlemci":"longtask"}
+PASS AYS-02 Hiçbir arazi işi işçilere MAX_TRIES (3) kezden fazla gönderilmez (yeniden başlatılan işçilere iş sektirme yok; A-05, A-15, KI-234) → 1
+R: {"is":6,"toplam":6,"enCok":1,"enCokIs":1,"isciler":[[0,2,0,1,"son"],[1,2,0,1,"son"],[2,2,0,1,"son"]]}
+PASS Tuz Pazarı çevresinde karo ağları var → 21
+PASS Harita ızgarası isteği sonuçlanıyor → true
+PASS Uzak adada yürüme (zemin sorgusu tutarlı) → true
+R: "ok"
+PASS Kuyruk ilerliyor (askıda iş yok) → true
+R: {"jobsBefore":110,"jobsAfter8s":99,"fallback":true}
+errors: 3 pageErrors: 0 fails: 0 (43.7 s)
+IZINLI ×3 (terrainWorker\.missing\.js$): 404 http://localhost:8080/js/world/terrainWorker.missing.js
+IZINLI ×3 (terrainWorker\.missing\.js$): net::ERR_FAILED http://localhost:8080/js/world/terrainWorker.missing.js
+IZIN ×6 (cli, hepsi) terrainWorker\.missing\.js$ — badurl kipi işçi adresini kasıtlı olarak var olmayan dosyaya çevirir; 3 × 404 + 3 × requestfailed beklenir
+SONUC: GECTI (çıkış 0) kontrol 16/16, onay 16 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 6 | uyarı 6 farklı/38

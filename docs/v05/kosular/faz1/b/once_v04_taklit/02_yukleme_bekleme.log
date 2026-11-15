@@ -1,0 +1,25 @@
+# komut: /home/user/devtools/tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_yukleme_bekleme.js  --url 'http://localhost:8080/index.html' --size 640x360 --timeout 540 --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04_taklit/02_yukleme_bekleme.json --goruntu-dizin /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/goruntu/02_yukleme_bekleme 
+# koşucu (kosucu17 son): 285211cf 9292115d 53358e1c 
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+ready in 6.0 s
+PASS YB00 Test verisi: yuva 1'de Kuzeyfener'de (5,3 km) kayıt var, oyun menüde → true
+R: {"vardi":true,"mod":"ground","kayitKonum":[295,-5112],"durum":"menu"}
+DEGISKEN kayitOnce = "{\"version\":1,\"savedAt\":1794733030318,\"playTime\":2.1998999999999955,\"name\":\"Kaptan Deniz\",\"player\":{\"pos\":{\"x\":294.8248028661923,\"y\":2.799999952316284,\"z\":-5112.0025583817505},\"hp
+GOTO http://localhost:8080/index.html?test=1
+R: {"durum":"menu","oyuncu":false,"menu":true}
+PASS YB01 Yeniden yüklenen sayfada ana menü ve DEVAM ET düğmesi var, oyuncu yok → true
+PASS YB02 Önkoşul: DEVAM ET kayıttaki bölgenin (Kuzeyfener) hazırlığını başlattı ve start o hazırlığı bekliyor (kapı kapalı) → true
+R: {"cagri":[[295,-5112]],"kapida":true}
+FAIL YB03 Bölge hazırlığı beklenirken yükleme katmanı görünür (#loading etkin ya da perde açık; A-10) → false
+GORUNTU /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/goruntu/02_yukleme_bekleme/ilk_kalan.png
+R: {"yukleme":false,"perde":false,"menu":false,"hud":false,"durum":"playing"}
+FAIL YB04 Bölge hazırlığı beklenirken oyun durumu 'playing' değil (A-10: G.state 'loading') → false
+FAIL YB05 Bölge hazırlığı beklenirken Esc duraklatma menüsünü açmaz (A-10) → false
+R: {"paneller":["Duraklatıldı"],"duraklatildi":true}
+R: {"durum":"menu"}
+R: {"durum":"menu","menu":true,"hud":true,"oyuncu":true,"bildirim":["Kayıt yüklendi: Kaptan Deniz","Hedef: Hanın önündeki Yaşlı Kaptan Tuzla ile konuş. (J: Korsan Defteri)"],"kilit":true}
+FAIL YB06 İptal edilen yükleme hiçbir durumu değiştirmez: hazırlık bittikten sonra da durum 'menu', ana menü açık, HUD kapalı, oyuncu kurulmamış (A-10, oturum belirteci) → false
+FAIL YB07 İptal edilen yükleme 'Kayıt yüklendi' bildirimi üretmez (A-10) → false
+PASS YB08 İptal edilen yükleme kayıttaki veriyi değiştirmez (yuva 1 aynı) → true
+errors: 0 pageErrors: 0 fails: 5 (61.7 s)
+SONUC: KALDI (çıkış 1) kontrol 4/9, onay 9 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/68 | neden: başarısız kontrol ya da adım: 5

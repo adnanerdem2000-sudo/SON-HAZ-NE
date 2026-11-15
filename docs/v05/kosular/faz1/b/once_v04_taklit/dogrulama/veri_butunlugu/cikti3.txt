@@ -1,0 +1,23 @@
+LY13 dilim ölçümü (eşik: p99Fark <= 4 ms ve enBuyukFark <= 15 ms):
+  02_arazi_yasam_crash         B0    dilim=58 asim=1 p99Fark=2.6 enBuyukFark=8.8 enUzun=20.1 but=20 p99_pay=1.4
+  02_arazi_yasam_crash         taklit dilim=59 asim=0 p99Fark=2 enBuyukFark=2.4 enUzun=20.2 but=20 p99_pay=2
+  02_arazi_yasam_normal        B0    dilim=63 asim=3 p99Fark=6 enBuyukFark=8.1 enUzun=21.5 but=20 p99_pay=-2
+  02_arazi_yasam_normal        taklit dilim=70 asim=1 p99Fark=3.6 enBuyukFark=4.2 enUzun=22.1 but=20 p99_pay=0.4
+  02_arazi_yasam_normal_2      B0    dilim=63 asim=3 p99Fark=6 enBuyukFark=8.1 enUzun=21.5 but=20 p99_pay=-2
+  02_arazi_yasam_normal_2      taklit dilim=60 asim=0 p99Fark=1.4 enBuyukFark=3.5 enUzun=20.1 but=20 p99_pay=2.6
+  02_arazi_yasam_noworker      B0    dilim=63 asim=6 p99Fark=15.9 enBuyukFark=17.3 enUzun=32.1 but=20 p99_pay=-11.9
+  02_arazi_yasam_noworker      taklit dilim=55 asim=0 p99Fark=1 enBuyukFark=1.1 enUzun=20.1 but=20 p99_pay=3
+  02_arazi_yasam_noworker_2    B0    dilim=63 asim=6 p99Fark=15.9 enBuyukFark=17.3 enUzun=32.1 but=20 p99_pay=-11.9
+  02_arazi_yasam_noworker_2    taklit dilim=60 asim=0 p99Fark=1.1 enBuyukFark=3.3 enUzun=20.3 but=20 p99_pay=2.9
+
+AYS-01 (02_arazi_yedek) ortanca ve bölge süreleri:
+
+HYS-01 prepare kaydı (günlük R: satırı) <-> rapor değeri:
+  02_hizli_yolculuk_normal     B0    varisIlkKareMs=26498 prepare.ms=[1810] varis.ms=26380 rapor HYS-01=1810
+  02_hizli_yolculuk_normal     taklit varisIlkKareMs=14862 prepare.ms=[2404] varis.ms=14811 rapor HYS-01=2404
+  02_hizli_yolculuk_noworker   B0    varisIlkKareMs=35181 prepare.ms=[30949] varis.ms=34314 rapor HYS-01=30949
+  02_hizli_yolculuk_noworker   taklit varisIlkKareMs=26003 prepare.ms=[19730] varis.ms=25958 rapor HYS-01=19730
+  02_hizli_yolculuk_noworker_2 B0    varisIlkKareMs=35181 prepare.ms=[30949] varis.ms=34314 rapor HYS-01=30949
+  02_hizli_yolculuk_noworker_2 taklit varisIlkKareMs=29979 prepare.ms=[20341] varis.ms=27641 rapor HYS-01=20341
+  02_hizli_yolculuk_noworker_3 B0    varisIlkKareMs=35181 prepare.ms=[30949] varis.ms=34314 rapor HYS-01=30949
+  02_hizli_yolculuk_noworker_3 taklit varisIlkKareMs=33748 prepare.ms=[22172] varis.ms=31633 rapor HYS-01=22172

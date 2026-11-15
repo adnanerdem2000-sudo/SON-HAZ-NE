@@ -1,0 +1,21 @@
+# -*- coding: utf-8 -*-
+# #69 veri bütünlüğü, 8. bölüm: iki tarafta da YEŞİL olan sayısal kontrollerde eşiğe kalan pay (taklit) — %20'nin altı listelenir.
+import json, os, re
+B = '/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b'
+ESKI, YENI = B + '/once_v04/son', B + '/once_v04_taklit'
+def j(p):
+    with open(p, encoding='utf-8') as f: return json.load(f)
+def taban(ad): return re.sub(r'_(\d+)$', '', ad) if not os.path.exists(f'{ESKI}/{ad}.json') else ad
+adlar = sorted(f[:-5] for f in os.listdir(YENI) if f.endswith('.json') and not f.endswith('_bellek.json') and f != 'karsilastirma.json')
+for ad in adlar:
+    ke = {k['id']: k for k in j(f'{ESKI}/{taban(ad)}.json')['kontroller']}
+    for k in j(f'{YENI}/{ad}.json')['kontroller']:
+        e = ke.get(k['id'])
+        if not (k['ok'] and e and e['ok']): continue
+        v, b = k['deger'], k.get('beklenen') or {}
+        if isinstance(v, bool) or not isinstance(v, (int, float)): continue
+        for anah in ('lte', 'lt', 'gte', 'gt'):
+            if anah in b and isinstance(b[anah], (int, float)) and b[anah] != 0:
+                pay = (b[anah] - v) / abs(b[anah]) if anah in ('lte', 'lt') else (v - b[anah]) / abs(b[anah])
+                if pay < 0.2:
+                    print(f'{ad:30s} {k["id"]:8s} taklit={v} B0={e["deger"]} {anah} {b[anah]} pay={pay:.0%}')

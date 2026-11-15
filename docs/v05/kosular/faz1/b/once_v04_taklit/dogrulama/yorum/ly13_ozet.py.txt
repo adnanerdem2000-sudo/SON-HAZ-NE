@@ -1,0 +1,36 @@
+# ly13_say.py çıktısını (JSON satırları, stdin) sınıflara ayırıp sayar. python3 -I ly13_say.py <b> | python3 -I ly13_ozet.py
+import json, sys
+from collections import Counter, defaultdict
+S = [json.loads(l) for l in sys.stdin if l.strip().startswith('{')]
+
+def kip(u):
+    for k in ('noworker', 'crash', 'badurl'):
+        if 'terrain=' + k in (u or ''):
+            return k
+    return 'normal'
+
+def sinif(r):
+    if r['kayit'].startswith('once_v04_taklit/'):
+        return '#69 taklit'
+    if r['kilit'].startswith('birak'):
+        return 'B0 birak (tanı)'
+    if '127.0.0.1:8098' in (r['url'] or ''):
+        return 'B0 mutant :8098 (gerçek kilit)'
+    return 'B0 v0.4 gerçek kilit'
+
+say = defaultdict(Counter)
+for r in S:
+    s = sinif(r); k = kip(r['url'])
+    if r['LY13_deger'] is None:
+        d = 'olculmedi (sayfa coktu/OOM)'
+    else:
+        d = 'GECTI' if r['LY13_ok'] else 'KALDI'
+    say[(s, k)][d] += 1
+print('toplam kayit', len(S))
+for (s, k), c in sorted(say.items()):
+    print(f'{s:32s} {k:9s} ' + ', '.join(f'{d}: {n}' for d, n in sorted(c.items())))
+# son tanım (⌊(n−1)·0,99⌋, +4/+15) ile ölçülenlerin p99 / en büyük farkları
+print('\nson tanımla ölçülenler (p99Fark / enBuyukFark ms; eşik 4 / 15):')
+for r in S:
+    if r['tanim'].startswith('floor') and r['p99'] is not None:
+        print(f"  {sinif(r):32s} {kip(r['url']):9s} p99 {r['p99']:5.1f}  en büyük {r['enBuyuk']:5.1f}  dilim {r['dilim']:3d}  aşım {r['asim']}  {'GECTI' if r['LY13_ok'] else 'KALDI'}  {r['kayit']}")

@@ -1,0 +1,13 @@
+# -*- coding: utf-8 -*-
+# #69 veri bütünlüğü, 7. bölüm: tarayıcı açıkken cgroup'taki chrome dışı bellek (arka_plan_MB) sıçradı mı? (başka iş yükü belirtisi)
+import csv, os, statistics
+F = '/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/kosu'
+YENI = '/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04_taklit'
+adlar = sorted(f[:-5] for f in os.listdir(YENI) if f.endswith('.json') and not f.endswith('_bellek.json') and f != 'karsilastirma.json')
+for ad in adlar:
+    with open(f'{F}/{ad}_ornek.csv', encoding='utf-8') as f:
+        r = [x for x in csv.DictReader(f) if int(x['n_chrome']) > 0 and x['arka_plan_MB']]
+    bg = [float(x['arka_plan_MB']) for x in r]
+    nd = [float(x['node_MB']) for x in r]
+    taban = statistics.median(bg[:10]); tepe = max(bg); i = bg.index(tepe)
+    print(f'{ad:34s} arka_plan başlangıç≈{taban:7.1f} MB  tepe {tepe:7.1f} MB (+{tepe - taban:6.1f}) @ {r[i]["zaman"][11:19]}  medyan {statistics.median(bg):7.1f}  node tepe {max(nd):6.1f} MB')

@@ -1,0 +1,53 @@
+# LY13 (A-06 tarayıcı vekili) bütün 02_arazi_yasam kayıtlarında: B0 (once_v04/ altı, duzeltme*/ dahil) + taklit (once_v04_taklit/).
+# Salt okur. Kullanım: python3 -I ly13_say.py <b dizini>
+import json, os, sys, glob
+B = sys.argv[1]
+
+def oku(y):
+    with open(y, encoding='utf8') as f:
+        return json.load(f)
+
+def dilim_adimi(d):
+    for s in d.get('steps') or []:
+        r = s.get('result')
+        if isinstance(r, dict) and isinstance(r.get('dilim'), dict) and 'dolasim' in r:
+            return r['dilim'], r['dolasim']
+    return None, None
+
+def ly13(d):
+    for k in d.get('kontroller') or []:
+        kid = k.get('id') or (k.get('etiket') or '').split(' ')[0]
+        if kid == 'LY13':
+            return k
+    # eski şema: steps[].expect
+    for s in d.get('steps') or []:
+        e = s.get('expect')
+        if isinstance(e, dict) and (e.get('label') or '').startswith('LY13'):
+            return {'ok': e.get('ok'), 'deger': e.get('value'), 'etiket': e.get('label')}
+    return None
+
+satirlar = []
+for y in sorted(glob.glob(os.path.join(B, 'once_v04', '**', '*arazi_yasam*.json'), recursive=True)) + \
+         sorted(glob.glob(os.path.join(B, 'once_v04_taklit', '02_arazi_yasam*.json'))):
+    if y.endswith('_bellek.json'):
+        continue
+    d = oku(y)
+    rel = os.path.relpath(y, B)
+    k = ly13(d)
+    S, D = dilim_adimi(d)
+    url = d.get('url') or (d.get('hedef') or {}).get('verilenUrl')
+    sha = ((d.get('tekrar') or {}).get('senaryoSha256') or '')[:12]
+    kilit = (d.get('isaretciKilidi') or {}).get('kip') or ('birak(tanı)' if 'birak' in rel else 'gercek')
+    et = (k or {}).get('etiket') or ''
+    tanim = 'floor(n-1)*0.99 +4/+15' if '⌊' in et else ('ceil eski' if et else '-')
+    sonuc = (d.get('sonuc') or {})
+    satirlar.append({
+        'kayit': rel, 'url': url, 'sha': sha, 'kilit': kilit, 'tarih': (d.get('ortam') or {}).get('tarih'),
+        'durum': sonuc.get('durum'), 'gecen': f"{sonuc.get('gecen')}/{sonuc.get('kontrolSayisi')}",
+        'LY13_ok': None if k is None else bool(k.get('ok')), 'LY13_deger': None if k is None else k.get('deger'), 'tanim': tanim,
+        'dilim': None if not S else S.get('dilim'), 'asim': None if not S else S.get('asim'), 'p99': None if not S else S.get('p99Fark'),
+        'enBuyuk': None if not S else S.get('enBuyukFark'), 'enUzun': None if not S else S.get('enUzun'), 'enUzunBut': None if not S else S.get('enUzunBut'),
+        'isciVardi': None if not S else S.get('isciVardi'), 'dol2ms': None if not D else D.get('ms'), 'butceKaynagi': None if not S else S.get('butceKaynagi')})
+
+for r in satirlar:
+    print(json.dumps(r, ensure_ascii=False))

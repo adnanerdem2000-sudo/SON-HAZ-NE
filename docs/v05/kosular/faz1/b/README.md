@@ -73,21 +73,45 @@ Karşılanabilirlik ve duyarlılık da sınandı (`inceleme_sonuclari.json`). De
 
 ## Ortam uyarısı: işaretçi kilidi seli
 
-Bu dizindeki bütün tarayıcı koşuları, koşucunun işaretçi kilidi düzeltmesinden ÖNCE yapıldı. Ölçüm ayrıntısı `../once_v04_tam/ONCE_KAPISI.md` dosyasında ve koşucu düzeltmesinin kaydında.
+`once_v04/` altındaki bütün tarayıcı koşuları, koşucunun işaretçi kilidi düzeltmesinden ÖNCE, gerçek kilitle yapıldı. Ölçüm ayrıntısı `../once_v04_tam/ONCE_KAPISI.md` ve `../kosucu17/KOSUCU17.md` dosyalarında (KI-238, commit `2586265`).
 
 **Mekanizma:** Oyun başlarken fare kilidi alınıyor. Başsız Chromium kilitliyken saniyede on binlerce yapay fare olayı üretiyor. Bu olaylar sayfa JS'ine ulaşmıyor; sayfaya en çok 24 mousemove geliyor. Ama tarayıcı ve compositor süreçlerinde CPU tüketiyor ve belleği büyütüyor.
 
-**Etkilediği kontroller:**
-- **LY13** (yedek kipte dilim süresi, tarayıcı): Kilit bırakılınca v0.4'te normal ve noworker kipinde YEŞİL. Koşucu düzeltmesinin v0.4 koşuları da aynı sonucu verdi (`../kosucu17/`): kilit taklidiyle 3/3 "tamam", gerçek kilitle 2/2 kaldı. Yani tarayıcıdaki "önce" kırmızısı ortamdan geliyor. A-06'nın belirlenimli "önce" kanıtı Node'daki KY25'tir (v0.4'te kırmızı, A-06 mutantında yeşil).
-- **HYS-01** (işçisiz kipte hızlı yolculuk hazırlığı ≤ 3 sn): Kilitliyken 28,7–44,7 sn sürdü; bir koşu 0,37 sn ile aykırı kaldı. Kilit bırakılınca 10,3 sn sürdü. Sel gecikmeyi yaklaşık üç kat büyütüyor, ama gecikme selsiz de sınırın üstünde.
-- **AYS-01** kilitten etkilenmiyor: 150–211 ms.
-- **Açılış süreleri ve Node testleri** de etkilenmiyor: oyun oturumu başlamadan ölçülüyorlar.
-- **Ölçülmemiş etki:** Uzak varıştan sonraki ilk karenin 26–37 sn sürmesi ve ardışık uzak varışlardaki bellek büyümesi (bkz. bulgu 4 ve 5) üzerinde selin etkisi ölçülmedi.
+### Düzeltilmiş koşucuyla yineleme (`once_v04_taklit/`, #69)
 
-**Karar:**
-- Koşucu düzeltmesi geldikten sonra kilide duyarlı bu testler v0.4'e karşı yeniden koşulacak.
-- Sonra kapısında "önce" değeri olarak o koşular kullanılacak.
-- O zamana kadar LY13 ve HYS-01'in "önce kırmızı / sonra yeşil" çifti tek başına kanıt sayılmaz.
+B0'ın 20 tarayıcı koşusu son koşucuyla (işaretçi kilidi taklidi; `run.cjs` 285211cf) v0.4'e karşı yinelendi. Komutlar B0'ınkilerle aynı; tek fark koşucu. Kilide duyarlı iki koşu fazladan tekrarlandı: `02_arazi_yasam` normal ve işçisiz ×2, işçisiz `02_hizli_yolculuk` ×3. Toplam 24 koşu yapıldı (15 Kasım 06:47–09:05 UTC). OOM, kopma ya da yarım kalan koşu olmadı.
+
+- **Karşılaştırma:** `once_v04_taklit/KARSILASTIRMA.md` ve `karsilastirma.json`, kontrol kontrol ve değer değer.
+- **Sınıflandırma:** `once_v04_taklit/siniflandirma_taklit.json`, `siniflandirma.json`'un her satırı için taklitli "önce" sonucu. B0'ın dosyası değişmedi.
+- **Bağımsız doğrulama:** iki karşıt doğrulayıcı (veri bütünlüğü ve yorum), salt okuma. Betikler ve çıktıları `once_v04_taklit/dogrulama/` altında.
+
+**Sonuç:**
+- 24 koşunun hepsinde durum (GECTI/KALDI) B0'la aynı. 20 koşu kontrol kontrol aynı.
+- Tek sonuç farkı **LY13**: taklitle 4/4 geçti (normal ×2, işçisiz ×2); crash kipinde iki tarafta da geçti.
+- Taklitli sınıflandırma: 143 YEŞİL, 94 KIRMIZI, 10 UYGULANAMAZ. Tek değişiklik LY13: KIRMIZI → YEŞİL.
+- Aynı sonuçlu ama değeri değişen kontroller (`KARSILASTIRMA.md` "Aynı sonuç, farklı değer"):
+  - **HK04 (co-op):** iki tarafta da KALDI, ama nedeni değişti. B0'da konuk yanlış limana taşınmıştı; taklitte doğru limanda (aUzaklik 1) ve kırmızı yalnız çift "vardınız" bildiriminden geliyor. Yanlış limana taşınma yarışa bağlı; taklitte görülmedi. A-03'ün belirlenimli "önce" kanıtı HK03.
+  - **LY09 crash:** B0'da yalnız derinlik alt koşulu kalıyordu ("20 ağ"); taklitte iki alt koşul da kalıyor ("0 ağ"), işçisiz kiptekiyle aynı biçim.
+  - **Değer değişimi (kalma biçimi aynı):** HI03/HI04 (87 → 120), HK07 (HK04'teki başlangıç konumundan) ve işçisiz HYS-01.
+- **Bellek:** taklitle tarayıcı süreci 96–113 MB, renderer en çok 850 MB.
+
+**Etkilenen kontroller ve sonra kapısı kuralları:**
+- **LY13** (A-06, yedek kipte dilim süresi): Taklitle v0.4'te 4/4 geçti; gerçek kilitte ölçülebilen 20 kaydın 18'inde kalmıştı. Yani tarayıcıdaki "önce" kırmızısı selden geliyordu.
+  - LY13 artık gerileme korumasıdır. Sonra kapısında geçmesi A-06'nın düzeldiğine kanıt sayılmaz.
+  - A-06'nın belirlenimli "önce" kanıtı Node'daki KY25: v0.4'te p99 +90 ms, A-06 mutantında +2,5 ms.
+  - Pay dar: taklitli normal koşularda p99 farkı 3,6 ve 1,4 ms (eşik 4 ms).
+  - Denetimin A-06 kabulü daha sıkı: en uzun dilim ≤ bütçe + 4 ms. Bu ölçütle taklitli normal koşulardan biri (4,2 ms) kalırdı. Sonra kapısında bu ölçüt ayrıca raporlanır.
+- **HYS-01** (bölge hazırlığı ≤ 3 sn):
+  - İşçisiz kipte taklitle 19,7 / 20,3 / 22,2 sn, gerçek kilitte 28,7–44,7 sn idi. KI-237 selden bağımsız: selsiz bütün değerler sınırın en az 3,4 katı.
+  - Bulgu 3'teki "45 sn zaman aşımına yakın" ifadesi seldendi; taklitte en çok 22,2 sn.
+  - Önceki "kilit bırakılınca 10,3 sn, sel ~3 kat" ifadesi tek tanı koşusuna dayanıyordu. O koşuda kalkıştan önceki ~4,9 sn'lik ana iplik tıkanması ölçüm penceresinin dışında kalmıştı. Aynı pencereyle (çıkıştan hazırlık sonuna) gerçek kilit 29,3–31,5 sn, kilit bırakılmış tanı 15,2 sn, taklit 19,8–23,2 sn: sel yaklaşık 1,4–2 kat.
+  - Normal kipte HYS-01 bir gerileme korumasıdır ama kararsızdır: v0.4'ün bütün ölçümleri 0,18–3,32 sn (taklit 0,78 ve 2,4 sn). Oyun başındaki çok saniyelik ana iplik tıkanması pencereye bazen giriyor. Sonra kapısında tek koşuya dayanılmaz: en az 3 koşunun ortancası, aynı pencerede v0.4 ile dönüşümlü.
+- **AYS-01** kilitten etkilenmiyor: B0'da ve taklitte dört kipte 123–241 ms.
+- **Açılış süreleri ve Node testleri** de etkilenmiyor: oyun oturumu başlamadan ölçülüyorlar.
+- **Zaman karşılaştırmaları:** #69, B0'ın son koşularından kilitten bağımsız işte ~%30 yavaş bir pencerede koştu; sayfa hazır süresi oranının ortancası 1,30. Makine 03:27'de yeniden başlamıştı. Bu yüzden B0 ile taklit arasındaki süre farkları yalnız sele bağlanamaz.
+  - Sonra kapısında zaman kontrollerinin "önce"si #69'un mutlak değerleri değil, w2 ile aynı pencerede dönüşümlü koşulan v0.4 değerleridir: HYS-01, LY13 payı, AYS-01, varisIlkKareMs, bellek tepeleri.
+  - Durum vektörü (GECTI/KALDI) için "önce" değeri taklitli kayıtlardır.
+- **Taklidin bilinen farkları** B0'ın hiçbir kontrolünün durumunu değiştirmiyor (doğrulama). Bu farklar: kilit alınışında fare sıçraması, çerçeve başına kilit, sandbox yaklaşığı.
 
 ## Geçersiz koşular
 
@@ -106,10 +130,18 @@ Ayrıntılar `b0_is_akisi_sonucu.json` içinde, `sonuc.t.bulunan_hatalar` ve `so
    - İskele platformunun yarı genişliği 2,5 m (`js/world/islands.js` `_pier`).
    - Oyuncu platformun 0,1 m dışına konuyor. Arazi kusuru değil.
 3. **İşçisiz kipte hızlı yolculuk hazırlığı 10–45 sn sürüyor.** 45 sn zaman aşımı sınırına yakın; zaman aşımında varış sessizce eksik kalıyor.
+   - **#69 (taklit):** 19,7–22,2 sn; sınırın en az 3,4 katı. "45 sn'ye yakın" kısmı seldendi (yukarıda).
    - KI-234'ten ayrı bir konu.
    - Olası neden: yükleme ekranı yerel dilim bütçesini 40 ms'ye çıkarıyor, hızlı yolculuk perdesi çıkarmıyor (10 ms). Bu kanıtlanmadı.
 4. **Uzak limana varıştan sonraki ilk kare 26–37 sn gecikiyor.** Bölge hazırlığı ise 0,27–1,4 sn sürüyor. Olasılık: yeni gölgelendirici derlemeleri (yazılımsal WebGL). Sel etkisi ölçülmedi; Faz 8 konusu.
+   - **#69 (taklit):** Gecikme selden bağımsız olarak var, ama sel aynı pencerede onu ~2,5 kat büyütüyordu.
+     - Normal kip: taklitle 13,7–14,9 sn; bunun ~9,4–10,8 sn'si hazırlıktan sonraki ilk kare. Gerçek kilitte 26,5–34,3 sn.
+     - İşçisiz kip: 26–34 sn; çoğu KI-237 hazırlığı. Hazırlıktan sonraki ilk kare 4,2–9,5 sn.
+     - `varisIlkKareMs` hazırlığı da içerir; Faz 8'de yalnız hazırlıktan sonraki kısım ölçülmeli.
 5. **Ardışık uzak varışlarda bellek büyüyor.** İki ayrı koşuda renderer 6,2 GB ve 5,4 GB'a çıkıp cgroup sınırında çöktü. Koşucu düzeltmesinin 17_kamera_kararma ölçümlerinde renderer belleği gerçek kilitle 2,3–4,8 GB, kilit taklidiyle yaklaşık 0,47 GB. Bu yüzden büyümenin önemli bir kısmı sel kaynaklı olabilir; koşucu düzeltmesinden sonra hızlı yolculukta yeniden ölçülecek.
+   - **#69 (taklit):** GB'lık büyüme ve OOM seldendi. Taklitle hızlı yolculuk koşularında renderer en çok 0,85 GB, tarayıcı ~0,1 GB; çökme yok.
+     - Kapanmadı: işçisiz kipte tek koşu içinde renderer anon belleği bölümden bölüme büyüyor (272 → 480–631 MB, koşu başına +200–300 MB). Normal kipte büyüme yok (290 → 316 MB).
+     - Sızıntı olup olmadığı Faz 8'de ölçülecek. Örnek dizileri `once_v04_taklit/bellek/`.
 6. **KI-234'ün tanımı yanlış.** v0.4'te crash kipinde kuyruk kusuru yok.
    - crash, badurl ve noworker kuyruk açısından aynı davranıyor.
    - Çizim durdurulunca dört kip de 150–211 ms.
@@ -120,4 +152,13 @@ Ayrıntılar `b0_is_akisi_sonucu.json` içinde, `sonuc.t.bulunan_hatalar` ve `so
 
 - `once_v04/`: test yazıcının ilk "önce" koşuları (ilk sürüm testler) ve `inceleme_*` (inceleyicinin koşuları).
 - `once_v04/duzeltme/`, `duzeltme2/`, `duzeltme3/`: düzelticinin üç denemesindeki ara koşular, tanılar ve mutasyon kanıtları. `duzeltme3/isaretci/` işaretçi kilidi tanısıdır; betiği `isaretci_tani.js` de oradadır.
-- `once_v04/son/`: son sürüm testlerle son "önce" koşuları. Sonra kapısında karşılaştırılacak olanlar bunlardır (kilide duyarlı testler için yukarıdaki karara bakın).
+- `once_v04/son/`: son sürüm testlerle son "önce" koşuları, gerçek kilitle (A1 koşucusu).
+- `once_v04_taklit/` (#69): aynı koşular son koşucuyla (taklit). İçinde:
+  - koşu `.json`/`.log`/`_bellek.json`;
+  - `zincir.log`;
+  - `KARSILASTIRMA.md`, `karsilastirma.json`, `siniflandirma_taklit.json`;
+  - `bellek/`: 0,5 sn'lik örnek dizileri;
+  - `araclar/`: zincir, karşılaştırma ve sınıflandırma betikleri;
+  - `dogrulama/`: iki doğrulayıcının betikleri ve çıktıları.
+
+  Sonra kapısında durum vektörü bunlarla karşılaştırılır; zaman kontrolleri için yukarıdaki kurala bakın.

@@ -1,0 +1,25 @@
+# HYS-01 karşılaştırmasının eşdeğerliği: yola çıkış (fastTravel emit; __ftOnce.sayfaMs) ile terrain.prepare'in başlaması (prepare t0) arası.
+# v0.4 main.js:286: emit'ten sonra 1200 ms beklenir, sonra prepare başlar. gecikme = t0 − sayfaMs − 1200 (ana iş parçacığının o aradaki
+# tıkanması). Aynı zamanda varisIlkKareMs (çıkıştan ilk kareye toplam). Salt okur. python3 -I kalkis_gecikme.py <faz1 dizini>
+import json, os, sys, glob
+F = sys.argv[1]
+for y in sorted(glob.glob(os.path.join(F, '**', '*hizli_yolculuk*.json'), recursive=True)):
+    if 'bellek' in y or y.endswith('_ozet.json') or 'coop' in os.path.basename(y):
+        continue
+    with open(y, encoding='utf8') as f:
+        d = json.load(f)
+    if not isinstance(d, dict):
+        continue
+    r = None
+    for s in d.get('steps') or []:
+        if isinstance(s.get('result'), dict) and 'varisIlkKareMs' in s['result']:
+            r = s['result']; break
+    if not r or not r.get('yolculukOncesiKuyruk') or not r.get('prepare'):
+        continue
+    ft = r['yolculukOncesiKuyruk']; p = r['prepare'][0]
+    url = d.get('url') or ''
+    kip = 'noworker' if 'noworker' in url else 'normal'
+    kilit = (d.get('isaretciKilidi') or {}).get('kip') or ('birak' if '_birak' in y else 'gercek')
+    gec = p['t0'] - ft['sayfaMs'] - 1200
+    print(f"{kip:9s} {kilit:7s} ready {d.get('readyMs'):6d}  kuyruk@çıkış {ft['jobs']}/{ft['queue']}  çıkış→prepare tıkanma {gec/1000:5.1f} sn  "
+          f"HYS-01 {p['ms']/1000:5.1f} sn  tıkanma+HYS {(gec + p['ms'])/1000:5.1f} sn  ilk kare {r['varisIlkKareMs']/1000:5.1f} sn  {os.path.relpath(y, F)}")

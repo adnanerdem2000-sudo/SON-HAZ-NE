@@ -1,0 +1,8 @@
+00_acilis                      Menü düğmeleri taklit=8 B0=8 gte 8 pay=0%
+02_ayar_lod                    AL05     taklit=0.7 B0=0.7 lte 0.705 pay=1%
+02_ayar_lod                    AL05     taklit=0.7 B0=0.7 gte 0.695 pay=1%
+02_hizli_yolculuk_normal       HY02     taklit=5348 B0=5348 gte 5000 pay=7%
+02_hizli_yolculuk_normal       HYS-01   taklit=2404 B0=1810 lte 3000 pay=20%
+02_hizli_yolculuk_noworker     HY02     taklit=5348 B0=5348 gte 5000 pay=7%
+02_hizli_yolculuk_noworker_2   HY02     taklit=5348 B0=5348 gte 5000 pay=7%
+02_hizli_yolculuk_noworker_3   HY02     taklit=5348 B0=5348 gte 5000 pay=7%

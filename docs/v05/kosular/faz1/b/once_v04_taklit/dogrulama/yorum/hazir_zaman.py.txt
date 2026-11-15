@@ -1,0 +1,33 @@
+# Kilitten bağımsız makine hızı göstergesi: v0.4 (:8080/index.html) koşularının sayfa hazır süresi (readyMs; oyun oturumu ve kilit
+# isteğinden ÖNCE ölçülür) zamana ve koşucuya göre. Salt okur. python3 -I hazir_zaman.py <docs/v05/kosular>
+import json, os, sys, glob, statistics
+from collections import defaultdict
+K = sys.argv[1]
+satir = []
+for y in glob.glob(os.path.join(K, '**', '*.json'), recursive=True):
+    if os.path.getsize(y) > 3_000_000:
+        continue
+    try:
+        with open(y, encoding='utf8') as f:
+            d = json.load(f)
+    except Exception:
+        continue
+    if not isinstance(d, dict) or not isinstance(d.get('readyMs'), (int, float)):
+        continue
+    url = d.get('url') or ''
+    if not url.startswith('http://localhost:8080/index.html'):
+        continue
+    tarih = (d.get('ortam') or {}).get('tarih')
+    if not tarih:
+        continue
+    kos = 'kosucu17' if 'isaretciKilidi' in d else 'A1/eski'
+    kilit = (d.get('isaretciKilidi') or {}).get('kip') or 'gercek'
+    satir.append((tarih[:16], kos, kilit, d['readyMs'], os.path.relpath(y, K)))
+satir.sort()
+# saat dilimine göre özet
+grup = defaultdict(list)
+for t, kos, kilit, r, y in satir:
+    grup[(t[:13], kos)].append(r)
+print('saat (UTC)       koşucu     n   ortanca  min    max')
+for (s, kos), L in sorted(grup.items()):
+    print(f'{s}  {kos:9s} {len(L):3d}  {statistics.median(L):7.0f} {min(L):6.0f} {max(L):6.0f}')

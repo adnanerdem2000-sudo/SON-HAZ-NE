@@ -1,0 +1,227 @@
+{
+ "kok": 16069,
+ "log": "/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04_taklit/02_tek_dosya_kipler.log",
+ "aralik_ms": 500,
+ "ornekleyici_basladi": "2026-11-15T08:47:15.149Z",
+ "kilit_alindi": "2026-11-15T08:50:59.548Z",
+ "node_pid": 16972,
+ "chrome_ilk": "2026-11-15T08:51:00.048Z",
+ "chrome_son": "2026-11-15T08:52:09.644Z",
+ "bitis": "2026-11-15T08:52:10.148Z",
+ "oom_kill_basta": 0,
+ "oom_kill_sonda": 0,
+ "oom_artislari": [],
+ "ornek_sayisi": 589,
+ "chrome_ornek_sayisi": 140,
+ "cg_kilitten_once_MB": 3107,
+ "tur": {
+  "browser": {
+   "hwm_tepe_MB": 113.2,
+   "hwm_pid": 16987,
+   "rss_tepe_MB": 111.4,
+   "rss_pid": 16987,
+   "rss_tepe_zaman": "2026-11-15T08:51:14.566Z",
+   "tur_toplam_tepe_MB": 111.4,
+   "pid_sayisi": 1,
+   "rss_tepe_t_ms": 239417
+  },
+  "zygote": {
+   "hwm_tepe_MB": 39.7,
+   "hwm_pid": 16990,
+   "rss_tepe_MB": 39.7,
+   "rss_pid": 16990,
+   "rss_tepe_zaman": "2026-11-15T08:51:00.048Z",
+   "tur_toplam_tepe_MB": 79.1,
+   "pid_sayisi": 2,
+   "rss_tepe_t_ms": 224899
+  },
+  "utility": {
+   "hwm_tepe_MB": 67,
+   "hwm_pid": 17008,
+   "rss_tepe_MB": 67,
+   "rss_pid": 17008,
+   "rss_tepe_zaman": "2026-11-15T08:52:03.636Z",
+   "tur_toplam_tepe_MB": 67,
+   "pid_sayisi": 1,
+   "rss_tepe_t_ms": 288487
+  },
+  "renderer": {
+   "hwm_tepe_MB": 606.5,
+   "hwm_pid": 17050,
+   "rss_tepe_MB": 601.1,
+   "rss_pid": 17050,
+   "rss_tepe_zaman": "2026-11-15T08:51:14.566Z",
+   "tur_toplam_tepe_MB": 601.1,
+   "pid_sayisi": 1,
+   "rss_tepe_t_ms": 239417
+  },
+  "gpu-process": {
+   "hwm_tepe_MB": 385.7,
+   "hwm_pid": 17006,
+   "rss_tepe_MB": 376.5,
+   "rss_pid": 17006,
+   "rss_tepe_zaman": "2026-11-15T08:52:02.133Z",
+   "tur_toplam_tepe_MB": 376.5,
+   "pid_sayisi": 1,
+   "rss_tepe_t_ms": 286984
+  }
+ },
+ "pidler": {
+  "16987": {
+   "tur": "browser",
+   "ilk": "2026-11-15T08:51:00.048Z",
+   "son": "2026-11-15T08:52:09.644Z",
+   "son_rss_MB": 98.5,
+   "son_hwm_MB": 113.2,
+   "son_anon_MB": 14.7
+  },
+  "16989": {
+   "tur": "zygote",
+   "ilk": "2026-11-15T08:51:00.048Z",
+   "son": "2026-11-15T08:52:09.644Z",
+   "son_rss_MB": 39.5,
+   "son_hwm_MB": 39.5,
+   "son_anon_MB": 7.9
+  },
+  "16990": {
+   "tur": "zygote",
+   "ilk": "2026-11-15T08:51:00.048Z",
+   "son": "2026-11-15T08:52:09.644Z",
+   "son_rss_MB": 39.7,
+   "son_hwm_MB": 39.7,
+   "son_anon_MB": 7.9
+  },
+  "17006": {
+   "tur": "gpu-process",
+   "ilk": "2026-11-15T08:51:00.048Z",
+   "son": "2026-11-15T08:52:09.644Z",
+   "son_rss_MB": 189.3,
+   "son_hwm_MB": 385.7,
+   "son_anon_MB": 127.6
+  },
+  "17008": {
+   "tur": "utility",
+   "ilk": "2026-11-15T08:51:00.048Z",
+   "son": "2026-11-15T08:52:09.144Z",
+   "son_rss_MB": 66.9,
+   "son_hwm_MB": 66.9,
+   "son_anon_MB": 8.8
+  },
+  "17050": {
+   "tur": "renderer",
+   "ilk": "2026-11-15T08:51:00.048Z",
+   "son": "2026-11-15T08:52:02.133Z",
+   "son_rss_MB": 362.8,
+   "son_hwm_MB": 606.5,
+   "son_anon_MB": 240.2
+  }
+ },
+ "kaybolan_surecler": [
+  {
+   "pid": 17050,
+   "tur": "renderer",
+   "zaman": "2026-11-15T08:52:02.634Z",
+   "t_ms": 287485,
+   "son_rss_MB": 362.8,
+   "son_hwm_MB": 606.5,
+   "son_anon_MB": 240.2,
+   "kalan_chrome": 5
+  },
+  {
+   "pid": 17008,
+   "tur": "utility",
+   "zaman": "2026-11-15T08:52:09.644Z",
+   "t_ms": 294495,
+   "son_rss_MB": 66.9,
+   "son_hwm_MB": 66.9,
+   "son_anon_MB": 8.8,
+   "kalan_chrome": 4
+  },
+  {
+   "pid": 16987,
+   "tur": "browser",
+   "zaman": "2026-11-15T08:52:10.147Z",
+   "t_ms": 294998,
+   "son_rss_MB": 98.5,
+   "son_hwm_MB": 113.2,
+   "son_anon_MB": 14.7,
+   "kalan_chrome": 0
+  },
+  {
+   "pid": 16989,
+   "tur": "zygote",
+   "zaman": "2026-11-15T08:52:10.147Z",
+   "t_ms": 294998,
+   "son_rss_MB": 39.5,
+   "son_hwm_MB": 39.5,
+   "son_anon_MB": 7.9,
+   "kalan_chrome": 0
+  },
+  {
+   "pid": 16990,
+   "tur": "zygote",
+   "zaman": "2026-11-15T08:52:10.147Z",
+   "t_ms": 294998,
+   "son_rss_MB": 39.7,
+   "son_hwm_MB": 39.7,
+   "son_anon_MB": 7.9,
+   "kalan_chrome": 0
+  },
+  {
+   "pid": 17006,
+   "tur": "gpu-process",
+   "zaman": "2026-11-15T08:52:10.147Z",
+   "t_ms": 294998,
+   "son_rss_MB": 189.3,
+   "son_hwm_MB": 385.7,
+   "son_anon_MB": 127.6,
+   "kalan_chrome": 0
+  }
+ ],
+ "chrome_toplam_tepe": {
+  "MB": 1090.8,
+  "zaman": "2026-11-15T08:51:14.566Z",
+  "t_ms": 239417,
+  "cg_MB": 3400,
+  "tur_MB": {
+   "browser": 111.4,
+   "renderer": 601.1,
+   "gpu-process": 232.3,
+   "utility": 66.8,
+   "zygote": 79.1
+  }
+ },
+ "chrome_anon_toplam_tepe": {
+  "MB": 701.7,
+  "zaman": "2026-11-15T08:51:14.566Z",
+  "t_ms": 239417
+ },
+ "cg_tepe": {
+  "MB": 3521,
+  "zaman": "2026-11-15T08:51:13.064Z",
+  "t_ms": 237915,
+  "chrome_MB": 981.8,
+  "arka_plan_MB": 2539.2
+ },
+ "arka_plan_ilk": [
+  2306.6,
+  2289.7,
+  2289.2,
+  2289.1,
+  2289.8,
+  2290.7,
+  2290,
+  2290.6,
+  2290.3,
+  2290.2
+ ],
+ "arka_plan_tepe": {
+  "MB": 2539.2,
+  "zaman": "2026-11-15T08:51:13.064Z",
+  "t_ms": 237915,
+  "agac_disi_chrome_MB": 0
+ },
+ "agac_disi_chrome_tepe_MB": 1638.1,
+ "node_tepe_MB": 132.7,
+ "arka_plan_baslangic_MB": 2290.2
+}

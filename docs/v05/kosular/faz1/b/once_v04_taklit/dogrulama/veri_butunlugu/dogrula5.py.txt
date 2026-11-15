@@ -1,0 +1,22 @@
+# -*- coding: utf-8 -*-
+# #69 veri bütünlüğü, 5. bölüm: B0 tarafının sağlığı (referans), uyarı sayımları, adım sayıları; LY13 eşiklerinin senaryodaki tanımı.
+import json, os, re
+
+B = '/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b'
+ESKI, YENI = B + '/once_v04/son', B + '/once_v04_taklit'
+
+def j(p):
+    with open(p, encoding='utf-8') as f:
+        return json.load(f)
+
+def taban(ad):
+    return re.sub(r'_(\d+)$', '', ad) if not os.path.exists(f'{ESKI}/{ad}.json') else ad
+
+adlar = sorted(f[:-5] for f in os.listdir(YENI) if f.endswith('.json') and not f.endswith('_bellek.json') and f != 'karsilastirma.json')
+print('B0 sağlık (referans) ve uyarı/adım sayıları:')
+for ad in adlar:
+    e, y = j(f'{ESKI}/{taban(ad)}.json'), j(f'{YENI}/{ad}.json')
+    he = e.get('hatalar', {})
+    pe = e.get('pageErrors'); pe_bos = pe == [] or (isinstance(pe, dict) and all(v == [] for v in pe.values()))
+    print(f'  {ad:34s} B0: sayfa={he.get("sayfa")} kesildi={he.get("kesildi")} pageErrBoş={pe_bos} | uyarı B0={e.get("uyariSayim")} yeni={y.get("uyariSayim")} '
+          f'| adım B0={len(e.get("steps") or [])} yeni={len(y.get("steps") or [])} | agIstek B0={e.get("agIstekSayisi")} yeni={y.get("agIstekSayisi")}')

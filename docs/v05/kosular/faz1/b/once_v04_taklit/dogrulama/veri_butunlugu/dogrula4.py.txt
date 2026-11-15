@@ -1,0 +1,34 @@
+# -*- coding: utf-8 -*-
+# #69 veri bütünlüğü, 4. bölüm: varisIlkKareMs'in zaman çizelgesi. Senaryo (02_hizli_yolculuk.js satır 93-96):
+# window.__t0 = fastTravel emit anı; varisIlkKareMs = gemi demir yerinde VE oyuncunun hedefte ilk karesi anına kadar geçen süre.
+# prepare kaydı (Y.prepareIzle) aynı performance.now() saatinde t0 ve ms tutar. Buradan: hazırlık bittikten sonra ilk kareye kalan süre.
+import json, os, re
+
+B = '/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b'
+ESKI, YENI = B + '/once_v04/son', B + '/once_v04_taklit'
+
+def r_satirlari(p):
+    out = []
+    with open(p, encoding='utf-8') as f:
+        for l in f:
+            if l.startswith('R: '):
+                try:
+                    out.append(json.loads(l[3:]))
+                except Exception:
+                    pass
+    return out
+
+def taban(ad):
+    return re.sub(r'_(\d+)$', '', ad) if not os.path.exists(f'{ESKI}/{ad}.json') else ad
+
+adlar = sorted(f[:-5] for f in os.listdir(YENI) if f.startswith('02_hizli_yolculuk') and f.endswith('.json') and not f.endswith('_bellek.json'))
+print(f'{"koşu":30s} {"taraf":6s} {"ft_t0":>9s} {"prep_t0":>9s} {"prep_ms":>8s} {"varisIlkKareMs":>14s} {"ilk_kare-prep_bitis":>20s} {"prep_payi":>9s}')
+for ad in adlar:
+    for etiket, kok, a in (('B0', ESKI, taban(ad)), ('taklit', YENI, ad)):
+        for x in r_satirlari(f'{kok}/{a}.log'):
+            if isinstance(x, dict) and 'varisIlkKareMs' in x:
+                ft0 = x['yolculukOncesiKuyruk']['sayfaMs']
+                p = x['prepare'][0]
+                prep_bitis = p['t0'] + p['ms']
+                ilk = ft0 + x['varisIlkKareMs']
+                print(f'{ad:30s} {etiket:6s} {ft0:9.0f} {p["t0"]:9.0f} {p["ms"]:8d} {x["varisIlkKareMs"]:14d} {ilk - prep_bitis:20.0f} {p["ms"] / x["varisIlkKareMs"]:9.2f}')

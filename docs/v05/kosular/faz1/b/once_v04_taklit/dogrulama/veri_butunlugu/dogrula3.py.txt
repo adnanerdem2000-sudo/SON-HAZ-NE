@@ -1,0 +1,57 @@
+# -*- coding: utf-8 -*-
+# #69 veri bütünlüğü, 3. bölüm: LY13 dilim ölçümleri, AYS-01 ortancaları, HYS-01'in günlükteki prepare kaydı,
+# varisIlkKareMs bağlamı. Salt okur; günlüklerdeki 'R:' JSON satırlarından.
+import json, os, re
+
+B = '/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b'
+ESKI, YENI = B + '/once_v04/son', B + '/once_v04_taklit'
+
+def oku(p):
+    with open(p, encoding='utf-8') as f:
+        return f.read()
+
+def r_satirlari(p):
+    out = []
+    for l in oku(p).splitlines():
+        if l.startswith('R: '):
+            try:
+                out.append(json.loads(l[3:]))
+            except Exception:
+                pass
+    return out
+
+def taban(ad):
+    return re.sub(r'_(\d+)$', '', ad) if not os.path.exists(f'{ESKI}/{ad}.json') else ad
+
+adlar = sorted(f[:-5] for f in os.listdir(YENI) if f.endswith('.json') and not f.endswith('_bellek.json') and f != 'karsilastirma.json')
+
+print('LY13 dilim ölçümü (eşik: p99Fark <= 4 ms ve enBuyukFark <= 15 ms):')
+for ad in adlar:
+    if 'arazi_yasam' not in ad:
+        continue
+    for etiket, p in (('B0   ', f'{ESKI}/{taban(ad)}.log'), ('taklit', f'{YENI}/{ad}.log')):
+        d = [x['dilim'] for x in r_satirlari(p) if isinstance(x, dict) and isinstance(x.get('dilim'), dict)]
+        for x in d:
+            print(f'  {ad:28s} {etiket} dilim={x.get("dilim")} asim={x.get("asim")} p99Fark={x.get("p99Fark")} enBuyukFark={x.get("enBuyukFark")} '
+                  f'enUzun={x.get("enUzun")} but={x.get("enUzunBut")} p99_pay={round(4 - x.get("p99Fark"), 2) if x.get("p99Fark") is not None else None}')
+
+print('\nAYS-01 (02_arazi_yedek) ortanca ve bölge süreleri:')
+for ad in adlar:
+    if 'arazi_yedek' not in ad:
+        continue
+    for etiket, p in (('B0   ', f'{ESKI}/{taban(ad)}.log'), ('taklit', f'{YENI}/{ad}.log')):
+        rs = [x for x in r_satirlari(p) if isinstance(x, dict) and any(k in x for k in ('ortanca', 'ortancaMs', 'bolgeler', 'sureler'))]
+        for x in rs:
+            print(f'  {ad:28s} {etiket} {json.dumps(x, ensure_ascii=False)[:260]}')
+
+print('\nHYS-01 prepare kaydı (günlük R: satırı) <-> rapor değeri:')
+for ad in adlar:
+    if 'hizli_yolculuk' not in ad or ad.startswith('coop'):
+        continue
+    for etiket, kok, a in (('B0   ', ESKI, taban(ad)), ('taklit', YENI, ad)):
+        rs = [x for x in r_satirlari(f'{kok}/{a}.log') if isinstance(x, dict) and 'varisIlkKareMs' in x]
+        rap = json.load(open(f'{kok}/{a}.json', encoding='utf-8'))
+        hys = [k['deger'] for k in rap['kontroller'] if k['id'] == 'HYS-01'][0]
+        for x in rs:
+            print(f'  {ad:28s} {etiket} varisIlkKareMs={x["varisIlkKareMs"]} prepare.ms={[p.get("ms") for p in x.get("prepare", [])]} '
+                  f'varis.ms={(x.get("varis") or {}).get("ms")} rapor HYS-01={hys}')

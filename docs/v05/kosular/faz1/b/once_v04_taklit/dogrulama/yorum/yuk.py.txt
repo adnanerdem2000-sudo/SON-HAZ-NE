@@ -1,0 +1,28 @@
+# #69 taklit koşularında eşzamanlı yük: kilit beklemesi ve koşu penceresinde (kilit alındı → koşunun chrome'u bitti) ağaç dışı chrome
+# (başka ajanların/oturumların tarayıcıları) ve arka plan belleği. Salt okur. python3 -I yuk.py <f69/kosu dizini>
+import csv, json, os, sys, glob
+from datetime import datetime
+K = sys.argv[1]
+
+def t(s):
+    return datetime.fromisoformat(s.replace('Z', '+00:00')).timestamp()
+
+print(f"{'koşu':34s} {'bekleme_sn':>10s} {'koşu_sn':>8s} {'dışChrome>0 %':>13s} {'dışChrome ort/tepe MB':>22s} {'arkaPlan ort/tepe MB':>21s}")
+for oz_yol in sorted(glob.glob(os.path.join(K, '*_ozet.json'))):
+    ad = os.path.basename(oz_yol)[:-len('_ozet.json')]
+    with open(oz_yol, encoding='utf8') as f:
+        oz = json.load(f)
+    t0 = t(oz['ornekleyici_basladi']); tk = t(oz['kilit_alindi']) if oz.get('kilit_alindi') else None
+    tson = t(oz['chrome_son']) if oz.get('chrome_son') else None
+    dis, ap = [], []
+    with open(os.path.join(K, ad + '_ornek.csv'), encoding='utf8') as f:
+        for r in csv.DictReader(f):
+            z = t(r['zaman'])
+            if tk is None or z < tk or (tson and z > tson):
+                continue
+            dis.append(float(r['agac_disi_chrome_MB'] or 0))
+            ap.append(float(r['arka_plan_MB'] or 0) if r['arka_plan_MB'] not in ('', None) else 0.0)
+    n = len(dis) or 1
+    pz = 100 * sum(1 for x in dis if x > 0) / n
+    print(f"{ad:34s} {(tk - t0) if tk else float('nan'):10.0f} {(tson - tk) if (tk and tson) else float('nan'):8.0f} {pz:13.0f} "
+          f"{sum(dis)/n:10.0f}/{max(dis or [0]):<10.0f} {sum(ap)/n:10.0f}/{max(ap or [0]):<10.0f}")

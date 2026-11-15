@@ -1,0 +1,69 @@
+#!/bin/bash
+# #69: B0'ın tarayıcıdaki "önce" koşuları son koşucuyla (kosucu17, işaretçi kilidi taklidi) v0.4'e (:8080) karşı.
+# Komutlar docs/v05/kosular/faz1/b/kosular.json "son/" girdileriyle aynı; tek fark koşucu (w2 çalışma ağacı) ve görüntü dizini.
+# Her öğe ayrı tk kilitli koşu; ornekle2.mjs (0,5 sn) bellek örneklemesi. Biten öğe bitti.txt'ye; yeniden başlatmada bitenler atlanır,
+# yarım kalan öğenin dosyaları kosu/gecersiz/ altına taşınır ve öğe baştan koşulur.
+set -u
+F=/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69
+W2=/home/user/SON-HAZ-NE-w2
+OUT=$W2/docs/v05/kosular/faz1/b/once_v04_taklit
+mkdir -p $OUT
+L=$OUT/zincir.log; B=$F/bitti.txt; touch $B
+CG=$(ls -d /sys/fs/cgroup/memory/process_api/*/claude-code-bash | head -1)
+U=http://localhost:8080/index.html
+TEK=http://127.0.0.1:8097/DenizKorsanlari-SonHazine.html
+TEKF=file:///tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/fb0/v04_tek/DenizKorsanlari-SonHazine.html
+kod() { (cd $W2 && sha256sum tests/harness/run.cjs tests/harness/coop.cjs tests/harness/ortak.cjs | cut -c1-8 | tr '\n' ' '); }
+oomsay() { awk '$1=="oom_kill"{print $2+0}' $CG/memory.oom_control; }
+# ad|koşucu|senaryo|url|tk süresi|ek
+PLAN="02_arazi_yasam_normal|run|02_arazi_yasam.js|$U|590|
+02_arazi_yasam_noworker|run|02_arazi_yasam.js|$U?terrain=noworker|590|
+02_hizli_yolculuk_noworker|run|02_hizli_yolculuk.js|$U?terrain=noworker|950|
+02_arazi_yasam_normal_2|run|02_arazi_yasam.js|$U|590|
+02_arazi_yasam_noworker_2|run|02_arazi_yasam.js|$U?terrain=noworker|590|
+02_hizli_yolculuk_noworker_2|run|02_hizli_yolculuk.js|$U?terrain=noworker|950|
+02_hizli_yolculuk_normal|run|02_hizli_yolculuk.js|$U|590|
+02_hizli_yolculuk_noworker_3|run|02_hizli_yolculuk.js|$U?terrain=noworker|950|
+02_arazi_yasam_crash|run|02_arazi_yasam.js|$U?terrain=crash|590|
+00_acilis|run|00_acilis.js|$U|590|
+02_acilis_akisi|run|02_acilis_akisi.js|$U|590|
+02_acilis_hatalari|run|02_acilis_hatalari.js|$U|590|
+02_arazi_isci_hata|run|02_arazi_isci_hata.js|$U|590|
+02_arazi_yedek_badurl|run|02_arazi_yedek.js|$U?terrain=badurl|590|--izin-hata terrainWorker\\.missing\\.js\$ # badurl kipi işçi adresini kasıtlı olarak var olmayan dosyaya çevirir; 3 × 404 + 3 × requestfailed beklenir
+02_arazi_yedek_crash|run|02_arazi_yedek.js|$U?terrain=crash|590|
+02_arazi_yedek_normal|run|02_arazi_yedek.js|$U|590|
+02_arazi_yedek_noworker|run|02_arazi_yedek.js|$U?terrain=noworker|590|
+02_ayar_lod|run|02_ayar_lod.js|$U|590|
+02_depolama_kapali|run|02_depolama_kapali.js|$U|590|
+02_tek_dosya_blob|run|02_tek_dosya_blob.js|$TEK|590|
+02_tek_dosya_cerceve|run|02_tek_dosya_cerceve.js|$TEK|590|
+02_tek_dosya_kipler|run|02_tek_dosya_kipler.js|$TEKF|590|
+02_yukleme_bekleme|run|02_yukleme_bekleme.js|$U|590|
+coop_02_hizli_yolculuk_konuk|coop|coop/02_hizli_yolculuk_konuk.cjs|$U?peerhost=127.0.0.1&peerport=9000|650|"
+echo "$(date -Is) ZİNCİR BAŞLADI pid=$$ uptime='$(uptime -p)' cg=$CG kod: $(kod)" >> $L
+while IFS='|' read -r ad kos sen url tks ek; do
+  [ -z "$ad" ] && continue
+  grep -qx "$ad" $B && continue
+  if grep -q " BAŞLADI $ad\$" $L; then
+    g=$F/kosu/gecersiz/${ad}_$(date +%H%M%S); mkdir -p $g; mv $OUT/${ad}.json $OUT/${ad}.log $g/ 2>/dev/null; mv $F/kosu/${ad}_* $g/ 2>/dev/null
+    echo "$(date -Is) YARIM KALMIŞ $ad -> $g (GEÇERSİZ), baştan" >> $L
+  fi
+  oom0=$(oomsay); t0=$(date +%s)
+  echo "$(date -Is) BAŞLADI $ad" >> $L
+  if [ "$kos" = coop ]; then KOSUCU=tests/harness/coop.cjs; OY="--players 2"; else KOSUCU=tests/harness/run.cjs; OY=""; fi
+  IZ=(); if [ -n "$ek" ]; then IZ=(--izin-hata "${ek#--izin-hata }"); fi
+  ic=$(( tks - 50 ))
+  echo "# komut: /home/user/devtools/tk timeout $tks node $KOSUCU tests/scenarios/$sen $OY --url '$url' --size 640x360 --timeout $ic --report $OUT/$ad.json --goruntu-dizin $F/goruntu/$ad ${IZ[*]}" > $OUT/$ad.log
+  echo "# koşucu (kosucu17 son): $(kod)" >> $OUT/$ad.log
+  ( cd $W2 && exec /home/user/devtools/tk timeout $tks node $KOSUCU tests/scenarios/$sen $OY --url "$url" --size 640x360 --timeout $ic --report $OUT/$ad.json --goruntu-dizin $F/goruntu/$ad "${IZ[@]}" ) >> $OUT/$ad.log 2>&1 &
+  KP=$!
+  node $F/ornekle2.mjs --kok $KP --cikti $F/kosu/$ad --log $OUT/$ad.log --aralik 500 > $F/kosu/$ad.ornekle.out 2>&1 &
+  SP=$!
+  wait $KP; rc=$?; wait $SP
+  cp $F/kosu/${ad}_ozet.json $OUT/${ad}_bellek.json 2>/dev/null
+  oom1=$(oomsay)
+  echo "$ad" >> $B
+  son=$(grep -hE '^SONUC' $OUT/$ad.log | tail -1 | cut -c1-300)
+  echo "$(date -Is) BİTTİ $ad çıkış=$rc süre=$(( $(date +%s)-t0 ))s oom_kill $oom0 -> $oom1 kod: $(kod) | $son" >> $L
+done <<< "$PLAN"
+echo "$(date -Is) ZİNCİR BİTTİ" >> $L

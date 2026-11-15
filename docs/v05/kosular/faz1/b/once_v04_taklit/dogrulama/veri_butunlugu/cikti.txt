@@ -1,0 +1,328 @@
+
+====================================================================================================
+0. AD EŞLEMESİ
+====================================================================================================
+taklit rapor sayısı: 24
+B0 rapor sayısı (son/): 22 ; taklitte karşılığı olmayan B0 raporları: ['arazi_kuyruk', 'arazi_sozlesme']
+eksik dosya: []
+  00_acilis                          <- 00_acilis
+  02_acilis_akisi                    <- 02_acilis_akisi
+  02_acilis_hatalari                 <- 02_acilis_hatalari
+  02_arazi_isci_hata                 <- 02_arazi_isci_hata
+  02_arazi_yasam_crash               <- 02_arazi_yasam_crash
+  02_arazi_yasam_normal              <- 02_arazi_yasam_normal
+  02_arazi_yasam_normal_2            <- 02_arazi_yasam_normal
+  02_arazi_yasam_noworker            <- 02_arazi_yasam_noworker
+  02_arazi_yasam_noworker_2          <- 02_arazi_yasam_noworker
+  02_arazi_yedek_badurl              <- 02_arazi_yedek_badurl
+  02_arazi_yedek_crash               <- 02_arazi_yedek_crash
+  02_arazi_yedek_normal              <- 02_arazi_yedek_normal
+  02_arazi_yedek_noworker            <- 02_arazi_yedek_noworker
+  02_ayar_lod                        <- 02_ayar_lod
+  02_depolama_kapali                 <- 02_depolama_kapali
+  02_hizli_yolculuk_normal           <- 02_hizli_yolculuk_normal
+  02_hizli_yolculuk_noworker         <- 02_hizli_yolculuk_noworker
+  02_hizli_yolculuk_noworker_2       <- 02_hizli_yolculuk_noworker
+  02_hizli_yolculuk_noworker_3       <- 02_hizli_yolculuk_noworker
+  02_tek_dosya_blob                  <- 02_tek_dosya_blob
+  02_tek_dosya_cerceve               <- 02_tek_dosya_cerceve
+  02_tek_dosya_kipler                <- 02_tek_dosya_kipler
+  02_yukleme_bekleme                 <- 02_yukleme_bekleme
+  coop_02_hizli_yolculuk_konuk       <- coop_02_hizli_yolculuk_konuk
+
+====================================================================================================
+1. KOŞUCU SHA VE İŞARETÇİ KİLİDİ
+====================================================================================================
+  sha256 run.cjs: 285211cfc04d9492dadc4fbee337edd5782f480ad5119dbc13d90e4190f07e49
+  sha256 coop.cjs: 9292115d289ee5e49450d31fa1f0a3de6ee880e7e935ff2079c1ec9e99053f39
+  sha256 ortak.cjs: 53358e1c91bd8d79d5478fff702f78a0d355a6b2493d7a886d6c1886a65cbf4f
+  beklenen "# koşucu" dizgesi: 285211cf 9292115d 53358e1c
+  00_acilis                          kod_ok=True log_kilit=1x"işaretçi kilidi: taklit " rapor.kip=taklit istek=1 verildi=1
+  02_acilis_akisi                    kod_ok=True log_kilit=1x"işaretçi kilidi: taklit " rapor.kip=taklit istek=5 verildi=5
+  02_acilis_hatalari                 kod_ok=True log_kilit=1x"işaretçi kilidi: taklit " rapor.kip=taklit istek=0 verildi=0
+  02_arazi_isci_hata                 kod_ok=True log_kilit=1x"işaretçi kilidi: taklit " rapor.kip=taklit istek=0 verildi=0
+  02_arazi_yasam_crash               kod_ok=True log_kilit=1x"işaretçi kilidi: taklit " rapor.kip=taklit istek=1 verildi=1
+  02_arazi_yasam_normal              kod_ok=True log_kilit=1x"işaretçi kilidi: taklit " rapor.kip=taklit istek=1 verildi=1
+  02_arazi_yasam_normal_2            kod_ok=True log_kilit=1x"işaretçi kilidi: taklit " rapor.kip=taklit istek=1 verildi=1
+  02_arazi_yasam_noworker            kod_ok=True log_kilit=1x"işaretçi kilidi: taklit " rapor.kip=taklit istek=1 verildi=1
+  02_arazi_yasam_noworker_2          kod_ok=True log_kilit=1x"işaretçi kilidi: taklit " rapor.kip=taklit istek=1 verildi=1
+  02_arazi_yedek_badurl              kod_ok=True log_kilit=1x"işaretçi kilidi: taklit " rapor.kip=taklit istek=1 verildi=1
+  02_arazi_yedek_crash               kod_ok=True log_kilit=1x"işaretçi kilidi: taklit " rapor.kip=taklit istek=1 verildi=1
+  02_arazi_yedek_normal              kod_ok=True log_kilit=1x"işaretçi kilidi: taklit " rapor.kip=taklit istek=1 verildi=1
+  02_arazi_yedek_noworker            kod_ok=True log_kilit=1x"işaretçi kilidi: taklit " rapor.kip=taklit istek=1 verildi=1
+  02_ayar_lod                        kod_ok=True log_kilit=1x"işaretçi kilidi: taklit " rapor.kip=taklit istek=0 verildi=0
+  02_depolama_kapali                 kod_ok=True log_kilit=1x"işaretçi kilidi: taklit " rapor.kip=taklit istek=0 verildi=0
+  02_hizli_yolculuk_normal           kod_ok=True log_kilit=1x"işaretçi kilidi: taklit " rapor.kip=taklit istek=1 verildi=1
+  02_hizli_yolculuk_noworker         kod_ok=True log_kilit=1x"işaretçi kilidi: taklit " rapor.kip=taklit istek=1 verildi=1
+  02_hizli_yolculuk_noworker_2       kod_ok=True log_kilit=1x"işaretçi kilidi: taklit " rapor.kip=taklit istek=1 verildi=1
+  02_hizli_yolculuk_noworker_3       kod_ok=True log_kilit=1x"işaretçi kilidi: taklit " rapor.kip=taklit istek=1 verildi=1
+  02_tek_dosya_blob                  kod_ok=True log_kilit=1x"işaretçi kilidi: taklit " rapor.kip=taklit istek=0 verildi=0
+  02_tek_dosya_cerceve               kod_ok=True log_kilit=1x"işaretçi kilidi: taklit " rapor.kip=taklit istek=0 verildi=0
+  02_tek_dosya_kipler                kod_ok=True log_kilit=1x"işaretçi kilidi: taklit " rapor.kip=taklit istek=0 verildi=0
+  02_yukleme_bekleme                 kod_ok=True log_kilit=1x"işaretçi kilidi: taklit " rapor.kip=taklit istek=1 verildi=1
+  coop_02_hizli_yolculuk_konuk       kod_ok=True log_kilit=1x"işaretçi kilidi: taklit " rapor.kip=taklit istek={'Kaptan': 1, 'Tayfa': 1} verildi={'Kaptan': 1, 'Tayfa': 1}
+  ÖZET: kod_ok hepsi: True ; rapor kip=taklit hepsi: True ; günlükte "işaretçi kilidi: taklit" hepsi: True
+  B0 tarafı koşucu satırları (ilk satır) ve rapor alanları:
+   B0 koşucu kümeleri: {'run.cjs 591dff27aa01 ortak.cjs df191a997375', 'coop.cjs a6e0e14c4bd1 ortak.cjs df191a997375'}
+
+====================================================================================================
+1b/5. ZİNCİR GÜNLÜĞÜ
+====================================================================================================
+  satır: 50  BAŞLADI: 24  BİTTİ: 24  YARIM KALMIŞ: 0
+  ZİNCİR BAŞLADI satırı: ["2026-11-15T06:47:00+00:00 ZİNCİR BAŞLADI pid=7280 uptime='up 3 hours, 19 minutes' cg=/sys/fs/cgroup/memory/process_api/01a1dd3f-47bc-749c-8928-72e622417876/claude-code-bash kod: 285211cf 9292115d 5335"]
+  ZİNCİR BİTTİ var mı: True
+  BAŞLADI adları = BİTTİ adları = rapor adları: True
+  her BİTTİ kod == beklenen: True
+  oom_kill artışı olan: []
+  oom_kill değerleri kümesi: [(0, 0)]
+  rapor/günlük/zincir uyumsuzlukları: []
+
+====================================================================================================
+2. KOMUTLAR
+====================================================================================================
+  00_acilis                          komut_fark=[] tekrar_fark=False sha_ayni=True(9b8535d42868) izin_ayni=True hedef_ayni=True ortam_ayni=True
+  02_acilis_akisi                    komut_fark=[] tekrar_fark=False sha_ayni=True(1e20f2dc38df) izin_ayni=True hedef_ayni=True ortam_ayni=True
+  02_acilis_hatalari                 komut_fark=[] tekrar_fark=False sha_ayni=True(794dd6293f65) izin_ayni=True hedef_ayni=True ortam_ayni=True
+  02_arazi_isci_hata                 komut_fark=[] tekrar_fark=False sha_ayni=True(1477bbb33dfb) izin_ayni=False hedef_ayni=True ortam_ayni=True
+      izinler B0 : [{'desen': 'favicon\\.ico(\\?|$)', 'gerekce': 'Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.', 'tur': 'ag', 'kaynak': 'varsayilan', 'eslesme': 0}, {'desen': 'Arazi işçisi: .*test: enjekte üretim hatası', 'gerekce': "HI01/HI03 kasıtlı enjekte edilen işçi 'error' iletisi; v0.4 terrain._onMsg bunu console.error ile günlüğe yazar (beklenen tepki)", 'tur': 'konsol', 'kaynak': 'meta', 'eslesme': 88}]
+      izinler yeni: [{'desen': 'favicon\\.ico(\\?|$)', 'gerekce': 'Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.', 'tur': 'ag', 'kaynak': 'varsayilan', 'eslesme': 0}, {'desen': 'Arazi işçisi: .*test: enjekte üretim hatası', 'gerekce': "HI01/HI03 kasıtlı enjekte edilen işçi 'error' iletisi; v0.4 terrain._onMsg bunu console.error ile günlüğe yazar (beklenen tepki)", 'tur': 'konsol', 'kaynak': 'meta', 'eslesme': 121}]
+      komut --izin-hata B0: []  yeni: []
+  02_arazi_yasam_crash               komut_fark=[] tekrar_fark=False sha_ayni=True(1f67faee95b8) izin_ayni=True hedef_ayni=True ortam_ayni=True
+  02_arazi_yasam_normal              komut_fark=[] tekrar_fark=False sha_ayni=True(1f67faee95b8) izin_ayni=True hedef_ayni=True ortam_ayni=True
+  02_arazi_yasam_normal_2            komut_fark=[] tekrar_fark=False sha_ayni=True(1f67faee95b8) izin_ayni=True hedef_ayni=True ortam_ayni=True
+  02_arazi_yasam_noworker            komut_fark=[] tekrar_fark=False sha_ayni=True(1f67faee95b8) izin_ayni=True hedef_ayni=True ortam_ayni=True
+  02_arazi_yasam_noworker_2          komut_fark=[] tekrar_fark=False sha_ayni=True(1f67faee95b8) izin_ayni=True hedef_ayni=True ortam_ayni=True
+  02_arazi_yedek_badurl              komut_fark=[] tekrar_fark=False sha_ayni=True(7d4819041d89) izin_ayni=True hedef_ayni=True ortam_ayni=True
+      izinler B0 : [{'desen': 'favicon\\.ico(\\?|$)', 'gerekce': 'Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.', 'tur': 'ag', 'kaynak': 'varsayilan', 'eslesme': 0}, {'desen': 'terrainWorker\\.missing\\.js$', 'gerekce': 'badurl kipi işçi adresini kasıtlı olarak var olmayan dosyaya çevirir; 3 × 404 + 3 × requestfailed beklenir', 'tur': 'hepsi', 'kaynak': 'cli', 'eslesme': 6}]
+      izinler yeni: [{'desen': 'favicon\\.ico(\\?|$)', 'gerekce': 'Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.', 'tur': 'ag', 'kaynak': 'varsayilan', 'eslesme': 0}, {'desen': 'terrainWorker\\.missing\\.js$', 'gerekce': 'badurl kipi işçi adresini kasıtlı olarak var olmayan dosyaya çevirir; 3 × 404 + 3 × requestfailed beklenir', 'tur': 'hepsi', 'kaynak': 'cli', 'eslesme': 6}]
+      komut --izin-hata B0: [('terrainWorker\\.missing\\.js$', 'badurl kipi işçi adresini kasıtlı olarak var olmayan dosyaya çevirir; 3 × 404 + 3 × requestfailed beklenir')]  yeni: [('terrainWorker\\.missing\\.js$', 'badurl kipi işçi adresini kasıtlı olarak var olmayan dosyaya çevirir; 3 × 404 + 3 × requestfailed beklenir')]
+  02_arazi_yedek_crash               komut_fark=[] tekrar_fark=False sha_ayni=True(7d4819041d89) izin_ayni=True hedef_ayni=True ortam_ayni=True
+  02_arazi_yedek_normal              komut_fark=[] tekrar_fark=False sha_ayni=True(7d4819041d89) izin_ayni=True hedef_ayni=True ortam_ayni=True
+  02_arazi_yedek_noworker            komut_fark=[] tekrar_fark=False sha_ayni=True(7d4819041d89) izin_ayni=True hedef_ayni=True ortam_ayni=True
+  02_ayar_lod                        komut_fark=[] tekrar_fark=False sha_ayni=True(19ff4ba33b1d) izin_ayni=True hedef_ayni=True ortam_ayni=True
+  02_depolama_kapali                 komut_fark=[] tekrar_fark=False sha_ayni=True(08831f4b6de6) izin_ayni=True hedef_ayni=True ortam_ayni=True
+  02_hizli_yolculuk_normal           komut_fark=[] tekrar_fark=False sha_ayni=True(abf125923f9a) izin_ayni=True hedef_ayni=True ortam_ayni=True
+  02_hizli_yolculuk_noworker         komut_fark=[] tekrar_fark=False sha_ayni=True(abf125923f9a) izin_ayni=True hedef_ayni=True ortam_ayni=True
+  02_hizli_yolculuk_noworker_2       komut_fark=[] tekrar_fark=False sha_ayni=True(abf125923f9a) izin_ayni=True hedef_ayni=True ortam_ayni=True
+  02_hizli_yolculuk_noworker_3       komut_fark=[] tekrar_fark=False sha_ayni=True(abf125923f9a) izin_ayni=True hedef_ayni=True ortam_ayni=True
+  02_tek_dosya_blob                  komut_fark=[] tekrar_fark=False sha_ayni=True(749ec707f177) izin_ayni=True hedef_ayni=True ortam_ayni=True
+  02_tek_dosya_cerceve               komut_fark=[] tekrar_fark=False sha_ayni=True(93779e03fdf8) izin_ayni=True hedef_ayni=True ortam_ayni=True
+  02_tek_dosya_kipler                komut_fark=[] tekrar_fark=False sha_ayni=True(cc9671caf8ed) izin_ayni=True hedef_ayni=True ortam_ayni=True
+  02_yukleme_bekleme                 komut_fark=[] tekrar_fark=False sha_ayni=True(c9439e8aad63) izin_ayni=True hedef_ayni=True ortam_ayni=True
+  coop_02_hizli_yolculuk_konuk       komut_fark=[] tekrar_fark=False sha_ayni=True(6cad74c81c36) izin_ayni=True hedef_ayni=True ortam_ayni=True
+  tk/timeout/url/size değerleri (yeni):
+    00_acilis                          tk=590 --timeout=540 url=http://localhost:8080/index.html size=640x360 players=None
+    02_acilis_akisi                    tk=590 --timeout=540 url=http://localhost:8080/index.html size=640x360 players=None
+    02_acilis_hatalari                 tk=590 --timeout=540 url=http://localhost:8080/index.html size=640x360 players=None
+    02_arazi_isci_hata                 tk=590 --timeout=540 url=http://localhost:8080/index.html size=640x360 players=None
+    02_arazi_yasam_crash               tk=590 --timeout=540 url=http://localhost:8080/index.html?terrain=crash size=640x360 players=None
+    02_arazi_yasam_normal              tk=590 --timeout=540 url=http://localhost:8080/index.html size=640x360 players=None
+    02_arazi_yasam_normal_2            tk=590 --timeout=540 url=http://localhost:8080/index.html size=640x360 players=None
+    02_arazi_yasam_noworker            tk=590 --timeout=540 url=http://localhost:8080/index.html?terrain=noworker size=640x360 players=None
+    02_arazi_yasam_noworker_2          tk=590 --timeout=540 url=http://localhost:8080/index.html?terrain=noworker size=640x360 players=None
+    02_arazi_yedek_badurl              tk=590 --timeout=540 url=http://localhost:8080/index.html?terrain=badurl size=640x360 players=None
+    02_arazi_yedek_crash               tk=590 --timeout=540 url=http://localhost:8080/index.html?terrain=crash size=640x360 players=None
+    02_arazi_yedek_normal              tk=590 --timeout=540 url=http://localhost:8080/index.html size=640x360 players=None
+    02_arazi_yedek_noworker            tk=590 --timeout=540 url=http://localhost:8080/index.html?terrain=noworker size=640x360 players=None
+    02_ayar_lod                        tk=590 --timeout=540 url=http://localhost:8080/index.html size=640x360 players=None
+    02_depolama_kapali                 tk=590 --timeout=540 url=http://localhost:8080/index.html size=640x360 players=None
+    02_hizli_yolculuk_normal           tk=590 --timeout=540 url=http://localhost:8080/index.html size=640x360 players=None
+    02_hizli_yolculuk_noworker         tk=950 --timeout=900 url=http://localhost:8080/index.html?terrain=noworker size=640x360 players=None
+    02_hizli_yolculuk_noworker_2       tk=950 --timeout=900 url=http://localhost:8080/index.html?terrain=noworker size=640x360 players=None
+    02_hizli_yolculuk_noworker_3       tk=950 --timeout=900 url=http://localhost:8080/index.html?terrain=noworker size=640x360 players=None
+    02_tek_dosya_blob                  tk=590 --timeout=540 url=http://127.0.0.1:8097/DenizKorsanlari-SonHazine.html size=640x360 players=None
+    02_tek_dosya_cerceve               tk=590 --timeout=540 url=http://127.0.0.1:8097/DenizKorsanlari-SonHazine.html size=640x360 players=None
+    02_tek_dosya_kipler                tk=590 --timeout=540 url=file:///tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/fb0/v04_tek/DenizKorsanlari-SonHazine.html size=640x360 players=None
+    02_yukleme_bekleme                 tk=590 --timeout=540 url=http://localhost:8080/index.html size=640x360 players=None
+    coop_02_hizli_yolculuk_konuk       tk=650 --timeout=600 url=http://localhost:8080/index.html?peerhost=127.0.0.1&peerport=9000 size=640x360 players=2
+  ÖZET: komut farkı olan: [] ; tekrar.komut farklı: [] ; senaryo sha farklı: [] ; izinler farklı: ['02_arazi_isci_hata'] ; hedef farklı: [] ; ortam farklı: []
+
+====================================================================================================
+3. DURUM VE KONTROL EŞİTLİĞİ
+====================================================================================================
+  00_acilis                          KALDI->KALDI 6/9->6/9 onay 9->9 tutarlı=True yalnızB0=[] yalnızYeni=[] okFark=[] çift= sıra_aynı=True etiketFark=[] beklenenFark=[] fails 3->3 evalErr 0->0
+  02_acilis_akisi                    KALDI->KALDI 22/23->22/23 onay 23->23 tutarlı=True yalnızB0=[] yalnızYeni=[] okFark=[] çift= sıra_aynı=True etiketFark=[] beklenenFark=[] fails 1->1 evalErr 0->0
+  02_acilis_hatalari                 KALDI->KALDI 3/19->3/19 onay 19->19 tutarlı=True yalnızB0=[] yalnızYeni=[] okFark=[] çift= sıra_aynı=True etiketFark=[] beklenenFark=[] fails 16->16 evalErr 0->0
+  02_arazi_isci_hata                 KALDI->KALDI 5/9->5/9 onay 9->9 tutarlı=True yalnızB0=[] yalnızYeni=[] okFark=[] çift= sıra_aynı=True etiketFark=[] beklenenFark=[] fails 4->4 evalErr 0->0
+      neden ['başarısız kontrol ya da adım: 4'] -> ['başarısız kontrol ya da adım: 4']; izinsizKonsol (0, 0) izinsizAg (0, 0) izinliKonsol (88, 121) izinliAg (0, 0)
+  02_arazi_yasam_crash               KALDI->KALDI 13/18->13/18 onay 18->18 tutarlı=True yalnızB0=[] yalnızYeni=[] okFark=[] çift= sıra_aynı=True etiketFark=[] beklenenFark=[] fails 5->5 evalErr 0->0
+  02_arazi_yasam_normal              KALDI->KALDI 12/18->13/18 onay 18->18 tutarlı=True yalnızB0=[] yalnızYeni=[] okFark=[('LY13', [False], [True])] çift= sıra_aynı=True etiketFark=[] beklenenFark=[] fails 6->5 evalErr 0->0
+      neden ['başarısız kontrol ya da adım: 6'] -> ['başarısız kontrol ya da adım: 5']; izinsizKonsol (0, 0) izinsizAg (0, 0) izinliKonsol (0, 0) izinliAg (0, 0)
+  02_arazi_yasam_normal_2            KALDI->KALDI 12/18->13/18 onay 18->18 tutarlı=True yalnızB0=[] yalnızYeni=[] okFark=[('LY13', [False], [True])] çift= sıra_aynı=True etiketFark=[] beklenenFark=[] fails 6->5 evalErr 0->0
+      neden ['başarısız kontrol ya da adım: 6'] -> ['başarısız kontrol ya da adım: 5']; izinsizKonsol (0, 0) izinsizAg (0, 0) izinliKonsol (0, 0) izinliAg (0, 0)
+  02_arazi_yasam_noworker            KALDI->KALDI 12/18->13/18 onay 18->18 tutarlı=True yalnızB0=[] yalnızYeni=[] okFark=[('LY13', [False], [True])] çift= sıra_aynı=True etiketFark=[] beklenenFark=[] fails 6->5 evalErr 0->0
+      neden ['başarısız kontrol ya da adım: 6'] -> ['başarısız kontrol ya da adım: 5']; izinsizKonsol (0, 0) izinsizAg (0, 0) izinliKonsol (0, 0) izinliAg (0, 0)
+  02_arazi_yasam_noworker_2          KALDI->KALDI 12/18->13/18 onay 18->18 tutarlı=True yalnızB0=[] yalnızYeni=[] okFark=[('LY13', [False], [True])] çift= sıra_aynı=True etiketFark=[] beklenenFark=[] fails 6->5 evalErr 0->0
+      neden ['başarısız kontrol ya da adım: 6'] -> ['başarısız kontrol ya da adım: 5']; izinsizKonsol (0, 0) izinsizAg (0, 0) izinliKonsol (0, 0) izinliAg (0, 0)
+  02_arazi_yedek_badurl              GECTI->GECTI 16/16->16/16 onay 16->16 tutarlı=True yalnızB0=[] yalnızYeni=[] okFark=[] çift= sıra_aynı=True etiketFark=[] beklenenFark=[] fails 0->0 evalErr 0->0
+  02_arazi_yedek_crash               GECTI->GECTI 16/16->16/16 onay 16->16 tutarlı=True yalnızB0=[] yalnızYeni=[] okFark=[] çift= sıra_aynı=True etiketFark=[] beklenenFark=[] fails 0->0 evalErr 0->0
+  02_arazi_yedek_normal              GECTI->GECTI 16/16->16/16 onay 16->16 tutarlı=True yalnızB0=[] yalnızYeni=[] okFark=[] çift= sıra_aynı=True etiketFark=[] beklenenFark=[] fails 0->0 evalErr 0->0
+  02_arazi_yedek_noworker            GECTI->GECTI 16/16->16/16 onay 16->16 tutarlı=True yalnızB0=[] yalnızYeni=[] okFark=[] çift= sıra_aynı=True etiketFark=[] beklenenFark=[] fails 0->0 evalErr 0->0
+  02_ayar_lod                        KALDI->KALDI 4/11->4/11 onay 11->11 tutarlı=True yalnızB0=[] yalnızYeni=[] okFark=[] çift= sıra_aynı=True etiketFark=[] beklenenFark=[] fails 7->7 evalErr 0->0
+  02_depolama_kapali                 KALDI->KALDI 2/15->2/15 onay 15->15 tutarlı=True yalnızB0=[] yalnızYeni=[] okFark=[] çift= sıra_aynı=True etiketFark=[] beklenenFark=[] fails 23->23 evalErr 10->10
+  02_hizli_yolculuk_normal           KALDI->KALDI 23/34->23/34 onay 34->34 tutarlı=True yalnızB0=[] yalnızYeni=[] okFark=[] çift= sıra_aynı=True etiketFark=[] beklenenFark=[] fails 11->11 evalErr 0->0
+  02_hizli_yolculuk_noworker         KALDI->KALDI 22/34->22/34 onay 34->34 tutarlı=True yalnızB0=[] yalnızYeni=[] okFark=[] çift= sıra_aynı=True etiketFark=[] beklenenFark=[] fails 12->12 evalErr 0->0
+  02_hizli_yolculuk_noworker_2       KALDI->KALDI 22/34->22/34 onay 34->34 tutarlı=True yalnızB0=[] yalnızYeni=[] okFark=[] çift= sıra_aynı=True etiketFark=[] beklenenFark=[] fails 12->12 evalErr 0->0
+  02_hizli_yolculuk_noworker_3       KALDI->KALDI 22/34->22/34 onay 34->34 tutarlı=True yalnızB0=[] yalnızYeni=[] okFark=[] çift= sıra_aynı=True etiketFark=[] beklenenFark=[] fails 12->12 evalErr 0->0
+  02_tek_dosya_blob                  KALDI->KALDI 3/4->3/4 onay 4->4 tutarlı=True yalnızB0=[] yalnızYeni=[] okFark=[] çift= sıra_aynı=True etiketFark=[] beklenenFark=[] fails 1->1 evalErr 0->0
+  02_tek_dosya_cerceve               KALDI->KALDI 2/5->2/5 onay 5->5 tutarlı=True yalnızB0=[] yalnızYeni=[] okFark=[] çift= sıra_aynı=True etiketFark=[] beklenenFark=[] fails 3->3 evalErr 0->0
+  02_tek_dosya_kipler                KALDI->KALDI 3/4->3/4 onay 4->4 tutarlı=True yalnızB0=[] yalnızYeni=[] okFark=[] çift= sıra_aynı=True etiketFark=[] beklenenFark=[] fails 1->1 evalErr 0->0
+  02_yukleme_bekleme                 KALDI->KALDI 4/9->4/9 onay 9->9 tutarlı=True yalnızB0=[] yalnızYeni=[] okFark=[] çift= sıra_aynı=True etiketFark=[] beklenenFark=[] fails 5->5 evalErr 0->0
+  coop_02_hizli_yolculuk_konuk       KALDI->KALDI 5/8->5/8 onay 8->8 tutarlı=True yalnızB0=[] yalnızYeni=[] okFark=[] çift= sıra_aynı=True etiketFark=[] beklenenFark=[] fails 3->3 evalErr []->[]
+  ÖZET: koşu=24 durum aynı=24 kontrol-kontrol aynı=20 farklı=['02_arazi_yasam_normal', '02_arazi_yasam_normal_2', '02_arazi_yasam_noworker', '02_arazi_yasam_noworker_2']
+  farklı koşulardaki farklar: {'02_arazi_yasam_normal': [('LY13', [False], [True])], '02_arazi_yasam_normal_2': [('LY13', [False], [True])], '02_arazi_yasam_noworker': [('LY13', [False], [True])], '02_arazi_yasam_noworker_2': [('LY13', [False], [True])]}
+  yalnız bir tarafta kontrol olan koşular: []
+  kimlik çiftlenmesi: []
+  etiket/beklenen farkı olan: []
+  fails/evalErrors farklı: [('02_arazi_yasam_normal', 6, 5, 0, 0), ('02_arazi_yasam_normal_2', 6, 5, 0, 0), ('02_arazi_yasam_noworker', 6, 5, 0, 0), ('02_arazi_yasam_noworker_2', 6, 5, 0, 0)]
+
+====================================================================================================
+4. AYNI KIRMIZILARDA KALMA BİÇİMİ (deger/hata)
+====================================================================================================
+  aynı kırmızı sayısı: 129 Counter({'tam_ayni': 121, 'yalniz_sayi': 8})
+  [yalniz_sayi] 02_arazi_isci_hata HI03: tür sayi->sayi
+      B0  deger=87
+      yeni deger=120
+      B0  hata=beklenen {"lte":5}, gelen 87 (sağlanmayan: lte 5)
+      yeni hata=beklenen {"lte":5}, gelen 120 (sağlanmayan: lte 5)
+  [yalniz_sayi] 02_arazi_isci_hata HI04: tür sayi->sayi
+      B0  deger=87
+      yeni deger=120
+      B0  hata=beklenen {"lte":50}, gelen 87 (sağlanmayan: lte 50)
+      yeni hata=beklenen {"lte":50}, gelen 120 (sağlanmayan: lte 50)
+  [yalniz_sayi] 02_arazi_yasam_crash LY09: tür dizge->dizge
+      B0  deger="B odağı kısaldı: B bittikten 5 sn sonra B bölgesinde 20 ağ, derinlik 5214 m"
+      yeni deger="B odağı kısaldı: B bittikten 5 sn sonra B bölgesinde 0 ağ, derinlik 5214 m"
+      B0  hata=beklenen {"eq":"tamam"}, gelen "B odağı kısaldı: B bittikten 5 sn sonra B bölgesinde 20 ağ, derinlik 5214 m" (sağlanmayan: eq "tamam")
+      yeni hata=beklenen {"eq":"tamam"}, gelen "B odağı kısaldı: B bittikten 5 sn sonra B bölgesinde 0 ağ, derinlik 5214 m" (sağlanmayan: eq "tamam")
+  [yalniz_sayi] 02_hizli_yolculuk_noworker HYS-01: tür sayi->sayi
+      B0  deger=30949
+      yeni deger=19730
+      B0  hata=beklenen {"gte":0,"lte":3000}, gelen 30949 (sağlanmayan: lte 3000)
+      yeni hata=beklenen {"gte":0,"lte":3000}, gelen 19730 (sağlanmayan: lte 3000)
+  [yalniz_sayi] 02_hizli_yolculuk_noworker_2 HYS-01: tür sayi->sayi
+      B0  deger=30949
+      yeni deger=20341
+      B0  hata=beklenen {"gte":0,"lte":3000}, gelen 30949 (sağlanmayan: lte 3000)
+      yeni hata=beklenen {"gte":0,"lte":3000}, gelen 20341 (sağlanmayan: lte 3000)
+  [yalniz_sayi] 02_hizli_yolculuk_noworker_3 HYS-01: tür sayi->sayi
+      B0  deger=30949
+      yeni deger=22172
+      B0  hata=beklenen {"gte":0,"lte":3000}, gelen 30949 (sağlanmayan: lte 3000)
+      yeni hata=beklenen {"gte":0,"lte":3000}, gelen 22172 (sağlanmayan: lte 3000)
+  [yalniz_sayi] coop_02_hizli_yolculuk_konuk HK04: tür nesne->nesne
+      B0  deger={"aUzaklik": 5978, "ayniOyuncu": true, "bUzaklik": 1, "durum": "playing", "konum": [289, -5003], "varisBildirimi": ["Kaptan rotayı kırdı: yeni limana vardınız!", "Kaptan rotayı kırdı: yeni limana vardınız!"]}
+      yeni deger={"aUzaklik": 1, "ayniOyuncu": true, "bUzaklik": 5979, "durum": "playing", "konum": [1676, 813], "varisBildirimi": ["Kaptan rotayı kırdı: yeni limana vardınız!", "Kaptan rotayı kırdı: yeni limana vardınız!"]}
+  [yalniz_sayi] coop_02_hizli_yolculuk_konuk HK07: tür nesne->nesne
+      B0  deger={"bildirimSonra": ["Kaptan rotayı kırdı: yeni limana vardınız!"], "cUzaklik": 1, "durum": "menu", "hud": false, "menu": true, "oyuncuKaydi": 10046}
+      yeni deger={"bildirimSonra": ["Kaptan rotayı kırdı: yeni limana vardınız!"], "cUzaklik": 1, "durum": "menu", "hud": false, "menu": true, "oyuncuKaydi": 4655}
+
+====================================================================================================
+5. KOŞU SAĞLIĞI
+====================================================================================================
+  00_acilis                          kopma=None sonuc.kopma=None tarayiciKoptu=False sus=[] sayfa=[] kesildi=False pageErrBoş=True errorsBoş=True deg=0 oom_art=[] oom 0->0 logKötü=[] SONUC=True
+  02_acilis_akisi                    kopma=None sonuc.kopma=None tarayiciKoptu=False sus=[] sayfa=[] kesildi=False pageErrBoş=True errorsBoş=True deg=0 oom_art=[] oom 0->0 logKötü=[] SONUC=True
+  02_acilis_hatalari                 kopma=None sonuc.kopma=None tarayiciKoptu=False sus=[] sayfa=[] kesildi=False pageErrBoş=True errorsBoş=False deg=0 oom_art=[] oom 0->0 logKötü=['zaman aşımı', 'zaman aşımı'] SONUC=True
+  02_arazi_isci_hata                 kopma=None sonuc.kopma=None tarayiciKoptu=False sus=[] sayfa=[] kesildi=False pageErrBoş=True errorsBoş=False deg=0 oom_art=[] oom 0->0 logKötü=[] SONUC=True
+  02_arazi_yasam_crash               kopma=None sonuc.kopma=None tarayiciKoptu=False sus=[] sayfa=[] kesildi=False pageErrBoş=True errorsBoş=True deg=0 oom_art=[] oom 0->0 logKötü=['zaman aşımı'] SONUC=True
+  02_arazi_yasam_normal              kopma=None sonuc.kopma=None tarayiciKoptu=False sus=[] sayfa=[] kesildi=False pageErrBoş=True errorsBoş=True deg=0 oom_art=[] oom 0->0 logKötü=['zaman aşımı'] SONUC=True
+  02_arazi_yasam_normal_2            kopma=None sonuc.kopma=None tarayiciKoptu=False sus=[] sayfa=[] kesildi=False pageErrBoş=True errorsBoş=True deg=0 oom_art=[] oom 0->0 logKötü=['zaman aşımı'] SONUC=True
+  02_arazi_yasam_noworker            kopma=None sonuc.kopma=None tarayiciKoptu=False sus=[] sayfa=[] kesildi=False pageErrBoş=True errorsBoş=True deg=0 oom_art=[] oom 0->0 logKötü=['zaman aşımı'] SONUC=True
+  02_arazi_yasam_noworker_2          kopma=None sonuc.kopma=None tarayiciKoptu=False sus=[] sayfa=[] kesildi=False pageErrBoş=True errorsBoş=True deg=0 oom_art=[] oom 0->0 logKötü=['zaman aşımı'] SONUC=True
+  02_arazi_yedek_badurl              kopma=None sonuc.kopma=None tarayiciKoptu=False sus=[] sayfa=[] kesildi=False pageErrBoş=True errorsBoş=False deg=0 oom_art=[] oom 0->0 logKötü=['zaman aşımı'] SONUC=True
+  02_arazi_yedek_crash               kopma=None sonuc.kopma=None tarayiciKoptu=False sus=[] sayfa=[] kesildi=False pageErrBoş=True errorsBoş=True deg=0 oom_art=[] oom 0->0 logKötü=['zaman aşımı'] SONUC=True
+  02_arazi_yedek_normal              kopma=None sonuc.kopma=None tarayiciKoptu=False sus=[] sayfa=[] kesildi=False pageErrBoş=True errorsBoş=True deg=0 oom_art=[] oom 0->0 logKötü=['zaman aşımı'] SONUC=True
+  02_arazi_yedek_noworker            kopma=None sonuc.kopma=None tarayiciKoptu=False sus=[] sayfa=[] kesildi=False pageErrBoş=True errorsBoş=True deg=0 oom_art=[] oom 0->0 logKötü=['zaman aşımı'] SONUC=True
+  02_ayar_lod                        kopma=None sonuc.kopma=None tarayiciKoptu=False sus=[] sayfa=[] kesildi=False pageErrBoş=True errorsBoş=True deg=0 oom_art=[] oom 0->0 logKötü=[] SONUC=True
+  02_depolama_kapali                 kopma=None sonuc.kopma=None tarayiciKoptu=False sus=[] sayfa=[] kesildi=False pageErrBoş=True errorsBoş=False deg=10 oom_art=[] oom 0->0 logKötü=['zaman aşımı'] SONUC=True
+  02_hizli_yolculuk_normal           kopma=None sonuc.kopma=None tarayiciKoptu=False sus=[] sayfa=[] kesildi=False pageErrBoş=True errorsBoş=True deg=0 oom_art=[] oom 0->0 logKötü=['zaman aşımı'] SONUC=True
+  02_hizli_yolculuk_noworker         kopma=None sonuc.kopma=None tarayiciKoptu=False sus=[] sayfa=[] kesildi=False pageErrBoş=True errorsBoş=True deg=0 oom_art=[] oom 0->0 logKötü=['zaman aşımı'] SONUC=True
+  02_hizli_yolculuk_noworker_2       kopma=None sonuc.kopma=None tarayiciKoptu=False sus=[] sayfa=[] kesildi=False pageErrBoş=True errorsBoş=True deg=0 oom_art=[] oom 0->0 logKötü=['zaman aşımı'] SONUC=True
+  02_hizli_yolculuk_noworker_3       kopma=None sonuc.kopma=None tarayiciKoptu=False sus=[] sayfa=[] kesildi=False pageErrBoş=True errorsBoş=True deg=0 oom_art=[] oom 0->0 logKötü=['zaman aşımı'] SONUC=True
+  02_tek_dosya_blob                  kopma=None sonuc.kopma=None tarayiciKoptu=False sus=[] sayfa=[] kesildi=False pageErrBoş=True errorsBoş=True deg=0 oom_art=[] oom 0->0 logKötü=[] SONUC=True
+  02_tek_dosya_cerceve               kopma=None sonuc.kopma=None tarayiciKoptu=False sus=[] sayfa=[] kesildi=False pageErrBoş=True errorsBoş=False deg=0 oom_art=[] oom 0->0 logKötü=[] SONUC=True
+  02_tek_dosya_kipler                kopma=None sonuc.kopma=None tarayiciKoptu=False sus=[] sayfa=[] kesildi=False pageErrBoş=True errorsBoş=True deg=0 oom_art=[] oom 0->0 logKötü=[] SONUC=True
+  02_yukleme_bekleme                 kopma=None sonuc.kopma=None tarayiciKoptu=False sus=[] sayfa=[] kesildi=False pageErrBoş=True errorsBoş=True deg=0 oom_art=[] oom 0->0 logKötü=[] SONUC=True
+  coop_02_hizli_yolculuk_konuk       kopma=None sonuc.kopma=None tarayiciKoptu=False sus=[] sayfa=[] kesildi=False pageErrBoş=True errorsBoş=True deg=0 oom_art=[] oom 0->0 logKötü=['oom'] SONUC=True
+  ÖZET sağlıksız koşu: ['02_acilis_hatalari', '02_arazi_isci_hata', '02_arazi_yedek_badurl', '02_depolama_kapali', '02_tek_dosya_cerceve']
+  degerlendirme (hatalar.degerlendirme) boş olmayan: [('02_depolama_kapali', 10)]
+
+====================================================================================================
+6. SAYISAL DEĞERLER
+====================================================================================================
+  HYS-01:
+    02_hizli_yolculuk_normal           B0=1810 ok=True  taklit=2404 ok=True  beklenen={'gte': 0, 'lte': 3000}
+    02_hizli_yolculuk_noworker         B0=30949 ok=False  taklit=19730 ok=False  beklenen={'gte': 0, 'lte': 3000}
+    02_hizli_yolculuk_noworker_2       B0=30949 ok=False  taklit=20341 ok=False  beklenen={'gte': 0, 'lte': 3000}
+    02_hizli_yolculuk_noworker_3       B0=30949 ok=False  taklit=22172 ok=False  beklenen={'gte': 0, 'lte': 3000}
+  LY13:
+    02_arazi_yasam_crash               B0 ok=True deger="tamam"
+                                       yeni ok=True deger="tamam"
+    02_arazi_yasam_normal              B0 ok=False deger="p99 bütçe+6 ms, en uzun bütçe+8.1 ms"
+                                       yeni ok=True deger="tamam"
+    02_arazi_yasam_normal_2            B0 ok=False deger="p99 bütçe+6 ms, en uzun bütçe+8.1 ms"
+                                       yeni ok=True deger="tamam"
+    02_arazi_yasam_noworker            B0 ok=False deger="p99 bütçe+15.9 ms, en uzun bütçe+17.3 ms"
+                                       yeni ok=True deger="tamam"
+    02_arazi_yasam_noworker_2          B0 ok=False deger="p99 bütçe+15.9 ms, en uzun bütçe+17.3 ms"
+                                       yeni ok=True deger="tamam"
+  varisIlkKareMs (günlük; her geçiş):
+    02_hizli_yolculuk_normal           B0 log=[26498] json=[26498] | taklit log=[14862] json=[14862]
+    02_hizli_yolculuk_noworker         B0 log=[35181] json=[35181] | taklit log=[26003] json=[26003]
+    02_hizli_yolculuk_noworker_2       B0 log=[35181] json=[35181] | taklit log=[29979] json=[29979]
+    02_hizli_yolculuk_noworker_3       B0 log=[35181] json=[35181] | taklit log=[33748] json=[33748]
+    coop_02_hizli_yolculuk_konuk       B0 log=[] json=[] | taklit log=[] json=[]
+  bellek (_bellek.json tur.<tür>.hwm_tepe_MB):
+    00_acilis                          renderer=445.3 (pid 1) browser=100.6 gpu=506.9 chrome_toplam=1195.6 cg=3416
+    02_acilis_akisi                    renderer=451.1 (pid 1) browser=101.5 gpu=625.6 chrome_toplam=1353.5 cg=3614
+    02_acilis_hatalari                 renderer=792.6 (pid 1) browser=99.8 gpu=415.5 chrome_toplam=1342.6 cg=3655
+    02_arazi_isci_hata                 renderer=559.7 (pid 1) browser=100.5 gpu=530.9 chrome_toplam=1229.4 cg=3444
+    02_arazi_yasam_crash               renderer=587.1 (pid 1) browser=99.8 gpu=522.9 chrome_toplam=1295.9 cg=2406
+    02_arazi_yasam_normal              renderer=587.8 (pid 1) browser=100.4 gpu=526 chrome_toplam=1208.7 cg=2262
+    02_arazi_yasam_normal_2            renderer=583 (pid 1) browser=101.6 gpu=544 chrome_toplam=1359.5 cg=2428
+    02_arazi_yasam_noworker            renderer=558.2 (pid 1) browser=99.1 gpu=530.3 chrome_toplam=1293.7 cg=2354
+    02_arazi_yasam_noworker_2          renderer=603.7 (pid 1) browser=99 gpu=529 chrome_toplam=1302.6 cg=2405
+    02_arazi_yedek_badurl              renderer=438 (pid 2) browser=96.3 gpu=553.2 chrome_toplam=1231.5 cg=3445
+    02_arazi_yedek_crash               renderer=450.7 (pid 2) browser=96.8 gpu=552.7 chrome_toplam=1249 cg=3463
+    02_arazi_yedek_normal              renderer=477.4 (pid 1) browser=96.8 gpu=533.5 chrome_toplam=1256.3 cg=3501
+    02_arazi_yedek_noworker            renderer=432.5 (pid 1) browser=96 gpu=538.3 chrome_toplam=1217.6 cg=3468
+    02_ayar_lod                        renderer=698.3 (pid 1) browser=101.1 gpu=392.5 chrome_toplam=1296.9 cg=3521
+    02_depolama_kapali                 renderer=398.9 (pid 1) browser=99.8 gpu=333.7 chrome_toplam=986.6 cg=3266
+    02_hizli_yolculuk_normal           renderer=595.4 (pid 1) browser=100.7 gpu=546 chrome_toplam=1306.7 cg=2367
+    02_hizli_yolculuk_noworker         renderer=771.5 (pid 1) browser=100.2 gpu=532 chrome_toplam=1491.3 cg=2513
+    02_hizli_yolculuk_noworker_2       renderer=777.2 (pid 1) browser=100.7 gpu=530.4 chrome_toplam=1504.5 cg=2566
+    02_hizli_yolculuk_noworker_3       renderer=850.3 (pid 1) browser=101.2 gpu=534.4 chrome_toplam=1608.4 cg=2665
+    02_tek_dosya_blob                  renderer=618.6 (pid 1) browser=112.6 gpu=385.4 chrome_toplam=1217.7 cg=3477
+    02_tek_dosya_cerceve               renderer=510.5 (pid 1) browser=110.3 gpu=400.4 chrome_toplam=1078.1 cg=3355
+    02_tek_dosya_kipler                renderer=606.5 (pid 1) browser=113.2 gpu=385.7 chrome_toplam=1090.8 cg=3521
+    02_yukleme_bekleme                 renderer=489.9 (pid 1) browser=101.6 gpu=513.8 chrome_toplam=1237.4 cg=3510
+    coop_02_hizli_yolculuk_konuk       renderer=406.8 (pid 3) browser=103.3 gpu=718 chrome_toplam=1759.6 cg=3913
+  renderer VmHWM aralığı: 398.9 – 850.3 MB (0.850 GB / 0.830 GiB); tarayıcı: 96 – 113.2 MB
+  renderer sayısı > 1 olan (coop beklenir): {'02_arazi_yedek_badurl': 2, '02_arazi_yedek_crash': 2, 'coop_02_hizli_yolculuk_konuk': 3}
+  süreler (rapor ms):
+    00_acilis                          B0 ms=50023 toplamMs=50023 | taklit ms=34542 toplamMs=34542
+    02_acilis_akisi                    B0 ms=133673 toplamMs=133673 | taklit ms=102718 toplamMs=102718
+    02_acilis_hatalari                 B0 ms=308810 toplamMs=308810 | taklit ms=331638 toplamMs=331638
+    02_arazi_isci_hata                 B0 ms=91696 toplamMs=91696 | taklit ms=64463 toplamMs=64463
+    02_arazi_yasam_crash               B0 ms=99737 toplamMs=99737 | taklit ms=95360 toplamMs=95360
+    02_arazi_yasam_normal              B0 ms=88911 toplamMs=88911 | taklit ms=72414 toplamMs=72414
+    02_arazi_yasam_normal_2            B0 ms=88911 toplamMs=88911 | taklit ms=72803 toplamMs=72803
+    02_arazi_yasam_noworker            B0 ms=115437 toplamMs=115437 | taklit ms=88653 toplamMs=88653
+    02_arazi_yasam_noworker_2          B0 ms=115437 toplamMs=115437 | taklit ms=95178 toplamMs=95178
+    02_arazi_yedek_badurl              B0 ms=83549 toplamMs=83549 | taklit ms=43697 toplamMs=43697
+    02_arazi_yedek_crash               B0 ms=88430 toplamMs=88430 | taklit ms=46188 toplamMs=46188
+    02_arazi_yedek_normal              B0 ms=80611 toplamMs=80611 | taklit ms=42948 toplamMs=42948
+    02_arazi_yedek_noworker            B0 ms=74612 toplamMs=74612 | taklit ms=41628 toplamMs=41628
+    02_ayar_lod                        B0 ms=74779 toplamMs=74779 | taklit ms=91390 toplamMs=91390
+    02_depolama_kapali                 B0 ms=132280 toplamMs=132280 | taklit ms=135568 toplamMs=135568
+    02_hizli_yolculuk_normal           B0 ms=264976 toplamMs=264976 | taklit ms=189784 toplamMs=189784
+    02_hizli_yolculuk_noworker         B0 ms=300983 toplamMs=300983 | taklit ms=213772 toplamMs=213772
+    02_hizli_yolculuk_noworker_2       B0 ms=300983 toplamMs=300983 | taklit ms=215236 toplamMs=215236
+    02_hizli_yolculuk_noworker_3       B0 ms=300983 toplamMs=300983 | taklit ms=224995 toplamMs=224995
+    02_tek_dosya_blob                  B0 ms=46741 toplamMs=46741 | taklit ms=53499 toplamMs=53499
+    02_tek_dosya_cerceve               B0 ms=166600 toplamMs=166600 | taklit ms=170647 toplamMs=170647
+    02_tek_dosya_kipler                B0 ms=56679 toplamMs=56679 | taklit ms=62726 toplamMs=62726
+    02_yukleme_bekleme                 B0 ms=62023 toplamMs=62023 | taklit ms=61701 toplamMs=61701
+    coop_02_hizli_yolculuk_konuk       B0 ms=116737 toplamMs=116737 | taklit ms=135395 toplamMs=135395
+
+yazıldı: /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69_dogrulama/veri_butunlugu/sonuc.json

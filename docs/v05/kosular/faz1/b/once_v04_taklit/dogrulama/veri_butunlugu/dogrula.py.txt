@@ -1,0 +1,451 @@
+# -*- coding: utf-8 -*-
+# #69 veri bütünlüğü doğrulaması: once_v04/son (B0, gerçek kilit) <-> once_v04_taklit (kosucu17, taklit).
+# Ana oturumun karsilastir69.py betiği KULLANILMAZ; her şey ham .json/.log/_bellek.json dosyalarından hesaplanır.
+# Salt okur. Çıktı: stdout + (isteğe bağlı) bu dizine sonuc.json.
+import hashlib, json, os, re, shlex, sys
+
+KOK = '/home/user/SON-HAZ-NE-w2'
+B = KOK + '/docs/v05/kosular/faz1/b'
+ESKI = B + '/once_v04/son'
+YENI = B + '/once_v04_taklit'
+CIKTI = os.path.dirname(os.path.abspath(__file__))
+SONUC = {}
+
+def oku(p):
+    with open(p, encoding='utf-8') as f:
+        return f.read()
+
+def jyukle(p):
+    with open(p, encoding='utf-8') as f:
+        return json.load(f)
+
+def bolum(t):
+    print('\n' + '=' * 100 + '\n' + t + '\n' + '=' * 100)
+
+# ---------------------------------------------------------------- 0. ad eşlemesi
+bolum('0. AD EŞLEMESİ')
+yeni_json = sorted(f[:-5] for f in os.listdir(YENI)
+                   if f.endswith('.json') and not f.endswith('_bellek.json') and f != 'karsilastirma.json')
+eski_json = sorted(f[:-5] for f in os.listdir(ESKI) if f.endswith('.json'))
+eslem = {}
+for ad in yeni_json:
+    if ad in eski_json:
+        eslem[ad] = ad
+    else:
+        m = re.match(r'^(.*)_(\d+)$', ad)
+        assert m and m.group(1) in eski_json, ('eşlenemeyen', ad)
+        eslem[ad] = m.group(1)
+print('taklit rapor sayısı:', len(yeni_json))
+print('B0 rapor sayısı (son/):', len(eski_json), '; taklitte karşılığı olmayan B0 raporları:',
+      sorted(set(eski_json) - set(eslem.values())))
+eksik_dosya = []
+for ad in yeni_json:
+    for uz in ('.json', '.log', '_bellek.json'):
+        if not os.path.exists(f'{YENI}/{ad}{uz}'):
+            eksik_dosya.append(ad + uz)
+    for uz in ('.json', '.log'):
+        if not os.path.exists(f'{ESKI}/{eslem[ad]}{uz}'):
+            eksik_dosya.append('B0:' + eslem[ad] + uz)
+print('eksik dosya:', eksik_dosya)
+for ad in yeni_json:
+    print(f'  {ad:34s} <- {eslem[ad]}')
+SONUC['eslem'] = eslem
+
+# ---------------------------------------------------------------- 1. koşucu sha + işaretçi kilidi
+bolum('1. KOŞUCU SHA VE İŞARETÇİ KİLİDİ')
+gercek_sha = {}
+for d in ('run.cjs', 'coop.cjs', 'ortak.cjs'):
+    h = hashlib.sha256(open(f'{KOK}/tests/harness/{d}', 'rb').read()).hexdigest()
+    gercek_sha[d] = h
+    print(f'  sha256 {d}: {h}')
+beklenen_kod = ' '.join(gercek_sha[d][:8] for d in ('run.cjs', 'coop.cjs', 'ortak.cjs'))
+print('  beklenen "# koşucu" dizgesi:', beklenen_kod)
+s1 = []
+for ad in yeni_json:
+    log = oku(f'{YENI}/{ad}.log').splitlines()
+    kos_satir = [l for l in log[:6] if l.startswith('# koşucu')]
+    kod = re.sub(r'^# koşucu[^:]*:\s*', '', kos_satir[0]).strip() if kos_satir else None
+    kilit_satir = [l for l in log if l.startswith('işaretçi kilidi:')]
+    r = jyukle(f'{YENI}/{ad}.json')
+    ik = r.get('isaretciKilidi') or {}
+    kip = ik.get('kip')
+    say = ik.get('sayac') or {}
+    # coop: oyuncu başına sayaç
+    if say and all(isinstance(v, dict) for v in say.values()):
+        verildi = {o: v.get('verildi') for o, v in say.items()}
+        istek = {o: v.get('istek') for o, v in say.items()}
+    else:
+        verildi = say.get('verildi'); istek = say.get('istek')
+    satir = dict(ad=ad, kod=kod, kod_ok=(kod == beklenen_kod), kilit_log=[k[:40] for k in kilit_satir],
+                 kip=kip, istek=istek, verildi=verildi)
+    s1.append(satir)
+    print(f'  {ad:34s} kod_ok={satir["kod_ok"]} log_kilit={len(kilit_satir)}x"{kilit_satir[0][:24] if kilit_satir else None}" '
+          f'rapor.kip={kip} istek={istek} verildi={verildi}')
+print('  ÖZET: kod_ok hepsi:', all(x['kod_ok'] for x in s1), '; rapor kip=taklit hepsi:', all(x['kip'] == 'taklit' for x in s1),
+      '; günlükte "işaretçi kilidi: taklit" hepsi:', all(any('taklit' in k for k in x['kilit_log']) for x in s1))
+# B0 tarafı: koşucu satırı ve rapordaki isaretciKilidi
+print('  B0 tarafı koşucu satırları (ilk satır) ve rapor alanları:')
+b0kos = set()
+for ad in sorted(set(eslem.values())):
+    l0 = oku(f'{ESKI}/{ad}.log').splitlines()[0]
+    m = re.search(r'koşucu (.*?); senaryo', l0)
+    b0kos.add(m.group(1) if m else l0[:80])
+    r = jyukle(f'{ESKI}/{ad}.json')
+    if 'isaretciKilidi' in r:
+        print('   B0 raporunda isaretciKilidi VAR:', ad, r['isaretciKilidi'])
+print('   B0 koşucu kümeleri:', b0kos)
+SONUC['kosucu'] = s1
+
+# zincir.log
+bolum('1b/5. ZİNCİR GÜNLÜĞÜ')
+z = oku(f'{YENI}/zincir.log').splitlines()
+basl = [l for l in z if ' BAŞLADI ' in l and 'ZİNCİR' not in l]
+bitti = [l for l in z if ' BİTTİ ' in l and 'ZİNCİR' not in l]
+yarim = [l for l in z if 'YARIM' in l]
+print('  satır:', len(z), ' BAŞLADI:', len(basl), ' BİTTİ:', len(bitti), ' YARIM KALMIŞ:', len(yarim))
+print('  ZİNCİR BAŞLADI satırı:', [l[:200] for l in z if 'ZİNCİR BAŞLADI' in l])
+print('  ZİNCİR BİTTİ var mı:', any('ZİNCİR BİTTİ' in l for l in z))
+zbit = {}
+for l in bitti:
+    m = re.match(r'^(\S+) BİTTİ (\S+) çıkış=(\d+) süre=(\d+)s oom_kill (\d+) -> (\d+) kod: (\S+ \S+ \S+)\s*\| (.*)$', l)
+    assert m, l
+    zbit[m.group(2)] = dict(zaman=m.group(1), cikis=int(m.group(3)), sure=int(m.group(4)), oom0=int(m.group(5)),
+                            oom1=int(m.group(6)), kod=m.group(7), sonuc=m.group(8))
+zbas = {}
+for l in basl:
+    m = re.match(r'^(\S+) BAŞLADI (\S+)$', l)
+    zbas[m.group(2)] = m.group(1)
+print('  BAŞLADI adları = BİTTİ adları = rapor adları:', set(zbas) == set(zbit) == set(yeni_json))
+print('  her BİTTİ kod == beklenen:', all(v['kod'] == beklenen_kod for v in zbit.values()))
+print('  oom_kill artışı olan:', [a for a, v in zbit.items() if v['oom1'] != v['oom0']])
+print('  oom_kill değerleri kümesi:', sorted({(v['oom0'], v['oom1']) for v in zbit.values()}))
+# rapor cikisKodu ile zincir çıkış kodu, günlük SONUC satırı ile zincir özeti
+uyumsuz = []
+for ad in yeni_json:
+    r = jyukle(f'{YENI}/{ad}.json')
+    log = oku(f'{YENI}/{ad}.log').splitlines()
+    sonuc_l = [l for l in log if l.startswith('SONUC')]
+    if r['sonuc']['cikisKodu'] != zbit[ad]['cikis']:
+        uyumsuz.append((ad, 'cikis', r['sonuc']['cikisKodu'], zbit[ad]['cikis']))
+    if not sonuc_l or not zbit[ad]['sonuc'].startswith(sonuc_l[-1][:300].strip()[:250]):
+        uyumsuz.append((ad, 'SONUC satırı', sonuc_l[-1][:120] if sonuc_l else None, zbit[ad]['sonuc'][:120]))
+print('  rapor/günlük/zincir uyumsuzlukları:', uyumsuz)
+
+# ---------------------------------------------------------------- 2. komutlar
+bolum('2. KOMUTLAR')
+
+def komut_coz(satir):
+    s = satir.split('# komut:', 1)[1].strip()
+    lx = shlex.shlex(s, posix=True)
+    lx.whitespace_split = True
+    lx.commenters = ''
+    lx.escape = ''
+    t = list(lx)
+    out = {'_on': [], 'secenek': {}, 'izin_hata': []}
+    i = 0
+    # önek: tk timeout N node <koşucu> <senaryo>
+    while i < len(t) and not t[i].startswith('--'):
+        out['_on'].append(t[i]); i += 1
+    while i < len(t):
+        k = t[i]
+        if k == '--izin-hata':
+            desen = t[i + 1]; i += 2
+            ger = None
+            if i < len(t) and t[i] == '#':
+                ger = ' '.join(t[i + 1:]); i = len(t)
+            elif '#' in desen:
+                desen, ger = [x.strip() for x in desen.split('#', 1)]
+            out['izin_hata'].append((desen, ger))
+            continue
+        if i + 1 < len(t) and not t[i + 1].startswith('--'):
+            out['secenek'][k] = t[i + 1]; i += 2
+        else:
+            out['secenek'][k] = True; i += 1
+    return out
+
+def on_coz(on):
+    # ['/home/user/devtools/tk','timeout','590','node','tests/harness/run.cjs','tests/scenarios/x.js']
+    d = {'tk': os.path.basename(on[0]) if on else None}
+    if 'timeout' in on:
+        d['tk_timeout'] = on[on.index('timeout') + 1]
+    if 'node' in on:
+        j = on.index('node')
+        d['kosucu'] = os.path.basename(on[j + 1]) if j + 1 < len(on) else None
+        d['senaryo'] = on[j + 2] if j + 2 < len(on) else None
+    return d
+
+FARK_SERBEST = {'--report', '--goruntu-dizin'}
+s2 = []
+for ad in yeni_json:
+    e = eslem[ad]
+    le = [l for l in oku(f'{ESKI}/{e}.log').splitlines()[:4] if l.startswith('# komut:')]
+    ly = [l for l in oku(f'{YENI}/{ad}.log').splitlines()[:4] if l.startswith('# komut:')]
+    assert len(le) == 1 and len(ly) == 1, (ad, le, ly)
+    ke, ky = komut_coz(le[0]), komut_coz(ly[0])
+    oe, oy = on_coz(ke['_on']), on_coz(ky['_on'])
+    farklar = []
+    for k in sorted(set(oe) | set(oy)):
+        if oe.get(k) != oy.get(k):
+            farklar.append((k, oe.get(k), oy.get(k)))
+    for k in sorted((set(ke['secenek']) | set(ky['secenek'])) - FARK_SERBEST):
+        if ke['secenek'].get(k) != ky['secenek'].get(k):
+            farklar.append((k, ke['secenek'].get(k), ky['secenek'].get(k)))
+    if ke['izin_hata'] != ky['izin_hata']:
+        farklar.append(('--izin-hata', ke['izin_hata'], ky['izin_hata']))
+    # yalnız yenide olan serbest seçenekler
+    serbest = {k: (ke['secenek'].get(k), ky['secenek'].get(k)) for k in FARK_SERBEST}
+    # rapor tarafı: tekrar.komut, izinler, senaryo sha, hedef, ortam
+    re_ = jyukle(f'{ESKI}/{e}.json'); ry = jyukle(f'{YENI}/{ad}.json')
+    def tk_norm(c):
+        c = re.sub(r"--report \S+", '', c); c = re.sub(r"--goruntu-dizin \S+", '', c)
+        return sorted(shlex.split(c)[2:])  # node <koşucu> çıkarıldı; sıralı sözcük kümesi (sıra farkı önemsiz)
+    tek_e, tek_y = re_.get('tekrar', {}), ry.get('tekrar', {})
+    tekrar_fark = tk_norm(tek_e.get('komut', '')) != tk_norm(tek_y.get('komut', ''))
+    sha_e, sha_y = tek_e.get('senaryoSha256'), tek_y.get('senaryoSha256')
+    izn_e = [{k: z.get(k) for k in ('desen', 'gerekce', 'tur', 'kaynak', 'eslesme')} for z in re_.get('izinler', [])]
+    izn_y = [{k: z.get(k) for k in ('desen', 'gerekce', 'tur', 'kaynak', 'eslesme')} for z in ry.get('izinler', [])]
+    hed_e = {k: v for k, v in re_.get('hedef', {}).items()}
+    hed_y = {k: v for k, v in ry.get('hedef', {}).items()}
+    ort_k = ('tarayici', 'playwright', 'node', 'gl', 'glSurum', 'cekirdek', 'bellekGB', 'gorunum')
+    ort_e = {k: re_.get('ortam', {}).get(k) for k in ort_k}
+    ort_y = {k: ry.get('ortam', {}).get(k) for k in ort_k}
+    satir = dict(ad=ad, komut_farklari=farklar, serbest=serbest, tekrar_komut_farkli=tekrar_fark,
+                 senaryo_sha_ayni=(sha_e == sha_y and sha_e is not None), sha=sha_y[:12] if sha_y else None,
+                 izinler_ayni=(izn_e == izn_y), izinler_e=izn_e, izinler_y=izn_y,
+                 hedef_ayni=(hed_e == hed_y), hedef_fark={k: (hed_e.get(k), hed_y.get(k)) for k in set(hed_e) | set(hed_y) if hed_e.get(k) != hed_y.get(k)},
+                 ortam_ayni=(ort_e == ort_y), ortam_fark={k: (ort_e[k], ort_y[k]) for k in ort_k if ort_e[k] != ort_y[k]},
+                 on_e=oe, on_y=oy, secenek_e=ke['secenek'], izin_e=ke['izin_hata'])
+    s2.append(satir)
+    print(f'  {ad:34s} komut_fark={farklar} tekrar_fark={tekrar_fark} sha_ayni={satir["senaryo_sha_ayni"]}({satir["sha"]}) '
+          f'izin_ayni={satir["izinler_ayni"]} hedef_ayni={satir["hedef_ayni"]} ortam_ayni={satir["ortam_ayni"]}')
+    if not satir['izinler_ayni'] or ke['izin_hata']:
+        print('      izinler B0 :', izn_e)
+        print('      izinler yeni:', izn_y)
+        print('      komut --izin-hata B0:', ke['izin_hata'], ' yeni:', ky['izin_hata'])
+    if satir['hedef_fark'] or satir['ortam_fark']:
+        print('      hedef_fark:', satir['hedef_fark'], ' ortam_fark:', satir['ortam_fark'])
+print('  tk/timeout/url/size değerleri (yeni):')
+for x in s2:
+    print(f'    {x["ad"]:34s} tk={x["on_y"].get("tk_timeout")} --timeout={x["secenek_e"].get("--timeout")} '
+          f'url={x["secenek_e"].get("--url")} size={x["secenek_e"].get("--size")} players={x["secenek_e"].get("--players")}')
+print('  ÖZET: komut farkı olan:', [x['ad'] for x in s2 if x['komut_farklari']],
+      '; tekrar.komut farklı:', [x['ad'] for x in s2 if x['tekrar_komut_farkli']],
+      '; senaryo sha farklı:', [x['ad'] for x in s2 if not x['senaryo_sha_ayni']],
+      '; izinler farklı:', [x['ad'] for x in s2 if not x['izinler_ayni']],
+      '; hedef farklı:', [x['ad'] for x in s2 if not x['hedef_ayni']],
+      '; ortam farklı:', [x['ad'] for x in s2 if not x['ortam_ayni']])
+SONUC['komut'] = s2
+
+# ---------------------------------------------------------------- 3. durum + kontrol eşitliği
+bolum('3. DURUM VE KONTROL EŞİTLİĞİ')
+
+def kontroller(r):
+    ks = r.get('kontroller') or []
+    sozluk, cift = {}, []
+    for k in ks:
+        if k['id'] in sozluk:
+            cift.append(k['id'])
+        sozluk.setdefault(k['id'], []).append(k)
+    return sozluk, cift
+
+s3 = []
+for ad in yeni_json:
+    e = eslem[ad]
+    re_ = jyukle(f'{ESKI}/{e}.json'); ry = jyukle(f'{YENI}/{ad}.json')
+    ke, ce = kontroller(re_); ky, cy = kontroller(ry)
+    yalniz_e = sorted(set(ke) - set(ky)); yalniz_y = sorted(set(ky) - set(ke))
+    ok_fark = []
+    for i in sorted(set(ke) & set(ky)):
+        oe = [k['ok'] for k in ke[i]]; oy = [k['ok'] for k in ky[i]]
+        if oe != oy:
+            ok_fark.append((i, oe, oy))
+    # sıra/etiket eşitliği
+    sira_e = [k['id'] for k in re_['kontroller']]; sira_y = [k['id'] for k in ry['kontroller']]
+    etiket_fark = [i for i in set(ke) & set(ky) if [k['etiket'] for k in ke[i]] != [k['etiket'] for k in ky[i]]]
+    beklenen_fark = [i for i in set(ke) & set(ky) if [k.get('beklenen') for k in ke[i]] != [k.get('beklenen') for k in ky[i]]]
+    se, sy = re_['sonuc'], ry['sonuc']
+    gec_e = sum(1 for k in re_['kontroller'] if k['ok']); gec_y = sum(1 for k in ry['kontroller'] if k['ok'])
+    satir = dict(ad=ad, durum_e=se['durum'], durum_y=sy['durum'],
+                 gecen_e=se.get('gecen'), kontrol_e=se.get('kontrolSayisi'), onay_e=se.get('onaySayisi'),
+                 gecen_y=sy.get('gecen'), kontrol_y=sy.get('kontrolSayisi'), onay_y=sy.get('onaySayisi'),
+                 sayim_tutarli=(gec_e == se.get('gecen') and gec_y == sy.get('gecen') and len(sira_e) == se.get('kontrolSayisi') and len(sira_y) == sy.get('kontrolSayisi')),
+                 yalniz_eski=yalniz_e, yalniz_yeni=yalniz_y, ok_fark=ok_fark, cift_e=ce, cift_y=cy,
+                 sira_ayni=(sira_e == sira_y), etiket_fark=etiket_fark, beklenen_fark=beklenen_fark,
+                 fails_e=re_.get('fails'), fails_y=ry.get('fails'),
+                 eval_e=re_.get('evalErrors'), eval_y=ry.get('evalErrors'),
+                 neden_e=se.get('neden'), neden_y=sy.get('neden'),
+                 izinsizKonsol=(se.get('izinsizKonsol'), sy.get('izinsizKonsol')),
+                 izinsizAg=(se.get('izinsizAg'), sy.get('izinsizAg')),
+                 izinliKonsol=(se.get('izinliKonsol'), sy.get('izinliKonsol')),
+                 izinliAg=(se.get('izinliAg'), sy.get('izinliAg')),
+                 kirmizi_e=sorted(i for i in ke if not all(k['ok'] for k in ke[i])),
+                 kirmizi_y=sorted(i for i in ky if not all(k['ok'] for k in ky[i])))
+    s3.append(satir)
+    print(f'  {ad:34s} {se["durum"]}->{sy["durum"]} {se.get("gecen")}/{se.get("kontrolSayisi")}->{sy.get("gecen")}/{sy.get("kontrolSayisi")} '
+          f'onay {se.get("onaySayisi")}->{sy.get("onaySayisi")} tutarlı={satir["sayim_tutarli"]} yalnızB0={yalniz_e} yalnızYeni={yalniz_y} '
+          f'okFark={ok_fark} çift={ce or ""}{cy or ""} sıra_aynı={satir["sira_ayni"]} etiketFark={etiket_fark} beklenenFark={beklenen_fark} '
+          f'fails {satir["fails_e"]}->{satir["fails_y"]} evalErr {satir["eval_e"]}->{satir["eval_y"]}')
+    if satir['neden_e'] != satir['neden_y'] or satir['izinsizKonsol'][0] != satir['izinsizKonsol'][1] or satir['izinliKonsol'][0] != satir['izinliKonsol'][1] or satir['izinliAg'][0] != satir['izinliAg'][1] or satir['izinsizAg'][0] != satir['izinsizAg'][1]:
+        print(f'      neden {satir["neden_e"]} -> {satir["neden_y"]}; izinsizKonsol {satir["izinsizKonsol"]} izinsizAg {satir["izinsizAg"]} izinliKonsol {satir["izinliKonsol"]} izinliAg {satir["izinliAg"]}')
+durum_ayni = sum(1 for x in s3 if x['durum_e'] == x['durum_y'])
+kontrol_ayni = [x['ad'] for x in s3 if not x['yalniz_eski'] and not x['yalniz_yeni'] and not x['ok_fark']]
+farkli = [x['ad'] for x in s3 if x['ad'] not in kontrol_ayni]
+print(f'  ÖZET: koşu={len(s3)} durum aynı={durum_ayni} kontrol-kontrol aynı={len(kontrol_ayni)} farklı={farkli}')
+print('  farklı koşulardaki farklar:', {x['ad']: x['ok_fark'] for x in s3 if x['ad'] in farkli})
+print('  yalnız bir tarafta kontrol olan koşular:', [(x['ad'], x['yalniz_eski'], x['yalniz_yeni']) for x in s3 if x['yalniz_eski'] or x['yalniz_yeni']])
+print('  kimlik çiftlenmesi:', [(x['ad'], x['cift_e'], x['cift_y']) for x in s3 if x['cift_e'] or x['cift_y']])
+print('  etiket/beklenen farkı olan:', [(x['ad'], x['etiket_fark'], x['beklenen_fark']) for x in s3 if x['etiket_fark'] or x['beklenen_fark']])
+print('  fails/evalErrors farklı:', [(x['ad'], x['fails_e'], x['fails_y'], x['eval_e'], x['eval_y']) for x in s3 if x['fails_e'] != x['fails_y'] or x['eval_e'] != x['eval_y']])
+SONUC['kontrol'] = s3
+
+# ---------------------------------------------------------------- 4. aynı kırmızıların kalma biçimi
+bolum('4. AYNI KIRMIZILARDA KALMA BİÇİMİ (deger/hata)')
+SAYI = re.compile(r'-?\d+(?:[.,]\d+)?(?:e[-+]?\d+)?')
+
+def norm(x):
+    return SAYI.sub('#', x if isinstance(x, str) else json.dumps(x, ensure_ascii=False, sort_keys=True))
+
+def tur(v):
+    if v is None: return 'null'
+    if isinstance(v, bool): return 'bool'
+    if isinstance(v, (int, float)): return 'sayi'
+    if isinstance(v, str): return 'dizge'
+    if isinstance(v, list): return 'dizi'
+    if isinstance(v, dict): return 'nesne'
+    return type(v).__name__
+
+s4 = []
+for ad in yeni_json:
+    e = eslem[ad]
+    ke, _ = kontroller(jyukle(f'{ESKI}/{e}.json')); ky, _ = kontroller(jyukle(f'{YENI}/{ad}.json'))
+    for i in sorted(set(ke) & set(ky)):
+        a, b = ke[i][0], ky[i][0]
+        if a['ok'] is False and b['ok'] is False:
+            da, db = a.get('deger'), b.get('deger')
+            ha, hb = a.get('hata'), b.get('hata')
+            ja = json.dumps(da, ensure_ascii=False, sort_keys=True); jb = json.dumps(db, ensure_ascii=False, sort_keys=True)
+            if ja == jb and ha == hb:
+                sinif = 'tam_ayni'
+            elif tur(da) == tur(db) and norm(da) == norm(db) and norm(ha or '') == norm(hb or ''):
+                sinif = 'yalniz_sayi'
+            else:
+                sinif = 'bicim_farkli'
+            s4.append(dict(ad=ad, id=i, sinif=sinif, tur_e=tur(da), tur_y=tur(db),
+                           deger_e=ja[:400], deger_y=jb[:400], hata_e=(ha or '')[:400], hata_y=(hb or '')[:400]))
+from collections import Counter
+print('  aynı kırmızı sayısı:', len(s4), Counter(x['sinif'] for x in s4))
+for x in s4:
+    if x['sinif'] != 'tam_ayni':
+        print(f'  [{x["sinif"]}] {x["ad"]} {x["id"]}: tür {x["tur_e"]}->{x["tur_y"]}')
+        print(f'      B0  deger={x["deger_e"][:300]}')
+        print(f'      yeni deger={x["deger_y"][:300]}')
+        if x['hata_e'] != x['hata_y']:
+            print(f'      B0  hata={x["hata_e"][:300]}')
+            print(f'      yeni hata={x["hata_y"][:300]}')
+SONUC['ayni_kirmizi'] = s4
+
+# ---------------------------------------------------------------- 5. koşu sağlığı
+bolum('5. KOŞU SAĞLIĞI')
+
+def anahtar_ara(o, adlar, yol=''):
+    bul = []
+    if isinstance(o, dict):
+        for k, v in o.items():
+            if k in adlar:
+                bul.append((yol + '.' + k, v))
+            if k not in ('steps', 'kontroller', 'checks', 'meta', 'uyarilar'):
+                bul += anahtar_ara(v, adlar, yol + '.' + k)
+    return bul
+
+s5 = []
+for ad in yeni_json:
+    r = jyukle(f'{YENI}/{ad}.json')
+    bel = jyukle(f'{YENI}/{ad}_bellek.json')
+    h = r.get('hatalar', {})
+    ps = r.get('pageErrors'); ps_bos = (ps == [] or (isinstance(ps, dict) and all(v == [] for v in ps.values())))
+    er = r.get('errors'); er_bos = (er == [] or (isinstance(er, dict) and all(v == [] for v in er.values())))
+    sus = anahtar_ara(r, {'timeout', 'harnessError', 'kosucuHatasi', 'zamanAsimi', 'zamanasimi', 'timedOut'})
+    log = oku(f'{YENI}/{ad}.log')
+    log_kotu = [m for m in re.findall(r'(?im)^.*(KOSUCU_HATASI|harnessError|zaman aşımı|timeout exceeded|Target crashed|Page crashed|sayfa çöktü|tarayıcı koptu|OOM).*$', log)]
+    satir = dict(ad=ad, kopma=r.get('kopma', 'ALAN_YOK'), sonuc_kopma=r['sonuc'].get('kopma', 'ALAN_YOK'),
+                 tarayiciKoptu=r['sonuc'].get('tarayiciKoptu', 'ALAN_YOK'), sus=sus,
+                 hatalar_sayfa=h.get('sayfa'), kesildi=h.get('kesildi'), pageErrors_bos=ps_bos, errors_bos=er_bos,
+                 degerlendirme=h.get('degerlendirme'), kapananlar=r.get('kapananlar'),
+                 oom_artislari=bel.get('oom_artislari'), oom_bas=bel.get('oom_kill_basta'), oom_son=bel.get('oom_kill_sonda'),
+                 log_kotu=log_kotu[:5], sonuc_satiri=('SONUC' in log))
+    s5.append(satir)
+    print(f'  {ad:34s} kopma={satir["kopma"]} sonuc.kopma={satir["sonuc_kopma"]} tarayiciKoptu={satir["tarayiciKoptu"]} '
+          f'sus={sus} sayfa={satir["hatalar_sayfa"]} kesildi={satir["kesildi"]} pageErrBoş={ps_bos} errorsBoş={er_bos} '
+          f'deg={len(satir["degerlendirme"] or [])} oom_art={satir["oom_artislari"]} oom {satir["oom_bas"]}->{satir["oom_son"]} '
+          f'logKötü={satir["log_kotu"]} SONUC={satir["sonuc_satiri"]}')
+sagliksiz = [x['ad'] for x in s5 if not (x['kopma'] is None and x['sonuc_kopma'] is None and x['tarayiciKoptu'] is False and not x['sus']
+                                       and x['hatalar_sayfa'] == [] and x['kesildi'] is False and x['pageErrors_bos'] and x['errors_bos']
+                                       and x['oom_artislari'] == [] and x['oom_bas'] == x['oom_son'] and x['sonuc_satiri'])]
+print('  ÖZET sağlıksız koşu:', sagliksiz)
+print('  degerlendirme (hatalar.degerlendirme) boş olmayan:', [(x['ad'], len(x['degerlendirme'])) for x in s5 if x['degerlendirme']])
+SONUC['saglik'] = s5
+
+# ---------------------------------------------------------------- 6. sayısal iddialar
+bolum('6. SAYISAL DEĞERLER')
+
+def kontrol_deger(r, i):
+    for k in r['kontroller']:
+        if k['id'] == i:
+            return k
+    return None
+
+print('  HYS-01:')
+hys = {}
+for ad in yeni_json:
+    if 'hizli_yolculuk' in ad and not ad.startswith('coop'):
+        a = kontrol_deger(jyukle(f'{ESKI}/{eslem[ad]}.json'), 'HYS-01'); b = kontrol_deger(jyukle(f'{YENI}/{ad}.json'), 'HYS-01')
+        hys[ad] = (a['deger'], a['ok'], b['deger'], b['ok'])
+        print(f'    {ad:34s} B0={a["deger"]} ok={a["ok"]}  taklit={b["deger"]} ok={b["ok"]}  beklenen={b["beklenen"]}')
+print('  LY13:')
+ly = {}
+for ad in yeni_json:
+    if 'arazi_yasam' in ad:
+        a = kontrol_deger(jyukle(f'{ESKI}/{eslem[ad]}.json'), 'LY13'); b = kontrol_deger(jyukle(f'{YENI}/{ad}.json'), 'LY13')
+        ly[ad] = (a['deger'], a['ok'], b['deger'], b['ok'])
+        print(f'    {ad:34s} B0 ok={a["ok"]} deger={json.dumps(a["deger"], ensure_ascii=False)[:160]}')
+        print(f'    {"":34s} yeni ok={b["ok"]} deger={json.dumps(b["deger"], ensure_ascii=False)[:160]}')
+print('  varisIlkKareMs (günlük; her geçiş):')
+vik = {}
+for ad in yeni_json:
+    if 'hizli_yolculuk' in ad:
+        le = [int(x) for x in re.findall(r'"varisIlkKareMs":(\d+)', oku(f'{ESKI}/{eslem[ad]}.log'))]
+        lyv = [int(x) for x in re.findall(r'"varisIlkKareMs":(\d+)', oku(f'{YENI}/{ad}.log'))]
+        je = [int(x) for x in re.findall(r'"varisIlkKareMs":\s*(\d+)', oku(f'{ESKI}/{eslem[ad]}.json'))]
+        jy = [int(x) for x in re.findall(r'"varisIlkKareMs":\s*(\d+)', oku(f'{YENI}/{ad}.json'))]
+        vik[ad] = dict(log_e=le, log_y=lyv, json_e=je, json_y=jy)
+        print(f'    {ad:34s} B0 log={le} json={je} | taklit log={lyv} json={jy}')
+print('  bellek (_bellek.json tur.<tür>.hwm_tepe_MB):')
+bel_t = {}
+for ad in yeni_json:
+    bel = jyukle(f'{YENI}/{ad}_bellek.json')
+    t = bel.get('tur', {})
+    bel_t[ad] = dict(renderer=(t.get('renderer') or {}).get('hwm_tepe_MB'), browser=(t.get('browser') or {}).get('hwm_tepe_MB'),
+                     gpu=(t.get('gpu-process') or {}).get('hwm_tepe_MB'), chrome_top=(bel.get('chrome_toplam_tepe') or {}).get('MB'),
+                     cg=(bel.get('cg_tepe') or {}).get('MB'), renderer_sayi=(t.get('renderer') or {}).get('pid_sayisi'),
+                     kaybolan_renderer=[k for k in bel.get('kaybolan_surecler', []) if k.get('tur') == 'renderer'],
+                     chrome_son=bel.get('chrome_son'), bitis=bel.get('bitis'), kilit=bel.get('kilit_alindi'))
+    print(f'    {ad:34s} renderer={bel_t[ad]["renderer"]} (pid {bel_t[ad]["renderer_sayi"]}) browser={bel_t[ad]["browser"]} gpu={bel_t[ad]["gpu"]} '
+          f'chrome_toplam={bel_t[ad]["chrome_top"]} cg={bel_t[ad]["cg"]}')
+rv = [v['renderer'] for v in bel_t.values() if v['renderer'] is not None]
+bv = [v['browser'] for v in bel_t.values() if v['browser'] is not None]
+print(f'  renderer VmHWM aralığı: {min(rv)} – {max(rv)} MB ({max(rv)/1000:.3f} GB / {max(rv)/1024:.3f} GiB); tarayıcı: {min(bv)} – {max(bv)} MB')
+print('  renderer sayısı > 1 olan (coop beklenir):', {a: v['renderer_sayi'] for a, v in bel_t.items() if (v['renderer_sayi'] or 0) > 1})
+SONUC['sayisal'] = dict(hys=hys, ly=ly, vik=vik, bellek=bel_t)
+
+# süreler
+print('  süreler (rapor ms):')
+sur = {}
+for ad in yeni_json:
+    re_ = jyukle(f'{ESKI}/{eslem[ad]}.json'); ry = jyukle(f'{YENI}/{ad}.json')
+    sur[ad] = (re_.get('ms'), (re_.get('sure') or {}).get('toplamMs'), ry.get('ms'), (ry.get('sure') or {}).get('toplamMs'))
+    print(f'    {ad:34s} B0 ms={sur[ad][0]} toplamMs={sur[ad][1]} | taklit ms={sur[ad][2]} toplamMs={sur[ad][3]}')
+SONUC['sure'] = sur
+
+with open(os.path.join(CIKTI, 'sonuc.json'), 'w', encoding='utf-8') as f:
+    json.dump(SONUC, f, ensure_ascii=False, indent=1, default=str)
+print('\nyazıldı:', os.path.join(CIKTI, 'sonuc.json'))

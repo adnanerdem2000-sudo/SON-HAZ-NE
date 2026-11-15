@@ -1,0 +1,27 @@
+# -*- coding: utf-8 -*-
+# #69 veri bütünlüğü, 6. bölüm: koşu sırasında BAŞKA bir tarayıcı (ağaç dışı chrome) çalıştı mı?
+# Kaynak: zincir69.sh'in örnekleyicisi (ornekle2.mjs) 0,5 sn'de bir yazdığı f69/kosu/<ad>_ornek.csv:
+#   n_chrome = bu koşunun süreç ağacındaki chrome süreç sayısı; agac_disi_chrome_MB = ağaç dışındaki chrome süreçlerinin RSS toplamı.
+# Bu koşunun tarayıcısı açıkken (n_chrome > 0) ağaç dışı chrome > 0 ise aynı anda ikinci bir tarayıcı vardır (CPU paylaşımı).
+import csv, json, os, re
+
+F = '/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/kosu'
+YENI = '/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04_taklit'
+adlar = sorted(f[:-5] for f in os.listdir(YENI) if f.endswith('.json') and not f.endswith('_bellek.json') and f != 'karsilastirma.json')
+toplam_kirli = []
+for ad in adlar:
+    p = f'{F}/{ad}_ornek.csv'
+    with open(p, encoding='utf-8') as f:
+        satirlar = list(csv.DictReader(f))
+    bizde = [r for r in satirlar if int(r['n_chrome']) > 0]
+    cakisan = [r for r in bizde if float(r['agac_disi_chrome_MB']) > 0]
+    # ilk 3 sn (önceki tarayıcının kapanışı) ayrı say
+    ilk_t = int(bizde[0]['t_ms']) if bizde else 0
+    gec = [r for r in cakisan if int(r['t_ms']) - ilk_t > 3000]
+    oran = len(cakisan) / len(bizde) if bizde else 0
+    print(f'{ad:34s} örnek(tarayıcı açık)={len(bizde):4d} ağaç-dışı chrome>0={len(cakisan):4d} ({oran:5.1%}) ilk 3 sn sonrası={len(gec):4d} '
+          f'tepe={max((float(r["agac_disi_chrome_MB"]) for r in cakisan), default=0):7.1f} MB '
+          f'aralık={(cakisan[0]["zaman"][11:19] + "–" + cakisan[-1]["zaman"][11:19]) if cakisan else "-"}')
+    if gec:
+        toplam_kirli.append((ad, len(gec), round(len(gec) * 0.5)))
+print('\nTarayıcı açıkken (ilk 3 sn sonrası) ikinci tarayıcı görülen koşular (ad, örnek, ≈sn):', toplam_kirli)

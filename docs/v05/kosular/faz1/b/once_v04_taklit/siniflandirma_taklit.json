@@ -1,0 +1,1995 @@
+{
+ "sema": "dk-69-siniflandirma/1",
+ "kaynak": "siniflandirma.json (B0, değişmedi) + once_v04_taklit/*.json (#69)",
+ "sayim": {
+  "YESIL": 143,
+  "KIRMIZI": 94,
+  "UYGULANAMAZ": 10
+ },
+ "satirlar": [
+  {
+   "test": "arazi_sozlesme.mjs",
+   "kimlik": "SZ01a–c",
+   "hedef_madde": "FAZ1-2 veri sözleşmesi (tileGen alanlar/tipler/uzunluklar)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_sozlesme.mjs",
+   "kimlik": "SZ02a–c",
+   "hedef_madde": "FAZ1-2 (ızgara konumları, yükseklik = computeHeight)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_sozlesme.mjs",
+   "kimlik": "SZ03a–c",
+   "hedef_madde": "FAZ1-2 (normaller)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_sozlesme.mjs",
+   "kimlik": "SZ04a–c",
+   "hedef_madde": "FAZ1-2 (renk aralığı)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_sozlesme.mjs",
+   "kimlik": "SZ05a–c",
+   "hedef_madde": "FAZ1-2 + madde 17 (üçgenleme köşegeni b–d)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_sozlesme.mjs",
+   "kimlik": "SZ06a–c",
+   "hedef_madde": "FAZ1-2 (etek)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_sozlesme.mjs",
+   "kimlik": "SZ07a–c",
+   "hedef_madde": "FAZ1-2 (min/max yükseklik)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_sozlesme.mjs",
+   "kimlik": "SZ08a–c",
+   "hedef_madde": "FAZ1-2 (hires yükseklik ızgarası)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_sozlesme.mjs",
+   "kimlik": "SZ09a–c",
+   "hedef_madde": "FAZ1-2 (aktarım listesi)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_sozlesme.mjs",
+   "kimlik": "SZ10",
+   "hedef_madde": "62-5 Harita derinliği; FAZ1-2 (depthGen yarım duyarlık kodlaması)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_sozlesme.mjs",
+   "kimlik": "SZ11",
+   "hedef_madde": "62-5; FAZ1-2 (depthGen kod çözümü)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_sozlesme.mjs",
+   "kimlik": "SZ12",
+   "hedef_madde": "FAZ1-1/2 (gridGen yükseklik)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_sozlesme.mjs",
+   "kimlik": "SZ13",
+   "hedef_madde": "FAZ1-1/2 (gridGen biyom)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_sozlesme.mjs",
+   "kimlik": "SZ14",
+   "hedef_madde": "FAZ1-1 (bilinmeyen iş türü)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_sozlesme.mjs",
+   "kimlik": "SZ15",
+   "hedef_madde": "FAZ1-2: işçi yolu (runAll) ↔ dilimli yol bayt eşitliği",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_sozlesme.mjs",
+   "kimlik": "SZ16",
+   "hedef_madde": "FAZ1-1/2: terrain.js gerçek yerel şerit yolu ↔ runAll bayt eşitliği",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_sozlesme.mjs",
+   "kimlik": "SZ17",
+   "hedef_madde": "FAZ1-3 yerel üretimde gerçek ağ",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_sozlesme.mjs",
+   "kimlik": "SZ18",
+   "hedef_madde": "madde 17: heightAt ↔ çizilen ağ üçgenlemesi (SYS6)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY01a",
+   "hedef_madde": "62-1",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY01b",
+   "hedef_madde": "62-1/4/5",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY01c",
+   "hedef_madde": "62-1",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY01d",
+   "hedef_madde": "madde 7 / A-11 / KI-159 (prepare dönüş değeri)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY02a",
+   "hedef_madde": "62-2 / A-17",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY02b",
+   "hedef_madde": "62-2",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY02c",
+   "hedef_madde": "62-2",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY03a",
+   "hedef_madde": "madde 3 / A-15 / KI-163 (kısmi kurucu hatası)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY03b",
+   "hedef_madde": "62-2",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY04a",
+   "hedef_madde": "62-2 (404)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY04b",
+   "hedef_madde": "62-2",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY04c",
+   "hedef_madde": "62-2",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY05a",
+   "hedef_madde": "madde 7, 17 / A-11 (hazır sinyali yok)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY05b",
+   "hedef_madde": "madde 17",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY06a",
+   "hedef_madde": "madde 7, 17 / A-11 (askı)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY06b",
+   "hedef_madde": "madde 17",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY07a",
+   "hedef_madde": "62-3",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY07b",
+   "hedef_madde": "62-3",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY07c",
+   "hedef_madde": "madde 3 / A-15 (yeniden başlatma)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY08a",
+   "hedef_madde": "62-3 / madde 3 (bütün işçiler çöker; B0-I06 ile gözlenebilir ölçüt)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY08b",
+   "hedef_madde": "madde 20 / KI-234 (Node: işçiler çöktükten sonra uzak prepare)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY09a",
+   "hedef_madde": "madde 3, 17 / A-05 / KI-153 (MAX_TRIES → yerel devir)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY09b",
+   "hedef_madde": "madde 3",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY10a",
+   "hedef_madde": "madde 17 ('error' iletisi)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY10b",
+   "hedef_madde": "madde 17",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY11a",
+   "hedef_madde": "madde 3 / A-05 (geri çekilme)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY11b",
+   "hedef_madde": "madde 3 / A-05 (failures ≤ 50)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY11c",
+   "hedef_madde": "madde 3",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY12a",
+   "hedef_madde": "madde 4 / A-08 / KI-156",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY13a",
+   "hedef_madde": "madde 4 / A-08",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY14a",
+   "hedef_madde": "madde 4 / A-08",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY14b",
+   "hedef_madde": "madde 4 / A-08",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY15",
+   "hedef_madde": "madde 17 (_depthSeq)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY16",
+   "hedef_madde": "madde 17 (odak bastırması)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY17",
+   "hedef_madde": "madde 17 (odak koruması)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY18",
+   "hedef_madde": "madde 8 / A-12 / KI-160",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY19a",
+   "hedef_madde": "madde 17 (prepare zaman aşımı dalı)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY19b",
+   "hedef_madde": "madde 7 / A-11 (timeout dönüşü)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY20a",
+   "hedef_madde": "madde 4 / A-09 / KI-157",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY20b",
+   "hedef_madde": "madde 4 / A-09 (B0-I06: yalnız dalgadan önce canlı işçiler)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY21",
+   "hedef_madde": "madde 4 / A-08",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY22",
+   "hedef_madde": "madde 12 / A-07 / KI-155",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY23",
+   "hedef_madde": "madde 12 / A-07",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY24a",
+   "hedef_madde": "madde 9 / A-13",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY24b",
+   "hedef_madde": "madde 9 / A-13 / KI-161",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KY25",
+   "hedef_madde": "madde 11 / A-06 / KI-154 (B0-I08: belirlenimci katı dilim sınırı, Node)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KYxx-D (23 durum)",
+   "hedef_madde": "arazi_kuyruk değişmezleri (A-05, A-09)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "arazi_kuyruk.mjs",
+   "kimlik": "KYxx-S (23 durum)",
+   "hedef_madde": "arazi_kuyruk değişmezleri (A-05, A-09)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HY00",
+   "hedef_madde": "madde 18a (kip denetimi)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (true); noworker: geçti (true); noworker #2: geçti (true); noworker #3: geçti (true)"
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HY01",
+   "hedef_madde": "kurulum",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (true); noworker: geçti (true); noworker #2: geçti (true); noworker #3: geçti (true)"
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HY02",
+   "hedef_madde": "madde 19 (≥ 5 km)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (5348); noworker: geçti (5348); noworker #2: geçti (5348); noworker #3: geçti (5348)"
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HY03",
+   "hedef_madde": "madde 5 / A-03 (gemi hedefte)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (0.02); noworker: geçti (0.03); noworker #2: geçti (0.03); noworker #3: geçti (0.03)"
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HYS-01",
+   "hedef_madde": "hızlı yolculuk hazırlığı ≤ 3 sn (normal: gerileme koruması; noworker: KI-234 DE…",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "normal: geçti (2404); noworker: KALDI (19730); noworker #2: KALDI (20341); noworker #3: KALDI (22172)",
+   "not_taklit": "Taklitle normal 2404 ms (geçti; eşiğe yakın, v0.4'ün bütün ölçümleri 0,18–3,32 sn: oyun başındaki ana iplik tıkanması pencereye bazen giriyor), noworker 19 730 / 20 341 / 22 172 ms (KALDI; KI-237 selden bağımsız, gerçek kilitte 28,7–44,7 sn). Sonra kapısında en az 3 koşunun ortancası, aynı pencerede v0.4 ile dönüşümlü (doğrulama YORUM-2/3, VB-5)."
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HYS-02",
+   "hedef_madde": "madde 7 / A-11 (hızlı yolculuk prepare 'ok' döner)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "normal: KALDI (undefined); noworker: KALDI (undefined); noworker #2: KALDI (undefined); noworker #3: KALDI (undefined)"
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HY04",
+   "hedef_madde": "A-03 (oyuncu hedefte)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (0.23); noworker: geçti (0.23); noworker #2: geçti (0.23); noworker #3: geçti (0.23)"
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HY05",
+   "hedef_madde": "A-03 (gemi hızı)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (0.111); noworker: geçti (0.097); noworker #2: geçti (0.096); noworker #3: geçti (0.103)"
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HY06",
+   "hedef_madde": "A-03 / 62-5 (derinlik hedefte)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (7); noworker: geçti (7); noworker #2: geçti (7); noworker #3: geçti (7)"
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HY07",
+   "hedef_madde": "A-03 / 62-4 (≥ 6 ağ)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (20); noworker: geçti (23); noworker #2: geçti (23); noworker #3: geçti (22)"
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HY08",
+   "hedef_madde": "A-03 (ücret bir kez)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (true); noworker: geçti (true); noworker #2: geçti (true); noworker #3: geçti (true)"
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HYU-01",
+   "hedef_madde": "madde 19 (ilk karede ağ, derinlik, heightAt = ağ)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (true); noworker: geçti (true); noworker #2: geçti (true); noworker #3: geçti (true)"
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HYU-02",
+   "hedef_madde": "madde 19 (varışta zeminde; hedef ports.js biniş noktası, B0-I16)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "normal: KALDI (false); noworker: KALDI (false); noworker #2: KALDI (false); noworker #3: KALDI (false)"
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HYU-03",
+   "hedef_madde": "madde 19 / 17 (heightAt = ağ)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (true); noworker: geçti (true); noworker #2: geçti (true); noworker #3: geçti (true)"
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HYU-04",
+   "hedef_madde": "madde 19 (görünürlük + piksel)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (true); noworker: geçti (true); noworker #2: geçti (true); noworker #3: geçti (true)"
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HYU-05",
+   "hedef_madde": "madde 19 (biniş noktası iskele platformunda; ports.js/islands.js, B0-I16)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "normal: KALDI (false); noworker: KALDI (false); noworker #2: KALDI (false); noworker #3: KALDI (false)"
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HY09",
+   "hedef_madde": "kurulum",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (true); noworker: geçti (true); noworker #2: geçti (true); noworker #3: geçti (true)"
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HY10",
+   "hedef_madde": "madde 5 / A-03 / KI-035 (ikinci emit yok sayılır; B0-I02: varış sayımı)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "normal: KALDI (false); noworker: KALDI (false); noworker #2: KALDI (false); noworker #3: KALDI (false)"
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HY11",
+   "hedef_madde": "madde 5 / A-03 (ücret bir kez)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "normal: KALDI (false); noworker: KALDI (false); noworker #2: KALDI (false); noworker #3: KALDI (false)"
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HY12",
+   "hedef_madde": "kurulum",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (true); noworker: geçti (true); noworker #2: geçti (true); noworker #3: geçti (true)"
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HY12b",
+   "hedef_madde": "önkoşul (B0-I05)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (true); noworker: geçti (true); noworker #2: geçti (true); noworker #3: geçti (true)"
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HY13",
+   "hedef_madde": "madde 10 / A-14 / KI-162",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "normal: KALDI (0); noworker: KALDI (0); noworker #2: KALDI (0); noworker #3: KALDI (0)"
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HY14",
+   "hedef_madde": "madde 10 / A-14",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "normal: KALDI (5804); noworker: KALDI (5804); noworker #2: KALDI (5804); noworker #3: KALDI (5804)"
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HY15",
+   "hedef_madde": "kurulum",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (true); noworker: geçti (true); noworker #2: geçti (true); noworker #3: geçti (true)"
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HY16",
+   "hedef_madde": "madde 5 / A-03",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (true); noworker: geçti (true); noworker #2: geçti (true); noworker #3: geçti (true)"
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HY17",
+   "hedef_madde": "madde 5 / A-03 (B0-I02: prepare bitene kadar)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "normal: KALDI (true); noworker: KALDI (true); noworker #2: KALDI (true); noworker #3: KALDI (true)"
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HY18",
+   "hedef_madde": "madde 5 / A-03",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "normal: KALDI (false); noworker: KALDI (false); noworker #2: KALDI (false); noworker #3: KALDI (false)"
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HY19",
+   "hedef_madde": "madde 5 / A-03 (oturum belirteci: varış olayı/bildirimi yok)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "normal: KALDI (false); noworker: KALDI (false); noworker #2: KALDI (false); noworker #3: KALDI (false)"
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HYK-2",
+   "hedef_madde": "test doğruluğu (kip korunur; FB0 ek bulgusu)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (true); noworker: geçti (true); noworker #2: geçti (true); noworker #3: geçti (true)"
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HYK-3",
+   "hedef_madde": "test doğruluğu (kip korunur)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (true); noworker: geçti (true); noworker #2: geçti (true); noworker #3: geçti (true)"
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HYK-4",
+   "hedef_madde": "test doğruluğu (kip korunur)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (true); noworker: geçti (true); noworker #2: geçti (true); noworker #3: geçti (true)"
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HYK-5",
+   "hedef_madde": "test doğruluğu (kip korunur)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (true); noworker: geçti (true); noworker #2: geçti (true); noworker #3: geçti (true)"
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HY20",
+   "hedef_madde": "kurulum",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (true); noworker: geçti (true); noworker #2: geçti (true); noworker #3: geçti (true)"
+  },
+  {
+   "test": "02_hizli_yolculuk.js",
+   "kimlik": "HY21",
+   "hedef_madde": "madde 5 (prepare 'timeout' → bildirim; B0-I17)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "normal: KALDI (false); noworker: KALDI (false); noworker #2: KALDI (false); noworker #3: KALDI (false)"
+  },
+  {
+   "test": "02_arazi_yasam.js",
+   "kimlik": "LY00",
+   "hedef_madde": "madde 18a / 17 (kip denetimi; B0-I06 crash/hang ölçütü)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (true); normal #2: geçti (true); noworker: geçti (true); noworker #2: geçti (true); crash: geçti (true)"
+  },
+  {
+   "test": "02_arazi_yasam.js",
+   "kimlik": "LY01",
+   "hedef_madde": "62-1/2/3",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (true); normal #2: geçti (true); noworker: geçti (true); noworker #2: geçti (true); crash: geçti (true)"
+  },
+  {
+   "test": "02_arazi_yasam.js",
+   "kimlik": "LY02",
+   "hedef_madde": "62-4",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (125); normal #2: geçti (125); noworker: geçti (125); noworker #2: geçti (125); crash: geçti (125)"
+  },
+  {
+   "test": "02_arazi_yasam.js",
+   "kimlik": "LY03",
+   "hedef_madde": "62-5",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (10); normal #2: geçti (10); noworker: geçti (10); noworker #2: geçti (10); crash: geçti (10)"
+  },
+  {
+   "test": "02_arazi_yasam.js",
+   "kimlik": "LY04",
+   "hedef_madde": "62-5",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (tamam); normal #2: geçti (tamam); noworker: geçti (tamam); noworker #2: geçti (tamam); crash: geçti (tamam)"
+  },
+  {
+   "test": "02_arazi_yasam.js",
+   "kimlik": "LY05",
+   "hedef_madde": "madde 7 / A-11",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "normal: KALDI (undefined); normal #2: KALDI (undefined); noworker: KALDI (undefined); noworker #2: KALDI (undefined); crash: KALDI (undefined)"
+  },
+  {
+   "test": "02_arazi_yasam.js",
+   "kimlik": "LY06",
+   "hedef_madde": "kurulum",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (true); normal #2: geçti (true); noworker: geçti (true); noworker #2: geçti (true); crash: geçti (true)"
+  },
+  {
+   "test": "02_arazi_yasam.js",
+   "kimlik": "LY07",
+   "hedef_madde": "madde 17 (LOD yarışı; FB0: önkoşul seg-32 uçuşta)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (tamam); normal #2: geçti (tamam); noworker: geçti (tamam); noworker #2: geçti (tamam); crash: geçti (tamam)"
+  },
+  {
+   "test": "02_arazi_yasam.js",
+   "kimlik": "LY08",
+   "hedef_madde": "FAZ1-8 (geç sonuç; B0-I14, önkoşul: sonuç düşürmeden sonra)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (tamam); normal #2: geçti (tamam); noworker: geçti (tamam); noworker #2: geçti (tamam); crash: geçti (tamam)"
+  },
+  {
+   "test": "02_arazi_yasam.js",
+   "kimlik": "LY09",
+   "hedef_madde": "madde 8 / A-12 / KI-160 (B0-I15: işçili kipte gözlenebilir)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "normal: KALDI (B odağı kısaldı: B bittikten 5 sn sonra B bölgesinde 20 ağ,…); normal #2: KALDI (B odağı kısaldı: B bittikten 5 sn sonra B bölgesinde 20 ağ,…); noworker: KALDI (B odağı kısaldı: B bittikten 5 sn sonra B bölgesinde 0 ağ, …); noworker #2: KALDI (B odağı kısaldı: B bittikten 5 sn sonra B bölgesinde 0 ağ, …); crash: KALDI (B odağı kısaldı: B bittikten 5 sn sonra B bölgesinde 0 ağ, …)",
+   "not_taklit": "crash kipinde kalma biçimi değişti: B0'da 'B bölgesinde 20 ağ' (yalnız derinlik kalıyordu), taklitte '0 ağ' (iki alt koşul da kalıyor; noworker kipiyle aynı biçim). Sonra kapısında iki alt koşul ayrı ayrı gösterilmeli (doğrulama VB-2)."
+  },
+  {
+   "test": "02_arazi_yasam.js",
+   "kimlik": "LY10",
+   "hedef_madde": "madde 9 / A-13 (B0-I13)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "normal: KALDI (24); normal #2: KALDI (24); noworker: KALDI (24); noworker #2: KALDI (24); crash: KALDI (24)"
+  },
+  {
+   "test": "02_arazi_yasam.js",
+   "kimlik": "LY11",
+   "hedef_madde": "madde 12 / A-07",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "normal: KALDI (83); normal #2: KALDI (83); noworker: KALDI (83); noworker #2: KALDI (83); crash: KALDI (83)"
+  },
+  {
+   "test": "02_arazi_yasam.js",
+   "kimlik": "LY12",
+   "hedef_madde": "madde 4 / A-09 (B0-I13)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (true); normal #2: geçti (true); noworker: geçti (true); noworker #2: geçti (true); crash: geçti (true)"
+  },
+  {
+   "test": "02_arazi_yasam.js",
+   "kimlik": "LY13",
+   "hedef_madde": "madde 11 / A-06 / KI-154 (B0-I08: dağılım)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (tamam); normal #2: geçti (tamam); noworker: geçti (tamam); noworker #2: geçti (tamam); crash: geçti (tamam)",
+   "not_taklit": "Taklitle v0.4'te 5/5 geçti (normal ×2, noworker ×2, crash): B0'ın gerçek kilitli kırmızısı selden geliyordu. Sonra kapısında gerileme korumasıdır; geçmesi A-06'nın düzeldiğine kanıt sayılmaz (A-06'nın belirlenimli 'önce' kanıtı arazi_kuyruk KY25). Pay dar: p99 farkı normal koşularda 3,6 ve 1,4 ms (eşik 4 ms). Denetimin A-06 kabulü (en uzun dilim ≤ bütçe + 4 ms) daha sıkıdır; taklitli normal koşuda en uzun fark 4,2 ms (doğrulama YORUM-1)."
+  },
+  {
+   "test": "02_arazi_yasam.js",
+   "kimlik": "LY14",
+   "hedef_madde": "madde 12 / A-07",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "normal: KALDI (83); normal #2: KALDI (83); noworker: KALDI (83); noworker #2: KALDI (83); crash: KALDI (83)"
+  },
+  {
+   "test": "02_arazi_yasam.js",
+   "kimlik": "LY15",
+   "hedef_madde": "FAZ1-6",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (true); normal #2: geçti (true); noworker: geçti (true); noworker #2: geçti (true); crash: geçti (true)"
+  },
+  {
+   "test": "02_arazi_yasam.js",
+   "kimlik": "LY16",
+   "hedef_madde": "geometri sızıntısı",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (tamam); normal #2: geçti (tamam); noworker: geçti (tamam); noworker #2: geçti (tamam); crash: geçti (tamam)"
+  },
+  {
+   "test": "02_arazi_yasam.js",
+   "kimlik": "LYK-09",
+   "hedef_madde": "test doğruluğu (LY09 sayfasında kip korunur)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (true); normal #2: geçti (true); noworker: geçti (true); noworker #2: geçti (true); crash: geçti (true)"
+  },
+  {
+   "test": "02_arazi_isci_hata.js",
+   "kimlik": "HI00",
+   "hedef_madde": "kurulum",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "02_arazi_isci_hata.js",
+   "kimlik": "HI01",
+   "hedef_madde": "madde 17 ('error' iletisi)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "02_arazi_isci_hata.js",
+   "kimlik": "HI02",
+   "hedef_madde": "kurulum",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "02_arazi_isci_hata.js",
+   "kimlik": "HI03",
+   "hedef_madde": "madde 3 / A-05",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (120)",
+   "not_taklit": "Değer değişti (87 → 120; izinli konsol eşleşmesi 88 → 121), kalma biçimi aynı (doğrulama VB-3)."
+  },
+  {
+   "test": "02_arazi_isci_hata.js",
+   "kimlik": "HI04",
+   "hedef_madde": "madde 3 / A-05",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (120)",
+   "not_taklit": "Değer değişti (87 → 120), kalma biçimi aynı (doğrulama VB-3)."
+  },
+  {
+   "test": "02_arazi_isci_hata.js",
+   "kimlik": "HI05",
+   "hedef_madde": "madde 3, 17 / A-05",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (RED: Arazi işi grid tekrarlanan işçi hatası)"
+  },
+  {
+   "test": "02_arazi_isci_hata.js",
+   "kimlik": "HI06",
+   "hedef_madde": "FAZ1-6",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (0)"
+  },
+  {
+   "test": "02_arazi_isci_hata.js",
+   "kimlik": "HI07",
+   "hedef_madde": "madde 3 / A-15",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_arazi_isci_hata.js",
+   "kimlik": "HI08",
+   "hedef_madde": "62-2",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (94)"
+  },
+  {
+   "test": "02_ayar_lod.js",
+   "kimlik": "AL00",
+   "hedef_madde": "gerileme koruması",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (1)"
+  },
+  {
+   "test": "02_ayar_lod.js",
+   "kimlik": "AL01",
+   "hedef_madde": "madde 16 / A-19 / KI-038",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (0.7)"
+  },
+  {
+   "test": "02_ayar_lod.js",
+   "kimlik": "AL02",
+   "hedef_madde": "madde 16",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_ayar_lod.js",
+   "kimlik": "AL03",
+   "hedef_madde": "madde 16",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (1)"
+  },
+  {
+   "test": "02_ayar_lod.js",
+   "kimlik": "AL04",
+   "hedef_madde": "madde 16",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (0.7)"
+  },
+  {
+   "test": "02_ayar_lod.js",
+   "kimlik": "AL05",
+   "hedef_madde": "madde 16",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (0.7)"
+  },
+  {
+   "test": "02_ayar_lod.js",
+   "kimlik": "AL06",
+   "hedef_madde": "madde 16",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_ayar_lod.js",
+   "kimlik": "AL07",
+   "hedef_madde": "madde 16",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (1)"
+  },
+  {
+   "test": "02_ayar_lod.js",
+   "kimlik": "AL08",
+   "hedef_madde": "madde 16 / KI-130",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (2048)"
+  },
+  {
+   "test": "02_ayar_lod.js",
+   "kimlik": "AL09",
+   "hedef_madde": "madde 16 / KI-130",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (2048)"
+  },
+  {
+   "test": "02_ayar_lod.js",
+   "kimlik": "AL10",
+   "hedef_madde": "madde 16",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (1)"
+  },
+  {
+   "test": "02_depolama_kapali.js",
+   "kimlik": "DK01",
+   "hedef_madde": "gerileme koruması",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "02_depolama_kapali.js",
+   "kimlik": "DK02",
+   "hedef_madde": "kurulum",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (SecurityError)"
+  },
+  {
+   "test": "02_depolama_kapali.js",
+   "kimlik": "DK03",
+   "hedef_madde": "madde 15 / A-18 / KI-037",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_depolama_kapali.js",
+   "kimlik": "DK04",
+   "hedef_madde": "madde 15",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_depolama_kapali.js",
+   "kimlik": "DK05",
+   "hedef_madde": "madde 15 + A-04",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_depolama_kapali.js",
+   "kimlik": "DK06",
+   "hedef_madde": "madde 15",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_depolama_kapali.js",
+   "kimlik": "DK07",
+   "hedef_madde": "madde 15 / 62-7",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_depolama_kapali.js",
+   "kimlik": "DK08",
+   "hedef_madde": "madde 15",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_depolama_kapali.js",
+   "kimlik": "DK09",
+   "hedef_madde": "madde 15",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (null)"
+  },
+  {
+   "test": "02_depolama_kapali.js",
+   "kimlik": "DK10",
+   "hedef_madde": "madde 15",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (null)"
+  },
+  {
+   "test": "02_depolama_kapali.js",
+   "kimlik": "DK11",
+   "hedef_madde": "madde 15",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_depolama_kapali.js",
+   "kimlik": "DK12",
+   "hedef_madde": "madde 15 (ONLINE → Oda kur; B0-I17)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_depolama_kapali.js",
+   "kimlik": "DK13",
+   "hedef_madde": "madde 15 (oda kurulur)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (zaman aşımı)"
+  },
+  {
+   "test": "02_depolama_kapali.js",
+   "kimlik": "DK14",
+   "hedef_madde": "madde 15 (startOnlineHost korumalı)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (null)"
+  },
+  {
+   "test": "02_depolama_kapali.js",
+   "kimlik": "DK15",
+   "hedef_madde": "madde 15 (çevrimiçi akışta SecurityError 0)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_acilis_akisi.js",
+   "kimlik": "AA01",
+   "hedef_madde": "madde 19 / 62-6",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "02_acilis_akisi.js",
+   "kimlik": "AA02",
+   "hedef_madde": "62-6",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "02_acilis_akisi.js",
+   "kimlik": "AA03",
+   "hedef_madde": "62-6",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "02_acilis_akisi.js",
+   "kimlik": "AA04",
+   "hedef_madde": "62-6",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "02_acilis_akisi.js",
+   "kimlik": "AA05",
+   "hedef_madde": "62-7",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "02_acilis_akisi.js",
+   "kimlik": "AA06",
+   "hedef_madde": "62-7",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "02_acilis_akisi.js",
+   "kimlik": "AA07",
+   "hedef_madde": "62-7",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "02_acilis_akisi.js",
+   "kimlik": "AA08",
+   "hedef_madde": "62-8",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "02_acilis_akisi.js",
+   "kimlik": "AA09",
+   "hedef_madde": "62-8",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "02_acilis_akisi.js",
+   "kimlik": "AA09b",
+   "hedef_madde": "madde 19 (menüde fare kilidi)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_acilis_akisi.js",
+   "kimlik": "AA10",
+   "hedef_madde": "62-8",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "02_acilis_akisi.js",
+   "kimlik": "AA11",
+   "hedef_madde": "62-8",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "02_acilis_akisi.js",
+   "kimlik": "AA18",
+   "hedef_madde": "önkoşul (B0-I07: birinci dünya uzak bölgede, içerik var)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "02_acilis_akisi.js",
+   "kimlik": "AA12",
+   "hedef_madde": "62-10",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "02_acilis_akisi.js",
+   "kimlik": "AA13",
+   "hedef_madde": "62-10",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "02_acilis_akisi.js",
+   "kimlik": "AA14",
+   "hedef_madde": "62-10",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "02_acilis_akisi.js",
+   "kimlik": "AA15",
+   "hedef_madde": "62-10 (kalıntı yok; düşman sayısı eklendi)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)",
+   "not_taklit": "Taklitte de zamanlamaya duyarlı: ikinci ölçüm yükleme bitmeden alınabiliyor (#69: taban 754 → şimdi 504; B0: 754 → 825). Kontrol geçiyor ama kalıntıya duyarlılığı koşuya göre değişiyor (doğrulama YORUM-7, KOSUCU17 GZ-5)."
+  },
+  {
+   "test": "02_acilis_akisi.js",
+   "kimlik": "AA19",
+   "hedef_madde": "62-10 (eski bölgenin karoları yok)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (0)"
+  },
+  {
+   "test": "02_acilis_akisi.js",
+   "kimlik": "AA20",
+   "hedef_madde": "62-10 (eski ada içeriği yok)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (tamam)"
+  },
+  {
+   "test": "02_acilis_akisi.js",
+   "kimlik": "AA21",
+   "hedef_madde": "62-10 (eski düşman/sandık yok)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (tamam)"
+  },
+  {
+   "test": "02_acilis_akisi.js",
+   "kimlik": "AA22",
+   "hedef_madde": "62-10 / 62-5 (derinlik yeni başlangıçta)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (12)"
+  },
+  {
+   "test": "02_acilis_akisi.js",
+   "kimlik": "AA16",
+   "hedef_madde": "62-10",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "02_acilis_akisi.js",
+   "kimlik": "AA17",
+   "hedef_madde": "madde 19",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "02_arazi_yedek.js",
+   "kimlik": "AYK-01",
+   "hedef_madde": "madde 18a / KI-149",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (true); noworker: geçti (true); crash: geçti (true); badurl: geçti (true)"
+  },
+  {
+   "test": "02_arazi_yedek.js",
+   "kimlik": "AYK-02",
+   "hedef_madde": "madde 18a / KI-149 (B0-I06: crash/hang gözlenebilir ölçüt)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (true); noworker: geçti (true); crash: geçti (true); badurl: geçti (true)"
+  },
+  {
+   "test": "02_arazi_yedek.js",
+   "kimlik": "AYS-01",
+   "hedef_madde": "madde 20 / KI-234 (B0-I01: çizim durdurulmuş kuyruk süresi)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (true); noworker: geçti (true); crash: geçti (true); badurl: geçti (true)"
+  },
+  {
+   "test": "02_arazi_yedek.js",
+   "kimlik": "AYS-02",
+   "hedef_madde": "madde 3 / A-05, A-15 (iş başına gönderim ≤ 3)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (1); noworker: geçti (0); crash: geçti (1); badurl: geçti (1)"
+  },
+  {
+   "test": "02_arazi_yedek.js",
+   "kimlik": "eski 12 kontrol (Sayfa hazır … Kuyruk ilerliyor)",
+   "hedef_madde": "62-1..5 (eski kontroller; gerileme koruması)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "normal: geçti (12/12); noworker: geçti (12/12); crash: geçti (12/12); badurl: geçti (12/12)"
+  },
+  {
+   "test": "00_acilis.js",
+   "kimlik": "Ana menü görünür",
+   "hedef_madde": "eski (gerileme koruması)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "00_acilis.js",
+   "kimlik": "Menü düğmeleri",
+   "hedef_madde": "eski",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (8)"
+  },
+  {
+   "test": "00_acilis.js",
+   "kimlik": "Oyun başladı",
+   "hedef_madde": "eski",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (playing)"
+  },
+  {
+   "test": "00_acilis.js",
+   "kimlik": "AC01",
+   "hedef_madde": "madde 17 / A-10 / KI-158",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "00_acilis.js",
+   "kimlik": "AC02",
+   "hedef_madde": "madde 6 / A-10 ('loading')",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "00_acilis.js",
+   "kimlik": "AC03",
+   "hedef_madde": "madde 6, 17 / A-10 (geçişte hazırlık bitmiş; B0-I09)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI ({\"surenPrepare\":0,\"bitenPrepare\":0,\"yakinBekleyenKaro\":0,\"i…)"
+  },
+  {
+   "test": "00_acilis.js",
+   "kimlik": "Oyuncu dünyada",
+   "hedef_madde": "eski",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "00_acilis.js",
+   "kimlik": "Arazi karoları yüklendi",
+   "hedef_madde": "eski",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (129)"
+  },
+  {
+   "test": "00_acilis.js",
+   "kimlik": "Arazi işçileri çalışıyor",
+   "hedef_madde": "eski",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (3)"
+  },
+  {
+   "test": "02_acilis_hatalari.js",
+   "kimlik": "AH00",
+   "hedef_madde": "kurulum",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "02_acilis_hatalari.js",
+   "kimlik": "AH01",
+   "hedef_madde": "kurulum (normal başvuru açılışı)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (7674)"
+  },
+  {
+   "test": "02_acilis_hatalari.js",
+   "kimlik": "IZ01",
+   "hedef_madde": "madde 1 / A-02 / KI-034 (B0-I03)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_acilis_hatalari.js",
+   "kimlik": "IZ02",
+   "hedef_madde": "madde 1 / A-02",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_acilis_hatalari.js",
+   "kimlik": "IZ03",
+   "hedef_madde": "madde 1, 2 / A-02, A-04",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (Oyun başlatılamadı: test: enjekte ızgara hatasıWebGL destek…)"
+  },
+  {
+   "test": "02_acilis_hatalari.js",
+   "kimlik": "IZ04",
+   "hedef_madde": "madde 1 / A-02 (harita ızgarası yerelde)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (64)"
+  },
+  {
+   "test": "02_acilis_hatalari.js",
+   "kimlik": "IZ05",
+   "hedef_madde": "madde 1, 3 / A-02, A-05",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_acilis_hatalari.js",
+   "kimlik": "IZ06",
+   "hedef_madde": "madde 1, 3",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_acilis_hatalari.js",
+   "kimlik": "IZ07",
+   "hedef_madde": "madde 3 / A-05",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (64)"
+  },
+  {
+   "test": "02_acilis_hatalari.js",
+   "kimlik": "AH02",
+   "hedef_madde": "madde 7 / A-11 (askı; B0-I11)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_acilis_hatalari.js",
+   "kimlik": "AH03",
+   "hedef_madde": "madde 7 / A-11 (yükleme metni)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_acilis_hatalari.js",
+   "kimlik": "AH04",
+   "hedef_madde": "madde 7 / A-11 (hazır sinyali yok)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_acilis_hatalari.js",
+   "kimlik": "AH05",
+   "hedef_madde": "madde 7 / A-11 (yükleme metni)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_acilis_hatalari.js",
+   "kimlik": "AH10",
+   "hedef_madde": "madde 7, 14 (?terrain=hang)",
+   "once_v04": "UYGULANAMAZ",
+   "once_v04_taklit": "UYGULANAMAZ",
+   "once_v04_taklit_aciklama": "v0.4'te bu kip yok; taklitle de koşulmadı."
+  },
+  {
+   "test": "02_acilis_hatalari.js",
+   "kimlik": "AH11",
+   "hedef_madde": "madde 7, 14 (?terrain=noready)",
+   "once_v04": "UYGULANAMAZ",
+   "once_v04_taklit": "UYGULANAMAZ",
+   "once_v04_taklit_aciklama": "v0.4'te bu kip yok; taklitle de koşulmadı."
+  },
+  {
+   "test": "02_acilis_hatalari.js",
+   "kimlik": "AH06",
+   "hedef_madde": "madde 2 / A-04 (WebGL iletisi; B0-I10)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "02_acilis_hatalari.js",
+   "kimlik": "AH07",
+   "hedef_madde": "madde 2 / A-04 (import map)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_acilis_hatalari.js",
+   "kimlik": "AH08",
+   "hedef_madde": "madde 2 / A-04 (modül 404)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_acilis_hatalari.js",
+   "kimlik": "AH09",
+   "hedef_madde": "madde 2 / A-04 (__ready uyarısı)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_yukleme_bekleme.js",
+   "kimlik": "YB00",
+   "hedef_madde": "kurulum (test verisi)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "02_yukleme_bekleme.js",
+   "kimlik": "YB01",
+   "hedef_madde": "kurulum",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "02_yukleme_bekleme.js",
+   "kimlik": "YB02",
+   "hedef_madde": "önkoşul (kapı)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "02_yukleme_bekleme.js",
+   "kimlik": "YB03",
+   "hedef_madde": "madde 6 / A-10 (yükleme katmanı; B0-I09)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_yukleme_bekleme.js",
+   "kimlik": "YB04",
+   "hedef_madde": "madde 6 / A-10 (G.state ≠ 'playing')",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_yukleme_bekleme.js",
+   "kimlik": "YB05",
+   "hedef_madde": "madde 6 / A-10 (Esc duraklatma açmaz)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_yukleme_bekleme.js",
+   "kimlik": "YB06",
+   "hedef_madde": "madde 6 / A-10 (iptal durum değiştirmez)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_yukleme_bekleme.js",
+   "kimlik": "YB07",
+   "hedef_madde": "madde 6 / A-10 (bildirim yok)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_yukleme_bekleme.js",
+   "kimlik": "YB08",
+   "hedef_madde": "madde 6 / A-10 (kayıt değişmez)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "02_tek_dosya_kipler.js",
+   "kimlik": "TK00",
+   "hedef_madde": "kurulum",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "02_tek_dosya_kipler.js",
+   "kimlik": "TK01",
+   "hedef_madde": "madde 14 / A-17",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "02_tek_dosya_kipler.js",
+   "kimlik": "TK02",
+   "hedef_madde": "madde 14 / A-17 / KI-165 (badurl data: altında gerçekten bozuk; B0-I12)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_tek_dosya_kipler.js",
+   "kimlik": "TK03",
+   "hedef_madde": "madde 14",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (126)"
+  },
+  {
+   "test": "02_tek_dosya_blob.js",
+   "kimlik": "TB00",
+   "hedef_madde": "kurulum",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "02_tek_dosya_blob.js",
+   "kimlik": "TB03",
+   "hedef_madde": "madde 13 (blob reddinde açılış tamamlanır)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "02_tek_dosya_blob.js",
+   "kimlik": "TB01",
+   "hedef_madde": "madde 13 / A-16 (blob reddinde data: ile ikinci deneme; B0-I12)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_tek_dosya_blob.js",
+   "kimlik": "TB02",
+   "hedef_madde": "madde 13",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (126)"
+  },
+  {
+   "test": "02_tek_dosya_cerceve.js",
+   "kimlik": "TC00",
+   "hedef_madde": "kurulum",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (true)"
+  },
+  {
+   "test": "02_tek_dosya_cerceve.js",
+   "kimlik": "TC01",
+   "hedef_madde": "önkoşul (çerçeve kökeni 'null')",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti (null)"
+  },
+  {
+   "test": "02_tek_dosya_cerceve.js",
+   "kimlik": "TC02",
+   "hedef_madde": "madde 13 / A-16 (sandbox iframe açılışı; B0-I12)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_tek_dosya_cerceve.js",
+   "kimlik": "TC03",
+   "hedef_madde": "madde 13 / A-16 (sandbox iframe ≥ 1 işçi çalışır)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (false)"
+  },
+  {
+   "test": "02_tek_dosya_cerceve.js",
+   "kimlik": "TC04",
+   "hedef_madde": "madde 13 (sandbox iframe ≥ 20 ağ)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI (çerçevede DK yok)"
+  },
+  {
+   "test": "02_arazi_yedek.js",
+   "kimlik": "AYK-01/AYK-02/AYS-01/AYS-02 (ctorthrow)",
+   "hedef_madde": "madde 14, 18a (yeni test kipi)",
+   "once_v04": "UYGULANAMAZ",
+   "once_v04_taklit": "UYGULANAMAZ",
+   "once_v04_taklit_aciklama": "v0.4'te bu kip yok; taklitle de koşulmadı."
+  },
+  {
+   "test": "02_arazi_yasam.js",
+   "kimlik": "LY00–LY16, LYK-09 (ctorthrow)",
+   "hedef_madde": "madde 14, 17 (yeni kiplerde açılış)",
+   "once_v04": "UYGULANAMAZ",
+   "once_v04_taklit": "UYGULANAMAZ",
+   "once_v04_taklit_aciklama": "v0.4'te bu kip yok; taklitle de koşulmadı."
+  },
+  {
+   "test": "02_arazi_yedek.js",
+   "kimlik": "AYK-01/AYK-02/AYS-01/AYS-02 (noready)",
+   "hedef_madde": "madde 14, 18a (yeni test kipi)",
+   "once_v04": "UYGULANAMAZ",
+   "once_v04_taklit": "UYGULANAMAZ",
+   "once_v04_taklit_aciklama": "v0.4'te bu kip yok; taklitle de koşulmadı."
+  },
+  {
+   "test": "02_arazi_yasam.js",
+   "kimlik": "LY00–LY16, LYK-09 (noready)",
+   "hedef_madde": "madde 14, 17 (yeni kiplerde açılış)",
+   "once_v04": "UYGULANAMAZ",
+   "once_v04_taklit": "UYGULANAMAZ",
+   "once_v04_taklit_aciklama": "v0.4'te bu kip yok; taklitle de koşulmadı."
+  },
+  {
+   "test": "02_arazi_yedek.js",
+   "kimlik": "AYK-01/AYK-02/AYS-01/AYS-02 (hang)",
+   "hedef_madde": "madde 14, 18a (yeni test kipi)",
+   "once_v04": "UYGULANAMAZ",
+   "once_v04_taklit": "UYGULANAMAZ",
+   "once_v04_taklit_aciklama": "v0.4'te bu kip yok; taklitle de koşulmadı."
+  },
+  {
+   "test": "02_arazi_yasam.js",
+   "kimlik": "LY00–LY16, LYK-09 (hang)",
+   "hedef_madde": "madde 14, 17 (yeni kiplerde açılış)",
+   "once_v04": "UYGULANAMAZ",
+   "once_v04_taklit": "UYGULANAMAZ",
+   "once_v04_taklit_aciklama": "v0.4'te bu kip yok; taklitle de koşulmadı."
+  },
+  {
+   "test": "02_arazi_yedek.js",
+   "kimlik": "AYK-01/AYK-02/AYS-01/AYS-02 (crash1)",
+   "hedef_madde": "madde 14, 18a (yeni test kipi)",
+   "once_v04": "UYGULANAMAZ",
+   "once_v04_taklit": "UYGULANAMAZ",
+   "once_v04_taklit_aciklama": "v0.4'te bu kip yok; taklitle de koşulmadı."
+  },
+  {
+   "test": "02_arazi_yasam.js",
+   "kimlik": "LY00–LY16, LYK-09 (crash1)",
+   "hedef_madde": "madde 14, 17 (yeni kiplerde açılış)",
+   "once_v04": "UYGULANAMAZ",
+   "once_v04_taklit": "UYGULANAMAZ",
+   "once_v04_taklit_aciklama": "v0.4'te bu kip yok; taklitle de koşulmadı."
+  },
+  {
+   "test": "coop/02_hizli_yolculuk_konuk.cjs",
+   "kimlik": "HK00",
+   "hedef_madde": "kurulum (oda sahibi + konuk)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti ({\"hOk\": true, \"gOk\": true})"
+  },
+  {
+   "test": "coop/02_hizli_yolculuk_konuk.cjs",
+   "kimlik": "HK01",
+   "hedef_madde": "önkoşul (konukta 'teleport' hazırlığı başladı)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti ({\"kur\": \"kuruldu\", \"ilk\": {\"ms\": 1401, \"teleport\": 1}})"
+  },
+  {
+   "test": "coop/02_hizli_yolculuk_konuk.cjs",
+   "kimlik": "HK02",
+   "hedef_madde": "önkoşul (ikinci 'teleport' bekleme sırasında ulaştı)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti ({\"teleport\": [[1676, 812], [289, -5003]], \"cagri\": [[1676, …)"
+  },
+  {
+   "test": "coop/02_hizli_yolculuk_konuk.cjs",
+   "kimlik": "HK03",
+   "hedef_madde": "madde 5 / A-03 (konuk 'teleport' işleyicisinde travelBusy; B0-I17)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI ({\"ikinciHazirlik\": 1, \"cagri\": [[1676, 812, 400, \"bekliyor\"…)"
+  },
+  {
+   "test": "coop/02_hizli_yolculuk_konuk.cjs",
+   "kimlik": "HK04",
+   "hedef_madde": "madde 5 / A-03 (konuk bir kez ve ilk hedefe taşınır)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI ({\"ayniOyuncu\": true, \"konum\": [1676, 813], \"aUzaklik\": 1, \"…)",
+   "not_taklit": "Kalma nedeni taklitte değişti: konuk ilk hedefte (aUzaklik 1, konum [1676, 813]); kırmızı yalnız çift 'vardınız' bildiriminden. B0'daki 'ikinci ileti konuğu yanlış limana taşır' belirtisi yarışa bağlı, taklitte görülmedi. A-03'ün belirlenimli 'önce' kanıtı HK03. Sonra kapısında HK04'ün geçmesi tek başına yanlış-hedef belirtisinin düzeldiğine kanıt sayılmaz (doğrulama VB-1/YORUM-4)."
+  },
+  {
+   "test": "coop/02_hizli_yolculuk_konuk.cjs",
+   "kimlik": "HK05",
+   "hedef_madde": "önkoşul (ikinci yolculuk, bekleme penceresi)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti ({\"C\": {\"id\": \"zumrut_koy_port_0\", \"x\": -305, \"z\": 5125, \"bx…)"
+  },
+  {
+   "test": "coop/02_hizli_yolculuk_konuk.cjs",
+   "kimlik": "HK06",
+   "hedef_madde": "madde 5 / A-03 (menüye dönen konuk menüde kalır)",
+   "once_v04": "YESIL",
+   "once_v04_taklit": "YESIL",
+   "once_v04_taklit_aciklama": "v0.4 taklit: geçti ({\"durum\": \"menu\", \"menu\": true, \"hud\": false, \"oyuncuKaydi\"…)"
+  },
+  {
+   "test": "coop/02_hizli_yolculuk_konuk.cjs",
+   "kimlik": "HK07",
+   "hedef_madde": "madde 5 / A-03 (oturum belirteci: konuk taşınmaz, bildirim yok)",
+   "once_v04": "KIRMIZI",
+   "once_v04_taklit": "KIRMIZI",
+   "once_v04_taklit_aciklama": "v0.4 taklit: KALDI ({\"durum\": \"menu\", \"menu\": true, \"hud\": false, \"oyuncuKaydi\"…)",
+   "not_taklit": "Değer değişti (oyuncuKaydi 10046 → 4655): HK04'teki başlangıç konumu farkından; kalma biçimi aynı (doğrulama VB-3)."
+  }
+ ]
+}

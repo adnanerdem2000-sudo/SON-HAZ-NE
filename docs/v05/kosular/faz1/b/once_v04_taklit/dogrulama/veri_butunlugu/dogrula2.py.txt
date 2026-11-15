@@ -1,0 +1,176 @@
+# -*- coding: utf-8 -*-
+# #69 veri bütünlüğü, 2. bölüm: karsilastirma.json'ı ham verilerle sınar; zaman damgaları, konsol/ağ hata listeleri,
+# günlükteki şüpheli sözcüklerin bağlamı. Salt okur.
+import json, os, re, datetime
+
+KOK = '/home/user/SON-HAZ-NE-w2'
+B = KOK + '/docs/v05/kosular/faz1/b'
+ESKI = B + '/once_v04/son'
+YENI = B + '/once_v04_taklit'
+
+def oku(p):
+    with open(p, encoding='utf-8') as f:
+        return f.read()
+
+def j(p):
+    with open(p, encoding='utf-8') as f:
+        return json.load(f)
+
+def bolum(t):
+    print('\n' + '=' * 100 + '\n' + t + '\n' + '=' * 100)
+
+def ts(s):
+    s = s.replace('Z', '+00:00')
+    return datetime.datetime.fromisoformat(s)
+
+K = j(YENI + '/karsilastirma.json')
+adlar = [k['ad'] for k in K['kosular']]
+dosya_adlari = sorted(f[:-5] for f in os.listdir(YENI) if f.endswith('.json') and not f.endswith('_bellek.json') and f != 'karsilastirma.json')
+
+# ------------------------------------------------------------------ A. karsilastirma.json <-> ham
+bolum('A. karsilastirma.json <-> HAM VERİ')
+print('  karsilastirma koşu adları = dosya adları:', sorted(adlar) == dosya_adlari, len(adlar))
+hatalar = []
+for k in K['kosular']:
+    ad, taban = k['ad'], k['taban']
+    re_, ry = j(f'{ESKI}/{taban}.json'), j(f'{YENI}/{ad}.json')
+    bel = j(f'{YENI}/{ad}_bellek.json')
+    beklenen_taban = re.sub(r'_(\d+)$', '', ad) if not os.path.exists(f'{ESKI}/{ad}.json') else ad
+    if taban != beklenen_taban:
+        hatalar.append((ad, 'taban', taban, beklenen_taban))
+    y, e = k['yeni'], k['eski']
+    karsi = {
+        'yeni.durum': (y['durum'], ry['sonuc']['durum']), 'yeni.gecen': (y['gecen'], ry['sonuc']['gecen']),
+        'yeni.kontrol': (y['kontrol'], ry['sonuc']['kontrolSayisi']), 'yeni.sure_ms': (y['sure_ms'], ry['ms']),
+        'yeni.kopma': (y['kopma'], ry.get('kopma')), 'yeni.isaretci': (y['isaretci'], (ry.get('isaretciKilidi') or {}).get('kip')),
+        'eski.durum': (e['durum'], re_['sonuc']['durum']), 'eski.gecen': (e['gecen'], re_['sonuc']['gecen']),
+        'eski.kontrol': (e['kontrol'], re_['sonuc']['kontrolSayisi']), 'eski.sure_ms': (e['sure_ms'], re_['ms']),
+        'bellek.tarayici': (y['bellek']['tarayici_VmHWM_MB'], bel['tur']['browser']['hwm_tepe_MB']),
+        'bellek.renderer': (y['bellek']['renderer_VmHWM_MB'], bel['tur']['renderer']['hwm_tepe_MB']),
+        'bellek.gpu': (y['bellek']['gpu_VmHWM_MB'], bel['tur']['gpu-process']['hwm_tepe_MB']),
+        'bellek.chrome_toplam': (y['bellek']['chrome_toplam_tepe_MB'], bel['chrome_toplam_tepe']['MB']),
+        'bellek.cgroup': (y['bellek']['cgroup_tepe_MB'], bel['cg_tepe']['MB']),
+        'bellek.oom_artislari': (y['bellek']['oom_artislari'], bel['oom_artislari']),
+    }
+    for a, (v1, v2) in karsi.items():
+        if v1 != v2:
+            hatalar.append((ad, a, v1, v2))
+    # kontrol eşlemesi
+    ke = {x['id']: x for x in re_['kontroller']}; ky = {x['id']: x for x in ry['kontroller']}
+    farklar = sorted(i for i in set(ke) | set(ky) if (i in ke) != (i in ky) or ke[i]['ok'] != ky[i]['ok'])
+    k_far = sorted(f['id'] for f in k['farklar'])
+    if farklar != k_far:
+        hatalar.append((ad, 'farklar', k_far, farklar))
+    for f in k['farklar']:
+        i = f['id']
+        if f['eski']['ok'] != ke[i]['ok'] or f['yeni']['ok'] != ky[i]['ok'] or f['eski']['deger'] != ke[i]['deger'] or f['yeni']['deger'] != ky[i]['deger']:
+            hatalar.append((ad, 'farklar.' + i, f, (ke[i]['ok'], ke[i]['deger'], ky[i]['ok'], ky[i]['deger'])))
+    ak = [i for i in [x['id'] for x in re_['kontroller']] if i in ky and ke[i]['ok'] is False and ky[i]['ok'] is False]
+    if sorted(ak) != sorted(k['ayni_kirmizi']):
+        hatalar.append((ad, 'ayni_kirmizi', k['ayni_kirmizi'], ak))
+    ay = sum(1 for i in ke if i in ky and ke[i]['ok'] is True and ky[i]['ok'] is True)
+    if ay != k['ayni_yesil_sayisi']:
+        hatalar.append((ad, 'ayni_yesil_sayisi', k['ayni_yesil_sayisi'], ay))
+    for i, sd in k['secilmis_degerler'].items():
+        def kisa(v):
+            s = v if isinstance(v, str) else json.dumps(v, ensure_ascii=False, separators=(',', ':'))
+            return s
+        ee, yy = kisa(ke[i]['deger']), kisa(ky[i]['deger'])
+        # karsilastirma uzun değerleri '…' ile kısaltıyor: önek eşleşmesi yeterli
+        def uy(kayit, ham):
+            return kayit == ham or (kayit.endswith('…') and ham.startswith(kayit[:-1]))
+        if not (uy(sd['eski'], ee) and uy(sd['yeni'], yy)):
+            hatalar.append((ad, 'secilmis.' + i, sd, (ee[:80], yy[:80])))
+print('  uyuşmazlık sayısı:', len(hatalar))
+for h in hatalar:
+    print('   ', h)
+oz = K['ozet']
+print('  ozet:', oz)
+
+# ------------------------------------------------------------------ B. KARSILASTIRMA.md tablosu <-> ham
+bolum('B. KARSILASTIRMA.md TABLOSU <-> HAM')
+md = oku(YENI + '/KARSILASTIRMA.md')
+md_h = []
+for l in md.splitlines():
+    m = re.match(r'^\| `([^`]+)` \| (\w+) (\d+)/(\d+) \| (\w+) (\d+)/(\d+) \| (\d+) → (\d+) \| ([\d.]+)/([\d.]+) \| (.*) \|$', l)
+    if not m:
+        continue
+    ad = m.group(1)
+    taban = re.sub(r'_(\d+)$', '', ad) if not os.path.exists(f'{ESKI}/{ad}.json') else ad
+    re_, ry = j(f'{ESKI}/{taban}.json'), j(f'{YENI}/{ad}.json'); bel = j(f'{YENI}/{ad}_bellek.json')
+    beklenen = (re_['sonuc']['durum'], re_['sonuc']['gecen'], re_['sonuc']['kontrolSayisi'], ry['sonuc']['durum'], ry['sonuc']['gecen'],
+                ry['sonuc']['kontrolSayisi'], round(re_['ms'] / 1000), round(ry['ms'] / 1000), bel['tur']['browser']['hwm_tepe_MB'], bel['tur']['renderer']['hwm_tepe_MB'])
+    kayit = (m.group(2), int(m.group(3)), int(m.group(4)), m.group(5), int(m.group(6)), int(m.group(7)), int(m.group(8)), int(m.group(9)), float(m.group(10)), float(m.group(11)))
+    if kayit != beklenen:
+        md_h.append((ad, kayit, beklenen))
+    md_h_say = None
+print('  tablo satırı uyuşmazlıkları:', md_h)
+print('  md başlık:', [l for l in md.splitlines() if l.startswith('Koşu:')])
+
+# ------------------------------------------------------------------ C. zaman damgaları (bayat rapor yok mu?)
+bolum('C. ZAMAN DAMGALARI: rapor/bellek kaydı zincirdeki pencerede mi?')
+z = oku(YENI + '/zincir.log').splitlines()
+bas, bit = {}, {}
+for l in z:
+    m = re.match(r'^(\S+) BAŞLADI (\S+)$', l)
+    if m: bas[m.group(2)] = ts(m.group(1))
+    m = re.match(r'^(\S+) BİTTİ (\S+) ', l)
+    if m: bit[m.group(2)] = ts(m.group(1))
+pencere_disi = []
+for ad in dosya_adlari:
+    ry = j(f'{YENI}/{ad}.json'); bel = j(f'{YENI}/{ad}_bellek.json')
+    t_rapor = ts(ry['ortam']['tarih'])
+    mt_json = datetime.datetime.fromtimestamp(os.path.getmtime(f'{YENI}/{ad}.json'), datetime.timezone.utc)
+    mt_bel = datetime.datetime.fromtimestamp(os.path.getmtime(f'{YENI}/{ad}_bellek.json'), datetime.timezone.utc)
+    kilit = ts(bel['kilit_alindi']) if bel.get('kilit_alindi') else None
+    bel_log = bel.get('log')
+    ok = (bas[ad] <= t_rapor <= bit[ad]) and (bas[ad] <= mt_json <= bit[ad] + datetime.timedelta(seconds=2)) and \
+         (bas[ad] <= mt_bel <= bit[ad] + datetime.timedelta(seconds=2)) and bel_log == f'{YENI}/{ad}.log' and (kilit is None or bas[ad] <= kilit <= t_rapor)
+    bekleme = (kilit - bas[ad]).total_seconds() if kilit else None
+    print(f'  {ad:34s} BAŞLADI {bas[ad].time()} kilit {kilit.time() if kilit else None} (bekleme {bekleme:.0f} sn) rapor.tarih {t_rapor.time()} '
+          f'json_mtime {mt_json.time().replace(microsecond=0)} BİTTİ {bit[ad].time()} bellek.log_eslesir={bel_log == f"{YENI}/{ad}.log"} pencere_ok={ok}')
+    if not ok:
+        pencere_disi.append(ad)
+print('  pencere dışı:', pencere_disi)
+# B0 tarafı: rapor.tarih <-> günlük başlığı
+print('  B0 rapor tarihleri <-> günlük başlık tarihi:')
+for ad in sorted(set(re.sub(r'_(\d+)$', '', a) if not os.path.exists(f'{ESKI}/{a}.json') else a for a in dosya_adlari)):
+    r = j(f'{ESKI}/{ad}.json'); l0 = oku(f'{ESKI}/{ad}.log').splitlines()[0]
+    m = re.match(r'^# (\S+Z)', l0)
+    tl = ts(m.group(1)) if m else None
+    tr = ts(r['ortam']['tarih'])
+    print(f'    {ad:34s} log {tl.time() if tl else None} rapor {tr.time()} fark {(tr - tl).total_seconds() if tl else None:.0f} sn  rapor yolu doğru={r["tekrar"]["komut"].count("/once_v04/son/" + ad + ".json") == 1}')
+
+# ------------------------------------------------------------------ D. konsol/ağ hata listeleri
+bolum('D. KONSOL / AĞ HATA LİSTELERİ (B0 <-> taklit)')
+SAY = re.compile(r'\d+')
+def hata_ozet(r):
+    h = r.get('hatalar', {})
+    def m(x):
+        if isinstance(x, dict):
+            x = x.get('metin') or x.get('ileti') or x.get('text') or x.get('url') or json.dumps(x, ensure_ascii=False, sort_keys=True)
+        return SAY.sub('#', str(x))[:140]
+    return {a: sorted(set(m(x) for x in (h.get(a) or []))) for a in ('konsol', 'konsolIzinli', 'sayfa', 'ag', 'agIzinli', 'agIptal', 'degerlendirme')}, \
+           {a: len(h.get(a) or []) for a in ('konsol', 'konsolIzinli', 'sayfa', 'ag', 'agIzinli', 'agIptal', 'degerlendirme')}
+for ad in dosya_adlari:
+    taban = re.sub(r'_(\d+)$', '', ad) if not os.path.exists(f'{ESKI}/{ad}.json') else ad
+    oe, se = hata_ozet(j(f'{ESKI}/{taban}.json')); oy, sy = hata_ozet(j(f'{YENI}/{ad}.json'))
+    fark = {a: (oe[a], oy[a]) for a in oe if oe[a] != oy[a]}
+    print(f'  {ad:34s} sayım B0={se} yeni={sy}' + (f'\n      FARKLI içerik: {json.dumps(fark, ensure_ascii=False)[:900]}' if fark else ''))
+
+# ------------------------------------------------------------------ E. günlükte şüpheli sözcük bağlamı
+bolum('E. GÜNLÜKTE "zaman aşımı" / "oom" BAĞLAMI (taklit)')
+for ad in dosya_adlari:
+    for i, l in enumerate(oku(f'{YENI}/{ad}.log').splitlines()):
+        if re.search(r'zaman aşımı|\boom\b|OOM|timeout|crash|çök', l, re.I) and not l.startswith('# komut'):
+            print(f'  {ad}:{i + 1}: {l[:230]}')
+
+# ------------------------------------------------------------------ F. LY09/LY05.. değerleri bütün arazi_yasam koşularında
+bolum('F. arazi_yasam kırmızılarının değerleri (bütün koşular)')
+for ad in dosya_adlari:
+    if 'arazi_yasam' not in ad:
+        continue
+    taban = re.sub(r'_(\d+)$', '', ad) if not os.path.exists(f'{ESKI}/{ad}.json') else ad
+    ke = {x['id']: x for x in j(f'{ESKI}/{taban}.json')['kontroller']}; ky = {x['id']: x for x in j(f'{YENI}/{ad}.json')['kontroller']}
+    for i in ('LY05', 'LY09', 'LY10', 'LY11', 'LY14'):
+        print(f'  {ad:28s} {i}: B0 {json.dumps(ke[i]["deger"], ensure_ascii=False)[:110]}  |  yeni {json.dumps(ky[i]["deger"], ensure_ascii=False)[:110]}')

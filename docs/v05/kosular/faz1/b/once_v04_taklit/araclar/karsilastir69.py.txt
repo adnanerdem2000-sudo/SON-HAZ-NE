@@ -1,0 +1,106 @@
+# #69: B0'ın gerçek kilitli "önce" kayıtları (once_v04/son/) ↔ son koşucuyla (işaretçi kilidi taklidi) alınan "önce" kayıtları
+# (once_v04_taklit/), kontrol kontrol. Salt okur; çıktı: <taklit dizini>/karsilastirma.json ve KARSILASTIRMA.md.
+#   python3 -I karsilastir69.py <b dizini: docs/v05/kosular/faz1/b>
+import json, os, re, sys, glob
+B = sys.argv[1]
+ESKI = os.path.join(B, 'once_v04', 'son')
+YENI = os.path.join(B, 'once_v04_taklit')
+
+def oku(yol):
+    with open(yol, encoding='utf8') as f: return json.load(f)
+
+def kontroller(r):
+    # run.cjs ve coop.cjs (dk-test-raporu/2) ortak alanı: kontroller[] {id, etiket, ok, deger}
+    out = {}
+    for k in r.get('kontroller') or []:
+        kid = k.get('id') or (k.get('etiket') or '').split(' ')[0]
+        out[kid] = {'ok': bool(k.get('ok')), 'deger': k.get('deger')}
+    return out
+
+def kisa(v, n=90):
+    s = json.dumps(v, ensure_ascii=False) if not isinstance(v, str) else v
+    return s if len(s) <= n else s[:n - 1] + '…'
+
+def bellek(ad):
+    # ornekle2.mjs özeti: tur.<süreç türü>.hwm_tepe_MB; chrome_toplam_tepe.MB; cg_tepe.MB (cgroup öteki işleri de içerir)
+    y = os.path.join(YENI, ad + '_bellek.json')
+    if not os.path.exists(y): return None
+    o = oku(y)
+    t = o.get('tur') or {}
+    g = lambda tur: (t.get(tur) or {}).get('hwm_tepe_MB')
+    return {'tarayici_VmHWM_MB': g('browser'), 'renderer_VmHWM_MB': g('renderer'), 'gpu_VmHWM_MB': g('gpu-process'),
+            'chrome_toplam_tepe_MB': (o.get('chrome_toplam_tepe') or {}).get('MB'), 'cgroup_tepe_MB': (o.get('cg_tepe') or {}).get('MB'),
+            'oom_artislari': o.get('oom_artislari')}
+
+kayitlar = []
+for yol in sorted(glob.glob(os.path.join(YENI, '*.json'))):
+    ad = os.path.basename(yol)[:-5]
+    if ad.endswith('_bellek') or ad in ('karsilastirma',): continue
+    m = re.match(r'^(.*?)(?:_(\d))?$', ad)
+    taban, tekrar = m.group(1), int(m.group(2) or 1)
+    eski_yol = os.path.join(ESKI, taban + '.json')
+    yeni = oku(yol)
+    kayit = {'ad': ad, 'taban': taban, 'tekrar': tekrar,
+             'yeni': {'durum': yeni['sonuc']['durum'], 'gecen': yeni['sonuc'].get('gecen'), 'kontrol': yeni['sonuc'].get('kontrolSayisi'),
+                      'sure_ms': (yeni.get('sure') or {}).get('toplamMs') or yeni.get('ms'), 'kopma': yeni.get('kopma'),
+                      'isaretci': (yeni.get('isaretciKilidi') or {}).get('kip'), 'bellek': bellek(ad)}}
+    if not os.path.exists(eski_yol):
+        kayit['eski'] = None; kayit['not'] = 'B0 kaydı yok'; kayitlar.append(kayit); continue
+    eski = oku(eski_yol)
+    kayit['eski'] = {'durum': eski['sonuc']['durum'], 'gecen': eski['sonuc'].get('gecen'), 'kontrol': eski['sonuc'].get('kontrolSayisi'),
+                     'sure_ms': (eski.get('sure') or {}).get('toplamMs') or eski.get('ms'), 'isaretci': (eski.get('isaretciKilidi') or {}).get('kip') or 'gercek (A1 koşucusu)'}
+    ke, ky = kontroller(eski), kontroller(yeni)
+    farklar, ayni_kirmizi, ayni_yesil, deger_farki = [], [], [], []
+    for kid in list(dict.fromkeys(list(ke) + list(ky))):
+        a, b = ke.get(kid), ky.get(kid)
+        if a is None or b is None:
+            farklar.append({'id': kid, 'eski': a and {'ok': a['ok'], 'deger': kisa(a['deger'])}, 'yeni': b and {'ok': b['ok'], 'deger': kisa(b['deger'])}, 'tur': 'yalniz_birinde'})
+        elif a['ok'] != b['ok']:
+            farklar.append({'id': kid, 'eski': {'ok': a['ok'], 'deger': kisa(a['deger'])}, 'yeni': {'ok': b['ok'], 'deger': kisa(b['deger'])}, 'tur': 'sonuc_farki'})
+        else:
+            (ayni_kirmizi if not a['ok'] else ayni_yesil).append(kid)
+            # (doğrulama VB-3/YORUM-4) aynı sonuç, farklı değer: kalma biçimi ya da ölçülen sayı değişmiş olabilir
+            if json.dumps(a['deger'], ensure_ascii=False, sort_keys=True) != json.dumps(b['deger'], ensure_ascii=False, sort_keys=True):
+                deger_farki.append({'id': kid, 'ok': a['ok'], 'eski': kisa(a['deger'], 160), 'yeni': kisa(b['deger'], 160)})
+    kayit['farklar'] = farklar
+    kayit['ayni_kirmizi'] = ayni_kirmizi
+    kayit['ayni_yesil_sayisi'] = len(ayni_yesil)
+    kayit['ayni_sonuc_farkli_deger'] = deger_farki
+    # zamana bağlı seçilmiş değerler (iki tarafta da)
+    sec = {}
+    for kid in ('HYS-01', 'LY13', 'AYS-01', 'HY02', 'AC01', 'AC02', 'AC03', 'YB03', 'HY13', 'HY14'):
+        if kid in ke or kid in ky:
+            sec[kid] = {'eski': kisa(ke.get(kid, {}).get('deger'), 60) if kid in ke else None, 'yeni': kisa(ky.get(kid, {}).get('deger'), 60) if kid in ky else None}
+    kayit['secilmis_degerler'] = sec
+    kayitlar.append(kayit)
+
+ozet = {'kosu': len(kayitlar), 'durumu_ayni': sum(1 for k in kayitlar if k.get('eski') and k['eski']['durum'] == k['yeni']['durum']),
+        'kontrolleri_ayni': sum(1 for k in kayitlar if k.get('eski') and not k['farklar']),
+        'farkli_kosular': [k['ad'] for k in kayitlar if k.get('farklar')]}
+with open(os.path.join(YENI, 'karsilastirma.json'), 'w', encoding='utf8') as f:
+    json.dump({'sema': 'dk-69-karsilastirma/1', 'eski': 'once_v04/son (A1 koşucusu, gerçek işaretçi kilidi)', 'yeni': 'once_v04_taklit (kosucu17, taklit)',
+               'ozet': ozet, 'kosular': kayitlar}, f, ensure_ascii=False, indent=1)
+    f.write('\n')
+
+L = ['# #69 karşılaştırması: B0 "önce" kayıtları, gerçek kilit ↔ taklit (v0.4)', '',
+     f"Koşu: {ozet['kosu']}. Durumu aynı: {ozet['durumu_ayni']}. Kontrol kontrol aynı: {ozet['kontrolleri_ayni']}.", '',
+     '| Koşu | B0 (gerçek kilit) | taklit | süre B0 → taklit (sn) | tarayıcı/renderer VmHWM MB (taklit) | farklı kontroller |', '|---|---|---|---|---|---|']
+for k in kayitlar:
+    e, y = k.get('eski'), k['yeni']
+    bl = y.get('bellek') or {}
+    fs = '; '.join(f"{f['id']}: {('geçti' if f['eski']['ok'] else 'KALDI') if f['eski'] else '—'} ({f['eski']['deger'] if f['eski'] else ''}) → {('geçti' if f['yeni']['ok'] else 'KALDI') if f['yeni'] else '—'} ({f['yeni']['deger'] if f['yeni'] else ''})" for f in k.get('farklar', [])) or '—'
+    sure = f"{(e['sure_ms'] or 0)/1000:.0f} → {(y['sure_ms'] or 0)/1000:.0f}" if e else f"— → {(y['sure_ms'] or 0)/1000:.0f}"
+    L.append(f"| `{k['ad']}` | {e['durum'] + ' ' + str(e['gecen']) + '/' + str(e['kontrol']) if e else '—'} | {y['durum']} {y['gecen']}/{y['kontrol']} | {sure} | "
+             f"{bl.get('tarayici_VmHWM_MB')}/{bl.get('renderer_VmHWM_MB')} | {fs} |")
+L += ['', '## Aynı sonuç, farklı değer', '', 'Geçti/kaldı aynı, değer farklı. Kırmızılarda kalma biçimi değişmiş olabilir: sonra kapısında "önce" değeri olarak taklitli değer kullanılır.', '',
+      '| Koşu | Kontrol | sonuç | B0 değeri | taklit değeri |', '|---|---|---|---|---|']
+for k in kayitlar:
+    for d in k.get('ayni_sonuc_farkli_deger', []):
+        e = str(d['eski']).replace('|', '¦'); y = str(d['yeni']).replace('|', '¦')
+        L.append(f"| `{k['ad']}` | {d['id']} | {'geçti' if d['ok'] else 'KALDI'} | {e} | {y} |")
+L += ['', '## Zamana bağlı seçilmiş değerler', '', '| Koşu | Kontrol | B0 | taklit |', '|---|---|---|---|']
+for k in kayitlar:
+    for kid, v in (k.get('secilmis_degerler') or {}).items():
+        L.append(f"| `{k['ad']}` | {kid} | {v['eski']} | {v['yeni']} |")
+with open(os.path.join(YENI, 'KARSILASTIRMA.md'), 'w', encoding='utf8') as f: f.write('\n'.join(L) + '\n')
+print(json.dumps(ozet, ensure_ascii=False))

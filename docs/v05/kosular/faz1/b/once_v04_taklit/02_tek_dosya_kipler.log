@@ -1,0 +1,13 @@
+# komut: /home/user/devtools/tk timeout 590 node tests/harness/run.cjs tests/scenarios/02_tek_dosya_kipler.js  --url 'file:///tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/fb0/v04_tek/DenizKorsanlari-SonHazine.html' --size 640x360 --timeout 540 --report /home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04_taklit/02_tek_dosya_kipler.json --goruntu-dizin /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/goruntu/02_tek_dosya_kipler 
+# koşucu (kosucu17 son): 285211cf 9292115d 53358e1c 
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+ready in 6.2 s
+PASS TK00 Tek dosya file:// altında açıldı (parametresiz) → true
+GOTO file:///tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/fb0/v04_tek/DenizKorsanlari-SonHazine.html?terrain=badurl&test=1
+PASS TK01 Tek dosyada ?terrain=badurl ile açılış tamamlanır (window.__ready) → true
+FAIL TK02 Tek dosya file:// altında badurl kipi gerçekten bozuk işçi içeriği verir: 0 işçi, yedek kip açık, hata kaydı var (A-17) → false
+GORUNTU /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/f69/goruntu/02_tek_dosya_kipler/ilk_kalan.png
+R: {"proto":"file:","mode":"badurl","workers":3,"fallback":false,"failures":[],"url":"data:text/javascript;charset=utf-8,(()%3D%3E%7Bv"}
+PASS TK03 badurl kipinde tek dosyada arazi karoları üretilir (≥ 20 ağ; düzeltmeden sonra yerel yedekte, v0.4’te işçiler bozulmadığı için işçilerde) → 126
+errors: 0 pageErrors: 0 fails: 1 (62.7 s)
+SONUC: KALDI (çıkış 1) kontrol 3/4, onay 4 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/68 | neden: başarısız kontrol ya da adım: 1

@@ -1,0 +1,63 @@
+# HYS-01 ve uzak varış ilk karesi (varisIlkKareMs) bütün 02_hizli_yolculuk kayıtlarında (faz1/b ve faz1/kosucu17).
+# Salt okur. python3 -I hys_say.py <faz1 dizini>
+import json, os, sys, glob
+F = sys.argv[1]
+
+def oku(y):
+    with open(y, encoding='utf8') as f:
+        return json.load(f)
+
+def kontrol(d, kid):
+    for k in d.get('kontroller') or []:
+        if (k.get('id') or (k.get('etiket') or '').split(' ')[0]) == kid:
+            return k
+    for s in d.get('steps') or []:
+        e = s.get('expect')
+        if isinstance(e, dict) and (e.get('label') or '').split(' ')[0] == kid:
+            return {'ok': e.get('ok'), 'deger': e.get('value')}
+    return None
+
+def adim_sonuc(d, anahtar):
+    for s in d.get('steps') or []:
+        r = s.get('result')
+        if isinstance(r, dict) and anahtar in r:
+            return r, s
+    return None, None
+
+def metrics_ms(d, ad):
+    for s in d.get('steps') or []:
+        if s.get('metrics') == ad or (isinstance(s.get('label'), str) and s.get('label') == ad):
+            return s.get('ms')
+        r = s.get('result')
+        if isinstance(r, dict) and r.get('ad') == ad:
+            return s.get('ms')
+    return None
+
+satir = []
+for y in sorted(glob.glob(os.path.join(F, '**', '*hizli_yolculuk*.json'), recursive=True)):
+    if 'bellek' in y or y.endswith('_ozet.json') or 'coop' in os.path.basename(y):
+        continue
+    d = oku(y)
+    if not isinstance(d, dict) or 'steps' not in d:
+        continue
+    rel = os.path.relpath(y, F)
+    url = d.get('url') or ''
+    kip = 'noworker' if 'noworker' in url else ('normal' if url else '?')
+    kilit = (d.get('isaretciKilidi') or {}).get('kip') or ('birak(tanı)' if '_birak' in rel else 'gercek')
+    h = kontrol(d, 'HYS-01')
+    r, s = adim_sonuc(d, 'varisIlkKareMs')
+    ft = (r or {}).get('yolculukOncesiKuyruk')
+    prep = (r or {}).get('prepare') or []
+    varis = (r or {}).get('varis') or {}
+    # m_once ölçüm adımının süresi (366 ms'lik koşuda 4,7 sn sürmüştü)
+    m_once = None
+    for st in d.get('steps') or []:
+        if 'metrics' in json.dumps(st)[:200] and 'm_once' in json.dumps(st)[:400]:
+            m_once = st.get('ms'); break
+    satir.append((rel, kip, kilit, ((d.get('tekrar') or {}).get('senaryoSha256') or '')[:8], (d.get('ortam') or {}).get('tarih', '')[:16],
+                  None if h is None else h.get('deger'), None if h is None else h.get('ok'), (r or {}).get('varisIlkKareMs'), ft,
+                  [(round(p.get('x', 0)), round(p.get('z', 0)), p.get('ms')) for p in prep][:4], m_once, varis.get('ms') if isinstance(varis, dict) else None))
+
+for t in satir:
+    print(json.dumps({'kayit': t[0], 'kip': t[1], 'kilit': t[2], 'sha': t[3], 'tarih': t[4], 'HYS01': t[5], 'ok': t[6], 'varisIlkKareMs': t[7],
+                      'ftOnce': t[8], 'prepare(x,z,ms)': t[9], 'm_once_ms': t[10], 'varis.ms': t[11]}, ensure_ascii=False))

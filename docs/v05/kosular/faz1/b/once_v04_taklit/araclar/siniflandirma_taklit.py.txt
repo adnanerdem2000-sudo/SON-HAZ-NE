@@ -1,0 +1,101 @@
+# #69: B0'ın siniflandirma.json'undaki her satır için taklitli "önce" sonucunu AYRI bir dosyaya yazar:
+# once_v04_taklit/siniflandirma_taklit.json (test, kimlik, hedef_madde, once_v04, once_v04_taklit, once_v04_taklit_aciklama, varsa not_taklit).
+# B0'ın siniflandirma.json'u DEĞİŞMEZ (salt okunur).
+#   python3 -I siniflandirma_taklit.py <b dizini>
+import json, os, re, sys
+B = sys.argv[1]
+Y = os.path.join(B, 'once_v04_taklit')
+yol = os.path.join(B, 'siniflandirma.json')
+with open(yol, encoding='utf8') as f: S = json.load(f)
+ham = open(yol, encoding='utf8').read()
+
+KOSULAR = {
+    '00_acilis.js': ['00_acilis'],
+    '02_acilis_akisi.js': ['02_acilis_akisi'],
+    '02_acilis_hatalari.js': ['02_acilis_hatalari'],
+    '02_arazi_isci_hata.js': ['02_arazi_isci_hata'],
+    '02_arazi_yasam.js': ['02_arazi_yasam_normal', '02_arazi_yasam_normal_2', '02_arazi_yasam_noworker', '02_arazi_yasam_noworker_2', '02_arazi_yasam_crash'],
+    '02_arazi_yedek.js': ['02_arazi_yedek_normal', '02_arazi_yedek_noworker', '02_arazi_yedek_crash', '02_arazi_yedek_badurl'],
+    '02_ayar_lod.js': ['02_ayar_lod'],
+    '02_depolama_kapali.js': ['02_depolama_kapali'],
+    '02_hizli_yolculuk.js': ['02_hizli_yolculuk_normal', '02_hizli_yolculuk_noworker', '02_hizli_yolculuk_noworker_2', '02_hizli_yolculuk_noworker_3'],
+    '02_tek_dosya_blob.js': ['02_tek_dosya_blob'],
+    '02_tek_dosya_cerceve.js': ['02_tek_dosya_cerceve'],
+    '02_tek_dosya_kipler.js': ['02_tek_dosya_kipler'],
+    '02_yukleme_bekleme.js': ['02_yukleme_bekleme'],
+    'coop/02_hizli_yolculuk_konuk.cjs': ['coop_02_hizli_yolculuk_konuk'],
+}
+def kip(ad, test):
+    if len(KOSULAR[test]) == 1: return 'v0.4 taklit'
+    m = re.match(r'^.*_(normal|noworker|crash|badurl)(?:_(\d))?$', ad)
+    return m.group(1) + (f" #{m.group(2)}" if m.group(2) else '')
+RAP = {}
+def rapor(ad):
+    if ad not in RAP:
+        with open(os.path.join(Y, ad + '.json'), encoding='utf8') as f: RAP[ad] = json.load(f)
+    return RAP[ad]
+def kisa(v, n=60):
+    s = v if isinstance(v, str) else json.dumps(v, ensure_ascii=False)
+    return s if len(s) <= n else s[:n - 1] + '…'
+
+NOTLAR = {
+    ('02_arazi_yasam.js', 'LY13'): ("Taklitle v0.4'te 5/5 geçti (normal ×2, noworker ×2, crash): B0'ın gerçek kilitli kırmızısı selden geliyordu. "
+        "Sonra kapısında gerileme korumasıdır; geçmesi A-06'nın düzeldiğine kanıt sayılmaz (A-06'nın belirlenimli 'önce' kanıtı arazi_kuyruk KY25). "
+        "Pay dar: p99 farkı normal koşularda 3,6 ve 1,4 ms (eşik 4 ms). Denetimin A-06 kabulü (en uzun dilim ≤ bütçe + 4 ms) daha sıkıdır; "
+        "taklitli normal koşuda en uzun fark 4,2 ms (doğrulama YORUM-1)."),
+    ('02_hizli_yolculuk.js', 'HYS-01'): ("Taklitle normal 2404 ms (geçti; eşiğe yakın, v0.4'ün bütün ölçümleri 0,18–3,32 sn: oyun başındaki ana iplik tıkanması "
+        "pencereye bazen giriyor), noworker 19 730 / 20 341 / 22 172 ms (KALDI; KI-237 selden bağımsız, gerçek kilitte 28,7–44,7 sn). "
+        "Sonra kapısında en az 3 koşunun ortancası, aynı pencerede v0.4 ile dönüşümlü (doğrulama YORUM-2/3, VB-5)."),
+    ('coop/02_hizli_yolculuk_konuk.cjs', 'HK04'): ("Kalma nedeni taklitte değişti: konuk ilk hedefte (aUzaklik 1, konum [1676, 813]); kırmızı yalnız çift 'vardınız' "
+        "bildiriminden. B0'daki 'ikinci ileti konuğu yanlış limana taşır' belirtisi yarışa bağlı, taklitte görülmedi. A-03'ün belirlenimli 'önce' kanıtı HK03. "
+        "Sonra kapısında HK04'ün geçmesi tek başına yanlış-hedef belirtisinin düzeldiğine kanıt sayılmaz (doğrulama VB-1/YORUM-4)."),
+    ('coop/02_hizli_yolculuk_konuk.cjs', 'HK07'): "Değer değişti (oyuncuKaydi 10046 → 4655): HK04'teki başlangıç konumu farkından; kalma biçimi aynı (doğrulama VB-3).",
+    ('02_arazi_yasam.js', 'LY09'): ("crash kipinde kalma biçimi değişti: B0'da 'B bölgesinde 20 ağ' (yalnız derinlik kalıyordu), taklitte '0 ağ' (iki alt koşul da kalıyor; "
+        "noworker kipiyle aynı biçim). Sonra kapısında iki alt koşul ayrı ayrı gösterilmeli (doğrulama VB-2)."),
+    ('02_arazi_isci_hata.js', 'HI03'): "Değer değişti (87 → 120; izinli konsol eşleşmesi 88 → 121), kalma biçimi aynı (doğrulama VB-3).",
+    ('02_arazi_isci_hata.js', 'HI04'): "Değer değişti (87 → 120), kalma biçimi aynı (doğrulama VB-3).",
+    ('02_acilis_akisi.js', 'AA15'): ("Taklitte de zamanlamaya duyarlı: ikinci ölçüm yükleme bitmeden alınabiliyor (#69: taban 754 → şimdi 504; B0: 754 → 825). "
+        "Kontrol geçiyor ama kalıntıya duyarlılığı koşuya göre değişiyor (doğrulama YORUM-7, KOSUCU17 GZ-5)."),
+}
+
+eslenemeyen, sayac = [], {'YESIL': 0, 'KIRMIZI': 0, 'UYGULANAMAZ': 0}
+for r in S:
+    t, kid = r['test'], r['kimlik']
+    if t.endswith('.mjs'):
+        r['once_v04_taklit'] = r['once_v04']
+        r['once_v04_taklit_aciklama'] = "Node testi: işaretçi kilidinden bağımsız, yinelenmedi; once_v04 ile aynı."
+    elif r['once_v04'] == 'UYGULANAMAZ':
+        r['once_v04_taklit'] = 'UYGULANAMAZ'
+        r['once_v04_taklit_aciklama'] = "v0.4'te bu kip yok; taklitle de koşulmadı."
+    else:
+        parcalar, oklar = [], []
+        for ad in KOSULAR[t]:
+            K = rapor(ad)['kontroller']
+            if kid.startswith('eski 12 kontrol'):
+                sec = [k for k in K if not re.match(r'^[A-Z]{2,3}[-]?\d', k['id'])]
+                ok = all(k['ok'] for k in sec)
+                parcalar.append(f"{kip(ad, t)}: {'geçti' if ok else 'KALDI'} ({sum(k['ok'] for k in sec)}/{len(sec)})"); oklar.append(ok)
+                continue
+            k = next((k for k in K if k['id'] == kid), None)
+            if k is None:
+                parcalar.append(f"{kip(ad, t)}: kontrol yok"); continue
+            parcalar.append(f"{kip(ad, t)}: {'geçti' if k['ok'] else 'KALDI'} ({kisa(k.get('deger'))})"); oklar.append(bool(k['ok']))
+        if not oklar:
+            eslenemeyen.append((t, kid)); r['once_v04_taklit'] = 'ESLENEMEDI'
+        else:
+            # B0'ın kuralı: bir kip (ya da tekrar) bile kalırsa KIRMIZI; karışık sonuç açıklamada görünür
+            r['once_v04_taklit'] = 'YESIL' if all(oklar) else 'KIRMIZI'
+        r['once_v04_taklit_aciklama'] = '; '.join(parcalar)
+    if (t, kid) in NOTLAR: r['not_taklit'] = NOTLAR[(t, kid)]
+    sayac[r['once_v04_taklit']] = sayac.get(r['once_v04_taklit'], 0) + 1
+
+degisen = [(r['test'], r['kimlik'], r['once_v04'], r['once_v04_taklit']) for r in S if r['once_v04'] != r['once_v04_taklit']]
+assert open(yol, encoding='utf8').read() == ham, 'siniflandirma.json değişmemeli'
+cikti = [{k: r[k] for k in ('test', 'kimlik', 'hedef_madde', 'once_v04', 'once_v04_taklit', 'once_v04_taklit_aciklama', 'not_taklit') if k in r} for r in S]
+with open(os.path.join(Y, 'siniflandirma_taklit.json'), 'w', encoding='utf8') as f:
+    f.write(json.dumps({'sema': 'dk-69-siniflandirma/1', 'kaynak': 'siniflandirma.json (B0, değişmedi) + once_v04_taklit/*.json (#69)',
+                        'sayim': sayac, 'satirlar': cikti}, ensure_ascii=False, indent=1) + '\n')
+print('sayaç', sayac)
+print('eşlenemeyen', eslenemeyen)
+print('once_v04 ≠ once_v04_taklit:', degisen)
+print('notlu satır:', sum(1 for r in S if 'not_taklit' in r), '/', len(NOTLAR))

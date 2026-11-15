@@ -1,0 +1,50 @@
+2026-11-15T06:47:00+00:00 ZİNCİR BAŞLADI pid=7280 uptime='up 3 hours, 19 minutes' cg=/sys/fs/cgroup/memory/process_api/01a1dd3f-47bc-749c-8928-72e622417876/claude-code-bash kod: 285211cf 9292115d 53358e1c 
+2026-11-15T06:47:00+00:00 BAŞLADI 02_arazi_yasam_normal
+2026-11-15T06:54:15+00:00 BİTTİ 02_arazi_yasam_normal çıkış=1 süre=435s oom_kill 0 -> 0 kod: 285211cf 9292115d 53358e1c  | SONUC: KALDI (çıkış 1) kontrol 13/18, onay 18 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 6 farklı/72 | neden: başarısız kontrol ya da adım: 5
+2026-11-15T06:54:15+00:00 BAŞLADI 02_arazi_yasam_noworker
+2026-11-15T07:02:21+00:00 BİTTİ 02_arazi_yasam_noworker çıkış=1 süre=486s oom_kill 0 -> 0 kod: 285211cf 9292115d 53358e1c  | SONUC: KALDI (çıkış 1) kontrol 13/18, onay 18 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 3 farklı/70 | neden: başarısız kontrol ya da adım: 5
+2026-11-15T07:02:21+00:00 BAŞLADI 02_hizli_yolculuk_noworker
+2026-11-15T07:10:37+00:00 BİTTİ 02_hizli_yolculuk_noworker çıkış=1 süre=496s oom_kill 0 -> 0 kod: 285211cf 9292115d 53358e1c  | SONUC: KALDI (çıkış 1) kontrol 22/34, onay 34 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 4 farklı/176 | neden: başarısız kontrol ya da adım: 12
+2026-11-15T07:10:37+00:00 BAŞLADI 02_arazi_yasam_normal_2
+2026-11-15T07:27:38+00:00 BİTTİ 02_arazi_yasam_normal_2 çıkış=1 süre=1021s oom_kill 0 -> 0 kod: 285211cf 9292115d 53358e1c  | SONUC: KALDI (çıkış 1) kontrol 13/18, onay 18 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 6 farklı/72 | neden: başarısız kontrol ya da adım: 5
+2026-11-15T07:27:38+00:00 BAŞLADI 02_arazi_yasam_noworker_2
+2026-11-15T07:34:23+00:00 BİTTİ 02_arazi_yasam_noworker_2 çıkış=1 süre=405s oom_kill 0 -> 0 kod: 285211cf 9292115d 53358e1c  | SONUC: KALDI (çıkış 1) kontrol 13/18, onay 18 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 3 farklı/70 | neden: başarısız kontrol ya da adım: 5
+2026-11-15T07:34:23+00:00 BAŞLADI 02_hizli_yolculuk_noworker_2
+2026-11-15T07:43:54+00:00 BİTTİ 02_hizli_yolculuk_noworker_2 çıkış=1 süre=571s oom_kill 0 -> 0 kod: 285211cf 9292115d 53358e1c  | SONUC: KALDI (çıkış 1) kontrol 22/34, onay 34 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 4 farklı/176 | neden: başarısız kontrol ya da adım: 12
+2026-11-15T07:43:54+00:00 BAŞLADI 02_hizli_yolculuk_normal
+2026-11-15T07:53:13+00:00 BİTTİ 02_hizli_yolculuk_normal çıkış=1 süre=559s oom_kill 0 -> 0 kod: 285211cf 9292115d 53358e1c  | SONUC: KALDI (çıkış 1) kontrol 23/34, onay 34 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 3 farklı/171 | neden: başarısız kontrol ya da adım: 11
+2026-11-15T07:53:13+00:00 BAŞLADI 02_hizli_yolculuk_noworker_3
+2026-11-15T07:59:35+00:00 BİTTİ 02_hizli_yolculuk_noworker_3 çıkış=1 süre=382s oom_kill 0 -> 0 kod: 285211cf 9292115d 53358e1c  | SONUC: KALDI (çıkış 1) kontrol 22/34, onay 34 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 4 farklı/176 | neden: başarısız kontrol ya da adım: 12
+2026-11-15T07:59:35+00:00 BAŞLADI 02_arazi_yasam_crash
+2026-11-15T08:03:18+00:00 BİTTİ 02_arazi_yasam_crash çıkış=1 süre=223s oom_kill 0 -> 0 kod: 285211cf 9292115d 53358e1c  | SONUC: KALDI (çıkış 1) kontrol 13/18, onay 18 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 6 farklı/76 | neden: başarısız kontrol ya da adım: 5
+2026-11-15T08:03:18+00:00 BAŞLADI 00_acilis
+2026-11-15T08:06:32+00:00 BİTTİ 00_acilis çıkış=1 süre=194s oom_kill 0 -> 0 kod: 285211cf 9292115d 53358e1c  | SONUC: KALDI (çıkış 1) kontrol 6/9, onay 9 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34 | neden: başarısız kontrol ya da adım: 3
+2026-11-15T08:06:32+00:00 BAŞLADI 02_acilis_akisi
+2026-11-15T08:08:51+00:00 BİTTİ 02_acilis_akisi çıkış=1 süre=139s oom_kill 0 -> 0 kod: 285211cf 9292115d 53358e1c  | SONUC: KALDI (çıkış 1) kontrol 22/23, onay 23 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34 | neden: başarısız kontrol ya da adım: 1
+2026-11-15T08:08:51+00:00 BAŞLADI 02_acilis_hatalari
+2026-11-15T08:14:25+00:00 BİTTİ 02_acilis_hatalari çıkış=1 süre=334s oom_kill 0 -> 0 kod: 285211cf 9292115d 53358e1c  | SONUC: KALDI (çıkış 1) kontrol 3/19, onay 19 | izinsiz konsol 2, ağ 0 | izinli konsol 3, ağ 1 | uyarı 14 farklı/316 | neden: başarısız kontrol ya da adım: 16; izinsiz konsol hatası: 2
+2026-11-15T08:14:25+00:00 BAŞLADI 02_arazi_isci_hata
+2026-11-15T08:16:53+00:00 BİTTİ 02_arazi_isci_hata çıkış=1 süre=148s oom_kill 0 -> 0 kod: 285211cf 9292115d 53358e1c  | SONUC: KALDI (çıkış 1) kontrol 5/9, onay 9 | izinsiz konsol 0, ağ 0 | izinli konsol 121, ağ 0 | uyarı 7 farklı/73 | neden: başarısız kontrol ya da adım: 4
+2026-11-15T08:16:53+00:00 BAŞLADI 02_arazi_yedek_badurl
+2026-11-15T08:18:25+00:00 BİTTİ 02_arazi_yedek_badurl çıkış=0 süre=92s oom_kill 0 -> 0 kod: 285211cf 9292115d 53358e1c  | SONUC: GECTI (çıkış 0) kontrol 16/16, onay 16 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 6 | uyarı 6 farklı/38
+2026-11-15T08:18:25+00:00 BAŞLADI 02_arazi_yedek_crash
+2026-11-15T08:19:20+00:00 BİTTİ 02_arazi_yedek_crash çıkış=0 süre=55s oom_kill 0 -> 0 kod: 285211cf 9292115d 53358e1c  | SONUC: GECTI (çıkış 0) kontrol 16/16, onay 16 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 6 farklı/38
+2026-11-15T08:19:20+00:00 BAŞLADI 02_arazi_yedek_normal
+2026-11-15T08:22:15+00:00 BİTTİ 02_arazi_yedek_normal çıkış=0 süre=175s oom_kill 0 -> 0 kod: 285211cf 9292115d 53358e1c  | SONUC: GECTI (çıkış 0) kontrol 16/16, onay 16 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34
+2026-11-15T08:22:15+00:00 BAŞLADI 02_arazi_yedek_noworker
+2026-11-15T08:28:06+00:00 BİTTİ 02_arazi_yedek_noworker çıkış=0 süre=351s oom_kill 0 -> 0 kod: 285211cf 9292115d 53358e1c  | SONUC: GECTI (çıkış 0) kontrol 16/16, onay 16 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 3 farklı/35
+2026-11-15T08:28:06+00:00 BAŞLADI 02_ayar_lod
+2026-11-15T08:30:31+00:00 BİTTİ 02_ayar_lod çıkış=1 süre=145s oom_kill 0 -> 0 kod: 285211cf 9292115d 53358e1c  | SONUC: KALDI (çıkış 1) kontrol 4/11, onay 11 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/204 | neden: başarısız kontrol ya da adım: 7
+2026-11-15T08:30:31+00:00 BAŞLADI 02_depolama_kapali
+2026-11-15T08:33:42+00:00 BİTTİ 02_depolama_kapali çıkış=1 süre=191s oom_kill 0 -> 0 kod: 285211cf 9292115d 53358e1c  | SONUC: KALDI (çıkış 1) kontrol 2/15, onay 15 | izinsiz konsol 1, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34 | neden: başarısız kontrol ya da adım: 23; izinsiz konsol hatası: 1; adım istisnası (evalErrors): 10
+2026-11-15T08:33:42+00:00 BAŞLADI 02_tek_dosya_blob
+2026-11-15T08:39:35+00:00 BİTTİ 02_tek_dosya_blob çıkış=1 süre=353s oom_kill 0 -> 0 kod: 285211cf 9292115d 53358e1c  | SONUC: KALDI (çıkış 1) kontrol 3/4, onay 4 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 3 farklı/69 | neden: başarısız kontrol ya da adım: 1
+2026-11-15T08:39:35+00:00 BAŞLADI 02_tek_dosya_cerceve
+2026-11-15T08:47:15+00:00 BİTTİ 02_tek_dosya_cerceve çıkış=1 süre=460s oom_kill 0 -> 0 kod: 285211cf 9292115d 53358e1c  | SONUC: KALDI (çıkış 1) kontrol 2/5, onay 5 | izinsiz konsol 1, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34 | neden: başarısız kontrol ya da adım: 3; izinsiz konsol hatası: 1
+2026-11-15T08:47:15+00:00 BAŞLADI 02_tek_dosya_kipler
+2026-11-15T08:52:10+00:00 BİTTİ 02_tek_dosya_kipler çıkış=1 süre=295s oom_kill 0 -> 0 kod: 285211cf 9292115d 53358e1c  | SONUC: KALDI (çıkış 1) kontrol 3/4, onay 4 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/68 | neden: başarısız kontrol ya da adım: 1
+2026-11-15T08:52:10+00:00 BAŞLADI 02_yukleme_bekleme
+2026-11-15T08:57:51+00:00 BİTTİ 02_yukleme_bekleme çıkış=1 süre=341s oom_kill 0 -> 0 kod: 285211cf 9292115d 53358e1c  | SONUC: KALDI (çıkış 1) kontrol 4/9, onay 9 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/68 | neden: başarısız kontrol ya da adım: 5
+2026-11-15T08:57:51+00:00 BAŞLADI coop_02_hizli_yolculuk_konuk
+2026-11-15T09:04:58+00:00 BİTTİ coop_02_hizli_yolculuk_konuk çıkış=1 süre=427s oom_kill 0 -> 0 kod: 285211cf 9292115d 53358e1c  | SONUC: KALDI (çıkış 1) kontrol 5/8 | ev() istisnası 0, kapalı sayfa atlama 0, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 4 farklı/68 | neden: başarısız kontrol ya da ev() istisnası: 3
+2026-11-15T09:04:58+00:00 ZİNCİR BİTTİ

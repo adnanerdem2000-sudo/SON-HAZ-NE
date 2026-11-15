@@ -1,0 +1,46 @@
+# Ek değerler (salt okur): (a) kilitten bağımsız sayfa hazır süresi B0 son/ ↔ taklit eşleri; (b) AYS-01 bölge süreleri (çizim durdurulmuş);
+# (c) AA15'in taban/şimdi geometri sayıları; (d) HK04 değerleri. python3 -I ek_degerler.py <faz1 dizini>
+import json, os, re, sys, glob, statistics
+F = sys.argv[1]; B = os.path.join(F, 'b')
+
+def oku(y):
+    with open(y, encoding='utf8') as f:
+        return json.load(f)
+
+print('(a) readyMs (kilit isteğinden önce ölçülür) taklit/B0 oranı')
+oran = []
+for y in sorted(glob.glob(os.path.join(B, 'once_v04_taklit', '*.json'))):
+    ad = os.path.basename(y)[:-5]
+    if ad.endswith('_bellek') or ad == 'karsilastirma':
+        continue
+    e = oku(os.path.join(B, 'once_v04', 'son', re.sub(r'_(\d)$', '', ad) + '.json')); t = oku(y)
+    hz = lambda d: d.get('readyMs') or (d.get('sure') or {}).get('hazirMs')
+    oran.append((hz(t) / hz(e), ad))
+oran.sort()
+print('   ', ', '.join(f'{a}:{r:.2f}' for r, a in oran))
+print(f'    ortanca {statistics.median(r for r, _ in oran):.2f}; >= 1.07 olan {sum(1 for r, _ in oran if r >= 1.07)}/{len(oran)}')
+
+print('(b) AYS-01 bölge hazırlık süreleri ms (r300, çizim durdurulmuş; Kuzeyfener, Kül Limanı, Kumsaati)')
+for k in ('normal', 'noworker', 'crash', 'badurl'):
+    for kok in ('once_v04/son', 'once_v04_taklit'):
+        d = oku(os.path.join(B, kok, f'02_arazi_yedek_{k}.json'))
+        for s in d['steps']:
+            r = s.get('result')
+            if isinstance(r, dict) and 'olcumler' in r:
+                print(f'    {kok:16s} {k:9s}', [o['ms'] for o in r['olcumler']]); break
+
+print('(c) AA15 yeni dünya geometri sayısı: taban (ilk dünya başı) → şimdi; eşik taban*1.25+50')
+for y in ['b/once_v04/son/02_acilis_akisi.json', 'b/once_v04_taklit/02_acilis_akisi.json', 'kosucu17/son/b0/acilis_T.json', 'kosucu17/son/b0/acilis_G.json', 'kosucu17/son2/dogrulama/V_acilis_T.json']:
+    d = oku(os.path.join(F, y))
+    for s in d['steps']:
+        r = s.get('result')
+        if isinstance(r, dict) and isinstance(r.get('ilk'), dict) and 'geometri' in r['ilk'] and 'simdi' in r:
+            a, b = r['ilk']['geometri'], r['simdi']['geometri']
+            print(f"    {y:44s} kilit={(d.get('isaretciKilidi') or {}).get('kip', 'gercek'):7s} taban {a} → şimdi {b} (eşik {a*1.25+50:.1f})"); break
+
+print('(d) HK04 (konuk bir kez ve ilk hedefe; tek bildirim)')
+for y in ['b/once_v04/duzeltme2/coop_02_hizli_yolculuk_konuk_deneme1.json', 'b/once_v04/son/coop_02_hizli_yolculuk_konuk.json', 'b/once_v04_taklit/coop_02_hizli_yolculuk_konuk.json']:
+    d = oku(os.path.join(F, y))
+    k = next(x for x in d['kontroller'] if x.get('id') == 'HK04')
+    v = k['deger']
+    print(f"    {y:62s} ok={k['ok']} konum={v['konum']} aUzaklik={v['aUzaklik']} bUzaklik={v['bUzaklik']} bildirim={len(v['varisBildirimi'])}")
