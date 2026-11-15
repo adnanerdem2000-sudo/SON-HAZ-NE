@@ -1,0 +1,203 @@
+{
+ "scenario": "tests/fixtures/kosucu/ia_gec_kilit_tikla.js",
+ "url": "http://127.0.0.1:44527/pk_isaretci.html",
+ "size": [
+  320,
+  200
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "ms": 2
+  },
+  {
+   "n": 2,
+   "label": null,
+   "result": "kuruldu",
+   "ms": 2
+  },
+  {
+   "n": 3,
+   "label": null,
+   "tikla": {
+    "secici": "#gec"
+   },
+   "ms": 1379
+  },
+  {
+   "n": 4,
+   "label": null,
+   "result": "{\"gec\":0,\"tuval\":[[\"mousedown\",200,150,0],[\"mouseup\",200,150,0],[\"click\",200,150,0]],\"kilitli\":true,\"sayac\":{\"istek\":1,\"verildi\":1,\"hedefDegisti\":0,\"red\":0,\"jestsiz\":0,\"kisitli\":0,\"birakma\":0,\"birakildi\":0,\"iptal\":0,\"degisimOlayi\":1,\"hataOlayi\":0,\"yonlendirilen\":7,\"susturulan\":4}}",
+   "ms": 1
+  },
+  {
+   "n": 5,
+   "label": null,
+   "expect": {
+    "label": "IA01 Düğme etkinleşmedi, kilit sürüyor",
+    "ok": true,
+    "value": [
+     0,
+     true
+    ]
+   },
+   "ms": 4
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 216,
+ "ms": 2613,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/fixtures/kosucu/ia_gec_kilit_tikla.js",
+ "meta": {},
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://127.0.0.1:44527/pk_isaretci.html?test=1",
+  "verilenUrl": "http://127.0.0.1:44527/pk_isaretci.html",
+  "gorunum": [
+   320,
+   200
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   320,
+   200
+  ],
+  "ci": false,
+  "commit": null,
+  "dal": null,
+  "kirli": null,
+  "tarih": "2026-11-15T03:59:45.869Z"
+ },
+ "tekrar": {
+  "komut": "node /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/son2/eski_kosucu/run.cjs /home/user/SON-HAZ-NE-k17/tests/fixtures/kosucu/ia_gec_kilit_tikla.js --size 320x200 --timeout 90 --url http://127.0.0.1:44527/pk_isaretci.html --report /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/son2/kn_eski/ia.json",
+  "cwd": "/home/user/SON-HAZ-NE-k17",
+  "sunucular": [
+   "statik sunucu http://127.0.0.1:44527 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 44527"
+  ],
+  "commit": null,
+  "senaryoSha256": "a8deb5db2fc20af924be9433c6af181faf14127e515db4e20bc30ee958213ad5",
+  "adim": null,
+  "url": "http://127.0.0.1:44527/pk_isaretci.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 5,
+   "id": "IA01",
+   "etiket": "IA01 Düğme etkinleşmedi, kilit sürüyor",
+   "ok": true,
+   "deger": [
+    0,
+    true
+   ],
+   "beklenen": {
+    "eq": [
+     0,
+     true
+    ]
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [],
+ "uyariSayim": {
+  "farkli": 0,
+  "toplam": 0,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 1,
+ "isaretciKilidi": {
+  "kip": "taklit",
+  "sayac": {
+   "istek": 1,
+   "verildi": 1,
+   "hedefDegisti": 0,
+   "red": 0,
+   "jestsiz": 0,
+   "kisitli": 0,
+   "birakma": 0,
+   "birakildi": 0,
+   "iptal": 0,
+   "degisimOlayi": 1,
+   "hataOlayi": 0,
+   "yonlendirilen": 7,
+   "susturulan": 4
+  }
+ },
+ "kopma": null,
+ "sonuc": {
+  "durum": "GECTI",
+  "cikisKodu": 0,
+  "neden": [],
+  "onaySayisi": 1,
+  "kontrolSayisi": 1,
+  "gecen": 1,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": "tarayici",
+  "turSayim": {
+   "tarayici": 1
+  },
+  "tarayiciKoptu": false,
+  "kopma": null
+ },
+ "sure": {
+  "hazirMs": 216,
+  "toplamMs": 2613,
+  "yerlesmeMs": 1001
+ }
+}

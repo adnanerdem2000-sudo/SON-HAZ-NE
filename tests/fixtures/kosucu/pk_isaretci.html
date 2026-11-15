@@ -1,0 +1,35 @@
+<!doctype html>
+<meta charset="utf-8">
+<link rel="icon" href="data:,">
+<title>koşucu sabiti (pk): işaretçi kilidi</title>
+<!-- (pk) İşaretçi kilidi taklidi (kosucu17). Oyun gibi (js/core/input.js, js/main.js:387-390): pointerlockchange'te
+     input.pointerLocked = (pointerLockElement === tuval); kilit bırakılınca (G.noAutoPause değilse, arayüz kapalıyken) duraklatma
+     sayılır; kilitliyken mousemove.movementX toplanır. Sayfaya gelen her mousemove sayılır: gerçek kilitte başsız Chromium'un
+     sentetik fare olayı seli sayfaya saniyede onlarca mousemove olarak ulaşır, taklitte (fare hareket etmedikçe) hiç gelmez.
+     Tuval oyundaki gibi bütün görünümü kaplar, üstünde arayüz gibi bir düğme (#dugme) ve metin kutusu (#metin) vardır: kilitliyken
+     fare olayları gerçek kilitte kilitli tuvale gider (yoklama5); tuvalin aldığı mousedown/mouseup/click (tür, clientX/Y, düğme)
+     ve düğmenin click sayısı kaydedilir. Co-op sınamaları (pk7/pk8) da bu sayfayı kullanır (coop.cjs mk() DK.G.profile'a ad yazar). -->
+<body style="margin:0;overflow:hidden">
+<canvas id="tuval" width="320" height="200" style="position:absolute;left:0;top:0;width:320px;height:200px"></canvas>
+<button id="dugme" style="position:absolute;left:10px;top:10px;width:100px;height:30px">Düğme</button>
+<input id="metin" style="position:absolute;left:10px;top:50px;width:100px;height:20px">
+<script>
+  window.__olay = []; window.__mm = 0; window.__duraklat = 0; window.__tik = 0; window.__tuval = [];
+  const tuval = document.getElementById('tuval');
+  const G = { noAutoPause: false, uiOpen: false, profile: { appearance: { name: '' } } };   // profile: coop.cjs mk() adı yazar (pk7/pk8)
+  const input = { pointerLocked: false, dx: 0 };
+  document.addEventListener('pointerlockchange', () => {
+    input.pointerLocked = document.pointerLockElement === tuval;
+    window.__olay.push(['degisim', input.pointerLocked]);
+    if (!G.noAutoPause && !document.pointerLockElement && !G.uiOpen) window.__duraklat++;
+  });
+  document.addEventListener('pointerlockerror', () => { window.__olay.push(['hata']); });
+  window.addEventListener('mousemove', (e) => { window.__mm++; if (input.pointerLocked) input.dx += e.movementX; });
+  document.getElementById('dugme').addEventListener('click', () => { window.__tik++; });
+  for (const t of ['mousedown', 'mouseup', 'click']) tuval.addEventListener(t, (e) => { window.__tuval.push([e.type, Math.round(e.clientX), Math.round(e.clientY), e.button]); });
+  window.DK = { G, input, tuval, sim(sn = 1, dt = 1 / 30) { return Math.round(sn / dt); },
+    // oyunun input.lockPointer()'ı gibi: söz reddi yutulur
+    kilitle() { const p = tuval.requestPointerLock(); if (p && p.catch) p.catch(() => {}); return 'istendi'; } };
+  window.__ready = true;
+</script>
+</body>

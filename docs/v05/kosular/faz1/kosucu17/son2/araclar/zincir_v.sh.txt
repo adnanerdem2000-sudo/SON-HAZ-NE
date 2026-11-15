@@ -1,0 +1,47 @@
+#!/bin/bash
+# Son düzeltici 2 doğrulama zinciri (son kod). Her öğe ayrı bir tk kilitli tarayıcı koşusu; biten öğe bitti_v.txt'ye yazılır.
+#   ITEMS="17v04_T acilis_T coop06b_T gkY" setsid nohup bash zincir_v.sh >> zincir_v.nohup 2>&1 < /dev/null &
+# Kipler: _T taklit (varsayılan), _G --isaretci-kilidi gercek. Örnekleyiciler (17/acilis/coop): ölçüm ajanının ornekle2.mjs (0,5 sn) +
+# iplik.mjs (2 sn), son düzelticiyle aynı. gkY: inceleyicinin gk_karsilastir.cjs'i son ortak.cjs ile (gerçek ↔ taklit).
+set -u
+K=/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17
+S=$K/sd2; O=$S/kosu; A=/home/user/SON-HAZ-NE-k17; W2=/home/user/SON-HAZ-NE-w2
+D=$K/duzeltici; D2=$K/duzeltici2
+L=$S/zincir.log; B=$S/bitti_v.txt; touch $B
+CG=$(ls -d /sys/fs/cgroup/memory/process_api/*/claude-code-bash | head -1)
+ITEMS=${ITEMS:?ITEMS gerekli}
+kod() { (cd $A && sha256sum tests/harness/run.cjs tests/harness/coop.cjs tests/harness/ortak.cjs tests/node/kosucu_negatif.mjs | cut -c1-8 | tr '\n' ' '); }
+oomsay() { awk '$1=="oom_kill"{print $2+0}' $CG/memory.oom_control; }
+echo "$(date -u +%FT%TZ) V-ZİNCİR BAŞLADI pid=$$ kod: $(kod)" >> $L
+for it in $ITEMS; do
+  grep -qx "$it" $B && continue
+  oom0=$(oomsay)
+  echo "$(date -u +%FT%TZ) V-BAŞLADI(kilit bekleniyor) $it" >> $L
+  kip=${it##*_}; sen=${it%_*}; EK=""; [ "$kip" = "G" ] && EK="--isaretci-kilidi gercek"
+  taban=$O/V_$it; rc=0
+  case $sen in
+    gkY) ( cd $S && /home/user/devtools/tk timeout 590 node $S/araclar/gk_karsilastir.cjs $taban.json > $taban.log 2>&1 ); rc=$? ;;
+    17v04|17w2|acilis|coop06b)
+      SURE=900; TK=960; KOSUCU=$A/tests/harness/run.cjs; OYUNCU=
+      case $sen in
+        17v04) SCEN=$K/17_v04.js; URL=http://localhost:8080/index.html ;;
+        17w2) SCEN=$A/tests/scenarios/17_kamera_kararma.js; URL=http://localhost:8081/index.html ;;
+        acilis) SCEN=$W2/tests/scenarios/02_acilis_akisi.js; URL=http://localhost:8080/index.html; SURE=540; TK=600 ;;
+        coop06b) SCEN=$A/tests/scenarios/coop/06b_esitlik_senkron.cjs; URL='http://localhost:8081/index.html?peerhost=127.0.0.1&peerport=9000'; SURE=1200; TK=1260; KOSUCU=$A/tests/harness/coop.cjs; OYUNCU="--players 2" ;;
+      esac
+      ( cd $A && exec /home/user/devtools/tk timeout $TK node $KOSUCU $SCEN $OYUNCU --url "$URL" --size 640x360 --timeout $SURE --report $taban.json --goruntu-dizin $O/V_${it}_goruntu $EK ) > $taban.log 2>&1 &
+      KP=$!
+      node $D2/ornekle2.mjs --kok $KP --cikti $taban --log $taban.log --aralik 500 > $taban.ornekle.out 2>&1 &
+      SP=$!
+      node $D/iplik.mjs --kok $KP --cikti $taban --aralik 2000 > $taban.iplik.out 2>&1 &
+      IP=$!
+      wait $KP; rc=$?; wait $SP; wait $IP ;;
+    *) echo "$(date -u +%FT%TZ) bilinmeyen öğe $it" >> $L; continue ;;
+  esac
+  oom1=$(oomsay)
+  { echo "# $it dmesg (koşu sonunda son 6 'Killed process' satırı)"; dmesg -T 2>/dev/null | grep 'Killed process' | tail -6; } > $taban.dmesg.txt
+  echo "$it" >> $B
+  son=$(grep -hE '^SONUC' $taban.log 2>/dev/null | tail -1 | cut -c1-260)
+  echo "$(date -u +%FT%TZ) V-BİTTİ $it çıkış=$rc oom_kill $oom0 -> $oom1 kod: $(kod) | $son" >> $L
+done
+echo "$(date -u +%FT%TZ) V-ZİNCİR BİTTİ" >> $L

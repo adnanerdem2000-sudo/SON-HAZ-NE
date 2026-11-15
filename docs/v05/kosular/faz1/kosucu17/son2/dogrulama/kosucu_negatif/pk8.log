@@ -1,0 +1,24 @@
+$ node /home/user/SON-HAZ-NE-k17/tests/harness/coop.cjs tests/fixtures/kosucu/pk7_coop_tikla.cjs --players 2 --size 320x200 --timeout 120 --url http://127.0.0.1:38307/pk_isaretci.html --report /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/kosu/V1_kn/pk8.json --isaretci-kilidi gercek
+işaretçi kilidi: GERÇEK (taklit kapalı: --isaretci-kilidi gercek)
+Kaptan/kilitsiz tıklandı: #dugme
+PASS PK7-01 Kilitsiz tikla düğmeyi etkinleştirdi → {"donus":true,"tik":1}
+EVALERR Kaptan kilitli locator.click: Timeout 3000ms exceeded.
+Call log:
+  - waiting for getByText('Düğme', { exact: true })
+    - locator resolved to <button id="dugme">Düğme</button>
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is visible, enabled and stable
+ 
+PASS PK7-02 Kilitliyken tikla false döndü; düğme ve tuval tık almadı, kilit sürüyor → {"donus":false,"durum":[0,0,true]}
+GORUNTU /home/user/SON-HAZ-NE-k17/tests/out/goruntu/pk7_coop_tikla_2026-11-15T06-13-14-872Z_23137/ilk_kalan_Kaptan.png
+GORUNTU /home/user/SON-HAZ-NE-k17/tests/out/goruntu/pk7_coop_tikla_2026-11-15T06-13-14-872Z_23137/ilk_kalan_Tayfa.png
+EVALERR Kaptan yanlis-hedef locator.click: Timeout 500ms exceeded.
+Call log:
+  - waiting for locator('#yok-boyle-bir-oge')
+
+PASS PK7-03 Olmayan öğeye tikla false döndü → false
+checks: 3 fails: 2 pageErrors: 0 (5.2 s)
+SONUC: KALDI (çıkış 1) kontrol 3/3 | ev() istisnası 2, kapalı sayfa atlama 0, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: başarısız kontrol ya da ev() istisnası: 2; ev() istisnası (evalErrors): 2
+
+[çıkış 1]

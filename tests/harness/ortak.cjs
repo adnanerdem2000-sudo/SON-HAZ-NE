@@ -9,6 +9,10 @@
 //     de olduğu gibi döndürür; düz JSON.stringify rapor yazımında istisna atıp koşucuyu asılı bırakıyordu, A1-01);
 //     expect/agSay/metrikKarsilastir iç alan denetimi ve karşılaştırıcı (A1-04); izinlerde gerekçe zorunlu, her şeyle eşleşen
 //     desen reddedilir, konsol iletisinin konum adresi yalnız "Failed to load resource" iletilerinde eşlenir (A1-09)
+//   - (Faz 1, 17 bellek çökmesi düzeltmesi) ISARETCI_TAKLIT: işaretçi kilidi (pointer lock) taklidi; isaretciKipi(): koşucuların
+//     --isaretci-kilidi taklit|gercek seçeneği; tiklaTaklitli(): taklit kilitte Playwright locator.click'in gerçek kilitteki
+//     sonucunu veren tıklama (run.cjs tikla adımı, co-op senaryolarının tikla yardımcısı). Gerekçe ve sınırlar
+//     isaretciKilidiTaklidi()'nin başındaki notta.
 'use strict';
 const fs = require('fs');
 const path = require('path');
@@ -384,7 +388,387 @@ function karsilastir(v, E) {
   return { ok: sorun.length === 0, sorun };
 }
 
+// ---- işaretçi kilidi taklidi (Faz 1, 17 bellek çökmesi düzeltmesi)
+// Kök neden (ölçüm: docs/v05/kosular/faz1/kosucu17/KOSUCU17.md): oyun oturum başında input.lockPointer() çağırır
+// (js/game/game.js:149); başsız Chromium (chrome-headless-shell) kilidi verir ve kilit açık kaldıkça tarayıcı ana süreci saniyede
+// ~41 bin sentetik fare hareketi (aura WindowEventDispatcher::PostSynthesizeMouseMove) üretip renderer'a MouseMove iletisi gönderir.
+// Renderer ana ipliği uzun eşzamanlı iş yaparken (senaryonun büyük js adımları; girdi işlenemez) İKİ süreçte de bellek büyür
+// (tarayıcı ~55–75 MB/sn, renderer ~40–50 MB/sn); cgroup bellek sınırındaki OOM ikisinin toplamından gelir, kurbanı oom_score_adj
+// belirler (renderer +300 aldığından çoğu kez renderer; tarayıcı çok büyüdüyse tarayıcı) (17_kamera_kararma; büyüme 02_arazi_yasam'da
+// da ölçüldü). Taklitle aynı senaryolarda tarayıcı ~0,1 GB, renderer ~0,5 GB'ta kalır, ana iplik blokunda iki süreç de büyümez
+// (ölçüldü). Biriken şeyin onayı gecikmiş olayların bekleyen durumu olması olasıdır (bağıntı ve iz yapısı buna uyar; hangi kapta
+// biriktiği doğrudan görülmedi).
+// Taklit bu seli kaynağında keser: Element.prototype.requestPointerLock gerçek kilidi İSTEMEZ, yalnız sayfa içi bir durum kurar;
+// document.pointerLockElement (ve ShadowRoot.pointerLockElement) o öğeyi döndürür; 'pointerlockchange'/'pointerlockerror'
+// olayları belgeye eşzamansız (ayrı görevde) gönderilir; requestPointerLock söz döndürür. Sıra ve kurallar Blink'in
+// PointerLockController'ını ve başsız kabuğun (her isteği kabul eder) davranışını izler; ayrıntılı karşılaştırma (gerçek ↔ taklit
+// yoklaması): docs/v05/kosular/faz1/kosucu17/isaretci_yoklama.json. Oyunun gözlenebilir anlamı korunur: input.pointerLocked,
+// main.js'teki kilit bırakılınca otomatik duraklatma (G.noAutoPause), fare bakışı (kilitliyken mousemove.movementX/Y işlenir).
+// Kilitliyken fare olayları gerçek kilitteki gibi kilitli öğeye, kilit anındaki imleç konumuyla yönlendirilir (aşağıda, yoklama5):
+// kilitliyken bir düğmeye/arayüze tıklayan senaryo gerçek kilitte olduğu gibi taklitte de amacına ulaşamaz (düğme etkinleşmez);
+// "panel açılınca kilit bırakılmadı" türü hatalar gizlenmez. Koşucunun tikla adımı ve co-op tikla yardımcısı gerçek kilitteki
+// Playwright isabet engelini tıklamanın gönderildiği anda uygular (aşağıda 'tik' ve tiklaTaklitli): kilit anındaki imleç konumu
+// hedef öğenin üstünde DEĞİLSE tikla zaman aşımına düşer; ÜSTÜNDEYSE (Playwright'ın isabet denetimi geçer) tikla hatasız döner ama
+// tık kilitli öğeye gider, düğme etkinleşmez (gerçek kilitle aynı; inceleme GZ-4, gk_sonuc.json T1/T5/T6): etki sonraki onayla
+// denetlenmeli. Senaryo Playwright'ın locator.click/page.click'ini doğrudan çağırırsa (yalnız co-op'ta mümkün) bu engel uygulanmaz:
+// taklitte tık sessizce kilitli öğeye gider, gerçek kilitte zaman aşımına düşerdi; co-op senaryoları bu yüzden tikla yardımcısını kullanmalı.
+// Bilinen farklar (ölçüldü; oyun ve bugünkü senaryolar bunlara dayanmaz):
+//  - Yönlendirilen olayın kopyasının isTrusted'ı false'tur (hedefi zaten kilitli öğe olan olaylar özgün ve güvenilir kalır).
+//  - Kilitliyken fare hareketi (inceleme GZ-1; gk_kamera.json, bu turda yeniden: kosucu17/son2/): gerçek başsız kilitte imleç
+//    (0,0)'a çekilir (merkeze değil). Her kilit alınışında oyuna kilitliyken −(kilit anındaki imleç konumu) kadar TEK bir mousemove
+//    gelir: (320,150)'de alınan kilit movementX/Y −320/−150 verir, oyunda kamera yaw'ı +0,704 rad döner (camera.js; 0,0022 rad/px);
+//    400 px'i aşan sıçramayı input.js:84 süzgeci yalnız önceki olay 50 ms'den yakınsa atar, yani etki zamanlamaya bağlıdır. Kilit
+//    bırakılınca bazen kilitsiz bir −x/−y olayı daha gelir (iki koşunun birinde). Kilitliyken her Playwright fare hareketi (+x,+y)/(−x,−y) çifti verir (x,y:
+//    Playwright'ın imleç konumu): çoğunlukla toplam 0 ve fare bakışı çalışmaz, ama |x| ya da |y| 400 px'i aşınca input.js:84 süzgeci
+//    çiftin birini zamanlamaya bağlı atabilir ve kamera sıçrar ((320,180)→(420,180) hareketinde bir koşuda +0,924 rad = 420 px, öbüründe
+//    0; gk_karsilastir G2); sel ayrıca ~52 hareketsiz mousemove/sn ekler. Taklitte bunların
+//    hiçbiri yoktur: kilit alınışı hareket üretmez, Playwright hareketleri doğal movementX/Y verir (fare bakışı çalışır). Yani gerçek
+//    kilitli koşularda kamera ve yürüyüş yönü kilit alınışlarında (zamanlamaya bağlı) sapabilir, taklitli koşularda sapmaz; oyunun
+//    bu sıçramaya dayanıklılığı taklitle sınanmaz (--isaretci-kilidi gercek ile sınanabilir). Başlı (gerçek) tarayıcıda böyle bir
+//    sıçrama olup olmadığı ölçülmedi.
+//  - İmleç gizlenmez, CSS :hover güncellenir; pointerrawupdate yönlendirilmez.
+//  - Sayfanın window'a sonradan eklediği yakalama dinleyicileri yönlendirilecek olayın özgün hedefini görür (oyunda bir tane var:
+//    input.js:64'teki tuş atama mousedown dinleyicisi; yalnız e.button ve captureNext kullanır, tuş atama paneli açıkken kilit zaten
+//    bırakılmış olur: etkisiz).
+//  - Kilitli öğe DOM'dan çıkarılırsa kilit ancak sonraki API çağrısında ya da fare olayında bırakılır; pencere odak kaybı kilidi
+//    bırakmaz (Playwright odak öykünmesinde odak kaybı olmaz); unadjustedMovement seçeneği yok sayılır.
+//  - Çerçeveler (inceleme GZ-3; gk_sonuc.json T8–T12): taklit belge (çerçeve) başınadır; kilit sahibi, olay yönlendirmesi ve istek
+//    kısıtlaması çerçeveler arasında paylaşılmaz. Gerçekte kilit sayfa başınadır: bir çerçeve kilitliyken öbür çerçevedeki fare olayları
+//    da kilitli öğeye gider (T8: alt çerçeve kilitliyken üstteki düğmeye tikla hatasız döner ama düğme tık almaz, tık çerçevedeki tuvale
+//    gider; taklitte düğme tıklanır. T9 tersi), kilit sürerken başka belgenin isteği WrongDocumentError ile reddedilir (T10; taklitte
+//    ikinci kilit verilir), kısıtlama sayacı sayfanındır (T12). Oyun tek çerçevelidir; çerçeveler arası kilit gerçek kilitle sınanmalı.
+//  - Sandbox'lı çerçeve (inceleme GZ-2; T11): allow-pointer-lock'suz sandbox'lı çerçevede gerçek Chromium isteği SecurityError,
+//    pointerlockerror ve konsolda güvenlik hatasıyla reddeder. Taklit bunu YAKLAŞIKLA uygular (aşağıda sandboxNedeni): alt çerçevede,
+//    erişilebilen çerçeve öğesi zincirinde allow-pointer-lock'suz sandbox özniteliği varsa ya da çerçevenin kökeni opaksa
+//    (allow-same-origin yok; data: adresi hariç). Sandbox bayrakları JS'ten okunamaz: opak kökenli çerçevede allow-pointer-lock
+//    görülemediği için sandbox="allow-scripts allow-pointer-lock" çerçevesinde taklit de reddeder (gerçekte verilir); çapraz kökenli
+//    (opak olmayan) çerçevenin özniteliği ve CSP sandbox başlığı görülmez (taklit verir). Böyle çerçevelerde --isaretci-kilidi gercek.
+// Sayaçlar Element.prototype.requestPointerLock.__kosucuTaklit'tedir. Taklit window'a ad eklemez; sayfada şunları değiştirir (run.cjs
+// --uretim kipinde de kurulur): dört yerleşik üye (Element.prototype.requestPointerLock, Document.prototype.exitPointerLock,
+// Document.prototype ve ShadowRoot.prototype.pointerLockElement) ve window'a 19, document'a 11 yakalama evresi dinleyicisi (kilitliyken
+// güvenilir fare olaylarını işaretler, durdurur ve kilitli öğeye yönlendirir; kilit yokken yalnız imleç konumunu okur). Sandbox'lı
+// sayılan alt çerçevedeki kilit isteği gerçek kilitteki gibi konsola güvenlik hatası yazar (koşucu bunu izinsiz konsol hatası sayar).
+function isaretciKilidiTaklidi() {
+  const W = window;
+  const EP = typeof Element === 'function' ? Element.prototype : null;
+  const DP = typeof Document === 'function' ? Document.prototype : null;
+  const istekOzgun = EP && Object.getOwnPropertyDescriptor(EP, 'requestPointerLock');
+  const cikOzgun = DP && Object.getOwnPropertyDescriptor(DP, 'exitPointerLock');
+  const ogeOzgun = DP && Object.getOwnPropertyDescriptor(DP, 'pointerLockElement');
+  // tarayıcıda işaretçi kilidi yoksa ya da taklit bu belgede zaten kuruluysa dokunulmaz
+  if (!istekOzgun || typeof istekOzgun.value !== 'function' || !cikOzgun || !ogeOzgun || istekOzgun.value.__kosucuTaklit) return;
+  const N = Node.prototype;
+  const bagliMi = Object.getOwnPropertyDescriptor(N, 'isConnected').get;
+  const belgesi = Object.getOwnPropertyDescriptor(N, 'ownerDocument').get;
+  const kokAl = N.getRootNode;
+  const ogeMarka = Object.getOwnPropertyDescriptor(EP, 'tagName').get;          // Element değilse "Illegal invocation"
+  const belgeMarka = Object.getOwnPropertyDescriptor(DP, 'URL').get;           // Document değilse "Illegal invocation"
+  const SR = typeof ShadowRoot === 'function' ? ShadowRoot.prototype : null;
+  const evSahibi = SR ? Object.getOwnPropertyDescriptor(SR, 'host').get : null;
+  const gonder = EventTarget.prototype.dispatchEvent;
+  const dinle = EventTarget.prototype.addEventListener;
+  const kutu = EP.getBoundingClientRect;
+  const zamanla = W.setTimeout;
+  const Soz = W.Promise, Olay = W.Event, Istisna = W.DOMException;
+  const perf = W.performance, simdi = () => perf.now();
+  const etkinlik = W.navigator && W.navigator.userActivation;   // geçici kullanıcı etkinliği (Playwright evaluate'i jest sayılır)
+  const ONEK = "Failed to execute 'requestPointerLock' on 'Element': ";
+  // (inceleme GZ-2) sandbox'lı çerçeve: Blink bu belgede kilit isteğini (bağlılık denetiminden sonra, kilit sahibi denetiminden önce)
+  // SecurityError ile reddeder, konsola güvenlik hatası yazar ve pointerlockerror gönderir. Sandbox bayrakları JS'ten okunamaz;
+  // yaklaşım (belge kurulurken bir kez; gerçekte de bayraklar gezinme anında donar): yalnız alt çerçevede (üst düzey belge hiç
+  // sandbox'lı sayılmaz: file:// sayfanın da kökeni 'null'dır), erişilebilen çerçeve öğesi zincirinde allow-pointer-lock içermeyen bir
+  // sandbox özniteliği varsa 'öznitelik'; zincir çapraz kökende kesilir ve bu belgenin kökeni opaksa (allow-same-origin yok; data:
+  // adresi opak ama sandbox'lı değildir) 'opak' (allow-pointer-lock görülemez, yok sayılır). Bilinen sınırlar başlıktaki notta.
+  const SANDBOX_ILETI = "Blocked pointer lock on an element because the element's frame is sandboxed and the 'allow-pointer-lock' permission is not set.";
+  const konsolHata = W.console && typeof W.console.error === 'function' ? W.console.error : null;
+  const sandboxNedeni = (() => {
+    try {
+      if (W === W.top) return null;
+      const ozVar = EP.hasAttribute, ozAl = EP.getAttribute;
+      let w = W;
+      for (let i = 0; i < 32; i++) {
+        let fe = null;
+        try { fe = w.frameElement; } catch (e) { fe = null; }
+        if (!fe) break;   // çapraz kökenli üst çerçeve: öznitelik okunamaz
+        if (ozVar.call(fe, 'sandbox') && !String(ozAl.call(fe, 'sandbox') || '').toLowerCase().split(/\s+/).includes('allow-pointer-lock')) return 'öznitelik';
+        const ust = w.parent;
+        if (!ust || ust === w || ust === w.top) break;
+        w = ust;
+      }
+      if (W.origin === 'null' && W.location.protocol !== 'data:') return 'opak';
+    } catch (e) { /* okunamadı: sandbox'lı sayılmaz */ }
+    return null;
+  })();
+  // hedef: kilitli (ya da istek sürerken kilitlenecek) öğe; bekleyen: sürmekte olan ilk istek ({iptal})
+  const durum = { hedef: null, bekleyen: null };
+  // yeni kilit isteği kısıtlaması (yoklamada gerçek kabukla uyan model): bir önceki kabul edilen yeni kilit isteğinden 2 sn'den uzun
+  // süre geçtiyse sayaç sıfırlanır; sayaç 5'e ulaştıysa istek eşzamanlı reddedilir (reddedilen istek zamanı güncellemez)
+  const kisit = { sayi: 0, son: -Infinity };
+  const sayac = { istek: 0, verildi: 0, hedefDegisti: 0, red: 0, jestsiz: 0, kisitli: 0, sandbox: 0, birakma: 0, birakildi: 0, iptal: 0, degisimOlayi: 0, hataOlayi: 0,
+    yonlendirilen: 0, susturulan: 0, tikEngel: 0 };
+  // imleç: son bilinen imleç konumu (kilitsizken güvenilir fare olaylarından); donmus: kilidin verildiği andaki konum (yönlendirme)
+  const imlec = { cx: 0, cy: 0, sx: 0, sy: 0 };
+  const yon = { donmus: null, isaretli: new WeakSet() };
+  // Blink: olaylar belgeye ayrı bir görevde gönderilir (EnqueueDocumentEvent); kabarmaz, iptal edilemez, composed değildir
+  const olayGonder = (tur, belge) => {
+    zamanla.call(W, () => {
+      sayac[tur === 'pointerlockchange' ? 'degisimOlayi' : 'hataOlayi']++;
+      try { gonder.call(belge, new Olay(tur)); } catch (e) { /* belge gitmiş */ }
+    }, 0);
+  };
+  const reddet = (belge, ad, ileti) => { sayac.red++; olayGonder('pointerlockerror', belge); return Soz.reject(new Istisna(ONEK + ileti, ad)); };
+  // kilit bırakılır: öğe hemen null olur, değişim olayı ayrı görevde gelir (yoklamada gerçek kilitle aynı)
+  const birak = (belge) => {
+    durum.hedef = null; yon.donmus = null; sayac.birakildi++;
+    if (durum.bekleyen) { durum.bekleyen.iptal = true; durum.bekleyen = null; sayac.iptal++; }
+    olayGonder('pointerlockchange', belge);
+  };
+  // kilitli öğe DOM'dan çıkarılmışsa kilit bırakılır
+  const temizle = () => { const el = durum.hedef; if (el && !durum.bekleyen && !bagliMi.call(el)) birak(belgesi.call(el)); };
+  const yerine = {
+    requestPointerLock() {
+      try { ogeMarka.call(this); } catch (e) { return Soz.reject(new TypeError(ONEK + 'Illegal invocation')); }
+      temizle();
+      sayac.istek++;
+      const el = this, belge = belgesi.call(el);
+      if (!bagliMi.call(el)) return reddet(belge, 'WrongDocumentError', 'Target Element removed from DOM');
+      // (GZ-2) sandbox'lı çerçeve (allow-pointer-lock yok): Blink gibi konsola güvenlik hatası, pointerlockerror, SecurityError
+      if (sandboxNedeni) {
+        sayac.sandbox++;
+        if (konsolHata) { try { konsolHata.call(W.console, SANDBOX_ILETI); } catch (e) { /* konsol yok */ } }
+        return reddet(belge, 'SecurityError', SANDBOX_ILETI);
+      }
+      if (durum.hedef) {
+        // kilit (ya da istek) sürerken: Blink hedefi hemen değiştirir, değişim olayı gönderir ve sözü çözer
+        if (belgesi.call(durum.hedef) !== belge) return reddet(belge, 'WrongDocumentError', 'The new element is not in the same shadow-root document as the element that currently holds the lock.');
+        durum.hedef = el; sayac.hedefDegisti++; olayGonder('pointerlockchange', belge); return Soz.resolve();
+      }
+      // yeni kilit: kısa sürede çok istek eşzamanlı reddedilir (Blink; iletisi gerçek kabuktakiyle aynı)
+      const t = simdi();
+      if (t - kisit.son > 2000) kisit.sayi = 0;
+      if (kisit.sayi >= 5) { sayac.kisitli++; return reddet(belge, 'NotAllowedError', 'Too many pointer lock requests in a short window of time.'); }
+      kisit.sayi++; kisit.son = t;
+      // geçici kullanıcı etkinliği istek anında okunur; yoksa istek yine bekler ve yanıtta reddedilir (gerçek kabukta tarayıcı yanıtı)
+      const jest = !etkinlik || etkinlik.isActive;
+      const istek = { iptal: false };
+      durum.hedef = el; durum.bekleyen = istek;
+      // yanıt iki görev sonra gelir (gerçekte tarayıcıya gidip gelen ileti): istekten hemen sonra sıraya giren olaylar önce işlenir
+      return new Soz((coz, red) => zamanla.call(W, () => zamanla.call(W, () => {
+        if (istek.iptal) { coz(); return; }   // istek sürerken bırakıldı: söz çözülür, kilit kurulmaz (yoklamada gerçek kilitle aynı)
+        durum.bekleyen = null;
+        if (!jest) {
+          durum.hedef = null; sayac.jestsiz++; sayac.red++;
+          olayGonder('pointerlockerror', belge);
+          red(new Istisna('A user gesture is required to request Pointer Lock.', 'NotAllowedError'));
+          return;
+        }
+        // başsız kabuk jestli her kilit isteğini kabul eder; burada gerçek kilit İSTENMEZ (sel kaynağı)
+        sayac.verildi++;
+        yon.donmus = { cx: imlec.cx, cy: imlec.cy, sx: imlec.sx, sy: imlec.sy };
+        olayGonder('pointerlockchange', belgesi.call(durum.hedef || el));
+        coz();
+      }, 0), 0));
+    },
+    exitPointerLock() {
+      try { belgeMarka.call(this); } catch (e) { throw new TypeError('Illegal invocation'); }
+      temizle();
+      const el = durum.hedef;
+      if (!el || belgesi.call(el) !== this) return;
+      sayac.birakma++;
+      birak(this);
+    },
+  };
+  // pointerLockElement: istek sürerken null; gölge ağacındaki öğe belgenin kapsamına (ev sahibine) yeniden hedeflenir
+  const ogeGetir = function () {
+    temizle();
+    const el = durum.hedef;
+    if (!el || durum.bekleyen) return null;
+    let n = el;
+    for (let i = 0; i < 64 && n; i++) {
+      const kok = kokAl.call(n);
+      if (kok === this) return n;
+      let ev = null;
+      try { ev = evSahibi ? evSahibi.call(kok) : null; } catch (e) { ev = null; }
+      n = ev;
+    }
+    return null;
+  };
+  Object.defineProperty(ogeGetir, 'name', { value: 'get pointerLockElement' });
+  Object.defineProperty(yerine.requestPointerLock, '__kosucuTaklit', { value: sayac });
+  Object.defineProperty(EP, 'requestPointerLock', { value: yerine.requestPointerLock, writable: istekOzgun.writable, enumerable: istekOzgun.enumerable, configurable: istekOzgun.configurable });
+  Object.defineProperty(DP, 'exitPointerLock', { value: yerine.exitPointerLock, writable: cikOzgun.writable, enumerable: cikOzgun.enumerable, configurable: cikOzgun.configurable });
+  const ogeTanim = { get: ogeGetir, set: undefined, enumerable: ogeOzgun.enumerable, configurable: ogeOzgun.configurable };
+  Object.defineProperty(DP, 'pointerLockElement', ogeTanim);
+  if (SR && Object.getOwnPropertyDescriptor(SR, 'pointerLockElement')) Object.defineProperty(SR, 'pointerLockElement', ogeTanim);
+
+  // ---- kilitliyken fare olaylarının yönlendirilmesi (yoklama5: docs/v05/kosular/faz1/kosucu17/yoklama/yoklama5*.json). Gerçek kilitte
+  // Blink fare ve işaretçi olaylarını (pointer/mouse down-up-move, click, dblclick, wheel) KİLİTLİ ÖĞEYE, kilidin alındığı andaki imleç
+  // konumuyla (clientX/Y, screenX/Y donar) dağıtır; sağ/orta tık 'click' (button 2/1) olur, contextmenu/auxclick ve sınır olayları
+  // (over/out/enter/leave) gelmez; odak değişmez, düğme/onay kutusu etkinleşmez. Playwright'ın isabet denetimi (locator.click) donmuş
+  // konumda hedef yerine başka öğe (kilitli tuval) bulursa olayı engelleyip yeniden dener ve zaman aşımına düşer; donmuş konum hedefin
+  // üstündeyse tıklama hatasız biter ama olaylar kilitli öğeye gider (gk_sonuc.json T1/T5/T6). Taklit aynısını yapar: güvenilir fare olayı
+  // pencerede (yakalama evresi, sayfanın ve Playwright'ın dinleyicilerinden önce) donmuş konumla işaretlenir (ana dünyada; Playwright'ın
+  // yalıtılmış dünyadaki denetimi olayın özgün konumunu görür, isabet engelini bu yüzden 'tik' uygular); hedef kilitli öğe değilse olay
+  // belgede (yakalama) durdurulur, varsayılan eylemi engellenir ve kopyası kilitli öğeye gönderilir. Klavyeyle üretilen click
+  // (pointerType '') ve sayfanın kendi gönderdiği olaylar (isTrusted false) yönlendirilmez.
+  const YONLENEN = new Set(['pointerdown', 'pointerup', 'pointermove', 'mousedown', 'mouseup', 'mousemove', 'click', 'dblclick', 'wheel']);
+  const SINIR = new Set(['pointerover', 'pointerout', 'pointerenter', 'pointerleave', 'mouseover', 'mouseout', 'mouseenter', 'mouseleave']);
+  const ARA = new Set(['auxclick', 'contextmenu']);   // gerçek kilitte gelmez; auxclick'in yerine kilitli öğeye 'click' (aynı düğme)
+  const KOPYA_ALAN = ['bubbles', 'cancelable', 'composed', 'detail', 'screenX', 'screenY', 'clientX', 'clientY', 'ctrlKey', 'shiftKey', 'altKey', 'metaKey',
+    'button', 'buttons', 'movementX', 'movementY', 'pointerId', 'width', 'height', 'pressure', 'tangentialPressure', 'tiltX', 'tiltY', 'twist', 'pointerType',
+    'isPrimary', 'deltaX', 'deltaY', 'deltaZ', 'deltaMode'];
+  const kilitliOge = () => { temizle(); return durum.hedef && !durum.bekleyen && yon.donmus ? durum.hedef : null; };
+  // fare kaynaklı mı: click/auxclick/contextmenu/pointer* olaylarında pointerType 'mouse' (klavye click'i ''), dblclick'te detail > 0
+  const fareMi = (e) => (typeof e.pointerType === 'string' ? e.pointerType === 'mouse' : e.type === 'dblclick' ? e.detail > 0 : true);
+  const dondur = (e, el) => {
+    const d = yon.donmus;
+    let r = { left: 0, top: 0 };
+    try { r = kutu.call(el); } catch (x) { /* öğe yok */ }
+    const px = W.scrollX || 0, py = W.scrollY || 0;
+    const t = { clientX: d.cx, clientY: d.cy, x: d.cx, y: d.cy, screenX: d.sx, screenY: d.sy, pageX: d.cx + px, pageY: d.cy + py, offsetX: d.cx - r.left, offsetY: d.cy - r.top };
+    for (const k in t) { try { Object.defineProperty(e, k, { value: t[k], configurable: true, enumerable: true }); } catch (x) { /* */ } }
+  };
+  const kopyala = (e, tur, el) => {
+    const init = { view: W };
+    for (const k of KOPYA_ALAN) if (k in e) init[k] = e[k];   // clientX/Y, screenX/Y donmuş değerler (dondur)
+    const Sinif = W.WheelEvent && e instanceof W.WheelEvent ? W.WheelEvent : W.PointerEvent && e instanceof W.PointerEvent ? W.PointerEvent : W.MouseEvent;
+    let k;
+    try { k = new Sinif(tur, init); } catch (x) { return; }
+    sayac.yonlendirilen++;
+    try { gonder.call(el, k); } catch (x) { /* */ }
+  };
+  // ---- koşucu tıklaması (run.cjs tikla adımı, co-op tikla yardımcısı; tiklaTaklitli): Playwright'ın gerçek kilitteki isabet engeli.
+  // Gerçek kilitte Playwright'ın denetimi (injectedScript setupHitTargetInterceptor/expectHitTarget, 'button-link' yeniden hedeflemesi)
+  // tıklamanın İLK fare olayında (pointerdown) olayın konumunda hedefi arar; kilitliyken bu konum kilit anındaki imleç konumudur. Hedef
+  // (ya da onun alt öğesi) orada değilse o olay ve tıklamanın sonraki olayları engellenir (preventDefault + stopImmediatePropagation:
+  // sayfa hiçbirini görmez; hover olayları engellenmez), Playwright yeniden dener ve süre dolunca zaman aşımına düşer (yoklama5, adım
+  // 11). Taklitte koşucu her tıklama denemesinden önce hedef öğeyi bildirir (__kosucuTiklaBasla), taklit aynı kararı aynı anda (olayın
+  // gönderildiği anda) verir ve engeller; koşucu deneme sonunda engeli okur (__kosucuTiklaBitir) ve Playwright gibi yeniden dener.
+  // Kilit tıklama sürerken (ör. görünürlük beklenirken) alınsa da sonuç gerçek kilitle aynıdır (kosucu_negatif ia/ib); ilk olayda
+  // kilit yoksa karar Playwright'ın kendi denetimine kalır. Bildirim bir süre sonra kendiliğinden düşer (son): koşucu bitirme çağrısını
+  // yapamasa da (sayfa yanıt vermedi, koşucu koptu) sonraki ham fare tıklamaları bu kurala girmez.
+  const TIK_OLAY = new Set(['pointerdown', 'pointerup', 'mousedown', 'mouseup', 'click', 'auxclick', 'dblclick', 'contextmenu']);
+  const tik = { etkin: false, hedef: null, karar: undefined, engellenen: 0, son: 0 };
+  const tikSifirla = () => { tik.etkin = false; tik.hedef = null; tik.karar = undefined; tik.engellenen = 0; tik.son = 0; };
+  const ogeAdi = (n) => (n ? String(n.nodeName).toLowerCase() + (n.id ? '#' + n.id : '') : 'öğe yok');
+  const isabetDenetle = (oge) => {
+    const d = yon.donmus;
+    let hedef = oge && oge.nodeType === 1 ? oge : oge ? oge.parentElement : null;
+    if (hedef && !hedef.matches('input, textarea, select') && !hedef.isContentEditable) hedef = hedef.closest('button, [role=button], a, [role=link]') || hedef;
+    let h = W.document.elementFromPoint(d.cx, d.cy);
+    while (h && h.shadowRoot) { const ic = h.shadowRoot.elementFromPoint(d.cx, d.cy); if (!ic || ic === h) break; h = ic; }
+    for (let n = h; n; n = n.parentElement || (n.getRootNode && n.getRootNode().host) || null) if (n === hedef) return null;
+    return { nokta: [d.cx, d.cy], isabet: ogeAdi(h), hedef: ogeAdi(hedef), kilitli: ogeAdi(durum.hedef) };
+  };
+  const pencerede = (e) => {
+    if (!e.isTrusted || !fareMi(e)) return;
+    const el = kilitliOge();
+    if (tik.etkin && simdi() > tik.son) tikSifirla();   // bildirim süresi doldu (bitirme çağrısı gelmedi)
+    if (tik.etkin && TIK_OLAY.has(e.type)) {
+      if (tik.karar === undefined) tik.karar = el ? isabetDenetle(tik.hedef) : null;   // ilk olay karar verir (Playwright gibi)
+      if (tik.karar) { if (e.cancelable) e.preventDefault(); e.stopImmediatePropagation(); tik.engellenen++; sayac.tikEngel++; return; }
+    }
+    if (!el) {
+      if (typeof e.clientX === 'number' && (YONLENEN.has(e.type) || SINIR.has(e.type))) { imlec.cx = e.clientX; imlec.cy = e.clientY; imlec.sx = e.screenX; imlec.sy = e.screenY; }
+      return;
+    }
+    if (SINIR.has(e.type)) { e.stopImmediatePropagation(); sayac.susturulan++; return; }
+    dondur(e, el);
+    yon.isaretli.add(e);
+  };
+  const belgede = (e) => {
+    if (!yon.isaretli.has(e)) return;   // yalnız kilitliyken gelen ve pencerede işaretlenen güvenilir fare olayı
+    yon.isaretli.delete(e);
+    const el = durum.hedef;
+    if (ARA.has(e.type)) {
+      e.stopImmediatePropagation(); if (e.cancelable) e.preventDefault(); sayac.susturulan++;
+      if (e.type === 'auxclick' && el) kopyala(e, 'click', el);
+      return;
+    }
+    if (!el || e.target === el) return;   // hedef zaten kilitli öğe: özgün olay donmuş konumla sürer
+    // varsayılan eylem (odak, seçim, düğme/onay kutusu etkinleşmesi, kaydırma) engellenir; pointer* olaylarında engellenmez:
+    // pointerdown'ın iptali uyumluluk mousedown/mouseup'ını da keserdi (onların kopyası da kilitli öğeye gitmeli)
+    e.stopImmediatePropagation(); if (e.cancelable && !e.type.startsWith('pointer')) e.preventDefault();
+    kopyala(e, e.type, el);
+  };
+  for (const t of [...YONLENEN, ...SINIR, ...ARA]) dinle.call(W, t, pencerede, { capture: true });
+  for (const t of [...YONLENEN, ...ARA]) dinle.call(W.document, t, belgede, { capture: true, passive: false });
+  // koşucu tıklaması: deneme başında hedef bildirilir (karar sıfırlanır; bildirim ms sonra kendiliğinden düşer), sonunda engel (varsa)
+  // okunur ve durum temizlenir
+  Object.defineProperty(yerine.requestPointerLock, '__kosucuTiklaBasla', { value: (oge, ms) => {
+    tikSifirla(); tik.etkin = true; tik.hedef = oge || null; tik.son = simdi() + (Number(ms) > 0 ? Number(ms) : 60000); return true;
+  } });
+  Object.defineProperty(yerine.requestPointerLock, '__kosucuTiklaBitir', { value: () => {
+    const r = tik.etkin && tik.karar ? Object.assign({ engellenen: tik.engellenen }, tik.karar) : null;
+    tikSifirla();
+    return r;
+  } });
+}
+const ISARETCI_TAKLIT = `(${isaretciKilidiTaklidi.toString()})();`;
+// Sayfadaki taklit sayaçlarını okuyan ifade (yalnız son belgenin sayaçları; taklit yoksa null)
+const ISARETCI_SAYAC_JS = `(() => { const f = Element.prototype.requestPointerLock; return f && f.__kosucuTaklit ? Object.assign({}, f.__kosucuTaklit) : null; })()`;
+
+// ---- taklit kilitte Playwright tıklaması (run.cjs tikla adımı; coop.cjs senaryolarının tikla yardımcısı)
+// Gerçek kilitte locator.click'in isabet denetimi tıklamanın ilk fare olayında, olayın donmuş konumunda (kilit anındaki imleç) hedefi
+// arar; bulamazsa olayları engeller, yeniden dener ve süre dolunca "locator.click: Timeout" ile düşer (yoklama5, adım 11). Bu denetim
+// Playwright'ın yalıtılmış dünyasında koşar ve taklidin donmuş konumunu göremez; taklitte tık sessizce kilitli öğeye giderdi (DOG-1/3).
+// Bu yüzden her denemede: (1) hedef öğe çözülür ve taklide bildirilir (karar olayın gönderildiği anda, kilit o an sürüyorsa verilir:
+// kilit ön denetimden sonra, ör. görünürlük beklenirken alınsa da), (2) locator.click (Playwright'ın kendi beklemeleri ve denetimi),
+// (3) taklidin kararı okunur; engellendiyse Playwright'ın yeniden deneme aralıklarıyla (0, 20, 100, 100, 500 ms) yeniden denenir, süre
+// dolunca gerçek kilitteki gibi zaman aşımı hatası atılır. Kilit yoksa (olağan durum) tek bir locator.click'tir; kip 'gercek'te
+// (taklit kurulmamış) doğrudan locator.click. Dönüş: { deneme, engel (son engel kaydı ya da null) }.
+const TIKLA_BASLA = (el, ms) => { const f = Element.prototype.requestPointerLock; return !!(f && typeof f.__kosucuTiklaBasla === 'function' && f.__kosucuTiklaBasla(el, ms)); };
+const TIKLA_BITIR = () => { const f = Element.prototype.requestPointerLock; return f && typeof f.__kosucuTiklaBitir === 'function' ? f.__kosucuTiklaBitir() : null; };
+const TIK_YENIDEN = [0, 20, 100, 100, 500];   // Playwright _retryAction aralıkları (ms)
+const ZAMAN_ASIMI = /Timeout \d+ms exceeded/;
+function tikEngelHatasi(zaman, engel, deneme) {
+  return new Error(`locator.click: Timeout ${zaman}ms exceeded. (işaretçi kilidi taklidi: ${deneme} denemede tıklama engellendi — ${engel.kilitli} kilitli; `
+    + `kilit anındaki imleç konumunda (${engel.nokta.join(', ')}) ${engel.isabet} var, hedef ${engel.hedef} değil. Gerçek kilitte Playwright'ın isabet `
+    + `denetimi tıklamayı burada engeller: "${engel.isabet} intercepts pointer events")`);
+}
+async function tiklaTaklitli(loc, { zaman = 30000, kip = 'taklit' } = {}) {
+  if (kip !== 'taklit') { await loc.click({ timeout: zaman }); return { deneme: 1, engel: null }; }
+  const t0 = Date.now();
+  const kalan = () => Math.max(1, zaman - (Date.now() - t0));
+  let engel = null;
+  for (let deneme = 1; ; deneme++) {
+    if (engel && Date.now() - t0 >= zaman) throw tikEngelHatasi(zaman, engel, deneme - 1);
+    // (1) hedef öğe: locator.click'in ilk adımı gibi öğenin bağlanması beklenir
+    let h;
+    try { h = await loc.elementHandle({ timeout: kalan() }); }
+    catch (e) {
+      const m = temiz((e && e.message) || e);
+      if (engel && ZAMAN_ASIMI.test(m)) throw tikEngelHatasi(zaman, engel, deneme - 1);
+      if (/^locator\.elementHandle: Timeout/.test(m)) throw new Error(m.replace(/^locator\.elementHandle: Timeout \d+ms exceeded\./, `locator.click: Timeout ${zaman}ms exceeded. (koşucu: tıklanacak öğe bekleniyordu)`));
+      throw e;
+    }
+    let hata = null, karar = null, bildirildi = false;
+    try {
+      try { bildirildi = await h.evaluate(TIKLA_BASLA, kalan() + 2000); } catch (e) { bildirildi = false; }   // belge değiştiyse: düz tıklama
+      // (2) tıklama
+      try { await loc.click({ timeout: kalan() }); } catch (e) { hata = e; }
+      // (3) karar okunur ve bildirim temizlenir (tıklama hata verse de); belge gittiyse (tık gezinme başlattı) engel yoktur
+      if (bildirildi) { try { karar = await h.evaluate(TIKLA_BITIR); } catch (e) { karar = null; } }
+    } finally { h.dispose().catch(() => {}); }
+    if (hata) {
+      if (engel && ZAMAN_ASIMI.test(temiz(hata.message || hata))) throw tikEngelHatasi(zaman, engel, deneme - 1);
+      throw hata;
+    }
+    if (!karar) return { deneme, engel };
+    engel = karar;
+    const bekle = TIK_YENIDEN[Math.min(deneme - 1, TIK_YENIDEN.length - 1)];
+    if (bekle) await new Promise((r) => setTimeout(r, Math.min(bekle, Math.max(0, zaman - (Date.now() - t0)))));
+  }
+}
+// --isaretci-kilidi taklit|gercek (varsayılan taklit). gercek: taklit kurulmaz (yalnız karşılaştırma ölçümleri için).
+function isaretciKipi(deger) {
+  const k = deger === undefined ? 'taklit' : String(deger);
+  if (!['taklit', 'gercek'].includes(k)) throw new Error(`--isaretci-kilidi taklit|gercek olmalı (gelen ${JSON.stringify(deger)})`);
+  return k;
+}
+
 module.exports = {
   SEMA, secenekler, degiskenler, degiskenBetigi, testUrl, izinleriDerle, izinOzeti, HataKaydi, siniflandir, kimlik,
   ortamBilgisi, hedefTipi, tekrarBilgisi, goruntuDizini, mime, kisa, temiz, git, guvenliJson, DONGUSEL, onayDenetle, karsilastir,
+  ISARETCI_TAKLIT, ISARETCI_SAYAC_JS, tiklaTaklitli, isaretciKipi,
 };

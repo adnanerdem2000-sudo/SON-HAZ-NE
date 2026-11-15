@@ -1,0 +1,19 @@
+<!doctype html>
+<meta charset="utf-8">
+<link rel="icon" href="data:,">
+<title>koşucu sabiti (ig): sandbox'lı çerçevede işaretçi kilidi</title>
+<!-- (ig/ih; son düzeltici 2, inceleme GZ-2) Üç alt çerçeve aynı sayfayı (ig_cerceve.html) açar: s1 sandbox="allow-scripts" (opak köken,
+     B0'ın 02_tek_dosya_cerceve.js'indeki gibi), s2 sandbox="allow-scripts allow-same-origin" (aynı köken, allow-pointer-lock yok), s3
+     sandbox'sız. Çerçeve tıklanınca kendi tuvalini kilitlemek ister ve sonucu (söz, kilit olayları, köken) üst çerçeveye postMessage
+     ile bildirir; üst çerçeve window.__ig'ye yazar. Gerçek Chromium'da s1 ve s2'nin isteği SecurityError + pointerlockerror + konsolda
+     güvenlik hatası, s3'ünkü kilit (hemen bırakılır). -->
+<style>body{margin:0} iframe{position:absolute;top:0;width:100px;height:90px;border:0}</style>
+<iframe id="s1" sandbox="allow-scripts" src="ig_cerceve.html?ad=s1" style="left:0"></iframe>
+<iframe id="s2" sandbox="allow-scripts allow-same-origin" src="ig_cerceve.html?ad=s2" style="left:110px"></iframe>
+<iframe id="s3" src="ig_cerceve.html?ad=s3" style="left:220px"></iframe>
+<script>
+  window.__ig = {}; window.__igHazir = {};
+  window.addEventListener('message', (e) => { const d = e.data; if (d && d.__ig) { if (d.hazir) window.__igHazir[d.ad] = true; else window.__ig[d.ad] = d; } });
+  window.DK = { sim(sn = 1, dt = 1 / 30) { return Math.round(sn / dt); } };
+  window.__ready = true;
+</script>

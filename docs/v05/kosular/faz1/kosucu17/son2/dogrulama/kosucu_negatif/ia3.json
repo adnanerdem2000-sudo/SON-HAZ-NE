@@ -1,0 +1,199 @@
+{
+ "scenario": "tests/fixtures/kosucu/ia2_kilit_birakilinca_tikla.js",
+ "url": "http://127.0.0.1:38307/pk_isaretci.html",
+ "size": [
+  320,
+  200
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "ms": 3
+  },
+  {
+   "n": 2,
+   "label": null,
+   "result": "istendi",
+   "ms": 4
+  },
+  {
+   "n": 3,
+   "label": null,
+   "ms": 304
+  },
+  {
+   "n": 4,
+   "label": null,
+   "result": [
+    true
+   ],
+   "ms": 33
+  },
+  {
+   "n": 5,
+   "label": null,
+   "tikla": {
+    "secici": "#dugme"
+   },
+   "ms": 905
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "IA2-01 Kilit bırakılınca tikla düğmeyi bir kez etkinleştirdi; tuval tık almadı",
+    "ok": true,
+    "value": [
+     1,
+     0,
+     null
+    ]
+   },
+   "ms": 5
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 273,
+ "ms": 2539,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/fixtures/kosucu/ia2_kilit_birakilinca_tikla.js",
+ "meta": {},
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://127.0.0.1:38307/pk_isaretci.html?test=1",
+  "verilenUrl": "http://127.0.0.1:38307/pk_isaretci.html",
+  "gorunum": [
+   320,
+   200
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   320,
+   200
+  ],
+  "ci": false,
+  "commit": "0d5765004d45995ceb8b36feeb9ce241dffcbd02",
+  "dal": "HEAD",
+  "kirli": true,
+  "tarih": "2026-11-15T06:12:54.272Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-k17/tests/harness/run.cjs /home/user/SON-HAZ-NE-k17/tests/fixtures/kosucu/ia2_kilit_birakilinca_tikla.js --size 320x200 --timeout 90 --url http://127.0.0.1:38307/pk_isaretci.html --report /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/kosu/V1_kn/ia3.json --isaretci-kilidi gercek",
+  "cwd": "/home/user/SON-HAZ-NE-k17",
+  "sunucular": [
+   "statik sunucu http://127.0.0.1:38307 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 38307"
+  ],
+  "commit": "0d5765004d45995ceb8b36feeb9ce241dffcbd02-kirli",
+  "senaryoSha256": "c88adc395a10add0a57b17101912c6a54eeb956c27fa2d9bf981f3546687fd75",
+  "adim": null,
+  "url": "http://127.0.0.1:38307/pk_isaretci.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 6,
+   "id": "IA2-01",
+   "etiket": "IA2-01 Kilit bırakılınca tikla düğmeyi bir kez etkinleştirdi; tuval tık almadı",
+   "ok": true,
+   "deger": [
+    1,
+    0,
+    null
+   ],
+   "beklenen": {
+    "eq": [
+     1,
+     0,
+     null
+    ]
+   },
+   "sure_ms": 3,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "frames": 0,
+    "simSteps": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [],
+ "uyariSayim": {
+  "farkli": 0,
+  "toplam": 0,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 1,
+ "isaretciKilidi": {
+  "kip": "gercek",
+  "sayac": null
+ },
+ "kopma": null,
+ "sonuc": {
+  "durum": "GECTI",
+  "cikisKodu": 0,
+  "neden": [],
+  "onaySayisi": 1,
+  "kontrolSayisi": 1,
+  "gecen": 1,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": "tarayici",
+  "turSayim": {
+   "tarayici": 1
+  },
+  "tarayiciKoptu": false,
+  "kopma": null
+ },
+ "sure": {
+  "hazirMs": 273,
+  "toplamMs": 2539,
+  "yerlesmeMs": 1002
+ }
+}

@@ -1,0 +1,51 @@
+// İşaretçi kilidi yoklamalarının gerçek ↔ taklit karşılaştırması (2. deneme; 3. denemede yalnız 13_birak_ve_tik notu gözleme göre düzeltildi): yoklama3 (anlam + diziler), yoklama4 (jestsiz istek +
+// kısıtlama ayrıntısı) — 1. denemenin karsilastir_yoklama.mjs'iyle aynı kurallar — ve yoklama5 (kilitliyken fare olaylarının
+// yönlendirilmesi; sayfanın kabarma evresindeki window dinleyicilerinin gördüğü olaylar, düğme tık sayısı, odak, onay kutusu, kilit).
+//   node karsilastir_yoklama2.mjs <y3.json> <y4.json> <y5.json> <çıktı.json>
+// yoklama5 kuralları: yönlendirilen kopyanın isTrusted'ı false'tur (bilinen fark): '(sentetik)' işareti atılır; gerçek kilitte selin
+// kilitli tuvale getirdiği hareketsiz mousemove/pointermove olayları taklitte yoktur (beklenen fark): sayıları karşılaştırılmaz.
+import fs from 'node:fs';
+const [Y3, Y4, Y5, CIKTI] = process.argv.slice(2);
+const y3 = JSON.parse(fs.readFileSync(Y3, 'utf8')), y4 = JSON.parse(fs.readFileSync(Y4, 'utf8')), y5 = JSON.parse(fs.readFileSync(Y5, 'utf8'));
+const zamansiz = (v) => Array.isArray(v) ? v.map(zamansiz) : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).filter(([k]) => k !== 't').map(([k, x]) => [k, zamansiz(x)])) : v;
+const dizi = (v) => Array.isArray(v) ? (v.length === 4 && typeof v[0] === 'number' && typeof v[1] === 'number' ? [v[0], v[2], v[3]] : v.map(dizi)) : v;
+const maddeler = [];
+const ekle = (kaynak, ad, g, t, not) => { const a = JSON.stringify(g), b = JSON.stringify(t); maddeler.push({ kaynak, ad, ayni: a === b, gercek: g, taklit: t, ...(not ? { not } : {}) }); };
+const G3 = y3.gercek, T3 = y3.taklit;
+ekle('yoklama3', 'API tanımları (pointerLockElement erişimcisi, işlev adları/uzunlukları, odak, etkinlik)', G3.anlam.info, T3.anlam.info);
+G3.anlam.kayit.forEach((k, i) => ekle('yoklama3', 'anlam: ' + k.ad, zamansiz(k), zamansiz(T3.anlam.kayit[i])));
+ekle('yoklama3', 'anlam: olay listesi (tür, bubbles, cancelable, composed, hedef, olay anındaki pointerLockElement, sınıf)', zamansiz(G3.anlam.olaylar), zamansiz(T3.anlam.olaylar));
+ekle('yoklama3', 'anlam: window dinleyicisine ulaşan olay (kabarma)', G3.anlam.pencere, T3.anlam.pencere);
+ekle('yoklama3', 'Escape tuşu kilidi bırakır mı', G3.escape, T3.escape);
+for (const k of ['jestsiz', 'kilitliyken_jestsiz', 'dizi_20ms', 'dizi_600ms', 'kilitliyken_8', 'ayri_1500ms', 'ayri_3x100_bosluk3sn_3x100', 'ayri_3x100_bosluk8sn_3x100', 'ayri_2500ms']) ekle('yoklama3', k, dizi(G3[k]), dizi(T3[k]));
+ekle('yoklama3', 'sel göstergesi: kilitliyken 2 sn (sayfaya gelen mousemove/sn, iplik CPU %)', G3.sel_kilitli, T3.sel_kilitli, 'beklenen fark: taklitte gerçek kilit yok, sel yok');
+ekle('yoklama3', 'sel göstergesi: kilitsizken 2 sn', G3.sel_kilitsiz, T3.sel_kilitsiz);
+const G4 = y4.gercek, T4 = y4.taklit;
+for (const k of Object.keys(G4)) ekle('yoklama4', k, dizi(G4[k]), dizi(T4[k]), k === 'kisit_olay' ? "gerçek kabuk bu dizide 3, taklit 5 isteğe izin verdi: dizi, window.open ile açılıp kapanan açılır pencerenin hemen ardından koştu (yoklama4 'jestsiz'); kısıtlama modelinin açıklayamadığı tek gözlem (oyun açılır pencere açmaz)" : undefined);
+const ozet5 = (v, gercekMi, karsi) => {
+  if (typeof v === 'string') return v;
+  const ev = {};
+  for (const [k0, x] of Object.entries(v.olaylarKabarma)) {
+    const k = k0.replace('(sentetik)', '');
+    const tur = k.split('@')[0];
+    const hareket = tur === 'mousemove' || tur === 'pointermove';
+    ev[k] = [hareket ? 'n' : x.n + (ev[k] && ev[k][0] !== 'n' ? ev[k][0] : 0), x.ilk.x, x.ilk.y, x.ilk.btn];
+  }
+  const o = { olaylar: ev, tik: v.tik, odak: v.odak, onay: v.onay, ple: v.ple };
+  if ('ek' in v) o.ek = v.ek && typeof v.ek === 'object' ? String(v.ek.r).slice(0, 40) : v.ek;
+  return o;
+};
+const G5 = y5.gercek, T5 = y5.taklit;
+const NOT5 = {
+  '11_kilitli_locator_click': "bilinen fark (Playwright düzeyi): gerçek kilitte locator.click'in isabet denetimi (yalıtılmış dünyada, olayın donmuş clientX/Y'si) tıklamayı engelleyip zaman aşımına düşer; taklitte denetim olayın özgün konumunu görür, tık tuvale yönlendirilir (düğme etkinleşmez). run.cjs'in tikla adımı aynı engeli kendisi uygular (ISARETCI_ISABET_JS; kosucu_negatif pk5/pk6).",
+  '13_birak_ve_tik': 'bilinen fark: gerçek kilit bırakılırken tuvale hareketsiz (movementX/Y 0) 1–2 mousemove/pointermove daha gelir; konumu koşudan koşuya değişir (2. denemenin yoklamalarında (0,0), 3. denemede kilit anındaki konum (200,150)); taklitte yok. Tık sayısı, odak ve kilit durumu aynı.',
+};
+for (const k of Object.keys(G5).filter((x) => x !== 'surum' && x !== 'hata')) {
+  const g = ozet5(G5[k]), t = ozet5(T5[k]);
+  if (g && t && typeof g === 'object' && typeof t === 'object' && g.ple === 'c') for (const s of ['mousemove@c', 'pointermove@c']) if (s in g.olaylar && !(s in t.olaylar)) delete g.olaylar[s];
+  ekle('yoklama5', k, g, t, NOT5[k]);
+}
+const farkli = maddeler.filter((m) => !m.ayni);
+const ozet = { surum: G3.surum, madde: maddeler.length, ayni: maddeler.length - farkli.length, farkli: farkli.map((m) => `${m.kaynak}: ${m.ad}${m.not ? ' — ' + m.not : ''}`) };
+fs.writeFileSync(CIKTI, JSON.stringify({ aciklama: 'Gerçek işaretçi kilidi (chrome-headless-shell) ile koşucunun taklidi (tests/harness/ortak.cjs ISARETCI_TAKLIT) aynı sınamalarla; zaman damgaları karşılaştırılmaz. yoklama5: kilitliyken fare olaylarının yönlendirilmesi (sayfanın kabarma evresindeki dinleyicileri).', ozet, maddeler }, null, 1));
+console.log(JSON.stringify(ozet, null, 1));

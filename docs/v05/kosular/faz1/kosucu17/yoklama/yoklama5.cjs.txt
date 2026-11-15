@@ -1,0 +1,91 @@
+// İşaretçi kilidi yoklaması 5 (2. deneme): kilitliyken FARE OLAYLARININ YÖNLENDİRİLMESİ — gerçek kilit (başsız kabuk) ↔ taklit.
+//   node yoklama5.cjs <cikti.json> [ortak.cjs yolu]
+// Sayfa: tam ekran tuval (#c) ve üstünde düğme (#b), metin kutusu (#t), onay kutusu (#k). İmleç kilitten önce (200,150)'ye götürülür,
+// tuval kilitlenir; sonra Playwright fare işlemleri (move/click/dblclick/sağ tık/wheel, locator.click) düğmenin üstünde yapılır.
+// Her işlemde window yakalama dinleyicisinin gördüğü olaylar (tür, hedef, isTrusted, clientX/Y, movementX/Y) özetlenir; düğmenin
+// click sayısı, odak (activeElement) ve onay kutusu durumu kaydedilir. 'pointerrawupdate' DİNLENMEZ: dinleyici varken Blink selin her
+// olayını ana iplikte dağıtıyor; ilk denemede (yoklama5_once) gerçek kipte tarayıcı 3 dk içinde 11,4 GB'a çıkıp OOM ile öldürüldü.
+const { chromium } = require('playwright');
+const http = require('http');
+const fs = require('fs');
+const CIKTI = process.argv[2];
+const ORTAK = process.argv[3] || '/home/user/SON-HAZ-NE-k17/tests/harness/ortak.cjs';
+const TAKLIT = require(ORTAK).ISARETCI_TAKLIT;
+const SAYFA = `<!doctype html><meta charset="utf-8"><link rel="icon" href="data:,"><title>yoklama5</title>
+<body style="margin:0;overflow:hidden">
+<canvas id="c" width="320" height="200" style="position:absolute;left:0;top:0;width:320px;height:200px;background:#246"></canvas>
+<div id="hud" style="position:absolute;left:10px;top:10px">
+ <button id="b" style="display:block;width:100px;height:30px">Düğme</button>
+ <input id="t" style="display:block;width:100px;height:20px">
+ <input id="k" type="checkbox" style="display:block;width:20px;height:20px;margin:0">
+</div>
+<script>
+ window.__log = []; window.__tik = 0;
+ const TURLER = ['pointerdown','pointerup','pointermove','pointerover','pointerout','pointerenter','pointerleave','gotpointercapture','lostpointercapture',
+   'mousedown','mouseup','mousemove','mouseover','mouseout','mouseenter','mouseleave','click','dblclick','auxclick','contextmenu','wheel','focusin','focusout','selectstart'];
+ const kayit = (L) => (e) => { if (L().length < 20000) L().push([e.type, (e.target && e.target.id) || (e.target === document ? 'document' : e.target === window ? 'window' : (e.target && e.target.nodeName) || '?'), e.isTrusted, Math.round(e.clientX ?? -1), Math.round(e.clientY ?? -1), e.movementX ?? null, e.movementY ?? null, e.button ?? null]); };
+ // __log: window yakalama evresi (taklidin dinleyicisinden SONRA eklenir: yönlendirilecek olayın özgün hedefini de görür);
+ // __logK: window kabarma evresi (oyunun dinleyicileri gibi: sayfanın normal dinleyicilerinin gördüğü)
+ window.__logK = [];
+ for (const t of TURLER) window.addEventListener(t, kayit(() => window.__log), true);
+ for (const t of TURLER) window.addEventListener(t, kayit(() => window.__logK), false);
+ document.getElementById('b').addEventListener('click', () => { window.__tik++; });
+ window.__ready = true;
+</script>`;
+const bekle = (ms) => new Promise((r) => setTimeout(r, ms));
+const OZET = `(() => {
+  const ozetle = (L) => {
+  const g = new Map();
+  for (const [tur, hedef, guv, x, y, mx, my, btn] of L) {
+    const k = tur + '@' + hedef + (guv ? '' : '(sentetik)');
+    const v = g.get(k) || { n: 0, mxToplam: 0, myToplam: 0, sifirHareket: 0, ilk: null };
+    v.n++; v.mxToplam += mx || 0; v.myToplam += my || 0; if (!mx && !my) v.sifirHareket++;
+    if (!v.ilk) v.ilk = { x, y, mx, my, btn };
+    g.set(k, v);
+  }
+  const out = {}; for (const [k, v] of [...g.entries()].sort()) out[k] = v;
+  return out; };
+  const out = ozetle(window.__log), outK = ozetle(window.__logK); window.__log = []; window.__logK = [];
+  return { olaylar: out, olaylarKabarma: outK, tik: window.__tik, odak: document.activeElement && (document.activeElement.id || document.activeElement.nodeName), onay: document.getElementById('k').checked,
+    ple: document.pointerLockElement && document.pointerLockElement.id };
+})()`;
+(async () => {
+  const sunucu = http.createServer((q, r) => { r.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' }); r.end(SAYFA); });
+  await new Promise((r) => sunucu.listen(0, '127.0.0.1', r));
+  const URL = `http://127.0.0.1:${sunucu.address().port}/`;
+  const tum = {};
+  const kapat = setTimeout(() => { console.log('ZAMAN AŞIMI'); fs.writeFileSync(CIKTI, JSON.stringify(tum, null, 1)); process.exit(3); }, 280000);
+  for (const kip of ['gercek', 'taklit']) {
+    const b = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--disable-gpu-watchdog', '--autoplay-policy=no-user-gesture-required', '--enable-precise-memory-info'] });
+    const p = await b.newPage({ viewport: { width: 320, height: 200 } });
+    if (kip === 'taklit') await p.addInitScript({ content: TAKLIT });
+    const o = tum[kip] = { surum: b.version() };
+    const adim = async (ad, f) => { try { await p.evaluate('window.__log = []; window.__logK = []'); const ek = await f(); await bekle(250); o[ad] = { ...(await p.evaluate(OZET)), ...(ek !== undefined ? { ek } : {}) }; } catch (e) { o[ad] = 'HATA ' + String(e && e.message || e).split('\n')[0].slice(0, 300); } console.log(kip, ad, JSON.stringify(o[ad]).slice(0, 600)); };
+    const kilitle = async () => { await p.mouse.move(200, 150); await bekle(100); const r = await p.evaluate('document.getElementById("c").requestPointerLock().then(() => "ok", (e) => e.name + ": " + e.message)'); await bekle(300); return r; };
+    try {
+      await p.goto(URL);
+      await p.waitForFunction('window.__ready');
+      await adim('00_kilitsiz_tik_dugme', async () => { await p.mouse.click(50, 25); });
+      await p.evaluate('document.activeElement && document.activeElement.blur && document.activeElement.blur(); window.__tik = 0');
+      await adim('01_kilitle', kilitle);
+      await adim('02_kilitli_bekle_1sn', async () => { await bekle(1000); });
+      await adim('03_kilitli_move_dugme', async () => { await p.mouse.move(50, 25, { steps: 4 }); });
+      await adim('04_kilitli_tik_dugme', async () => { await p.mouse.click(50, 25); });
+      await adim('05_kilitli_tik_metin', async () => { await p.mouse.click(50, 52); });
+      await adim('06_kilitli_tik_onay', async () => { await p.mouse.click(20, 73); });
+      await adim('07_kilitli_cifttik_dugme', async () => { await p.mouse.dblclick(50, 25); });
+      await adim('08_kilitli_sagtik_dugme', async () => { await p.mouse.click(50, 25, { button: 'right' }); });
+      await adim('09_kilitli_orta_dugme', async () => { await p.mouse.click(50, 25, { button: 'middle' }); });
+      await adim('10_kilitli_wheel_dugme', async () => { await p.mouse.move(50, 25); await p.mouse.wheel(0, 120); });
+      await adim('11_kilitli_locator_click', async () => { const t0 = Date.now(); const r = await p.locator('#b').click({ timeout: 5000 }).then(() => 'çözüldü', (e) => 'red ' + String(e.message).split('\n')[0].slice(0, 160)); return { r, ms: Date.now() - t0 }; });
+      await adim('12_kilitli_move_tuval', async () => { await p.mouse.move(250, 150, { steps: 5 }); });
+      await adim('12b_kilitli_klavye_click', async () => { await p.evaluate('document.getElementById("b").focus()'); await p.keyboard.press('Enter'); });
+      await adim('13_birak_ve_tik', async () => { await p.evaluate('document.exitPointerLock()'); await bekle(200); await p.mouse.click(50, 25); });
+    } catch (e) { o.hata = String(e && e.message || e).slice(0, 400); }
+    await b.close().catch(() => {});
+  }
+  clearTimeout(kapat);
+  sunucu.close();
+  fs.writeFileSync(CIKTI, JSON.stringify(tum, null, 1));
+  process.exit(0);
+})();

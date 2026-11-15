@@ -1,0 +1,11 @@
+{
+ "surum": "153.0.8010.12",
+ "madde": 53,
+ "ayni": 49,
+ "farkli": [
+  "yoklama3: sel göstergesi: kilitliyken 2 sn (sayfaya gelen mousemove/sn, iplik CPU %) — beklenen fark: taklitte gerçek kilit yok, sel yok",
+  "yoklama4: kisit_olay — gerçek kabuk bu dizide 3, taklit 5 isteğe izin verdi: dizi, window.open ile açılıp kapanan açılır pencerenin hemen ardından koştu (yoklama4 'jestsiz'); kısıtlama modelinin açıklayamadığı tek gözlem (oyun açılır pencere açmaz)",
+  "yoklama5: 11_kilitli_locator_click — bilinen fark (Playwright düzeyi): gerçek kilitte locator.click'in isabet denetimi (yalıtılmış dünyada, olayın donmuş clientX/Y'si) tıklamayı engelleyip zaman aşımına düşer; taklitte denetim olayın özgün konumunu görür, tık tuvale yönlendirilir (düğme etkinleşmez). run.cjs'in tikla adımı aynı engeli kendisi uygular (ISARETCI_ISABET_JS; kosucu_negatif pk5/pk6).",
+  "yoklama5: 13_birak_ve_tik — bilinen fark: gerçek kilit bırakılırken tuvale hareketsiz (movementX/Y 0) 1–2 mousemove/pointermove daha gelir; konumu koşudan koşuya değişir (2. denemenin yoklamalarında (0,0), 3. denemede kilit anındaki konum (200,150)); taklitte yok. Tık sayısı, odak ve kilit durumu aynı."
+ ]
+}

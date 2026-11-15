@@ -1,0 +1,21 @@
+$ node /home/user/SON-HAZ-NE-k17/tests/harness/run.cjs tests/fixtures/kosucu/pk_isaretci.js --size 320x200 --timeout 90 --url http://127.0.0.1:38307/pk_isaretci.html --report /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/kosu/V1_kn/pk2.json --isaretci-kilidi gercek
+işaretçi kilidi: GERÇEK (taklit kapalı: --isaretci-kilidi gercek)
+ready in 0.3 s
+R: "istendi"
+PASS PK01 requestPointerLock: pointerLockElement tuval, tek pointerlockchange, input.pointerLocked true → true
+R: "mousemove sayacı sıfırlandı"
+FAIL PK02 Kilitliyken 1,5 sn içinde sayfaya gelen mousemove ≤ 5 (sentetik fare olayı seli yok) → 58
+GORUNTU /home/user/SON-HAZ-NE-k17/tests/out/goruntu/pk_isaretci_2026-11-15T06-11-55-082Z_20866/ilk_kalan.png
+PASS PK03 exitPointerLock: öğe hemen null, değişim olayı sonra gelir; noAutoPause yokken bırakma duraklatır → [null,null,false,1,2]
+PASS PK04 DOM dışı öğeye istek reddedilir (WrongDocumentError) ve pointerlockerror gönderilir → ["WrongDocumentError","hata",null]
+PASS PK05 noAutoPause=true iken yeniden kilit ve bırakma; duraklatma sayısı değişmez → [true,false,1]
+PASS PK06 Geçici kullanıcı etkinliği (5 sn) bittikten sonraki istek reddedilir (NotAllowedError: user gesture) → true
+R: "istendi"
+R: [true,"BODY"]
+PASS PK07 Kilitliyken düğmeye ve metin kutusuna fare tıklaması kilitli tuvale gider (kilit anındaki konumla); düğme etkinleşmez, odak değişmez → [0,"mousedown:200:150:0 mouseup:200:150:0 click:200:150:0 mousedown:200:150:0 mouseup:200:150:0 click:200:150:0","BODY",true]
+R: "dugme"
+PASS PK08 Kilitliyken klavyeyle (odaktaki düğmede Enter) üretilen click düğmeye gider (yönlendirilmez) → [1,true]
+errors: 0 pageErrors: 0 fails: 1 (10.4 s)
+SONUC: KALDI (çıkış 1) kontrol 7/8, onay 8 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: başarısız kontrol ya da adım: 1
+
+[çıkış 1]

@@ -1,0 +1,7 @@
+$ node /home/user/SON-HAZ-NE-k17/tests/harness/run.cjs tests/fixtures/kosucu/y4_agsay_sinirsiz.js --size 320x200 --timeout 90 --url http://127.0.0.1:46833/temiz.html --report /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/kn5/tum/y4.json
+HARNESS ERROR adım 1: agSay'de sınır yok (enCok ya da enAz gerekli)
+GORUNTU /home/user/SON-HAZ-NE-k17/tests/out/goruntu/y4_agsay_sinirsiz_2026-11-15T02-37-58-113Z_32097/son.png
+errors: 0 pageErrors: 0 fails: 0 HARNESS ERROR (senaryo koşmadı) (0.2 s)
+SONUC: KOSUCU_HATASI (çıkış 1) kontrol 0/0, onay - | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: koşucu hatası: adım 1: agSay'de sınır yok (enCok ya da enAz gerekli)
+
+[çıkış 1]

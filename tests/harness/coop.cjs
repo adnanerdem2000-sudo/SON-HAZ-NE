@@ -5,10 +5,17 @@
 //        [--url ...] [--timeout 900] [--izin-hata '<düzenli ifade> # <gerekçe>']… [--degisken ad=deger]… [--baslatma <betik.js>]…
 //        [--goruntu kalan|hep|yok] [--goruntu-dizin <dizin>]
 //
-// Senaryo modülü şunu dışa aktarır:  module.exports = async ({ pages, host, guests, ev, tick, log, check }) => { ... }
+// Senaryo modülü şunu dışa aktarır:  module.exports = async ({ pages, host, guests, ev, tick, log, check, tikla }) => { ... }
 //   pages   : Playwright sayfaları (pages[0] oda sahibi)        ev(page, js, label?, {kapaliIzinli}?) : sayfada çalıştır, sonucu yaz
 //   tick(sn): açık sayfalarda DK.sim ile sn saniye ilerlet (ağ mesajlarının akması için gerçek bekleme de yapar)
 //   check(label, ok, detay): sonuç kaydeder (ok=false → fail)   log(msg): ekrana yaz
+//   tikla(page, hedef, label?, {zaman = 10000}?): arayüz tıklaması (run.cjs tikla adımıyla aynı: görünürlük ve isabet denetimli
+//     locator.click; hedef CSS seçici, {metin, tam?} ya da o sayfanın Playwright locator'ı). Başarısızlık ev() gibi kaydedilir
+//     (evalErrors, fails; false döner). İşaretçi kilidi taklidinde kilitliyken arayüze tıklamak gerçek kilitteki gibi amacına ulaşmaz:
+//     kilit anındaki imleç konumu hedefin üstünde değilse zaman aşımına düşer, üstündeyse tikla true döner ama tık kilitli öğeye gider,
+//     düğme etkinleşmez (etkiyi sonraki check() ile denetleyin; inceleme GZ-4). Senaryo Playwright'ın p.click/locator.click'ini DOĞRUDAN
+//     çağırırsa bu engel uygulanmaz (taklitte tık sessizce kilitli öğeye gider, gerçek kilitte zaman aşımı olurdu): arayüz tıklamaları
+//     için tikla kullanılmalı.
 //   module.exports.meta (isteğe bağlı): { testler, dosyalar, olcum, izinliHatalar, baslatma } — anlamları run.cjs ile aynı
 //
 // Faz 9 tasarımı §6.3 (K-11, K-12, K-13):
@@ -27,6 +34,26 @@
 //   - Kapanış her durumda tamamlanır (rapor döngü/BigInt güvenli yazılır; yazılamazsa yedek iskelet, çıkış 1; tarayıcı kapanır,
 //     süreç çıkar); yakalanmamış istisna KOSUCU_HATASI raporuyla biter (A1-01). İzinlerde gerekçe zorunlu; komut satırı izinleri
 //     tarayıcı açılmadan derlenir, hata kullanım hatasıdır (A1-09, A1-10).
+// Faz 1, 17 bellek çökmesi düzeltmesi (kosucu17; gerekçe: docs/v05/kosular/faz1/kosucu17/):
+//   - İşaretçi kilidi taklidi (--isaretci-kilidi taklit|gercek; varsayılan taklit) her oyuncunun bağlamına ilk başlatma betiği
+//     olarak kurulur (O.ISARETCI_TAKLIT; ayrıntı ortak.cjs'te): gerçek kilit her sekmede sentetik fare olayı seli üretiyordu.
+//   - Tarayıcı çökmesi/kopması ('disconnected'): hatalar.sayfa'ya {oyuncu: null, ileti: 'TARAYICI ÇÖKTÜ/KOPTU …'} yazılır, durum
+//     KALDI, neden'de açıkça belirtilir (eskiden kapalı sayfalar kapaliAtlama/kapaliIstisna ile sessizce atlanıyor, hatalar.sayfa
+//     boş kalıyordu). Senaryo kapatmadan (p.close/ctx.close sarmalayıcıları dışında) kapanan sekme o oyuncuya 'SEKME BEKLENMEDİK
+//     KAPANDI' sayfa hatası yazar. Kopma yüzünden yarıda kalan senaryo istisnası koşucu hatası sayılmaz (KALDI). Yerleşme duvar
+//     saatine göre en az --yerlesme ms sürer.
+//   - Rapor tutarlılığı: durum son görüntü ve sayaç okumasından (bütün await'lerden) SONRA hesaplanır, hatalar.sayfa aynı anda
+//     alınır; o sırada gelen sayfa hatası ya da kopma da duruma girer (eskiden hatalar.sayfa dolu, durum GECTI kalabiliyordu).
+//   - tikla(page, hedef) yardımcısı (yukarıda): taklit kilitte gerçek kilitteki Playwright isabet engeli (O.tiklaTaklitli).
+//   - Sayfa (renderer) çökmesi (inceleme KC-1; bellek sınırındaki OOM'un sık kurbanı renderer'dır): o oyuncunun hatalar.sayfa
+//     kaydına 'SAYFA ÇÖKTÜ (renderer crash): …' yazılır, kopma.tur 'renderer' (kopma.cokenler: oyuncu), durum KALDI. Çökmüş sekmenin
+//     isteklerinin 'Target crashed'/'Page crashed' reddi koşucu hatası sayılmaz (eskiden tick()'teki pages[0].waitForTimeout reddi
+//     KOSUCU_HATASI veriyordu; tick() artık Node zamanlayıcısıyla bekler).
+//   - Kopmadan sonra senaryo sürmez (inceleme KC-3): tarayıcı koptuktan ya da bir sekme çöktükten sonra ilk ev()/tick()/tikla()
+//     çağrısı bir kopma hatası atar ve senaryo durur (yarıda kalan senaryo kopma.senaryoHatasi'nda); senaryo bu hatayı yakalayıp
+//     sürse de kopmadan sonra çağrılan check() sayılmaz (kopma.sayilmayanKontrol). Eskiden kapalı sayfalar atlanıyor, kopmadan sonraki
+//     kontroller undefined değerle sayılıyordu (boşuna geçebiliyordu). İlk check()'ten önce kopan senaryoda neden 'senaryo ilk onaydan
+//     önce yarıda kaldı' olur (eskiden yanlışlıkla 'senaryo hiç onay içermiyor … meta.olcum ile işaretleyin' ekleniyordu; KC-2).
 // Çıkış kodu: 0 yalnız GECTI ya da OLCUM; 1 başarısızlık, koşucu hatası, zaman aşımı; 2 kullanım hatası.
 const { chromium } = require('playwright');
 const fs = require('fs');
@@ -36,12 +63,14 @@ const O = require('./ortak.cjs');
 const argv = process.argv.slice(2);
 let ayr;
 try {
-  ayr = O.secenekler(argv, { deger: ['players', 'size', 'url', 'report', 'timeout', 'goruntu', 'goruntu-dizin', 'hedef-tip', 'yerlesme'], cok: ['izin-hata', 'degisken', 'baslatma'], bayrak: [] });
+  ayr = O.secenekler(argv, { deger: ['players', 'size', 'url', 'report', 'timeout', 'goruntu', 'goruntu-dizin', 'hedef-tip', 'yerlesme', 'isaretci-kilidi'], cok: ['izin-hata', 'degisken', 'baslatma'], bayrak: [] });
 } catch (e) { console.error(e.message); process.exit(2); }
 const secim = ayr.o;
 const scenarioPath = secim._[0];
-const KULLANIM = 'Kullanım: node tests/harness/coop.cjs <senaryo.cjs> [--players N] [--size WxH] [--url ...] [--report r.json] [--izin-hata "desen # gerekçe"] [--baslatma betik.js] [--goruntu kalan|hep|yok] [--yerlesme ms]';
+const KULLANIM = 'Kullanım: node tests/harness/coop.cjs <senaryo.cjs> [--players N] [--size WxH] [--url ...] [--report r.json] [--izin-hata "desen # gerekçe"] [--baslatma betik.js] [--goruntu kalan|hep|yok] [--yerlesme ms] [--isaretci-kilidi taklit|gercek]';
 if (!scenarioPath || ayr.bilinmeyen.length) { console.error((ayr.bilinmeyen.length ? 'Bilinmeyen seçenek: ' + ayr.bilinmeyen.join(' ') + '\n' : '') + KULLANIM); process.exit(2); }
+let isaretciKipi;
+try { isaretciKipi = O.isaretciKipi(secim['isaretci-kilidi']); } catch (e) { console.error(e.message + '\n' + KULLANIM); process.exit(2); }
 // (A1-10) komut satırı izinleri tarayıcı açılmadan derlenir: bozuk düzenli ifade ya da gerekçesiz izin kullanım hatasıdır
 let cliIzinleri;
 try { cliIzinleri = O.izinleriDerle([], secim['izin-hata'] || []); } catch (e) { console.error(e.message + '\n' + KULLANIM); process.exit(2); }
@@ -74,6 +103,19 @@ try { kosuDegiskenleri = O.degiskenler(secim.degisken); } catch (e) { console.er
 (async () => {
   const t0 = Date.now();
   const report = { scenario: scenarioPath, players: N, checks: [], errors: {}, pageErrors: {}, fails: 0, evalErrors: [], kapaliAtlama: 0, kapaliIstisna: 0, kapananlar: [] };
+  // (kosucu17) tarayıcı düzeyindeki kopma kayıtları (oyuncuya bağlı değil): hatalar.sayfa'ya {oyuncu: null} olarak girer
+  const tarayiciHatalari = [];
+  let tarayiciKapatiliyor = false;   // finish() tarayıcıyı kendisi kapatırken gelen olaylar kopma değildir
+  let kopmaSenaryoHatasi = null;
+  // (kosucu17, KC-1/KC-3) çöken sekmeler (renderer crash) ve kopmadan sonra çağrılıp sayılmayan kontroller
+  const cokenler = [];
+  const sayilmayanKontroller = [];
+  // kopma: tarayıcı koptu ya da bir oyuncunun sekmesi çöktü (koşucunun kendi kapanışı sayılmaz)
+  const kopmaVar = () => tarayiciHatalari.length > 0 || cokenler.length > 0 || (!tarayiciKapatiliyor && !b.isConnected());
+  class KopmaHatasi extends Error {}
+  const kopmaHatasi = (nerede) => new KopmaHatasi(`koşu koptu (${tarayiciHatalari.length || !b.isConnected() ? 'tarayıcı çöktü/koptu' : 'sayfa (renderer) çöktü: ' + cokenler.map((c) => c.oyuncu).join(', ')}); ${nerede} tamamlanamadı, senaryo durduruldu`);
+  // Playwright'ın kapanma ve çökme iletileri ('Target crashed': CDP; 'Page crashed': çökmüş sayfanın kapsamı)
+  const KAPANMA = /has been closed|Target closed|Target page, context or browser|Browser closed|browser has disconnected|Target crashed|Page crashed/i;
   const kontroller = [];
   const kayitlar = [];
   const goruntuler = [];
@@ -91,6 +133,13 @@ try { kosuDegiskenleri = O.degiskenler(secim.degisken); } catch (e) { console.er
   let sonKontrolT = null;
   const goruntuDir = O.goruntuDizini(__dirname, scenarioPath, secim['goruntu-dizin']);
   const b = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--disable-gpu-watchdog', '--disable-background-timer-throttling', '--disable-renderer-backgrounding', '--disable-backgrounding-occluded-windows'] });
+  b.on('disconnected', () => {
+    if (tarayiciKapatiliyor) return;
+    const ileti = `TARAYICI ÇÖKTÜ/KOPTU: tarayıcı süreciyle bağlantı koptu (süreç öldürüldü ya da çöktü; ör. bellek sınırında OOM) — ${((Date.now() - t0) / 1000).toFixed(1)} sn, ${report.checks.length} kontrolden sonra`;
+    tarayiciHatalari.push(ileti);
+    console.log('KOPMA', ileti);
+  });
+  console.log(`işaretçi kilidi: ${isaretciKipi === 'taklit' ? 'taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)' : 'GERÇEK (taklit kapalı: --isaretci-kilidi gercek)'}`);
   const ortam = await O.ortamBilgisi(b, { kosucuDizin: __dirname, gorunum: [W, H], chromium });
   const tekrar = O.tekrarBilgisi({ kosucuDosya: __filename, argv, senaryoArg: scenarioPath, url: hedefUrl, coop: true, ortam });
   const names = ['Kaptan', 'Tayfa', 'Lostromo', 'Topçu'];
@@ -107,6 +156,8 @@ try { kosuDegiskenleri = O.degiskenler(secim.degisken); } catch (e) { console.er
     // senaryo bağlamı ya da sekmeyi kasıtlı kapatırken o sekmenin yarıda kalan istekleri hata sayılmaz
     const baglamKapat = ctx.close.bind(ctx);
     ctx.close = async (...a) => { kayit.kapaniyor = true; return baglamKapat(...a); };
+    // (kosucu17) işaretçi kilidi taklidi ilk başlatma betiği (her oyuncu sekmesi; ayrıntı ortak.cjs)
+    if (isaretciKipi === 'taklit') await ctx.addInitScript({ content: O.ISARETCI_TAKLIT });
     if (Object.keys(kosuDegiskenleri).length) await ctx.addInitScript({ content: O.degiskenBetigi(kosuDegiskenleri) });
     for (const s of baslatma) await ctx.addInitScript({ content: s });
     const p = await ctx.newPage();
@@ -120,8 +171,26 @@ try { kosuDegiskenleri = O.degiskenler(secim.degisken); } catch (e) { console.er
     p.on('pageerror', (e) => { const s = e.message + ' | ' + (e.stack || '').split('\n').slice(0, 3).join(' | '); report.pageErrors[anahtar].push(s.slice(0, 600)); console.log(anahtar, 'PAGEERR:', s.slice(0, 400)); });
     p.on('requestfailed', (r) => { const s = kayit.istekBasarisiz(r); if (!/favicon/.test(r.url())) console.log(anahtar, 'NETFAIL:', r.url().slice(0, 300) + (s === 'iptal' ? ' (kapanış iptali; hata sayılmaz)' : '')); });
     p.on('response', (r) => { if (kayit.yanit(r)) console.log(anahtar, 'HTTP', r.status(), r.url().slice(0, 300)); });
-    p.on('close', () => { kayit.kapaniyor = true; if (!bitti) { report.kapananlar.push({ oyuncu: anahtar, ms: Date.now() - t0 }); console.log(anahtar, 'sekme kapandı'); } });
-    p.on('crash', () => { report.pageErrors[anahtar].push('SAYFA ÇÖKTÜ (renderer crash)'); console.log(anahtar, 'PAGECRASH'); });
+    p.on('close', () => {
+      const kasitli = kayit.kapaniyor;
+      kayit.kapaniyor = true;
+      if (!bitti) { report.kapananlar.push({ oyuncu: anahtar, ms: Date.now() - t0, kasitli }); console.log(anahtar, 'sekme kapandı' + (kasitli ? '' : ' (senaryo kapatmadı)')); }
+      // (kosucu17) senaryo kapatmadan kapanan sekme: tarayıcı hâlâ bağlıysa o oyuncunun sayfa hatası (tarayıcı öldüyse onun kaydı yeter)
+      if (!kasitli && !bitti && !tarayiciKapatiliyor) setTimeout(() => {
+        if (bitti || tarayiciKapatiliyor || !b.isConnected()) return;
+        report.pageErrors[anahtar].push('SEKME BEKLENMEDİK KAPANDI (senaryo p.close/ctx.close ile kapatmadı)');
+        console.log(anahtar, 'SEKME BEKLENMEDİK KAPANDI');
+      }, 100);
+    });
+    // (KC-1) sekmenin renderer'ı çöktü: o oyuncunun sayfa hatası ve kopma (sonraki ev/tick/tikla senaryoyu durdurur)
+    p.on('crash', () => {
+      if (tarayiciKapatiliyor) return;
+      p.__kosucuCoktu = true;
+      const ms = Date.now() - t0;
+      report.pageErrors[anahtar].push(`SAYFA ÇÖKTÜ (renderer crash): ${anahtar} sekmesinin renderer süreci öldü ya da çöktü (ör. bellek sınırında OOM) — ${(ms / 1000).toFixed(1)} sn, ${report.checks.length} kontrolden sonra`);
+      cokenler.push({ oyuncu: anahtar, ms, kontrolSayisi: report.checks.length });
+      console.log(anahtar, 'PAGECRASH');
+    });
     p.playerName = name;
     p.oyuncuAnahtari = anahtar;
     await p.goto(hedefUrl);
@@ -138,7 +207,7 @@ try { kosuDegiskenleri = O.degiskenler(secim.degisken); } catch (e) { console.er
     try { fs.mkdirSync(goruntuDir, { recursive: true }); } catch (e) { /* yok */ }
     for (const p of pages) {
       const oyuncu = p.oyuncuAnahtari || p.playerName;
-      if (p.isClosed()) { out.push({ oyuncu, sayfa: null, not: 'sekme kapalı' }); continue; }
+      if (p.isClosed() || p.__kosucuCoktu) { out.push({ oyuncu, sayfa: null, not: p.__kosucuCoktu ? 'sekme çöktü' : 'sekme kapalı' }); continue; }
       const f = path.join(goruntuDir, `${ad}_${oyuncu}.png`);
       try { await p.screenshot({ path: f, timeout: 60000 }); out.push({ oyuncu, sayfa: f }); console.log('GORUNTU', f); }
       catch (e) { out.push({ oyuncu, sayfa: null, hata: e.message.slice(0, 200) }); }
@@ -170,6 +239,7 @@ try { kosuDegiskenleri = O.degiskenler(secim.degisken); } catch (e) { console.er
         yedekRapor(ileti);
         console.log(`SONUC: KOSUCU_HATASI (çıkış 1) | neden: ${ileti}`);
       } finally {
+        tarayiciKapatiliyor = true;
         try { await Promise.race([b.close(), new Promise((r) => setTimeout(r, 20000))]); } catch (e) { /* kapalı */ }
         clearTimeout(bekci);
         process.exit(cikis);
@@ -188,23 +258,50 @@ try { kosuDegiskenleri = O.degiskenler(secim.degisken); } catch (e) { console.er
   };
   const raporla = async () => {
     if (bekleyenGoruntu) await Promise.race([bekleyenGoruntu, new Promise((r) => setTimeout(r, 30000))]);
-    const pe = Object.values(report.pageErrors).reduce((s, a) => s + a.length, 0);
-    const hatalar = O.siniflandir(kayitlar, izinler);
-    const neden = [];
-    if (report.fails) neden.push(`başarısız kontrol ya da ev() istisnası: ${report.fails}`);
-    if (pe) neden.push(`sayfa hatası (pageerror): ${pe}`);
-    if (hatalar.sayim.konsol) neden.push(`izinsiz konsol hatası: ${hatalar.sayim.konsol}`);
-    if (hatalar.sayim.ag) neden.push(`izinsiz ağ hatası (≥ 400 yanıt ya da başarısız istek): ${hatalar.sayim.ag}`);
-    if (report.evalErrors.length) neden.push(`ev() istisnası (evalErrors): ${report.evalErrors.length}`);
-    if (senaryoOkundu && !report.harnessError && !report.timeout && report.checks.length === 0 && meta.olcum !== true) neden.push('senaryo hiç onay içermiyor: check() çağrılmadı (ölçüm betiği mi? module.exports.meta.olcum ile işaretleyin)');
-    if (report.harnessError) neden.push('koşucu hatası: ' + report.harnessError);
-    if (report.timeout) neden.push(`zaman aşımı (${timeoutS} sn)`);
-    const durum = report.timeout ? 'ZAMAN_ASIMI' : report.harnessError ? 'KOSUCU_HATASI' : neden.length ? 'KALDI' : meta.olcum === true ? 'OLCUM' : 'GECTI';
-    const cikis = durum === 'GECTI' || durum === 'OLCUM' ? 0 : 1;
-    if (!report.timeout && (goruntuKipi === 'hep' || (goruntuKipi === 'kalan' && cikis !== 0 && !ilkGoruntu))) await Promise.race([goruntuAl('son'), new Promise((r) => setTimeout(r, 30000))]);
-    report.ms = Date.now() - t0;
+    const hesapla = () => {
+      for (const z of izinler) z.eslesme = 0;   // siniflandir eşleşmeleri sayar: hesap iki kez yapıldığında çift sayılmasın
+      const pe = Object.values(report.pageErrors).reduce((s, a) => s + a.length, 0) + tarayiciHatalari.length;
+      const hatalar = O.siniflandir(kayitlar, izinler);
+      const neden = [];
+      if (report.fails) neden.push(`başarısız kontrol ya da ev() istisnası: ${report.fails}`);
+      if (pe) neden.push(`sayfa hatası (pageerror): ${pe}`);
+      // (kosucu17) tarayıcı kopması ve sekme (renderer) çökmesi açıkça: kopmadan sonra senaryo durur (KC-1/KC-3)
+      const kopmaNotu = kopmaSenaryoHatasi ? ' (senaryo yarıda kaldı: ' + kopmaSenaryoHatasi.slice(0, 160) + ')' : '';
+      if (tarayiciHatalari.length) neden.push(`tarayıcı çöktü/koptu${kopmaNotu}`);
+      if (cokenler.length) neden.push(`sayfa (renderer) çöktü: ${cokenler.map((c) => c.oyuncu).join(', ')}${tarayiciHatalari.length ? '' : kopmaNotu}`);
+      if (hatalar.sayim.konsol) neden.push(`izinsiz konsol hatası: ${hatalar.sayim.konsol}`);
+      if (hatalar.sayim.ag) neden.push(`izinsiz ağ hatası (≥ 400 yanıt ya da başarısız istek): ${hatalar.sayim.ag}`);
+      if (report.evalErrors.length) neden.push(`ev() istisnası (evalErrors): ${report.evalErrors.length}`);
+      // (KC-2) ilk check()'ten önce kopan senaryo "onaysız" değildir: kopma ayrıca yazılır, yanlış yönlendirme (meta.olcum) yapılmaz
+      if (senaryoOkundu && !report.harnessError && !report.timeout && report.checks.length === 0 && meta.olcum !== true) neden.push(kopmaVar() ? 'senaryo ilk onaydan önce yarıda kaldı (koşu koptu; check() çağrılamadı)' : 'senaryo hiç onay içermiyor: check() çağrılmadı (ölçüm betiği mi? module.exports.meta.olcum ile işaretleyin)');
+      if (report.harnessError) neden.push('koşucu hatası: ' + report.harnessError);
+      if (report.timeout) neden.push(`zaman aşımı (${timeoutS} sn)`);
+      const durum = report.timeout ? 'ZAMAN_ASIMI' : report.harnessError ? 'KOSUCU_HATASI' : neden.length ? 'KALDI' : meta.olcum === true ? 'OLCUM' : 'GECTI';
+      return { pe, hatalar, neden, durum, cikis: durum === 'GECTI' || durum === 'OLCUM' ? 0 : 1 };
+    };
+    // ön hesap: yalnız son görüntünün alınıp alınmayacağına karar verir (asıl durum aşağıda, bütün await'lerden sonra)
+    const onDurum = hesapla();
+    if (!report.timeout && (goruntuKipi === 'hep' || (goruntuKipi === 'kalan' && onDurum.cikis !== 0 && !ilkGoruntu))) await Promise.race([goruntuAl('son'), new Promise((r) => setTimeout(r, 30000))]);
+    // (kosucu17) her açık sekmenin işaretçi kilidi taklidi sayaçları (son belge); yanıt vermeyen sekmede 3 sn sonra vazgeçilir
+    let isaretciSayac = null;
+    if (isaretciKipi === 'taklit') {
+      isaretciSayac = {};
+      for (const p of pages) {
+        const oyuncu = p.oyuncuAnahtari || p.playerName;
+        if (p.isClosed() || !b.isConnected() || p.__kosucuCoktu) { isaretciSayac[oyuncu] = p.__kosucuCoktu ? 'sekme çöktü' : 'sekme kapalı'; continue; }
+        try { const s = await Promise.race([p.evaluate(O.ISARETCI_SAYAC_JS), new Promise((r) => setTimeout(() => r(undefined), 3000))]); isaretciSayac[oyuncu] = s === undefined ? 'okunamadı' : s; }
+        catch (e) { isaretciSayac[oyuncu] = 'okunamadı'; }
+      }
+    }
+    // (kosucu17) tarayıcı son görüntü ya da sayaç okuması sırasında koptuysa 'disconnected' olayı kısa bir gecikmeyle gelebilir: beklenir
+    for (let i = 0; i < 30 && !tarayiciHatalari.length && !b.isConnected(); i++) await new Promise((r) => setTimeout(r, 20));
+    // (kosucu17, DOG-2) asıl durum BÜTÜN await'lerden sonra hesaplanır ve hatalar.sayfa aynı anda (arada await olmadan) toplanır:
+    // son görüntü ya da sayaç okuması sürerken gelen sayfa hatası/kopma da duruma girer; rapor kendi içinde tutarlıdır
+    const { pe, hatalar, neden, durum, cikis } = hesapla();
     const sayfaHatalari = [];
+    for (const ileti of tarayiciHatalari) sayfaHatalari.push({ oyuncu: null, ileti });
     for (const [oyuncu, liste] of Object.entries(report.pageErrors)) for (const ileti of liste) sayfaHatalari.push({ oyuncu, ileti });
+    report.ms = Date.now() - t0;
     Object.assign(report, {
       sema: O.SEMA, senaryo: path.relative(process.cwd(), path.resolve(scenarioPath)) || scenarioPath, meta,
       hedef: { tip: O.hedefTipi(hedefUrl, false, secim['hedef-tip']), url: hedefUrl, verilenUrl: url, gorunum: [W, H], oyuncu: N },
@@ -212,9 +309,13 @@ try { kosuDegiskenleri = O.degiskenler(secim.degisken); } catch (e) { console.er
       hatalar: { konsol: hatalar.konsol, konsolIzinli: hatalar.konsolIzinli, konsolAgEslesen: hatalar.konsolAgEslesen, sayfa: sayfaHatalari, ag: hatalar.ag, agIzinli: hatalar.agIzinli, agIptal: hatalar.agIptal, degerlendirme: report.evalErrors, kesildi: hatalar.kesildi },
       uyarilar: hatalar.uyarilar, uyariSayim: { farkli: hatalar.uyarilar.length, toplam: hatalar.uyariToplam, sinirDisi: hatalar.uyariTasma },
       izinler: O.izinOzeti(izinler), goruntuler,
+      isaretciKilidi: { kip: isaretciKipi, sayac: isaretciKipi === 'taklit' ? isaretciSayac : null },
+      kopma: tarayiciHatalari.length || cokenler.length ? { tur: tarayiciHatalari.length ? 'tarayici' : 'renderer', kayitlar: tarayiciHatalari.slice(), cokenler: cokenler.map((c) => Object.assign({}, c)),
+        senaryoHatasi: kopmaSenaryoHatasi, sayilmayanKontrol: sayilmayanKontroller.slice() } : null,
       sonuc: { durum, cikisKodu: cikis, neden, onaySayisi: report.checks.length, kontrolSayisi: kontroller.length, gecen: kontroller.filter((k) => k.ok).length, kalan: kontroller.filter((k) => !k.ok).length,
         izinsizKonsol: hatalar.sayim.konsol, izinsizAg: hatalar.sayim.ag, izinliKonsol: hatalar.sayim.konsolIzinli, izinliAg: hatalar.sayim.agIzinli,
-        evalErrors: report.evalErrors.length, kapaliAtlama: report.kapaliAtlama, kapaliIstisna: report.kapaliIstisna, tur: 'tarayici+webrtc' },
+        evalErrors: report.evalErrors.length, kapaliAtlama: report.kapaliAtlama, kapaliIstisna: report.kapaliIstisna, tur: 'tarayici+webrtc', tarayiciKoptu: tarayiciHatalari.length > 0,
+        kopma: tarayiciHatalari.length ? 'tarayici' : cokenler.length ? 'renderer' : null },
       sure: { hazirMs, toplamMs: report.ms, yerlesmeMs: yerlesmeSure },
     });
     console.log(`checks: ${report.checks.length} fails: ${report.fails} pageErrors: ${pe} (${(report.ms / 1000).toFixed(1)} s)`);
@@ -251,15 +352,19 @@ try { kosuDegiskenleri = O.degiskenler(secim.degisken); } catch (e) { console.er
     for (let i = 0; i < N; i++) pages.push(await mk(names[i]));
     hazirMs = Date.now() - t0;
     const ev = async (p, js, label, { kapaliIzinli = false } = {}) => {
+      // (KC-3) tarayıcı koptuktan ya da bir sekme çöktükten sonra senaryo sürmez (kalan istekler değer okuyamaz, onaylar boşuna geçerdi)
+      if (kopmaVar()) throw kopmaHatasi(`ev(${label || ''})`);
       if (p.isClosed()) { report.kapaliAtlama++; return undefined; }
       const oyuncu = p.oyuncuAnahtari || p.playerName;
       // sonuç günlüğü döngü/BigInt güvenli (A1-01): eskiden döngüsel bir dönüş değeri JSON.stringify istisnasıyla EVALERR sayılıyordu
       try { const r = await p.evaluate(js); if (label) console.log(`${oyuncu}/${label}`, O.kisa(r, 700)); return r; }
       catch (e) {
         const msg = O.temiz((e && e.message) || e);
-        const kapanmaIletisi = /has been closed|Target closed|Target page, context or browser/i.test(msg);
-        // kapanma olayı istisnadan hemen sonra işlenebilir: "kapandı" iletisinde sayfanın kapandığını kısa süre bekleyerek doğrula
-        if (kapanmaIletisi) for (let i = 0; i < 10 && !p.isClosed(); i++) await new Promise((r) => setTimeout(r, 20));
+        const kapanmaIletisi = KAPANMA.test(msg);
+        // kapanma/çökme olayı istisnadan hemen sonra işlenebilir: iletide sayfanın kapandığını ya da koşunun koptuğunu kısa süre bekleyerek doğrula
+        if (kapanmaIletisi) for (let i = 0; i < 10 && !p.isClosed() && !kopmaVar(); i++) await new Promise((r) => setTimeout(r, 20));
+        // (KC-1) istek sürerken sekme çöktü ya da tarayıcı koptu: hata sayılmaz (kopma kaydı hatalar.sayfa'da), senaryo durur
+        if (kopmaVar()) { report.kapaliIstisna++; console.log('EV-KOPMA', oyuncu, label || '', msg.slice(0, 120)); throw kopmaHatasi(`ev(${label || ''})`); }
         if (p.isClosed() || (kapaliIzinli && kapanmaIletisi)) { report.kapaliIstisna++; console.log('EV-KAPALI', oyuncu, label || '', msg.slice(0, 120)); return undefined; }
         report.evalErrors.push({ oyuncu: oyuncu || null, etiket: label || null, js: String(js).slice(0, 400), hata: msg.slice(0, 600) });
         report.fails++;
@@ -268,16 +373,45 @@ try { kosuDegiskenleri = O.degiskenler(secim.degisken); } catch (e) { console.er
         return undefined;
       }
     };
+    // (kosucu17, DOG-3) arayüz tıklaması: run.cjs tikla adımıyla aynı (O.tiklaTaklitli: taklit kilitte gerçek kilitteki Playwright isabet
+    // engeli). Başarısızlık ev() gibi kaydedilir (evalErrors, fails, ilk başarısızlık görüntüsü) ve false döner; kapalı sekme atlanır.
+    const tikla = async (p, hedef, label, { zaman = 10000 } = {}) => {
+      if (kopmaVar()) throw kopmaHatasi(`tikla(${label || ''})`);   // (KC-3)
+      if (p.isClosed()) { report.kapaliAtlama++; return false; }
+      const oyuncu = p.oyuncuAnahtari || p.playerName;
+      const tanim = typeof hedef === 'string' ? hedef : hedef && typeof hedef === 'object' && 'metin' in hedef ? 'metin: ' + hedef.metin : String(hedef);
+      try {
+        const loc = typeof hedef === 'string' ? p.locator(hedef) : hedef && typeof hedef === 'object' && 'metin' in hedef ? p.getByText(hedef.metin, { exact: !!hedef.tam }) : hedef;
+        if (!loc || typeof loc.click !== 'function' || typeof loc.elementHandle !== 'function') throw new Error('tikla: hedef CSS seçici, {metin, tam?} ya da Playwright locator\'ı olmalı');
+        const tk = await O.tiklaTaklitli(loc, { zaman, kip: isaretciKipi });
+        console.log(`${oyuncu}/${label || 'tikla'} tıklandı: ${tanim}${tk.engel ? ` (${tk.deneme - 1} deneme kilit engeline takıldı)` : ''}`);
+        return true;
+      } catch (e) {
+        const msg = O.temiz((e && e.message) || e);
+        if (KAPANMA.test(msg)) for (let i = 0; i < 10 && !p.isClosed() && !kopmaVar(); i++) await new Promise((r) => setTimeout(r, 20));
+        if (kopmaVar()) { report.kapaliIstisna++; console.log('TIKLA-KOPMA', oyuncu, label || '', msg.slice(0, 120)); throw kopmaHatasi(`tikla(${label || ''})`); }   // (KC-1)
+        if (p.isClosed()) { report.kapaliIstisna++; console.log('TIKLA-KAPALI', oyuncu, label || '', msg.slice(0, 120)); return false; }
+        report.evalErrors.push({ oyuncu: oyuncu || null, etiket: label || null, js: 'tikla ' + tanim.slice(0, 380), hata: msg.slice(0, 600) });
+        report.fails++;
+        console.log('EVALERR', oyuncu, label || 'tikla', msg.slice(0, 300));
+        ilkBasarisizlik(`EVALERR ${oyuncu}/${label || 'tikla'}: ${msg.slice(0, 200)}`);
+        return false;
+      }
+    };
     const tick = async (sec = 1) => {
       for (let i = 0; i < sec * 5; i++) {
-        for (const p of pages) { if (p.isClosed()) { report.kapaliAtlama++; continue; } await ev(p, 'DK.sim(0.2)'); }
-        if (!pages[0].isClosed()) await pages[0].waitForTimeout(40); else await new Promise((r) => setTimeout(r, 40));
+        for (const p of pages) { if (kopmaVar()) throw kopmaHatasi('tick()'); if (p.isClosed()) { report.kapaliAtlama++; continue; } await ev(p, 'DK.sim(0.2)'); }
+        // (KC-1) Node zamanlayıcısı: eskiden pages[0].waitForTimeout(40) oda sahibinin sekmesi çökünce 'Page crashed' ile reddediliyor,
+        // senaryo KOSUCU_HATASI ile bitiyordu (bekleme süresi aynı: 40 ms)
+        await new Promise((r) => setTimeout(r, 40));
       }
     };
     const log = (m) => console.log('[test]', m);
     const check = (label, ok, detail) => {
       // zaman aşımından sonra (rapor yazıldı, tarayıcı kapanıyor) yarıda kalan senaryonun kontrolleri sayılmaz ve PASS/FAIL basmaz
       if (bitti) { console.log('GEC KONTROL (koşu bitmişti; sayılmadı): ' + label); return; }
+      // (KC-3) kopmadan sonra (senaryo kopma hatasını yakalayıp sürdüyse) gelen kontrol sayılmaz: değeri kopmuş/çökmüş sekmeden okunamaz
+      if (kopmaVar()) { sayilmayanKontroller.push(String(label)); console.log('KOPMADAN SONRA KONTROL (sayılmadı): ' + label); return; }
       // (A1-07) ok bir söz (Promise) ise await unutulmuştur: söz her zaman 'doğru'dur ama değer hiç denetlenmedi → kontrol kalır
       const sozMu = (x) => x !== null && (typeof x === 'object' || typeof x === 'function') && typeof x.then === 'function';
       let hata = null;
@@ -293,19 +427,32 @@ try { kosuDegiskenleri = O.degiskenler(secim.degisken); } catch (e) { console.er
       if (!ok) { const g = ilkBasarisizlik(`FAIL ${label}`); if (g) g.then((x) => { k.goruntu = x; }); }
     };
     senaryoT0 = Date.now();
-    await scenario({ pages, host: pages[0], guests: pages.slice(1), ev, tick, log, check, browser: b, mk });
+    await scenario({ pages, host: pages[0], guests: pages.slice(1), ev, tick, log, check, tikla, browser: b, mk });
     // (A1-08) yerleşme: son adımın başlattığı eşzamansız işlerin (zamanlayıcı, söz, ağ mesajı) hataları sınıflandırmadan önce gelsin
     if (!bitti && yerlesmeMs > 0 && b.contexts().some((c) => c.pages().some((x) => !x.isClosed()))) {
       const say = () => Object.values(report.pageErrors).reduce((s, a) => s + a.length, 0) + kayitlar.reduce((s, k) => s + k.konsolToplam + k.agToplam, 0);
       const onceSay = say();
       const ty = Date.now();
-      await new Promise((r) => setTimeout(r, yerlesmeMs));
+      // (kosucu17) Node zamanlayıcısı Date.now()'a göre 1-2 ms erken dönebilir: yerleşme duvar saatine göre en az yerlesmeMs sürer
+      while (Date.now() - ty < yerlesmeMs) await new Promise((r) => setTimeout(r, Math.max(1, yerlesmeMs - (Date.now() - ty))));
       yerlesmeSure = Date.now() - ty;
       if (say() > onceSay) console.log(`YERLESME: senaryodan sonraki ${yerlesmeSure} ms içinde ${say() - onceSay} yeni hata kaydı geldi`);
     }
     await finish();
   } catch (e) {
     if (bitti) { console.log('(kapanış sürerken yarıda kalan senaryo: ' + O.temiz((e && e.message) || e).split('\n')[0].slice(0, 160) + ')'); await bitisSozu; return; }
+    // (kosucu17) tarayıcı koptuğu ya da bir sekme çöktüğü için yarıda kalan senaryo (ör. mk() yeni bağlam açamadı, senaryonun kendi
+    // Playwright çağrısı 'Page crashed' verdi, ev()/tick()/tikla() kopma hatası attı) koşucu hatası değildir: kopma kaydıyla KALDI.
+    // 'disconnected'/'crash' olayı istisnadan sonra işlenebilir: ileti kapanma/çökme bildiriyorsa (ya da tarayıcı bağlı değilse) kısa süre beklenir.
+    const kapanmaIletisi = e instanceof KopmaHatasi || KAPANMA.test(O.temiz((e && e.message) || e));
+    for (let i = 0; i < 30 && !kopmaVar(); i++) { if (!kapanmaIletisi && b.isConnected()) break; await new Promise((r) => setTimeout(r, 20)); }
+    if (kopmaVar()) {
+      kopmaSenaryoHatasi = O.temiz((e && e.message) || e).split('\n')[0].slice(0, 300);
+      if (!tarayiciHatalari.length && !b.isConnected()) tarayiciHatalari.push(`TARAYICI ÇÖKTÜ/KOPTU: tarayıcı bağlı değil (senaryo istisnası: ${kopmaSenaryoHatasi.slice(0, 160)})`);
+      console.log('(koşu koptuğu için yarıda kalan senaryo: ' + kopmaSenaryoHatasi.slice(0, 160) + ')');
+      await finish();
+      return;
+    }
     console.log('HARNESS ERROR', O.temiz(e.message).slice(0, 500));
     report.harnessError = O.temiz(e.message).slice(0, 500);
     await finish();

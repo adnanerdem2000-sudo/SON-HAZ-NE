@@ -1,0 +1,518 @@
+{
+ "arac": "tests/node/kosucu_negatif.mjs",
+ "tarih": "2026-11-15T06:10:28.864Z",
+ "kosucuDizin": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/once_kosucu",
+ "ciktiDizin": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/kosu/N2_kn_once",
+ "eskiKosucuKipi": false,
+ "durum": "KALDI",
+ "cekirdekKalan": [],
+ "yanlisGecenler": [],
+ "kalanlar": [
+  "rk",
+  "rw",
+  "rm",
+  "rc",
+  "rg"
+ ],
+ "durumlar": [
+  {
+   "ad": "rk",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "renderer süreci js adımı sürerken öldürülür: SAYFA ÇÖKTÜ, kalan adımlar koşmaz → KALDI",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KALDI",
+    "rapor": true
+   },
+   "gercek": {
+    "cikis": 1,
+    "sinyal": null,
+    "durum": "ZAMAN_ASIMI",
+    "sema": "dk-test-raporu/2"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "süreç kendiliğinden bitti (asılı kalmadı)",
+     "ok": true
+    },
+    {
+     "ad": "renderer süreci (renderer) senaryo sürerken öldürüldü",
+     "ok": true
+    },
+    {
+     "ad": "süre ≤ 60000 ms",
+     "ok": false,
+     "deger": 90664
+    },
+    {
+     "ad": "durum",
+     "ok": false,
+     "deger": "ZAMAN_ASIMI"
+    },
+    {
+     "ad": "eski alanlar korunmuş",
+     "ok": true
+    },
+    {
+     "ad": "sema dk-test-raporu/2",
+     "ok": true
+    },
+    {
+     "ad": "ortam alanı (playwright, tarayıcı, GL)",
+     "ok": true
+    },
+    {
+     "ad": "tekrar.komut senaryoyu içeriyor",
+     "ok": true
+    },
+    {
+     "ad": "sonuc.cikisKodu = süreç çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "hatalar.sayfa: SAYFA ÇÖKTÜ (renderer crash)",
+     "ok": true
+    },
+    {
+     "ad": "neden: sayfa (renderer) çöktü",
+     "ok": false,
+     "deger": [
+      "başarısız kontrol ya da adım: 2",
+      "sayfa hatası (pageerror): 1",
+      "adım istisnası (evalErrors): 1",
+      "zaman aşımı (90 sn)"
+     ]
+    },
+    {
+     "ad": "kopma: tür renderer, adım 2, 4 adım koşmadı; RK02/RK03 yok",
+     "ok": false,
+     "deger": {
+      "kopma": null,
+      "kontroller": [
+       "RK01",
+       "RK02"
+      ]
+     }
+    },
+    {
+     "ad": "zaman aşımı ve koşucu hatası yok; sonuc.kopma renderer",
+     "ok": false,
+     "deger": {
+      "timeout": true,
+      "sonuc": {
+       "durum": "ZAMAN_ASIMI",
+       "cikisKodu": 1,
+       "neden": [
+        "başarısız kontrol ya da adım: 2",
+        "sayfa hatası (pageerror): 1",
+        "adım istisnası (evalErrors): 1",
+        "zaman aşımı (90 sn)"
+       ],
+       "onaySayisi": 3,
+       "kontrolSayisi": 2,
+       "gecen": 1,
+       "kalan": 1,
+       "izinsizKonsol": 0,
+       "izinsizAg": 0,
+       "izinliKonsol": 0,
+       "izinliAg": 0,
+       "tur": "tarayici",
+       "turSayim": {
+        "tarayici": 1,
+        "null": 1
+       },
+       "tarayiciKoptu": false,
+       "kopma": null
+      }
+     }
+    }
+   ],
+   "rapor": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/kosu/N2_kn_once/rk.json",
+   "gunluk": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/kosu/N2_kn_once/rk.log",
+   "sureMs": 90664
+  },
+  {
+   "ad": "rw",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "renderer süreci bekleme adımı sürerken öldürülür: KOSUCU_HATASI değil KALDI",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KALDI",
+    "rapor": true
+   },
+   "gercek": {
+    "cikis": 1,
+    "sinyal": null,
+    "durum": "KOSUCU_HATASI",
+    "sema": "dk-test-raporu/2"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "süreç kendiliğinden bitti (asılı kalmadı)",
+     "ok": true
+    },
+    {
+     "ad": "renderer süreci (renderer) senaryo sürerken öldürüldü",
+     "ok": true
+    },
+    {
+     "ad": "süre ≤ 60000 ms",
+     "ok": true
+    },
+    {
+     "ad": "durum",
+     "ok": false,
+     "deger": "KOSUCU_HATASI"
+    },
+    {
+     "ad": "eski alanlar korunmuş",
+     "ok": true
+    },
+    {
+     "ad": "sema dk-test-raporu/2",
+     "ok": true
+    },
+    {
+     "ad": "ortam alanı (playwright, tarayıcı, GL)",
+     "ok": true
+    },
+    {
+     "ad": "tekrar.komut senaryoyu içeriyor",
+     "ok": true
+    },
+    {
+     "ad": "sonuc.cikisKodu = süreç çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "hatalar.sayfa: SAYFA ÇÖKTÜ (renderer crash)",
+     "ok": true
+    },
+    {
+     "ad": "koşucu hatası yok (harnessError boş)",
+     "ok": false,
+     "deger": "page.waitForTimeout: Page crashed"
+    },
+    {
+     "ad": "kopma: tür renderer, yarıda kalan bekleme adımı 3; RW02 yok",
+     "ok": false,
+     "deger": null
+    }
+   ],
+   "rapor": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/kosu/N2_kn_once/rw.json",
+   "gunluk": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/kosu/N2_kn_once/rw.log",
+   "sureMs": 678
+  },
+  {
+   "ad": "rm",
+   "cekirdek": false,
+   "kosucu": "run",
+   "aciklama": "renderer süreci metrics adımının CDP isteği sürerken öldürülür: asılı kalmaz → KALDI",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KALDI",
+    "rapor": true
+   },
+   "gercek": {
+    "cikis": 1,
+    "sinyal": null,
+    "durum": "ZAMAN_ASIMI",
+    "sema": "dk-test-raporu/2"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "süreç kendiliğinden bitti (asılı kalmadı)",
+     "ok": true
+    },
+    {
+     "ad": "renderer süreci (renderer) senaryo sürerken öldürüldü",
+     "ok": true
+    },
+    {
+     "ad": "süre ≤ 60000 ms",
+     "ok": false,
+     "deger": 90690
+    },
+    {
+     "ad": "durum",
+     "ok": false,
+     "deger": "ZAMAN_ASIMI"
+    },
+    {
+     "ad": "eski alanlar korunmuş",
+     "ok": true
+    },
+    {
+     "ad": "sema dk-test-raporu/2",
+     "ok": true
+    },
+    {
+     "ad": "ortam alanı (playwright, tarayıcı, GL)",
+     "ok": true
+    },
+    {
+     "ad": "tekrar.komut senaryoyu içeriyor",
+     "ok": true
+    },
+    {
+     "ad": "sonuc.cikisKodu = süreç çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "kopma: tür renderer, adım 3 (metrics); RM02 yok",
+     "ok": false,
+     "deger": {
+      "kopma": null,
+      "kontroller": [
+       "RM01"
+      ]
+     }
+    },
+    {
+     "ad": "metrics adımı kanıt uyarısıyla bitti (sayılmadı)",
+     "ok": false,
+     "deger": {}
+    },
+    {
+     "ad": "zaman aşımı ve koşucu hatası yok",
+     "ok": false,
+     "deger": {
+      "timeout": true
+     }
+    }
+   ],
+   "rapor": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/kosu/N2_kn_once/rm.json",
+   "gunluk": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/kosu/N2_kn_once/rm.log",
+   "sureMs": 90690
+  },
+  {
+   "ad": "rc",
+   "cekirdek": false,
+   "kosucu": "coop",
+   "aciklama": "co-op: oda sahibinin renderer'ı ev() isteği sürerken öldürülür: SAYFA ÇÖKTÜ (Kaptan), senaryo durur → KALDI",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KALDI",
+    "rapor": true
+   },
+   "gercek": {
+    "cikis": 1,
+    "sinyal": null,
+    "durum": "KOSUCU_HATASI",
+    "sema": "dk-test-raporu/2"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "süreç kendiliğinden bitti (asılı kalmadı)",
+     "ok": true
+    },
+    {
+     "ad": "renderer süreci (renderer) senaryo sürerken öldürüldü",
+     "ok": true
+    },
+    {
+     "ad": "süre ≤ 90000 ms",
+     "ok": true
+    },
+    {
+     "ad": "durum",
+     "ok": false,
+     "deger": "KOSUCU_HATASI"
+    },
+    {
+     "ad": "eski alanlar korunmuş",
+     "ok": true
+    },
+    {
+     "ad": "sema dk-test-raporu/2",
+     "ok": true
+    },
+    {
+     "ad": "ortam alanı (playwright, tarayıcı, GL)",
+     "ok": true
+    },
+    {
+     "ad": "tekrar.komut senaryoyu içeriyor",
+     "ok": true
+    },
+    {
+     "ad": "sonuc.cikisKodu = süreç çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "hatalar.sayfa: Kaptan, SAYFA ÇÖKTÜ (renderer crash)",
+     "ok": true
+    },
+    {
+     "ad": "kopma: tür renderer, çöken Kaptan; senaryo durdu (kopma hatası)",
+     "ok": false,
+     "deger": null
+    },
+    {
+     "ad": "RC01 geçti, RC02 koşmadı; yarıdaki istek hata sayılmadı (evalErrors 0)",
+     "ok": false,
+     "deger": {
+      "kontroller": [
+       [
+        "RC01",
+        true
+       ]
+      ],
+      "evalErrors": [
+       {
+        "oyuncu": "Kaptan",
+        "etiket": "öldürme sırasında",
+        "js": "new Promise((r) => setTimeout(() => r('öldürülmedi'), 20000))",
+        "hata": "page.evaluate: Target crashed "
+       },
+       {
+        "oyuncu": "Kaptan",
+        "etiket": null,
+        "js": "DK.sim(0.2)",
+        "hata": "page.evaluate: Target crashed "
+       }
+      ]
+     }
+    },
+    {
+     "ad": "neden: sayfa (renderer) çöktü: Kaptan; koşucu hatası yok",
+     "ok": false,
+     "deger": {
+      "neden": [
+       "başarısız kontrol ya da ev() istisnası: 2",
+       "sayfa hatası (pageerror): 1",
+       "ev() istisnası (evalErrors): 2",
+       "koşucu hatası: page.waitForTimeout: Page crashed"
+      ],
+      "harnessError": "page.waitForTimeout: Page crashed"
+     }
+    }
+   ],
+   "rapor": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/kosu/N2_kn_once/rc.json",
+   "gunluk": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/kosu/N2_kn_once/rc.log",
+   "sureMs": 768
+  },
+  {
+   "ad": "rg",
+   "cekirdek": false,
+   "kosucu": "coop",
+   "aciklama": "co-op: konuğun renderer'ı öldürülür; tick() kopma hatası atar, kopmadan sonraki check() sayılmaz → KALDI",
+   "beklenen": {
+    "cikis": 1,
+    "durum": "KALDI",
+    "rapor": true
+   },
+   "gercek": {
+    "cikis": 1,
+    "sinyal": null,
+    "durum": "KALDI",
+    "sema": "dk-test-raporu/2"
+   },
+   "sonuc": "KALDI",
+   "yanlisGecis": false,
+   "denetimler": [
+    {
+     "ad": "çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "süreç kendiliğinden bitti (asılı kalmadı)",
+     "ok": true
+    },
+    {
+     "ad": "renderer süreci (renderer2) senaryo sürerken öldürüldü",
+     "ok": true
+    },
+    {
+     "ad": "süre ≤ 90000 ms",
+     "ok": true
+    },
+    {
+     "ad": "durum",
+     "ok": true
+    },
+    {
+     "ad": "eski alanlar korunmuş",
+     "ok": true
+    },
+    {
+     "ad": "sema dk-test-raporu/2",
+     "ok": true
+    },
+    {
+     "ad": "ortam alanı (playwright, tarayıcı, GL)",
+     "ok": true
+    },
+    {
+     "ad": "tekrar.komut senaryoyu içeriyor",
+     "ok": true
+    },
+    {
+     "ad": "sonuc.cikisKodu = süreç çıkış kodu",
+     "ok": true
+    },
+    {
+     "ad": "hatalar.sayfa: Tayfa, SAYFA ÇÖKTÜ (renderer crash)",
+     "ok": true
+    },
+    {
+     "ad": "kopma: tür renderer, çöken Tayfa; RG02 sayılmadı",
+     "ok": false,
+     "deger": null
+    },
+    {
+     "ad": "RG01 geçti; RG02 kontrollerde yok",
+     "ok": false,
+     "deger": [
+      [
+       "RG01",
+       true
+      ],
+      [
+       "RG02",
+       true
+      ]
+     ]
+    },
+    {
+     "ad": "koşucu hatası yok",
+     "ok": true
+    },
+    {
+     "ad": "tick() kopma hatası attı ('koşu koptu … tick()')",
+     "ok": false,
+     "deger": null
+    }
+   ],
+   "rapor": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/kosu/N2_kn_once/rg.json",
+   "gunluk": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/kosu/N2_kn_once/rg.log",
+   "sureMs": 4934
+  }
+ ]
+}

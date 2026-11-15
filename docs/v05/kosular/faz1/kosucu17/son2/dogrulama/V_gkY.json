@@ -1,0 +1,1586 @@
+{
+ "baslangic": "2026-11-15T06:29:41.640Z",
+ "oyun": "http://localhost:8080/index.html?test=1",
+ "ortakSha": "d46459b05bda268e1a3940575b44f6bbfd58a98d523ed572230548ed77f4c45e",
+ "surum": "153.0.8010.12",
+ "gercek": {
+  "fikstur": {
+   "T0_kilitsiz_tikla": {
+    "t": {
+     "sonuc": "ok",
+     "ms": 48,
+     "deneme": 1,
+     "engel": false
+    },
+    "d": {
+     "ust": {
+      "tik": {
+       "b": 1
+      },
+      "ple": null,
+      "plc": [],
+      "ev": [
+       [
+        "click",
+        "b",
+        true,
+        80,
+        40
+       ]
+      ]
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    }
+   },
+   "T1_donmus_konum_hedefte": {
+    "k": "ok",
+    "t": {
+     "sonuc": "ok",
+     "ms": 281,
+     "deneme": 1,
+     "engel": false
+    },
+    "d": {
+     "ust": {
+      "tik": {
+       "c": 1
+      },
+      "ple": "c",
+      "plc": [
+       "change:c"
+      ],
+      "ev": [
+       [
+        "click",
+        "c",
+        true,
+        80,
+        40
+       ]
+      ]
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    }
+   },
+   "T2_hud_ustunde_tuvale_tikla": {
+    "k": "ok",
+    "t": {
+     "sonuc": "hata: locator.click: Timeout 3000ms exceeded.",
+     "ms": 3004
+    },
+    "d": {
+     "ust": {
+      "tik": {},
+      "ple": "c",
+      "plc": [
+       "change:c"
+      ],
+      "ev": []
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    }
+   },
+   "T3_tuvalde_tuvale_tikla": {
+    "k": "ok",
+    "t": {
+     "sonuc": "ok",
+     "ms": 113,
+     "deneme": 1,
+     "engel": false
+    },
+    "d": {
+     "ust": {
+      "tik": {
+       "c": 1
+      },
+      "ple": "c",
+      "plc": [
+       "change:c"
+      ],
+      "ev": [
+       [
+        "click",
+        "c",
+        true,
+        220,
+        300
+       ]
+      ]
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    }
+   },
+   "T4_beklerken_kilit": {
+    "t": {
+     "sonuc": "hata: locator.click: Timeout 4000ms exceeded.",
+     "ms": 4001
+    },
+    "d": {
+     "ust": {
+      "tik": {},
+      "ple": "c",
+      "plc": [
+       "change:c"
+      ],
+      "ev": []
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    }
+   },
+   "T5_acik_golge_hedefte": {
+    "k": "ok",
+    "t": {
+     "sonuc": "ok",
+     "ms": 54,
+     "deneme": 1,
+     "engel": false
+    },
+    "d": {
+     "ust": {
+      "tik": {
+       "c": 1
+      },
+      "ple": "c",
+      "plc": [
+       "change:c"
+      ],
+      "ev": [
+       [
+        "click",
+        "c",
+        true,
+        100,
+        165
+       ]
+      ]
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    }
+   },
+   "T5b_acik_golge_disinda": {
+    "k": "ok",
+    "t": {
+     "sonuc": "hata: locator.click: Timeout 3000ms exceeded.",
+     "ms": 3001
+    },
+    "d": {
+     "ust": {
+      "tik": {},
+      "ple": "c",
+      "plc": [
+       "change:c"
+      ],
+      "ev": []
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    }
+   },
+   "T6_kapali_golge_ev_sahibi_hedefte": {
+    "k": "ok",
+    "t": {
+     "sonuc": "ok",
+     "ms": 41,
+     "deneme": 1,
+     "engel": false
+    },
+    "d": {
+     "ust": {
+      "tik": {
+       "c": 1
+      },
+      "ple": "c",
+      "plc": [
+       "change:c"
+      ],
+      "ev": [
+       [
+        "click",
+        "c",
+        true,
+        100,
+        225
+       ]
+      ]
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    }
+   },
+   "T7_klavye_enter": {
+    "k": "ok",
+    "d": {
+     "ust": {
+      "tik": {
+       "b": 1
+      },
+      "ple": "c",
+      "plc": [
+       "change:c"
+      ],
+      "ev": [
+       [
+        "click",
+        "b",
+        true,
+        0,
+        0
+       ]
+      ]
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    }
+   },
+   "T8_cerceve_kilitli_ust_tikla": {
+    "k": "ok",
+    "d0": {
+     "ust": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": "ic",
+      "plc": [
+       "change:ic"
+      ],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    },
+    "t": {
+     "sonuc": "ok",
+     "ms": 80,
+     "deneme": 1,
+     "engel": false
+    },
+    "d1": {
+     "ust": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "cerceve": {
+      "tik": {
+       "ic": 1
+      },
+      "ple": "ic",
+      "plc": [],
+      "ev": [
+       [
+        "click",
+        "ic",
+        true,
+        70,
+        100
+       ]
+      ]
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    },
+    "ham": {
+     "ust": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "cerceve": {
+      "tik": {
+       "ic": 1
+      },
+      "ple": "ic",
+      "plc": [],
+      "ev": [
+       [
+        "click",
+        "ic",
+        true,
+        70,
+        100
+       ]
+      ]
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    }
+   },
+   "T9_ust_kilitli_cerceveye_ham_tik": {
+    "k": "ok",
+    "d": {
+     "ust": {
+      "tik": {
+       "c": 1
+      },
+      "ple": "c",
+      "plc": [
+       "change:c"
+      ],
+      "ev": [
+       [
+        "click",
+        "c",
+        true,
+        220,
+        300
+       ]
+      ]
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    }
+   },
+   "T10_ust_kilitliyken_cerceve_ister": {
+    "k": "ok",
+    "k2": "red WrongDocumentError: Failed to execute 'requestPointerLock' on 'Element': The new element is not in the same shadow-root document as the element that currently holds the lock.",
+    "d": {
+     "ust": {
+      "tik": {},
+      "ple": "c",
+      "plc": [
+       "change:c"
+      ],
+      "ev": []
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": null,
+      "plc": [
+       "error"
+      ],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    }
+   },
+   "T11_sandbox_cerceve_ister": {
+    "k": "red SecurityError: Failed to execute 'requestPointerLock' on 'Element': Blocked pointer lock on an element because the element's frame is sandboxed and the 'allow-pointer-lock' permission is not set.",
+    "d": {
+     "ust": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [
+       "error"
+      ],
+      "ev": []
+     }
+    }
+   },
+   "T12_birakinca_donmus_konum": {
+    "k": "red NotAllowedError: Failed to execute 'requestPointerLock' on 'Element': Too many pointer lock requests in a short window of time.",
+    "sonrasi": {
+     "mm": null,
+     "n": 0
+    },
+    "k2": "ok",
+    "t": {
+     "sonuc": "ok",
+     "ms": 58,
+     "deneme": 1,
+     "engel": false
+    },
+    "d1": {
+     "ust": {
+      "tik": {
+       "c": 1
+      },
+      "ple": "c",
+      "plc": [
+       "error",
+       "change:c"
+      ],
+      "ev": [
+       [
+        "click",
+        "c",
+        true,
+        80,
+        40
+       ]
+      ]
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    },
+    "ham": {
+     "ust": {
+      "tik": {
+       "c": 1
+      },
+      "ple": "c",
+      "plc": [],
+      "ev": [
+       [
+        "click",
+        "c",
+        true,
+        80,
+        40
+       ]
+      ]
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    }
+   },
+   "T13_hedef_birakti_jestsiz_yeniden": {
+    "r0": "ok",
+    "etkin": false,
+    "pleOnce": true,
+    "r1": "red NotAllowedError: A user gesture is required to request Pointer Lock.",
+    "ple": false
+   },
+   "T15_baska_sayfa_one_gelince": {
+    "k": "ok",
+    "d": {
+     "ust": {
+      "tik": {},
+      "ple": "c",
+      "plc": [
+       "change:c"
+      ],
+      "ev": []
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    },
+    "odak": true,
+    "sonra": {
+     "ust": {
+      "tik": {},
+      "ple": "c",
+      "plc": [],
+      "ev": []
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    }
+   },
+   "sayac": null,
+   "konsol": [
+    "error: Blocked pointer lock on an element because the element's frame is sandboxed and the 'allow-pointer-lock' permission is not set."
+   ]
+  },
+  "oyun": {
+   "G0_basla": {
+    "ms": 1531,
+    "d": {
+     "ple": "game-canvas",
+     "kilitli": true,
+     "durum": "playing",
+     "ui": false,
+     "pause": false,
+     "uiOpen": false,
+     "plc": [
+      "change:game-canvas"
+     ],
+     "md": {},
+     "yaw": 3.1416
+    }
+   },
+   "G2_fare_bakisi": {
+    "ilkHareket": 0,
+    "ikinciHareket_100px": 0.924,
+    "d": {
+     "ple": "game-canvas",
+     "kilitli": true,
+     "durum": "playing",
+     "ui": false,
+     "pause": false,
+     "uiOpen": false,
+     "plc": [],
+     "md": {},
+     "yaw": 4.0656
+    }
+   },
+   "G3_kilitliyken_hud_ham_tik": "HUD öğesi yok",
+   "G4_kilit_kaybi_otomatik_duraklat": {
+    "ple": null,
+    "kilitli": false,
+    "durum": "playing",
+    "ui": true,
+    "pause": true,
+    "uiOpen": true,
+    "plc": [
+     "change:null"
+    ],
+    "md": {},
+    "yaw": 4.0656
+   },
+   "G5_devam_et_yeniden_kilit": {
+    "t": {
+     "sonuc": "ok",
+     "ms": 1498,
+     "deneme": 1,
+     "engel": false
+    },
+    "d": {
+     "ple": "game-canvas",
+     "kilitli": true,
+     "durum": "playing",
+     "ui": false,
+     "pause": false,
+     "uiOpen": false,
+     "plc": [
+      "change:game-canvas"
+     ],
+     "md": {},
+     "yaw": 4.0656
+    }
+   },
+   "G6_esc": {
+    "ple": null,
+    "kilitli": false,
+    "durum": "playing",
+    "ui": true,
+    "pause": true,
+    "uiOpen": true,
+    "plc": [
+     "change:null"
+    ],
+    "md": {},
+    "yaw": 4.7696
+   },
+   "G7_ana_menuye_don": {
+    "t1": {
+     "sonuc": "ok",
+     "ms": 833,
+     "deneme": 1,
+     "engel": false
+    },
+    "evet": [
+     455,
+     229
+    ],
+    "t2": {
+     "sonuc": "ok",
+     "ms": 1371,
+     "deneme": 1,
+     "engel": false
+    },
+    "d": {
+     "ple": "game-canvas",
+     "kilitli": true,
+     "durum": "menu",
+     "ui": false,
+     "pause": false,
+     "uiOpen": false,
+     "plc": [
+      "change:game-canvas"
+     ],
+     "md": {},
+     "yaw": 4.7696
+    },
+    "donmusKonumdaki": "SECTION#menu \"DENİZ KORSANLARISON HAZİNEPIRA\""
+   },
+   "G8_kilitliyken_menu_dugmesi": {
+    "t": {
+     "sonuc": "hata: locator.click: Timeout 3000ms exceeded.",
+     "ms": 3001
+    },
+    "acikPanel": [],
+    "d": {
+     "ple": "game-canvas",
+     "kilitli": true,
+     "durum": "menu",
+     "ui": false,
+     "pause": false,
+     "uiOpen": false,
+     "plc": [],
+     "md": {},
+     "yaw": 4.7696
+    }
+   },
+   "sayac": null,
+   "hatalar": []
+  }
+ },
+ "taklit": {
+  "fikstur": {
+   "T0_kilitsiz_tikla": {
+    "t": {
+     "sonuc": "ok",
+     "ms": 54,
+     "deneme": 1,
+     "engel": false
+    },
+    "d": {
+     "ust": {
+      "tik": {
+       "b": 1
+      },
+      "ple": null,
+      "plc": [],
+      "ev": [
+       [
+        "click",
+        "b",
+        true,
+        80,
+        40
+       ]
+      ]
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    }
+   },
+   "T1_donmus_konum_hedefte": {
+    "k": "ok",
+    "t": {
+     "sonuc": "ok",
+     "ms": 36,
+     "deneme": 1,
+     "engel": false
+    },
+    "d": {
+     "ust": {
+      "tik": {
+       "c~": 1
+      },
+      "ple": "c",
+      "plc": [
+       "change:c"
+      ],
+      "ev": [
+       [
+        "click",
+        "c",
+        false,
+        80,
+        40
+       ]
+      ]
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    }
+   },
+   "T2_hud_ustunde_tuvale_tikla": {
+    "k": "ok",
+    "t": {
+     "sonuc": "hata: locator.click: Timeout 3000ms exceeded. (işaretçi kilidi taklidi: 9 denemede tıklama engellendi — canvas#c kilitli; kilit anındaki imleç konumunda (450, 220) div#hud var, hedef canvas#c değil. Gerçek ",
+     "ms": 3001
+    },
+    "d": {
+     "ust": {
+      "tik": {},
+      "ple": "c",
+      "plc": [
+       "change:c"
+      ],
+      "ev": []
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    }
+   },
+   "T3_tuvalde_tuvale_tikla": {
+    "k": "ok",
+    "t": {
+     "sonuc": "ok",
+     "ms": 37,
+     "deneme": 1,
+     "engel": false
+    },
+    "d": {
+     "ust": {
+      "tik": {
+       "c": 1
+      },
+      "ple": "c",
+      "plc": [
+       "change:c"
+      ],
+      "ev": [
+       [
+        "click",
+        "c",
+        true,
+        220,
+        300
+       ]
+      ]
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    }
+   },
+   "T4_beklerken_kilit": {
+    "t": {
+     "sonuc": "hata: locator.click: Timeout 4000ms exceeded. (işaretçi kilidi taklidi: 9 denemede tıklama engellendi — canvas#c kilitli; kilit anındaki imleç konumunda (220, 300) canvas#c var, hedef button#g değil. Gerçek",
+     "ms": 4000
+    },
+    "d": {
+     "ust": {
+      "tik": {},
+      "ple": "c",
+      "plc": [
+       "change:c"
+      ],
+      "ev": []
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    }
+   },
+   "T5_acik_golge_hedefte": {
+    "k": "ok",
+    "t": {
+     "sonuc": "ok",
+     "ms": 33,
+     "deneme": 1,
+     "engel": false
+    },
+    "d": {
+     "ust": {
+      "tik": {
+       "c~": 1
+      },
+      "ple": "c",
+      "plc": [
+       "change:c"
+      ],
+      "ev": [
+       [
+        "click",
+        "c",
+        false,
+        100,
+        165
+       ]
+      ]
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    }
+   },
+   "T5b_acik_golge_disinda": {
+    "k": "ok",
+    "t": {
+     "sonuc": "hata: locator.click: Timeout 3000ms exceeded. (işaretçi kilidi taklidi: 9 denemede tıklama engellendi — canvas#c kilitli; kilit anındaki imleç konumunda (220, 300) canvas#c var, hedef button#sb değil. Gerçe",
+     "ms": 3001
+    },
+    "d": {
+     "ust": {
+      "tik": {},
+      "ple": "c",
+      "plc": [
+       "change:c"
+      ],
+      "ev": []
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    }
+   },
+   "T6_kapali_golge_ev_sahibi_hedefte": {
+    "k": "ok",
+    "t": {
+     "sonuc": "ok",
+     "ms": 32,
+     "deneme": 1,
+     "engel": false
+    },
+    "d": {
+     "ust": {
+      "tik": {
+       "c~": 1
+      },
+      "ple": "c",
+      "plc": [
+       "change:c"
+      ],
+      "ev": [
+       [
+        "click",
+        "c",
+        false,
+        100,
+        225
+       ]
+      ]
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    }
+   },
+   "T7_klavye_enter": {
+    "k": "ok",
+    "d": {
+     "ust": {
+      "tik": {
+       "b": 1
+      },
+      "ple": "c",
+      "plc": [
+       "change:c"
+      ],
+      "ev": [
+       [
+        "click",
+        "b",
+        true,
+        0,
+        0
+       ]
+      ]
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    }
+   },
+   "T8_cerceve_kilitli_ust_tikla": {
+    "k": "ok",
+    "d0": {
+     "ust": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": "ic",
+      "plc": [
+       "change:ic"
+      ],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    },
+    "t": {
+     "sonuc": "ok",
+     "ms": 21,
+     "deneme": 1,
+     "engel": false
+    },
+    "d1": {
+     "ust": {
+      "tik": {
+       "b": 1
+      },
+      "ple": null,
+      "plc": [],
+      "ev": [
+       [
+        "click",
+        "b",
+        true,
+        80,
+        40
+       ]
+      ]
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": "ic",
+      "plc": [],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    },
+    "ham": {
+     "ust": {
+      "tik": {
+       "b": 1
+      },
+      "ple": null,
+      "plc": [],
+      "ev": [
+       [
+        "click",
+        "b",
+        true,
+        80,
+        40
+       ]
+      ]
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": "ic",
+      "plc": [],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    }
+   },
+   "T9_ust_kilitli_cerceveye_ham_tik": {
+    "k": "ok",
+    "d": {
+     "ust": {
+      "tik": {},
+      "ple": "c",
+      "plc": [
+       "change:c"
+      ],
+      "ev": []
+     },
+     "cerceve": {
+      "tik": {
+       "ib": 1
+      },
+      "ple": null,
+      "plc": [],
+      "ev": [
+       [
+        "click",
+        "ib",
+        true,
+        70,
+        40
+       ]
+      ]
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    }
+   },
+   "T10_ust_kilitliyken_cerceve_ister": {
+    "k": "ok",
+    "k2": "ok",
+    "d": {
+     "ust": {
+      "tik": {},
+      "ple": "c",
+      "plc": [
+       "change:c"
+      ],
+      "ev": []
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": "ic",
+      "plc": [
+       "change:ic"
+      ],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    }
+   },
+   "T11_sandbox_cerceve_ister": {
+    "k": "red SecurityError: Failed to execute 'requestPointerLock' on 'Element': Blocked pointer lock on an element because the element's frame is sandboxed and the 'allow-pointer-lock' permission is not set.",
+    "d": {
+     "ust": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [
+       "error"
+      ],
+      "ev": []
+     }
+    }
+   },
+   "T12_birakinca_donmus_konum": {
+    "k": "ok",
+    "sonrasi": {
+     "mm": null,
+     "n": 0
+    },
+    "k2": "red NotAllowedError",
+    "t": {
+     "sonuc": "ok",
+     "ms": 32,
+     "deneme": 1,
+     "engel": false
+    },
+    "d1": {
+     "ust": {
+      "tik": {
+       "b": 1
+      },
+      "ple": null,
+      "plc": [
+       "change:c",
+       "change:null",
+       "error"
+      ],
+      "ev": [
+       [
+        "click",
+        "b",
+        true,
+        80,
+        40
+       ]
+      ]
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    },
+    "ham": {
+     "ust": {
+      "tik": {
+       "b": 1
+      },
+      "ple": null,
+      "plc": [],
+      "ev": [
+       [
+        "click",
+        "b",
+        true,
+        81,
+        41
+       ]
+      ]
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    }
+   },
+   "T13_hedef_birakti_jestsiz_yeniden": {
+    "r0": "red NotAllowedError: Failed to execute 'requestPointerLock' on 'Element': Too many pointer lock requests in a short window of time.",
+    "etkin": false,
+    "pleOnce": false,
+    "r1": "red NotAllowedError: A user gesture is required to request Pointer Lock.",
+    "ple": false
+   },
+   "T15_baska_sayfa_one_gelince": {
+    "k": "ok",
+    "d": {
+     "ust": {
+      "tik": {},
+      "ple": "c",
+      "plc": [
+       "change:c"
+      ],
+      "ev": []
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    },
+    "odak": true,
+    "sonra": {
+     "ust": {
+      "tik": {},
+      "ple": "c",
+      "plc": [],
+      "ev": []
+     },
+     "cerceve": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     },
+     "sandbox": {
+      "tik": {},
+      "ple": null,
+      "plc": [],
+      "ev": []
+     }
+    }
+   },
+   "sayac": {
+    "istek": 15,
+    "verildi": 12,
+    "hedefDegisti": 0,
+    "red": 3,
+    "jestsiz": 1,
+    "kisitli": 2,
+    "sandbox": 0,
+    "birakma": 12,
+    "birakildi": 12,
+    "iptal": 0,
+    "degisimOlayi": 24,
+    "hataOlayi": 3,
+    "yonlendirilen": 61,
+    "susturulan": 28,
+    "tikEngel": 81
+   },
+   "konsol": [
+    "error: Blocked pointer lock on an element because the element's frame is sandboxed and the 'allow-pointer-lock' permission is not set."
+   ]
+  },
+  "oyun": {
+   "G0_basla": {
+    "ms": 1514,
+    "d": {
+     "ple": "game-canvas",
+     "kilitli": true,
+     "durum": "playing",
+     "ui": false,
+     "pause": false,
+     "uiOpen": false,
+     "plc": [
+      "change:game-canvas"
+     ],
+     "md": {},
+     "yaw": 3.1416
+    }
+   },
+   "G2_fare_bakisi": {
+    "ilkHareket": -0.704,
+    "ikinciHareket_100px": -0.22,
+    "d": {
+     "ple": "game-canvas",
+     "kilitli": true,
+     "durum": "playing",
+     "ui": false,
+     "pause": false,
+     "uiOpen": false,
+     "plc": [],
+     "md": {},
+     "yaw": 2.2176
+    }
+   },
+   "G3_kilitliyken_hud_ham_tik": "HUD öğesi yok",
+   "G4_kilit_kaybi_otomatik_duraklat": {
+    "ple": null,
+    "kilitli": false,
+    "durum": "playing",
+    "ui": true,
+    "pause": true,
+    "uiOpen": true,
+    "plc": [
+     "change:null"
+    ],
+    "md": {},
+    "yaw": 2.2176
+   },
+   "G5_devam_et_yeniden_kilit": {
+    "t": {
+     "sonuc": "ok",
+     "ms": 433,
+     "deneme": 1,
+     "engel": false
+    },
+    "d": {
+     "ple": "game-canvas",
+     "kilitli": true,
+     "durum": "playing",
+     "ui": false,
+     "pause": false,
+     "uiOpen": false,
+     "plc": [
+      "change:game-canvas"
+     ],
+     "md": {},
+     "yaw": 2.2176
+    }
+   },
+   "G6_esc": {
+    "ple": null,
+    "kilitli": false,
+    "durum": "playing",
+    "ui": true,
+    "pause": true,
+    "uiOpen": true,
+    "plc": [
+     "change:null"
+    ],
+    "md": {},
+    "yaw": 2.2176
+   },
+   "G7_ana_menuye_don": {
+    "t1": {
+     "sonuc": "ok",
+     "ms": 473,
+     "deneme": 1,
+     "engel": false
+    },
+    "evet": [
+     455,
+     229
+    ],
+    "t2": {
+     "sonuc": "ok",
+     "ms": 595,
+     "deneme": 1,
+     "engel": false
+    },
+    "d": {
+     "ple": "game-canvas",
+     "kilitli": true,
+     "durum": "menu",
+     "ui": false,
+     "pause": false,
+     "uiOpen": false,
+     "plc": [
+      "change:game-canvas"
+     ],
+     "md": {},
+     "yaw": 2.2176
+    },
+    "donmusKonumdaki": "SECTION#menu \"DENİZ KORSANLARISON HAZİNEPIRA\""
+   },
+   "G8_kilitliyken_menu_dugmesi": {
+    "t": {
+     "sonuc": "hata: locator.click: Timeout 3000ms exceeded. (işaretçi kilidi taklidi: 2 denemede tıklama engellendi — canvas#game-canvas kilitli; kilit anındaki imleç konumunda (455, 229) section#menu var, hedef button değil. Gerçek kilitte",
+     "ms": 3008
+    },
+    "acikPanel": [],
+    "d": {
+     "ple": "game-canvas",
+     "kilitli": true,
+     "durum": "menu",
+     "ui": false,
+     "pause": false,
+     "uiOpen": false,
+     "plc": [],
+     "md": {},
+     "yaw": 2.2176
+    }
+   },
+   "sayac": {
+    "istek": 3,
+    "verildi": 3,
+    "hedefDegisti": 0,
+    "red": 0,
+    "jestsiz": 0,
+    "kisitli": 0,
+    "sandbox": 0,
+    "birakma": 2,
+    "birakildi": 2,
+    "iptal": 0,
+    "degisimOlayi": 5,
+    "hataOlayi": 0,
+    "yonlendirilen": 4,
+    "susturulan": 12,
+    "tikEngel": 6
+   },
+   "hatalar": []
+  }
+ },
+ "bitis": "2026-11-15T06:32:13.547Z"
+}

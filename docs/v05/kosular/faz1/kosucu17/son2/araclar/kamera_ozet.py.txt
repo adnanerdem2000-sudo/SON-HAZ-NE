@@ -1,0 +1,27 @@
+import json, sys
+r = json.load(open(sys.argv[1]))
+print('surum', r.get('surum'), 'ortak', (r.get('ortakSha') or '')[:16], r.get('baslangic'), r.get('bitis'), 'zamanAsimi', r.get('zamanAsimi'))
+for kip in ('gercek', 'taklit'):
+    o = r.get(kip) or {}
+    print('=====', kip)
+    oy = o.get('oyun') or {}
+    onceki = None
+    for ad, v in oy.items():
+        if not isinstance(v, dict) or 'yaw' not in v:
+            print(' ', ad, str(v)[:200]); continue
+        dy = None if onceki is None else round(v['yaw'] - onceki, 4)
+        onceki = v['yaw']
+        top = [0, 0]
+        for e in v.get('olaylar', []):
+            top[0] += e[2]; top[1] += e[3]
+        print('  %-28s yaw=%-8s dyaw=%-8s kilitli=%s ple=%s pause=%s durum=%s say=%s nonzero=%d toplam=%s plc=%s t=%s' % (ad, v['yaw'], dy, v['kilitli'], v['ple'], v['pause'], v['durum'], v.get('say'), len(v.get('olaylar', [])), top, v.get('plc'), (v.get('t') or {}).get('sonuc')))
+        for e in v.get('olaylar', [])[:12]:
+            print('      ', e)
+    print('  sayac', oy.get('sayac'), 'hatalar', oy.get('hatalar'))
+    u = o.get('uretim')
+    if isinstance(u, dict):
+        print('  uretim', {k: v for k, v in u.items() if k != 'adlar'}, 'adSayisi', len(u.get('adlar', [])))
+    else:
+        print('  uretim', u)
+    print('  gecikme', o.get('gecikme'), o.get('gecikmeHata'))
+print('uretimAdFarki', r.get('uretimAdFarki'))

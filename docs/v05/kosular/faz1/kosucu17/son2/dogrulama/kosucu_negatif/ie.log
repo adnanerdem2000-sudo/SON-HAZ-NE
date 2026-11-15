@@ -1,0 +1,10 @@
+$ node /home/user/SON-HAZ-NE-k17/tests/harness/run.cjs tests/fixtures/kosucu/ie_sayac_sirasinda_hata.js --size 320x200 --timeout 90 --url http://127.0.0.1:38307/temiz.html --report /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/kosu/V1_kn/ie.json
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+ready in 0.3 s
+PASS IE01 Sabit sayfa açıldı → "object"
+R: "planlandı"
+PAGEERR: kosucu_negatif ie: yerleşmeden sonra, sayaç okuması sürerken gelen hata | Error: kosucu_negatif ie: yerleşmeden sonra, sayaç okuması sürerken gelen hata |     at eval (eval at evaluate (:311:30), <anonymous>:1:95)
+errors: 0 pageErrors: 1 fails: 0 (3.6 s)
+SONUC: KALDI (çıkış 1) kontrol 1/1, onay 1 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: sayfa hatası (pageerror): 1
+
+[çıkış 1]

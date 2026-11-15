@@ -1,0 +1,12 @@
+$ node /home/user/SON-HAZ-NE-k17/tests/harness/run.cjs tests/fixtures/kosucu/b_gorsel_404.js --size 320x200 --timeout 90 --url http://127.0.0.1:46833/v_baglanti.html --report /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/kn5/tum/v.json
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+NETFAIL: http://127.0.0.1:65530/kapali-kapi.png
+ERR: Failed to load resource: net::ERR_CONNECTION_REFUSED
+ready in 0.2 s
+PASS B01 Görsel öğesi var → 1
+GORUNTU /home/user/SON-HAZ-NE-k17/tests/out/goruntu/b_gorsel_404_2026-11-15T02-37-48-348Z_31424/son.png
+errors: 2 pageErrors: 0 fails: 0 (1.3 s)
+IZINSIZ AG ×1: net::ERR_CONNECTION_REFUSED http://127.0.0.1:65530/kapali-kapi.png
+SONUC: KALDI (çıkış 1) kontrol 1/1, onay 1 | izinsiz konsol 0, ağ 1 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: izinsiz ağ hatası (≥ 400 yanıt ya da başarısız istek): 1
+
+[çıkış 1]

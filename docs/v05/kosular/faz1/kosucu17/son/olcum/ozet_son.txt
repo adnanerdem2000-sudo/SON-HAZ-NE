@@ -1,0 +1,12 @@
+# kosucu17 ölçüm özeti (MB: VmHWM tepe; chrome: bütün chrome süreçlerinin VmRSS toplamının tepesi; cgroup: cgroup kullanımının tepesi —
+# cgroup oturumun öteki işlerini de içerir; CPU %: koşu boyunca ortalama, 100 = bir çekirdek; uy/sn: gönüllü bağlam değişimi/sn)
+koşu                   durum    kontrl K05 sn K08 sn    brHWM    rnHWM  gpuHWM   chrome  cgroup  brCPU%  brANA%  brIO% IOuy/sn   Comp%  Cuy/sn  rnANA%
+17v04_T                GECTI    13/13    15.1     29     95.5    459.3   509.6   1211.8    1498     0.9     0.1    0.1      21     0.6      61     8.3
+17w2_T                 GECTI    13/13    14.2   29.3     96.2    468.4     510   1224.2    1567     0.8     0.1      0      10     0.7      71     7.9
+
+# ölçüm ajanının N koşuları (rAF sarmalayıcısız, işaretçi kilidi gerçek; aynı örnekleyici, 03'ten önce iplik gözlemcisi yok)
+koşu                   durum    kontrl K05 sn K08 sn    brHWM    rnHWM  gpuHWM   chrome  cgroup  brCPU%  brANA%  brIO% IOuy/sn   Comp%  Cuy/sn  rnANA%
+02_N                   KALDI    8/13     88.9   22.2   8861.3     4817     491  13571.4   13675       -       -      -       -       -       -       -
+04_N                   GECTI    13/13      39  103.7   1092.8   2279.9   514.6   3460.7    3593   109.3      86   22.3     NaN    69.2     NaN    21.6
+06_N                   GECTI    13/13    38.7   78.1   1291.1     4059   526.6   5186.2    5392   109.6    87.8   20.9     NaN    69.2     NaN    21.6
+08_N                   GECTI    13/13      43   82.3   1305.6   2614.9   516.8   4262.3    4445   109.7    87.6   21.3     NaN    69.9     NaN    21.5

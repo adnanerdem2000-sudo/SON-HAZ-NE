@@ -1,0 +1,48 @@
+# Blok deneyi çözümlemesi: evreler sayfanın Date.now() damgalarından (R: satırındaki JSON), bellek/iplik örnekleyici zamanıyla (time.time()).
+import csv, json, sys, os, re, collections
+D = sys.argv[1]
+for ad in sys.argv[2:]:
+    log = open(os.path.join(D, ad + '.log')).read()
+    m = [l for l in log.splitlines() if l.startswith('R: ') and 'bos_bas' in l]
+    faz = json.loads(json.loads(m[-1][3:])) if m else None
+    F = {k: v / 1000 for k, v in faz} if faz else {}
+    rows = list(csv.DictReader(open(os.path.join(D, ad + '_bellek.csv'))))
+    seri = collections.defaultdict(list)
+    for r in rows:
+        seri[r['tur'] + ':' + r['pid']].append((float(r['t']), int(r['anon_kB']) / 1024, int(r['rss_kB']) / 1024, int(r['hwm_kB']) / 1024, int(r['cg_MB'])))
+    def ana(tur):
+        best = None
+        for k, a in seri.items():
+            if k.startswith(tur + ':') and (best is None or len(a) > len(best)): best = a
+        return best
+    def egim(a, t0, t1):
+        p = [(t, x) for t, x, *_ in a if t0 <= t <= t1]
+        if len(p) < 3: return None
+        n = len(p); mt = sum(t for t, _ in p) / n; mx = sum(x for _, x in p) / n
+        return sum((t - mt) * (x - mx) for t, x in p) / sum((t - mt) ** 2 for t, _ in p)
+    def deger(a, t):
+        b = min(a, key=lambda r: abs(r[0] - t)); return round(b[1])
+    print('==', ad, 'evreler (sn, bos_bas göre):', {k: round(v - F['bos_bas'], 1) for k, v in F.items()} if F else 'YOK')
+    cg = [int(r['cg_MB']) for r in rows]
+    print('   cgroup tepe (0,25 sn örnek)', max(cg), 'MB; oom_kill', rows[0]['oom_kill'], '->', rows[-1]['oom_kill'])
+    for tur in ('browser', 'renderer', 'gpu-process'):
+        a = ana(tur)
+        if not a or not F: continue
+        print('   %-11s anon MB: bos_bas %5d  mesgul_bas %5d  mesgul_bit %5d  son %5d | eğim MB/sn: boşta %6.1f  meşgul %6.1f  sonra %6.1f | VmHWM son %5d' % (
+            tur, deger(a, F['bos_bas']), deger(a, F['mesgul_bas']), deger(a, F['mesgul_bit']), deger(a, F['son']),
+            egim(a, F['bos_bas'] + 1, F['mesgul_bas']) or 0, egim(a, F['mesgul_bas'] + 0.5, F['mesgul_bit']) or 0, egim(a, F['mesgul_bit'] + 0.5, F['son']) or 0, round(a[-1][3])))
+    it = collections.defaultdict(list)
+    for r in csv.DictReader(open(os.path.join(D, ad + '_iplik.csv'))):
+        it[(r['tur'], r['iplik'], r['pid'])].append((float(r['t']), int(r['tik']), int(r['gonullu'])))
+    def cpu(tur, ip, t0, t1):
+        best = None
+        for (t, i, p), a in it.items():
+            if t == tur and i == ip and (best is None or len(a) > len(best)): best = a
+        if not best: return None
+        p = [x for x in best if t0 <= x[0] <= t1]
+        if len(p) < 2: return None
+        dt = p[-1][0] - p[0][0]
+        return round((p[-1][1] - p[0][1]) / dt, 1), round((p[-1][2] - p[0][2]) / dt)
+    for tur, ip in (('browser', 'ANA'), ('browser', 'Chrome_IOThread'), ('renderer', 'Compositor'), ('renderer', 'ANA')):
+        if not F: break
+        print('   %-8s %-16s CPU%%/uyanma: boşta %s  meşgul %s  sonra %s' % (tur, ip, cpu(tur, ip, F['bos_bas'] + 1, F['mesgul_bas']), cpu(tur, ip, F['mesgul_bas'] + 0.5, F['mesgul_bit']), cpu(tur, ip, F['mesgul_bit'] + 0.5, F['son'])))

@@ -1,0 +1,94 @@
+// kosucu17 ölçüm özeti: her koşunun raporu (<ad>.json), bellek örnekleyicisi özeti (<ad>_ozet.json, <ad>_ornek.csv) ve iplik CSV'si
+// (<ad>_iplik.csv) → koşu başına ölçüler + T/G karşılaştırma tablosu; ölçüm ajanının N koşularıyla (olcum/*_N_*) yan yana.
+//   node ozet17.mjs <koşu dizini> <çıktı.json> <çıktı.txt> [ad...]
+import fs from 'node:fs';
+import path from 'node:path';
+const [DIR, CJSON, CTXT, ...SECILI] = process.argv.slice(2);
+const OLCUM = '/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/olcum';
+const oku = (f) => { try { return fs.readFileSync(f, 'utf8'); } catch { return null; } };
+const json = (f) => { const s = oku(f); try { return s ? JSON.parse(s) : null; } catch { return null; } };
+const r1 = (x) => (x === null || x === undefined || Number.isNaN(x) ? null : Math.round(x * 10) / 10);
+function iplikOzet(taban) {
+  const s = oku(taban + '_iplik.csv'); if (!s) return null;
+  const satir = s.trim().split('\n');
+  let sat;
+  if (/,tid,/.test(satir[0])) {
+    // ölçüm ajanının gozlem.mjs biçimi: zaman,t_ms,pid,tur,tid,iplik,cpu_tik,anon_kB (iplik başına satır; ana iplik tid = pid);
+    // aynı anda aynı adlı iplikler toplanır, süreç toplamı (TOPLAM) bütün ipliklerin toplamıdır; uyanma sayısı yok
+    const top = new Map();
+    for (const l of satir.slice(1)) {
+      const [z, t, pid, tur, tid, ip, tik] = l.split(',');
+      const ad = tid === pid ? 'ANA' : ip;
+      for (const a of [ad, 'TOPLAM']) { const k = `${t}|${pid}|${tur}|${a}`; const v = top.get(k) || { t: Number(t), pid: Number(pid), tur, ip: a, tik: 0, gon: NaN }; v.tik += Number(tik); top.set(k, v); }
+    }
+    sat = [...top.values()];
+  } else sat = satir.slice(1).map((l) => { const [z, t, pid, tur, ip, tik, gon] = l.split(','); return { t: Number(t), pid: Number(pid), tur, ip, tik: Number(tik), gon: Number(gon) }; });
+  const g = new Map();
+  for (const x of sat) { const k = `${x.tur}|${x.pid}|${x.ip}`; if (!g.has(k)) g.set(k, []); g.get(k).push(x); }
+  for (const a of g.values()) a.sort((p, q) => p.t - q.t);
+  // tür ve iplik adına göre: en uzun yaşayan pid (aynı türden birden çok süreç olabilir: ortamBilgisi'nin geçici renderer'ı)
+  const out = {};
+  for (const [k, a] of g) {
+    if (a.length < 3) continue;
+    const [tur, , ip] = k.split('|');
+    const dt = (a[a.length - 1].t - a[0].t) / 1000; if (dt <= 0) continue;
+    const cpu = (a[a.length - 1].tik - a[0].tik) / dt;   // tık = 1/100 sn → %
+    const uyan = Number.isNaN(a[0].gon) ? NaN : (a[a.length - 1].gon - a[0].gon) / dt;
+    // en yüksek 10 sn'lik pencere (5 örnek)
+    let tepe = 0; for (let i = 5; i < a.length; i++) { const d = (a[i].t - a[i - 5].t) / 1000; if (d > 0) tepe = Math.max(tepe, (a[i].tik - a[i - 5].tik) / d); }
+    const anahtar = `${tur}:${ip}`;
+    if (!out[anahtar] || out[anahtar].sure_sn < dt) out[anahtar] = { cpu_yuzde_ort: r1(cpu), cpu_yuzde_tepe10sn: r1(tepe), uyanma_sn: Math.round(uyan), sure_sn: r1(dt), ornek: a.length };
+  }
+  return out;
+}
+function ornekTepe(taban) {
+  const s = oku(taban + '_ornek.csv'); if (!s) return null;
+  const sat = s.trim().split('\n'); const bas = sat[0].split(',');
+  const i = (ad) => bas.indexOf(ad);
+  let br = 0, rn = 0, brT = null;
+  for (const l of sat.slice(1)) { const f = l.split(','); const b = Number(f[i('browser_MB')]), r = Number(f[i('renderer_MB')]); if (b > br) { br = b; brT = Number(f[i('t_ms')]); } if (r > rn) rn = r; }
+  return { browser_rss_tepe_MB: r1(br), browser_rss_tepe_t_sn: brT === null ? null : r1(brT / 1000), renderer_rss_toplam_tepe_MB: r1(rn) };
+}
+function adimSure(r, kod) {
+  const k = (r && r.kontroller || []).find((x) => x.id === kod);
+  if (!k) return null;
+  const st = (r.steps || []).find((x) => x.n === k.n);
+  return st && typeof st.ms === 'number' ? r1(st.ms / 1000) : null;
+}
+function kosu(dir, ad) {
+  const taban = path.join(dir, ad);
+  const r = json(taban + '.json'), oz = json(taban + '_ozet.json');
+  const tur = (oz && oz.tur) || {};
+  const hwm = (t) => (tur[t] ? tur[t].hwm_tepe_MB : null);
+  const kontrol = r && r.kontroller ? `${r.kontroller.filter((k) => k.ok).length}/${r.kontroller.length}` : (r && r.steps ? `${r.steps.filter((s) => s.expect && s.expect.ok).length}/${r.steps.filter((s) => s.expect).length}` : null);
+  return {
+    ad, durum: r ? (r.sonuc ? r.sonuc.durum : (r.fails || (r.pageErrors || []).length ? 'KALDI?' : 'GECTI?')) : 'rapor yok', kontrol,
+    neden: r && r.sonuc ? r.sonuc.neden : null, kip: r && r.isaretciKilidi ? r.isaretciKilidi.kip : null, isaretciSayac: r && r.isaretciKilidi ? r.isaretciKilidi.sayac : null,
+    kopma: r ? r.kopma || null : null, hataSayfa: r && r.hatalar ? r.hatalar.sayfa : (r ? r.pageErrors : null), toplam_sn: r && r.ms ? r1(r.ms / 1000) : null,
+    K05_sn: adimSure(r, 'K05'), K08_sn: adimSure(r, 'K08'),
+    browser_VmHWM_MB: hwm('browser'), renderer_VmHWM_MB: hwm('renderer'), gpu_VmHWM_MB: hwm('gpu-process'),
+    chrome_toplam_tepe_MB: oz && oz.chrome_toplam_tepe ? oz.chrome_toplam_tepe.MB : null, cgroup_tepe_MB: oz && oz.cg_tepe ? oz.cg_tepe.MB : null,
+    arka_plan_baslangic_MB: oz ? oz.arka_plan_baslangic_MB : null, oom_artislari: oz ? oz.oom_artislari : null,
+    kaybolan_surecler: oz ? (oz.kaybolan_surecler || []).filter((k) => k.kalan_chrome > 0).map((k) => `${k.tur}:${k.son_rss_MB}MB@${r1(k.t_ms / 1000)}s`) : null,
+    ...ornekTepe(taban), iplik: iplikOzet(taban),
+  };
+}
+const adlar = SECILI.length ? SECILI : fs.readdirSync(DIR).filter((f) => /^\d\d_.*_(T|G)\.json$/.test(f)).map((f) => f.slice(0, -5)).sort();
+const kosular = adlar.map((a) => kosu(DIR, a));
+// ölçüm ajanının N koşuları (rAF sarmalayıcısız, işaretçi kilidi gerçek): aynı ölçüler
+const nler = fs.existsSync(OLCUM) ? fs.readdirSync(OLCUM).filter((f) => /^\d\d_N\.json$/.test(f)).map((f) => f.slice(0, -5)).sort().map((a) => kosu(OLCUM, a)) : [];
+fs.writeFileSync(CJSON, JSON.stringify({ dizin: DIR, kosular, olcumAjaniN: nler }, null, 1));
+const sutun = (k) => {
+  const i = k.iplik || {};
+  const c = (a) => (i[a] ? `${i[a].cpu_yuzde_ort}` : '-');
+  return [k.ad.padEnd(22), String(k.durum).padEnd(8), String(k.kontrol).padEnd(6), String(k.K05_sn ?? '-').padStart(6), String(k.K08_sn ?? '-').padStart(6),
+    String(k.browser_VmHWM_MB ?? '-').padStart(8), String(k.renderer_VmHWM_MB ?? '-').padStart(8), String(k.gpu_VmHWM_MB ?? '-').padStart(7), String(k.chrome_toplam_tepe_MB ?? '-').padStart(8), String(k.cgroup_tepe_MB ?? '-').padStart(7),
+    c('browser:TOPLAM').padStart(7), c('browser:ANA').padStart(7), c('browser:Chrome_IOThread').padStart(6), String(i['browser:Chrome_IOThread'] ? i['browser:Chrome_IOThread'].uyanma_sn : '-').padStart(7), c('renderer:Compositor').padStart(7), String(i['renderer:Compositor'] ? i['renderer:Compositor'].uyanma_sn : '-').padStart(7), c('renderer:ANA').padStart(7)].join(' ');
+};
+const baslik = ['koşu'.padEnd(22), 'durum'.padEnd(8), 'kontrl'.padEnd(6), 'K05 sn'.padStart(6), 'K08 sn'.padStart(6), 'brHWM'.padStart(8), 'rnHWM'.padStart(8), 'gpuHWM'.padStart(7), 'chrome'.padStart(8), 'cgroup'.padStart(7),
+  'brCPU%'.padStart(7), 'brANA%'.padStart(7), 'brIO%'.padStart(6), 'IOuy/sn'.padStart(7), 'Comp%'.padStart(7), 'Cuy/sn'.padStart(7), 'rnANA%'.padStart(7)].join(' ');
+const satirlar = ['# kosucu17 ölçüm özeti (MB: VmHWM tepe; chrome: bütün chrome süreçlerinin VmRSS toplamının tepesi; cgroup: cgroup kullanımının tepesi —',
+  '# cgroup oturumun öteki işlerini de içerir; CPU %: koşu boyunca ortalama, 100 = bir çekirdek; uy/sn: gönüllü bağlam değişimi/sn)', baslik, ...kosular.map(sutun), '',
+  '# ölçüm ajanının N koşuları (rAF sarmalayıcısız, işaretçi kilidi gerçek; aynı örnekleyici, 03\'ten önce iplik gözlemcisi yok)', baslik, ...nler.map(sutun)];
+fs.writeFileSync(CTXT, satirlar.join('\n') + '\n');
+console.log(satirlar.join('\n'));

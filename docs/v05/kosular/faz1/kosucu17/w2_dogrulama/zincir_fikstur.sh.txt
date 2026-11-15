@@ -1,0 +1,16 @@
+#!/bin/bash
+# Fikstür zamanlama düzeltmesinden (rm/tm, rw, td: işaret js adımının yanıtından sonra) sonra: dört durum 3 kez, sonra bütün takım.
+cd /home/user/SON-HAZ-NE-w2
+F=/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17w2
+OUT=docs/v05/kosular/faz1/kosucu17/w2_dogrulama
+SUM=$OUT/ozet_fikstur.txt; : > $SUM
+echo "fikstür sha: $(sha256sum tests/fixtures/kosucu/rm_renderer_olur_metrics.js tests/fixtures/kosucu/rw_renderer_olur_bekleme.js tests/fixtures/kosucu/td_tarayici_olur_bekleme.js | cut -c1-8 | tr '\n' ' ') koşucu: $(sha256sum tests/harness/run.cjs tests/harness/coop.cjs tests/harness/ortak.cjs tests/node/kosucu_negatif.mjs | cut -c1-8 | tr '\n' ' ')" >> $SUM
+for i in 1 2 3; do
+  t0=$(date +%s)
+  /home/user/devtools/tk timeout 900 node tests/node/kosucu_negatif.mjs --kosucu-dizin /home/user/SON-HAZ-NE-w2/tests/harness --cikti $F/kn_alt$i --sadece rm,tm,rw,td --rapor $OUT/kosucu_negatif_alt${i}_ozet.json > $OUT/kosucu_negatif_alt$i.log 2>&1
+  echo "$(date +%H:%M:%S) alt$i rc=$? sure=$(( $(date +%s)-t0 ))s | $(grep -E '^(PASS|FAIL) \((rm|tm|rw|td)\)' $OUT/kosucu_negatif_alt$i.log | cut -c1-12 | tr '\n' ' ')" >> $SUM
+done
+t0=$(date +%s)
+/home/user/devtools/tk timeout 1900 node tests/node/kosucu_negatif.mjs --kosucu-dizin /home/user/SON-HAZ-NE-w2/tests/harness --cikti $F/kn2 --rapor $OUT/kosucu_negatif_2_ozet.json > $OUT/kosucu_negatif_2.log 2>&1
+echo "$(date +%H:%M:%S) tum rc=$? sure=$(( $(date +%s)-t0 ))s | PASS $(grep -c '^PASS' $OUT/kosucu_negatif_2.log) FAIL $(grep -c '^FAIL' $OUT/kosucu_negatif_2.log)" >> $SUM
+echo BITTI >> $SUM

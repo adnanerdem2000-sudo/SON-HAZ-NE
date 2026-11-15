@@ -1,0 +1,98 @@
+# KOSUCU17.md'yi ikinci inceleme turuna göre günceller (son düzeltici 2). Kullanım: python3 -I belge_kosucu17.py <KOSUCU17.md> <bolum.md>
+import sys
+p, bolum = sys.argv[1], sys.argv[2]
+s = open(p, encoding='utf-8').read()
+def degistir(eski, yeni, say=1):
+    global s
+    n = s.count(eski)
+    if n != say:
+        raise SystemExit(f'bulunamadı/çok ({n}): {eski[:80]!r}')
+    s = s.replace(eski, yeni)
+
+# (a) Kısa sonuç: çökme maddesi
+degistir("""- **Tarayıcı çökmesi artık raporda.** Tarayıcı süreci ölür ya da bağlantı koparsa `hatalar.sayfa`'ya `TARAYICI ÇÖKTÜ/KOPTU …`
+  yazılır, durum KALDI olur, kalan adımlar koşmaz, `kopma` alanı ayrıntıyı verir. Eskiden alan boş kalıyordu (ölçüm ajanının 02_N'si).""",
+"""- **Tarayıcı ya da sayfa çökmesi artık raporda.** Tarayıcı süreci ölür ya da bağlantı koparsa `hatalar.sayfa`'ya
+  `TARAYICI ÇÖKTÜ/KOPTU …`, sayfanın renderer süreci ölürse (OOM'un sık kurbanı) `SAYFA ÇÖKTÜ (renderer crash): …` yazılır, durum
+  KALDI olur, `kopma` alanı ayrıntıyı verir (`kopma.tur`). `run.cjs`'te kalan adımlar koşmaz; `coop.cjs`'te kopmadan sonraki ilk
+  `ev()`/`tick()`/`tikla()` senaryoyu durdurur ve kopmadan sonra çağrılan `check()` sayılmaz. Eskiden tarayıcı ölümünde alan boş
+  kalıyordu (ölçüm ajanının 02_N'si); renderer çökmesinde kalan adımlar koşuyor, koşu ZAMAN_ASIMI ya da KOSUCU_HATASI oluyordu
+  (ikinci inceleme KC-1; aşağıda "Son düzeltici 2").""")
+# (b) Hata yakalama gücü maddesi
+degistir("""- **Hata yakalama gücü azalmadı.** Son kodla `kosucu_negatif` 64/64 (3. denemenin 9 + son düzelticinin 10 yeni durumu dahil;
+  `son/kosucu_negatif/`).""",
+"""- **Hata yakalama gücü azalmadı.** Son kodla (son düzeltici 2) `kosucu_negatif` 73/73 (3. denemenin 9, son düzelticinin 10 ve
+  son düzeltici 2'nin 9 yeni durumu dahil; `son2/dogrulama/kosucu_negatif/`; son düzelticinin koduyla 64/64: `son/kosucu_negatif/`).""")
+# (c) Taklidin sadakati: bilinen öteki farklar
+degistir("""Bilinen öteki farklar (oyun ve senaryolar bunlara dayanmıyor) `tests/harness/ortak.cjs`'te `isaretciKilidiTaklidi()`'nin başında.""",
+"""Bilinen öteki farklar (oyun ve senaryolar bunlara dayanmıyor) `tests/harness/ortak.cjs`'te `isaretciKilidiTaklidi()`'nin başında.
+İkinci inceleme turunda ölçülüp eklenenler (yoklamanın 53 maddesinde yoktu; ayrıntı "Son düzeltici 2"):
+
+- **Kilit alınışında fare sıçraması** (GZ-1): gerçek başsız kilitte imleç (0,0)'a çekilir, her kilit alınışında oyuna −(kilit
+  anındaki imleç konumu) kadar tek bir kilitli `mousemove` gelir ve kamera döner ((320,150)'de +0,704 rad); kilitliyken her Playwright
+  fare hareketi (+x,+y)/(−x,−y) çifti verir: çoğunlukla toplam 0, ama |x| ya da |y| 400 px'i aşınca `input.js:84` süzgeci çiftin birini
+  zamanlamaya bağlı atabilir ve kamera sıçrar (bu turda bir koşuda +0,924 rad = 420 px, öbüründe 0). Taklitte bunların hiçbiri yok.
+  Oyunun bu sıçramaya dayanıklılığı taklitle sınanmaz; gerçek kilitli kayıtlarda kamera/yürüyüş yönü zamanlamaya bağlı sapabilir.
+- **Çerçeveler** (GZ-3): taklit çerçeve başınadır (kilit sahibi, olay yönlendirmesi, istek kısıtlaması paylaşılmaz); gerçekte sayfa
+  başınadır. Oyun tek çerçeveli.
+- **Sandbox'lı çerçeve** (GZ-2): artık yaklaşıkla taklit ediliyor (SecurityError, `pointerlockerror`, konsolda güvenlik hatası);
+  opak kökenli çerçevede `allow-pointer-lock` okunamaz, çapraz kökenli çerçevenin özniteliği okunamaz.
+- **Kilitliyken `tikla`** (GZ-4): kilit anındaki imleç hedefin üstündeyse `tikla` iki kipte de hatasız döner ama tık kilitli öğeye gider
+  (düğme etkinleşmez); zaman aşımı yalnız imleç hedefin üstünde değilse olur. Etki sonraki onayla denetlenmeli.""")
+# (d) Oyunun kilide bağlı davranışı tablosu: input.js:79
+degistir("""| `js/core/input.js:79` | Kilitliyken `mousemove.movementX/Y` kamerayı döndürür | Olaylar kilitli tuvale gider; Playwright hareketlerinde doğal movementX/Y (gerçek başsız kilitte anlamsız; bilinen fark). Senaryolarda fare hareketi adımı yok |""",
+"""| `js/core/input.js:79` | Kilitliyken `mousemove.movementX/Y` kamerayı döndürür | Olaylar kilitli tuvale gider; Playwright hareketlerinde doğal movementX/Y. Gerçek başsız kilitte ise her kilit alınışı −(imleç konumu) kadar hareket verir (kamera döner; 400 px üstü `input.js:84` süzgecinde zamanlamaya bağlı) ve Playwright hareketleri (+x,+y)/(−x,−y) çiftidir (çoğunlukla toplam 0; 400 px üstünde süzgeç çiftin birini zamanlamaya bağlı atabilir): bilinen fark (GZ-1). Senaryolarda fare hareketi adımı yok |""")
+# (e) Doğrulama tablosu: 02_acilis_akisi satırı (GZ-5)
+degistir("""T 104 sn, G 161 sn, B0 134 sn. Bellek: T tarayıcı VmHWM 102 MB, cgroup tepe 1570 MB; G 1500 MB, 4492 MB |""",
+"""T 104 sn, G 161 sn, B0 134 sn. Bellek: T tarayıcı VmHWM 102 MB, cgroup tepe 1570 MB; G 1500 MB, 4492 MB. (Sonradan, GZ-5: ikinci turun inceleyicisinin gerçek kilitli koşusunda AA15 de kaldı, 21/23: taban yükleme bitmeden alındı, gerçek kilidin yükü; tek G koşusu bu kontrol için kanıt değil) |""")
+# (g) kosucu_negatif bölümü
+degistir("""SIGKILL ile öldürülür: `TARAYICI ÇÖKTÜ/KOPTU`, KALDI, süreç kendiliğinden biter). A1'in bütün durumları geçmeye devam ediyor.""",
+"""SIGKILL ile öldürülür: `TARAYICI ÇÖKTÜ/KOPTU`, KALDI, süreç kendiliğinden biter). A1'in bütün durumları geçmeye devam ediyor.
+Son düzeltici 2'nin durumları (son kodla 73/73): rk/rw/rm (sayfanın renderer süreci js adımı, bekleme adımı ve metrics adımının
+CDP isteği sürerken öldürülür: `SAYFA ÇÖKTÜ (renderer crash)`, `kopma.tur` renderer, kalan adımlar koşmaz, asılı kalma yok, KALDI),
+tm (aynı metrics senaryosunda tarayıcı öldürülür), rc/rg (co-op: oda sahibinin renderer'ı `ev()` sürerken, konuğunki senaryo beklerken
+öldürülür; senaryo durur, kopmadan sonraki `check()` sayılmaz), rd (co-op: tarayıcı ilk onaydan önce öldürülür; neden "ilk onaydan
+önce yarıda kaldı", "onaysız" değil), ig/ih (sandbox'lı alt çerçevede kilit isteği: taklitte ve gerçek kilitte SecurityError,
+`pointerlockerror`, konsolda güvenlik hatası). te'nin beklentisi değişti: TE02 artık koşmaz (eskiden boşuna geçiyordu).
+Öldürme düzeneği renderer'ı da hedefleyebiliyor (`chromeSureci`: en eski ya da ikinci en eski canlı renderer; öldürülen oyuncu
+durumların kendi denetimiyle doğrulanır).""")
+# (h) Değişen dosyalar tablosu
+degistir("""| `tests/README.md` | Taklit ve tarayıcı çökmesi notu; co-op `tikla` yardımcısı; `--uretim`'de taklidin sayfaya kattıkları |""",
+"""| `tests/README.md` | Taklit ve tarayıcı çökmesi notu; co-op `tikla` yardımcısı; `--uretim`'de taklidin sayfaya kattıkları; son düzeltici 2: taklidin ölçülmüş bilinen farkları (kilit alınışı sıçraması, çerçeveler, sandbox), kilitliyken `tikla`'nın iki sonucu, renderer çökmesi ve iki koşucunun kopma sonrası davranışı |
+| son düzeltici 2 | `run.cjs`: renderer çökmesi kopma (`kopma.tur` renderer, `SAYFA ÇÖKTÜ (renderer crash): …`), `KAPANMA`'da 'Target/Page crashed', metrics CDP istekleri kopma/süre yarışı, KC-4 yorumu. `coop.cjs`: çöken sekme kopması (`kopma.cokenler`), kopmadan sonra `ev`/`tick`/`tikla` atar ve `check` sayılmaz (`kopma.sayilmayanKontrol`), `tick()` Node zamanlayıcısı, ilk onaydan önce kopmada doğru neden. `ortak.cjs`: sandbox'lı alt çerçeve yaklaşımı (`sandboxNedeni`, sayaç `sandbox`), bilinen farklar. `kosucu_negatif.mjs`: rk, rw, rm, tm, rc, rg, rd, ig, ih; te beklentisi; renderer öldürme. Fikstürler: `rk_renderer_olur.js`, `rw_renderer_olur_bekleme.js`, `rm_renderer_olur_metrics.js`, `rc_coop_renderer_olur.cjs`, `rg_coop_konuk_renderer_olur.cjs`, `rd_coop_onaysiz_kopma.cjs`, `ig_sandbox.html`, `ig_cerceve.html`, `ig_sandbox_cerceve.js` (te yorumu) |""")
+# (i) Dosyalar listesi
+degistir("""- `olcum_ajani/`: ölçüm ajanının kök neden kanıtları""",
+"""- `son2/`: son düzeltici 2'nin kayıtları: `yeniden/` (bulguların değişiklik öncesi koşucuyla yeniden üretimi: inceleyicinin
+  `gk_karsilastir`/`gk_kamera` betikleri ve yeni `kosucu_negatif` durumları; `once_kosucu_sha.txt`), `dogrulama/` (son kodla:
+  `kosucu_negatif` tümü, 17 v0.4, B0'ın `02_acilis_akisi`, co-op 06b, `gk_karsilastir`), `araclar/`, `zincir.log`, `kod_sha.txt`.
+- `olcum_ajani/`: ölçüm ajanının kök neden kanıtları""")
+# (j) Ölçümden sonra değişenler
+degistir("""verdiği yeniden ölçüldü: "Son düzeltici" bölümündeki doğrulama tablosu.""",
+"""verdiği yeniden ölçüldü: "Son düzeltici" bölümündeki doğrulama tablosu.
+
+### Son düzeltici 2: çökme yolları, sandbox ve belgeler
+
+Son düzeltici 2 kodu yine değiştirdi (ikinci inceleme KC-1..4, GZ-2): renderer çökmesi ve kopma sonrası davranış (yalnız çökme ya da
+kopma olduğunda etkin yollar), metrics adımının CDP isteklerinin kopma/süre yarışı (sağlıklı sayfada sonuç aynı), `tick()`'in 40 ms
+beklemesi Playwright yerine Node zamanlayıcısıyla, taklitte sandbox'lı alt çerçeve kuralı (yalnız alt çerçevede etkin; üst düzey belgede
+hiç uygulanmaz). Ölçülen senaryoların hiçbiri alt çerçevede kilit istemiyor. Sel/bellek sonucunun ve tıklama yolunun son kodla aynı
+kaldığı yeniden ölçüldü: "Son düzeltici 2" bölümündeki doğrulama tablosu.""")
+# (k) Gözlenen öteki olay
+degistir("""Öldürülenin büyük olasılıkla B0'ın renderer'ı olduğu ve aynı mekanizma olduğu olası; pid'in üst sürecini doğrulamadım.""",
+"""Öldürülenin büyük olasılıkla B0'ın renderer'ı olduğu ve aynı mekanizma olduğu olası; pid'in üst sürecini doğrulamadım.
+(Sonradan, ikinci inceleme KC-1: o koşunun raporu ZAMAN_ASIMI'ydı (`b/once_v04/duzeltme3/kesik/02_hizli_yolculuk_normal_abf125_sayfa_coktu_oom.json`):
+renderer çöktükten sonra metrics adımının CDP isteği 540 sn asılı kaldı. Son düzeltici 2'nin koşucusunda bu KALDI ve `kopma.tur`
+renderer olur, metrics isteği kopmayla yarışır.)""")
+# (l) Yeniden üretme komutları
+degistir("""/home/user/devtools/tk node tests/node/kosucu_negatif.mjs --kosucu-dizin <dizin> --sadece ia,ib,ia2,ie,ie2,pk7,pk5,pk""",
+"""/home/user/devtools/tk node tests/node/kosucu_negatif.mjs --kosucu-dizin <dizin> --sadece ia,ib,ia2,ie,ie2,pk7,pk5,pk
+# son düzeltici 2'nin durumları (renderer/tarayıcı öldürme, co-op kopma, sandbox'lı çerçeve)
+/home/user/devtools/tk node tests/node/kosucu_negatif.mjs --kosucu-dizin <dizin> --sadece rk,rw,rm,tm,rc,rg,rd,te,ig,ih
+# inceleyicinin gerçek kilit ↔ taklit karşılaştırma betikleri (son2/araclar/*.txt; ORTAK ortam değişkeni ortak.cjs yolunu seçer)
+ORTAK=$PWD/tests/harness/ortak.cjs /home/user/devtools/tk timeout 590 node gk_karsilastir.cjs cikti.json
+ORTAK=$PWD/tests/harness/ortak.cjs /home/user/devtools/tk timeout 580 node gk_kamera.cjs cikti.json""")
+# (f) yeni bölüm: "## Dosyalar" başlığından önce
+yeni = open(bolum, encoding='utf-8').read().rstrip('\n') + '\n\n'
+degistir("## Dosyalar\n", yeni + "## Dosyalar\n")
+open(p, 'w', encoding='utf-8').write(s)
+print('tamam')

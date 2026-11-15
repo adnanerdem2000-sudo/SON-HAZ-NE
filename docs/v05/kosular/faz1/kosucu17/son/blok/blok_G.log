@@ -1,0 +1,11 @@
+işaretçi kilidi: GERÇEK (taklit kapalı: --isaretci-kilidi gercek)
+ready in 6.1 s
+R: "ok"
+PASS Oyun başladı → "playing"
+R: "ok"
+PASS B01 işaretçi kilidi açık (gerçek ya da taklit) → true
+PASS B02 ana iplik 20 sn eşzamanlı meşgul → true
+PASS B03 boşalmadan sonra oyun sürüyor → "playing"
+R: "[[\"bos_bas\",1794716388855],[\"mesgul_bas\",1794716403898],[\"mesgul_bit\",1794716423898],[\"son\",1794716447098]]"
+errors: 0 pageErrors: 0 fails: 0 (83.9 s)
+SONUC: GECTI (çıkış 0) kontrol 4/4, onay 4 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34

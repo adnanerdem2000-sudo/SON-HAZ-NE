@@ -1,0 +1,16 @@
+$ node /home/user/SON-HAZ-NE-w2/tests/harness/run.cjs tests/fixtures/kosucu/rm_renderer_olur_metrics.js --size 320x200 --timeout 90 --url http://127.0.0.1:40743/temiz.html --report /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17w2/kn/tm.json
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+ready in 0.3 s
+PASS RM01 Sabit sayfa açıldı → "object"
+[test] KOSUCU_NEGATIF_OLDUR
+KOPMA TARAYICI ÇÖKTÜ/KOPTU: tarayıcı süreciyle bağlantı koptu (süreç öldürüldü ya da çöktü; ör. bellek sınırında OOM) — adım 2, 0.3 sn
+EVALERR page.evaluate: Target page, context or browser has been closed
+Browser logs:
+
+<launching> /opt/pw-browsers/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --n
+KOPMA: kalan 2 adım koşmadı
+errors: 0 pageErrors: 1 fails: 1 evalErrors: 1 (0.3 s)
+SONUC: KALDI (çıkış 1) kontrol 1/1, onay 2 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: başarısız kontrol ya da adım: 1; sayfa hatası (pageerror): 1; adım istisnası (evalErrors): 1; tarayıcı çöktü/koptu (adım 2; 2 adım koşmadı)
+
+[çıkış 1]
+[tarayıcı öldürme: {"durum":"öldürüldü","hedef":"tarayici","pid":4715,"ms":581}]

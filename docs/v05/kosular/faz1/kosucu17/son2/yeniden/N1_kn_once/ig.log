@@ -1,0 +1,11 @@
+$ node /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/once_kosucu/run.cjs tests/fixtures/kosucu/ig_sandbox_cerceve.js --size 320x200 --timeout 90 --url http://127.0.0.1:46101/ig_sandbox.html --report /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/kosu/N1_kn_once/ig.json
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+ready in 0.2 s
+PASS IG00 Üç alt çerçeve yüklendi → "s1,s2,s3"
+R: "{\"s1\":{\"__ig\":true,\"ad\":\"s1\",\"sonuc\":\"ok\",\"olaylar\":[\"change:c\"],\"koken\":\"null\"},\"s2\":{\"__ig\":true,\"ad\":\"s2\",\"sonuc\":\"ok\",\"olaylar\":[\"change:c\"],\"koken\":\"http://127.0.0.1:46101\"},\"s3\":{\"__ig\":true,\"ad\":\"s3\",\"sonuc\":\"ok\",\"olaylar\":[\"change:c\"],\"koken\":\"http://127.0.0.1:46101\"}}"
+FAIL IG01 Sandbox'lı çerçevelerde (s1 opak, s2 aynı köken) istek SecurityError + pointerlockerror; sandbox'sız s3 kilitlenir → [false,false,true,"null",true]
+GORUNTU /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/out/goruntu/ig_sandbox_cerceve_2026-11-15T06-03-29-364Z_15563/ilk_kalan.png
+errors: 0 pageErrors: 0 fails: 1 (3.0 s)
+SONUC: KALDI (çıkış 1) kontrol 1/2, onay 2 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 1 farklı/1 | neden: başarısız kontrol ya da adım: 1
+
+[çıkış 1]

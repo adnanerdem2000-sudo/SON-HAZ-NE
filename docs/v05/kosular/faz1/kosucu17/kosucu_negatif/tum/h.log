@@ -1,0 +1,9 @@
+$ node /home/user/SON-HAZ-NE-k17/tests/harness/run.cjs tests/fixtures/kosucu/h_baslatma.js --size 320x200 --timeout 90 --url http://127.0.0.1:46833/depolama.html --report /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/kn5/tum/h.json
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+başlatma betiği: 1 meta, 0 dosya
+ready in 0.2 s
+PASS H01 Sayfa yüklenirken localStorage SecurityError attı → "SecurityError"
+errors: 0 pageErrors: 0 fails: 0 (1.2 s)
+SONUC: GECTI (çıkış 0) kontrol 1/1, onay 1 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0
+
+[çıkış 0]

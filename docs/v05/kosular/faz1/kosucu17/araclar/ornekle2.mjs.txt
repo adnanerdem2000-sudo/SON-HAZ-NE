@@ -1,0 +1,180 @@
+// Bellek örnekleyicisi (17_kamera_kararma ölçümü). Yalnız okur: /proc ve cgroup dosyaları.
+//   node ornekle.mjs --kok <pid> --cikti <taban> [--log <koşu günlüğü>] [--aralik 500] [--en-cok-sn 3600]
+// --kok: tk (flock) sürecinin pid'i. Örneklenen chrome süreçleri YALNIZ bu pid'in alt ağacındakilerdir (flock → timeout →
+// node → chrome-headless …); kilit B0 ile paylaşıldığından kilit beklenirken alt ağaçta chrome yoktur ve sayılmaz.
+// Çıktılar:
+//   <taban>_surec.csv  her örnekte her chrome süreci (ve koşucu node'u) için bir satır: pid, tür, VmRSS, VmHWM, RssAnon/File/Shmem (kB)
+//   <taban>_ornek.csv  her örnekte bir satır: cgroup kullanımı, oom_kill sayacı, tür başına RSS toplamı, ağaç dışı chrome, arka plan
+//   <taban>_olay.csv   koşu günlüğüne gelen her satır (örnek çözünürlüğünde zamanlı) ve örnekleyici olayları (#…)
+//   <taban>_ozet.json  koşu bitince: tür başına tepe (VmHWM ve VmRSS), toplam chrome tepesi, cgroup tepesi, başlangıç arka planı
+import fs from 'node:fs';
+
+const args = process.argv.slice(2);
+const opt = (k, d) => { const i = args.indexOf('--' + k); return i >= 0 && i + 1 < args.length ? args[i + 1] : d; };
+const KOK = Number(opt('kok'));
+const TABAN = opt('cikti');
+const LOG = opt('log', null);
+const ARALIK = Number(opt('aralik', '500'));
+const EN_COK_MS = Number(opt('en-cok-sn', '3600')) * 1000;
+if (!Number.isInteger(KOK) || KOK <= 1 || !TABAN) { console.error('Kullanım: node ornekle.mjs --kok <pid> --cikti <taban> [--log f] [--aralik ms]'); process.exit(2); }
+// (2. deneme) makine 2026-11-15 ~00:03 UTC'de yeniden başladı ve cgroup yolu değişti: yol /proc/self/cgroup'tan okunur (DK_CG ile verilebilir)
+const CG = process.env.DK_CG || ('/sys/fs/cgroup/memory' + ((fs.readFileSync('/proc/self/cgroup', 'utf8').split('\n').find((l) => /^\d+:memory:/.test(l)) || '::').split(':')[2]));
+
+const fSurec = fs.openSync(TABAN + '_surec.csv', 'w');
+const fOrnek = fs.openSync(TABAN + '_ornek.csv', 'w');
+const fOlay = fs.openSync(TABAN + '_olay.csv', 'w');
+fs.writeSync(fSurec, 'zaman,t_ms,cg_MB,pid,ppid,tur,rss_kB,hwm_kB,anon_kB,file_kB,shmem_kB\n');
+fs.writeSync(fOrnek, 'zaman,t_ms,cg_MB,oom_kill,n_chrome,chrome_rss_MB,chrome_anon_MB,browser_MB,renderer_MB,gpu_MB,utility_MB,zygote_MB,agac_disi_chrome_MB,node_MB,arka_plan_MB\n');
+fs.writeSync(fOlay, 'zaman,t_ms,satir\n');
+
+const t0 = Date.now();
+const iso = (t) => new Date(t).toISOString();
+const csvMetin = (s) => '"' + String(s).replace(/"/g, '""') + '"';
+const olay = (t, s) => fs.writeSync(fOlay, `${iso(t)},${t - t0},${csvMetin(s)}\n`);
+const oku = (f) => { try { return fs.readFileSync(f, 'utf8'); } catch { return null; } };
+const sayi = (s, re) => { const m = re.exec(s || ''); return m ? Number(m[1]) : null; };
+const cgMB = () => { const s = oku(CG + '/memory.usage_in_bytes'); return s ? Math.round(Number(s) / 1048576) : null; };
+const oomKill = () => sayi(oku(CG + '/memory.oom_control'), /^oom_kill (\d+)$/m);   // 'oom_kill_disable' satırı DEĞİL
+
+function surecTablosu() {
+  const m = new Map();
+  for (const d of fs.readdirSync('/proc')) {
+    if (!/^\d+$/.test(d)) continue;
+    const s = oku('/proc/' + d + '/stat');
+    if (!s) continue;
+    const a = s.indexOf('('), b = s.lastIndexOf(')');
+    const kalan = s.slice(b + 2).split(' ');
+    m.set(Number(d), { ppid: Number(kalan[1]), comm: s.slice(a + 1, b) });
+  }
+  return m;
+}
+function altAgac(tablo, kok) {
+  const cocuk = new Map();
+  for (const [pid, v] of tablo) { if (!cocuk.has(v.ppid)) cocuk.set(v.ppid, []); cocuk.get(v.ppid).push(pid); }
+  const out = new Set(); const yigin = [kok];
+  while (yigin.length) { const p = yigin.pop(); for (const c of cocuk.get(p) || []) if (!out.has(c)) { out.add(c); yigin.push(c); } }
+  return out;
+}
+const chromeMu = (comm) => comm.startsWith('chrome');
+function turu(pid) {
+  const c = oku('/proc/' + pid + '/cmdline');
+  if (c === null) return null;
+  const m = /--type=([a-z-]+)/.exec(c.replace(/\0/g, ' '));
+  return m ? m[1] : 'browser';   // --type yoksa ana (browser) süreç
+}
+function bellek(pid) {
+  const s = oku('/proc/' + pid + '/status');
+  if (!s) return null;
+  return { rss: sayi(s, /^VmRSS:\s+(\d+)/m), hwm: sayi(s, /^VmHWM:\s+(\d+)/m), anon: sayi(s, /^RssAnon:\s+(\d+)/m), file: sayi(s, /^RssFile:\s+(\d+)/m), shmem: sayi(s, /^RssShmem:\s+(\d+)/m) };
+}
+
+// ---- koşu boyunca tutulan özet
+const oz = {
+  kok: KOK, log: LOG, aralik_ms: ARALIK, ornekleyici_basladi: iso(t0), kilit_alindi: null, node_pid: null, chrome_ilk: null, chrome_son: null, bitis: null,
+  oom_kill_basta: oomKill(), oom_kill_sonda: null, oom_artislari: [], ornek_sayisi: 0, chrome_ornek_sayisi: 0,
+  cg_kilitten_once_MB: null, tur: {}, pidler: {}, kaybolan_surecler: [],
+  chrome_toplam_tepe: null, chrome_anon_toplam_tepe: null, cg_tepe: null, arka_plan_ilk: [], arka_plan_tepe: null, agac_disi_chrome_tepe_MB: 0, node_tepe_MB: 0,
+};
+let logOfset = 0, logArtik = '';
+let oncekiOom = oz.oom_kill_basta;
+let oncekiPidler = new Map();   // pid → {tur, rss, hwm}
+let son = null;
+
+function logOku(t) {
+  if (!LOG) return;
+  let st; try { st = fs.statSync(LOG); } catch { return; }
+  if (st.size < logOfset) { logOfset = 0; logArtik = ''; }
+  if (st.size === logOfset) return;
+  const fd = fs.openSync(LOG, 'r');
+  const buf = Buffer.alloc(st.size - logOfset);
+  fs.readSync(fd, buf, 0, buf.length, logOfset); fs.closeSync(fd);
+  logOfset = st.size;
+  const parca = (logArtik + buf.toString('utf8')).split('\n');
+  logArtik = parca.pop();
+  for (const satir of parca) if (satir.trim()) olay(t, satir.slice(0, 220));
+}
+
+function ornekle() {
+  const t = Date.now();
+  const cg = cgMB();
+  const oom = oomKill();
+  const tablo = surecTablosu();
+  const kokVar = tablo.has(KOK);
+  const agac = kokVar ? altAgac(tablo, KOK) : new Set();
+  const tur = { browser: 0, renderer: 0, 'gpu-process': 0, utility: 0, zygote: 0 };
+  let chromeRss = 0, chromeAnon = 0, n = 0, nodeMB = 0, agacDisi = 0;
+  const simdiki = new Map();
+  for (const pid of agac) {
+    const v = tablo.get(pid);
+    if (v.comm === 'node') {
+      const b = bellek(pid); if (!b) continue;
+      if (!oz.node_pid) { oz.node_pid = pid; oz.kilit_alindi = iso(t); olay(t, `#node_basladi pid=${pid} (kilit alındı)`); if (son) oz.cg_kilitten_once_MB = son.cg; }
+      nodeMB += b.rss / 1024;
+      fs.writeSync(fSurec, `${iso(t)},${t - t0},${cg},${pid},${v.ppid},node,${b.rss},${b.hwm},${b.anon},${b.file},${b.shmem}\n`);
+      continue;
+    }
+    if (!chromeMu(v.comm)) continue;
+    const tr = turu(pid), b = bellek(pid);
+    if (!tr || !b || b.rss === null) continue;
+    n++; chromeRss += b.rss; chromeAnon += b.anon || 0;
+    tur[tr] = (tur[tr] || 0) + b.rss;
+    simdiki.set(pid, { tur: tr, rss: b.rss, hwm: b.hwm, anon: b.anon });
+    fs.writeSync(fSurec, `${iso(t)},${t - t0},${cg},${pid},${v.ppid},${tr},${b.rss},${b.hwm},${b.anon},${b.file},${b.shmem}\n`);
+    const T = (oz.tur[tr] = oz.tur[tr] || { hwm_tepe_MB: 0, hwm_pid: null, rss_tepe_MB: 0, rss_pid: null, rss_tepe_zaman: null, tur_toplam_tepe_MB: 0, pid_sayisi: 0 });
+    if (b.hwm / 1024 > T.hwm_tepe_MB) { T.hwm_tepe_MB = +(b.hwm / 1024).toFixed(1); T.hwm_pid = pid; }
+    if (b.rss / 1024 > T.rss_tepe_MB) { T.rss_tepe_MB = +(b.rss / 1024).toFixed(1); T.rss_pid = pid; T.rss_tepe_zaman = iso(t); T.rss_tepe_t_ms = t - t0; }
+    if (!oz.pidler[pid]) { oz.pidler[pid] = { tur: tr, ilk: iso(t) }; T.pid_sayisi++; }
+    oz.pidler[pid].tur = tr; oz.pidler[pid].son = iso(t); oz.pidler[pid].son_rss_MB = +(b.rss / 1024).toFixed(1); oz.pidler[pid].son_hwm_MB = +(b.hwm / 1024).toFixed(1); oz.pidler[pid].son_anon_MB = +((b.anon || 0) / 1024).toFixed(1);
+  }
+  for (const [tr, kB] of Object.entries(tur)) { const T = oz.tur[tr]; if (T && kB / 1024 > T.tur_toplam_tepe_MB) T.tur_toplam_tepe_MB = +(kB / 1024).toFixed(1); }
+  // ağaç dışı chrome (başka bir koşunun tarayıcısı ya da kapanmakta olan önceki tarayıcı): sayılmaz, yalnız not edilir
+  for (const [pid, v] of tablo) if (chromeMu(v.comm) && !agac.has(pid)) { const b = bellek(pid); if (b && b.rss) agacDisi += b.rss / 1024; }
+  // kaybolan chrome süreçleri (OOM öldürmesi ya da kapanış)
+  for (const [pid, v] of oncekiPidler) if (!simdiki.has(pid)) {
+    const k = { pid, tur: v.tur, zaman: iso(t), t_ms: t - t0, son_rss_MB: +(v.rss / 1024).toFixed(1), son_hwm_MB: +(v.hwm / 1024).toFixed(1), son_anon_MB: +((v.anon || 0) / 1024).toFixed(1), kalan_chrome: simdiki.size };
+    oz.kaybolan_surecler.push(k);
+    olay(t, `#surec_kayboldu pid=${pid} tur=${v.tur} son_rss_MB=${k.son_rss_MB} son_hwm_MB=${k.son_hwm_MB} kalan_chrome=${simdiki.size}`);
+  }
+  oncekiPidler = simdiki;
+  if (oom !== null && oncekiOom !== null && oom > oncekiOom) { oz.oom_artislari.push({ zaman: iso(t), t_ms: t - t0, onceki: oncekiOom, yeni: oom }); olay(t, `#oom_kill ${oncekiOom} -> ${oom}`); }
+  if (oom !== null) oncekiOom = oom;
+  const rssMB = chromeRss / 1024, anonMB = chromeAnon / 1024, bg = n ? cg - rssMB : null;
+  fs.writeSync(fOrnek, `${iso(t)},${t - t0},${cg},${oom},${n},${rssMB.toFixed(1)},${anonMB.toFixed(1)},${(tur.browser / 1024).toFixed(1)},${(tur.renderer / 1024).toFixed(1)},${(tur['gpu-process'] / 1024).toFixed(1)},${(tur.utility / 1024).toFixed(1)},${(tur.zygote / 1024).toFixed(1)},${agacDisi.toFixed(1)},${nodeMB.toFixed(1)},${bg === null ? '' : bg.toFixed(1)}\n`);
+  oz.ornek_sayisi++;
+  if (agacDisi > oz.agac_disi_chrome_tepe_MB) oz.agac_disi_chrome_tepe_MB = +agacDisi.toFixed(1);
+  if (nodeMB > oz.node_tepe_MB) oz.node_tepe_MB = +nodeMB.toFixed(1);
+  if (n) {
+    oz.chrome_ornek_sayisi++;
+    if (!oz.chrome_ilk) { oz.chrome_ilk = iso(t); olay(t, `#chrome_basladi n=${n}`); }
+    oz.chrome_son = iso(t);
+    if (!oz.chrome_toplam_tepe || rssMB > oz.chrome_toplam_tepe.MB) oz.chrome_toplam_tepe = { MB: +rssMB.toFixed(1), zaman: iso(t), t_ms: t - t0, cg_MB: cg, tur_MB: Object.fromEntries(Object.entries(tur).map(([k, v]) => [k, +(v / 1024).toFixed(1)])) };
+    if (!oz.chrome_anon_toplam_tepe || anonMB > oz.chrome_anon_toplam_tepe.MB) oz.chrome_anon_toplam_tepe = { MB: +anonMB.toFixed(1), zaman: iso(t), t_ms: t - t0 };
+    if (!oz.cg_tepe || cg > oz.cg_tepe.MB) oz.cg_tepe = { MB: cg, zaman: iso(t), t_ms: t - t0, chrome_MB: +rssMB.toFixed(1), arka_plan_MB: +bg.toFixed(1) };
+    if (oz.arka_plan_ilk.length < 10) oz.arka_plan_ilk.push(+bg.toFixed(1));
+    if (!oz.arka_plan_tepe || bg > oz.arka_plan_tepe.MB) oz.arka_plan_tepe = { MB: +bg.toFixed(1), zaman: iso(t), t_ms: t - t0, agac_disi_chrome_MB: +agacDisi.toFixed(1) };
+  } else if (oz.chrome_ilk && son && son.n) olay(t, '#chrome_bitti');
+  son = { cg, n };
+  logOku(t);
+  return kokVar;
+}
+
+const bitir = () => {
+  const t = Date.now();
+  logOku(t);
+  if (logArtik.trim()) olay(t, logArtik.slice(0, 220));
+  oz.bitis = iso(t); oz.oom_kill_sonda = oomKill();
+  const a = [...oz.arka_plan_ilk].sort((x, y) => x - y);
+  oz.arka_plan_baslangic_MB = a.length ? a[Math.floor(a.length / 2)] : null;   // chrome göründükten sonraki ilk 10 örneğin (≈5 sn) ortancası
+  olay(t, '#bitti');
+  fs.writeFileSync(TABAN + '_ozet.json', JSON.stringify(oz, null, 1));
+  fs.closeSync(fSurec); fs.closeSync(fOrnek); fs.closeSync(fOlay);
+  console.log(JSON.stringify({ chrome_toplam_tepe: oz.chrome_toplam_tepe, cg_tepe: oz.cg_tepe, arka_plan_baslangic_MB: oz.arka_plan_baslangic_MB, tur: oz.tur, oom: oz.oom_artislari }));
+  process.exit(0);
+};
+olay(t0, `#ornekleyici_basladi kok=${KOK}`);
+const zamanlayici = setInterval(() => {
+  let kokVar;
+  try { kokVar = ornekle(); } catch (e) { olay(Date.now(), '#ornekleme_hatasi ' + (e && e.message)); kokVar = true; }
+  if (!kokVar || Date.now() - t0 > EN_COK_MS) { clearInterval(zamanlayici); bitir(); }
+}, ARALIK);
+process.on('SIGTERM', () => { clearInterval(zamanlayici); bitir(); });

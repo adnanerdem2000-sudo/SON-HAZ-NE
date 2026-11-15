@@ -1,0 +1,21 @@
+#!/bin/bash
+# Son koşucu (w2'ye uygulanmış kosucu17 yaması) doğrulama zinciri: negatif takım + co-op regresyonu (v0.4'e karşı)
+cd /home/user/SON-HAZ-NE-w2
+OUT=docs/v05/kosular/faz1/kosucu17/w2_dogrulama
+mkdir -p $OUT
+TK=/home/user/devtools/tk
+CU="http://localhost:8080/index.html?peerhost=127.0.0.1&peerport=9000"
+SUM=$OUT/ozet.txt; : > $SUM
+echo "koşucu: run $(sha256sum tests/harness/run.cjs|cut -c1-8) coop $(sha256sum tests/harness/coop.cjs|cut -c1-8) ortak $(sha256sum tests/harness/ortak.cjs|cut -c1-8) negatif $(sha256sum tests/node/kosucu_negatif.mjs|cut -c1-8)" >> $SUM
+CG=$(ls -d /sys/fs/cgroup/memory/process_api/*/claude-code-bash)
+one() { local name=$1; shift; local t0=$(date +%s); local oom0=$(grep '^oom_kill ' $CG/memory.oom_control | awk '{print $2}')
+  "$@" > $OUT/$name.log 2>&1; local rc=$?
+  local oom1=$(grep '^oom_kill ' $CG/memory.oom_control | awk '{print $2}')
+  echo "$(date +%H:%M:%S) $name rc=$rc sure=$(( $(date +%s)-t0 ))s oom_kill=$oom0->$oom1 | $(grep -E '^SONUC|^GECTI|^KALDI|PASS, ' $OUT/$name.log | tail -1)" >> $SUM
+}
+one kosucu_negatif $TK timeout 1900 node tests/node/kosucu_negatif.mjs --kosucu-dizin /home/user/SON-HAZ-NE-w2/tests/harness --cikti /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17w2/kn --rapor $OUT/kosucu_negatif_ozet.json
+one coop_06a2 $TK timeout 960 node tests/harness/coop.cjs tests/scenarios/coop/06a2_mesaj_kopma.cjs --players 3 --size 480x270 --timeout 900 --url "$CU" --report $OUT/coop_06a2.json
+one coop_06a $TK timeout 960 node tests/harness/coop.cjs tests/scenarios/coop/06a_ag_guvenligi.cjs --players 3 --size 480x270 --timeout 900 --url "$CU" --report $OUT/coop_06a.json
+one coop_06d $TK timeout 960 node tests/harness/coop.cjs tests/scenarios/coop/06d_ganimet_canta.cjs --players 2 --size 640x360 --timeout 900 --url "$CU" --report $OUT/coop_06d.json
+one coop_06c $TK timeout 1260 node tests/harness/coop.cjs tests/scenarios/coop/06c_dort_oyuncu.cjs --players 4 --size 480x270 --timeout 1200 --url "$CU" --report $OUT/coop_06c.json
+echo BITTI >> $SUM

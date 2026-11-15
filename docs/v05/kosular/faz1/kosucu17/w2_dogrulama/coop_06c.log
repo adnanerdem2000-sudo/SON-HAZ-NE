@@ -1,0 +1,44 @@
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+Kaptan/host {"code":"SVGUHJ"}
+Tayfa/join {"room":"Dört Kişilik Oda"}
+Lostromo/join {"room":"Dört Kişilik Oda"}
+Topçu/join {"room":"Dört Kişilik Oda"}
+Kaptan/roster ["Kaptan","Tayfa","Lostromo","Topçu"]
+PASS D4-01 Lobide 4 kayıt → ["Kaptan","Tayfa","Lostromo","Topçu"]
+Kaptan/hs "host-started"
+Tayfa/gs "guest-started"
+Lostromo/gs "guest-started"
+Topçu/gs "guest-started"
+tick 2 @ 38.4s
+PASS D4-02 4 oyuncu da oyunda → ["playing","playing","playing","playing"]
+PASS D4-03 Her oyuncu 3 uzak oyuncu görür → [3,3,3,3]
+tick 1.5 @ 39.9s
+PASS D4-04 Sohbet diğer 3 oyuncuya ulaşır → [1,1,1,1]
+tick 2 @ 40.9s
+PASS D4-05 Konuğun hareketi diğer konukta görünür → {"before":[8.789999999999997,214.63999999999996],"after":[14.789999999931776,218.6399999999545]}
+Topçu/g3-menu "menu"
+tick 1 @ 42.1s
+tick 0.5 @ 44.2s
+Topçu/rejoin {"room":"Dört Kişilik Oda"}
+Topçu/gs2 "guest-restarted"
+tick 2 @ 45.5s
+PASS D4-06 Menüye dönen konuk aynı adla geri gelir; roster 4 kayıt, çift ad yok, 3 uzak oyuncu görür → {"name3":"Topçu","leftState":"menu","rosterAfterLeave":["Kaptan","Tayfa","Lostromo"],"rosterAfterRejoin":["Kaptan","Tayfa","Lostromo","Topçu"],"g3state":"playing","g3remotes":3}
+Tayfa sekme kapandı
+tick 0.2 @ 49.0s
+tick 0.2 @ 50.1s
+tick 0.2 @ 51.2s
+tick 0.2 @ 52.3s
+tick 0.2 @ 53.4s
+tick 0.2 @ 54.5s
+tick 0.2 @ 55.5s
+tick 0.2 @ 56.6s
+tick 0.2 @ 57.7s
+tick 0.2 @ 58.8s
+tick 0.2 @ 59.9s
+tick 0.2 @ 61.0s
+tick 0.2 @ 62.1s
+tick 1 @ 62.2s
+PASS D4-07 Sekmesi kapanan konuk herkeste kalkar (≤ 25 sn) → {"rem":[2,2,2],"waitedMs":13000}
+[test] 4 oyuncu tamam @ 62.6s
+checks: 7 fails: 0 pageErrors: 0 (463.6 s)
+SONUC: GECTI (çıkış 0) kontrol 7/7 | ev() istisnası 0, kapalı sayfa atlama 18, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 9 farklı/137

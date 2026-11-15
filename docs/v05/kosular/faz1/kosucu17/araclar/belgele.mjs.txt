@@ -1,0 +1,40 @@
+// kosucu17 ham kayıtlarını depoya (k17 docs/v05/kosular/faz1/kosucu17/<alt>/) taşınabilir boyutta kopyalar:
+//   rapor (.json), günlük (.log), dmesg, örnekleyici özeti (_ozet.json), bellek dizisi 2 sn'ye seyreltilmiş (_ornek_2sn.csv),
+//   iplik CPU'su 10 sn'lik pencerelerde (_iplik_10sn.csv: tarayıcı ana/IO, renderer ana/Compositor, gpu toplamı; % ve uyanma/sn).
+// Ham _surec.csv, _ornek.csv ve _iplik.csv scratch'te kalır (yol README'de).   node belgele.mjs <kaynak dizin> <hedef dizin> <ad>...
+import fs from 'node:fs';
+import path from 'node:path';
+const [KAYNAK, HEDEF, ...ADLAR] = process.argv.slice(2);
+fs.mkdirSync(HEDEF, { recursive: true });
+const oku = (f) => { try { return fs.readFileSync(f, 'utf8'); } catch { return null; } };
+for (const ad of ADLAR) {
+  const t = path.join(KAYNAK, ad), h = path.join(HEDEF, ad);
+  for (const uz of ['.json', '.log', '.dmesg.txt', '_ozet.json']) { const s = oku(t + uz); if (s !== null) fs.writeFileSync(h + uz, s); }
+  // bellek dizisi: 2 sn'de bir örnek (ilk, son ve tepe örnekleri korunur)
+  const o = oku(t + '_ornek.csv');
+  if (o) {
+    const sat = o.trim().split('\n'); const bas = sat[0].split(','); const ib = bas.indexOf('browser_MB'), ir = bas.indexOf('renderer_MB'), ic = bas.indexOf('cg_MB'), it = bas.indexOf('t_ms');
+    let tb = 1, tr = 1, tc = 1;
+    sat.slice(1).forEach((l, i) => { const f = l.split(','); if (+f[ib] > +sat[tb].split(',')[ib]) tb = i + 1; if (+f[ir] > +sat[tr].split(',')[ir]) tr = i + 1; if (+f[ic] > +sat[tc].split(',')[ic]) tc = i + 1; });
+    let son = -1e9; const sec = [sat[0]];
+    sat.slice(1).forEach((l, i) => { const n = i + 1; const tm = +l.split(',')[it]; if (tm - son >= 2000 || n === 1 || n === sat.length - 1 || n === tb || n === tr || n === tc) { sec.push(l); son = tm; } });
+    fs.writeFileSync(h + '_ornek_2sn.csv', sec.join('\n') + '\n');
+  }
+  // iplik CPU'su: 10 sn'lik pencereler
+  const ip = oku(t + '_iplik.csv');
+  if (ip) {
+    const sat = ip.trim().split('\n').slice(1).map((l) => { const [z, tm, pid, tur, ad2, tik, gon] = l.split(','); return { tm: +tm, pid: +pid, tur, ad: ad2, tik: +tik, gon: +gon }; });
+    const ana = (tur) => { const say = new Map(); for (const x of sat) if (x.tur === tur && x.ad === 'TOPLAM') say.set(x.pid, (say.get(x.pid) || 0) + 1); let en = null, n = 0; for (const [p, c] of say) if (c > n) { n = c; en = p; } return en; };
+    const pids = { browser: ana('browser'), renderer: ana('renderer'), 'gpu-process': ana('gpu-process') };
+    const seri = (tur, ad2) => sat.filter((x) => x.pid === pids[tur] && x.ad === ad2).sort((a, b) => a.tm - b.tm);
+    const kolon = [['browser', 'ANA'], ['browser', 'Chrome_IOThread'], ['renderer', 'ANA'], ['renderer', 'Compositor'], ['gpu-process', 'TOPLAM'], ['browser', 'TOPLAM']];
+    const seriler = kolon.map(([a, b]) => seri(a, b));
+    const t0 = Math.min(...seriler.filter((s) => s.length).map((s) => s[0].tm));
+    const t1 = Math.max(...seriler.filter((s) => s.length).map((s) => s[s.length - 1].tm));
+    const satir = ['pencere_bas_sn,' + kolon.map(([a, b]) => `${a}:${b}_cpu%,${a}:${b}_uyanma/sn`).join(',')];
+    const deger = (s, a, b) => { const x = s.filter((q) => q.tm >= a && q.tm <= b); if (x.length < 2) return ['', '']; const dt = (x[x.length - 1].tm - x[0].tm) / 1000; return dt > 0 ? [((x[x.length - 1].tik - x[0].tik) / dt).toFixed(0), ((x[x.length - 1].gon - x[0].gon) / dt).toFixed(0)] : ['', '']; };
+    for (let a = t0; a < t1; a += 10000) satir.push([((a - t0) / 1000).toFixed(0), ...seriler.flatMap((s) => deger(s, a, a + 10000))].join(','));
+    fs.writeFileSync(h + '_iplik_10sn.csv', satir.join('\n') + '\n');
+  }
+}
+console.log('kopyalandı:', ADLAR.length, '→', HEDEF);

@@ -1,0 +1,64 @@
+// İşaretçi kilidi yoklaması 4: jestsiz isteğin zamanlaması ve olayları, kısıtlamanın olayları, jestsiz isteğin kısıtlama sayacına
+// girip girmediği ve sıfırlanma modeli (2 sn boşluk), gerçek ↔ taklit (k17 ortak.cjs).   node yoklama4.cjs <cikti.json> [ortak.cjs]
+const { chromium } = require('playwright');
+const http = require('http');
+const fs = require('fs');
+const CIKTI = process.argv[2];
+const ORTAK = process.argv[3] || '/home/user/SON-HAZ-NE-k17/tests/harness/ortak.cjs';
+const TAKLIT = require(ORTAK).ISARETCI_TAKLIT;
+const SAYFA = '<!doctype html><meta charset="utf-8"><link rel="icon" href="data:,"><title>yoklama4</title><body><canvas id="c" width="64" height="64"></canvas></body>';
+const bekle = (ms) => new Promise((r) => setTimeout(r, ms));
+// window.open geçici etkinliği tüketir: hemen ardından gelen istek jestsizdir
+const JESTSIZ = `(async () => {
+  const c = document.getElementById('c'); const ol = []; const ple = () => document.pointerLockElement ? 'c' : null;
+  const f = (e) => ol.push(e.type + '(' + ple() + ')'); document.addEventListener('pointerlockchange', f); document.addEventListener('pointerlockerror', f);
+  const w = window.open('about:blank'); const etkin = navigator.userActivation.isActive; if (w) w.close();
+  const p = c.requestPointerLock(); const esz = ple(); let durumMikro = null; Promise.resolve().then(() => { durumMikro = 'mikro:' + ol.length; });
+  const r = await p.then(() => 'çözüldü', (e) => 'red ' + e.name + ': ' + e.message); const olaySozde = ol.slice();
+  await new Promise((q) => setTimeout(q, 100));
+  document.removeEventListener('pointerlockchange', f); document.removeEventListener('pointerlockerror', f);
+  return { etkinOpenSonrasi: etkin, esz, durumMikro, r, olaySozde, olay100: ol, ple: ple() };
+})()`;
+const TEK = `(async () => { const c = document.getElementById('c'); const ol = []; const f = (e) => ol.push(e.type); document.addEventListener('pointerlockerror', f);
+  const r = await c.requestPointerLock().then(() => 'ok', (e) => e.name + ': ' + e.message.replace("Failed to execute 'requestPointerLock' on 'Element': ", '[önek] ')); await new Promise((q) => setTimeout(q, 20));
+  const k = !!document.pointerLockElement; if (document.pointerLockElement) document.exitPointerLock(); document.removeEventListener('pointerlockerror', f); return [r, k, ol.length]; })()`;
+(async () => {
+  const sunucu = http.createServer((q, r) => { r.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' }); r.end(SAYFA); });
+  await new Promise((r) => sunucu.listen(0, '127.0.0.1', r));
+  const URL = `http://127.0.0.1:${sunucu.address().port}/`;
+  const tum = {};
+  const kapat = setTimeout(() => { console.log('ZAMAN AŞIMI'); fs.writeFileSync(CIKTI, JSON.stringify(tum, null, 1)); process.exit(3); }, 280000);
+  for (const kip of ['gercek', 'taklit']) {
+    const b = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--disable-gpu-watchdog', '--autoplay-policy=no-user-gesture-required', '--enable-precise-memory-info'] });
+    const ctx = await b.newContext({ viewport: { width: 320, height: 200 } });
+    if (kip === 'taklit') await ctx.addInitScript({ content: TAKLIT });
+    const p = await ctx.newPage();
+    const o = tum[kip] = {};
+    const adim = async (ad, f) => { try { o[ad] = await f(); } catch (e) { o[ad] = 'HATA ' + String(e && e.message || e).split('\n')[0].slice(0, 300); } console.log(kip, ad, JSON.stringify(o[ad]).slice(0, 700)); };
+    const dizi = async (n, aralik) => { const out = []; for (let i = 0; i < n; i++) { out.push(await p.evaluate(TEK)); await bekle(aralik); } return out; };
+    try {
+      await p.goto(URL);
+      await adim('jestsiz', () => p.evaluate(JESTSIZ));
+      await bekle(2600);
+      // kısıtlama: 5 kabul, 6. red (olay var mı, önek var mı)
+      await adim('kisit_olay', () => dizi(6, 50));
+      await bekle(2600);
+      // Q1: 4 kabul (100 ms), 1,9 sn boşluk, 2 istek → M2: 5. kabul, 6. red
+      await adim('q1_bosluk1900', async () => { const a = await dizi(4, 100); await bekle(1900 - 100); const z = await dizi(2, 100); return [a, z]; });
+      await bekle(2600);
+      // Q2: 4 kabul, 2,3 sn boşluk, 2 istek → M2: ikisi de kabul (sayaç sıfırlandı)
+      await adim('q2_bosluk2300', async () => { const a = await dizi(4, 100); await bekle(2300 - 100); const z = await dizi(2, 100); return [a, z]; });
+      await bekle(2600);
+      // Q3: 4 kabul, jestsiz istek, 1 jestli istek → jestsiz sayılıyorsa sonuncusu 'Too many'
+      await adim('q3_jestsiz_sayilir_mi', async () => { const a = await dizi(4, 100); const j = await p.evaluate(JESTSIZ); await bekle(100); const z = await dizi(2, 100); return [a, j.r, z]; });
+      await bekle(2600);
+      // Q4: reddedilen istekler zamanı güncelliyor mu: 5 kabul, sonra 1,5 sn'de bir 3 istek (M2: ilk ikisi red, üçüncüsü 4,5 sn sonra... )
+      await adim('q4_red_zamani', async () => { const a = await dizi(5, 50); await bekle(1500); const z1 = await dizi(1, 0); await bekle(1500); const z2 = await dizi(1, 0); return [a, z1, z2]; });
+    } catch (e) { o.hata = String(e && e.message || e).slice(0, 400); }
+    await b.close().catch(() => {});
+  }
+  clearTimeout(kapat);
+  sunucu.close();
+  fs.writeFileSync(CIKTI, JSON.stringify(tum, null, 1));
+  process.exit(0);
+})();

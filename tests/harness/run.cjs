@@ -28,7 +28,8 @@
 //
 // Test kipi (§5.6): --uretim verilmezse adrese test=1 eklenir ve __ready'den sonra window.DK aranır; yoksa KOSUCU_HATASI.
 // --uretim verilirse test eklenmez ve koşucu 'U00 Üretimde test kancası yok' kontrolünü kendiliğinden ekler.
-// Başlatma betikleri (addInitScript) şu sırayla kurulur: --degisken değerleri, meta.baslatma, --baslatma dosyaları.
+// Başlatma betikleri (addInitScript) şu sırayla kurulur: işaretçi kilidi taklidi (varsayılan; kosucu17), tür ölçümü (yalnız test
+// kipinde), --degisken değerleri, meta.baslatma, --baslatma dosyaları.
 //
 // Çıkış kodu (§6.3-4): 0 yalnız durum GECTI ya da OLCUM ise. 1: başarısız kontrol/adım, sayfa hatası (pageerror), izinsiz konsol
 // hatası, izinsiz ağ hatası (≥ 400 yanıt, requestfailed), adım istisnası, onaysız senaryo (meta.olcum yoksa), koşucu hatası,
@@ -54,6 +55,29 @@
 //     kapanışı ve process.exit her durumda çalışır (asılı kalma yok); yakalanmamış istisna KOSUCU_HATASI raporuyla biter.
 //   - İzin listesi (A1-09, A1-10): gerekçe zorunlu; her şeyle eşleşen desen reddedilir; komut satırı izinleri tarayıcı açılmadan
 //     derlenir, hata kullanım hatasıdır (çıkış 2).
+//
+// Faz 1, 17 bellek çökmesi düzeltmesi (kosucu17; ölçüm ve gerekçe: docs/v05/kosular/faz1/kosucu17/):
+//   - İşaretçi kilidi taklidi (--isaretci-kilidi taklit|gercek; varsayılan taklit): sayfa betiklerinden önce O.ISARETCI_TAKLIT kurulur
+//     (test ve --uretim kipinde; window'a ad eklemez, dört yerleşik üyeyi değiştirir ve yakalama dinleyicileri kurar: ortak.cjs).
+//     Başsız Chromium'da gerçek kilit açıkken tarayıcı saniyede ~41 bin sentetik fare olayı üretiyor, uzun js adımlarında tarayıcı
+//     ve renderer belleği büyüyüp OOM'a yol açıyordu (biriken şey olası olarak onayı gecikmiş olayların durumu; doğrudan görülmedi).
+//     gercek: taklit kurulmaz (yalnız karşılaştırma ölçümü için). Rapor: isaretciKilidi {kip, sayac (son belgenin taklit
+//     sayaçları)}. Kilitliyken fare olayları gerçek kilitteki gibi kilitli öğeye, kilit anındaki konumla gider (ortak.cjs); tikla
+//     adımı O.tiklaTaklitli ile gerçek kilitteki Playwright isabet engelini uygular: karar tıklamanın gönderildiği anda verilir (kilit
+//     ön denetimden sonra alınsa da), engellenen tık Playwright gibi yeniden denenir, süre dolunca zaman aşımı (yoklama5; ia/ib).
+//   - Yerleşme süresi duvar saatine göre en az --yerlesme ms (Node zamanlayıcısı 1-2 ms erken dönebiliyordu).
+//   - Rapor tutarlılığı: durum, son görüntü ve sayaç okumasından (bütün await'lerden) SONRA hesaplanır ve hatalar.sayfa aynı anda
+//     alınır; o sırada gelen sayfa hatası ya da kopma da duruma girer (eskiden hatalar.sayfa dolu, durum GECTI kalabiliyordu; ie).
+//   - Tarayıcı çökmesi/kopması: tarayıcı süreci ölür ya da bağlantı koparsa ('disconnected'), sayfa ya da bağlamı koşucu
+//     kapatmadan kapanırsa hatalar.sayfa'ya 'TARAYICI ÇÖKTÜ/KOPTU …' (ya da 'SAYFA/TARAYICI BAĞLAMI BEKLENMEDİK KAPANDI …') yazılır,
+//     kalan adımlar koşmaz (kopma.kosmayanAdim), durum KALDI, neden'de açıkça belirtilir. Eskiden hatalar.sayfa boş kalıyor, kalan
+//     adımlar 'Target page, context or browser has been closed' veriyor, bekleme adımında kopma KOSUCU_HATASI sayılıyordu.
+//   - Sayfa (renderer) çökmesi de kopmadır (inceleme KC-1; bellek sınırındaki OOM'un en sık kurbanı renderer'dır, oom_score_adj
+//     +300): Playwright 'crash' olayında sayfayı kapatmaz, sonraki istekler 'Target crashed' ya da 'Page crashed' ile reddedilir,
+//     CDP istekleri (metrics) hiç yanıt almayabilir. hatalar.sayfa'ya 'SAYFA ÇÖKTÜ (renderer crash): …' yazılır, kopma.tur
+//     'renderer', kalan adımlar koşmaz, durum KALDI (eskiden kalan adımlar koşup 'Target crashed' ile kalıyor, bekleme adımında
+//     KOSUCU_HATASI, metrics adımında --timeout dolana dek asılı kalıp ZAMAN_ASIMI oluyordu). metrics adımının CDP istekleri kopmayla
+//     ve 120 sn süre sınırıyla yarışır.
 const { chromium } = require('playwright');
 const fs = require('fs');
 const path = require('path');
@@ -62,12 +86,14 @@ const O = require('./ortak.cjs');
 const argv = process.argv.slice(2);
 let ayr;
 try {
-  ayr = O.secenekler(argv, { deger: ['url', 'size', 'timeout', 'report', 'goruntu', 'goruntu-dizin', 'hedef-tip', 'yerlesme'], cok: ['izin-hata', 'degisken', 'baslatma'], bayrak: ['uretim', 'trace'] });
+  ayr = O.secenekler(argv, { deger: ['url', 'size', 'timeout', 'report', 'goruntu', 'goruntu-dizin', 'hedef-tip', 'yerlesme', 'isaretci-kilidi'], cok: ['izin-hata', 'degisken', 'baslatma'], bayrak: ['uretim', 'trace'] });
 } catch (e) { console.error(e.message); process.exit(2); }
 const secim = ayr.o;
 const scenarioPath = secim._[0];
-const KULLANIM = 'Kullanım: node tests/harness/run.cjs <senaryo.js> [--url ...] [--size WxH] [--report r.json] [--uretim] [--izin-hata "desen # gerekçe"] [--degisken ad=deger] [--baslatma betik.js] [--goruntu kalan|hep|yok] [--yerlesme ms]';
+const KULLANIM = 'Kullanım: node tests/harness/run.cjs <senaryo.js> [--url ...] [--size WxH] [--report r.json] [--uretim] [--izin-hata "desen # gerekçe"] [--degisken ad=deger] [--baslatma betik.js] [--goruntu kalan|hep|yok] [--yerlesme ms] [--isaretci-kilidi taklit|gercek]';
 if (!scenarioPath || ayr.bilinmeyen.length) { console.error((ayr.bilinmeyen.length ? 'Bilinmeyen seçenek: ' + ayr.bilinmeyen.join(' ') + '\n' : '') + KULLANIM); process.exit(2); }
+let isaretciKipi;
+try { isaretciKipi = O.isaretciKipi(secim['isaretci-kilidi']); } catch (e) { console.error(e.message + '\n' + KULLANIM); process.exit(2); }
 // (A1-10) komut satırı izinleri tarayıcı açılmadan derlenir: bozuk düzenli ifade ya da gerekçesiz izin kullanım hatasıdır
 let cliIzinleri;
 try { cliIzinleri = O.izinleriDerle([], secim['izin-hata'] || []); } catch (e) { console.error(e.message + '\n' + KULLANIM); process.exit(2); }
@@ -123,9 +149,65 @@ const hedefUrl = uretim ? url : O.testUrl(url);
   // DK_JSFLAGS ortam değişkeni (örn. --expose-gc) V8'e iletilir: bellek teşhisi için
   const extra = process.env.DK_JSFLAGS ? ['--js-flags=' + process.env.DK_JSFLAGS] : [];
   const b = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--disable-gpu-watchdog', '--autoplay-policy=no-user-gesture-required', '--enable-precise-memory-info', ...extra] }); // kesin performance.memory (başsızda nicemlenmiş değer döner)
+  // ---- (kosucu17) tarayıcı çökmesi/kopması, sayfa (renderer) çökmesi ve beklenmedik kapanış: hatalar.sayfa'ya açık kayıt, kalan
+  // adımlar koşmaz. Tarayıcı ölünce Playwright önce sayfa ve bağlam 'close', sonra tarayıcı 'disconnected' olaylarını verir: sayfa/bağlam
+  // kapanışı kısa bir gecikmeyle sınıflandırılır (tarayıcı bağlıysa sayfa/bağlam, değilse tarayıcı); en ağır tür kayda geçer.
+  // Renderer çökmesi ('crash'; inceleme KC-1) ayrı bir olaydır: ardından tarayıcı da koparsa iki kayıt da kalır.
+  let kopma = null;
+  let kopmaSozCoz = null;
+  const kopmaSozu = new Promise((r) => { kopmaSozCoz = r; });   // kopma kaydedilince çözülür (asılı kalabilecek istekler bununla yarışır)
+  let tarayiciKapatiliyor = false;   // finish() tarayıcıyı kendisi kapatırken gelen olaylar kopma değildir
+  let adimSayisi = 0;
+  const KOPMA_SIRA = { sayfa: 1, renderer: 2, baglam: 3, tarayici: 4 };
+  const KOPMA_ILETI = {
+    tarayici: 'TARAYICI ÇÖKTÜ/KOPTU: tarayıcı süreciyle bağlantı koptu (süreç öldürüldü ya da çöktü; ör. bellek sınırında OOM)',
+    baglam: 'TARAYICI BAĞLAMI BEKLENMEDİK KAPANDI (koşucu kapatmadı)',
+    renderer: 'SAYFA ÇÖKTÜ (renderer crash): sayfanın renderer süreci öldü ya da çöktü (ör. bellek sınırında OOM; renderer oom_score_adj +300 aldığından OOM\'un sık kurbanıdır)',
+    sayfa: 'SAYFA BEKLENMEDİK KAPANDI (koşucu kapatmadı)',
+  };
+  const KOPMA_NEDEN = { tarayici: 'tarayıcı çöktü/koptu', baglam: 'tarayıcı bağlamı beklenmedik kapandı', renderer: 'sayfa (renderer) çöktü', sayfa: 'sayfa beklenmedik kapandı' };
+  const kopmaKaydet = (tur) => {
+    if (tarayiciKapatiliyor) return;
+    if (kopma && KOPMA_SIRA[tur] <= KOPMA_SIRA[kopma.tur]) { if (!kopma.olaylar.includes(tur)) kopma.olaylar.push(tur); return; }
+    const ileti = `${KOPMA_ILETI[tur]} — adım ${aktifAdim}, ${((Date.now() - t0) / 1000).toFixed(1)} sn`;
+    if (!kopma) kopma = { tur, adim: aktifAdim, ms: Date.now() - t0, olaylar: [tur], kosmayanAdim: null, yaridaKalan: null, i: report.pageErrors.push(ileti) - 1 };
+    else if (kopma.tur === 'renderer') { kopma.tur = tur; kopma.olaylar.push(tur); kopma.i = report.pageErrors.push(ileti) - 1; }   // ayrı olay: çökme kaydı kalır
+    else { kopma.tur = tur; kopma.olaylar.push(tur); report.pageErrors[kopma.i] = ileti; }   // sayfa/bağlam kapanışı tarayıcının ölümüymüş
+    console.log('KOPMA', ileti);
+    kopmaSozCoz();
+  };
+  // (kosucu17, KC-1) çökmüş sayfada bazı istekler hiç yanıt almıyordu (metrics adımının CDP isteği --timeout dolana dek asılı kaldı,
+  // ortak tarayıcı kilidi tutuldu): istek kopmayla ve süre sınırıyla yarışır; geç gelen ret yakalanır (yakalanmamış söz reddi olmaz)
+  const kopmaYaris = async (soz, ms, ad) => {
+    let zaman = null;
+    try {
+      const r = await Promise.race([
+        Promise.resolve(soz).then((v) => ({ v }), (e) => ({ e })),
+        kopmaSozu.then(() => ({ koptu: true })),
+        new Promise((coz) => { zaman = setTimeout(() => coz({ dolu: true }), ms); }),
+      ]);
+      if (r.e) throw r.e;
+      if (r.koptu) throw new Error(`${ad}: sayfa/tarayıcı koptu (${kopma ? kopma.tur : '?'}); istek yanıtsız bırakıldı`);
+      if (r.dolu) throw new Error(`${ad}: ${ms} ms içinde yanıt gelmedi`);
+      return r.v;
+    } finally { clearTimeout(zaman); }
+  };
+  b.on('disconnected', () => kopmaKaydet('tarayici'));
   const ortam = await O.ortamBilgisi(b, { kosucuDizin: __dirname, gorunum: [W, H], chromium });
   const tekrar = O.tekrarBilgisi({ kosucuDosya: __filename, argv, senaryoArg: scenarioPath, url: hedefUrl, coop: false, ortam });
   const p = await b.newPage({ viewport: { width: W, height: H } });
+  p.on('close', () => { if (!tarayiciKapatiliyor) setTimeout(() => kopmaKaydet(b.isConnected() ? 'sayfa' : 'tarayici'), 100); });
+  p.context().on('close', () => { if (!tarayiciKapatiliyor) setTimeout(() => kopmaKaydet(b.isConnected() ? 'baglam' : 'tarayici'), 100); });
+  // kopma şüphesi: sınıflandırma olayını en çok ~0,6 sn bekler; kopma yoksa null. supheli: istisna iletisi kapanma ya da çökme
+  // bildiriyor (Playwright'ın reddi 'close'/'disconnected'/'crash' olaylarından önce gelebilir); değilse sayfa açık ve tarayıcı
+  // bağlıysa beklemez. Çökmüş sayfada Playwright 'Target crashed' (CDP) ya da 'Page crashed' (sayfa kapsamı kapandı) verir (KC-1).
+  const KAPANMA = /has been closed|Target closed|Target page, context or browser|Browser closed|browser has disconnected|Target crashed|Page crashed/i;
+  let kapanmaSuphesi = false;
+  const kopmaBekle = async (supheli = false) => {
+    for (let i = 0; i < 30 && !kopma; i++) { if (!supheli && !p.isClosed() && b.isConnected()) break; await new Promise((r) => setTimeout(r, 20)); }
+    if (!kopma && (p.isClosed() || !b.isConnected())) kopmaKaydet(b.isConnected() ? 'sayfa' : 'tarayici');
+    return kopma;
+  };
   p.on('console', (m) => {
     const t = m.text();
     if (m.type() === 'error') { kayit.konsolIletisi(m); if (report.errors.length < 5000) report.errors.push(t.slice(0, 600)); console.log('ERR:', t.slice(0, 400)); }
@@ -135,8 +217,8 @@ const hedefUrl = uretim ? url : O.testUrl(url);
     }
   });
   p.on('pageerror', (e) => { const s = e.message + ' | ' + (e.stack || '').split('\n').slice(0, 4).join(' | '); report.pageErrors.push(s.slice(0, 800)); console.log('PAGEERR:', s.slice(0, 500)); });
-  // (A1-06) sayfa (renderer) çökmesi: coop.cjs gibi pageErrors'a yazılır → KALDI
-  p.on('crash', () => { report.pageErrors.push('SAYFA ÇÖKTÜ (renderer crash)'); console.log('PAGECRASH'); });
+  // (A1-06) sayfa (renderer) çökmesi: pageErrors'a yazılır → KALDI. (kosucu17, KC-1) ayrıca kopmadır: kalan adımlar koşmaz
+  p.on('crash', () => { console.log('PAGECRASH'); kopmaKaydet('renderer'); });
   p.on('requestfailed', (r) => {
     const sonuc = kayit.istekBasarisiz(r);
     if (!/favicon/.test(r.url())) { if (report.errors.length < 5000) report.errors.push('NET ' + r.url() + ' ' + (r.failure()?.errorText || '')); console.log('NETFAIL:', r.url() + (sonuc === 'iptal' ? ' (gezinme iptali; hata sayılmaz)' : '')); }
@@ -187,7 +269,9 @@ const hedefUrl = uretim ? url : O.testUrl(url);
     sar(D, 'simSteps', () => { c.simSteps = (c.simSteps || 0) + 1; });
     if (durum.rafSarili && D.game && typeof D.game === 'object') sar(D.game, 'update', null, true);
   }`;
-  // Başlatma betiği (yalnız test kipinde; --uretim'de window'a hiçbir şey eklenmez): rAF geri çağrılarını işaretler ve oyun
+  // Başlatma betiği (yalnız test kipinde; --uretim'de bu tür ölçümü betiği eklenmez — varsayılan kipte işaretçi kilidi taklidi
+  // --uretim'de de eklenir ve window/document'a yakalama dinleyicileri kurar, bkz. aşağıda başlatma betiklerinin kurulduğu yer
+  // ve ortak.cjs; inceleme KC-4): rAF geri çağrılarını işaretler ve oyun
   // window.__ready'yi yazdığı anda (DK kurulmuş: main.js:134-153; Y3 §5.7-2 "__ready install'dan sonra") SAYAC_KUR'u çağırır.
   // Böylece sayfa kendini yeniden yüklese de sayım yeni belgede baştan kurulur (A1-11).
   const SAYAC_BASLATMA = `(() => {
@@ -245,7 +329,7 @@ const hedefUrl = uretim ? url : O.testUrl(url);
   };
   const ilkBasarisizlik = async (n, js) => {
     if (!tekrar.adim) tekrar.adim = { n, js: js !== undefined && js !== null ? String(js).slice(0, 400) : null };
-    if (goruntuKipi === 'yok' || ilkGoruntu || p.isClosed()) return null;
+    if (goruntuKipi === 'yok' || ilkGoruntu || p.isClosed() || kopma) return null;   // kopmuş/çökmüş sayfanın görüntüsü alınamaz
     ilkGoruntu = await goruntuAl('ilk_kalan');
     return ilkGoruntu;
   };
@@ -259,6 +343,7 @@ const hedefUrl = uretim ? url : O.testUrl(url);
   };
   const adimHatasi = async (rec, tur, e, js, ek) => {
     rec.error = O.temiz(e.message).slice(0, 600); report.evalErrors++; report.fails++;
+    if (KAPANMA.test(rec.error)) kapanmaSuphesi = true;   // (kosucu17) sonraki adımdan önce kopma denetlenir
     adimHatalari.push({ n: rec.n, tur, hata: rec.error, ...(ek || {}) });
     console.log('EVALERR', e.message.slice(0, 500));
     const g = await ilkBasarisizlik(rec.n, js);
@@ -303,6 +388,7 @@ const hedefUrl = uretim ? url : O.testUrl(url);
         yedekRapor(ileti);
         console.log(`SONUC: KOSUCU_HATASI (çıkış 1) | neden: ${ileti}`);
       } finally {
+        tarayiciKapatiliyor = true;
         try { await Promise.race([b.close(), new Promise((r) => setTimeout(r, 20000))]); } catch (e) { /* kapalı */ }
         clearTimeout(bekci);
         process.exit(cikis);
@@ -321,22 +407,40 @@ const hedefUrl = uretim ? url : O.testUrl(url);
     } catch (e) { console.log('YEDEK RAPOR da yazılamadı: ' + O.temiz(e.message).slice(0, 200)); }
   };
   const raporla = async () => {
-    const hatalar = O.siniflandir([kayit], izinler);
-    const izinsizKonsol = hatalar.sayim.konsol, izinsizAg = hatalar.sayim.ag;
-    const neden = [];
-    if (report.fails) neden.push(`başarısız kontrol ya da adım: ${report.fails}`);
-    if (report.pageErrors.length) neden.push(`sayfa hatası (pageerror): ${report.pageErrors.length}`);
-    if (izinsizKonsol) neden.push(`izinsiz konsol hatası: ${izinsizKonsol}`);
-    if (izinsizAg) neden.push(`izinsiz ağ hatası (≥ 400 yanıt ya da başarısız istek): ${izinsizAg}`);
-    if (report.evalErrors) neden.push(`adım istisnası (evalErrors): ${report.evalErrors}`);
-    if (onaySayisi === 0 && meta.olcum !== true) neden.push('senaryo hiç onay içermiyor (ölçüm betiği mi? meta.olcum ile işaretleyin)');
-    if (report.harnessError) neden.push('koşucu hatası: ' + report.harnessError);
-    if (report.timeout) neden.push(`zaman aşımı (${timeoutS} sn)`);
-    const durum = report.timeout ? 'ZAMAN_ASIMI' : report.harnessError ? 'KOSUCU_HATASI' : neden.length ? 'KALDI' : meta.olcum === true ? 'OLCUM' : 'GECTI';
-    const cikis = durum === 'GECTI' || durum === 'OLCUM' ? 0 : 1;
-    if (!report.timeout && !p.isClosed() && (goruntuKipi === 'hep' || (goruntuKipi === 'kalan' && cikis !== 0 && !ilkGoruntu))) {
+    const hesapla = () => {
+      for (const z of izinler) z.eslesme = 0;   // siniflandir eşleşmeleri sayar: hesap iki kez yapıldığında çift sayılmasın
+      const hatalar = O.siniflandir([kayit], izinler);
+      const izinsizKonsol = hatalar.sayim.konsol, izinsizAg = hatalar.sayim.ag;
+      const neden = [];
+      if (report.fails) neden.push(`başarısız kontrol ya da adım: ${report.fails}`);
+      if (report.pageErrors.length) neden.push(`sayfa hatası (pageerror): ${report.pageErrors.length}`);
+      if (izinsizKonsol) neden.push(`izinsiz konsol hatası: ${izinsizKonsol}`);
+      if (izinsizAg) neden.push(`izinsiz ağ hatası (≥ 400 yanıt ya da başarısız istek): ${izinsizAg}`);
+      if (report.evalErrors) neden.push(`adım istisnası (evalErrors): ${report.evalErrors}`);
+      if (onaySayisi === 0 && meta.olcum !== true) neden.push('senaryo hiç onay içermiyor (ölçüm betiği mi? meta.olcum ile işaretleyin)');
+      if (report.harnessError) neden.push('koşucu hatası: ' + report.harnessError);
+      if (report.timeout) neden.push(`zaman aşımı (${timeoutS} sn)`);
+      // (kosucu17) kopma: hatalar.sayfa'daki kayıt koşuyu zaten KALDI yapar; neden ayrıca ve açıkça yazılır
+      if (kopma) neden.push(`${KOPMA_NEDEN[kopma.tur]}${kopma.olaylar.length > 1 ? ` (olaylar: ${kopma.olaylar.join(', ')})` : ''} (adım ${kopma.adim}${kopma.kosmayanAdim ? `; ${kopma.kosmayanAdim} adım koşmadı` : ''})`);
+      const durum = report.timeout ? 'ZAMAN_ASIMI' : report.harnessError ? 'KOSUCU_HATASI' : neden.length ? 'KALDI' : meta.olcum === true ? 'OLCUM' : 'GECTI';
+      return { hatalar, izinsizKonsol, izinsizAg, neden, durum, cikis: durum === 'GECTI' || durum === 'OLCUM' ? 0 : 1 };
+    };
+    // ön hesap: yalnız son görüntünün alınıp alınmayacağına karar verir (asıl durum aşağıda, bütün await'lerden sonra)
+    const onDurum = hesapla();
+    if (!report.timeout && !kopma && !p.isClosed() && (goruntuKipi === 'hep' || (goruntuKipi === 'kalan' && onDurum.cikis !== 0 && !ilkGoruntu))) {
       await Promise.race([goruntuAl('son'), new Promise((r) => setTimeout(r, 30000))]);
     }
+    // (kosucu17) işaretçi kilidi taklidinin sayaçları (son belge); sayfa yanıt vermezse 3 sn sonra vazgeçilir
+    let isaretciSayac = null;
+    if (isaretciKipi === 'taklit' && !kopma && !p.isClosed()) {
+      try { isaretciSayac = await Promise.race([p.evaluate(O.ISARETCI_SAYAC_JS), new Promise((r) => setTimeout(() => r(undefined), 3000))]); } catch (e) { isaretciSayac = undefined; }
+    }
+    // (kosucu17) tarayıcı son görüntü ya da sayaç okuması sırasında koptuysa kopma kısa bir gecikmeyle sınıflandırılır: beklenir
+    if (p.isClosed() || !b.isConnected()) await kopmaBekle(true);
+    // (kosucu17, DOG-2) asıl durum BÜTÜN await'lerden sonra hesaplanır ve hatalar.sayfa aynı anda (arada await olmadan) alınır:
+    // son görüntü ya da sayaç okuması sürerken gelen sayfa hatası/kopma da duruma girer; rapor kendi içinde tutarlıdır
+    const { hatalar, izinsizKonsol, izinsizAg, neden, durum, cikis } = hesapla();
+    const sayfaHatalari = report.pageErrors.slice();
     report.ms = Date.now() - t0;
     const turSayim = {};
     for (const k of kontroller) turSayim[k.tur] = (turSayim[k.tur] || 0) + 1;
@@ -344,11 +448,14 @@ const hedefUrl = uretim ? url : O.testUrl(url);
       sema: O.SEMA, senaryo: path.relative(process.cwd(), path.resolve(scenarioPath)) || scenarioPath, meta,
       hedef: { tip: O.hedefTipi(hedefUrl, uretim, secim['hedef-tip']), url: hedefUrl, verilenUrl: url, gorunum: [W, H], uretim },
       ortam, tekrar, kontroller,
-      hatalar: { konsol: hatalar.konsol, konsolIzinli: hatalar.konsolIzinli, konsolAgEslesen: hatalar.konsolAgEslesen, sayfa: report.pageErrors.slice(), ag: hatalar.ag, agIzinli: hatalar.agIzinli, agIptal: hatalar.agIptal, degerlendirme: adimHatalari, kesildi: hatalar.kesildi },
+      hatalar: { konsol: hatalar.konsol, konsolIzinli: hatalar.konsolIzinli, konsolAgEslesen: hatalar.konsolAgEslesen, sayfa: sayfaHatalari, ag: hatalar.ag, agIzinli: hatalar.agIzinli, agIptal: hatalar.agIptal, degerlendirme: adimHatalari, kesildi: hatalar.kesildi },
       uyarilar: hatalar.uyarilar, uyariSayim: { farkli: hatalar.uyarilar.length, toplam: hatalar.uyariToplam, sinirDisi: hatalar.uyariTasma },
       izinler: O.izinOzeti(izinler), diyaloglar, goruntuler, kanitUyarilari, agIstekSayisi: agGunlugu.length,
+      isaretciKilidi: { kip: isaretciKipi, sayac: isaretciKipi === 'taklit' ? (isaretciSayac === undefined ? 'okunamadı' : isaretciSayac) : null },
+      kopma: kopma ? { tur: kopma.tur, adim: kopma.adim, ms: kopma.ms, olaylar: kopma.olaylar, kosmayanAdim: kopma.kosmayanAdim, yaridaKalan: kopma.yaridaKalan } : null,
       sonuc: { durum, cikisKodu: cikis, neden, onaySayisi, kontrolSayisi: kontroller.length, gecen: kontroller.filter((k) => k.ok).length, kalan: kontroller.filter((k) => !k.ok).length,
-        izinsizKonsol, izinsizAg, izinliKonsol: hatalar.sayim.konsolIzinli, izinliAg: hatalar.sayim.agIzinli, tur: turSayim['tarayici+benzetim'] ? 'tarayici+benzetim' : kontroller.length ? 'tarayici' : null, turSayim },
+        izinsizKonsol, izinsizAg, izinliKonsol: hatalar.sayim.konsolIzinli, izinliAg: hatalar.sayim.agIzinli, tur: turSayim['tarayici+benzetim'] ? 'tarayici+benzetim' : kontroller.length ? 'tarayici' : null, turSayim,
+        tarayiciKoptu: !!kopma && kopma.tur === 'tarayici', kopma: kopma ? kopma.tur : null },
       sure: { hazirMs: report.readyMs, toplamMs: report.ms, yerlesmeMs: yerlesmeSure },
     });
     console.log(`errors: ${report.errors.length} pageErrors: ${report.pageErrors.length} fails: ${report.fails}${report.evalErrors ? ` evalErrors: ${report.evalErrors}` : ''}${report.harnessError ? ' HARNESS ERROR (senaryo koşmadı)' : ''}${report.timeout ? ' TIMEOUT' : ''} (${(report.ms / 1000).toFixed(1)} s)`);
@@ -392,8 +499,18 @@ const hedefUrl = uretim ? url : O.testUrl(url);
     // meta izinleri: gerekçesiz ya da her şeyle eşleşen izin koşucu hatasıdır (A1-09)
     izinler = O.izinleriDerle(meta.izinliHatalar, secim['izin-hata'] || []);
     onaySayisi = steps.filter((s) => s.expect || s.agSay || s.metrikKarsilastir).length;
+    adimSayisi = steps.length;
     // başlatma betikleri: sayfanın kendi betiklerinden önce, her gezinmede çalışır
-    // tür ölçümü (A1-03, A1-11): yalnız test kipinde; --uretim'de sayfaya hiçbir şey eklenmez
+    // (kosucu17) işaretçi kilidi taklidi ilk kurulur (sayfa ve öteki başlatma betikleri taklidi görür). --uretim'de de kurulur:
+    // sel tarayıcı ortamının yapıtıdır (oyunun değil) ve üretim kipindeki uzun senaryoları da öldürebilir. Taklit window'a ad
+    // eklemez (U00 'typeof window.DK' denetimi etkilenmez) ama sayfayı değiştirir: dört yerleşik üyenin (requestPointerLock,
+    // exitPointerLock, Document ve ShadowRoot pointerLockElement) yerini aynı gözlenebilir anlamla tutar ve window/document'a
+    // yakalama dinleyicileri kurar (kilitliyken güvenilir fare olaylarını durdurup kilitli öğeye yönlendirir; ayrıntı ortak.cjs).
+    // Yani U00 (ve bütün --uretim koşuları) bu değiştirilmiş yerleşiklerle koşar; --isaretci-kilidi gercek ile hiç eklenmez.
+    if (isaretciKipi === 'taklit') await p.addInitScript({ content: O.ISARETCI_TAKLIT });
+    console.log(`işaretçi kilidi: ${isaretciKipi === 'taklit' ? 'taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)' : 'GERÇEK (taklit kapalı: --isaretci-kilidi gercek)'}`);
+    // tür ölçümü (A1-03, A1-11): yalnız test kipinde; --uretim'de tür ölçümü betiği eklenmez (sayfaya giren tek koşucu betiği,
+    // varsayılan kipte işaretçi kilidi taklididir)
     if (!uretim) await p.addInitScript({ content: SAYAC_BASLATMA });
     if (Object.keys(kosuDegiskenleri).length) await p.addInitScript({ content: O.degiskenBetigi(kosuDegiskenleri) });
     const metaBaslatma = meta.baslatma === undefined ? [] : [].concat(meta.baslatma);
@@ -419,6 +536,13 @@ const hedefUrl = uretim ? url : O.testUrl(url);
     let n = 0;
     for (const s of steps) {
       if (bitti) break;   // zaman aşımı: rapor yazıldı, tarayıcı kapanıyor; kalan adımlar koşmaz ve PASS/FAIL basmaz
+      // (kosucu17) tarayıcı/sayfa koptuysa kalan adımlar koşmaz (hepsi 'Target … closed' verirdi); kopma kaydı raporda
+      if ((kopma || kapanmaSuphesi || p.isClosed() || !b.isConnected()) && await kopmaBekle(kapanmaSuphesi)) {
+        kopma.kosmayanAdim = steps.length - n;
+        console.log(`KOPMA: kalan ${kopma.kosmayanAdim} adım koşmadı`);
+        break;
+      }
+      kapanmaSuphesi = false;
       n++;
       aktifAdim = n;
       const ta = Date.now();
@@ -467,8 +591,11 @@ const hedefUrl = uretim ? url : O.testUrl(url);
         try {
           let loc = c.metin !== undefined ? p.getByText(c.metin, { exact: !!c.tam }) : p.locator(c.secici);
           if (c.ilk) loc = loc.first();
-          await loc.click({ timeout: c.zaman || 10000 });
+          // (kosucu17) taklit kilitte gerçek kilitteki Playwright isabet engeli: karar tıklama gönderildiği anda verilir, engellenen tık
+          // Playwright gibi yeniden denenir, süre dolunca zaman aşımı (O.tiklaTaklitli; kilit yoksa tek bir locator.click)
+          const tk = await O.tiklaTaklitli(loc, { zaman: c.zaman || 10000, kip: isaretciKipi });
           rec.tikla = c.metin !== undefined ? { metin: c.metin } : { secici: c.secici };
+          if (tk.engel) rec.tikla.kilitEngeli = { engellenenDeneme: tk.deneme - 1, son: tk.engel };   // engel sonradan kalktı (kilit bırakıldı)
         } catch (e) { await adimHatasi(rec, 'tikla', e, c.metin !== undefined ? 'metin: ' + c.metin : c.secici); }
       }
       if (s.js) {
@@ -514,6 +641,7 @@ const hedefUrl = uretim ? url : O.testUrl(url);
           await kontrolEkle({ n, etiket: E.label || E.js.slice(0, 80), ok, deger: v, beklenen, hata: ok ? null : `beklenen ${O.kisa(beklenen, 200)}, gelen ${O.kisa(v, 200)} (sağlanmayan: ${sorun.join('; ')})`, sureMs: Date.now() - te, js: E.js });
         } catch (e) {
           if (bitti) break;
+          if (KAPANMA.test(O.temiz(e.message))) kapanmaSuphesi = true;   // (kosucu17)
           report.fails++; rec.expect = { label: E.label, ok: false, error: e.message.slice(0, 300) }; console.log('FAIL (hata) ' + (E.label || '') + ' ' + e.message.slice(0, 200));
           await kontrolEkle({ n, etiket: E.label || E.js.slice(0, 80), ok: false, deger: null, beklenen, hata: 'istisna: ' + e.message.slice(0, 300), sureMs: Date.now() - te, js: E.js });
         }
@@ -521,7 +649,8 @@ const hedefUrl = uretim ? url : O.testUrl(url);
       if (s.key) await p.keyboard.press(s.key);
       if (s.down) await p.keyboard.down(s.down);
       if (s.up) await p.keyboard.up(s.up);
-      if (s.metrics) { try { if (!p._cdp) { p._cdp = await p.context().newCDPSession(p); await p._cdp.send('Performance.enable'); } const mm = (await p._cdp.send('Performance.getMetrics')).metrics; const m = Object.fromEntries(mm.map((x) => [x.name, x.value])); const hu = await p._cdp.send('Runtime.getHeapUsage').catch(() => ({})); const o = { label: s.metrics, heapMB: +(m.JSHeapUsedSize / 1048576).toFixed(1), heapTotalMB: +(m.JSHeapTotalSize / 1048576).toFixed(1), backingMB: hu.backingStorageSize !== undefined ? +(hu.backingStorageSize / 1048576).toFixed(1) : null, embedderMB: hu.embedderHeapUsedSize !== undefined ? +(hu.embedderHeapUsedSize / 1048576).toFixed(1) : null, nodes: m.Nodes, listeners: m.JSEventListeners, docs: m.Documents, frames: m.Frames }; rec.metrics = o; metrikler[s.metrics] = o; console.log('M:', JSON.stringify(o)); } catch (e) { console.log('METRICSFAIL', e.message.slice(0, 120)); kanitUyarisi(rec, 'metrics', e); } }
+      // (kosucu17, KC-1) metrics: CDP istekleri çökmüş sayfada yanıtsız kalabiliyordu; kopmayla ve 120 sn sınırıyla yarışır
+      if (s.metrics) { try { const o = await kopmaYaris((async () => { if (!p._cdp) { p._cdp = await p.context().newCDPSession(p); await p._cdp.send('Performance.enable'); } const mm = (await p._cdp.send('Performance.getMetrics')).metrics; const m = Object.fromEntries(mm.map((x) => [x.name, x.value])); const hu = await p._cdp.send('Runtime.getHeapUsage').catch(() => ({})); return { label: s.metrics, heapMB: +(m.JSHeapUsedSize / 1048576).toFixed(1), heapTotalMB: +(m.JSHeapTotalSize / 1048576).toFixed(1), backingMB: hu.backingStorageSize !== undefined ? +(hu.backingStorageSize / 1048576).toFixed(1) : null, embedderMB: hu.embedderHeapUsedSize !== undefined ? +(hu.embedderHeapUsedSize / 1048576).toFixed(1) : null, nodes: m.Nodes, listeners: m.JSEventListeners, docs: m.Documents, frames: m.Frames }; })(), 120000, 'metrics'); rec.metrics = o; metrikler[s.metrics] = o; console.log('M:', JSON.stringify(o)); } catch (e) { console.log('METRICSFAIL', e.message.slice(0, 120)); kanitUyarisi(rec, 'metrics', e); } }
       if (s.click) await p.mouse.click(s.click[0], s.click[1]);
       // (A1-06) kanıt adımları: sayfa tarafındaki istisna (evaluate reddi) ya da data: adresi olmayan dönüş adım hatasıdır (sayılır);
       // dosya yazımı sorunu yalnız kanıt uyarısıdır. Eskiden üçü de yalnız SNAPFAIL satırı basıyor, raporda iz kalmıyordu.
@@ -566,10 +695,12 @@ const hedefUrl = uretim ? url : O.testUrl(url);
       report.steps.push(rec);
     }
     // (A1-08) yerleşme: son adımın başlattığı eşzamansız işlerin (zamanlayıcı, söz, ağ yanıtı) hataları sınıflandırmadan önce gelsin
-    if (!bitti && yerlesmeMs > 0 && !p.isClosed()) {
+    if (!bitti && yerlesmeMs > 0 && !p.isClosed() && !kopma) {
       const onceSay = report.pageErrors.length + kayit.konsolToplam + kayit.agToplam;
       const ty = Date.now();
-      await new Promise((r) => setTimeout(r, yerlesmeMs));
+      // (kosucu17) Node zamanlayıcısı libuv'nin önbellekli döngü saatine göre kurulur, Date.now()'a göre 1-2 ms erken dönebilir
+      // (kosucu_negatif ab: 999 ms ölçüldü): yerleşme duvar saatine göre en az yerlesmeMs sürer
+      while (Date.now() - ty < yerlesmeMs) await new Promise((r) => setTimeout(r, Math.max(1, yerlesmeMs - (Date.now() - ty))));
       yerlesmeSure = Date.now() - ty;
       const yeni = report.pageErrors.length + kayit.konsolToplam + kayit.agToplam - onceSay;
       if (yeni > 0) console.log(`YERLESME: son adımdan sonraki ${yerlesmeSure} ms içinde ${yeni} yeni hata kaydı geldi`);
@@ -578,6 +709,15 @@ const hedefUrl = uretim ? url : O.testUrl(url);
   } catch (e) {
     // kapanış sürüyorsa (ör. zaman aşımı tarayıcıyı kapattı ve yarıdaki adım koptu) onu bekle; o raporu yazıp çıkar
     if (bitti) { console.log('(kapanış sürerken yarıda kalan adım: ' + O.temiz((e && e.message) || e).split('\n')[0].slice(0, 160) + ')'); await bitisSozu; return; }
+    // (kosucu17) tarayıcı/sayfa koptuğu için yarıda kalan adım (ör. wait, key, click) koşucu hatası değildir: kopma kaydıyla KALDI
+    if (await kopmaBekle(KAPANMA.test(O.temiz((e && e.message) || e)))) {
+      const ileti = O.temiz((e && e.message) || e).split('\n')[0].slice(0, 300);
+      kopma.yaridaKalan = { adim: aktifAdim, hata: ileti };
+      kopma.kosmayanAdim = Math.max(0, adimSayisi - aktifAdim);
+      console.log(`(kopma yüzünden yarıda kalan adım ${aktifAdim}: ${ileti.slice(0, 160)}; kalan ${kopma.kosmayanAdim} adım koşmadı)`);
+      await finish();
+      return;
+    }
     console.log('HARNESS ERROR', O.temiz(e.message).slice(0, 500));
     report.harnessError = O.temiz(e.message).slice(0, 500);
     await finish();

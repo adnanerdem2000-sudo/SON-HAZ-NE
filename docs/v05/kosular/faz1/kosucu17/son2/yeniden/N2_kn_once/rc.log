@@ -1,0 +1,15 @@
+$ node /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/once_kosucu/coop.cjs tests/fixtures/kosucu/rc_coop_renderer_olur.cjs --players 2 --size 320x200 --timeout 120 --url http://127.0.0.1:36961/coop.html --report /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/kosu/N2_kn_once/rc.json
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+Kaptan/sim 30
+PASS RC01 Ev sahibi ilerledi → 30
+[test] KOSUCU_NEGATIF_OLDUR
+Kaptan PAGECRASH
+EVALERR Kaptan öldürme sırasında page.evaluate: Target crashed 
+EVALERR Kaptan  page.evaluate: Target crashed 
+HARNESS ERROR page.waitForTimeout: Page crashed
+GORUNTU /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/out/goruntu/rc_coop_renderer_olur_2026-11-15T06-10-23-474Z_16787/ilk_kalan_Tayfa.png
+checks: 1 fails: 2 pageErrors: 1 (0.4 s)
+SONUC: KOSUCU_HATASI (çıkış 1) kontrol 1/1 | ev() istisnası 2, kapalı sayfa atlama 0, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: başarısız kontrol ya da ev() istisnası: 2; sayfa hatası (pageerror): 1; ev() istisnası (evalErrors): 2; koşucu hatası: page.waitForTimeout: Page crashed
+
+[çıkış 1]
+[tarayıcı öldürme: {"durum":"öldürüldü","hedef":"renderer","pid":16856,"ms":619}]

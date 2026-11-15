@@ -1,0 +1,52 @@
+#!/bin/bash
+# kosucu17 ölçüm sürücüsü (2. deneme): düzeltilmiş koşucuyla (k17 run.cjs) taklitli (T, varsayılan) ve taklitsiz (G: --isaretci-kilidi
+# gercek) koşular; tek fark bu seçenek. Her koşu bellek örnekleyicisi (ölçüm ajanının ornekle.mjs'i; yalnız cgroup yolu /proc/self/cgroup'tan
+# okunan kopyası ornekle2.mjs — makine 2026-11-15 ~00:03 UTC'de yeniden başladı, yol değişti) ve iplik gözlemcisiyle (iplik.mjs) sarılır.
+#   SIRA="01_17v04_T 02_17v04_G ..." bash surucu17b.sh
+# Öğe adı: <no>_<senaryo>_<kip>; senaryo: 17v04 (ölçüm ajanının 17_v04.js, v0.4 :8080), 17w2 (k17 17_kamera_kararma.js, w2 :8081),
+# 02yasam (B0'ın w2'deki 02_arazi_yasam.js kopyası, v0.4 :8080, normal kip), w2-<ad> (k17 tests/scenarios/<ad>.js, w2 :8081),
+# w2kok-<ad> (aynı, ama çalışma dizini w2: 53_test_kipi sahte kökeni çalışma dizininden sunar), v04-<ad> (k17 senaryosu, v0.4 :8080),
+# coop-<ad> (k17 tests/scenarios/coop/<ad>.cjs, coop.cjs 2 oyuncu, w2 :8081 + yerel PeerJS 127.0.0.1:9000).
+set -u
+K=/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17
+D=$K/duzeltici
+D2=$K/duzeltici2
+O=${O:-$K/kosucu17b}
+A=/home/user/SON-HAZ-NE-k17
+CG=/sys/fs/cgroup/memory$(grep -E '^[0-9]+:memory:' /proc/self/cgroup | cut -d: -f3)
+RUN=$A/tests/harness/run.cjs
+SIRA=${SIRA:?SIRA gerekli}
+LOG=$O/surucu.log
+mkdir -p $O
+oomsay() { awk '$1=="oom_kill"{print $2+0}' $CG/memory.oom_control; }
+echo "$(date -Is) SÜRÜCÜ BAŞLADI pid=$$ SIRA='$SIRA' cg=$CG run.cjs sha=$(sha256sum $RUN | cut -c1-16) ortak.cjs sha=$(sha256sum $A/tests/harness/ortak.cjs | cut -c1-16)" >> $LOG
+for ad in $SIRA; do
+  kip=${ad##*_}; orta=${ad#*_}; sen=${orta%_*}
+  SURE=900; TK=960; BOYUT=640x360; CWD=$A; KOSUCU=$RUN; OYUNCU=
+  case $sen in
+    17v04) SCEN=$K/17_v04.js; URL=http://localhost:8080/index.html ;;
+    17w2) SCEN=$A/tests/scenarios/17_kamera_kararma.js; URL=http://localhost:8081/index.html ;;
+    02yasam) SCEN=$O/02_arazi_yasam_w2kopya.js; URL=http://localhost:8080/index.html; SURE=540; TK=590 ;;
+    w2-*) SCEN=$A/tests/scenarios/${sen#w2-}.js; URL=http://localhost:8081/index.html; SURE=1800; TK=1860 ;;
+    w2kok-*) SCEN=$A/tests/scenarios/${sen#w2kok-}.js; URL=http://localhost:8081/index.html; SURE=1800; TK=1860; CWD=/home/user/SON-HAZ-NE-w2 ;;
+    v04-*) SCEN=$A/tests/scenarios/${sen#v04-}.js; URL=http://localhost:8080/index.html; SURE=1800; TK=1860 ;;
+    coop-*) SCEN=$A/tests/scenarios/coop/${sen#coop-}.cjs; URL='http://localhost:8081/index.html?peerhost=127.0.0.1&peerport=9000'; SURE=1200; TK=1260; KOSUCU=$A/tests/harness/coop.cjs; OYUNCU="--players 2" ;;
+    *) echo "$(date -Is) bilinmeyen senaryo $sen" >> $LOG; continue ;;
+  esac
+  case $kip in T) EK="" ;; G) EK="--isaretci-kilidi gercek" ;; *) echo "bilinmeyen kip $kip" >> $LOG; continue ;; esac
+  taban=$O/$ad
+  oom0=$(oomsay)
+  echo "$(date -Is) $ad kuyruğa girdi (kilit bekleniyor) senaryo=$SCEN url=$URL kip=$kip cwd=$CWD oom_kill=$oom0" >> $LOG
+  ( cd $CWD && exec /home/user/devtools/tk timeout $TK node $KOSUCU $SCEN $OYUNCU --url "$URL" --size $BOYUT --timeout $SURE --report $taban.json $EK ) > $taban.log 2>&1 &
+  KP=$!
+  node $D2/ornekle2.mjs --kok $KP --cikti $taban --log $taban.log --aralik 500 > $taban.ornekle.out 2>&1 &
+  SP=$!
+  node $D/iplik.mjs --kok $KP --cikti $taban --aralik 2000 > $taban.iplik.out 2>&1 &
+  IP=$!
+  wait $KP; rc=$?
+  wait $SP; wait $IP
+  oom1=$(oomsay)
+  { echo "# $ad dmesg (koşu sonunda son 6 'Killed process' satırı)"; dmesg -T 2>/dev/null | grep 'Killed process' | tail -6; } > $taban.dmesg.txt
+  echo "$(date -Is) $ad bitti çıkış=$rc oom_kill $oom0 -> $oom1 son: $(grep -E '^SONUC' $taban.log | tail -1 | cut -c1-240)" >> $LOG
+done
+echo "$(date -Is) SÜRÜCÜ BİTTİ" >> $LOG

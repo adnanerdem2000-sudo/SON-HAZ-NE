@@ -1,0 +1,28 @@
+2026-11-15T05:45:30Z BEKLE R1_gk_karsilastir_once oom_kill=0
+2026-11-15T05:47:41Z BASLA R1_gk_karsilastir_once
+2026-11-15T05:50:13Z BITTI R1_gk_karsilastir_once rc=0 oom_kill=0 | 
+2026-11-15T05:50:13Z BEKLE R2_gk_kamera_once oom_kill=0
+2026-11-15T05:57:09Z BEKLE N1_kn_once oom_kill=0
+2026-11-15T05:57:15Z BASLA R2_gk_kamera_once
+2026-11-15T05:59:14Z BITTI R2_gk_kamera_once rc=0 oom_kill=0 | 
+2026-11-15T05:59:14Z ZINCIR BITTI /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/plan_R.tsv
+2026-11-15T06:01:47Z BASLA N1_kn_once
+2026-11-15T06:02:20Z BEKLE N2_kn_once_renderer oom_kill=0
+2026-11-15T06:03:35Z BITTI N1_kn_once rc=1 oom_kill=0 | kosucu_negatif: KALDI — kalan: [te, rk, rw, rm, rc, rg, rd, ig]; çekirdekte kalan: []; koşucunun yanlışlıkla geçirdiği: [] (koşucu dizini ../../../tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26
+2026-11-15T06:03:35Z BEKLE V1_kn_tum oom_kill=0
+2026-11-15T06:04:29Z V-ZİNCİR BAŞLADI pid=16109 kod: 285211cf 9292115d d46459b0 8d84ec85 
+2026-11-15T06:04:29Z V-BAŞLADI(kilit bekleniyor) 17v04_T
+2026-11-15T06:07:21Z BASLA N2_kn_once_renderer
+2026-11-15T06:10:28Z BASLA V1_kn_tum
+2026-11-15T06:10:28Z BITTI N2_kn_once_renderer rc=1 oom_kill=0 | kosucu_negatif: KALDI — kalan: [rk, rw, rm, rc, rg]; çekirdekte kalan: []; koşucunun yanlışlıkla geçirdiği: [] (koşucu dizini ../../../tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9
+2026-11-15T06:10:28Z ZINCIR BITTI /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/plan_N2.tsv
+2026-11-15T06:13:20Z BITTI V1_kn_tum rc=0 oom_kill=0 | kosucu_negatif: GECTI — kalan: []; çekirdekte kalan: []; koşucunun yanlışlıkla geçirdiği: [] (koşucu dizini tests/harness)
+2026-11-15T06:13:20Z ZINCIR BITTI /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/plan_N.tsv
+2026-11-15T06:14:46Z V-BİTTİ 17v04_T çıkış=0 oom_kill 0 -> 0 kod: 285211cf 9292115d d46459b0 8d84ec85  | SONUC: GECTI (çıkış 0) kontrol 13/13, onay 13 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34
+2026-11-15T06:14:46Z V-BAŞLADI(kilit bekleniyor) acilis_T
+2026-11-15T06:20:56Z V-BİTTİ acilis_T çıkış=1 oom_kill 0 -> 0 kod: 285211cf 9292115d d46459b0 8d84ec85  | SONUC: KALDI (çıkış 1) kontrol 22/23, onay 23 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34 | neden: başarısız kontrol ya da adım: 1
+2026-11-15T06:20:56Z V-BAŞLADI(kilit bekleniyor) coop06b_T
+2026-11-15T06:26:19Z V-BİTTİ coop06b_T çıkış=0 oom_kill 0 -> 0 kod: 285211cf 9292115d d46459b0 8d84ec85  | SONUC: GECTI (çıkış 0) kontrol 18/18 | ev() istisnası 0, kapalı sayfa atlama 0, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 4 farklı/68
+2026-11-15T06:26:19Z V-BAŞLADI(kilit bekleniyor) gkY
+2026-11-15T06:32:13Z V-BİTTİ gkY çıkış=0 oom_kill 0 -> 0 kod: 285211cf 9292115d d46459b0 8d84ec85  | 
+2026-11-15T06:32:13Z V-ZİNCİR BİTTİ

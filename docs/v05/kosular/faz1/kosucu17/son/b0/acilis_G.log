@@ -1,0 +1,42 @@
+işaretçi kilidi: GERÇEK (taklit kapalı: --isaretci-kilidi gercek)
+ready in 6.5 s
+R: ["bekle","oyunda","envanter","olcum","zeminde","sahnede","agYakin"]
+PASS AA01 Ana menü görünür; YENİ MACERA, DÜNYALAR, ONLINE, AYARLAR, KREDİLER düğmeleri var → true
+R: ["YENİ MACERA","DÜNYALAR","ONLINE","KORSANIM","KORSAN DEFTERİ","AYARLAR","KREDİLER","ÇIKIŞ"]
+PASS AA02 KREDİLER düğmesi Krediler panelini açar → true
+PASS AA03 AYARLAR düğmesi Ayarlar panelini (≥ 4 sekme) açar → true
+PASS AA04 Paneller kapanınca ana menüye dönülür → true
+PASS AA05 YENİ MACERA karakter oluşturucuyu açar (önizleme tuvali ve ad kutusu) → true
+R: "Kaptan Bir"
+PASS AA06 Maceraya Başla ile oyun başlar (G.state playing, oyuncu var, menü kapalı) → true
+PASS AA07 Yeni oyun: oluşturucudaki ad ve cinsiyet uygulandı, yuva 1, HUD açık, ≥ 6 karo ağı, derinlik penceresi hazır, oyuncu zeminde → true
+R: {"ad":"Kaptan Bir","cinsiyet":"f","slot":0,"hud":true,"ag400":19,"derinlikUzak":12,"zeminde":true,"olcum":{"karo":126,"ag":126,"grupAg":126,"sahneCocuk":329,"geometri":514,"doku":194,"gemi":1,"dusman":0,"sandik":0,"kese":0,"oyuncu":[2,212]}}
+R: {"konum":[-1.877803999782432,210.11149650057035],"altin":777}
+PASS AA08 Duraklatma menüsündeki Kaydet yuva 1'e yazar (ad, altın, konum) → true
+R: {"kayit":{"ad":"Kaptan Bir","altin":777,"konum":[-2.130067182352793,209.988643488121],"envanter":"{\"stacks\":[{\"id\":\"kilic\",\"n\":1},{\"id\":\"tabanca\",\"n\":1},{\"id\":\"mermi\",\"n\":12},{\"id\":\"kurek\",\"n\":1},{\"id\":\"olta\",\"n\":1},{\"id\":\"yem_solucan\",\"n\":10},{\"id\":\"fener\",\"n\":1},{\"id\":\"pusula\",\"n\":1},{\"id\":\"muz\",\"n\":8},{\"id\":\"ekmek\",\"n\":2}],\"gold\":777,\"capacity\":45}"},"oyun":{"altin":777,"konum":[-2.130067182352793,209.988643488121],"envanter":"{\"stacks\":[{\"id\":\"kilic\",\"n\":1},{\"id\":\"tabanca\",\"n\":1},{\"id\":\"mermi\",\"n\":12},{\"id\":\"kurek\",\"n\":1},{\"id\":\"olta\",\"n\":1},{\"id\":\"yem_solucan\",\"n\":10},{\"id\":\"fener\",\"n\":1},{\"id\":\"pusula\",\"n\":1},{\"id\":\"muz\",\"n\":8},{\"id\":\"ekmek\",\"n\":2}],\"gold\":777,\"capacity\":45}"}}
+PASS AA09 Ana menüye dönüş: menü ve son macera kartı (Kaptan Bir) görünür, HUD kapalı → true
+FAIL AA09b Ana menüye dönüşten 1,5 sn sonra fare kilidi yok (document.pointerLockElement; kilitliyken menü düğmelerine tıklanamaz) → false
+GORUNTU /home/user/SON-HAZ-NE-k17/tests/out/goruntu/02_acilis_akisi_2026-11-15T04-02-53-655Z_13128/ilk_kalan.png
+R: {"kilitVardi":true}
+PASS AA10 DEVAM ET ile kayıtlı oyun yüklenir → true
+PASS AA11 Yüklenen oyun (yeni oyuncu nesnesi, durum playing) aynı yuva: konum (≤ 1 m), altın, envanter ve ad kayıttakiyle aynı → true
+R: {"durum":"playing","yeniOyuncu":true,"slot":0,"ad":"Kaptan Bir","altin":777,"konumFark":0,"envanterAyni":true}
+R: {"vardi":false,"ms":30075,"ada":"kuzeyfener","adaKurulu":true,"kuzeyfenerAg":20,"dusman":2,"sandik":1,"oyuncu":[295,-5112]}
+PASS AA18 Önkoşul: birinci dünya uzak bölgede (Kuzeyfener, 5,3 km): orada ≥ 6 karo ağı, adanın içerik grubu sahnede, ≥ 1 düşman ve ≥ 1 sandık var (yoksa AA15/AA19–AA21 kördür) → true
+R: {"kilitVardi":true}
+PASS AA12 DÜNYALAR yuva listesini gösterir: yuva 1 Kaptan Bir, yuva 2 boş → true
+R: ["Kaptan BirGemi: Martı · 777 altınHikâye: Korsan Hayatına Baş","Yuva 2 — Yeni macera başlat","Yuva 3 — Yeni macera başlat"]
+R: "Kaptan İki"
+PASS AA13 Yuva 2 seçilip oluşturucudan yeni dünya başlar → true
+PASS AA14 Yeni dünyaya önceki yuvanın verisi sızmıyor: yuva 2, ad Kaptan İki, başlangıç altını 150, başlangıç envanteri (3 muz), başlangıç noktası → true
+R: {"durum":"playing","yeniOyuncu":true,"slot":1,"ad":"Kaptan İki","altin":150,"muz":3,"konumYeniBaslangic":true}
+PASS AA15 Dünya değişiminde önceki dünyanın kalıntısı yok: karo/ağ, sahne nesnesi, geometri/doku, gemi, düşman, sandık ve kese sayıları ilk açılışla aynı düzeyde → true
+R: {"ilk":{"karo":126,"ag":126,"grupAg":126,"sahneCocuk":329,"geometri":514,"doku":194,"gemi":1,"dusman":0,"sandik":0,"kese":0,"oyuncu":[2,212]},"simdi":{"karo":124,"ag":124,"grupAg":124,"sahneCocuk":329,"geometri":606,"doku":209,"gemi":1,"dusman":0,"sandik":0,"kese":0,"oyuncu":[2,212]},"ok":{"yeniDunyada":true,"karoMakul":true,"grupAg":true,"sahne":true,"geometri":true,"doku":true,"gemi":true,"dusman":true,"sandik":true,"kese":true}}
+PASS AA19 Yeni dünyada önceki dünyanın uzak bölgesinde (Kuzeyfener, 1 km içinde) karo ağı kalmadı → 0
+PASS AA20 Yeni dünyada önceki dünyanın uzak adasının içerik grubu sahnede değil ve ada kurulu değil → "tamam"
+PASS AA21 Yeni dünyada önceki dünyanın düşman ve sandık nesneleri yok (listelerde değil, sandık ağı sahnede değil) → "tamam"
+PASS AA22 Yeni dünyada derinlik penceresi yeni başlangıç noktasında (≤ 600 m), eski bölgede değil → 12
+PASS AA16 Yeni dünya önceki yuvanın kaydını bozmaz (yuva 1: Kaptan Bir, 777 altın) → true
+PASS AA17 Bütün akış sayfa yeniden yüklenmeden tamamlandı → true
+errors: 0 pageErrors: 0 fails: 1 (161.3 s)
+SONUC: KALDI (çıkış 1) kontrol 22/23, onay 23 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34 | neden: başarısız kontrol ya da adım: 1

@@ -1,0 +1,23 @@
+<!doctype html>
+<meta charset="utf-8">
+<link rel="icon" href="data:,">
+<!-- (ig/ih) ig_sandbox.html'in alt çerçevesi: tuval tıklanınca kilit ister, 200 ms sonra sonucu üst çerçeveye bildirir ve kilidi bırakır. -->
+<body style="margin:0;overflow:hidden">
+<canvas id="c" width="100" height="90" style="display:block;width:100px;height:90px;background:#246"></canvas>
+<script>
+  const ad = new URLSearchParams(location.search).get('ad');
+  const olaylar = [];
+  document.addEventListener('pointerlockchange', () => olaylar.push('change:' + (document.pointerLockElement ? 'c' : 'null')));
+  document.addEventListener('pointerlockerror', () => olaylar.push('error'));
+  const bildir = (sonuc) => setTimeout(() => {
+    parent.postMessage({ __ig: true, ad, sonuc, olaylar: olaylar.slice(), koken: String(self.origin) }, '*');
+    if (document.pointerLockElement) document.exitPointerLock();
+  }, 200);
+  const c = document.getElementById('c');
+  c.addEventListener('click', () => {
+    let p;
+    try { p = c.requestPointerLock(); } catch (e) { bildir('istisna ' + e.name + ': ' + e.message); return; }
+    Promise.resolve(p).then(() => bildir('ok'), (e) => bildir('red ' + e.name + ': ' + e.message));
+  });
+  parent.postMessage({ __ig: true, ad, hazir: true }, '*');
+</script>

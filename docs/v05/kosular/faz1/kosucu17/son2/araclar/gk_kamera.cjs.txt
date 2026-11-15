@@ -1,0 +1,115 @@
+// İnceleme 2 (gizleme): kilit geçişlerinde (Esc ile bırakma, "Devam et" ile yeniden kilit) oyunun gördüğü fare hareketi ve kamera
+// sapması, gerçek kilit ↔ k17 son taklidi; ayrıca üretim kipi (w2, test parametresiz) açılışında taklidin pencereye ad eklemediği ve
+// U00 koşulunun (typeof window.DK === 'undefined') iki kipte aynı olduğu.   node gk_kamera.cjs <cikti.json>
+const { chromium } = require('playwright');
+const fs = require('fs');
+const CIKTI = process.argv[2];
+const OYUN = 'http://localhost:8080/index.html?test=1';
+const URETIM = 'http://localhost:8081/index.html';
+const O = require((process.env.ORTAK || '/home/user/SON-HAZ-NE-k17/tests/harness/ortak.cjs'));
+const bekle = (ms) => new Promise((r) => setTimeout(r, ms));
+// oyunun gördüğü fare hareketleri: window kabarma evresi (oyunun input.js dinleyicisi gibi); yalnız hareketi sıfırdan farklı olanlar
+// ayrıntılı, öbürleri sayılır. Her kayıt: [ms, güvenilir, movementX, movementY, clientX, clientY, input.pointerLocked, pointerLockElement var mı]
+const KUR = `(() => { const t0 = performance.now(); window.__L = []; window.__say = { hepsi: 0, sifir: 0 }; window.__plcG = [];
+  window.addEventListener('mousemove', (e) => { window.__say.hepsi++; if (!e.movementX && !e.movementY) { window.__say.sifir++; return; }
+    if (window.__L.length < 400) window.__L.push([Math.round(performance.now() - t0), e.isTrusted, e.movementX, e.movementY, Math.round(e.clientX), Math.round(e.clientY), !!(window.DK && DK.input.pointerLocked), !!document.pointerLockElement]); });
+  document.addEventListener('pointerlockchange', () => window.__plcG.push([Math.round(performance.now() - t0), document.pointerLockElement ? 'kilit' : 'yok']));
+  document.addEventListener('pointerlockerror', () => window.__plcG.push([Math.round(performance.now() - t0), 'hata']));
+  window.__t0 = t0; return 'ok'; })()`;
+const OKU = `(() => { const r = { yaw: +DK.tpCamera.yaw.toFixed(4), pitch: +DK.tpCamera.pitch.toFixed(4), kilitli: DK.input.pointerLocked, ple: !!document.pointerLockElement, pause: !!DK.ui.topIs('pause'), durum: DK.G.state, olaylar: window.__L.splice(0), say: Object.assign({}, window.__say), plc: window.__plcG.splice(0) };
+  window.__say.hepsi = 0; window.__say.sifir = 0; return r; })()`;
+
+(async () => {
+  const tum = { baslangic: new Date().toISOString(), ortakSha: require('crypto').createHash('sha256').update(fs.readFileSync((process.env.ORTAK || '/home/user/SON-HAZ-NE-k17/tests/harness/ortak.cjs'))).digest('hex') };
+  const yaz = () => fs.writeFileSync(CIKTI, JSON.stringify(tum, null, 1));
+  const kapat = setTimeout(() => { console.log('ZAMAN AŞIMI'); tum.zamanAsimi = true; yaz(); process.exit(3); }, 540000);
+  const sunucu = require('http').createServer((q, r) => { r.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
+    r.end('<!doctype html><meta charset="utf-8"><link rel="icon" href="data:,"><body style="margin:0"><canvas id="c" width="640" height="360" style="display:block;width:640px;height:360px"></canvas><script>window.__ready = true;</script>'); });
+  await new Promise((r) => sunucu.listen(0, '127.0.0.1', r));
+  const GURL = `http://127.0.0.1:${sunucu.address().port}/`;
+  const b = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--disable-gpu-watchdog', '--autoplay-policy=no-user-gesture-required', '--enable-precise-memory-info'] });
+  tum.surum = b.version();
+  for (const kip of ['gercek', 'taklit']) {
+    const o = tum[kip] = { oyun: {}, uretim: null };
+    // ---------------- oyun: kilit geçişlerinde kamera
+    const ctx = await b.newContext({ viewport: { width: 640, height: 360 } });
+    if (kip === 'taklit') await ctx.addInitScript({ content: O.ISARETCI_TAKLIT });
+    const g = await ctx.newPage();
+    const hatalar = []; g.on('pageerror', (e) => { if (hatalar.length < 20) hatalar.push(e.message.slice(0, 200)); });
+    const adim = async (ad, f) => { const t0 = Date.now(); try { o.oyun[ad] = await f(); } catch (e) { o.oyun[ad] = 'HATA ' + String(e && e.message || e).split('\n')[0].slice(0, 300); } console.log(kip, ad, (Date.now() - t0) + 'ms', JSON.stringify(o.oyun[ad]).slice(0, 1500)); yaz(); };
+    const tikla = async (metin, zaman) => { const t0 = Date.now(); try { const r = await O.tiklaTaklitli(g.getByText(metin, { exact: true }), { zaman, kip }); return { sonuc: 'ok', ms: Date.now() - t0, deneme: r.deneme }; } catch (e) { return { sonuc: 'hata: ' + String(e.message).split('\n')[0].slice(0, 200), ms: Date.now() - t0 }; } };
+    try {
+      await g.goto(OYUN);
+      await g.waitForFunction('window.__ready', null, { timeout: 120000 });
+      await g.evaluate(KUR);
+      await adim('A0_menude_fare_320_150', async () => { await g.mouse.move(320, 150); await bekle(300); return await g.evaluate(OKU); });
+      await adim('A1_basla_kilit', async () => {
+        await g.evaluate(`DK.G.noAutoPause = false; DK.handlers.startGame({ kind: 'solo', slot: 2, data: null }); 'ok'`);
+        const t0 = Date.now(); while (Date.now() - t0 < 60000 && (await g.evaluate(`DK.G.state`)) !== 'playing') await bekle(500);
+        await bekle(1500); return await g.evaluate(OKU);
+      });
+      await adim('A2_esc_birak', async () => { await g.keyboard.press('Escape'); await bekle(1200); return await g.evaluate(OKU); });
+      await adim('A3_devam_et_yeniden_kilit', async () => { const t = await tikla('Devam et', 5000); await bekle(1200); return { t, ...(await g.evaluate(OKU)) }; });
+      await adim('A4_esc_birak_2', async () => { await g.keyboard.press('Escape'); await bekle(1200); return await g.evaluate(OKU); });
+      await adim('A5_devam_et_2', async () => { const t = await tikla('Devam et', 5000); await bekle(1200); return { t, ...(await g.evaluate(OKU)) }; });
+      await adim('A6_kilitliyken_fare_+60px', async () => { const p = await g.evaluate(`null`); await g.mouse.move(380, 150, { steps: 6 }); await bekle(600); return await g.evaluate(OKU); });
+      await adim('A7_esc_birak_3', async () => { await g.keyboard.press('Escape'); await bekle(1200); return await g.evaluate(OKU); });
+      o.oyun.sayac = await g.evaluate(O.ISARETCI_SAYAC_JS).catch(() => null);
+      o.oyun.hatalar = hatalar;
+    } catch (e) { o.oyun.hata = String(e && e.message || e).slice(0, 400); }
+    await ctx.close().catch(() => {});
+    yaz();
+    // ---------------- üretim kipi açılışı (U00 koşulu, pencereye eklenen adlar)
+    const ctxU = await b.newContext({ viewport: { width: 640, height: 360 } });
+    if (kip === 'taklit') await ctxU.addInitScript({ content: O.ISARETCI_TAKLIT });
+    const u = await ctxU.newPage();
+    try {
+      await u.goto(URETIM);
+      await u.waitForFunction('window.__ready', null, { timeout: 120000 });
+      await bekle(500);
+      o.uretim = await u.evaluate(`(() => ({ U00: typeof window.DK === 'undefined', durum: typeof window.__dkDurum === 'function' ? window.__dkDurum().test : 'yok',
+        menu: !!document.getElementById('menu') && document.getElementById('menu').classList.contains('active'),
+        taklit: typeof Element.prototype.requestPointerLock.__kosucuTaklit, istekAd: Element.prototype.requestPointerLock.name, yerlesik: /\\[native code\\]/.test(Function.prototype.toString.call(Element.prototype.requestPointerLock)),
+        adlar: Object.getOwnPropertyNames(window).sort() }))()`);
+      console.log(kip, 'uretim', JSON.stringify({ ...o.uretim, adlar: o.uretim.adlar.length }));
+    } catch (e) { o.uretim = 'HATA ' + String(e && e.message || e).slice(0, 300); console.log(kip, 'uretim', o.uretim); }
+    await ctxU.close().catch(() => {});
+    yaz();
+    // ---------------- kilit verilme gecikmesi (boşta, en küçük sayfa): istekten söz çözülmesine ve pointerlockchange'e kadar ms
+    const ctxL = await b.newContext({ viewport: { width: 640, height: 360 } });
+    if (kip === 'taklit') await ctxL.addInitScript({ content: O.ISARETCI_TAKLIT });
+    const l = await ctxL.newPage();
+    o.gecikme = [];
+    try {
+      await l.goto(GURL);
+      await l.waitForFunction('window.__ready');
+      await bekle(300);
+      for (let i = 0; i < 4; i++) {
+        o.gecikme.push(await l.evaluate(async () => {
+          const c = document.getElementById('c'); const t0 = performance.now(); let tc = null;
+          document.addEventListener('pointerlockchange', () => { if (tc === null) tc = performance.now() - t0; }, { once: true });
+          const r = await c.requestPointerLock().then(() => 'ok', (e) => 'red ' + e.name);
+          const tr = performance.now() - t0;
+          await new Promise((q) => setTimeout(q, 60));
+          const ple = !!document.pointerLockElement; document.exitPointerLock(); await new Promise((q) => setTimeout(q, 60));
+          return { r, cozulmeMs: +tr.toFixed(2), olayMs: tc === null ? null : +tc.toFixed(2), ple };
+        }));
+        await bekle(2300);
+      }
+      console.log(kip, 'gecikme', JSON.stringify(o.gecikme));
+    } catch (e) { o.gecikmeHata = String(e && e.message || e).slice(0, 300); console.log(kip, 'gecikme HATA', o.gecikmeHata); }
+    await ctxL.close().catch(() => {});
+    yaz();
+  }
+  if (tum.gercek && tum.taklit && tum.gercek.uretim && tum.taklit.uretim && Array.isArray(tum.gercek.uretim.adlar) && Array.isArray(tum.taklit.uretim.adlar)) {
+    const G = new Set(tum.gercek.uretim.adlar), T = new Set(tum.taklit.uretim.adlar);
+    tum.uretimAdFarki = { yalnizTaklitte: [...T].filter((x) => !G.has(x)), yalnizGercekte: [...G].filter((x) => !T.has(x)) };
+    console.log('uretimAdFarki', JSON.stringify(tum.uretimAdFarki));
+  }
+  await b.close().catch(() => {});
+  clearTimeout(kapat);
+  sunucu.close();
+  tum.bitis = new Date().toISOString();
+  yaz();
+  process.exit(0);
+})();

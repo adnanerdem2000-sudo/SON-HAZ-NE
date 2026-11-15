@@ -1,0 +1,30 @@
+#!/bin/bash
+# 3. deneme: sürdürülebilir doğrulama zinciri. Her öğe tam bitince $D3/bitti.txt'ye yazılır. Yeniden başlatmada bitenler atlanır;
+# yarım kalan öğenin (zincir.log'da BAŞLADI var, bitti.txt'de yok) dosyaları kosucu17b/gecersiz/ altına taşınır ve öğe BAŞTAN koşulur.
+#   setsid nohup bash zincir3.sh >> zincir3.nohup 2>&1 < /dev/null &
+set -u
+K=/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17
+D=$K/duzeltici; D2=$K/duzeltici2; D3=$K/duzeltici3; A=/home/user/SON-HAZ-NE-k17; O=$K/kosucu17b
+L=$D3/zincir.log; B=$D3/bitti.txt; touch $B
+ITEMS=${ITEMS:-"y3 y4 y5 01_17v04_T 02_17v04_G 03_17w2_T 04_17w2_G 05_02yasam_T 06_02yasam_G 07_17v04_T 08_17v04_G 09_17w2_T 10_17w2_G 11_17v04_T 12_17v04_G 13_w2-04_karakter_T 14_w2-05_dusman_ai_T 15_w2-13_donma_T 16_w2-03_fizik_duzeltmeler_T 17_w2kok-53_test_kipi_T 18_w2-08_kalicilik_T 19_v04-04_karakter_T 20_coop-06b_esitlik_senkron_T 21_coop-06b_esitlik_senkron_G kn4"}
+kod() { (cd $A && sha256sum tests/harness/run.cjs tests/harness/coop.cjs tests/harness/ortak.cjs tests/node/kosucu_negatif.mjs | cut -c1-16 | tr '\n' ' '); }
+echo "$(date -Is) ZİNCİR3 BAŞLADI pid=$$ uptime='$(uptime -p)' kod: $(kod)" >> $L
+for it in $ITEMS; do
+  grep -qx "$it" $B && continue
+  if grep -q " BAŞLADI $it\$" $L; then
+    g=$O/gecersiz/${it}_$(date +%H%M%S); mkdir -p $g
+    case $it in y3|y4|y5) mv $D2/yoklama${it#y}_son3.* $g/ 2>/dev/null ;; kn*) mv $K/$it $g/ 2>/dev/null ;; *) mv $O/${it}.* $O/${it}_* $g/ 2>/dev/null ;; esac
+    echo "$(date -Is) YARIM KALMIŞ $it -> dosyaları $g (GEÇERSİZ), baştan koşuluyor" >> $L
+  fi
+  echo "$(date -Is) BAŞLADI $it" >> $L
+  case $it in
+    y3) ( cd $D && /home/user/devtools/tk timeout 560 node $D/yoklama3.cjs $D2/yoklama3_son3.json > $D2/yoklama3_son3.log 2>&1 ); rc=$? ;;
+    y4) ( cd $D && /home/user/devtools/tk timeout 300 node $D/yoklama4.cjs $D2/yoklama4_son3.json > $D2/yoklama4_son3.log 2>&1 ); rc=$? ;;
+    y5) ( cd $D2 && /home/user/devtools/tk timeout 300 node $D2/yoklama5.cjs $D2/yoklama5_son3.json > $D2/yoklama5_son3.log 2>&1 ); rc=$? ;;
+    kn*) mkdir -p $K/$it; ( cd $A && /home/user/devtools/tk node tests/node/kosucu_negatif.mjs --kosucu-dizin $A/tests/harness --cikti $K/$it/tum --rapor $K/$it/tum_ozet.json > $K/$it/tum.log 2>&1 ); rc=$? ;;
+    *) SIRA="$it" bash $D2/surucu17b.sh; rc=$? ;;
+  esac
+  echo "$it" >> $B
+  echo "$(date -Is) BİTTİ $it çıkış=$rc kod: $(kod)" >> $L
+done
+echo "$(date -Is) ZİNCİR3 BİTTİ" >> $L

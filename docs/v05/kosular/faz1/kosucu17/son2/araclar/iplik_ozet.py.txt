@@ -1,0 +1,12 @@
+# iplik.mjs çıktısından (zaman,t_ms,pid,tur,iplik,tik,gonullu; tik = birikimli CPU saat tıkı, 100/sn) iplik başına ortalama CPU % ve
+# gönüllü bağlam değişimi (uyanma)/sn. Kullanım: python3 -I iplik_ozet.py <_iplik.csv>
+import csv, sys, collections
+d = collections.defaultdict(list)
+for r in csv.DictReader(open(sys.argv[1])):
+    try: d[(r['tur'], r['iplik'], r['pid'])].append((int(r['t_ms']), int(r['tik']), int(r['gonullu'])))
+    except (ValueError, KeyError): pass
+for (tur, ip, pid), v in sorted(d.items()):
+    if len(v) < 2 or ip not in ('ANA', 'CrBrowserMain', 'chrome-headless', 'Chrome_IOThread', 'Compositor', 'CrRendererMain', 'TOPLAM'): continue
+    v.sort(); sn = (v[-1][0] - v[0][0]) / 1000
+    if sn <= 0: continue
+    print(f'{tur:9s} {ip:16s} pid {pid:6s} {sn:6.1f} sn  CPU %{100 * (v[-1][1] - v[0][1]) / 100 / sn:6.1f}  uyanma/sn {(v[-1][2] - v[0][2]) / sn:8.1f}')

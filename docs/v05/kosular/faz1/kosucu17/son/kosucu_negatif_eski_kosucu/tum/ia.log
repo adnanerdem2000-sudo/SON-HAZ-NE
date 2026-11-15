@@ -1,0 +1,10 @@
+$ node /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/son2/eski_kosucu/run.cjs tests/fixtures/kosucu/ia_gec_kilit_tikla.js --size 320x200 --timeout 90 --url http://127.0.0.1:44527/pk_isaretci.html --report /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/son2/kn_eski/ia.json
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+ready in 0.2 s
+R: "kuruldu"
+R: "{\"gec\":0,\"tuval\":[[\"mousedown\",200,150,0],[\"mouseup\",200,150,0],[\"click\",200,150,0]],\"kilitli\":true,\"sayac\":{\"istek\":1,\"verildi\":1,\"hedefDegisti\":0,\"red\":0,\"jestsiz\":0,\"kisitli\":0,\"birakma\":0,\"birakildi\":0,\"iptal\":0,\"degisimOlayi\":1,\"hataOlayi\":0,\"yonlendirilen\":7,\"susturulan\":4}}"
+PASS IA01 Düğme etkinleşmedi, kilit sürüyor → [0,true]
+errors: 0 pageErrors: 0 fails: 0 (2.6 s)
+SONUC: GECTI (çıkış 0) kontrol 1/1, onay 1 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0
+
+[çıkış 0]

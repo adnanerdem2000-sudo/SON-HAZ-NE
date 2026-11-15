@@ -1,0 +1,14 @@
+$ node /home/user/SON-HAZ-NE-k17/tests/harness/run.cjs tests/fixtures/kosucu/ig_sandbox_cerceve.js --size 320x200 --timeout 90 --url http://127.0.0.1:38307/ig_sandbox.html --report /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/kosu/V1_kn/ig.json
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+ready in 0.3 s
+PASS IG00 Üç alt çerçeve yüklendi → "s1,s2,s3"
+ERR: Blocked pointer lock on an element because the element's frame is sandboxed and the 'allow-pointer-lock' permission is not set.
+ERR: Blocked pointer lock on an element because the element's frame is sandboxed and the 'allow-pointer-lock' permission is not set.
+R: "{\"s1\":{\"__ig\":true,\"ad\":\"s1\",\"sonuc\":\"red SecurityError: Failed to execute 'requestPointerLock' on 'Element': Blocked pointer lock on an element because the element's frame is sandboxed and the 'allow-pointer-lock' permission is not set.\",\"olaylar\":[\"error\"],\"koken\":\"null\"},\"s2\":{\"__ig\":true,\"ad\":\"s2\",\"sonuc\":\"red SecurityError: Failed to execute 'requestPointerLock' on 'Element': Blocked pointer lock on an element because the element's frame is sandboxed and the 'allow-pointer-lock' permission is not set.\",\"olaylar\":[\"error\"],\"koken\":\"http://127.0.0.1:38307\"},\"s3\":{\"__ig\":true,\"ad\":\"s3\",\"sonuc\":\"ok\",\"olaylar\":[\"change:c\"],\"koken\":\"http://127.0.0.1:38307\"}}"
+PASS IG01 Sandbox'lı çerçevelerde (s1 opak, s2 aynı köken) istek SecurityError + pointerlockerror; sandbox'sız s3 kilitlenir → [true,true,true,"null",true]
+GORUNTU /home/user/SON-HAZ-NE-k17/tests/out/goruntu/ig_sandbox_cerceve_2026-11-15T06-12-32-933Z_22145/son.png
+errors: 2 pageErrors: 0 fails: 0 (3.1 s)
+IZINSIZ KONSOL ×2: Blocked pointer lock on an element because the element's frame is sandboxed and the 'allow-pointer-lock' permission is not set.
+SONUC: KALDI (çıkış 1) kontrol 2/2, onay 2 | izinsiz konsol 2, ağ 0 | izinli konsol 0, ağ 0 | uyarı 1 farklı/1 | neden: izinsiz konsol hatası: 2
+
+[çıkış 1]

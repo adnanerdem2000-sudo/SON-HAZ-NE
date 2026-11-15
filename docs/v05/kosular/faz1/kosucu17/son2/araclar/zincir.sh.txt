@@ -1,0 +1,21 @@
+#!/bin/bash
+# Kullanım: zincir.sh <plan dosyası>. Plan satırı: ad<TAB>cwd<TAB>süre_sn<TAB>komut (bash -c ile). Her öğe tk kilidiyle, sonra timeout ile
+# sırayla koşar. Günlük: kosu/<ad>.log; özet satırları: zincir.log; biten: bitti.txt (biten öğe yeniden koşmaz).
+S=/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2
+PLAN=$1
+CG=$(ls -d /sys/fs/cgroup/memory/process_api/*/claude-code-bash | head -1)
+touch $S/bitti.txt
+while IFS=$'\t' read -r ad cwd sure komut; do
+  [ -z "$ad" ] && continue
+  case "$ad" in \#*) continue;; esac
+  if grep -qx "$ad" $S/bitti.txt; then continue; fi
+  oom0=$(grep '^oom_kill ' $CG/memory.oom_control | awk '{print $2+0}')
+  echo "$(date -u +%FT%TZ) BEKLE $ad oom_kill=$oom0" >> $S/zincir.log
+  ( cd "$cwd" && export GIT_OPTIONAL_LOCKS=0 && /home/user/devtools/tk bash -c "echo \"\$(date -u +%FT%TZ) BASLA $ad\" >> $S/zincir.log; exec timeout $sure bash -c \"\$0\"" "$komut" ) > $S/kosu/$ad.log 2>&1
+  rc=$?
+  oom1=$(grep '^oom_kill ' $CG/memory.oom_control | awk '{print $2+0}')
+  echo "$(date -u +%FT%TZ) BITTI $ad rc=$rc oom_kill=$oom1 | $(grep -E 'SONUC:|kosucu_negatif:' $S/kosu/$ad.log | tail -1 | cut -c1-200)" >> $S/zincir.log
+  dmesg -T 2>/dev/null | grep 'Killed process' | tail -3 >> $S/kosu/$ad.dmesg.txt
+  echo "$ad" >> $S/bitti.txt
+done < "$PLAN"
+echo "$(date -u +%FT%TZ) ZINCIR BITTI $PLAN" >> $S/zincir.log

@@ -1,0 +1,85 @@
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+başlatma betiği: 1 meta, 0 dosya
+ready in 6.1 s
+PASS DK01 Normal depolamayla açılış: ana menü görünür, ≥ 8 düğme → true
+ERR: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.
+GOTO http://localhost:8080/index.html?depolama=kapali&peerhost=127.0.0.1&peerport=9000&test=1
+PASS DK02 Kurulum: bu sayfada localStorage erişimi SecurityError atıyor → "SecurityError"
+FAIL DK03 Site verisi engelliyken açılış tamamlanır (window.__ready) → false
+GORUNTU /home/user/SON-HAZ-NE-k17/tests/out/goruntu/02_depolama_kapali_2026-11-15T04-17-03-620Z_17264/ilk_kalan.png
+R: {"ready":false,"ms":5197,"yuklemeMetni":"Oyun başlatılamadı: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.WebGL destekli güncel bir tarayıcı (Chrome, Edge, Firefox) gerekiyor."}
+FAIL DK04 Site verisi engelliyken ana menü görünür (≥ 8 düğme), yükleme ekranı kapalı → false
+FAIL DK05 Yükleme ekranında yanıltıcı 'Oyun başlatılamadı … WebGL' metni yok → false
+FAIL DK06 Menüde görünür "tarayıcı kayda izin vermiyor / kayıt yapılamıyor" bildirimi var → false
+EVALERR locator.click: Timeout 10000ms exceeded. (koşucu: tıklanacak öğe bekleniyordu)
+Call log:
+  - waiting for getByText('YENİ MACERA', { exact: true })
+
+EVALERR locator.click: Timeout 15000ms exceeded. (koşucu: tıklanacak öğe bekleniyordu)
+Call log:
+  - waiting for getByText('Maceraya Başla', { exact: true })
+
+FAIL DK07 Site verisi engelliyken arayüzden yeni oyun başlar (YENİ MACERA → Maceraya Başla) → false
+EVALERR page.evaluate: ReferenceError: DK is not defined
+    at eval (eval at evaluate (:311:30), <anonymous>:1:8)
+    at eval (eval at evaluate (:311:30), <anonymous>:1:133)
+    at eval (<anonymous>)
+    at UtilityScript.evaluate (<anonymous>:311:30)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+FAIL DK08 Kayıt denemesi "tarayıcı kayda izin vermiyor / kayıt yapılamıyor" bildirimi verir → false
+R: ""
+EVALERR page.evaluate: ReferenceError: DK is not defined
+    at eval (eval at evaluate (:311:30), <anonymous>:1:8)
+    at eval (eval at evaluate (:311:30), <anonymous>:1:133)
+    at eval (<anonymous>)
+    at UtilityScript.evaluate (<anonymous>:311:30)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+FAIL (hata) DK09 Site verisi engelliyken menüye dönüş ve menü yeniden çizimi çalışır page.evaluate: ReferenceError: DK is not defined
+    at eval (eval at evaluate (:311:30), <anonymous>:1:1)
+    at eval (<anonymous>)
+    at UtilityScript.evaluate (<anonymous>:311:30)
+    at UtilitySc
+EVALERR page.evaluate: ReferenceError: DK is not defined
+    at eval (eval at evaluate (:311:30), <anonymous>:1:1)
+    at eval (<anonymous>)
+    at UtilityScript.evaluate (<anonymous>:311:30)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+FAIL (hata) DK10 Site verisi engelliyken DK.handlers.startGame({kind:"solo", slot:0}) ile oyun başlar page.evaluate: ReferenceError: DK is not defined
+    at eval (eval at evaluate (:311:30), <anonymous>:1:113)
+    at async <anonymous>:337:30
+FAIL DK11 Engelli açılış boyunca SecurityError/localStorage içeren konsol hatası ve sayfa hatası 0 → false
+R: {"konsol":1,"sayfa":0,"ornek":["Failed to read the 'localStorage' property from 'Window': Access is denied for this document."]}
+EVALERR page.evaluate: ReferenceError: DK is not defined
+    at eval (eval at evaluate (:311:30), <anonymous>:1:8)
+    at eval (eval at evaluate (:311:30), <anonymous>:1:62)
+    at eval (<anonymous>)
+    at UtilityScript.evaluate (<anonymous>:311:30)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+EVALERR locator.click: Timeout 10000ms exceeded. (koşucu: tıklanacak öğe bekleniyordu)
+Call log:
+  - waiting for getByText('ONLINE', { exact: true })
+
+EVALERR locator.click: Timeout 10000ms exceeded. (koşucu: tıklanacak öğe bekleniyordu)
+Call log:
+  - waiting for getByText('Oda kur', { exact: true })
+
+FAIL DK12 Site verisi engelliyken ONLINE → Oda kur paneli açılır (yuva listesi okunabiliyor) → false
+EVALERR locator.click: Timeout 10000ms exceeded. (koşucu: tıklanacak öğe bekleniyordu)
+Call log:
+  - waiting for getByText('Odayı oluştur', { exact: true })
+
+FAIL DK13 Site verisi engelliyken oda kurulur (yerel sinyal sunucusu), lobi açılır → "zaman aşımı"
+EVALERR locator.click: Timeout 10000ms exceeded. (koşucu: tıklanacak öğe bekleniyordu)
+Call log:
+  - waiting for locator('#start-btn')
+
+FAIL (hata) DK14 Site verisi engelliyken çevrimiçi oyun (oda sahibi) başlar (startOnlineHost korumalı) page.evaluate: ReferenceError: DK is not defined
+    at eval (eval at evaluate (:311:30), <anonymous>:1:42)
+    at eval (eval at evaluate (:311:30), <anonymous>:1:211)
+    at eval (<anonymous>)
+    at
+FAIL DK15 Çevrimiçi akış boyunca da SecurityError/localStorage içeren konsol hatası ve sayfa hatası 0 → false
+R: {"konsol":1,"sayfa":0,"ornek":["Failed to read the 'localStorage' property from 'Window': Access is denied for this document."]}
+errors: 1 pageErrors: 0 fails: 23 evalErrors: 10 (135.3 s)
+IZINSIZ KONSOL ×1: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.
+SONUC: KALDI (çıkış 1) kontrol 2/15, onay 15 | izinsiz konsol 1, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34 | neden: başarısız kontrol ya da adım: 23; izinsiz konsol hatası: 1; adım istisnası (evalErrors): 10

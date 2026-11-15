@@ -1,0 +1,713 @@
+// Koşucuların (run.cjs, coop.cjs) ortak parçaları — Faz 9 tasarımı §5.6, §6.1–6.3 (Y1; K-11, K-12, K-13).
+//   - seçenek ayrıştırma (eski --url/--size/--timeout/--report biçimi aynen; bilinmeyen seçenek hata verir)
+//   - testUrl(): test kipini kendiliğinden açar (test=1 ekler, diğer parametreleri bayt bayt korur)
+//   - HataKaydi + siniflandir(): konsol hataları, uyarılar (tekilleştirilmiş), ağ hataları (≥ 400 yanıt, requestfailed);
+//     izin listesi metin VE adres (location().url) üzerinde eşlenir; adres içermeyen "Failed to load resource" iletisi
+//     aynı adresli ağ kaydıyla tekilleştirilir (N9-11)
+//   - ortam/tekrar alanları, kontrol kimliği, ekran görüntüsü dizini, rota kökü için MIME türleri
+//   - (A1 inceleme düzeltmesi) guvenliJson(): döngüsel başvuru ve BigInt içeren değerleri de yazar (Playwright evaluate ikisini
+//     de olduğu gibi döndürür; düz JSON.stringify rapor yazımında istisna atıp koşucuyu asılı bırakıyordu, A1-01);
+//     expect/agSay/metrikKarsilastir iç alan denetimi ve karşılaştırıcı (A1-04); izinlerde gerekçe zorunlu, her şeyle eşleşen
+//     desen reddedilir, konsol iletisinin konum adresi yalnız "Failed to load resource" iletilerinde eşlenir (A1-09)
+//   - (Faz 1, 17 bellek çökmesi düzeltmesi) ISARETCI_TAKLIT: işaretçi kilidi (pointer lock) taklidi; isaretciKipi(): koşucuların
+//     --isaretci-kilidi taklit|gercek seçeneği; tiklaTaklitli(): taklit kilitte Playwright locator.click'in gerçek kilitteki
+//     sonucunu veren tıklama (run.cjs tikla adımı, co-op senaryolarının tikla yardımcısı). Gerekçe ve sınırlar
+//     isaretciKilidiTaklidi()'nin başındaki notta.
+'use strict';
+const fs = require('fs');
+const path = require('path');
+const os = require('os');
+const crypto = require('crypto');
+const { execFileSync } = require('child_process');
+
+const SEMA = 'dk-test-raporu/2';
+const KONSOL_SINIR = 2000;   // ham konsol hatası kaydı üst sınırı (sayım sürer)
+const AG_SINIR = 2000;       // ham ağ hatası kaydı üst sınırı
+const UYARI_SINIR = 200;     // farklı uyarı iletisi üst sınırı (§6.3-1)
+
+// ---- seçenekler
+// tanim: { deger: [tek değerli], cok: [tekrarlanabilir], bayrak: [değersiz] }. Tek değerli seçenekte eski opt() gibi ilk geçiş geçerlidir.
+function secenekler(argv, { deger = [], cok = [], bayrak = [] }) {
+  const o = { _: [] };
+  const bilinmeyen = [];
+  for (let i = 0; i < argv.length; i++) {
+    const a = argv[i];
+    if (!a.startsWith('--') || a === '--') { o._.push(a); continue; }
+    let ad = a.slice(2);
+    let v;
+    const e = ad.indexOf('=');
+    if (e > 0) { v = ad.slice(e + 1); ad = ad.slice(0, e); }
+    if (deger.includes(ad) || cok.includes(ad)) {
+      if (v === undefined) {
+        if (i + 1 >= argv.length) throw new Error(`--${ad} bir değer ister`);
+        v = argv[++i];
+      }
+      if (cok.includes(ad)) (o[ad] = o[ad] || []).push(v);
+      else if (!(ad in o)) o[ad] = v;
+    } else if (bayrak.includes(ad)) {
+      if (v !== undefined) throw new Error(`--${ad} değer almaz`);
+      o[ad] = true;
+    } else bilinmeyen.push(a);
+  }
+  return { o, bilinmeyen };
+}
+
+// --degisken ad=deger → { ad: deger } (değer JSON olarak çözülebiliyorsa çözülür, yoksa dizge kalır)
+function degiskenler(liste) {
+  const out = {};
+  for (const s of liste || []) {
+    const i = s.indexOf('=');
+    if (i <= 0) throw new Error(`--degisken ad=deger biçiminde olmalı: ${s}`);
+    const ad = s.slice(0, i);
+    const ham = s.slice(i + 1);
+    let v = ham;
+    try { v = JSON.parse(ham); } catch (e) { v = ham; }
+    out[ad] = v;
+  }
+  return out;
+}
+const degiskenBetigi = (obj) => `window.__KOSUCU = Object.assign(window.__KOSUCU || {}, ${JSON.stringify(obj)});`;
+
+// ---- test kipi adresi (§5.6): http(s) ya da file adresine, test parametresi yoksa test=1 ekler; diğer parametreleri korur
+function testUrl(u) {
+  let x;
+  try { x = new URL(u); } catch (e) { return u; }
+  if (!['http:', 'https:', 'file:'].includes(x.protocol)) return u;
+  if (x.searchParams.has('test')) return u;
+  const h = u.indexOf('#');
+  const govde = h >= 0 ? u.slice(0, h) : u;
+  const kare = h >= 0 ? u.slice(h) : '';
+  const ayrac = !govde.includes('?') ? '?' : (govde.endsWith('?') || govde.endsWith('&') ? '' : '&');
+  return govde + ayrac + 'test=1' + kare;
+}
+
+// ---- izin listesi
+// Kaynaklar: varsayılan (yalnız favicon), senaryo metası izinliHatalar ({desen, gerekce, tur?: 'konsol'|'ag'|'hepsi', bayrak?}
+// ya da '<desen> # <gerekçe>' dizgesi), komut satırı --izin-hata '<düzenli ifade> # <gerekçe>'.
+// (A1-09) Gerekçe zorunludur. Boş dizgeyle ya da ilgisiz yoklama dizgelerinin hepsiyle eşleşen desen ('.*', 'x|', '(?:)', '.',
+// '\d' …) reddedilir: böyle bir izin bütün hataları izinliye taşır ve koşucuyu eski, hata yutan davranışına döndürür.
+const VARSAYILAN_IZIN = [{ desen: 'favicon\\.ico(\\?|$)', gerekce: 'Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.', tur: 'ag', kaynak: 'varsayilan' }];
+const IZIN_ALANLARI = ['desen', 'gerekce', 'tur', 'bayrak'];
+const IZIN_YOKLAMA = ['kosucu-yoklama-7f3a', 'Zq9 0', 'http://127.0.0.1:9/yoklama.png'];
+const izinDizgesi = (s, kaynak) => { const i = s.indexOf(' # '); return { desen: i >= 0 ? s.slice(0, i) : s, gerekce: i >= 0 ? s.slice(i + 3).trim() : null, kaynak }; };
+function izinleriDerle(metaIzin, cliIzin) {
+  const ham = [...VARSAYILAN_IZIN];
+  if (metaIzin !== undefined && !Array.isArray(metaIzin)) throw new Error('meta.izinliHatalar bir dizi olmalı');
+  for (const x of metaIzin || []) {
+    if (typeof x === 'string') { ham.push(izinDizgesi(x, 'meta')); continue; }
+    if (!x || typeof x !== 'object' || Array.isArray(x)) throw new Error('meta.izinliHatalar: her öğe {desen, gerekce} nesnesi ya da "<desen> # <gerekçe>" dizgesi olmalı: ' + kisa(x));
+    const yabanci = Object.keys(x).filter((k) => !IZIN_ALANLARI.includes(k));
+    if (yabanci.length) throw new Error(`meta.izinliHatalar: bilinmeyen alan ${yabanci.join(', ')} (bilinenler: ${IZIN_ALANLARI.join(', ')}): ${kisa(x)}`);
+    ham.push({ ...x, kaynak: 'meta' });
+  }
+  for (const s of cliIzin || []) ham.push(izinDizgesi(s, 'cli'));
+  return ham.map((z) => {
+    const yer = z.kaynak === 'cli' ? 'izin listesi (--izin-hata)' : z.kaynak === 'meta' ? 'izin listesi (meta.izinliHatalar)' : 'izin listesi';
+    if (typeof z.desen !== 'string' || !z.desen) throw new Error(`${yer}: desen dizgesi gerekli: ${kisa(z)}`);
+    if (typeof z.gerekce !== 'string' || !z.gerekce.trim()) {
+      throw new Error(`${yer}: gerekçe zorunlu (desen ${JSON.stringify(z.desen)}); biçim: ${z.kaynak === 'cli' ? "--izin-hata '<desen> # <gerekçe>'" : '{desen, gerekce} ya da "<desen> # <gerekçe>"'}`);
+    }
+    const tur = z.tur || 'hepsi';
+    if (!['hepsi', 'konsol', 'ag'].includes(tur)) throw new Error(`${yer}: tur 'hepsi' | 'konsol' | 'ag' olmalı: ${kisa(z)}`);
+    let re;
+    try { re = new RegExp(z.desen, String(z.bayrak || '').replace(/[gy]/g, '')); } catch (e) { throw new Error(`${yer}: geçersiz düzenli ifade ${JSON.stringify(z.desen)}: ${e.message}`); }
+    if (re.test('')) throw new Error(`${yer}: desen boş dizgeyle eşleşiyor, yani her iletiyle eşleşir (${JSON.stringify(z.desen)})`);
+    if (IZIN_YOKLAMA.every((s) => re.test(s))) throw new Error(`${yer}: desen ilgisiz yoklama dizgelerinin hepsiyle eşleşiyor, çok geniş (${JSON.stringify(z.desen)}; yoklama: ${IZIN_YOKLAMA.join(' | ')})`);
+    return { desen: z.desen, gerekce: z.gerekce.trim(), tur, kaynak: z.kaynak, re, eslesme: 0 };
+  });
+}
+function izinBul(izinler, tur, metinler) {
+  for (const z of izinler) {
+    if (z.tur !== 'hepsi' && z.tur !== tur) continue;
+    if (metinler.some((m) => m && z.re.test(m))) { z.eslesme++; return z; }
+  }
+  return null;
+}
+const izinOzeti = (izinler) => izinler.map(({ desen, gerekce, tur, kaynak, eslesme }) => ({ desen, gerekce, tur, kaynak, eslesme }));
+
+// ---- hata kaydı (sayfa ya da oyuncu başına)
+class HataKaydi {
+  constructor(oyuncu = null) {
+    this.oyuncu = oyuncu;
+    this.konsol = []; this.konsolToplam = 0;
+    this.ag = []; this.agToplam = 0;
+    this.agIptal = [];
+    this.uyari = new Map(); this.uyariToplam = 0; this.uyariTasma = 0;
+    this.gezinmede = false;   // koşucunun başlattığı gezinme sürerken (goto): eski belgenin ERR_ABORTED istekleri hata sayılmaz
+    this.kapaniyor = false;   // senaryo sekmeyi/bağlamı kapatırken: o sekmenin başarısız istekleri hata sayılmaz
+  }
+  konsolIletisi(m) {
+    const tur = m.type();
+    const ileti = m.text();
+    let url = null, satir = null;
+    try { const l = m.location(); url = l.url || null; satir = l.line ?? l.lineNumber ?? null; } catch (e) { /* konum yok */ }
+    let isci = false;
+    try { isci = typeof m.worker === 'function' && !!m.worker(); } catch (e) { /* eski sürüm */ }
+    if (tur === 'error') {
+      this.konsolToplam++;
+      if (this.konsol.length < KONSOL_SINIR) this.konsol.push({ oyuncu: this.oyuncu, ileti: ileti.slice(0, 2000), url, satir, isci });
+    } else if (tur === 'warning') {
+      this.uyariToplam++;
+      const k = ileti.slice(0, 600);
+      const v = this.uyari.get(k);
+      if (v) v.sayi++;
+      else if (this.uyari.size < UYARI_SINIR) this.uyari.set(k, { oyuncu: this.oyuncu, ileti: k, url, sayi: 1 });
+      else this.uyariTasma++;
+    }
+  }
+  istekBasarisiz(r) {
+    const hata = (r.failure() && r.failure().errorText) || '';
+    const k = { oyuncu: this.oyuncu, tur: 'basarisiz', url: r.url(), hata, kaynakTuru: safe(() => r.resourceType()), yontem: safe(() => r.method()) };
+    if (this.kapaniyor) { this.agIptal.push({ ...k, neden: 'sekme kapanışı' }); return 'iptal'; }
+    if (this.gezinmede && /ERR_ABORTED/.test(hata)) { this.agIptal.push({ ...k, neden: 'koşucu gezinmesi' }); return 'iptal'; }
+    this.agToplam++;
+    if (this.ag.length < AG_SINIR) this.ag.push(k);
+    return 'hata';
+  }
+  yanit(r) {
+    const durum = r.status();
+    if (durum < 400) return false;
+    this.agToplam++;
+    if (this.ag.length < AG_SINIR) this.ag.push({ oyuncu: this.oyuncu, tur: 'yanit', url: r.url(), durum, metin: safe(() => r.statusText()), kaynakTuru: safe(() => r.request().resourceType()) });
+    return true;
+  }
+}
+function safe(f) { try { return f(); } catch (e) { return null; } }
+
+// Ham kayıtları sınıflandırır: tekilleştirme (aynı ileti/adres → sayi), "Failed to load resource" ↔ ağ kaydı eşlemesi, izin listesi.
+function siniflandir(kayitlar, izinler) {
+  const h = { konsol: [], konsolIzinli: [], konsolAgEslesen: 0, ag: [], agIzinli: [], agIptal: [], uyarilar: [], uyariToplam: 0, uyariTasma: 0, kesildi: false };
+  const ekle = (liste, anahtar, kayit) => {
+    const v = liste.find((x) => x._k === anahtar);
+    if (v) v.sayi++; else liste.push({ ...kayit, sayi: 1, _k: anahtar });
+  };
+  for (const K of kayitlar) {
+    if (K.konsolToplam > K.konsol.length || K.agToplam > K.ag.length) h.kesildi = true;
+    const agAdres = new Set(K.ag.map((a) => a.url));
+    for (const c of K.konsol) {
+      // Sayfa düzeyindeki 404'ün konsol iletisi adres içermez; adres location().url'dedir. Aynı adresli ağ kaydı varsa yalnız orada sayılır.
+      const kaynakYuklenemedi = /^Failed to load resource/.test(c.ileti);
+      if (kaynakYuklenemedi && c.url && agAdres.has(c.url)) { h.konsolAgEslesen++; continue; }
+      // (A1-09) Konum adresi yalnız "Failed to load resource" iletisinde yüklenemeyen kaynağın adresidir. Öteki iletilerde konum,
+      // iletiyi basan betiğin adresidir (ör. js/world/terrain.js); izni ona uygulamak o dosyanın bastığı her hatayı izinli yapardı.
+      const z = izinBul(izinler, 'konsol', kaynakYuklenemedi ? [c.ileti, c.url] : [c.ileti]);
+      ekle(z ? h.konsolIzinli : h.konsol, `${c.oyuncu}|${c.ileti}|${c.url}`, z ? { ...c, izin: z.desen } : c);
+    }
+    for (const a of K.ag) {
+      const z = izinBul(izinler, 'ag', [a.url, `${a.durum || a.hata} ${a.url}`]);
+      ekle(z ? h.agIzinli : h.ag, `${a.oyuncu}|${a.tur}|${a.url}|${a.durum || a.hata}`, z ? { ...a, izin: z.desen } : a);
+    }
+    for (const a of K.agIptal) ekle(h.agIptal, `${a.oyuncu}|${a.url}|${a.hata}|${a.neden}`, a);
+    for (const u of K.uyari.values()) h.uyarilar.push(u);
+    h.uyariToplam += K.uyariToplam; h.uyariTasma += K.uyariTasma;
+  }
+  for (const k of ['konsol', 'konsolIzinli', 'ag', 'agIzinli', 'agIptal']) for (const x of h[k]) delete x._k;
+  const say = (a) => a.reduce((s, x) => s + x.sayi, 0);
+  h.sayim = { konsol: say(h.konsol), konsolIzinli: say(h.konsolIzinli), ag: say(h.ag), agIzinli: say(h.agIzinli), agIptal: say(h.agIptal) };
+  return h;
+}
+
+// ---- kontrol kimliği (§6.2): etiketin başındaki kod (K01, D4-01, H07/H22, B02/B-08, E-13/A1, F-07, ek-110); yoksa kısa özet
+const HARF = 'A-Za-zÇĞİÖŞÜçğıöşü';
+const KOD = new RegExp(`^([${HARF}]{1,4}-?\\d+[a-z]?(?:-\\d+)?(?:\\/[${HARF}]{1,4}-?\\d+[a-z]?(?:-\\d+)?)*)(?=[\\s:,.;)]|$)`);
+function kimlik(etiket) {
+  const s = String(etiket || '').trim();
+  const m = KOD.exec(s);
+  if (m) return m[1];
+  const ozet = s.split(/\s+/).slice(0, 6).join(' ');
+  return ozet.length > 48 ? ozet.slice(0, 48) : ozet || null;
+}
+
+// ---- ortam (§6.1)
+function git(dizin) {
+  const g = (...a) => execFileSync('git', ['-C', dizin, ...a], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], timeout: 15000 }).trim();
+  const out = { commit: null, dal: null, kirli: null };
+  try { out.commit = g('rev-parse', 'HEAD'); } catch (e) { return out; }
+  try { out.dal = g('rev-parse', '--abbrev-ref', 'HEAD'); } catch (e) { /* yok */ }
+  try { out.kirli = g('status', '--porcelain').length > 0; } catch (e) { /* yok */ }
+  return out;
+}
+async function ortamBilgisi(browser, { kosucuDizin, gorunum, chromium }) {
+  let gl = null;
+  try {
+    const ctx = await browser.newContext();
+    const gp = await ctx.newPage();
+    gl = await gp.evaluate(() => {
+      const c = document.createElement('canvas');
+      const g = c.getContext('webgl2') || c.getContext('webgl');
+      if (!g) return null;
+      const e = g.getExtension('WEBGL_debug_renderer_info');
+      const r = { surum: g.getParameter(g.VERSION), uretici: e ? g.getParameter(e.UNMASKED_VENDOR_WEBGL) : g.getParameter(g.VENDOR), cizici: e ? g.getParameter(e.UNMASKED_RENDERER_WEBGL) : g.getParameter(g.RENDERER) };
+      const l = g.getExtension('WEBGL_lose_context');
+      if (l) l.loseContext();
+      return r;
+    });
+    await ctx.close();
+  } catch (e) { gl = { hata: String(e.message || e).slice(0, 200) }; }
+  let playwright = null;
+  try { playwright = require('playwright/package.json').version; } catch (e) { /* yok */ }
+  let yol = null;
+  try { yol = chromium.executablePath(); } catch (e) { /* yok */ }
+  const gk = git(kosucuDizin);
+  const cizici = gl && gl.cizici ? String(gl.cizici) : null;
+  return {
+    makine: process.env.CI ? 'ci' : 'yerel', isletim: `${os.platform()} ${os.release()}`, cekirdek: os.cpus().length,
+    bellekGB: Math.round(os.totalmem() / 1073741824), node: process.version, playwright,
+    tarayici: `${yol && /headless_shell/.test(yol) ? 'chromium-headless-shell' : 'chromium'} ${safe(() => browser.version())}`,
+    gl: cizici, glSurum: gl && gl.surum ? gl.surum : null, glHata: gl && gl.hata ? gl.hata : undefined,
+    gercekGPU: cizici ? !/SwiftShader|llvmpipe|softpipe|Software|Microsoft Basic/i.test(cizici) : false,
+    gorunum, ci: !!process.env.CI, commit: gk.commit, dal: gk.dal, kirli: gk.kirli, tarih: new Date().toISOString(),
+  };
+}
+
+// ---- hedef türü (§6.1): moduler, tek-test, tek-uretim, site, canli
+function hedefTipi(u, uretim, verilen) {
+  if (verilen) return verilen;
+  try {
+    const x = new URL(u);
+    if (x.protocol === 'file:' || /DenizKorsanlari-SonHazine(\.test)?\.html$/i.test(x.pathname)) return uretim ? 'tek-uretim' : 'tek-test';
+    if (!/^(localhost|127\.0\.0\.1|\[::1\])$/.test(x.hostname)) return 'canli';
+    if (/\/_site\//.test(x.pathname)) return 'site';
+    return 'moduler';
+  } catch (e) { return null; }
+}
+
+// ---- tekrar (§6.1): tam komut (mutlak senaryo yolu), çalışma dizini, sunucu ipuçları, commit
+function tekrarBilgisi({ kosucuDosya, argv, senaryoArg, url, coop, ortam }) {
+  const q = (s) => (/^[\w@%+=:,./-]+$/.test(String(s)) ? String(s) : `'${String(s).replace(/'/g, `'\\''`)}'`);
+  const args = argv.map((a) => (a === senaryoArg ? path.resolve(a) : a));
+  const sunucular = [];
+  try {
+    const x = new URL(url);
+    if (/^https?:$/.test(x.protocol) && /^(localhost|127\.0\.0\.1|\[::1\])$/.test(x.hostname)) {
+      sunucular.push(`statik sunucu ${x.origin} — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 ${x.port || 80}`);
+    }
+    if (coop) sunucular.push(`PeerJS sinyal sunucusu ${x.searchParams.get('peerhost') || '127.0.0.1'}:${x.searchParams.get('peerport') || 9000} — node tests/peer-server.cjs (peer modülü NODE_PATH'te)`);
+  } catch (e) { /* adres çözülemedi */ }
+  let senaryoSha256 = null;
+  try { senaryoSha256 = crypto.createHash('sha256').update(fs.readFileSync(senaryoArg)).digest('hex'); } catch (e) { /* yok */ }
+  return {
+    komut: ['node', kosucuDosya, ...args].map(q).join(' '), cwd: process.cwd(), sunucular,
+    commit: ortam && ortam.commit ? ortam.commit + (ortam.kirli ? '-kirli' : '') : null, senaryoSha256, adim: null, url,
+  };
+}
+
+// ---- ekran görüntüsü dizini (png'ler depoya girmez: tests/out/ git dışı)
+function goruntuDizini(kosucuDizin, senaryoYolu, secilen) {
+  if (secilen) return path.resolve(secilen);
+  const ad = path.basename(String(senaryoYolu || 'senaryo')).replace(/\.(c?js|mjs)$/, '');
+  const zaman = new Date().toISOString().replace(/[:.]/g, '-');
+  return path.resolve(kosucuDizin, '..', 'out', 'goruntu', `${ad}_${zaman}_${process.pid}`);
+}
+
+// ---- rota kökü (rotaKok adımı) için MIME türleri
+const MIME = {
+  '.html': 'text/html; charset=utf-8', '.htm': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8',
+  '.cjs': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.map': 'application/json',
+  '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.gif': 'image/gif', '.svg': 'image/svg+xml', '.ico': 'image/x-icon',
+  '.glb': 'model/gltf-binary', '.gltf': 'model/gltf+json', '.bin': 'application/octet-stream', '.mp3': 'audio/mpeg', '.ogg': 'audio/ogg', '.wav': 'audio/wav',
+  '.woff': 'font/woff', '.woff2': 'font/woff2', '.ttf': 'font/ttf', '.otf': 'font/otf', '.txt': 'text/plain; charset=utf-8', '.wasm': 'application/wasm',
+};
+const mime = (dosya) => MIME[path.extname(dosya).toLowerCase()] || 'application/octet-stream';
+
+// Playwright çağrı günlüğündeki ANSI renk kodlarını hata iletilerinden ayıklar
+const temiz = (s) => String(s).replace(/\u001b\[[0-9;]*m/g, '');
+
+// ---- güvenli JSON (A1-01): döngüsel başvuru → "[Döngüsel]", BigInt → "<sayı>n". Yalnız gerçek döngüler (atası olan nesne)
+// değiştirilir; aynı nesnenin iki yerde geçmesi döngü değildir ve iki kez yazılır (düz JSON.stringify gibi).
+// durum verilirse değiştirilen öğe sayıları ona yazılır: { dongu, bigint }.
+const DONGUSEL = '[Döngüsel]';
+function guvenliJson(deger, bosluk, durum) {
+  const atalar = [];
+  return JSON.stringify(deger, function (anahtar, v) {
+    if (typeof v === 'bigint') { if (durum) durum.bigint = (durum.bigint || 0) + 1; return v.toString() + 'n'; }
+    if (v !== null && typeof v === 'object') {
+      while (atalar.length && atalar[atalar.length - 1] !== this) atalar.pop();
+      if (atalar.includes(v)) { if (durum) durum.dongu = (durum.dongu || 0) + 1; return DONGUSEL; }
+      atalar.push(v);
+    }
+    return v;
+  }, bosluk);
+}
+const kisa = (v, n = 300) => { let s; try { s = guvenliJson(v); } catch (e) { s = String(v); } return s === undefined ? 'undefined' : s.slice(0, n); };
+
+// ---- onay adımlarının iç alan denetimi (A1-04). Senaryo okunurken çağrılır; hata → KOSUCU_HATASI (adımlar koşmadan).
+// Yazım hatalı karşılaştırıcı ('truthly'), karşılaştırıcısız expect ve sınırsız agSay/metrikKarsilastir eskiden sessizce GEÇİYORDU.
+const EXPECT_ALANLARI = ['js', 'label', 'eq', 'truthy', 'gte', 'lte'];
+const AGSAY_ALANLARI = ['desen', 'enCok', 'enAz', 'sonGezinmeden', 'label'];
+const METRIK_ALANLARI = ['once', 'sonra', 'alan', 'enCokFark', 'enAzFark', 'label'];
+const sonluSayi = (x) => typeof x === 'number' && Number.isFinite(x);
+function alanDenetle(o, izinli, ad, yer) {
+  if (!o || typeof o !== 'object' || Array.isArray(o)) throw new Error(`${yer}: ${ad} bir nesne olmalı`);
+  const yabanci = Object.keys(o).filter((k) => !izinli.includes(k));
+  if (yabanci.length) throw new Error(`${yer}: ${ad} içinde bilinmeyen alan ${yabanci.join(', ')} (yazım hatası mı? bilinenler: ${izinli.join(', ')})`);
+  if ('label' in o && typeof o.label !== 'string') throw new Error(`${yer}: ${ad}.label dizge olmalı`);
+}
+function onayDenetle(s, yer) {
+  if (s.expect !== undefined) {
+    const E = s.expect;
+    alanDenetle(E, EXPECT_ALANLARI, 'expect', yer);
+    if (typeof E.js !== 'string' || !E.js.trim()) throw new Error(`${yer}: expect.js boş olmayan bir dizge olmalı`);
+    if (!['eq', 'truthy', 'gte', 'lte'].some((k) => k in E)) throw new Error(`${yer}: expect'te karşılaştırıcı yok (eq, truthy, gte ya da lte gerekli)`);
+    if ('truthy' in E && E.truthy !== true) throw new Error(`${yer}: expect.truthy yalnız true olabilir (yanlışlık için eq: false ya da olumsuzlanmış js kullanın)`);
+    for (const k of ['gte', 'lte']) if (k in E && !sonluSayi(E[k])) throw new Error(`${yer}: expect.${k} sonlu bir sayı olmalı (gelen ${kisa(E[k], 60)})`);
+  }
+  if (s.agSay !== undefined) {
+    const a = s.agSay;
+    alanDenetle(a, AGSAY_ALANLARI, 'agSay', yer);
+    if (typeof a.desen !== 'string' || !a.desen) throw new Error(`${yer}: agSay.desen boş olmayan bir düzenli ifade dizgesi olmalı`);
+    try { new RegExp(a.desen); } catch (e) { throw new Error(`${yer}: agSay.desen geçersiz düzenli ifade: ${e.message}`); }
+    if (!('enCok' in a) && !('enAz' in a)) throw new Error(`${yer}: agSay'de sınır yok (enCok ya da enAz gerekli)`);
+    for (const k of ['enCok', 'enAz']) if (k in a && !sonluSayi(a[k])) throw new Error(`${yer}: agSay.${k} sonlu bir sayı olmalı`);
+  }
+  if (s.metrikKarsilastir !== undefined) {
+    const m = s.metrikKarsilastir;
+    alanDenetle(m, METRIK_ALANLARI, 'metrikKarsilastir', yer);
+    for (const k of ['once', 'sonra', 'alan']) if (typeof m[k] !== 'string' || !m[k]) throw new Error(`${yer}: metrikKarsilastir.${k} boş olmayan bir dizge olmalı`);
+    if (!('enCokFark' in m) && !('enAzFark' in m)) throw new Error(`${yer}: metrikKarsilastir'da sınır yok (enCokFark ya da enAzFark gerekli)`);
+    for (const k of ['enCokFark', 'enAzFark']) if (k in m && !sonluSayi(m[k])) throw new Error(`${yer}: metrikKarsilastir.${k} sonlu bir sayı olmalı`);
+  }
+}
+// expect karşılaştırıcısı: verilen BÜTÜN karşılaştırıcılar sağlanmalı (eskiden yalnız sonuncusu uygulanıyordu: gte+lte'de gte yok
+// sayılıyordu). gte/lte yalnız sonlu sayılarla karşılaştırır: null >= 0, [] <= 5, '' >= 0 JS'te true'dur ama onay değildir.
+// eq: JSON gösterimleri eşit olmalı; değer JSON'a çevrilemiyorsa (döngüsel, BigInt) karşılaştırma yapılamaz → kalır.
+function karsilastir(v, E) {
+  const sorun = [];
+  if ('eq' in E) {
+    let a, b, hata = null;
+    try { a = JSON.stringify(v); b = JSON.stringify(E.eq); } catch (e) { hata = String(e.message).split('\n')[0]; }
+    if (hata) sorun.push(`eq karşılaştırılamadı: değer JSON'a çevrilemiyor (${hata})`);
+    else if (a !== b) sorun.push(`eq ${kisa(E.eq, 120)}`);
+  }
+  if (E.truthy === true && !v) sorun.push('truthy');
+  for (const k of ['gte', 'lte']) {
+    if (!(k in E)) continue;
+    if (!sonluSayi(v)) { sorun.push(`${k} ${E[k]}: değer sonlu bir sayı değil (${v === null ? 'null' : typeof v === 'number' ? String(v) : typeof v})`); continue; }
+    if (k === 'gte' ? !(v >= E.gte) : !(v <= E.lte)) sorun.push(`${k} ${E[k]}`);
+  }
+  return { ok: sorun.length === 0, sorun };
+}
+
+// ---- işaretçi kilidi taklidi (Faz 1, 17 bellek çökmesi düzeltmesi)
+// Kök neden (ölçüm: docs/v05/kosular/faz1/kosucu17/KOSUCU17.md): oyun oturum başında input.lockPointer() çağırır
+// (js/game/game.js:149); başsız Chromium (chrome-headless-shell) kilidi verir ve kilit açık kaldıkça tarayıcı ana süreci saniyede
+// ~41 bin sentetik fare hareketi (aura WindowEventDispatcher::PostSynthesizeMouseMove) üretip renderer'a MouseMove iletisi gönderir.
+// Renderer ana ipliği uzun eşzamanlı iş yaparken (senaryonun büyük js adımları; girdi işlenemez) İKİ süreçte de bellek büyür
+// (tarayıcı ~55–75 MB/sn, renderer ~40–50 MB/sn); cgroup bellek sınırındaki OOM ikisinin toplamından gelir, kurbanı oom_score_adj
+// belirler (renderer +300 aldığından çoğu kez renderer; tarayıcı çok büyüdüyse tarayıcı) (17_kamera_kararma; büyüme 02_arazi_yasam'da
+// da ölçüldü). Taklitle aynı senaryolarda tarayıcı ~0,1 GB, renderer ~0,5 GB'ta kalır, ana iplik blokunda iki süreç de büyümez
+// (ölçüldü). Biriken şeyin onayı gecikmiş olayların bekleyen durumu olması olasıdır (bağıntı ve iz yapısı buna uyar; hangi kapta
+// biriktiği doğrudan görülmedi).
+// Taklit bu seli kaynağında keser: Element.prototype.requestPointerLock gerçek kilidi İSTEMEZ, yalnız sayfa içi bir durum kurar;
+// document.pointerLockElement (ve ShadowRoot.pointerLockElement) o öğeyi döndürür; 'pointerlockchange'/'pointerlockerror'
+// olayları belgeye eşzamansız (ayrı görevde) gönderilir; requestPointerLock söz döndürür. Sıra ve kurallar Blink'in
+// PointerLockController'ını ve başsız kabuğun (her isteği kabul eder) davranışını izler; ayrıntılı karşılaştırma (gerçek ↔ taklit
+// yoklaması): docs/v05/kosular/faz1/kosucu17/isaretci_yoklama.json. Oyunun gözlenebilir anlamı korunur: input.pointerLocked,
+// main.js'teki kilit bırakılınca otomatik duraklatma (G.noAutoPause), fare bakışı (kilitliyken mousemove.movementX/Y işlenir).
+// Kilitliyken fare olayları gerçek kilitteki gibi kilitli öğeye, kilit anındaki imleç konumuyla yönlendirilir (aşağıda, yoklama5):
+// kilitliyken bir düğmeye/arayüze tıklayan senaryo gerçek kilitte olduğu gibi taklitte de amacına ulaşamaz (düğme etkinleşmez;
+// koşucunun tikla adımı ve co-op tikla yardımcısı gerçek kilitteki gibi zaman aşımına düşer: Playwright'ın isabet engeli tıklamanın
+// gönderildiği anda uygulanır, aşağıda 'tik' ve tiklaTaklitli); "panel açılınca kilit bırakılmadı" türü hatalar gizlenmez. Senaryo
+// Playwright'ın locator.click/page.click'ini doğrudan çağırırsa (yalnız co-op'ta mümkün) bu engel uygulanmaz: taklitte tık sessizce
+// kilitli öğeye gider, gerçek kilitte zaman aşımına düşerdi; co-op senaryoları bu yüzden tikla yardımcısını kullanmalı.
+// Bilinen farklar (oyun ve senaryolar bunlara dayanmaz): yönlendirilen olayın kopyasının isTrusted'ı false'tur (hedefi zaten kilitli
+// öğe olan olaylar özgün ve güvenilir kalır); kilitliyken Playwright fare hareketleri doğal movementX/Y verir (gerçek başsız kilitte
+// imleç merkeze çekildiğinden bu değerler anlamsızdır ve sel ~55 mousemove/sn ekler); imleç gizlenmez, CSS :hover güncellenir;
+// pointerrawupdate yönlendirilmez; sayfanın window'a sonradan eklediği yakalama dinleyicileri yönlendirilecek olayın özgün hedefini
+// görür (oyunda yok); kilitli öğe DOM'dan çıkarılırsa kilit ancak sonraki API çağrısında ya da fare olayında bırakılır; pencere odak
+// kaybı kilidi bırakmaz (Playwright odak öykünmesinde odak kaybı olmaz); unadjustedMovement seçeneği yok sayılır.
+// Sayaçlar Element.prototype.requestPointerLock.__kosucuTaklit'tedir. Taklit window'a ad eklemez; sayfada şunları değiştirir (run.cjs
+// --uretim kipinde de kurulur): dört yerleşik üye (Element.prototype.requestPointerLock, Document.prototype.exitPointerLock,
+// Document.prototype ve ShadowRoot.prototype.pointerLockElement) ve window'a 19, document'a 11 yakalama evresi dinleyicisi (kilitliyken
+// güvenilir fare olaylarını işaretler, durdurur ve kilitli öğeye yönlendirir; kilit yokken yalnız imleç konumunu okur).
+function isaretciKilidiTaklidi() {
+  const W = window;
+  const EP = typeof Element === 'function' ? Element.prototype : null;
+  const DP = typeof Document === 'function' ? Document.prototype : null;
+  const istekOzgun = EP && Object.getOwnPropertyDescriptor(EP, 'requestPointerLock');
+  const cikOzgun = DP && Object.getOwnPropertyDescriptor(DP, 'exitPointerLock');
+  const ogeOzgun = DP && Object.getOwnPropertyDescriptor(DP, 'pointerLockElement');
+  // tarayıcıda işaretçi kilidi yoksa ya da taklit bu belgede zaten kuruluysa dokunulmaz
+  if (!istekOzgun || typeof istekOzgun.value !== 'function' || !cikOzgun || !ogeOzgun || istekOzgun.value.__kosucuTaklit) return;
+  const N = Node.prototype;
+  const bagliMi = Object.getOwnPropertyDescriptor(N, 'isConnected').get;
+  const belgesi = Object.getOwnPropertyDescriptor(N, 'ownerDocument').get;
+  const kokAl = N.getRootNode;
+  const ogeMarka = Object.getOwnPropertyDescriptor(EP, 'tagName').get;          // Element değilse "Illegal invocation"
+  const belgeMarka = Object.getOwnPropertyDescriptor(DP, 'URL').get;           // Document değilse "Illegal invocation"
+  const SR = typeof ShadowRoot === 'function' ? ShadowRoot.prototype : null;
+  const evSahibi = SR ? Object.getOwnPropertyDescriptor(SR, 'host').get : null;
+  const gonder = EventTarget.prototype.dispatchEvent;
+  const dinle = EventTarget.prototype.addEventListener;
+  const kutu = EP.getBoundingClientRect;
+  const zamanla = W.setTimeout;
+  const Soz = W.Promise, Olay = W.Event, Istisna = W.DOMException;
+  const perf = W.performance, simdi = () => perf.now();
+  const etkinlik = W.navigator && W.navigator.userActivation;   // geçici kullanıcı etkinliği (Playwright evaluate'i jest sayılır)
+  const ONEK = "Failed to execute 'requestPointerLock' on 'Element': ";
+  // hedef: kilitli (ya da istek sürerken kilitlenecek) öğe; bekleyen: sürmekte olan ilk istek ({iptal})
+  const durum = { hedef: null, bekleyen: null };
+  // yeni kilit isteği kısıtlaması (yoklamada gerçek kabukla uyan model): bir önceki kabul edilen yeni kilit isteğinden 2 sn'den uzun
+  // süre geçtiyse sayaç sıfırlanır; sayaç 5'e ulaştıysa istek eşzamanlı reddedilir (reddedilen istek zamanı güncellemez)
+  const kisit = { sayi: 0, son: -Infinity };
+  const sayac = { istek: 0, verildi: 0, hedefDegisti: 0, red: 0, jestsiz: 0, kisitli: 0, birakma: 0, birakildi: 0, iptal: 0, degisimOlayi: 0, hataOlayi: 0,
+    yonlendirilen: 0, susturulan: 0, tikEngel: 0 };
+  // imleç: son bilinen imleç konumu (kilitsizken güvenilir fare olaylarından); donmus: kilidin verildiği andaki konum (yönlendirme)
+  const imlec = { cx: 0, cy: 0, sx: 0, sy: 0 };
+  const yon = { donmus: null, isaretli: new WeakSet() };
+  // Blink: olaylar belgeye ayrı bir görevde gönderilir (EnqueueDocumentEvent); kabarmaz, iptal edilemez, composed değildir
+  const olayGonder = (tur, belge) => {
+    zamanla.call(W, () => {
+      sayac[tur === 'pointerlockchange' ? 'degisimOlayi' : 'hataOlayi']++;
+      try { gonder.call(belge, new Olay(tur)); } catch (e) { /* belge gitmiş */ }
+    }, 0);
+  };
+  const reddet = (belge, ad, ileti) => { sayac.red++; olayGonder('pointerlockerror', belge); return Soz.reject(new Istisna(ONEK + ileti, ad)); };
+  // kilit bırakılır: öğe hemen null olur, değişim olayı ayrı görevde gelir (yoklamada gerçek kilitle aynı)
+  const birak = (belge) => {
+    durum.hedef = null; yon.donmus = null; sayac.birakildi++;
+    if (durum.bekleyen) { durum.bekleyen.iptal = true; durum.bekleyen = null; sayac.iptal++; }
+    olayGonder('pointerlockchange', belge);
+  };
+  // kilitli öğe DOM'dan çıkarılmışsa kilit bırakılır
+  const temizle = () => { const el = durum.hedef; if (el && !durum.bekleyen && !bagliMi.call(el)) birak(belgesi.call(el)); };
+  const yerine = {
+    requestPointerLock() {
+      try { ogeMarka.call(this); } catch (e) { return Soz.reject(new TypeError(ONEK + 'Illegal invocation')); }
+      temizle();
+      sayac.istek++;
+      const el = this, belge = belgesi.call(el);
+      if (!bagliMi.call(el)) return reddet(belge, 'WrongDocumentError', 'Target Element removed from DOM');
+      if (durum.hedef) {
+        // kilit (ya da istek) sürerken: Blink hedefi hemen değiştirir, değişim olayı gönderir ve sözü çözer
+        if (belgesi.call(durum.hedef) !== belge) return reddet(belge, 'WrongDocumentError', 'The new element is not in the same shadow-root document as the element that currently holds the lock.');
+        durum.hedef = el; sayac.hedefDegisti++; olayGonder('pointerlockchange', belge); return Soz.resolve();
+      }
+      // yeni kilit: kısa sürede çok istek eşzamanlı reddedilir (Blink; iletisi gerçek kabuktakiyle aynı)
+      const t = simdi();
+      if (t - kisit.son > 2000) kisit.sayi = 0;
+      if (kisit.sayi >= 5) { sayac.kisitli++; return reddet(belge, 'NotAllowedError', 'Too many pointer lock requests in a short window of time.'); }
+      kisit.sayi++; kisit.son = t;
+      // geçici kullanıcı etkinliği istek anında okunur; yoksa istek yine bekler ve yanıtta reddedilir (gerçek kabukta tarayıcı yanıtı)
+      const jest = !etkinlik || etkinlik.isActive;
+      const istek = { iptal: false };
+      durum.hedef = el; durum.bekleyen = istek;
+      // yanıt iki görev sonra gelir (gerçekte tarayıcıya gidip gelen ileti): istekten hemen sonra sıraya giren olaylar önce işlenir
+      return new Soz((coz, red) => zamanla.call(W, () => zamanla.call(W, () => {
+        if (istek.iptal) { coz(); return; }   // istek sürerken bırakıldı: söz çözülür, kilit kurulmaz (yoklamada gerçek kilitle aynı)
+        durum.bekleyen = null;
+        if (!jest) {
+          durum.hedef = null; sayac.jestsiz++; sayac.red++;
+          olayGonder('pointerlockerror', belge);
+          red(new Istisna('A user gesture is required to request Pointer Lock.', 'NotAllowedError'));
+          return;
+        }
+        // başsız kabuk jestli her kilit isteğini kabul eder; burada gerçek kilit İSTENMEZ (sel kaynağı)
+        sayac.verildi++;
+        yon.donmus = { cx: imlec.cx, cy: imlec.cy, sx: imlec.sx, sy: imlec.sy };
+        olayGonder('pointerlockchange', belgesi.call(durum.hedef || el));
+        coz();
+      }, 0), 0));
+    },
+    exitPointerLock() {
+      try { belgeMarka.call(this); } catch (e) { throw new TypeError('Illegal invocation'); }
+      temizle();
+      const el = durum.hedef;
+      if (!el || belgesi.call(el) !== this) return;
+      sayac.birakma++;
+      birak(this);
+    },
+  };
+  // pointerLockElement: istek sürerken null; gölge ağacındaki öğe belgenin kapsamına (ev sahibine) yeniden hedeflenir
+  const ogeGetir = function () {
+    temizle();
+    const el = durum.hedef;
+    if (!el || durum.bekleyen) return null;
+    let n = el;
+    for (let i = 0; i < 64 && n; i++) {
+      const kok = kokAl.call(n);
+      if (kok === this) return n;
+      let ev = null;
+      try { ev = evSahibi ? evSahibi.call(kok) : null; } catch (e) { ev = null; }
+      n = ev;
+    }
+    return null;
+  };
+  Object.defineProperty(ogeGetir, 'name', { value: 'get pointerLockElement' });
+  Object.defineProperty(yerine.requestPointerLock, '__kosucuTaklit', { value: sayac });
+  Object.defineProperty(EP, 'requestPointerLock', { value: yerine.requestPointerLock, writable: istekOzgun.writable, enumerable: istekOzgun.enumerable, configurable: istekOzgun.configurable });
+  Object.defineProperty(DP, 'exitPointerLock', { value: yerine.exitPointerLock, writable: cikOzgun.writable, enumerable: cikOzgun.enumerable, configurable: cikOzgun.configurable });
+  const ogeTanim = { get: ogeGetir, set: undefined, enumerable: ogeOzgun.enumerable, configurable: ogeOzgun.configurable };
+  Object.defineProperty(DP, 'pointerLockElement', ogeTanim);
+  if (SR && Object.getOwnPropertyDescriptor(SR, 'pointerLockElement')) Object.defineProperty(SR, 'pointerLockElement', ogeTanim);
+
+  // ---- kilitliyken fare olaylarının yönlendirilmesi (yoklama5: docs/v05/kosular/faz1/kosucu17/yoklama/yoklama5*.json). Gerçek kilitte
+  // Blink fare ve işaretçi olaylarını (pointer/mouse down-up-move, click, dblclick, wheel) KİLİTLİ ÖĞEYE, kilidin alındığı andaki imleç
+  // konumuyla (clientX/Y, screenX/Y donar) dağıtır; sağ/orta tık 'click' (button 2/1) olur, contextmenu/auxclick ve sınır olayları
+  // (over/out/enter/leave) gelmez; odak değişmez, düğme/onay kutusu etkinleşmez. Playwright'ın isabet denetimi (locator.click) donmuş
+  // konumda kilitli öğeyi bulduğu için olayı engelleyip yeniden dener ve zaman aşımına düşer. Taklit aynısını yapar: güvenilir fare olayı
+  // pencerede (yakalama evresi, sayfanın ve Playwright'ın dinleyicilerinden önce) donmuş konumla işaretlenir (ana dünyada; Playwright'ın
+  // yalıtılmış dünyadaki denetimi olayın özgün konumunu görür, isabet engelini bu yüzden 'tik' uygular); hedef kilitli öğe değilse olay
+  // belgede (yakalama) durdurulur, varsayılan eylemi engellenir ve kopyası kilitli öğeye gönderilir. Klavyeyle üretilen click
+  // (pointerType '') ve sayfanın kendi gönderdiği olaylar (isTrusted false) yönlendirilmez.
+  const YONLENEN = new Set(['pointerdown', 'pointerup', 'pointermove', 'mousedown', 'mouseup', 'mousemove', 'click', 'dblclick', 'wheel']);
+  const SINIR = new Set(['pointerover', 'pointerout', 'pointerenter', 'pointerleave', 'mouseover', 'mouseout', 'mouseenter', 'mouseleave']);
+  const ARA = new Set(['auxclick', 'contextmenu']);   // gerçek kilitte gelmez; auxclick'in yerine kilitli öğeye 'click' (aynı düğme)
+  const KOPYA_ALAN = ['bubbles', 'cancelable', 'composed', 'detail', 'screenX', 'screenY', 'clientX', 'clientY', 'ctrlKey', 'shiftKey', 'altKey', 'metaKey',
+    'button', 'buttons', 'movementX', 'movementY', 'pointerId', 'width', 'height', 'pressure', 'tangentialPressure', 'tiltX', 'tiltY', 'twist', 'pointerType',
+    'isPrimary', 'deltaX', 'deltaY', 'deltaZ', 'deltaMode'];
+  const kilitliOge = () => { temizle(); return durum.hedef && !durum.bekleyen && yon.donmus ? durum.hedef : null; };
+  // fare kaynaklı mı: click/auxclick/contextmenu/pointer* olaylarında pointerType 'mouse' (klavye click'i ''), dblclick'te detail > 0
+  const fareMi = (e) => (typeof e.pointerType === 'string' ? e.pointerType === 'mouse' : e.type === 'dblclick' ? e.detail > 0 : true);
+  const dondur = (e, el) => {
+    const d = yon.donmus;
+    let r = { left: 0, top: 0 };
+    try { r = kutu.call(el); } catch (x) { /* öğe yok */ }
+    const px = W.scrollX || 0, py = W.scrollY || 0;
+    const t = { clientX: d.cx, clientY: d.cy, x: d.cx, y: d.cy, screenX: d.sx, screenY: d.sy, pageX: d.cx + px, pageY: d.cy + py, offsetX: d.cx - r.left, offsetY: d.cy - r.top };
+    for (const k in t) { try { Object.defineProperty(e, k, { value: t[k], configurable: true, enumerable: true }); } catch (x) { /* */ } }
+  };
+  const kopyala = (e, tur, el) => {
+    const init = { view: W };
+    for (const k of KOPYA_ALAN) if (k in e) init[k] = e[k];   // clientX/Y, screenX/Y donmuş değerler (dondur)
+    const Sinif = W.WheelEvent && e instanceof W.WheelEvent ? W.WheelEvent : W.PointerEvent && e instanceof W.PointerEvent ? W.PointerEvent : W.MouseEvent;
+    let k;
+    try { k = new Sinif(tur, init); } catch (x) { return; }
+    sayac.yonlendirilen++;
+    try { gonder.call(el, k); } catch (x) { /* */ }
+  };
+  // ---- koşucu tıklaması (run.cjs tikla adımı, co-op tikla yardımcısı; tiklaTaklitli): Playwright'ın gerçek kilitteki isabet engeli.
+  // Gerçek kilitte Playwright'ın denetimi (injectedScript setupHitTargetInterceptor/expectHitTarget, 'button-link' yeniden hedeflemesi)
+  // tıklamanın İLK fare olayında (pointerdown) olayın konumunda hedefi arar; kilitliyken bu konum kilit anındaki imleç konumudur. Hedef
+  // (ya da onun alt öğesi) orada değilse o olay ve tıklamanın sonraki olayları engellenir (preventDefault + stopImmediatePropagation:
+  // sayfa hiçbirini görmez; hover olayları engellenmez), Playwright yeniden dener ve süre dolunca zaman aşımına düşer (yoklama5, adım
+  // 11). Taklitte koşucu her tıklama denemesinden önce hedef öğeyi bildirir (__kosucuTiklaBasla), taklit aynı kararı aynı anda (olayın
+  // gönderildiği anda) verir ve engeller; koşucu deneme sonunda engeli okur (__kosucuTiklaBitir) ve Playwright gibi yeniden dener.
+  // Kilit tıklama sürerken (ör. görünürlük beklenirken) alınsa da sonuç gerçek kilitle aynıdır (kosucu_negatif ia/ib); ilk olayda
+  // kilit yoksa karar Playwright'ın kendi denetimine kalır. Bildirim bir süre sonra kendiliğinden düşer (son): koşucu bitirme çağrısını
+  // yapamasa da (sayfa yanıt vermedi, koşucu koptu) sonraki ham fare tıklamaları bu kurala girmez.
+  const TIK_OLAY = new Set(['pointerdown', 'pointerup', 'mousedown', 'mouseup', 'click', 'auxclick', 'dblclick', 'contextmenu']);
+  const tik = { etkin: false, hedef: null, karar: undefined, engellenen: 0, son: 0 };
+  const tikSifirla = () => { tik.etkin = false; tik.hedef = null; tik.karar = undefined; tik.engellenen = 0; tik.son = 0; };
+  const ogeAdi = (n) => (n ? String(n.nodeName).toLowerCase() + (n.id ? '#' + n.id : '') : 'öğe yok');
+  const isabetDenetle = (oge) => {
+    const d = yon.donmus;
+    let hedef = oge && oge.nodeType === 1 ? oge : oge ? oge.parentElement : null;
+    if (hedef && !hedef.matches('input, textarea, select') && !hedef.isContentEditable) hedef = hedef.closest('button, [role=button], a, [role=link]') || hedef;
+    let h = W.document.elementFromPoint(d.cx, d.cy);
+    while (h && h.shadowRoot) { const ic = h.shadowRoot.elementFromPoint(d.cx, d.cy); if (!ic || ic === h) break; h = ic; }
+    for (let n = h; n; n = n.parentElement || (n.getRootNode && n.getRootNode().host) || null) if (n === hedef) return null;
+    return { nokta: [d.cx, d.cy], isabet: ogeAdi(h), hedef: ogeAdi(hedef), kilitli: ogeAdi(durum.hedef) };
+  };
+  const pencerede = (e) => {
+    if (!e.isTrusted || !fareMi(e)) return;
+    const el = kilitliOge();
+    if (tik.etkin && simdi() > tik.son) tikSifirla();   // bildirim süresi doldu (bitirme çağrısı gelmedi)
+    if (tik.etkin && TIK_OLAY.has(e.type)) {
+      if (tik.karar === undefined) tik.karar = el ? isabetDenetle(tik.hedef) : null;   // ilk olay karar verir (Playwright gibi)
+      if (tik.karar) { if (e.cancelable) e.preventDefault(); e.stopImmediatePropagation(); tik.engellenen++; sayac.tikEngel++; return; }
+    }
+    if (!el) {
+      if (typeof e.clientX === 'number' && (YONLENEN.has(e.type) || SINIR.has(e.type))) { imlec.cx = e.clientX; imlec.cy = e.clientY; imlec.sx = e.screenX; imlec.sy = e.screenY; }
+      return;
+    }
+    if (SINIR.has(e.type)) { e.stopImmediatePropagation(); sayac.susturulan++; return; }
+    dondur(e, el);
+    yon.isaretli.add(e);
+  };
+  const belgede = (e) => {
+    if (!yon.isaretli.has(e)) return;   // yalnız kilitliyken gelen ve pencerede işaretlenen güvenilir fare olayı
+    yon.isaretli.delete(e);
+    const el = durum.hedef;
+    if (ARA.has(e.type)) {
+      e.stopImmediatePropagation(); if (e.cancelable) e.preventDefault(); sayac.susturulan++;
+      if (e.type === 'auxclick' && el) kopyala(e, 'click', el);
+      return;
+    }
+    if (!el || e.target === el) return;   // hedef zaten kilitli öğe: özgün olay donmuş konumla sürer
+    // varsayılan eylem (odak, seçim, düğme/onay kutusu etkinleşmesi, kaydırma) engellenir; pointer* olaylarında engellenmez:
+    // pointerdown'ın iptali uyumluluk mousedown/mouseup'ını da keserdi (onların kopyası da kilitli öğeye gitmeli)
+    e.stopImmediatePropagation(); if (e.cancelable && !e.type.startsWith('pointer')) e.preventDefault();
+    kopyala(e, e.type, el);
+  };
+  for (const t of [...YONLENEN, ...SINIR, ...ARA]) dinle.call(W, t, pencerede, { capture: true });
+  for (const t of [...YONLENEN, ...ARA]) dinle.call(W.document, t, belgede, { capture: true, passive: false });
+  // koşucu tıklaması: deneme başında hedef bildirilir (karar sıfırlanır; bildirim ms sonra kendiliğinden düşer), sonunda engel (varsa)
+  // okunur ve durum temizlenir
+  Object.defineProperty(yerine.requestPointerLock, '__kosucuTiklaBasla', { value: (oge, ms) => {
+    tikSifirla(); tik.etkin = true; tik.hedef = oge || null; tik.son = simdi() + (Number(ms) > 0 ? Number(ms) : 60000); return true;
+  } });
+  Object.defineProperty(yerine.requestPointerLock, '__kosucuTiklaBitir', { value: () => {
+    const r = tik.etkin && tik.karar ? Object.assign({ engellenen: tik.engellenen }, tik.karar) : null;
+    tikSifirla();
+    return r;
+  } });
+}
+const ISARETCI_TAKLIT = `(${isaretciKilidiTaklidi.toString()})();`;
+// Sayfadaki taklit sayaçlarını okuyan ifade (yalnız son belgenin sayaçları; taklit yoksa null)
+const ISARETCI_SAYAC_JS = `(() => { const f = Element.prototype.requestPointerLock; return f && f.__kosucuTaklit ? Object.assign({}, f.__kosucuTaklit) : null; })()`;
+
+// ---- taklit kilitte Playwright tıklaması (run.cjs tikla adımı; coop.cjs senaryolarının tikla yardımcısı)
+// Gerçek kilitte locator.click'in isabet denetimi tıklamanın ilk fare olayında, olayın donmuş konumunda (kilit anındaki imleç) hedefi
+// arar; bulamazsa olayları engeller, yeniden dener ve süre dolunca "locator.click: Timeout" ile düşer (yoklama5, adım 11). Bu denetim
+// Playwright'ın yalıtılmış dünyasında koşar ve taklidin donmuş konumunu göremez; taklitte tık sessizce kilitli öğeye giderdi (DOG-1/3).
+// Bu yüzden her denemede: (1) hedef öğe çözülür ve taklide bildirilir (karar olayın gönderildiği anda, kilit o an sürüyorsa verilir:
+// kilit ön denetimden sonra, ör. görünürlük beklenirken alınsa da), (2) locator.click (Playwright'ın kendi beklemeleri ve denetimi),
+// (3) taklidin kararı okunur; engellendiyse Playwright'ın yeniden deneme aralıklarıyla (0, 20, 100, 100, 500 ms) yeniden denenir, süre
+// dolunca gerçek kilitteki gibi zaman aşımı hatası atılır. Kilit yoksa (olağan durum) tek bir locator.click'tir; kip 'gercek'te
+// (taklit kurulmamış) doğrudan locator.click. Dönüş: { deneme, engel (son engel kaydı ya da null) }.
+const TIKLA_BASLA = (el, ms) => { const f = Element.prototype.requestPointerLock; return !!(f && typeof f.__kosucuTiklaBasla === 'function' && f.__kosucuTiklaBasla(el, ms)); };
+const TIKLA_BITIR = () => { const f = Element.prototype.requestPointerLock; return f && typeof f.__kosucuTiklaBitir === 'function' ? f.__kosucuTiklaBitir() : null; };
+const TIK_YENIDEN = [0, 20, 100, 100, 500];   // Playwright _retryAction aralıkları (ms)
+const ZAMAN_ASIMI = /Timeout \d+ms exceeded/;
+function tikEngelHatasi(zaman, engel, deneme) {
+  return new Error(`locator.click: Timeout ${zaman}ms exceeded. (işaretçi kilidi taklidi: ${deneme} denemede tıklama engellendi — ${engel.kilitli} kilitli; `
+    + `kilit anındaki imleç konumunda (${engel.nokta.join(', ')}) ${engel.isabet} var, hedef ${engel.hedef} değil. Gerçek kilitte Playwright'ın isabet `
+    + `denetimi tıklamayı burada engeller: "${engel.isabet} intercepts pointer events")`);
+}
+async function tiklaTaklitli(loc, { zaman = 30000, kip = 'taklit' } = {}) {
+  if (kip !== 'taklit') { await loc.click({ timeout: zaman }); return { deneme: 1, engel: null }; }
+  const t0 = Date.now();
+  const kalan = () => Math.max(1, zaman - (Date.now() - t0));
+  let engel = null;
+  for (let deneme = 1; ; deneme++) {
+    if (engel && Date.now() - t0 >= zaman) throw tikEngelHatasi(zaman, engel, deneme - 1);
+    // (1) hedef öğe: locator.click'in ilk adımı gibi öğenin bağlanması beklenir
+    let h;
+    try { h = await loc.elementHandle({ timeout: kalan() }); }
+    catch (e) {
+      const m = temiz((e && e.message) || e);
+      if (engel && ZAMAN_ASIMI.test(m)) throw tikEngelHatasi(zaman, engel, deneme - 1);
+      if (/^locator\.elementHandle: Timeout/.test(m)) throw new Error(m.replace(/^locator\.elementHandle: Timeout \d+ms exceeded\./, `locator.click: Timeout ${zaman}ms exceeded. (koşucu: tıklanacak öğe bekleniyordu)`));
+      throw e;
+    }
+    let hata = null, karar = null, bildirildi = false;
+    try {
+      try { bildirildi = await h.evaluate(TIKLA_BASLA, kalan() + 2000); } catch (e) { bildirildi = false; }   // belge değiştiyse: düz tıklama
+      // (2) tıklama
+      try { await loc.click({ timeout: kalan() }); } catch (e) { hata = e; }
+      // (3) karar okunur ve bildirim temizlenir (tıklama hata verse de); belge gittiyse (tık gezinme başlattı) engel yoktur
+      if (bildirildi) { try { karar = await h.evaluate(TIKLA_BITIR); } catch (e) { karar = null; } }
+    } finally { h.dispose().catch(() => {}); }
+    if (hata) {
+      if (engel && ZAMAN_ASIMI.test(temiz(hata.message || hata))) throw tikEngelHatasi(zaman, engel, deneme - 1);
+      throw hata;
+    }
+    if (!karar) return { deneme, engel };
+    engel = karar;
+    const bekle = TIK_YENIDEN[Math.min(deneme - 1, TIK_YENIDEN.length - 1)];
+    if (bekle) await new Promise((r) => setTimeout(r, Math.min(bekle, Math.max(0, zaman - (Date.now() - t0)))));
+  }
+}
+// --isaretci-kilidi taklit|gercek (varsayılan taklit). gercek: taklit kurulmaz (yalnız karşılaştırma ölçümleri için).
+function isaretciKipi(deger) {
+  const k = deger === undefined ? 'taklit' : String(deger);
+  if (!['taklit', 'gercek'].includes(k)) throw new Error(`--isaretci-kilidi taklit|gercek olmalı (gelen ${JSON.stringify(deger)})`);
+  return k;
+}
+
+module.exports = {
+  SEMA, secenekler, degiskenler, degiskenBetigi, testUrl, izinleriDerle, izinOzeti, HataKaydi, siniflandir, kimlik,
+  ortamBilgisi, hedefTipi, tekrarBilgisi, goruntuDizini, mime, kisa, temiz, git, guvenliJson, DONGUSEL, onayDenetle, karsilastir,
+  ISARETCI_TAKLIT, ISARETCI_SAYAC_JS, tiklaTaklitli, isaretciKipi,
+};

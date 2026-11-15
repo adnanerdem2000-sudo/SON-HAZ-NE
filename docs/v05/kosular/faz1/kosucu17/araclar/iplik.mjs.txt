@@ -1,0 +1,55 @@
+// Edilgen iplik CPU gözlemcisi (yalnız /proc okur): --kok <pid> alt ağacındaki chrome süreçlerinin süreç toplamı ve seçili
+// ipliklerinin CPU tıkları (utime+stime) ve gönüllü bağlam değişimi sayısı (uyanma göstergesi), --aralik ms'de bir.
+//   node iplik.mjs --kok <pid> --cikti <taban> [--aralik 2000] [--en-cok-sn 3600]     → <taban>_iplik.csv
+// Satır: zaman,t_ms,pid,tur,iplik,tik,gonullu   (iplik 'TOPLAM' = sürecin bütün iplikleri; 'ANA' = ana iplik (tid = pid);
+// aynı adlı iplikler toplanır). kok sürecinin alt ağacı yalnızca bu koşunun tarayıcısını içerir (tk kilidi yüzünden başka koşu yok).
+import fs from 'node:fs';
+const args = process.argv.slice(2);
+const opt = (k, d) => { const i = args.indexOf('--' + k); return i >= 0 && i + 1 < args.length ? args[i + 1] : d; };
+const KOK = Number(opt('kok'));
+const TABAN = opt('cikti');
+const ARALIK = Number(opt('aralik', '2000'));
+const EN_COK = Number(opt('en-cok-sn', '3600')) * 1000;
+if (!Number.isInteger(KOK) || KOK <= 1 || !TABAN) { console.error('Kullanım: node iplik.mjs --kok <pid> --cikti <taban>'); process.exit(2); }
+const SECILI = /^(ANA|Chrome_IOThread|Compositor|VizCompositorThread|CrGpuMain|ThreadPoolForeg|ThreadPoolServi|Media|AudioOutputDevi)/;
+const oku = (f) => { try { return fs.readFileSync(f, 'utf8'); } catch { return null; } };
+const fd = fs.openSync(TABAN + '_iplik.csv', 'w');
+fs.writeSync(fd, 'zaman,t_ms,pid,tur,iplik,tik,gonullu\n');
+const t0 = Date.now();
+function tablo() {
+  const m = new Map();
+  for (const d of fs.readdirSync('/proc')) {
+    if (!/^\d+$/.test(d)) continue;
+    const s = oku('/proc/' + d + '/stat'); if (!s) continue;
+    const b = s.lastIndexOf(')');
+    m.set(Number(d), { ppid: Number(s.slice(b + 2).split(' ')[1]), comm: s.slice(s.indexOf('(') + 1, b) });
+  }
+  return m;
+}
+const zamanlayici = setInterval(() => {
+  const T = tablo();
+  if (!T.has(KOK) || Date.now() - t0 > EN_COK) { clearInterval(zamanlayici); fs.closeSync(fd); process.exit(0); }
+  const cocuk = new Map(); for (const [p, x] of T) { if (!cocuk.has(x.ppid)) cocuk.set(x.ppid, []); cocuk.get(x.ppid).push(p); }
+  const agac = []; const y = [KOK]; while (y.length) { const p = y.pop(); for (const q of cocuk.get(p) || []) { agac.push(q); y.push(q); } }
+  const t = Date.now(); const z = new Date(t).toISOString();
+  for (const pid of agac) {
+    if (!T.get(pid).comm.startsWith('chrome')) continue;
+    const m = /--type=([a-z-]+)/.exec((oku('/proc/' + pid + '/cmdline') || '').replace(/\0/g, ' '));
+    const tur = m ? m[1] : 'browser';
+    let g = []; try { g = fs.readdirSync('/proc/' + pid + '/task'); } catch { continue; }
+    const top = new Map(); let tikT = 0, gonT = 0;
+    for (const tid of g) {
+      const ss = oku(`/proc/${pid}/task/${tid}/stat`), st = oku(`/proc/${pid}/task/${tid}/status`); if (!ss || !st) continue;
+      const b = ss.lastIndexOf(')'); const f = ss.slice(b + 2).split(' ');
+      const tik = Number(f[11]) + Number(f[12]);
+      const gon = Number((/^voluntary_ctxt_switches:\s+(\d+)/m.exec(st) || [0, 0])[1]);
+      tikT += tik; gonT += gon;
+      const ad = String(pid) === tid ? 'ANA' : (/^Name:\s+(.*)$/m.exec(st) || [0, '?'])[1].replace(/,/g, ';');
+      if (!SECILI.test(ad)) continue;
+      const v = top.get(ad) || { tik: 0, gon: 0 }; v.tik += tik; v.gon += gon; top.set(ad, v);
+    }
+    fs.writeSync(fd, `${z},${t - t0},${pid},${tur},TOPLAM,${tikT},${gonT}\n`);
+    for (const [ad, v] of top) fs.writeSync(fd, `${z},${t - t0},${pid},${tur},${ad},${v.tik},${v.gon}\n`);
+  }
+}, ARALIK);
+process.on('SIGTERM', () => { try { fs.closeSync(fd); } catch {} process.exit(0); });

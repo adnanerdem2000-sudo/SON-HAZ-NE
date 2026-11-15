@@ -1,0 +1,45 @@
+diff --git a/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/duzeltici3/once_yorum/ortak.cjs b/tests/harness/ortak.cjs
+index f093a7a..e4cbba2 100644
+--- a/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/duzeltici3/once_yorum/ortak.cjs
++++ b/tests/harness/ortak.cjs
+@@ -391,8 +391,10 @@ function karsilastir(v, E) {
+ // Kök neden (ölçüm: docs/v05/kosular/faz1/kosucu17/): oyun oturum başında input.lockPointer() çağırır (js/game/game.js:149);
+ // başsız Chromium (chrome-headless-shell) kilidi verir ve kilit açık kaldıkça tarayıcı ana süreci saniyede ~41 bin sentetik
+ // fare hareketi (aura WindowEventDispatcher::PostSynthesizeMouseMove) üretip renderer'a MouseMove iletisi gönderir. Renderer
+-// ana ipliği uzun eşzamanlı iş yaparken (senaryonun büyük js adımları) onaylar gecikir, bekleyen olay durumu tarayıcı ve renderer
+-// süreçlerinde birikir (55–75 MB/sn) ve cgroup bellek sınırında OOM öldürmesine yol açar (17_kamera_kararma, 02_arazi_yasam).
++// ana ipliği uzun eşzamanlı iş yaparken (senaryonun büyük js adımları) tarayıcı (55–75 MB/sn) ve renderer süreçlerinin belleği
++// büyür ve cgroup bellek sınırında OOM öldürmesine yol açar (17_kamera_kararma; büyüme 02_arazi_yasam'da da ölçüldü). Taklitle
++// aynı senaryolarda tarayıcı ~0,1 GB, renderer ~0,5 GB'ta kalır (ölçüldü). Biriken şeyin onayı gecikmiş olayların bekleyen durumu
++// olması olasıdır (bağıntı ve iz yapısı buna uyar; hangi kapta biriktiği doğrudan görülmedi).
+ // Taklit bu seli kaynağında keser: Element.prototype.requestPointerLock gerçek kilidi İSTEMEZ, yalnız sayfa içi bir durum kurar;
+ // document.pointerLockElement (ve ShadowRoot.pointerLockElement) o öğeyi döndürür; 'pointerlockchange'/'pointerlockerror'
+ // olayları belgeye eşzamansız (ayrı görevde) gönderilir; requestPointerLock söz döndürür. Sıra ve kurallar Blink'in
+diff --git a/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/duzeltici3/once_yorum/run.cjs b/tests/harness/run.cjs
+index 05efefc..d6550af 100644
+--- a/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/duzeltici3/once_yorum/run.cjs
++++ b/tests/harness/run.cjs
+@@ -59,7 +59,8 @@
+ // Faz 1, 17 bellek çökmesi düzeltmesi (kosucu17; ölçüm ve gerekçe: docs/v05/kosular/faz1/kosucu17/):
+ //   - İşaretçi kilidi taklidi (--isaretci-kilidi taklit|gercek; varsayılan taklit): sayfa betiklerinden önce O.ISARETCI_TAKLIT kurulur
+ //     (test ve --uretim kipinde; window'a ad eklemez). Başsız Chromium'da gerçek kilit açıkken tarayıcı saniyede ~41 bin sentetik
+-//     fare olayı üretiyor, uzun js adımlarında bekleyen olaylar birikip OOM'a yol açıyordu. gercek: taklit kurulmaz (yalnız
++//     fare olayı üretiyor, uzun js adımlarında tarayıcı ve renderer belleği büyüyüp OOM'a yol açıyordu (biriken şey büyük
++//     olasılıkla onayı gecikmiş olayların durumu; doğrudan görülmedi). gercek: taklit kurulmaz (yalnız
+ //     karşılaştırma ölçümü için). Rapor: isaretciKilidi {kip, sayac (son belgenin taklit sayaçları)}. Kilitliyken fare olayları
+ //     gerçek kilitteki gibi kilitli öğeye, kilit anındaki konumla gider (ortak.cjs); tikla adımı taklit kilit sürerken gerçek kilitteki
+ //     Playwright isabet engelini kendisi uygular (donmuş konumda hedef yoksa bekler, süre dolunca zaman aşımı; yoklama5).
+diff --git a/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/duzeltici3/once_yorum/README.md b/tests/README.md
+index 421d3d2..c79bafd 100644
+--- a/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/duzeltici3/once_yorum/README.md
++++ b/tests/README.md
+@@ -32,7 +32,8 @@ Senaryo modülü `async ({ pages, host, guests, ev, tick, check, log }) => {}` d
+ 
+ ## İşaretçi kilidi taklidi ve tarayıcı çökmesi (Faz 1, kosucu17)
+ Başsız Chromium'da gerçek işaretçi kilidi (oyun oturum başında `input.lockPointer()` çağırır) açık kaldıkça tarayıcı saniyede
+-on binlerce sentetik fare olayı üretir; uzun senaryolarda bekleyen olaylar birikip bellek sınırında OOM'a yol açıyordu.
++on binlerce sentetik fare olayı üretir; uzun senaryolarda tarayıcı ve renderer belleği büyüyüp (biriken şey büyük olasılıkla
++onayı gecikmiş olayların durumu) bellek sınırında OOM'a yol açıyordu.
+ Koşucular (`run.cjs`, `coop.cjs`) bu yüzden varsayılan olarak kilidi **taklit eder** (`requestPointerLock`, `exitPointerLock`,
+ `pointerLockElement` ve `pointerlockchange`/`pointerlockerror` olayları gerçek kilitle aynı gözlenebilir anlamla; gerçek kilit
+ istenmez). Kilitliyken fare olayları da gerçek kilitteki gibi kilitli öğeye (oyunda tuval), kilit anındaki imleç konumuyla gider:

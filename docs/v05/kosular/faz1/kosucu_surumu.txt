@@ -25,3 +25,13 @@ df191a99737582179be90753afc329d022fdf713694e487d115f0a92961af995  tests/harness/
 # Düzeltmeden önceki sürümle (uygulayıcının sürümü; scratchpad kopyası a1fix_onceki/, sha256 a1_duzeltme/once/onceki_kosucu_sha256.txt)
 # alınanlar: a1_duzeltme/once/* (A1-01 asılma kanıtları, yeni negatif durumların önceki koşucudaki sonucu, A1-05 sahte koşucu,
 # A1-12 metasız kesik kamera taraması). a1_duzeltme/once/kosucu_negatif_ESKI_kosucu_44d548c: yeni araç (--eski-kosucu) + eski koşucu (cf2c01b7…/366fea37…).
+#
+# ---- kosucu17: işaretçi kilidi taklidi ve çökme kaydı (son düzeltici 2 + w2 fikstür zamanlaması, 2026-11-15T07:26:08Z) — koşucunun SON sürümü artık budur:
+285211cfc04d9492dadc4fbee337edd5782f480ad5119dbc13d90e4190f07e49  tests/harness/run.cjs
+9292115d289ee5e49450d31fa1f0a3de6ee880e7e935ff2079c1ec9e99053f39  tests/harness/coop.cjs
+53358e1c91bd8d79d5478fff702f78a0d355a6b2493d7a886d6c1886a65cbf4f  tests/harness/ortak.cjs
+8d84ec85705b8fe443a8a4c7a63cbfbf3745bb02132ab406ff4cb548ab37c0f4  tests/node/kosucu_negatif.mjs
+# Ayrıntı ve doğrulama: kosucu17/KOSUCU17.md, kosucu17/w2_dogrulama/. Bu sürümle alınanlar: kosucu17/w2_dogrulama/*, b/once_v04_taklit/*
+# (B0'ın kilide duyarlı "önce" koşuları, #69) ve bundan sonraki bütün Faz 1 koşuları. Varsayılan kip işaretçi kilidi taklidi;
+# --isaretci-kilidi gercek gerçek kilidi geri getirir. Önceki sürümle (A1 düzeltmesi, 591dff27…) alınan taban, önce kapısı ve B0 "önce"
+# kayıtları gerçek kilitle (sentetik fare olayı seliyle) alındı.

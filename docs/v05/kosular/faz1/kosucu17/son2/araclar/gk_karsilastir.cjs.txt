@@ -1,0 +1,200 @@
+// İnceleme 2 (gizleme merceği): gerçek işaretçi kilidi (başsız kabuk) ↔ k17 son taklidi (ortak.cjs ISARETCI_TAKLIT + tiklaTaklitli).
+//   node gk_karsilastir.cjs <cikti.json> [oyun adresi]
+// Tek tarayıcı başlatılır; her kip (gercek, taklit) için önce fikstür bağlamı, sonra oyun bağlamı sırayla açılıp kapanır.
+// Fikstür: isabet engeli kenar durumları (kilit tıklama sürerken, kilit yokken, kilitli öğenin kendisi, açık/kapalı gölge ağacı,
+// klavye), çerçeveler (aynı kökenli ve sandbox'lı iframe), bırakınca dondurulan konum, hedefin bıraktığı kilidin jestsiz yeniden
+// istenmesi, odak. Oyun (v0.4): başlangıç kilidi, fare bakışı, kilitliyken HUD'a ham tık, kilit kaybında otomatik duraklatma,
+// "Devam et" ile yeniden kilit, Esc, ana menüye dönüşte kilit (KI-235) ve kilitliyken menü düğmesine tikla.
+const { chromium } = require('playwright');
+const http = require('http');
+const fs = require('fs');
+const CIKTI = process.argv[2];
+const OYUN = process.argv[3] || 'http://localhost:8080/index.html?test=1';
+const O = require((process.env.ORTAK || '/home/user/SON-HAZ-NE-k17/tests/harness/ortak.cjs'));
+const bekle = (ms) => new Promise((r) => setTimeout(r, ms));
+
+const SAYFA = `<!doctype html><meta charset="utf-8"><link rel="icon" href="data:,"><title>gk</title>
+<body style="margin:0;overflow:hidden">
+<canvas id="c" width="640" height="360" style="position:absolute;left:0;top:0;width:640px;height:360px;background:#246"></canvas>
+<button id="b" style="position:absolute;left:20px;top:20px;width:120px;height:40px">Dugme</button>
+<button id="g" style="position:absolute;left:20px;top:80px;width:120px;height:40px" disabled>Gec</button>
+<div id="hud" style="position:absolute;left:400px;top:200px;width:120px;height:60px;background:rgba(255,0,0,.3)">HUD</div>
+<div id="sh" style="position:absolute;left:20px;top:140px;width:160px;height:50px"></div>
+<div id="shc" style="position:absolute;left:20px;top:200px;width:160px;height:50px"></div>
+<iframe id="f" src="/cerceve" style="position:absolute;left:300px;top:20px;width:300px;height:150px;border:0"></iframe>
+<iframe id="fs" sandbox="allow-scripts" src="/cerceve?sb=1" style="position:absolute;left:300px;top:280px;width:300px;height:75px;border:0"></iframe>
+<script>
+ window.__tik = {}; window.__ev = []; window.__plc = []; window.__mm = null; window.__mmN = 0;
+ const say = (ad) => (e) => { const k = ad + (e.isTrusted ? '' : '~'); window.__tik[k] = (window.__tik[k] || 0) + 1; };
+ for (const id of ['b', 'g', 'c', 'hud', 'sh', 'shc']) document.getElementById(id).addEventListener('click', say(id));
+ const s1 = document.getElementById('sh').attachShadow({ mode: 'open' });
+ s1.innerHTML = '<button id="sb" style="width:160px;height:50px;margin:0">Golge</button>'; s1.getElementById('sb').addEventListener('click', say('sb'));
+ const s2 = document.getElementById('shc').attachShadow({ mode: 'closed' });
+ s2.innerHTML = '<button id="sbc" style="width:160px;height:50px;margin:0">Kapali</button>'; s2.getElementById('sbc').addEventListener('click', say('sbc'));
+ window.addEventListener('click', (e) => { if (window.__ev.length < 100) window.__ev.push(['click', (e.target && e.target.id) || (e.target && e.target.nodeName), e.isTrusted, Math.round(e.clientX), Math.round(e.clientY)]); });
+ window.addEventListener('mousemove', (e) => { window.__mm = [Math.round(e.clientX), Math.round(e.clientY), e.isTrusted, (e.target && e.target.id) || (e.target && e.target.nodeName), e.movementX, e.movementY]; window.__mmN++; });
+ document.addEventListener('pointerlockchange', () => window.__plc.push('change:' + (document.pointerLockElement ? document.pointerLockElement.id : 'null')));
+ document.addEventListener('pointerlockerror', () => window.__plc.push('error'));
+ window.__ready = true;
+</script>`;
+const CERCEVE = `<!doctype html><meta charset="utf-8"><link rel="icon" href="data:,"><body style="margin:0;overflow:hidden">
+<canvas id="ic" width="300" height="150" style="position:absolute;left:0;top:0;width:300px;height:150px;background:#642"></canvas>
+<button id="ib" style="position:absolute;left:20px;top:20px;width:100px;height:40px">Ic</button>
+<script>
+ window.__tik = {}; window.__plc = []; window.__ev = [];
+ const say = (ad) => (e) => { const k = ad + (e.isTrusted ? '' : '~'); window.__tik[k] = (window.__tik[k] || 0) + 1; };
+ for (const id of ['ic', 'ib']) document.getElementById(id).addEventListener('click', say(id));
+ window.addEventListener('click', (e) => { if (window.__ev.length < 100) window.__ev.push(['click', (e.target && e.target.id) || (e.target && e.target.nodeName), e.isTrusted, Math.round(e.clientX), Math.round(e.clientY)]); });
+ document.addEventListener('pointerlockchange', () => window.__plc.push('change:' + (document.pointerLockElement ? document.pointerLockElement.id : 'null')));
+ document.addEventListener('pointerlockerror', () => window.__plc.push('error'));
+ window.__kilitle = () => document.getElementById('ic').requestPointerLock().then(() => 'ok', (e) => 'red ' + e.name + ': ' + e.message);
+ window.__ready = true;
+</script>`;
+
+const OKU = `(() => { const r = { tik: window.__tik, ple: document.pointerLockElement ? (document.pointerLockElement.id || document.pointerLockElement.nodeName) : null, plc: window.__plc.slice(), ev: window.__ev.slice(-6) };
+  window.__tik = {}; window.__plc = []; window.__ev = []; return r; })()`;
+
+(async () => {
+  const sunucu = http.createServer((q, r) => {
+    r.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
+    r.end(q.url.startsWith('/cerceve') ? CERCEVE : SAYFA);
+  });
+  await new Promise((r) => sunucu.listen(0, '127.0.0.1', r));
+  const URL = `http://127.0.0.1:${sunucu.address().port}/`;
+  const tum = { baslangic: new Date().toISOString(), oyun: OYUN, ortakSha: require('crypto').createHash('sha256').update(fs.readFileSync((process.env.ORTAK || '/home/user/SON-HAZ-NE-k17/tests/harness/ortak.cjs'))).digest('hex') };
+  const yaz = () => fs.writeFileSync(CIKTI, JSON.stringify(tum, null, 1));
+  const kapat = setTimeout(() => { console.log('ZAMAN AŞIMI'); tum.zamanAsimi = true; yaz(); process.exit(3); }, 560000);
+  const b = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--disable-gpu-watchdog', '--autoplay-policy=no-user-gesture-required', '--enable-precise-memory-info'] });
+  tum.surum = b.version();
+  for (const kip of ['gercek', 'taklit']) {
+    const o = tum[kip] = { fikstur: {}, oyun: {} };
+    // ---------------- fikstür
+    const ctx = await b.newContext({ viewport: { width: 640, height: 360 } });
+    if (kip === 'taklit') await ctx.addInitScript({ content: O.ISARETCI_TAKLIT });
+    const p = await ctx.newPage();
+    const konsol = []; p.on('console', (m) => { if (konsol.length < 40) konsol.push(m.type() + ': ' + m.text().slice(0, 200)); });
+    const F = o.fikstur;
+    const cerceve = (sb) => p.frames().find((fr) => fr !== p.mainFrame() && (sb ? /sb=1/.test(fr.url()) : /\/cerceve$/.test(fr.url())));
+    const durum = async () => { const r = { ust: await p.evaluate(OKU) }; try { r.cerceve = await cerceve(false).evaluate(OKU); } catch (e) { r.cerceve = 'HATA ' + e.message.slice(0, 80); } try { r.sandbox = await cerceve(true).evaluate(OKU); } catch (e) { r.sandbox = 'HATA ' + e.message.slice(0, 80); } return r; };
+    const tikla = async (loc, zaman) => { const t0 = Date.now(); try { const r = await O.tiklaTaklitli(loc, { zaman, kip }); return { sonuc: 'ok', ms: Date.now() - t0, deneme: r.deneme, engel: !!r.engel }; } catch (e) { return { sonuc: 'hata: ' + String(e.message).split('\n')[0].slice(0, 200), ms: Date.now() - t0 }; } };
+    const kilitle = async (x, y) => { await p.mouse.move(x, y); await bekle(120); const r = await p.evaluate(`document.getElementById('c').requestPointerLock().then(() => 'ok', (e) => 'red ' + e.name + ': ' + e.message)`); await bekle(300); return r; };
+    const birak = async () => { await p.evaluate(`document.exitPointerLock()`); try { await cerceve(false).evaluate(`document.exitPointerLock()`); } catch (e) { /* */ } try { await cerceve(true).evaluate(`document.exitPointerLock()`); } catch (e) { /* */ } await bekle(250); await durum(); };
+    const adim = async (ad, f) => { const t0 = Date.now(); try { F[ad] = await f(); } catch (e) { F[ad] = 'HATA ' + String(e && e.message || e).split('\n')[0].slice(0, 300); } console.log(kip, ad, (Date.now() - t0) + 'ms', JSON.stringify(F[ad]).slice(0, 900)); yaz(); };
+    try {
+      await p.goto(URL);
+      await p.waitForFunction('window.__ready');
+      await bekle(500);
+      await durum();
+      await adim('T0_kilitsiz_tikla', async () => ({ t: await tikla(p.locator('#b'), 3000), d: await durum() }));
+      await adim('T1_donmus_konum_hedefte', async () => { const k = await kilitle(80, 40); const t = await tikla(p.locator('#b'), 3000); await bekle(150); const d = await durum(); await birak(); return { k, t, d }; });
+      await adim('T2_hud_ustunde_tuvale_tikla', async () => { const k = await kilitle(450, 220); const t = await tikla(p.locator('#c'), 3000); await bekle(150); const d = await durum(); await birak(); return { k, t, d }; });
+      await adim('T3_tuvalde_tuvale_tikla', async () => { const k = await kilitle(220, 300); const t = await tikla(p.locator('#c'), 3000); await bekle(150); const d = await durum(); await birak(); return { k, t, d }; });
+      await adim('T4_beklerken_kilit', async () => {
+        await p.mouse.move(220, 300); await bekle(120);
+        await p.evaluate(`setTimeout(() => document.getElementById('c').requestPointerLock().catch(() => {}), 300); setTimeout(() => { document.getElementById('g').disabled = false; }, 900); 'ok'`);
+        const t = await tikla(p.locator('#g'), 4000); await bekle(150); const d = await durum(); await birak(); await p.evaluate(`document.getElementById('g').disabled = true`); return { t, d };
+      });
+      await adim('T5_acik_golge_hedefte', async () => { const k = await kilitle(100, 165); const t = await tikla(p.locator('#sb'), 3000); await bekle(150); const d = await durum(); await birak(); return { k, t, d }; });
+      await adim('T5b_acik_golge_disinda', async () => { const k = await kilitle(220, 300); const t = await tikla(p.locator('#sb'), 3000); await bekle(150); const d = await durum(); await birak(); return { k, t, d }; });
+      await adim('T6_kapali_golge_ev_sahibi_hedefte', async () => { const k = await kilitle(100, 225); const t = await tikla(p.locator('#shc'), 3000); await bekle(150); const d = await durum(); await birak(); return { k, t, d }; });
+      await adim('T7_klavye_enter', async () => { const k = await kilitle(220, 300); await p.evaluate(`document.getElementById('b').focus()`); await p.keyboard.press('Enter'); await bekle(200); const d = await durum(); await birak(); return { k, d }; });
+      await adim('T8_cerceve_kilitli_ust_tikla', async () => {
+        await p.mouse.move(370, 120); await bekle(120);
+        const k = await cerceve(false).evaluate(`window.__kilitle()`); await bekle(300);
+        const d0 = await durum();
+        const t = await tikla(p.locator('#b'), 3000); await bekle(150); const d1 = await durum();
+        await p.mouse.click(80, 40); await bekle(200); const d2 = await durum();
+        await birak(); return { k, d0, t, d1, ham: d2 };
+      });
+      await adim('T9_ust_kilitli_cerceveye_ham_tik', async () => { const k = await kilitle(220, 300); await p.mouse.click(370, 60); await bekle(200); const d = await durum(); await birak(); return { k, d }; });
+      await adim('T10_ust_kilitliyken_cerceve_ister', async () => { const k = await kilitle(220, 300); const k2 = await cerceve(false).evaluate(`window.__kilitle()`); await bekle(300); const d = await durum(); await birak(); return { k, k2, d }; });
+      await adim('T11_sandbox_cerceve_ister', async () => { const k = await cerceve(true).evaluate(`window.__kilitle()`); await bekle(300); const d = await durum(); await birak(); return { k, d }; });
+      await adim('T12_birakinca_donmus_konum', async () => {
+        const k = await kilitle(220, 300);
+        await p.mouse.move(80, 40, { steps: 3 }); await bekle(200);
+        await p.evaluate(`window.__mm = null; window.__mmN = 0; document.exitPointerLock()`); await bekle(400);
+        const sonrasi = await p.evaluate(`({ mm: window.__mm, n: window.__mmN })`);
+        const k2 = await p.evaluate(`document.getElementById('c').requestPointerLock().then(() => 'ok', (e) => 'red ' + e.name)`); await bekle(300);
+        const t = await tikla(p.locator('#b'), 2500); await bekle(150); const d1 = await durum();
+        await p.mouse.click(81, 41); await bekle(200); const d2 = await durum();
+        await birak(); return { k, sonrasi, k2, t, d1, ham: d2 };
+      });
+      await adim('T13_hedef_birakti_jestsiz_yeniden', () => p.evaluate(async () => {
+        const c = document.getElementById('c'); const s = (q) => q.then(() => 'ok', (e) => 'red ' + e.name + ': ' + e.message);
+        const r0 = await s(c.requestPointerLock()); await new Promise((q) => setTimeout(q, 5600));
+        const etkin = navigator.userActivation.isActive; const pleOnce = !!document.pointerLockElement;
+        document.exitPointerLock(); await new Promise((q) => setTimeout(q, 60));
+        const r1 = await s(c.requestPointerLock()); await new Promise((q) => setTimeout(q, 200));
+        const ple = !!document.pointerLockElement; if (ple) document.exitPointerLock(); await new Promise((q) => setTimeout(q, 100));
+        return { r0, etkin, pleOnce, r1, ple };
+      }));
+      await bekle(300); await durum();
+      await adim('T15_baska_sayfa_one_gelince', async () => {
+        const k = await kilitle(220, 300);
+        const p2 = await ctx.newPage(); await p2.goto(URL); await p2.bringToFront(); await bekle(600);
+        const d = await durum(); const odak = await p.evaluate(`document.hasFocus()`);
+        await p2.close(); await p.bringToFront(); await bekle(300); const d2 = await durum();
+        await birak(); return { k, d, odak, sonra: d2 };
+      });
+      F.sayac = await p.evaluate(O.ISARETCI_SAYAC_JS).catch(() => null);
+      F.konsol = konsol;
+    } catch (e) { F.hata = String(e && e.message || e).slice(0, 400); }
+    await ctx.close().catch(() => {});
+    yaz();
+    // ---------------- oyun (v0.4, test kipi)
+    const ctxG = await b.newContext({ viewport: { width: 640, height: 360 } });
+    if (kip === 'taklit') await ctxG.addInitScript({ content: O.ISARETCI_TAKLIT });
+    const g = await ctxG.newPage();
+    const Gk = []; g.on('pageerror', (e) => { if (Gk.length < 20) Gk.push('PAGEERR ' + e.message.slice(0, 200)); });
+    const Go = o.oyun;
+    const gadim = async (ad, f) => { const t0 = Date.now(); try { Go[ad] = await f(); } catch (e) { Go[ad] = 'HATA ' + String(e && e.message || e).split('\n')[0].slice(0, 300); } console.log(kip, 'oyun', ad, (Date.now() - t0) + 'ms', JSON.stringify(Go[ad]).slice(0, 700)); yaz(); };
+    const GDUR = `(() => { const pl = document.pointerLockElement; return { ple: pl ? (pl.id || pl.nodeName) : null, kilitli: DK.input.pointerLocked, durum: DK.G.state, ui: DK.ui.isOpen(), pause: !!DK.ui.topIs('pause'), uiOpen: !!DK.G.uiOpen, plc: (window.__plcG || []).splice(0), md: Object.assign({}, window.__md || {}), yaw: +DK.tpCamera.yaw.toFixed(4) }; })()`;
+    const gtikla = async (metin, zaman) => { const t0 = Date.now(); try { const r = await O.tiklaTaklitli(g.getByText(metin, { exact: true }), { zaman, kip }); return { sonuc: 'ok', ms: Date.now() - t0, deneme: r.deneme, engel: !!r.engel }; } catch (e) { return { sonuc: 'hata: ' + String(e.message).split('\n')[0].slice(0, 220), ms: Date.now() - t0 }; } };
+    try {
+      await g.goto(OYUN);
+      await g.waitForFunction('window.__ready', null, { timeout: 120000 });
+      await gadim('G0_basla', async () => {
+        await g.evaluate(`(() => { window.__plcG = []; const ad = () => { const pl = document.pointerLockElement; return pl ? (pl.id || pl.nodeName) : null; };
+          document.addEventListener('pointerlockchange', () => window.__plcG.push('change:' + ad())); document.addEventListener('pointerlockerror', () => window.__plcG.push('error'));
+          window.__md = {}; DK.engine.renderer.domElement.addEventListener('mousedown', (e) => { const k = e.isTrusted ? 't' : 'u'; window.__md[k] = (window.__md[k] || 0) + 1; });
+          DK.G.noAutoPause = false; DK.handlers.startGame({ kind: 'solo', slot: 2, data: null }); return 'ok'; })()`);
+        const t0 = Date.now(); while (Date.now() - t0 < 60000 && (await g.evaluate(`DK.G.state`)) !== 'playing') await bekle(500);
+        await bekle(1500); return { ms: Date.now() - t0, d: await g.evaluate(GDUR) };
+      });
+      await gadim('G2_fare_bakisi', async () => {
+        const y0 = await g.evaluate(`DK.tpCamera.yaw`);
+        await g.mouse.move(320, 180); await bekle(400); const y1 = await g.evaluate(`DK.tpCamera.yaw`);
+        await g.mouse.move(420, 180, { steps: 10 }); await bekle(500); const y2 = await g.evaluate(`DK.tpCamera.yaw`);
+        return { ilkHareket: +(y1 - y0).toFixed(4), ikinciHareket_100px: +(y2 - y1).toFixed(4), d: await g.evaluate(GDUR) };
+      });
+      await gadim('G3_kilitliyken_hud_ham_tik', async () => {
+        const r = await g.evaluate(`(() => { const L = [...document.querySelectorAll('#hud *')].filter((e) => { const b = e.getBoundingClientRect(); const s = getComputedStyle(e); return b.width > 20 && b.height > 14 && b.left > 0 && b.top > 0 && b.right < 640 && b.bottom < 360 && s.visibility !== 'hidden' && s.display !== 'none' && document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2) === e; });
+          const e = L[0]; if (!e) return null; const b = e.getBoundingClientRect(); return { ad: e.nodeName + (e.id ? '#' + e.id : '') + (e.className ? '.' + String(e.className).split(' ')[0] : ''), x: Math.round(b.left + b.width / 2), y: Math.round(b.top + b.height / 2) }; })()`);
+        if (!r) return 'HUD öğesi yok';
+        await g.mouse.click(r.x, r.y); await bekle(400); return { oge: r, d: await g.evaluate(GDUR) };
+      });
+      await gadim('G4_kilit_kaybi_otomatik_duraklat', async () => { await g.evaluate(`document.exitPointerLock()`); await bekle(800); return await g.evaluate(GDUR); });
+      await gadim('G5_devam_et_yeniden_kilit', async () => { const t = await gtikla('Devam et', 5000); await bekle(900); return { t, d: await g.evaluate(GDUR) }; });
+      await gadim('G6_esc', async () => { await g.keyboard.press('Escape'); await bekle(800); return await g.evaluate(GDUR); });
+      await gadim('G7_ana_menuye_don', async () => {
+        const t1 = await gtikla('Ana menüye dön', 5000); await bekle(300);
+        const evet = await g.evaluate(`(() => { const e = [...document.querySelectorAll('button')].find((x) => x.textContent.trim() === 'Evet'); if (!e) return null; const b = e.getBoundingClientRect(); return [Math.round(b.left + b.width / 2), Math.round(b.top + b.height / 2)]; })()`);
+        const t2 = await gtikla('Evet', 5000); await bekle(1500);
+        const d = await g.evaluate(GDUR);
+        const altta = evet ? await g.evaluate(`(() => { const e = document.elementFromPoint(${evet[0]}, ${evet[1]}); return e ? e.nodeName + (e.id ? '#' + e.id : '') + ' "' + (e.textContent || '').trim().slice(0, 30) + '"' : null; })()`) : null;
+        return { t1, evet, t2, d, donmusKonumdaki: altta };
+      });
+      await gadim('G8_kilitliyken_menu_dugmesi', async () => { const t = await gtikla('YENİ MACERA', 3000); await bekle(400); const ac = await g.evaluate(`(() => [...document.querySelectorAll('#modal.active .panel h2')].map((e) => e.textContent))()`); return { t, acikPanel: ac, d: await g.evaluate(GDUR) }; });
+      Go.sayac = await g.evaluate(O.ISARETCI_SAYAC_JS).catch(() => null);
+      Go.hatalar = Gk;
+    } catch (e) { Go.hata = String(e && e.message || e).slice(0, 400); }
+    await ctxG.close().catch(() => {});
+    yaz();
+  }
+  await b.close().catch(() => {});
+  clearTimeout(kapat);
+  sunucu.close();
+  tum.bitis = new Date().toISOString();
+  yaz();
+  process.exit(0);
+})();

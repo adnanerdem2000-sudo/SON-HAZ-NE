@@ -1,0 +1,22 @@
+# Aynı senaryonun raporlarını kontrol kontrol karşılaştırır (id, ok) ve adım hatalarını, tikla kilit engellerini, taklit sayaçlarını yazar.
+#   python3 -I karsilastir_rapor.py <ad=rapor.json>...   (ilk rapor taban)
+import json, sys
+def oku(f):
+    with open(f, encoding='utf-8') as h: return json.load(h)
+rap = []
+for a in sys.argv[1:]:
+    ad, f = a.split('=', 1); r = oku(f); rap.append((ad, r))
+taban_ad, taban = rap[0]
+def ok_harita(r): return {(k.get('id') or k.get('etiket')): k.get('ok') for k in r.get('kontroller', [])}
+th = ok_harita(taban)
+for ad, r in rap:
+    s = r.get('sonuc', {}); h = ok_harita(r)
+    fark = sorted(set(k for k in set(h) | set(th) if h.get(k) != th.get(k)))
+    adim_hata = [(x['n'], x.get('error', '')[:160]) for x in r.get('steps', []) if x.get('error')]
+    engel = [(x['n'], x['tikla'].get('kilitEngeli', {}).get('engellenenDeneme')) for x in r.get('steps', []) if isinstance(x.get('tikla'), dict) and x['tikla'].get('kilitEngeli')]
+    ik = r.get('isaretciKilidi') or {}
+    say = ik.get('sayac') if isinstance(ik.get('sayac'), dict) else None
+    print(f"{ad}: {s.get('durum')} {s.get('gecen')}/{s.get('kontrolSayisi')} kalan={[k for k, v in h.items() if not v]} ms={r.get('ms')} "
+          f"kip={ik.get('kip')} tabandan_farkli={fark} adim_hatasi={adim_hata} kilitEngeli={engel} "
+          f"sayac={ {k: say[k] for k in ('istek', 'verildi', 'birakma', 'yonlendirilen', 'tikEngel') if k in say} if say else None} "
+          f"sayfa_hatasi={len((r.get('hatalar') or {}).get('sayfa', r.get('pageErrors', [])))} senaryoSha={(r.get('tekrar') or {}).get('senaryoSha256', '')[:12]}")

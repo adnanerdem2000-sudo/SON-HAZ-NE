@@ -1,0 +1,6 @@
+PASS (td) tarayıcı süreci bekleme adımı sürerken öldürülür: KOSUCU_HATASI değil KALDI: beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI
+PASS (rw) renderer süreci bekleme adımı sürerken öldürülür: KOSUCU_HATASI değil KALDI: beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI
+PASS (rm) renderer süreci metrics adımının CDP isteği sürerken öldürülür: asılı kalmaz → KALDI: beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI
+PASS (tm) tarayıcı süreci metrics adımının CDP isteği sürerken öldürülür: asılı kalmaz → KALDI: beklenen çıkış 1/KALDI, gelen çıkış 1/KALDI
+
+kosucu_negatif: GECTI — kalan: []; çekirdekte kalan: []; koşucunun yanlışlıkla geçirdiği: [] (koşucu dizini tests/harness)

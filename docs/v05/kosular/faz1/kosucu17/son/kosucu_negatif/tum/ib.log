@@ -1,0 +1,23 @@
+$ node /home/user/SON-HAZ-NE-k17/tests/harness/run.cjs tests/fixtures/kosucu/ia_gec_kilit_tikla.js --size 320x200 --timeout 90 --url http://127.0.0.1:40581/pk_isaretci.html --report /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/son2/kn/tum/ib.json --isaretci-kilidi gercek
+işaretçi kilidi: GERÇEK (taklit kapalı: --isaretci-kilidi gercek)
+ready in 0.2 s
+R: "kuruldu"
+EVALERR locator.click: Timeout 4000ms exceeded.
+Call log:
+[2m  - waiting for locator('#gec')[22m
+[2m    - locator resolved to <button id="gec">Geç</button>[22m
+[2m  - attempting click action[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is not visible[22m
+[2m    - retrying click action[22m
+[2m    - waiting 20ms[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is not visible[22m
+[2m    - retrying c
+GORUNTU /home/user/SON-HAZ-NE-k17/tests/out/goruntu/ia_gec_kilit_tikla_2026-11-15T03-56-37-737Z_9731/ilk_kalan.png
+R: "{\"gec\":0,\"tuval\":[],\"kilitli\":true,\"sayac\":null}"
+PASS IA01 Düğme etkinleşmedi, kilit sürüyor → [0,true]
+errors: 0 pageErrors: 0 fails: 1 evalErrors: 1 (5.3 s)
+SONUC: KALDI (çıkış 1) kontrol 1/1, onay 1 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: başarısız kontrol ya da adım: 1; adım istisnası (evalErrors): 1
+
+[çıkış 1]

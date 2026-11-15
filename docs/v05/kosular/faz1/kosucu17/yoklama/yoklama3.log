@@ -1,0 +1,26 @@
+gercek sel_kilitli {"istek":"ok","ple":"c","mousemoveSn":52.9,"cpuYuzde":{"browser:ANA":97,"browser:Chrome_IOThread":28,"renderer:ANA":20,"renderer:Compositor":82}}
+gercek escape "c"
+gercek sel_kilitsiz {"ple":null,"mousemoveSn":0,"cpuYuzde":{"browser:ANA":0,"browser:Chrome_IOThread":0,"renderer:ANA":0,"renderer:Compositor":0}}
+gercek anlam {"info":{"ogeTanim":{"get":"function","getAd":"get pointerLockElement","set":"undefined","enumerable":true,"configurable":true},"srTanim":true,"istekUzunluk":0,"istekAd":"requestPointerLock","cikUzunluk":0,"cikAd":"exitPointerLock","odak":true,"etkin":true},"kayit":[{"ad":"1 istek: eşzamanlı","ple":
+gercek jestsiz {"r":"red NotAllowedError: A user gesture is required to request Pointer Lock.","ple":null,"etkin":false}
+gercek kilitliyken_jestsiz {"r0":"ok","r":"çözüldü","ple":"c"}
+gercek dizi_20ms [[0,0,"ok",true],[1,26,"ok",true],[2,52,"ok",true],[3,78,"ok",true],[4,104,"ok",true],[5,130,"NotAllowedError: Too many pointer lock requests in a short window of time.",false],[6,155,"NotAllowedError: Too many pointer lock requests in a short window of time.",false],[7,180,"NotAllowedError: Too man
+gercek dizi_600ms [[0,0,"ok",true],[1,606,"ok",true],[2,1212,"ok",true],[3,1819,"ok",true],[4,2425,"ok",true],[5,3031,"NotAllowedError: Too many pointer lock requests in a short window of time.",false],[6,3637,"NotAllowedError: Too many pointer lock requests in a short window of time.",false]]
+gercek kilitliyken_8 [[0,0,"ok",true],[1,29,"ok",true],[2,54,"ok",true],[3,82,"ok",true],[4,107,"ok",true],[5,132,"ok",true],[6,158,"ok",true],[7,183,"ok",true]]
+gercek ayri_1500ms [[0,0,"ok",true],[1,1511,"ok",true],[2,3021,"ok",true],[3,4533,"ok",true],[4,6044,"ok",true],[5,7553,"NotAllowedError: Too many pointer lock requests in a short window of time.",false],[6,9063,"ok",true]]
+gercek ayri_3x100_bosluk3sn_3x100 [[[0,0,"ok",true],[1,108,"ok",true],[2,216,"ok",true]],[[0,0,"ok",true],[1,110,"ok",true],[2,218,"ok",true]]]
+gercek ayri_3x100_bosluk8sn_3x100 [[[0,0,"ok",true],[1,108,"ok",true],[2,218,"ok",true]],[[0,0,"ok",true],[1,109,"ok",true],[2,217,"ok",true]]]
+gercek ayri_2500ms [[0,0,"ok",true],[1,2510,"ok",true],[2,5021,"ok",true],[3,7532,"ok",true],[4,10043,"ok",true],[5,12553,"ok",true],[6,15063,"ok",true]]
+taklit sel_kilitli {"istek":"ok","ple":"c","mousemoveSn":0,"cpuYuzde":{"browser:ANA":0,"browser:Chrome_IOThread":0,"renderer:ANA":0,"renderer:Compositor":0}}
+taklit escape "c"
+taklit sel_kilitsiz {"ple":null,"mousemoveSn":0,"cpuYuzde":{"browser:ANA":0,"browser:Chrome_IOThread":0,"renderer:ANA":0,"renderer:Compositor":0}}
+taklit anlam {"info":{"ogeTanim":{"get":"function","getAd":"get pointerLockElement","set":"undefined","enumerable":true,"configurable":true},"srTanim":true,"istekUzunluk":0,"istekAd":"requestPointerLock","cikUzunluk":0,"cikAd":"exitPointerLock","odak":true,"etkin":true},"kayit":[{"ad":"1 istek: eşzamanlı","ple":
+taklit jestsiz {"r":"red NotAllowedError: A user gesture is required to request Pointer Lock.","ple":null,"etkin":false}
+taklit kilitliyken_jestsiz {"r0":"ok","r":"çözüldü","ple":"c"}
+taklit dizi_20ms [[0,0,"ok",true],[1,26,"ok",true],[2,52,"ok",true],[3,85,"ok",true],[4,119,"ok",true],[5,153,"NotAllowedError: Too many pointer lock requests in a short window of time.",false],[6,179,"NotAllowedError: Too many pointer lock requests in a short window of time.",false],[7,204,"NotAllowedError: Too man
+taklit dizi_600ms [[0,0,"ok",true],[1,606,"ok",true],[2,1211,"ok",true],[3,1825,"ok",true],[4,2439,"ok",true],[5,3053,"NotAllowedError: Too many pointer lock requests in a short window of time.",false],[6,3658,"NotAllowedError: Too many pointer lock requests in a short window of time.",false]]
+taklit kilitliyken_8 [[0,0,"ok",true],[1,26,"ok",true],[2,51,"ok",true],[3,77,"ok",true],[4,102,"ok",true],[5,127,"ok",true],[6,153,"ok",true],[7,178,"ok",true]]
+taklit ayri_1500ms [[0,0,"ok",true],[1,1511,"ok",true],[2,3021,"ok",true],[3,4531,"ok",true],[4,6041,"ok",true],[5,7550,"NotAllowedError: Too many pointer lock requests in a short window of time.",false],[6,9060,"ok",true]]
+taklit ayri_3x100_bosluk3sn_3x100 [[[0,0,"ok",true],[1,109,"ok",true],[2,218,"ok",true]],[[0,0,"ok",true],[1,108,"ok",true],[2,216,"ok",true]]]
+taklit ayri_3x100_bosluk8sn_3x100 [[[0,0,"ok",true],[1,108,"ok",true],[2,216,"ok",true]],[[0,0,"ok",true],[1,107,"ok",true],[2,215,"ok",true]]]
+taklit ayri_2500ms [[0,0,"ok",true],[1,2510,"ok",true],[2,5021,"ok",true],[3,7529,"ok",true],[4,10040,"ok",true],[5,12551,"ok",true],[6,15063,"ok",true]]

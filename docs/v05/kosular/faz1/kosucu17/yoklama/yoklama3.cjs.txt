@@ -1,0 +1,155 @@
+// İşaretçi kilidi yoklaması 3: gerçek kilit (başsız kabuk) ↔ koşucunun taklidi (k17 ortak.cjs ISARETCI_TAKLIT) aynı sınamalarla.
+//   node yoklama3.cjs <cikti.json> [ortak.cjs yolu]
+// Sınamalar: anlam (yoklama 1), sel göstergesi + Escape, jestsiz istek, kilitliyken jestsiz istek, kısıtlama dizileri (tek evaluate
+// içinde ve ayrı evaluate'lerle), kısıtlamanın sıfırlanması. Çıktı her kip için ham sonuçlar; karşılaştırma ayrı (karsilastir3.cjs).
+const { chromium } = require('playwright');
+const http = require('http');
+const fs = require('fs');
+const CIKTI = process.argv[2];
+const ORTAK = process.argv[3] || '/home/user/SON-HAZ-NE-k17/tests/harness/ortak.cjs';
+const TAKLIT = require(ORTAK).ISARETCI_TAKLIT;
+const SAYAC_JS = require(ORTAK).ISARETCI_SAYAC_JS;
+const SAYFA = '<!doctype html><meta charset="utf-8"><link rel="icon" href="data:,"><title>yoklama3</title><body><canvas id="c" width="64" height="64"></canvas><p>yoklama</p></body>';
+const oku = (f) => { try { return fs.readFileSync(f, 'utf8'); } catch { return null; } };
+function chromeIplik() {
+  const T = new Map();
+  for (const d of fs.readdirSync('/proc')) { if (!/^\d+$/.test(d)) continue; const s = oku('/proc/' + d + '/stat'); if (!s) continue; const b = s.lastIndexOf(')'); T.set(Number(d), { ppid: Number(s.slice(b + 2).split(' ')[1]), comm: s.slice(s.indexOf('(') + 1, b) }); }
+  const cocuk = new Map(); for (const [p, x] of T) { if (!cocuk.has(x.ppid)) cocuk.set(x.ppid, []); cocuk.get(x.ppid).push(p); }
+  const agac = []; const y = [process.pid]; while (y.length) { const p = y.pop(); for (const q of cocuk.get(p) || []) { agac.push(q); y.push(q); } }
+  const out = {};
+  for (const pid of agac.filter((p) => T.get(p).comm.startsWith('chrome'))) {
+    const m = /--type=([a-z-]+)/.exec((oku('/proc/' + pid + '/cmdline') || '').replace(/\0/g, ' ')); const tur = m ? m[1] : 'browser';
+    if (tur !== 'browser' && tur !== 'renderer') continue;
+    let g = []; try { g = fs.readdirSync('/proc/' + pid + '/task'); } catch { continue; }
+    for (const tid of g) {
+      const st = oku(`/proc/${pid}/task/${tid}/status`), ss = oku(`/proc/${pid}/task/${tid}/stat`); if (!st || !ss) continue;
+      const ad = String(pid) === tid ? 'ANA' : (/^Name:\s+(.*)$/m.exec(st) || [0, '?'])[1];
+      if (!/^(ANA|Compositor|Chrome_IOThread)$/.test(ad)) continue;
+      const b = ss.lastIndexOf(')'); const f = ss.slice(b + 2).split(' ');
+      out[`${tur}:${ad}`] = (out[`${tur}:${ad}`] || 0) + Number(f[11]) + Number(f[12]);
+    }
+  }
+  return out;
+}
+const bekle = (ms) => new Promise((r) => setTimeout(r, ms));
+// yoklama 1'in anlam sınaması (kısıtlamaya takılmasın diye en çok 4 yeni kilit isteği; sonra 2,5 sn beklenir)
+const ANLAM = async () => {
+  const t0 = performance.now(); const ts = () => +(performance.now() - t0).toFixed(1);
+  const c = document.getElementById('c');
+  const ple = () => (document.pointerLockElement ? (document.pointerLockElement.id || document.pointerLockElement.tagName) : null);
+  const olaylar = []; const kayit = [];
+  const dinle = (e) => olaylar.push({ tur: e.type, bubbles: e.bubbles, cancelable: e.cancelable, composed: e.composed, hedef: e.target === document ? 'document' : String(e.target), ple: ple(), sinif: e.constructor.name });
+  document.addEventListener('pointerlockchange', dinle); document.addEventListener('pointerlockerror', dinle);
+  const pencere = []; const wd = (e) => pencere.push(e.type); window.addEventListener('pointerlockchange', wd); window.addEventListener('pointerlockerror', wd);
+  const say = () => olaylar.length;
+  const bekleS = (ms) => new Promise((r) => setTimeout(r, ms));
+  const sonuc = (p) => Promise.resolve(p).then(() => 'çözüldü', (e) => 'red ' + (e && e.name) + ': ' + (e && e.message));
+  const d1 = Object.getOwnPropertyDescriptor(Document.prototype, 'pointerLockElement');
+  const info = { ogeTanim: { get: typeof d1.get, getAd: d1.get && d1.get.name, set: typeof d1.set, enumerable: d1.enumerable, configurable: d1.configurable },
+    srTanim: !!Object.getOwnPropertyDescriptor(ShadowRoot.prototype, 'pointerLockElement'), istekUzunluk: Element.prototype.requestPointerLock.length, istekAd: Element.prototype.requestPointerLock.name,
+    cikUzunluk: Document.prototype.exitPointerLock.length, cikAd: Document.prototype.exitPointerLock.name, odak: document.hasFocus(), etkin: navigator.userActivation && navigator.userActivation.isActive };
+  // 1 ilk istek (yeni kilit 1)
+  const p1 = c.requestPointerLock();
+  kayit.push({ ad: '1 istek: eşzamanlı', ple: ple(), donus: Object.prototype.toString.call(p1) });
+  await Promise.resolve(); kayit.push({ ad: '1 istek: mikrogörev', ple: ple() });
+  const r1 = await sonuc(p1); kayit.push({ ad: '1 istek: söz', r1, ple: ple(), olay: say() });
+  await bekleS(100); kayit.push({ ad: '1 istek: 100 ms', ple: ple(), olay: say() });
+  // 2 kilitliyken istek
+  const n2 = say(); const p2 = c.requestPointerLock(); kayit.push({ ad: '2 kilitliyken istek: eşzamanlı', ple: ple() }); const r2 = await sonuc(p2); await bekleS(100); kayit.push({ ad: '2 kilitliyken istek', r2, ple: ple(), yeni: olaylar.slice(n2).map((o) => `${o.tur}(${o.ple})`) });
+  // 3 bırak
+  const n3 = say(); const d3 = document.exitPointerLock(); kayit.push({ ad: '3 bırak: eşzamanlı', donus: typeof d3, ple: ple() }); await Promise.resolve(); kayit.push({ ad: '3 bırak: mikrogörev', ple: ple(), yeni: say() - n3 });
+  await bekleS(0); kayit.push({ ad: '3 bırak: 0 ms', ple: ple(), yeni: say() - n3 }); await bekleS(100); kayit.push({ ad: '3 bırak: 100 ms', ple: ple(), yeni: say() - n3 });
+  // 4 kilitsizken bırak
+  const n4 = say(); document.exitPointerLock(); await bekleS(100); kayit.push({ ad: '4 kilitsizken bırak', ple: ple(), yeni: say() - n4 });
+  // 5 ayrık öğe
+  const n5 = say(); let r5; try { const dv = document.createElement('div'); r5 = 'döndü; ' + await sonuc(dv.requestPointerLock()); } catch (e) { r5 = 'eşzamanlı istisna ' + e.name + ': ' + e.message; }
+  await bekleS(100); kayit.push({ ad: '5 ayrık öğe', r5, ple: ple(), yeni: olaylar.slice(n5).map((o) => o.tur) });
+  // 6 iki eşzamanlı istek (yeni kilit 2)
+  const n6 = say(); const q1 = c.requestPointerLock(), q2 = c.requestPointerLock(); kayit.push({ ad: '6 iki istek: eşzamanlı', ple: ple() });
+  const r6 = await Promise.all([sonuc(q1), sonuc(q2)]); await bekleS(100); kayit.push({ ad: '6 iki istek', r6, ple: ple(), yeni: olaylar.slice(n6).map((o) => `${o.tur}(${o.ple})`) });
+  document.exitPointerLock(); await bekleS(100);
+  // 7 yanlış this
+  let r7; try { r7 = 'döndü; ' + await sonuc(Element.prototype.requestPointerLock.call({})); } catch (e) { r7 = 'eşzamanlı istisna ' + e.name + ': ' + e.message; }
+  let r7b; try { Document.prototype.exitPointerLock.call({}); r7b = 'istisna yok'; } catch (e) { r7b = 'eşzamanlı istisna ' + e.name + ': ' + e.message; }
+  kayit.push({ ad: '7 yanlış this', r7, r7b });
+  // 8 istek sürerken bırak (yeni kilit 3)
+  const n8 = say(); const z1 = c.requestPointerLock(); document.exitPointerLock(); const r8 = await sonuc(z1); await bekleS(100); kayit.push({ ad: '8 istek sürerken bırak', r8, ple: ple(), yeni: olaylar.slice(n8).map((o) => `${o.tur}(${o.ple})`) });
+  if (ple()) { document.exitPointerLock(); await bekleS(100); }
+  // 9 kilitliyken öğe DOM'dan çıkar (yeni kilit 4)
+  await sonuc(c.requestPointerLock()); await bekleS(100);
+  const n9 = say(); c.remove(); const s9 = ple(); await bekleS(100); const s9b = ple(); document.body.appendChild(c); await bekleS(50);
+  kayit.push({ ad: '9 öğe çıkarıldı', esz: s9, ms100: s9b, yeni: olaylar.slice(n9).map((o) => `${o.tur}(${o.ple})`) });
+  if (ple()) { document.exitPointerLock(); await bekleS(100); }
+  return { info, kayit, olaylar, pencere };
+};
+// tek evaluate içinde dizi (jest 5 sn'de biter)
+const DIZI = async ({ n, aralik, kilitliyken }) => {
+  const c = document.getElementById('c'); const t0 = performance.now(); const out = [];
+  const bek = (ms) => new Promise((r) => setTimeout(r, ms));
+  for (let i = 0; i < n; i++) {
+    const t = +(performance.now() - t0).toFixed(0);
+    const r = await c.requestPointerLock().then(() => 'ok', (e) => e.name + ': ' + e.message.replace("Failed to execute 'requestPointerLock' on 'Element': ", ''));
+    await bek(5);
+    out.push([i, t, r, !!document.pointerLockElement]);
+    if (!kilitliyken && document.pointerLockElement) document.exitPointerLock();
+    await bek(aralik);
+  }
+  if (document.pointerLockElement) document.exitPointerLock();
+  return out;
+};
+const TEK = `(async () => { const c = document.getElementById('c'); const r = await c.requestPointerLock().then(() => 'ok', (e) => e.name + ': ' + e.message.replace("Failed to execute 'requestPointerLock' on 'Element': ", '')); await new Promise((q) => setTimeout(q, 5)); const k = !!document.pointerLockElement; if (document.pointerLockElement) document.exitPointerLock(); return [r, k]; })()`;
+(async () => {
+  const sunucu = http.createServer((q, r) => { r.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' }); r.end(SAYFA); });
+  await new Promise((r) => sunucu.listen(0, '127.0.0.1', r));
+  const URL = `http://127.0.0.1:${sunucu.address().port}/`;
+  const tum = {};
+  const kapat = setTimeout(() => { console.log('ZAMAN AŞIMI'); fs.writeFileSync(CIKTI, JSON.stringify(tum, null, 1)); process.exit(3); }, 560000);
+  for (const kip of ['gercek', 'taklit']) {
+    const b = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--disable-gpu-watchdog', '--autoplay-policy=no-user-gesture-required', '--enable-precise-memory-info'] });
+    const p = await b.newPage({ viewport: { width: 320, height: 200 } });
+    if (kip === 'taklit') await p.addInitScript({ content: TAKLIT });
+    const o = tum[kip] = { surum: b.version() };
+    const adim = async (ad, f) => { try { o[ad] = await f(); } catch (e) { o[ad] = 'HATA ' + String(e && e.message || e).split('\n')[0].slice(0, 300); } console.log(kip, ad, JSON.stringify(o[ad]).slice(0, 300)); };
+    const ayri = async (n, aralik) => { const out = []; const t0 = Date.now(); for (let i = 0; i < n; i++) { const t = Date.now() - t0; const [r, k] = await p.evaluate(TEK); out.push([i, t, r, k]); await bekle(aralik); } return out; };
+    try {
+      await p.goto(URL);
+      const olc = async () => {
+        await p.evaluate('window.__mm = 0; if (!window.__mmKur) { window.__mmKur = true; document.addEventListener("mousemove", () => { window.__mm++; }, true); }');
+        const a = chromeIplik(), t = Date.now(); await bekle(2000); const z = chromeIplik(), dt = (Date.now() - t) / 1000;
+        const mm = await p.evaluate('window.__mm');
+        const cpu = {}; for (const k of Object.keys(z)) if (k in a) cpu[k] = +((z[k] - a[k]) / dt).toFixed(0);
+        return { ple: await p.evaluate('document.pointerLockElement && document.pointerLockElement.id'), mousemoveSn: +(mm / dt).toFixed(1), cpuYuzde: cpu };
+      };
+      await adim('sel_kilitli', async () => { const r = await p.evaluate('document.getElementById("c").requestPointerLock().then(() => "ok", (e) => e.name + ": " + e.message)'); await bekle(300); return { istek: r, ...(await olc()) }; });
+      await adim('escape', async () => { await p.keyboard.press('Escape'); await bekle(300); return await p.evaluate('document.pointerLockElement && document.pointerLockElement.id'); });
+      await adim('sel_kilitsiz', async () => { await p.evaluate('document.exitPointerLock()'); await bekle(300); return await olc(); });
+      await bekle(2500);
+      await adim('anlam', () => p.evaluate(ANLAM));
+      await bekle(2500);
+      await adim('jestsiz', () => p.evaluate(async () => { await new Promise((r) => setTimeout(r, 5600)); const c = document.getElementById('c'); const r = await c.requestPointerLock().then(() => 'çözüldü', (e) => 'red ' + e.name + ': ' + e.message); await new Promise((q) => setTimeout(q, 100)); const s = document.pointerLockElement && document.pointerLockElement.id; document.exitPointerLock(); await new Promise((q) => setTimeout(q, 100)); return { r, ple: s, etkin: navigator.userActivation.isActive }; }));
+      await bekle(2500);
+      await adim('kilitliyken_jestsiz', () => p.evaluate(async () => { const c = document.getElementById('c'); const r0 = await c.requestPointerLock().then(() => 'ok', (e) => 'red ' + e.name); await new Promise((r) => setTimeout(r, 5600)); const r = await c.requestPointerLock().then(() => 'çözüldü', (e) => 'red ' + e.name + ': ' + e.message); await new Promise((q) => setTimeout(q, 100)); const s = document.pointerLockElement && document.pointerLockElement.id; document.exitPointerLock(); await new Promise((q) => setTimeout(q, 100)); return { r0, r, ple: s }; }));
+      await bekle(2500);
+      await adim('dizi_20ms', () => p.evaluate(DIZI, { n: 9, aralik: 20 }));
+      await bekle(2500);
+      await adim('dizi_600ms', () => p.evaluate(DIZI, { n: 7, aralik: 600 }));
+      await bekle(2500);
+      await adim('kilitliyken_8', () => p.evaluate(DIZI, { n: 8, aralik: 20, kilitliyken: true }));
+      await bekle(2500);
+      // ayrı evaluate'lerle (her istek kendi jestiyle): sayaç zamanla sıfırlanıyor mu?
+      await adim('ayri_1500ms', () => ayri(7, 1500));
+      await bekle(2500);
+      await adim('ayri_3x100_bosluk3sn_3x100', async () => { const a = await ayri(3, 100); await bekle(3000); const z = await ayri(3, 100); return [a, z]; });
+      await bekle(2500);
+      await adim('ayri_3x100_bosluk8sn_3x100', async () => { const a = await ayri(3, 100); await bekle(8000); const z = await ayri(3, 100); return [a, z]; });
+      await bekle(2500);
+      await adim('ayri_2500ms', () => ayri(7, 2500));
+      o.sayac = await p.evaluate(SAYAC_JS).catch(() => null);
+    } catch (e) { o.hata = String(e && e.message || e).slice(0, 400); }
+    await b.close().catch(() => {});
+  }
+  clearTimeout(kapat);
+  sunucu.close();
+  fs.writeFileSync(CIKTI, JSON.stringify(tum, null, 1));
+  process.exit(0);
+})();

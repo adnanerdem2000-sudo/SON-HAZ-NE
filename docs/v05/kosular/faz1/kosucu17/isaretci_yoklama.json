@@ -1,0 +1,2993 @@
+{
+ "aciklama": "Gerçek işaretçi kilidi (chrome-headless-shell) ile koşucunun taklidi (tests/harness/ortak.cjs ISARETCI_TAKLIT) aynı sınamalarla; zaman damgaları karşılaştırılmaz. yoklama5: kilitliyken fare olaylarının yönlendirilmesi (sayfanın kabarma evresindeki dinleyicileri).",
+ "ozet": {
+  "surum": "153.0.8010.12",
+  "madde": 53,
+  "ayni": 49,
+  "bilinenFark": 3,
+  "aciklanmamisFark": 1,
+  "normallestirme": {
+   "yoklama5Madde": 15,
+   "isTrustedFalseKopyaOlanMadde": 10,
+   "hareketSayisiFarkliMadde": 14,
+   "not": "Bu iki fark karşılaştırmadan önce atılır (isTrusted: '(sentetik)' işareti silinir; mousemove/pointermove sayıları 'n' ile değiştirilir; gerçek kilitte olup taklitte olmayan mousemove@c/pointermove@c silinir). Oyun kodu isTrusted okumuyor (grep js/: yok)."
+  },
+  "farkli": [
+   "yoklama3: sel göstergesi: kilitliyken 2 sn (sayfaya gelen mousemove/sn, iplik CPU %) — beklenen fark: taklitte gerçek kilit yok, sel yok",
+   "yoklama4: kisit_olay — AÇIKLANMAMIŞ FARK: gerçek kabuk bu dizide 3, taklit 5 isteğe izin verdi; dizi, window.open ile açılıp kapanan açılır pencerenin hemen ardından koştu (yoklama4 'jestsiz'); kısıtlama modeli bunu açıklamıyor (oyun açılır pencere açmaz)",
+   "yoklama5: 11_kilitli_locator_click — bilinen fark (Playwright düzeyi; yoklama doğrudan locator.click çağırır): gerçek kilitte locator.click'in isabet denetimi (yalıtılmış dünyada, olayın donmuş clientX/Y'si) tıklamayı engelleyip zaman aşımına düşer; taklitte denetim olayın özgün konumunu görür, tık tuvale yönlendirilir (düğme etkinleşmez). run.cjs tikla adımı ve coop.cjs tikla yardımcısı aynı engeli O.tiklaTaklitli ile tıklamanın gönderildiği anda uygular (kosucu_negatif pk5/pk6, ia/ib, ia2/ia3, pk7/pk8); senaryo locator.click'i doğrudan çağırırsa fark kalır.",
+   "yoklama5: 13_birak_ve_tik — bilinen fark: gerçek kilit bırakılırken tuvale hareketsiz (movementX/Y 0) 1–2 mousemove/pointermove daha gelir; konumu koşudan koşuya değişir (2. denemenin yoklamalarında (0,0), 3. denemede kilit anındaki konum (200,150)); taklitte yok. Tık sayısı, odak ve kilit durumu aynı."
+  ]
+ },
+ "maddeler": [
+  {
+   "kaynak": "yoklama3",
+   "ad": "API tanımları (pointerLockElement erişimcisi, işlev adları/uzunlukları, odak, etkinlik)",
+   "ayni": true,
+   "gercek": {
+    "ogeTanim": {
+     "get": "function",
+     "getAd": "get pointerLockElement",
+     "set": "undefined",
+     "enumerable": true,
+     "configurable": true
+    },
+    "srTanim": true,
+    "istekUzunluk": 0,
+    "istekAd": "requestPointerLock",
+    "cikUzunluk": 0,
+    "cikAd": "exitPointerLock",
+    "odak": true,
+    "etkin": true
+   },
+   "taklit": {
+    "ogeTanim": {
+     "get": "function",
+     "getAd": "get pointerLockElement",
+     "set": "undefined",
+     "enumerable": true,
+     "configurable": true
+    },
+    "srTanim": true,
+    "istekUzunluk": 0,
+    "istekAd": "requestPointerLock",
+    "cikUzunluk": 0,
+    "cikAd": "exitPointerLock",
+    "odak": true,
+    "etkin": true
+   }
+  },
+  {
+   "kaynak": "yoklama3",
+   "ad": "anlam: 1 istek: eşzamanlı",
+   "ayni": true,
+   "gercek": {
+    "ad": "1 istek: eşzamanlı",
+    "ple": null,
+    "donus": "[object Promise]"
+   },
+   "taklit": {
+    "ad": "1 istek: eşzamanlı",
+    "ple": null,
+    "donus": "[object Promise]"
+   }
+  },
+  {
+   "kaynak": "yoklama3",
+   "ad": "anlam: 1 istek: mikrogörev",
+   "ayni": true,
+   "gercek": {
+    "ad": "1 istek: mikrogörev",
+    "ple": null
+   },
+   "taklit": {
+    "ad": "1 istek: mikrogörev",
+    "ple": null
+   }
+  },
+  {
+   "kaynak": "yoklama3",
+   "ad": "anlam: 1 istek: söz",
+   "ayni": true,
+   "gercek": {
+    "ad": "1 istek: söz",
+    "r1": "çözüldü",
+    "ple": "c",
+    "olay": 0
+   },
+   "taklit": {
+    "ad": "1 istek: söz",
+    "r1": "çözüldü",
+    "ple": "c",
+    "olay": 0
+   }
+  },
+  {
+   "kaynak": "yoklama3",
+   "ad": "anlam: 1 istek: 100 ms",
+   "ayni": true,
+   "gercek": {
+    "ad": "1 istek: 100 ms",
+    "ple": "c",
+    "olay": 1
+   },
+   "taklit": {
+    "ad": "1 istek: 100 ms",
+    "ple": "c",
+    "olay": 1
+   }
+  },
+  {
+   "kaynak": "yoklama3",
+   "ad": "anlam: 2 kilitliyken istek: eşzamanlı",
+   "ayni": true,
+   "gercek": {
+    "ad": "2 kilitliyken istek: eşzamanlı",
+    "ple": "c"
+   },
+   "taklit": {
+    "ad": "2 kilitliyken istek: eşzamanlı",
+    "ple": "c"
+   }
+  },
+  {
+   "kaynak": "yoklama3",
+   "ad": "anlam: 2 kilitliyken istek",
+   "ayni": true,
+   "gercek": {
+    "ad": "2 kilitliyken istek",
+    "r2": "çözüldü",
+    "ple": "c",
+    "yeni": [
+     "pointerlockchange(c)"
+    ]
+   },
+   "taklit": {
+    "ad": "2 kilitliyken istek",
+    "r2": "çözüldü",
+    "ple": "c",
+    "yeni": [
+     "pointerlockchange(c)"
+    ]
+   }
+  },
+  {
+   "kaynak": "yoklama3",
+   "ad": "anlam: 3 bırak: eşzamanlı",
+   "ayni": true,
+   "gercek": {
+    "ad": "3 bırak: eşzamanlı",
+    "donus": "undefined",
+    "ple": null
+   },
+   "taklit": {
+    "ad": "3 bırak: eşzamanlı",
+    "donus": "undefined",
+    "ple": null
+   }
+  },
+  {
+   "kaynak": "yoklama3",
+   "ad": "anlam: 3 bırak: mikrogörev",
+   "ayni": true,
+   "gercek": {
+    "ad": "3 bırak: mikrogörev",
+    "ple": null,
+    "yeni": 0
+   },
+   "taklit": {
+    "ad": "3 bırak: mikrogörev",
+    "ple": null,
+    "yeni": 0
+   }
+  },
+  {
+   "kaynak": "yoklama3",
+   "ad": "anlam: 3 bırak: 0 ms",
+   "ayni": true,
+   "gercek": {
+    "ad": "3 bırak: 0 ms",
+    "ple": null,
+    "yeni": 1
+   },
+   "taklit": {
+    "ad": "3 bırak: 0 ms",
+    "ple": null,
+    "yeni": 1
+   }
+  },
+  {
+   "kaynak": "yoklama3",
+   "ad": "anlam: 3 bırak: 100 ms",
+   "ayni": true,
+   "gercek": {
+    "ad": "3 bırak: 100 ms",
+    "ple": null,
+    "yeni": 1
+   },
+   "taklit": {
+    "ad": "3 bırak: 100 ms",
+    "ple": null,
+    "yeni": 1
+   }
+  },
+  {
+   "kaynak": "yoklama3",
+   "ad": "anlam: 4 kilitsizken bırak",
+   "ayni": true,
+   "gercek": {
+    "ad": "4 kilitsizken bırak",
+    "ple": null,
+    "yeni": 0
+   },
+   "taklit": {
+    "ad": "4 kilitsizken bırak",
+    "ple": null,
+    "yeni": 0
+   }
+  },
+  {
+   "kaynak": "yoklama3",
+   "ad": "anlam: 5 ayrık öğe",
+   "ayni": true,
+   "gercek": {
+    "ad": "5 ayrık öğe",
+    "r5": "döndü; red WrongDocumentError: Failed to execute 'requestPointerLock' on 'Element': Target Element removed from DOM",
+    "ple": null,
+    "yeni": [
+     "pointerlockerror"
+    ]
+   },
+   "taklit": {
+    "ad": "5 ayrık öğe",
+    "r5": "döndü; red WrongDocumentError: Failed to execute 'requestPointerLock' on 'Element': Target Element removed from DOM",
+    "ple": null,
+    "yeni": [
+     "pointerlockerror"
+    ]
+   }
+  },
+  {
+   "kaynak": "yoklama3",
+   "ad": "anlam: 6 iki istek: eşzamanlı",
+   "ayni": true,
+   "gercek": {
+    "ad": "6 iki istek: eşzamanlı",
+    "ple": null
+   },
+   "taklit": {
+    "ad": "6 iki istek: eşzamanlı",
+    "ple": null
+   }
+  },
+  {
+   "kaynak": "yoklama3",
+   "ad": "anlam: 6 iki istek",
+   "ayni": true,
+   "gercek": {
+    "ad": "6 iki istek",
+    "r6": [
+     "çözüldü",
+     "çözüldü"
+    ],
+    "ple": "c",
+    "yeni": [
+     "pointerlockchange(null)",
+     "pointerlockchange(c)"
+    ]
+   },
+   "taklit": {
+    "ad": "6 iki istek",
+    "r6": [
+     "çözüldü",
+     "çözüldü"
+    ],
+    "ple": "c",
+    "yeni": [
+     "pointerlockchange(null)",
+     "pointerlockchange(c)"
+    ]
+   }
+  },
+  {
+   "kaynak": "yoklama3",
+   "ad": "anlam: 7 yanlış this",
+   "ayni": true,
+   "gercek": {
+    "ad": "7 yanlış this",
+    "r7": "döndü; red TypeError: Failed to execute 'requestPointerLock' on 'Element': Illegal invocation",
+    "r7b": "eşzamanlı istisna TypeError: Illegal invocation"
+   },
+   "taklit": {
+    "ad": "7 yanlış this",
+    "r7": "döndü; red TypeError: Failed to execute 'requestPointerLock' on 'Element': Illegal invocation",
+    "r7b": "eşzamanlı istisna TypeError: Illegal invocation"
+   }
+  },
+  {
+   "kaynak": "yoklama3",
+   "ad": "anlam: 8 istek sürerken bırak",
+   "ayni": true,
+   "gercek": {
+    "ad": "8 istek sürerken bırak",
+    "r8": "çözüldü",
+    "ple": null,
+    "yeni": [
+     "pointerlockchange(null)"
+    ]
+   },
+   "taklit": {
+    "ad": "8 istek sürerken bırak",
+    "r8": "çözüldü",
+    "ple": null,
+    "yeni": [
+     "pointerlockchange(null)"
+    ]
+   }
+  },
+  {
+   "kaynak": "yoklama3",
+   "ad": "anlam: 9 öğe çıkarıldı",
+   "ayni": true,
+   "gercek": {
+    "ad": "9 öğe çıkarıldı",
+    "esz": null,
+    "ms100": null,
+    "yeni": [
+     "pointerlockchange(null)"
+    ]
+   },
+   "taklit": {
+    "ad": "9 öğe çıkarıldı",
+    "esz": null,
+    "ms100": null,
+    "yeni": [
+     "pointerlockchange(null)"
+    ]
+   }
+  },
+  {
+   "kaynak": "yoklama3",
+   "ad": "anlam: olay listesi (tür, bubbles, cancelable, composed, hedef, olay anındaki pointerLockElement, sınıf)",
+   "ayni": true,
+   "gercek": [
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": "c",
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": "c",
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": null,
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockerror",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": null,
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": null,
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": "c",
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": null,
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": null,
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": "c",
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": null,
+     "sinif": "Event"
+    }
+   ],
+   "taklit": [
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": "c",
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": "c",
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": null,
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockerror",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": null,
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": null,
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": "c",
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": null,
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": null,
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": "c",
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": null,
+     "sinif": "Event"
+    }
+   ]
+  },
+  {
+   "kaynak": "yoklama3",
+   "ad": "anlam: window dinleyicisine ulaşan olay (kabarma)",
+   "ayni": true,
+   "gercek": [],
+   "taklit": []
+  },
+  {
+   "kaynak": "yoklama3",
+   "ad": "Escape tuşu kilidi bırakır mı",
+   "ayni": true,
+   "gercek": "c",
+   "taklit": "c"
+  },
+  {
+   "kaynak": "yoklama3",
+   "ad": "jestsiz",
+   "ayni": true,
+   "gercek": {
+    "r": "red NotAllowedError: A user gesture is required to request Pointer Lock.",
+    "ple": null,
+    "etkin": false
+   },
+   "taklit": {
+    "r": "red NotAllowedError: A user gesture is required to request Pointer Lock.",
+    "ple": null,
+    "etkin": false
+   }
+  },
+  {
+   "kaynak": "yoklama3",
+   "ad": "kilitliyken_jestsiz",
+   "ayni": true,
+   "gercek": {
+    "r0": "ok",
+    "r": "çözüldü",
+    "ple": "c"
+   },
+   "taklit": {
+    "r0": "ok",
+    "r": "çözüldü",
+    "ple": "c"
+   }
+  },
+  {
+   "kaynak": "yoklama3",
+   "ad": "dizi_20ms",
+   "ayni": true,
+   "gercek": [
+    [
+     0,
+     "ok",
+     true
+    ],
+    [
+     1,
+     "ok",
+     true
+    ],
+    [
+     2,
+     "ok",
+     true
+    ],
+    [
+     3,
+     "ok",
+     true
+    ],
+    [
+     4,
+     "ok",
+     true
+    ],
+    [
+     5,
+     "NotAllowedError: Too many pointer lock requests in a short window of time.",
+     false
+    ],
+    [
+     6,
+     "NotAllowedError: Too many pointer lock requests in a short window of time.",
+     false
+    ],
+    [
+     7,
+     "NotAllowedError: Too many pointer lock requests in a short window of time.",
+     false
+    ],
+    [
+     8,
+     "NotAllowedError: Too many pointer lock requests in a short window of time.",
+     false
+    ]
+   ],
+   "taklit": [
+    [
+     0,
+     "ok",
+     true
+    ],
+    [
+     1,
+     "ok",
+     true
+    ],
+    [
+     2,
+     "ok",
+     true
+    ],
+    [
+     3,
+     "ok",
+     true
+    ],
+    [
+     4,
+     "ok",
+     true
+    ],
+    [
+     5,
+     "NotAllowedError: Too many pointer lock requests in a short window of time.",
+     false
+    ],
+    [
+     6,
+     "NotAllowedError: Too many pointer lock requests in a short window of time.",
+     false
+    ],
+    [
+     7,
+     "NotAllowedError: Too many pointer lock requests in a short window of time.",
+     false
+    ],
+    [
+     8,
+     "NotAllowedError: Too many pointer lock requests in a short window of time.",
+     false
+    ]
+   ]
+  },
+  {
+   "kaynak": "yoklama3",
+   "ad": "dizi_600ms",
+   "ayni": true,
+   "gercek": [
+    [
+     0,
+     "ok",
+     true
+    ],
+    [
+     1,
+     "ok",
+     true
+    ],
+    [
+     2,
+     "ok",
+     true
+    ],
+    [
+     3,
+     "ok",
+     true
+    ],
+    [
+     4,
+     "ok",
+     true
+    ],
+    [
+     5,
+     "NotAllowedError: Too many pointer lock requests in a short window of time.",
+     false
+    ],
+    [
+     6,
+     "NotAllowedError: Too many pointer lock requests in a short window of time.",
+     false
+    ]
+   ],
+   "taklit": [
+    [
+     0,
+     "ok",
+     true
+    ],
+    [
+     1,
+     "ok",
+     true
+    ],
+    [
+     2,
+     "ok",
+     true
+    ],
+    [
+     3,
+     "ok",
+     true
+    ],
+    [
+     4,
+     "ok",
+     true
+    ],
+    [
+     5,
+     "NotAllowedError: Too many pointer lock requests in a short window of time.",
+     false
+    ],
+    [
+     6,
+     "NotAllowedError: Too many pointer lock requests in a short window of time.",
+     false
+    ]
+   ]
+  },
+  {
+   "kaynak": "yoklama3",
+   "ad": "kilitliyken_8",
+   "ayni": true,
+   "gercek": [
+    [
+     0,
+     "ok",
+     true
+    ],
+    [
+     1,
+     "ok",
+     true
+    ],
+    [
+     2,
+     "ok",
+     true
+    ],
+    [
+     3,
+     "ok",
+     true
+    ],
+    [
+     4,
+     "ok",
+     true
+    ],
+    [
+     5,
+     "ok",
+     true
+    ],
+    [
+     6,
+     "ok",
+     true
+    ],
+    [
+     7,
+     "ok",
+     true
+    ]
+   ],
+   "taklit": [
+    [
+     0,
+     "ok",
+     true
+    ],
+    [
+     1,
+     "ok",
+     true
+    ],
+    [
+     2,
+     "ok",
+     true
+    ],
+    [
+     3,
+     "ok",
+     true
+    ],
+    [
+     4,
+     "ok",
+     true
+    ],
+    [
+     5,
+     "ok",
+     true
+    ],
+    [
+     6,
+     "ok",
+     true
+    ],
+    [
+     7,
+     "ok",
+     true
+    ]
+   ]
+  },
+  {
+   "kaynak": "yoklama3",
+   "ad": "ayri_1500ms",
+   "ayni": true,
+   "gercek": [
+    [
+     0,
+     "ok",
+     true
+    ],
+    [
+     1,
+     "ok",
+     true
+    ],
+    [
+     2,
+     "ok",
+     true
+    ],
+    [
+     3,
+     "ok",
+     true
+    ],
+    [
+     4,
+     "ok",
+     true
+    ],
+    [
+     5,
+     "NotAllowedError: Too many pointer lock requests in a short window of time.",
+     false
+    ],
+    [
+     6,
+     "ok",
+     true
+    ]
+   ],
+   "taklit": [
+    [
+     0,
+     "ok",
+     true
+    ],
+    [
+     1,
+     "ok",
+     true
+    ],
+    [
+     2,
+     "ok",
+     true
+    ],
+    [
+     3,
+     "ok",
+     true
+    ],
+    [
+     4,
+     "ok",
+     true
+    ],
+    [
+     5,
+     "NotAllowedError: Too many pointer lock requests in a short window of time.",
+     false
+    ],
+    [
+     6,
+     "ok",
+     true
+    ]
+   ]
+  },
+  {
+   "kaynak": "yoklama3",
+   "ad": "ayri_3x100_bosluk3sn_3x100",
+   "ayni": true,
+   "gercek": [
+    [
+     [
+      0,
+      "ok",
+      true
+     ],
+     [
+      1,
+      "ok",
+      true
+     ],
+     [
+      2,
+      "ok",
+      true
+     ]
+    ],
+    [
+     [
+      0,
+      "ok",
+      true
+     ],
+     [
+      1,
+      "ok",
+      true
+     ],
+     [
+      2,
+      "ok",
+      true
+     ]
+    ]
+   ],
+   "taklit": [
+    [
+     [
+      0,
+      "ok",
+      true
+     ],
+     [
+      1,
+      "ok",
+      true
+     ],
+     [
+      2,
+      "ok",
+      true
+     ]
+    ],
+    [
+     [
+      0,
+      "ok",
+      true
+     ],
+     [
+      1,
+      "ok",
+      true
+     ],
+     [
+      2,
+      "ok",
+      true
+     ]
+    ]
+   ]
+  },
+  {
+   "kaynak": "yoklama3",
+   "ad": "ayri_3x100_bosluk8sn_3x100",
+   "ayni": true,
+   "gercek": [
+    [
+     [
+      0,
+      "ok",
+      true
+     ],
+     [
+      1,
+      "ok",
+      true
+     ],
+     [
+      2,
+      "ok",
+      true
+     ]
+    ],
+    [
+     [
+      0,
+      "ok",
+      true
+     ],
+     [
+      1,
+      "ok",
+      true
+     ],
+     [
+      2,
+      "ok",
+      true
+     ]
+    ]
+   ],
+   "taklit": [
+    [
+     [
+      0,
+      "ok",
+      true
+     ],
+     [
+      1,
+      "ok",
+      true
+     ],
+     [
+      2,
+      "ok",
+      true
+     ]
+    ],
+    [
+     [
+      0,
+      "ok",
+      true
+     ],
+     [
+      1,
+      "ok",
+      true
+     ],
+     [
+      2,
+      "ok",
+      true
+     ]
+    ]
+   ]
+  },
+  {
+   "kaynak": "yoklama3",
+   "ad": "ayri_2500ms",
+   "ayni": true,
+   "gercek": [
+    [
+     0,
+     "ok",
+     true
+    ],
+    [
+     1,
+     "ok",
+     true
+    ],
+    [
+     2,
+     "ok",
+     true
+    ],
+    [
+     3,
+     "ok",
+     true
+    ],
+    [
+     4,
+     "ok",
+     true
+    ],
+    [
+     5,
+     "ok",
+     true
+    ],
+    [
+     6,
+     "ok",
+     true
+    ]
+   ],
+   "taklit": [
+    [
+     0,
+     "ok",
+     true
+    ],
+    [
+     1,
+     "ok",
+     true
+    ],
+    [
+     2,
+     "ok",
+     true
+    ],
+    [
+     3,
+     "ok",
+     true
+    ],
+    [
+     4,
+     "ok",
+     true
+    ],
+    [
+     5,
+     "ok",
+     true
+    ],
+    [
+     6,
+     "ok",
+     true
+    ]
+   ]
+  },
+  {
+   "kaynak": "yoklama3",
+   "ad": "sel göstergesi: kilitliyken 2 sn (sayfaya gelen mousemove/sn, iplik CPU %)",
+   "ayni": false,
+   "gercek": {
+    "istek": "ok",
+    "ple": "c",
+    "mousemoveSn": 51.8,
+    "cpuYuzde": {
+     "browser:ANA": 97,
+     "browser:Chrome_IOThread": 23,
+     "renderer:ANA": 19,
+     "renderer:Compositor": 79
+    }
+   },
+   "taklit": {
+    "istek": "ok",
+    "ple": "c",
+    "mousemoveSn": 0,
+    "cpuYuzde": {
+     "browser:ANA": 0,
+     "browser:Chrome_IOThread": 0,
+     "renderer:ANA": 0,
+     "renderer:Compositor": 0
+    }
+   },
+   "not": "beklenen fark: taklitte gerçek kilit yok, sel yok"
+  },
+  {
+   "kaynak": "yoklama3",
+   "ad": "sel göstergesi: kilitsizken 2 sn",
+   "ayni": true,
+   "gercek": {
+    "ple": null,
+    "mousemoveSn": 0,
+    "cpuYuzde": {
+     "browser:ANA": 0,
+     "browser:Chrome_IOThread": 0,
+     "renderer:ANA": 0,
+     "renderer:Compositor": 0
+    }
+   },
+   "taklit": {
+    "ple": null,
+    "mousemoveSn": 0,
+    "cpuYuzde": {
+     "browser:ANA": 0,
+     "browser:Chrome_IOThread": 0,
+     "renderer:ANA": 0,
+     "renderer:Compositor": 0
+    }
+   }
+  },
+  {
+   "kaynak": "yoklama4",
+   "ad": "jestsiz",
+   "ayni": true,
+   "gercek": {
+    "etkinOpenSonrasi": false,
+    "esz": null,
+    "durumMikro": "mikro:0",
+    "r": "red NotAllowedError: A user gesture is required to request Pointer Lock.",
+    "olaySozde": [],
+    "olay100": [
+     "pointerlockerror(null)"
+    ],
+    "ple": null
+   },
+   "taklit": {
+    "etkinOpenSonrasi": false,
+    "esz": null,
+    "durumMikro": "mikro:0",
+    "r": "red NotAllowedError: A user gesture is required to request Pointer Lock.",
+    "olaySozde": [],
+    "olay100": [
+     "pointerlockerror(null)"
+    ],
+    "ple": null
+   }
+  },
+  {
+   "kaynak": "yoklama4",
+   "ad": "kisit_olay",
+   "ayni": false,
+   "gercek": [
+    [
+     "ok",
+     true,
+     0
+    ],
+    [
+     "ok",
+     true,
+     0
+    ],
+    [
+     "ok",
+     true,
+     0
+    ],
+    [
+     "NotAllowedError: [önek] Too many pointer lock requests in a short window of time.",
+     false,
+     1
+    ],
+    [
+     "NotAllowedError: [önek] Too many pointer lock requests in a short window of time.",
+     false,
+     1
+    ],
+    [
+     "NotAllowedError: [önek] Too many pointer lock requests in a short window of time.",
+     false,
+     1
+    ]
+   ],
+   "taklit": [
+    [
+     "ok",
+     true,
+     0
+    ],
+    [
+     "ok",
+     true,
+     0
+    ],
+    [
+     "ok",
+     true,
+     0
+    ],
+    [
+     "ok",
+     true,
+     0
+    ],
+    [
+     "ok",
+     true,
+     0
+    ],
+    [
+     "NotAllowedError: [önek] Too many pointer lock requests in a short window of time.",
+     false,
+     1
+    ]
+   ],
+   "not": "AÇIKLANMAMIŞ FARK: gerçek kabuk bu dizide 3, taklit 5 isteğe izin verdi; dizi, window.open ile açılıp kapanan açılır pencerenin hemen ardından koştu (yoklama4 'jestsiz'); kısıtlama modeli bunu açıklamıyor (oyun açılır pencere açmaz)"
+  },
+  {
+   "kaynak": "yoklama4",
+   "ad": "q1_bosluk1900",
+   "ayni": true,
+   "gercek": [
+    [
+     [
+      "ok",
+      true,
+      0
+     ],
+     [
+      "ok",
+      true,
+      0
+     ],
+     [
+      "ok",
+      true,
+      0
+     ],
+     [
+      "ok",
+      true,
+      0
+     ]
+    ],
+    [
+     [
+      "ok",
+      true,
+      0
+     ],
+     [
+      "NotAllowedError: [önek] Too many pointer lock requests in a short window of time.",
+      false,
+      1
+     ]
+    ]
+   ],
+   "taklit": [
+    [
+     [
+      "ok",
+      true,
+      0
+     ],
+     [
+      "ok",
+      true,
+      0
+     ],
+     [
+      "ok",
+      true,
+      0
+     ],
+     [
+      "ok",
+      true,
+      0
+     ]
+    ],
+    [
+     [
+      "ok",
+      true,
+      0
+     ],
+     [
+      "NotAllowedError: [önek] Too many pointer lock requests in a short window of time.",
+      false,
+      1
+     ]
+    ]
+   ]
+  },
+  {
+   "kaynak": "yoklama4",
+   "ad": "q2_bosluk2300",
+   "ayni": true,
+   "gercek": [
+    [
+     [
+      "ok",
+      true,
+      0
+     ],
+     [
+      "ok",
+      true,
+      0
+     ],
+     [
+      "ok",
+      true,
+      0
+     ],
+     [
+      "ok",
+      true,
+      0
+     ]
+    ],
+    [
+     [
+      "ok",
+      true,
+      0
+     ],
+     [
+      "ok",
+      true,
+      0
+     ]
+    ]
+   ],
+   "taklit": [
+    [
+     [
+      "ok",
+      true,
+      0
+     ],
+     [
+      "ok",
+      true,
+      0
+     ],
+     [
+      "ok",
+      true,
+      0
+     ],
+     [
+      "ok",
+      true,
+      0
+     ]
+    ],
+    [
+     [
+      "ok",
+      true,
+      0
+     ],
+     [
+      "ok",
+      true,
+      0
+     ]
+    ]
+   ]
+  },
+  {
+   "kaynak": "yoklama4",
+   "ad": "q3_jestsiz_sayilir_mi",
+   "ayni": true,
+   "gercek": [
+    [
+     [
+      "ok",
+      true,
+      0
+     ],
+     [
+      "ok",
+      true,
+      0
+     ],
+     [
+      "ok",
+      true,
+      0
+     ],
+     [
+      "ok",
+      true,
+      0
+     ]
+    ],
+    "red NotAllowedError: A user gesture is required to request Pointer Lock.",
+    [
+     [
+      "NotAllowedError: [önek] Too many pointer lock requests in a short window of time.",
+      false,
+      1
+     ],
+     [
+      "NotAllowedError: [önek] Too many pointer lock requests in a short window of time.",
+      false,
+      1
+     ]
+    ]
+   ],
+   "taklit": [
+    [
+     [
+      "ok",
+      true,
+      0
+     ],
+     [
+      "ok",
+      true,
+      0
+     ],
+     [
+      "ok",
+      true,
+      0
+     ],
+     [
+      "ok",
+      true,
+      0
+     ]
+    ],
+    "red NotAllowedError: A user gesture is required to request Pointer Lock.",
+    [
+     [
+      "NotAllowedError: [önek] Too many pointer lock requests in a short window of time.",
+      false,
+      1
+     ],
+     [
+      "NotAllowedError: [önek] Too many pointer lock requests in a short window of time.",
+      false,
+      1
+     ]
+    ]
+   ]
+  },
+  {
+   "kaynak": "yoklama4",
+   "ad": "q4_red_zamani",
+   "ayni": true,
+   "gercek": [
+    [
+     [
+      "ok",
+      true,
+      0
+     ],
+     [
+      "ok",
+      true,
+      0
+     ],
+     [
+      "ok",
+      true,
+      0
+     ],
+     [
+      "ok",
+      true,
+      0
+     ],
+     [
+      "ok",
+      true,
+      0
+     ]
+    ],
+    [
+     [
+      "NotAllowedError: [önek] Too many pointer lock requests in a short window of time.",
+      false,
+      1
+     ]
+    ],
+    [
+     [
+      "ok",
+      true,
+      0
+     ]
+    ]
+   ],
+   "taklit": [
+    [
+     [
+      "ok",
+      true,
+      0
+     ],
+     [
+      "ok",
+      true,
+      0
+     ],
+     [
+      "ok",
+      true,
+      0
+     ],
+     [
+      "ok",
+      true,
+      0
+     ],
+     [
+      "ok",
+      true,
+      0
+     ]
+    ],
+    [
+     [
+      "NotAllowedError: [önek] Too many pointer lock requests in a short window of time.",
+      false,
+      1
+     ]
+    ],
+    [
+     [
+      "ok",
+      true,
+      0
+     ]
+    ]
+   ]
+  },
+  {
+   "kaynak": "yoklama5",
+   "ad": "00_kilitsiz_tik_dugme",
+   "ayni": true,
+   "gercek": {
+    "olaylar": {
+     "click@b": [
+      1,
+      50,
+      25,
+      0
+     ],
+     "focusin@b": [
+      1,
+      -1,
+      -1,
+      null
+     ],
+     "mousedown@b": [
+      1,
+      50,
+      25,
+      0
+     ],
+     "mousemove@b": [
+      "n",
+      50,
+      25,
+      0
+     ],
+     "mouseout@c": [
+      1,
+      50,
+      25,
+      0
+     ],
+     "mouseover@b": [
+      1,
+      50,
+      25,
+      0
+     ],
+     "mouseup@b": [
+      1,
+      50,
+      25,
+      0
+     ],
+     "pointerdown@b": [
+      1,
+      50,
+      25,
+      0
+     ],
+     "pointermove@b": [
+      "n",
+      50,
+      25,
+      -1
+     ],
+     "pointerout@c": [
+      1,
+      50,
+      25,
+      -1
+     ],
+     "pointerover@b": [
+      1,
+      50,
+      25,
+      -1
+     ],
+     "pointerup@b": [
+      1,
+      50,
+      25,
+      0
+     ]
+    },
+    "tik": 1,
+    "odak": "b",
+    "onay": false,
+    "ple": null
+   },
+   "taklit": {
+    "olaylar": {
+     "click@b": [
+      1,
+      50,
+      25,
+      0
+     ],
+     "focusin@b": [
+      1,
+      -1,
+      -1,
+      null
+     ],
+     "mousedown@b": [
+      1,
+      50,
+      25,
+      0
+     ],
+     "mousemove@b": [
+      "n",
+      50,
+      25,
+      0
+     ],
+     "mouseout@c": [
+      1,
+      50,
+      25,
+      0
+     ],
+     "mouseover@b": [
+      1,
+      50,
+      25,
+      0
+     ],
+     "mouseup@b": [
+      1,
+      50,
+      25,
+      0
+     ],
+     "pointerdown@b": [
+      1,
+      50,
+      25,
+      0
+     ],
+     "pointermove@b": [
+      "n",
+      50,
+      25,
+      -1
+     ],
+     "pointerout@c": [
+      1,
+      50,
+      25,
+      -1
+     ],
+     "pointerover@b": [
+      1,
+      50,
+      25,
+      -1
+     ],
+     "pointerup@b": [
+      1,
+      50,
+      25,
+      0
+     ]
+    },
+    "tik": 1,
+    "odak": "b",
+    "onay": false,
+    "ple": null
+   }
+  },
+  {
+   "kaynak": "yoklama5",
+   "ad": "01_kilitle",
+   "ayni": true,
+   "gercek": {
+    "olaylar": {
+     "mousemove@c": [
+      "n",
+      200,
+      150,
+      0
+     ],
+     "mouseout@b": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "mouseover@c": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "pointermove@c": [
+      "n",
+      200,
+      150,
+      -1
+     ],
+     "pointerout@b": [
+      1,
+      200,
+      150,
+      -1
+     ],
+     "pointerover@c": [
+      1,
+      200,
+      150,
+      -1
+     ]
+    },
+    "tik": 0,
+    "odak": "BODY",
+    "onay": false,
+    "ple": "c",
+    "ek": "ok"
+   },
+   "taklit": {
+    "olaylar": {
+     "mousemove@c": [
+      "n",
+      200,
+      150,
+      0
+     ],
+     "mouseout@b": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "mouseover@c": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "pointermove@c": [
+      "n",
+      200,
+      150,
+      -1
+     ],
+     "pointerout@b": [
+      1,
+      200,
+      150,
+      -1
+     ],
+     "pointerover@c": [
+      1,
+      200,
+      150,
+      -1
+     ]
+    },
+    "tik": 0,
+    "odak": "BODY",
+    "onay": false,
+    "ple": "c",
+    "ek": "ok"
+   }
+  },
+  {
+   "kaynak": "yoklama5",
+   "ad": "02_kilitli_bekle_1sn",
+   "ayni": true,
+   "gercek": {
+    "olaylar": {},
+    "tik": 0,
+    "odak": "BODY",
+    "onay": false,
+    "ple": "c"
+   },
+   "taklit": {
+    "olaylar": {},
+    "tik": 0,
+    "odak": "BODY",
+    "onay": false,
+    "ple": "c"
+   }
+  },
+  {
+   "kaynak": "yoklama5",
+   "ad": "03_kilitli_move_dugme",
+   "ayni": true,
+   "gercek": {
+    "olaylar": {
+     "mousemove@c": [
+      "n",
+      200,
+      150,
+      0
+     ],
+     "pointermove@c": [
+      "n",
+      200,
+      150,
+      -1
+     ]
+    },
+    "tik": 0,
+    "odak": "BODY",
+    "onay": false,
+    "ple": "c"
+   },
+   "taklit": {
+    "olaylar": {
+     "mousemove@c": [
+      "n",
+      200,
+      150,
+      0
+     ],
+     "pointermove@c": [
+      "n",
+      200,
+      150,
+      -1
+     ]
+    },
+    "tik": 0,
+    "odak": "BODY",
+    "onay": false,
+    "ple": "c"
+   }
+  },
+  {
+   "kaynak": "yoklama5",
+   "ad": "04_kilitli_tik_dugme",
+   "ayni": true,
+   "gercek": {
+    "olaylar": {
+     "click@c": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "mousedown@c": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "mousemove@c": [
+      "n",
+      200,
+      150,
+      0
+     ],
+     "mouseup@c": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "pointerdown@c": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "pointermove@c": [
+      "n",
+      200,
+      150,
+      -1
+     ],
+     "pointerup@c": [
+      1,
+      200,
+      150,
+      0
+     ]
+    },
+    "tik": 0,
+    "odak": "BODY",
+    "onay": false,
+    "ple": "c"
+   },
+   "taklit": {
+    "olaylar": {
+     "click@c": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "mousedown@c": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "mousemove@c": [
+      "n",
+      200,
+      150,
+      0
+     ],
+     "mouseup@c": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "pointerdown@c": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "pointermove@c": [
+      "n",
+      200,
+      150,
+      -1
+     ],
+     "pointerup@c": [
+      1,
+      200,
+      150,
+      0
+     ]
+    },
+    "tik": 0,
+    "odak": "BODY",
+    "onay": false,
+    "ple": "c"
+   }
+  },
+  {
+   "kaynak": "yoklama5",
+   "ad": "05_kilitli_tik_metin",
+   "ayni": true,
+   "gercek": {
+    "olaylar": {
+     "click@c": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "mousedown@c": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "mousemove@c": [
+      "n",
+      200,
+      150,
+      0
+     ],
+     "mouseup@c": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "pointerdown@c": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "pointermove@c": [
+      "n",
+      200,
+      150,
+      -1
+     ],
+     "pointerup@c": [
+      1,
+      200,
+      150,
+      0
+     ]
+    },
+    "tik": 0,
+    "odak": "BODY",
+    "onay": false,
+    "ple": "c"
+   },
+   "taklit": {
+    "olaylar": {
+     "click@c": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "mousedown@c": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "mousemove@c": [
+      "n",
+      200,
+      150,
+      0
+     ],
+     "mouseup@c": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "pointerdown@c": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "pointermove@c": [
+      "n",
+      200,
+      150,
+      -1
+     ],
+     "pointerup@c": [
+      1,
+      200,
+      150,
+      0
+     ]
+    },
+    "tik": 0,
+    "odak": "BODY",
+    "onay": false,
+    "ple": "c"
+   }
+  },
+  {
+   "kaynak": "yoklama5",
+   "ad": "06_kilitli_tik_onay",
+   "ayni": true,
+   "gercek": {
+    "olaylar": {
+     "click@c": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "mousedown@c": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "mousemove@c": [
+      "n",
+      200,
+      150,
+      0
+     ],
+     "mouseup@c": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "pointerdown@c": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "pointermove@c": [
+      "n",
+      200,
+      150,
+      -1
+     ],
+     "pointerup@c": [
+      1,
+      200,
+      150,
+      0
+     ]
+    },
+    "tik": 0,
+    "odak": "BODY",
+    "onay": false,
+    "ple": "c"
+   },
+   "taklit": {
+    "olaylar": {
+     "click@c": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "mousedown@c": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "mousemove@c": [
+      "n",
+      200,
+      150,
+      0
+     ],
+     "mouseup@c": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "pointerdown@c": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "pointermove@c": [
+      "n",
+      200,
+      150,
+      -1
+     ],
+     "pointerup@c": [
+      1,
+      200,
+      150,
+      0
+     ]
+    },
+    "tik": 0,
+    "odak": "BODY",
+    "onay": false,
+    "ple": "c"
+   }
+  },
+  {
+   "kaynak": "yoklama5",
+   "ad": "07_kilitli_cifttik_dugme",
+   "ayni": true,
+   "gercek": {
+    "olaylar": {
+     "click@c": [
+      2,
+      200,
+      150,
+      0
+     ],
+     "dblclick@c": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "mousedown@c": [
+      2,
+      200,
+      150,
+      0
+     ],
+     "mousemove@c": [
+      "n",
+      200,
+      150,
+      0
+     ],
+     "mouseup@c": [
+      2,
+      200,
+      150,
+      0
+     ],
+     "pointerdown@c": [
+      2,
+      200,
+      150,
+      0
+     ],
+     "pointermove@c": [
+      "n",
+      200,
+      150,
+      -1
+     ],
+     "pointerup@c": [
+      2,
+      200,
+      150,
+      0
+     ]
+    },
+    "tik": 0,
+    "odak": "BODY",
+    "onay": false,
+    "ple": "c"
+   },
+   "taklit": {
+    "olaylar": {
+     "click@c": [
+      2,
+      200,
+      150,
+      0
+     ],
+     "dblclick@c": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "mousedown@c": [
+      2,
+      200,
+      150,
+      0
+     ],
+     "mousemove@c": [
+      "n",
+      200,
+      150,
+      0
+     ],
+     "mouseup@c": [
+      2,
+      200,
+      150,
+      0
+     ],
+     "pointerdown@c": [
+      2,
+      200,
+      150,
+      0
+     ],
+     "pointermove@c": [
+      "n",
+      200,
+      150,
+      -1
+     ],
+     "pointerup@c": [
+      2,
+      200,
+      150,
+      0
+     ]
+    },
+    "tik": 0,
+    "odak": "BODY",
+    "onay": false,
+    "ple": "c"
+   }
+  },
+  {
+   "kaynak": "yoklama5",
+   "ad": "08_kilitli_sagtik_dugme",
+   "ayni": true,
+   "gercek": {
+    "olaylar": {
+     "click@c": [
+      1,
+      200,
+      150,
+      2
+     ],
+     "mousedown@c": [
+      1,
+      200,
+      150,
+      2
+     ],
+     "mousemove@c": [
+      "n",
+      200,
+      150,
+      0
+     ],
+     "mouseup@c": [
+      1,
+      200,
+      150,
+      2
+     ],
+     "pointerdown@c": [
+      1,
+      200,
+      150,
+      2
+     ],
+     "pointermove@c": [
+      "n",
+      200,
+      150,
+      -1
+     ],
+     "pointerup@c": [
+      1,
+      200,
+      150,
+      2
+     ]
+    },
+    "tik": 0,
+    "odak": "BODY",
+    "onay": false,
+    "ple": "c"
+   },
+   "taklit": {
+    "olaylar": {
+     "click@c": [
+      1,
+      200,
+      150,
+      2
+     ],
+     "mousedown@c": [
+      1,
+      200,
+      150,
+      2
+     ],
+     "mousemove@c": [
+      "n",
+      200,
+      150,
+      0
+     ],
+     "mouseup@c": [
+      1,
+      200,
+      150,
+      2
+     ],
+     "pointerdown@c": [
+      1,
+      200,
+      150,
+      2
+     ],
+     "pointermove@c": [
+      "n",
+      200,
+      150,
+      -1
+     ],
+     "pointerup@c": [
+      1,
+      200,
+      150,
+      2
+     ]
+    },
+    "tik": 0,
+    "odak": "BODY",
+    "onay": false,
+    "ple": "c"
+   }
+  },
+  {
+   "kaynak": "yoklama5",
+   "ad": "09_kilitli_orta_dugme",
+   "ayni": true,
+   "gercek": {
+    "olaylar": {
+     "click@c": [
+      1,
+      200,
+      150,
+      1
+     ],
+     "mousedown@c": [
+      1,
+      200,
+      150,
+      1
+     ],
+     "mousemove@c": [
+      "n",
+      200,
+      150,
+      0
+     ],
+     "mouseup@c": [
+      1,
+      200,
+      150,
+      1
+     ],
+     "pointerdown@c": [
+      1,
+      200,
+      150,
+      1
+     ],
+     "pointermove@c": [
+      "n",
+      200,
+      150,
+      -1
+     ],
+     "pointerup@c": [
+      1,
+      200,
+      150,
+      1
+     ]
+    },
+    "tik": 0,
+    "odak": "BODY",
+    "onay": false,
+    "ple": "c"
+   },
+   "taklit": {
+    "olaylar": {
+     "click@c": [
+      1,
+      200,
+      150,
+      1
+     ],
+     "mousedown@c": [
+      1,
+      200,
+      150,
+      1
+     ],
+     "mousemove@c": [
+      "n",
+      200,
+      150,
+      0
+     ],
+     "mouseup@c": [
+      1,
+      200,
+      150,
+      1
+     ],
+     "pointerdown@c": [
+      1,
+      200,
+      150,
+      1
+     ],
+     "pointermove@c": [
+      "n",
+      200,
+      150,
+      -1
+     ],
+     "pointerup@c": [
+      1,
+      200,
+      150,
+      1
+     ]
+    },
+    "tik": 0,
+    "odak": "BODY",
+    "onay": false,
+    "ple": "c"
+   }
+  },
+  {
+   "kaynak": "yoklama5",
+   "ad": "10_kilitli_wheel_dugme",
+   "ayni": true,
+   "gercek": {
+    "olaylar": {
+     "mousemove@c": [
+      "n",
+      200,
+      150,
+      0
+     ],
+     "pointermove@c": [
+      "n",
+      200,
+      150,
+      -1
+     ],
+     "wheel@c": [
+      1,
+      200,
+      150,
+      0
+     ]
+    },
+    "tik": 0,
+    "odak": "BODY",
+    "onay": false,
+    "ple": "c"
+   },
+   "taklit": {
+    "olaylar": {
+     "mousemove@c": [
+      "n",
+      200,
+      150,
+      0
+     ],
+     "pointermove@c": [
+      "n",
+      200,
+      150,
+      -1
+     ],
+     "wheel@c": [
+      1,
+      200,
+      150,
+      0
+     ]
+    },
+    "tik": 0,
+    "odak": "BODY",
+    "onay": false,
+    "ple": "c"
+   }
+  },
+  {
+   "kaynak": "yoklama5",
+   "ad": "11_kilitli_locator_click",
+   "ayni": false,
+   "gercek": {
+    "olaylar": {
+     "mousemove@c": [
+      "n",
+      200,
+      150,
+      0
+     ],
+     "pointermove@c": [
+      "n",
+      200,
+      150,
+      -1
+     ]
+    },
+    "tik": 0,
+    "odak": "BODY",
+    "onay": false,
+    "ple": "c",
+    "ek": "red locator.click: Timeout 5000ms exceed"
+   },
+   "taklit": {
+    "olaylar": {
+     "click@c": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "mousedown@c": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "mousemove@c": [
+      "n",
+      200,
+      150,
+      0
+     ],
+     "mouseup@c": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "pointerdown@c": [
+      1,
+      200,
+      150,
+      0
+     ],
+     "pointermove@c": [
+      "n",
+      200,
+      150,
+      -1
+     ],
+     "pointerup@c": [
+      1,
+      200,
+      150,
+      0
+     ]
+    },
+    "tik": 0,
+    "odak": "BODY",
+    "onay": false,
+    "ple": "c",
+    "ek": "çözüldü"
+   },
+   "not": "bilinen fark (Playwright düzeyi; yoklama doğrudan locator.click çağırır): gerçek kilitte locator.click'in isabet denetimi (yalıtılmış dünyada, olayın donmuş clientX/Y'si) tıklamayı engelleyip zaman aşımına düşer; taklitte denetim olayın özgün konumunu görür, tık tuvale yönlendirilir (düğme etkinleşmez). run.cjs tikla adımı ve coop.cjs tikla yardımcısı aynı engeli O.tiklaTaklitli ile tıklamanın gönderildiği anda uygular (kosucu_negatif pk5/pk6, ia/ib, ia2/ia3, pk7/pk8); senaryo locator.click'i doğrudan çağırırsa fark kalır."
+  },
+  {
+   "kaynak": "yoklama5",
+   "ad": "12_kilitli_move_tuval",
+   "ayni": true,
+   "gercek": {
+    "olaylar": {
+     "mousemove@c": [
+      "n",
+      200,
+      150,
+      0
+     ],
+     "pointermove@c": [
+      "n",
+      200,
+      150,
+      -1
+     ]
+    },
+    "tik": 0,
+    "odak": "BODY",
+    "onay": false,
+    "ple": "c"
+   },
+   "taklit": {
+    "olaylar": {
+     "mousemove@c": [
+      "n",
+      200,
+      150,
+      0
+     ],
+     "pointermove@c": [
+      "n",
+      200,
+      150,
+      -1
+     ]
+    },
+    "tik": 0,
+    "odak": "BODY",
+    "onay": false,
+    "ple": "c"
+   }
+  },
+  {
+   "kaynak": "yoklama5",
+   "ad": "12b_kilitli_klavye_click",
+   "ayni": true,
+   "gercek": {
+    "olaylar": {
+     "click@b": [
+      1,
+      0,
+      0,
+      0
+     ],
+     "focusin@b": [
+      1,
+      -1,
+      -1,
+      null
+     ]
+    },
+    "tik": 1,
+    "odak": "b",
+    "onay": false,
+    "ple": "c"
+   },
+   "taklit": {
+    "olaylar": {
+     "click@b": [
+      1,
+      0,
+      0,
+      0
+     ],
+     "focusin@b": [
+      1,
+      -1,
+      -1,
+      null
+     ]
+    },
+    "tik": 1,
+    "odak": "b",
+    "onay": false,
+    "ple": "c"
+   }
+  },
+  {
+   "kaynak": "yoklama5",
+   "ad": "13_birak_ve_tik",
+   "ayni": false,
+   "gercek": {
+    "olaylar": {
+     "click@b": [
+      1,
+      50,
+      25,
+      0
+     ],
+     "mousedown@b": [
+      1,
+      50,
+      25,
+      0
+     ],
+     "mousemove@b": [
+      "n",
+      50,
+      25,
+      0
+     ],
+     "mousemove@c": [
+      "n",
+      0,
+      0,
+      0
+     ],
+     "mouseout@c": [
+      1,
+      50,
+      25,
+      0
+     ],
+     "mouseover@b": [
+      1,
+      50,
+      25,
+      0
+     ],
+     "mouseup@b": [
+      1,
+      50,
+      25,
+      0
+     ],
+     "pointerdown@b": [
+      1,
+      50,
+      25,
+      0
+     ],
+     "pointermove@b": [
+      "n",
+      50,
+      25,
+      -1
+     ],
+     "pointermove@c": [
+      "n",
+      0,
+      0,
+      -1
+     ],
+     "pointerout@c": [
+      1,
+      50,
+      25,
+      -1
+     ],
+     "pointerover@b": [
+      1,
+      50,
+      25,
+      -1
+     ],
+     "pointerup@b": [
+      1,
+      50,
+      25,
+      0
+     ]
+    },
+    "tik": 2,
+    "odak": "b",
+    "onay": false,
+    "ple": null
+   },
+   "taklit": {
+    "olaylar": {
+     "click@b": [
+      1,
+      50,
+      25,
+      0
+     ],
+     "mousedown@b": [
+      1,
+      50,
+      25,
+      0
+     ],
+     "mousemove@b": [
+      "n",
+      50,
+      25,
+      0
+     ],
+     "mouseout@c": [
+      1,
+      50,
+      25,
+      0
+     ],
+     "mouseover@b": [
+      1,
+      50,
+      25,
+      0
+     ],
+     "mouseup@b": [
+      1,
+      50,
+      25,
+      0
+     ],
+     "pointerdown@b": [
+      1,
+      50,
+      25,
+      0
+     ],
+     "pointermove@b": [
+      "n",
+      50,
+      25,
+      -1
+     ],
+     "pointerout@c": [
+      1,
+      50,
+      25,
+      -1
+     ],
+     "pointerover@b": [
+      1,
+      50,
+      25,
+      -1
+     ],
+     "pointerup@b": [
+      1,
+      50,
+      25,
+      0
+     ]
+    },
+    "tik": 2,
+    "odak": "b",
+    "onay": false,
+    "ple": null
+   },
+   "not": "bilinen fark: gerçek kilit bırakılırken tuvale hareketsiz (movementX/Y 0) 1–2 mousemove/pointermove daha gelir; konumu koşudan koşuya değişir (2. denemenin yoklamalarında (0,0), 3. denemede kilit anındaki konum (200,150)); taklitte yok. Tık sayısı, odak ve kilit durumu aynı."
+  }
+ ]
+}

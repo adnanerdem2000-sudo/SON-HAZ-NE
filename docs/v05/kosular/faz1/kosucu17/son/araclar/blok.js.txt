@@ -1,0 +1,12 @@
+// İnceleme deneyi (yalnız okur; oyun koduna dokunmaz): oyun başlar (işaretçi kilidi istenir), 15 sn boşta, 20 sn renderer ana
+// ipliği eşzamanlı meşgul (girdi olayları işlenemez), 12 sn boşta. Bellek ve iplik CPU'su dışarıdan örneklenir.
+[
+ {js: `DK.G.noAutoPause=true; DK.handlers.startGame({kind:'solo', slot:2, data:null}); 'ok'`},
+ {wait: 4000, expect: {js: `DK.G.state`, eq: 'playing', label: 'Oyun başladı'}},
+ {js: `DK.engine.fpsLimit=0.01; window.__faz=[['bos_bas', Date.now()]]; 'ok'`},
+ {wait: 1000, expect: {js: `!!document.pointerLockElement`, truthy: true, label: 'B01 işaretçi kilidi açık (gerçek ya da taklit)'}},
+ {wait: 14000},
+ {expect: {js: `(()=>{ window.__faz.push(['mesgul_bas', Date.now()]); const t0=performance.now(); let x=0; while (performance.now()-t0 < 20000) { x += Math.sqrt(x+1); } window.__faz.push(['mesgul_bit', Date.now()]); return x>0; })()`, truthy: true, label: 'B02 ana iplik 20 sn eşzamanlı meşgul'}},
+ {wait: 12000, expect: {js: `(window.__faz.push(['son', Date.now()]), DK.G.state)`, eq: 'playing', label: 'B03 boşalmadan sonra oyun sürüyor'}},
+ {js: `JSON.stringify(window.__faz)`},
+]

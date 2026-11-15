@@ -1,0 +1,4391 @@
+{
+ "dizin": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/kosucu17b",
+ "kosular": [
+  {
+   "ad": "01_17v04_T",
+   "durum": "GECTI",
+   "kontrol": "13/13",
+   "neden": [],
+   "kip": "taklit",
+   "isaretciSayac": {
+    "istek": 1,
+    "verildi": 1,
+    "hedefDegisti": 0,
+    "red": 0,
+    "jestsiz": 0,
+    "kisitli": 0,
+    "birakma": 0,
+    "birakildi": 0,
+    "iptal": 0,
+    "degisimOlayi": 1,
+    "hataOlayi": 0,
+    "yonlendirilen": 0,
+    "susturulan": 4
+   },
+   "kopma": null,
+   "hataSayfa": [],
+   "toplam_sn": 67.9,
+   "K05_sn": 13.3,
+   "K08_sn": 25.4,
+   "browser_VmHWM_MB": 96.3,
+   "renderer_VmHWM_MB": 465.6,
+   "gpu_VmHWM_MB": 515.3,
+   "chrome_toplam_tepe_MB": 1223.8,
+   "cgroup_tepe_MB": 1340,
+   "arka_plan_baslangic_MB": 152.1,
+   "oom_artislari": [],
+   "kaybolan_surecler": [],
+   "browser_rss_tepe_MB": 96.2,
+   "browser_rss_tepe_t_sn": 104.7,
+   "renderer_rss_toplam_tepe_MB": 464.9,
+   "iplik": {
+    "browser:TOPLAM": {
+     "cpu_yuzde_ort": 0.8,
+     "cpu_yuzde_tepe10sn": 2.3,
+     "uyanma_sn": 324,
+     "sure_sn": 66.1,
+     "ornek": 34
+    },
+    "browser:ANA": {
+     "cpu_yuzde_ort": 0.2,
+     "cpu_yuzde_tepe10sn": 0.8,
+     "uyanma_sn": 31,
+     "sure_sn": 66.1,
+     "ornek": 34
+    },
+    "browser:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 66.1,
+     "ornek": 34
+    },
+    "browser:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.3,
+     "uyanma_sn": 1,
+     "sure_sn": 66.1,
+     "ornek": 34
+    },
+    "browser:Chrome_IOThread": {
+     "cpu_yuzde_ort": 0.1,
+     "cpu_yuzde_tepe10sn": 0.6,
+     "uyanma_sn": 42,
+     "sure_sn": 66.1,
+     "ornek": 34
+    },
+    "browser:CompositorTileW": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 66.1,
+     "ornek": 34
+    },
+    "zygote:TOPLAM": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 66.1,
+     "ornek": 34
+    },
+    "zygote:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 66.1,
+     "ornek": 34
+    },
+    "utility:TOPLAM": {
+     "cpu_yuzde_ort": 0.3,
+     "cpu_yuzde_tepe10sn": 1.8,
+     "uyanma_sn": 1,
+     "sure_sn": 66.1,
+     "ornek": 34
+    },
+    "utility:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 66.1,
+     "ornek": 34
+    },
+    "utility:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 66.1,
+     "ornek": 34
+    },
+    "utility:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 66.1,
+     "ornek": 34
+    },
+    "renderer:TOPLAM": {
+     "cpu_yuzde_ort": 17,
+     "cpu_yuzde_tepe10sn": 42.5,
+     "uyanma_sn": 366,
+     "sure_sn": 66.1,
+     "ornek": 34
+    },
+    "renderer:ANA": {
+     "cpu_yuzde_ort": 8.8,
+     "cpu_yuzde_tepe10sn": 15.5,
+     "uyanma_sn": 37,
+     "sure_sn": 66.1,
+     "ornek": 34
+    },
+    "renderer:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 1,
+     "sure_sn": 66.1,
+     "ornek": 34
+    },
+    "renderer:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 4.5,
+     "cpu_yuzde_tepe10sn": 16,
+     "uyanma_sn": 155,
+     "sure_sn": 66.1,
+     "ornek": 34
+    },
+    "renderer:Compositor": {
+     "cpu_yuzde_ort": 0.6,
+     "cpu_yuzde_tepe10sn": 0.8,
+     "uyanma_sn": 65,
+     "sure_sn": 66.1,
+     "ornek": 34
+    },
+    "renderer:Media": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 66.1,
+     "ornek": 34
+    },
+    "gpu-process:TOPLAM": {
+     "cpu_yuzde_ort": 281.2,
+     "cpu_yuzde_tepe10sn": 327.5,
+     "uyanma_sn": 14652,
+     "sure_sn": 66.1,
+     "ornek": 34
+    },
+    "gpu-process:ANA": {
+     "cpu_yuzde_ort": 5.4,
+     "cpu_yuzde_tepe10sn": 12.6,
+     "uyanma_sn": 97,
+     "sure_sn": 66.1,
+     "ornek": 34
+    },
+    "gpu-process:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 66.1,
+     "ornek": 34
+    },
+    "gpu-process:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 6.7,
+     "cpu_yuzde_tepe10sn": 39.7,
+     "uyanma_sn": 275,
+     "sure_sn": 66.1,
+     "ornek": 34
+    }
+   }
+  },
+  {
+   "ad": "02_17v04_G",
+   "durum": "GECTI",
+   "kontrol": "13/13",
+   "neden": [],
+   "kip": "gercek",
+   "isaretciSayac": null,
+   "kopma": null,
+   "hataSayfa": [],
+   "toplam_sn": 156.5,
+   "K05_sn": 33.2,
+   "K08_sn": 68.8,
+   "browser_VmHWM_MB": 1042.8,
+   "renderer_VmHWM_MB": 1859.2,
+   "gpu_VmHWM_MB": 504.8,
+   "chrome_toplam_tepe_MB": 3294.9,
+   "cgroup_tepe_MB": 3421,
+   "arka_plan_baslangic_MB": 157.6,
+   "oom_artislari": [],
+   "kaybolan_surecler": [],
+   "browser_rss_tepe_MB": 1035.2,
+   "browser_rss_tepe_t_sn": 118.3,
+   "renderer_rss_toplam_tepe_MB": 1848.7,
+   "iplik": {
+    "browser:TOPLAM": {
+     "cpu_yuzde_ort": 112.4,
+     "cpu_yuzde_tepe10sn": 130.1,
+     "uyanma_sn": 6572,
+     "sure_sn": 154.2,
+     "ornek": 78
+    },
+    "browser:ANA": {
+     "cpu_yuzde_ort": 91.7,
+     "cpu_yuzde_tepe10sn": 98.1,
+     "uyanma_sn": 808,
+     "sure_sn": 154.2,
+     "ornek": 78
+    },
+    "browser:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 154.2,
+     "ornek": 78
+    },
+    "browser:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": 0,
+     "sure_sn": 154.2,
+     "ornek": 78
+    },
+    "browser:Chrome_IOThread": {
+     "cpu_yuzde_ort": 20.2,
+     "cpu_yuzde_tepe10sn": 34.7,
+     "uyanma_sn": 5522,
+     "sure_sn": 154.2,
+     "ornek": 78
+    },
+    "browser:CompositorTileW": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 154.2,
+     "ornek": 78
+    },
+    "zygote:TOPLAM": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 154.2,
+     "ornek": 78
+    },
+    "zygote:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 154.2,
+     "ornek": 78
+    },
+    "utility:TOPLAM": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 154.2,
+     "ornek": 78
+    },
+    "utility:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 154.2,
+     "ornek": 78
+    },
+    "utility:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 154.2,
+     "ornek": 78
+    },
+    "utility:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 154.2,
+     "ornek": 78
+    },
+    "renderer:TOPLAM": {
+     "cpu_yuzde_ort": 99.8,
+     "cpu_yuzde_tepe10sn": 118.4,
+     "uyanma_sn": 8747,
+     "sure_sn": 154.2,
+     "ornek": 78
+    },
+    "renderer:ANA": {
+     "cpu_yuzde_ort": 21.2,
+     "cpu_yuzde_tepe10sn": 40.5,
+     "uyanma_sn": 124,
+     "sure_sn": 154.2,
+     "ornek": 78
+    },
+    "renderer:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 154.2,
+     "ornek": 78
+    },
+    "renderer:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 4,
+     "cpu_yuzde_tepe10sn": 11.2,
+     "uyanma_sn": 112,
+     "sure_sn": 154.2,
+     "ornek": 78
+    },
+    "renderer:Compositor": {
+     "cpu_yuzde_ort": 73.2,
+     "cpu_yuzde_tepe10sn": 84,
+     "uyanma_sn": 8480,
+     "sure_sn": 154.2,
+     "ornek": 78
+    },
+    "renderer:Media": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 154.2,
+     "ornek": 78
+    },
+    "gpu-process:TOPLAM": {
+     "cpu_yuzde_ort": 110,
+     "cpu_yuzde_tepe10sn": 218.2,
+     "uyanma_sn": 11799,
+     "sure_sn": 154.2,
+     "ornek": 78
+    },
+    "gpu-process:ANA": {
+     "cpu_yuzde_ort": 2.4,
+     "cpu_yuzde_tepe10sn": 11,
+     "uyanma_sn": 60,
+     "sure_sn": 154.2,
+     "ornek": 78
+    },
+    "gpu-process:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 154.2,
+     "ornek": 78
+    },
+    "gpu-process:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 3,
+     "cpu_yuzde_tepe10sn": 43.1,
+     "uyanma_sn": 158,
+     "sure_sn": 154.2,
+     "ornek": 78
+    }
+   }
+  },
+  {
+   "ad": "03_17w2_T",
+   "durum": "GECTI",
+   "kontrol": "13/13",
+   "neden": [],
+   "kip": "taklit",
+   "isaretciSayac": {
+    "istek": 1,
+    "verildi": 1,
+    "hedefDegisti": 0,
+    "red": 0,
+    "jestsiz": 0,
+    "kisitli": 0,
+    "birakma": 0,
+    "birakildi": 0,
+    "iptal": 0,
+    "degisimOlayi": 1,
+    "hataOlayi": 0,
+    "yonlendirilen": 0,
+    "susturulan": 0
+   },
+   "kopma": null,
+   "hataSayfa": [],
+   "toplam_sn": 66.3,
+   "K05_sn": 11.3,
+   "K08_sn": 24.6,
+   "browser_VmHWM_MB": 96.3,
+   "renderer_VmHWM_MB": 470.6,
+   "gpu_VmHWM_MB": 514.7,
+   "chrome_toplam_tepe_MB": 1223.8,
+   "cgroup_tepe_MB": 1367,
+   "arka_plan_baslangic_MB": 172.5,
+   "oom_artislari": [],
+   "kaybolan_surecler": [
+    "renderer:53.7MB@83.1s"
+   ],
+   "browser_rss_tepe_MB": 95.8,
+   "browser_rss_tepe_t_sn": 92.1,
+   "renderer_rss_toplam_tepe_MB": 470.5,
+   "iplik": {
+    "browser:TOPLAM": {
+     "cpu_yuzde_ort": 0.6,
+     "cpu_yuzde_tepe10sn": 1,
+     "uyanma_sn": 279,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "browser:ANA": {
+     "cpu_yuzde_ort": 0.1,
+     "cpu_yuzde_tepe10sn": 0.3,
+     "uyanma_sn": 12,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "browser:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "browser:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 1,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "browser:Chrome_IOThread": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.3,
+     "uyanma_sn": 20,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "browser:CompositorTileW": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "zygote:TOPLAM": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "zygote:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "utility:TOPLAM": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": 1,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "utility:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "utility:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "utility:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "renderer:TOPLAM": {
+     "cpu_yuzde_ort": 16.6,
+     "cpu_yuzde_tepe10sn": 36.4,
+     "uyanma_sn": 320,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "renderer:ANA": {
+     "cpu_yuzde_ort": 8.1,
+     "cpu_yuzde_tepe10sn": 15.6,
+     "uyanma_sn": 32,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "renderer:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 1,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "renderer:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 4.7,
+     "cpu_yuzde_tepe10sn": 13.4,
+     "uyanma_sn": 141,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "renderer:Compositor": {
+     "cpu_yuzde_ort": 0.5,
+     "cpu_yuzde_tepe10sn": 0.7,
+     "uyanma_sn": 69,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "renderer:Media": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "gpu-process:TOPLAM": {
+     "cpu_yuzde_ort": 281,
+     "cpu_yuzde_tepe10sn": 324.9,
+     "uyanma_sn": 16045,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "gpu-process:ANA": {
+     "cpu_yuzde_ort": 5.2,
+     "cpu_yuzde_tepe10sn": 11.7,
+     "uyanma_sn": 106,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "gpu-process:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "gpu-process:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 7.8,
+     "cpu_yuzde_tepe10sn": 46.1,
+     "uyanma_sn": 471,
+     "sure_sn": 64.1,
+     "ornek": 33
+    }
+   }
+  },
+  {
+   "ad": "04_17w2_G",
+   "durum": "GECTI",
+   "kontrol": "13/13",
+   "neden": [],
+   "kip": "gercek",
+   "isaretciSayac": null,
+   "kopma": null,
+   "hataSayfa": [],
+   "toplam_sn": 150.4,
+   "K05_sn": 31.4,
+   "K08_sn": 66.4,
+   "browser_VmHWM_MB": 1047.3,
+   "renderer_VmHWM_MB": 2705.1,
+   "gpu_VmHWM_MB": 501.4,
+   "chrome_toplam_tepe_MB": 3790,
+   "cgroup_tepe_MB": 3953,
+   "arka_plan_baslangic_MB": 177.7,
+   "oom_artislari": [],
+   "kaybolan_surecler": [],
+   "browser_rss_tepe_MB": 1019.1,
+   "browser_rss_tepe_t_sn": 129.2,
+   "renderer_rss_toplam_tepe_MB": 2644.1,
+   "iplik": {
+    "browser:TOPLAM": {
+     "cpu_yuzde_ort": 111,
+     "cpu_yuzde_tepe10sn": 131,
+     "uyanma_sn": 6335,
+     "sure_sn": 148.1,
+     "ornek": 75
+    },
+    "browser:ANA": {
+     "cpu_yuzde_ort": 91.2,
+     "cpu_yuzde_tepe10sn": 97.7,
+     "uyanma_sn": 855,
+     "sure_sn": 148.1,
+     "ornek": 75
+    },
+    "browser:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 148.1,
+     "ornek": 75
+    },
+    "browser:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": 0,
+     "sure_sn": 148.1,
+     "ornek": 75
+    },
+    "browser:Chrome_IOThread": {
+     "cpu_yuzde_ort": 19.3,
+     "cpu_yuzde_tepe10sn": 35.8,
+     "uyanma_sn": 5238,
+     "sure_sn": 148.1,
+     "ornek": 75
+    },
+    "browser:CompositorTileW": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 148.1,
+     "ornek": 75
+    },
+    "zygote:TOPLAM": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 148.1,
+     "ornek": 75
+    },
+    "zygote:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 148.1,
+     "ornek": 75
+    },
+    "utility:TOPLAM": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.2,
+     "uyanma_sn": 0,
+     "sure_sn": 148.1,
+     "ornek": 75
+    },
+    "utility:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": 0,
+     "sure_sn": 148.1,
+     "ornek": 75
+    },
+    "utility:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 148.1,
+     "ornek": 75
+    },
+    "utility:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 148.1,
+     "ornek": 75
+    },
+    "renderer:TOPLAM": {
+     "cpu_yuzde_ort": 98,
+     "cpu_yuzde_tepe10sn": 123.6,
+     "uyanma_sn": 9724,
+     "sure_sn": 148.1,
+     "ornek": 75
+    },
+    "renderer:ANA": {
+     "cpu_yuzde_ort": 21.2,
+     "cpu_yuzde_tepe10sn": 35.4,
+     "uyanma_sn": 119,
+     "sure_sn": 148.1,
+     "ornek": 75
+    },
+    "renderer:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 148.1,
+     "ornek": 75
+    },
+    "renderer:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 4.3,
+     "cpu_yuzde_tepe10sn": 13.9,
+     "uyanma_sn": 105,
+     "sure_sn": 148.1,
+     "ornek": 75
+    },
+    "renderer:Compositor": {
+     "cpu_yuzde_ort": 71.1,
+     "cpu_yuzde_tepe10sn": 82.7,
+     "uyanma_sn": 9463,
+     "sure_sn": 148.1,
+     "ornek": 75
+    },
+    "renderer:Media": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 148.1,
+     "ornek": 75
+    },
+    "gpu-process:TOPLAM": {
+     "cpu_yuzde_ort": 115.7,
+     "cpu_yuzde_tepe10sn": 219.3,
+     "uyanma_sn": 12384,
+     "sure_sn": 148.1,
+     "ornek": 75
+    },
+    "gpu-process:ANA": {
+     "cpu_yuzde_ort": 2.4,
+     "cpu_yuzde_tepe10sn": 11.3,
+     "uyanma_sn": 51,
+     "sure_sn": 148.1,
+     "ornek": 75
+    },
+    "gpu-process:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 148.1,
+     "ornek": 75
+    },
+    "gpu-process:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 3.1,
+     "cpu_yuzde_tepe10sn": 41.6,
+     "uyanma_sn": 180,
+     "sure_sn": 148.1,
+     "ornek": 75
+    }
+   }
+  },
+  {
+   "ad": "05_02yasam_T",
+   "durum": "KALDI",
+   "kontrol": "13/18",
+   "neden": [
+    "başarısız kontrol ya da adım: 5"
+   ],
+   "kip": "taklit",
+   "isaretciSayac": {
+    "istek": 1,
+    "verildi": 1,
+    "hedefDegisti": 0,
+    "red": 0,
+    "jestsiz": 0,
+    "kisitli": 0,
+    "birakma": 0,
+    "birakildi": 0,
+    "iptal": 0,
+    "degisimOlayi": 1,
+    "hataOlayi": 0,
+    "yonlendirilen": 0,
+    "susturulan": 0
+   },
+   "kopma": null,
+   "hataSayfa": [],
+   "toplam_sn": 68.1,
+   "K05_sn": null,
+   "K08_sn": null,
+   "browser_VmHWM_MB": 99.6,
+   "renderer_VmHWM_MB": 579.1,
+   "gpu_VmHWM_MB": 545.8,
+   "chrome_toplam_tepe_MB": 1370.9,
+   "cgroup_tepe_MB": 1506,
+   "arka_plan_baslangic_MB": 177.5,
+   "oom_artislari": [],
+   "kaybolan_surecler": [
+    "renderer:380MB@160.2s"
+   ],
+   "browser_rss_tepe_MB": 98.6,
+   "browser_rss_tepe_t_sn": 128.7,
+   "renderer_rss_toplam_tepe_MB": 576.7,
+   "iplik": {
+    "browser:TOPLAM": {
+     "cpu_yuzde_ort": 1,
+     "cpu_yuzde_tepe10sn": 2.1,
+     "uyanma_sn": 351,
+     "sure_sn": 74.1,
+     "ornek": 38
+    },
+    "browser:ANA": {
+     "cpu_yuzde_ort": 0.3,
+     "cpu_yuzde_tepe10sn": 0.8,
+     "uyanma_sn": 35,
+     "sure_sn": 74.1,
+     "ornek": 38
+    },
+    "browser:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 74.1,
+     "ornek": 38
+    },
+    "browser:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.2,
+     "uyanma_sn": 1,
+     "sure_sn": 74.1,
+     "ornek": 38
+    },
+    "browser:Chrome_IOThread": {
+     "cpu_yuzde_ort": 0.2,
+     "cpu_yuzde_tepe10sn": 0.7,
+     "uyanma_sn": 61,
+     "sure_sn": 74.1,
+     "ornek": 38
+    },
+    "browser:CompositorTileW": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 74.1,
+     "ornek": 38
+    },
+    "zygote:TOPLAM": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 74.1,
+     "ornek": 38
+    },
+    "zygote:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 74.1,
+     "ornek": 38
+    },
+    "utility:TOPLAM": {
+     "cpu_yuzde_ort": 0.2,
+     "cpu_yuzde_tepe10sn": 0.9,
+     "uyanma_sn": 3,
+     "sure_sn": 74.1,
+     "ornek": 38
+    },
+    "utility:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": 0,
+     "sure_sn": 74.1,
+     "ornek": 38
+    },
+    "utility:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 74.1,
+     "ornek": 38
+    },
+    "utility:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 74.1,
+     "ornek": 38
+    },
+    "renderer:TOPLAM": {
+     "cpu_yuzde_ort": 18.8,
+     "cpu_yuzde_tepe10sn": 48,
+     "uyanma_sn": 508,
+     "sure_sn": 66.1,
+     "ornek": 34
+    },
+    "renderer:ANA": {
+     "cpu_yuzde_ort": 7.8,
+     "cpu_yuzde_tepe10sn": 16.5,
+     "uyanma_sn": 76,
+     "sure_sn": 66.1,
+     "ornek": 34
+    },
+    "renderer:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 1,
+     "sure_sn": 66.1,
+     "ornek": 34
+    },
+    "renderer:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 7.6,
+     "cpu_yuzde_tepe10sn": 18.2,
+     "uyanma_sn": 241,
+     "sure_sn": 66.1,
+     "ornek": 34
+    },
+    "renderer:Compositor": {
+     "cpu_yuzde_ort": 0.5,
+     "cpu_yuzde_tepe10sn": 0.9,
+     "uyanma_sn": 67,
+     "sure_sn": 66.1,
+     "ornek": 34
+    },
+    "renderer:Media": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 66.1,
+     "ornek": 34
+    },
+    "gpu-process:TOPLAM": {
+     "cpu_yuzde_ort": 302.6,
+     "cpu_yuzde_tepe10sn": 371.9,
+     "uyanma_sn": 14447,
+     "sure_sn": 74.1,
+     "ornek": 38
+    },
+    "gpu-process:ANA": {
+     "cpu_yuzde_ort": 6.8,
+     "cpu_yuzde_tepe10sn": 22.1,
+     "uyanma_sn": 112,
+     "sure_sn": 74.1,
+     "ornek": 38
+    },
+    "gpu-process:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 74.1,
+     "ornek": 38
+    },
+    "gpu-process:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 6.5,
+     "cpu_yuzde_tepe10sn": 42,
+     "uyanma_sn": 453,
+     "sure_sn": 74.1,
+     "ornek": 38
+    }
+   }
+  },
+  {
+   "ad": "06_02yasam_G",
+   "durum": "KALDI",
+   "kontrol": "12/18",
+   "neden": [
+    "başarısız kontrol ya da adım: 6"
+   ],
+   "kip": "gercek",
+   "isaretciSayac": null,
+   "kopma": null,
+   "hataSayfa": [],
+   "toplam_sn": 88.7,
+   "K05_sn": null,
+   "K08_sn": null,
+   "browser_VmHWM_MB": 902.9,
+   "renderer_VmHWM_MB": 2750.9,
+   "gpu_VmHWM_MB": 520.6,
+   "chrome_toplam_tepe_MB": 3725.3,
+   "cgroup_tepe_MB": 3878,
+   "arka_plan_baslangic_MB": 180,
+   "oom_artislari": [],
+   "kaybolan_surecler": [
+    "renderer:1973MB@342.5s"
+   ],
+   "browser_rss_tepe_MB": 897.4,
+   "browser_rss_tepe_t_sn": 280.9,
+   "renderer_rss_toplam_tepe_MB": 2585.3,
+   "iplik": {
+    "browser:TOPLAM": {
+     "cpu_yuzde_ort": 77.8,
+     "cpu_yuzde_tepe10sn": 131.8,
+     "uyanma_sn": 7636,
+     "sure_sn": 94.1,
+     "ornek": 48
+    },
+    "browser:ANA": {
+     "cpu_yuzde_ort": 62,
+     "cpu_yuzde_tepe10sn": 95.3,
+     "uyanma_sn": 504,
+     "sure_sn": 94.1,
+     "ornek": 48
+    },
+    "browser:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 94.1,
+     "ornek": 48
+    },
+    "browser:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": 1,
+     "sure_sn": 94.1,
+     "ornek": 48
+    },
+    "browser:Chrome_IOThread": {
+     "cpu_yuzde_ort": 15.3,
+     "cpu_yuzde_tepe10sn": 37,
+     "uyanma_sn": 6885,
+     "sure_sn": 94.1,
+     "ornek": 48
+    },
+    "browser:CompositorTileW": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 94.1,
+     "ornek": 48
+    },
+    "zygote:TOPLAM": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 94.1,
+     "ornek": 48
+    },
+    "zygote:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 94.1,
+     "ornek": 48
+    },
+    "utility:TOPLAM": {
+     "cpu_yuzde_ort": 0.1,
+     "cpu_yuzde_tepe10sn": 0.4,
+     "uyanma_sn": 2,
+     "sure_sn": 94.1,
+     "ornek": 48
+    },
+    "utility:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 94.1,
+     "ornek": 48
+    },
+    "utility:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 94.1,
+     "ornek": 48
+    },
+    "utility:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 94.1,
+     "ornek": 48
+    },
+    "renderer:TOPLAM": {
+     "cpu_yuzde_ort": 79.9,
+     "cpu_yuzde_tepe10sn": 124.7,
+     "uyanma_sn": 6826,
+     "sure_sn": 86.1,
+     "ornek": 44
+    },
+    "renderer:ANA": {
+     "cpu_yuzde_ort": 18.5,
+     "cpu_yuzde_tepe10sn": 35.9,
+     "uyanma_sn": 124,
+     "sure_sn": 86.1,
+     "ornek": 44
+    },
+    "renderer:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 1,
+     "sure_sn": 86.1,
+     "ornek": 44
+    },
+    "renderer:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 7.1,
+     "cpu_yuzde_tepe10sn": 20.3,
+     "uyanma_sn": 220,
+     "sure_sn": 86.1,
+     "ornek": 44
+    },
+    "renderer:Compositor": {
+     "cpu_yuzde_ort": 52.1,
+     "cpu_yuzde_tepe10sn": 87,
+     "uyanma_sn": 6412,
+     "sure_sn": 86.1,
+     "ornek": 44
+    },
+    "renderer:Media": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 86.1,
+     "ornek": 44
+    },
+    "gpu-process:TOPLAM": {
+     "cpu_yuzde_ort": 188.7,
+     "cpu_yuzde_tepe10sn": 291.6,
+     "uyanma_sn": 13317,
+     "sure_sn": 94.1,
+     "ornek": 48
+    },
+    "gpu-process:ANA": {
+     "cpu_yuzde_ort": 5.1,
+     "cpu_yuzde_tepe10sn": 20,
+     "uyanma_sn": 72,
+     "sure_sn": 94.1,
+     "ornek": 48
+    },
+    "gpu-process:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 94.1,
+     "ornek": 48
+    },
+    "gpu-process:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 4.6,
+     "cpu_yuzde_tepe10sn": 35.8,
+     "uyanma_sn": 174,
+     "sure_sn": 94.1,
+     "ornek": 48
+    }
+   }
+  },
+  {
+   "ad": "07_17v04_T",
+   "durum": "GECTI",
+   "kontrol": "13/13",
+   "neden": [],
+   "kip": "taklit",
+   "isaretciSayac": {
+    "istek": 1,
+    "verildi": 1,
+    "hedefDegisti": 0,
+    "red": 0,
+    "jestsiz": 0,
+    "kisitli": 0,
+    "birakma": 0,
+    "birakildi": 0,
+    "iptal": 0,
+    "degisimOlayi": 1,
+    "hataOlayi": 0,
+    "yonlendirilen": 0,
+    "susturulan": 4
+   },
+   "kopma": null,
+   "hataSayfa": [],
+   "toplam_sn": 70.4,
+   "K05_sn": 14.8,
+   "K08_sn": 24.3,
+   "browser_VmHWM_MB": 96.6,
+   "renderer_VmHWM_MB": 456.3,
+   "gpu_VmHWM_MB": 512.5,
+   "chrome_toplam_tepe_MB": 1212.2,
+   "cgroup_tepe_MB": 1366,
+   "arka_plan_baslangic_MB": 196,
+   "oom_artislari": [],
+   "kaybolan_surecler": [
+    "renderer:81.6MB@311.5s"
+   ],
+   "browser_rss_tepe_MB": 96.2,
+   "browser_rss_tepe_t_sn": 320,
+   "renderer_rss_toplam_tepe_MB": 456.3,
+   "iplik": {
+    "browser:TOPLAM": {
+     "cpu_yuzde_ort": 0.6,
+     "cpu_yuzde_tepe10sn": 0.9,
+     "uyanma_sn": 258,
+     "sure_sn": 68.1,
+     "ornek": 35
+    },
+    "browser:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": 5,
+     "sure_sn": 68.1,
+     "ornek": 35
+    },
+    "browser:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 68.1,
+     "ornek": 35
+    },
+    "browser:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": 1,
+     "sure_sn": 68.1,
+     "ornek": 35
+    },
+    "browser:Chrome_IOThread": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": 9,
+     "sure_sn": 68.1,
+     "ornek": 35
+    },
+    "browser:CompositorTileW": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 68.1,
+     "ornek": 35
+    },
+    "zygote:TOPLAM": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 68.1,
+     "ornek": 35
+    },
+    "zygote:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 68.1,
+     "ornek": 35
+    },
+    "utility:TOPLAM": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 68.1,
+     "ornek": 35
+    },
+    "utility:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 68.1,
+     "ornek": 35
+    },
+    "utility:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 68.1,
+     "ornek": 35
+    },
+    "utility:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 68.1,
+     "ornek": 35
+    },
+    "renderer:TOPLAM": {
+     "cpu_yuzde_ort": 15.9,
+     "cpu_yuzde_tepe10sn": 29.6,
+     "uyanma_sn": 274,
+     "sure_sn": 68.1,
+     "ornek": 35
+    },
+    "renderer:ANA": {
+     "cpu_yuzde_ort": 8.2,
+     "cpu_yuzde_tepe10sn": 15.4,
+     "uyanma_sn": 25,
+     "sure_sn": 68.1,
+     "ornek": 35
+    },
+    "renderer:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 1,
+     "sure_sn": 68.1,
+     "ornek": 35
+    },
+    "renderer:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 4.2,
+     "cpu_yuzde_tepe10sn": 11,
+     "uyanma_sn": 116,
+     "sure_sn": 68.1,
+     "ornek": 35
+    },
+    "renderer:Compositor": {
+     "cpu_yuzde_ort": 0.7,
+     "cpu_yuzde_tepe10sn": 1,
+     "uyanma_sn": 63,
+     "sure_sn": 68.1,
+     "ornek": 35
+    },
+    "renderer:Media": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 68.1,
+     "ornek": 35
+    },
+    "gpu-process:TOPLAM": {
+     "cpu_yuzde_ort": 277,
+     "cpu_yuzde_tepe10sn": 327.6,
+     "uyanma_sn": 14940,
+     "sure_sn": 68.1,
+     "ornek": 35
+    },
+    "gpu-process:ANA": {
+     "cpu_yuzde_ort": 5,
+     "cpu_yuzde_tepe10sn": 11,
+     "uyanma_sn": 92,
+     "sure_sn": 68.1,
+     "ornek": 35
+    },
+    "gpu-process:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 68.1,
+     "ornek": 35
+    },
+    "gpu-process:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 6.9,
+     "cpu_yuzde_tepe10sn": 41.4,
+     "uyanma_sn": 284,
+     "sure_sn": 68.1,
+     "ornek": 35
+    }
+   }
+  },
+  {
+   "ad": "08_17v04_G",
+   "durum": "GECTI",
+   "kontrol": "13/13",
+   "neden": [],
+   "kip": "gercek",
+   "isaretciSayac": null,
+   "kopma": null,
+   "hataSayfa": [],
+   "toplam_sn": 154.4,
+   "K05_sn": 30.5,
+   "K08_sn": 62.8,
+   "browser_VmHWM_MB": 1014.1,
+   "renderer_VmHWM_MB": 2689.6,
+   "gpu_VmHWM_MB": 502.4,
+   "chrome_toplam_tepe_MB": 4172.2,
+   "cgroup_tepe_MB": 4352,
+   "arka_plan_baslangic_MB": 206.8,
+   "oom_artislari": [],
+   "kaybolan_surecler": [],
+   "browser_rss_tepe_MB": 1008.3,
+   "browser_rss_tepe_t_sn": 100.7,
+   "renderer_rss_toplam_tepe_MB": 2654.6,
+   "iplik": {
+    "browser:TOPLAM": {
+     "cpu_yuzde_ort": 111.6,
+     "cpu_yuzde_tepe10sn": 137.7,
+     "uyanma_sn": 7357,
+     "sure_sn": 152.2,
+     "ornek": 77
+    },
+    "browser:ANA": {
+     "cpu_yuzde_ort": 91.2,
+     "cpu_yuzde_tepe10sn": 98.2,
+     "uyanma_sn": 762,
+     "sure_sn": 152.2,
+     "ornek": 77
+    },
+    "browser:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 152.2,
+     "ornek": 77
+    },
+    "browser:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": 0,
+     "sure_sn": 152.2,
+     "ornek": 77
+    },
+    "browser:Chrome_IOThread": {
+     "cpu_yuzde_ort": 19.9,
+     "cpu_yuzde_tepe10sn": 42.7,
+     "uyanma_sn": 6353,
+     "sure_sn": 152.2,
+     "ornek": 77
+    },
+    "browser:CompositorTileW": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 152.2,
+     "ornek": 77
+    },
+    "zygote:TOPLAM": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 152.2,
+     "ornek": 77
+    },
+    "zygote:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 152.2,
+     "ornek": 77
+    },
+    "utility:TOPLAM": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": 0,
+     "sure_sn": 152.2,
+     "ornek": 77
+    },
+    "utility:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 152.2,
+     "ornek": 77
+    },
+    "utility:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 152.2,
+     "ornek": 77
+    },
+    "utility:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 152.2,
+     "ornek": 77
+    },
+    "renderer:TOPLAM": {
+     "cpu_yuzde_ort": 98.8,
+     "cpu_yuzde_tepe10sn": 131.5,
+     "uyanma_sn": 8542,
+     "sure_sn": 152.2,
+     "ornek": 77
+    },
+    "renderer:ANA": {
+     "cpu_yuzde_ort": 20.6,
+     "cpu_yuzde_tepe10sn": 39.7,
+     "uyanma_sn": 114,
+     "sure_sn": 152.2,
+     "ornek": 77
+    },
+    "renderer:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 152.2,
+     "ornek": 77
+    },
+    "renderer:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 4.1,
+     "cpu_yuzde_tepe10sn": 11.2,
+     "uyanma_sn": 105,
+     "sure_sn": 152.2,
+     "ornek": 77
+    },
+    "renderer:Compositor": {
+     "cpu_yuzde_ort": 72.8,
+     "cpu_yuzde_tepe10sn": 91.4,
+     "uyanma_sn": 8292,
+     "sure_sn": 152.2,
+     "ornek": 77
+    },
+    "renderer:Media": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 152.2,
+     "ornek": 77
+    },
+    "gpu-process:TOPLAM": {
+     "cpu_yuzde_ort": 112.2,
+     "cpu_yuzde_tepe10sn": 227.2,
+     "uyanma_sn": 12442,
+     "sure_sn": 152.2,
+     "ornek": 77
+    },
+    "gpu-process:ANA": {
+     "cpu_yuzde_ort": 2.5,
+     "cpu_yuzde_tepe10sn": 12.4,
+     "uyanma_sn": 50,
+     "sure_sn": 152.2,
+     "ornek": 77
+    },
+    "gpu-process:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 152.2,
+     "ornek": 77
+    },
+    "gpu-process:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 3.2,
+     "cpu_yuzde_tepe10sn": 44.1,
+     "uyanma_sn": 199,
+     "sure_sn": 152.2,
+     "ornek": 77
+    }
+   }
+  },
+  {
+   "ad": "09_17w2_T",
+   "durum": "GECTI",
+   "kontrol": "13/13",
+   "neden": [],
+   "kip": "taklit",
+   "isaretciSayac": {
+    "istek": 1,
+    "verildi": 1,
+    "hedefDegisti": 0,
+    "red": 0,
+    "jestsiz": 0,
+    "kisitli": 0,
+    "birakma": 0,
+    "birakildi": 0,
+    "iptal": 0,
+    "degisimOlayi": 1,
+    "hataOlayi": 0,
+    "yonlendirilen": 0,
+    "susturulan": 0
+   },
+   "kopma": null,
+   "hataSayfa": [],
+   "toplam_sn": 65.9,
+   "K05_sn": 14.7,
+   "K08_sn": 22.5,
+   "browser_VmHWM_MB": 95.6,
+   "renderer_VmHWM_MB": 450.6,
+   "gpu_VmHWM_MB": 509,
+   "chrome_toplam_tepe_MB": 1204.6,
+   "cgroup_tepe_MB": 1383,
+   "arka_plan_baslangic_MB": 214.3,
+   "oom_artislari": [],
+   "kaybolan_surecler": [
+    "renderer:80.6MB@53.1s"
+   ],
+   "browser_rss_tepe_MB": 95.6,
+   "browser_rss_tepe_t_sn": 60.6,
+   "renderer_rss_toplam_tepe_MB": 449.1,
+   "iplik": {
+    "browser:TOPLAM": {
+     "cpu_yuzde_ort": 0.6,
+     "cpu_yuzde_tepe10sn": 0.8,
+     "uyanma_sn": 259,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "browser:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": 5,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "browser:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "browser:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 1,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "browser:Chrome_IOThread": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": 10,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "browser:CompositorTileW": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "zygote:TOPLAM": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "zygote:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "utility:TOPLAM": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "utility:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "utility:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "utility:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "renderer:TOPLAM": {
+     "cpu_yuzde_ort": 15.9,
+     "cpu_yuzde_tepe10sn": 30.2,
+     "uyanma_sn": 302,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "renderer:ANA": {
+     "cpu_yuzde_ort": 7.9,
+     "cpu_yuzde_tepe10sn": 13.9,
+     "uyanma_sn": 30,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "renderer:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 1,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "renderer:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 4.4,
+     "cpu_yuzde_tepe10sn": 11.2,
+     "uyanma_sn": 125,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "renderer:Compositor": {
+     "cpu_yuzde_ort": 0.6,
+     "cpu_yuzde_tepe10sn": 0.8,
+     "uyanma_sn": 73,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "renderer:Media": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "gpu-process:TOPLAM": {
+     "cpu_yuzde_ort": 280.1,
+     "cpu_yuzde_tepe10sn": 332.8,
+     "uyanma_sn": 14975,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "gpu-process:ANA": {
+     "cpu_yuzde_ort": 5.1,
+     "cpu_yuzde_tepe10sn": 10.7,
+     "uyanma_sn": 95,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "gpu-process:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "gpu-process:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 7.1,
+     "cpu_yuzde_tepe10sn": 40.8,
+     "uyanma_sn": 349,
+     "sure_sn": 64.1,
+     "ornek": 33
+    }
+   }
+  },
+  {
+   "ad": "10_17w2_G",
+   "durum": "GECTI",
+   "kontrol": "13/13",
+   "neden": [],
+   "kip": "gercek",
+   "isaretciSayac": null,
+   "kopma": null,
+   "hataSayfa": [],
+   "toplam_sn": 158.2,
+   "K05_sn": 30.8,
+   "K08_sn": 67.3,
+   "browser_VmHWM_MB": 866.9,
+   "renderer_VmHWM_MB": 1799.8,
+   "gpu_VmHWM_MB": 507.7,
+   "chrome_toplam_tepe_MB": 3158.3,
+   "cgroup_tepe_MB": 3336,
+   "arka_plan_baslangic_MB": 213.2,
+   "oom_artislari": [],
+   "kaybolan_surecler": [
+    "renderer:1238.2MB@327s"
+   ],
+   "browser_rss_tepe_MB": 857.8,
+   "browser_rss_tepe_t_sn": 210.3,
+   "renderer_rss_toplam_tepe_MB": 1745.1,
+   "iplik": {
+    "browser:TOPLAM": {
+     "cpu_yuzde_ort": 111.5,
+     "cpu_yuzde_tepe10sn": 133.1,
+     "uyanma_sn": 7170,
+     "sure_sn": 156.2,
+     "ornek": 79
+    },
+    "browser:ANA": {
+     "cpu_yuzde_ort": 91.1,
+     "cpu_yuzde_tepe10sn": 98.2,
+     "uyanma_sn": 661,
+     "sure_sn": 156.2,
+     "ornek": 79
+    },
+    "browser:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 156.2,
+     "ornek": 79
+    },
+    "browser:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 156.2,
+     "ornek": 79
+    },
+    "browser:Chrome_IOThread": {
+     "cpu_yuzde_ort": 19.9,
+     "cpu_yuzde_tepe10sn": 38.7,
+     "uyanma_sn": 6267,
+     "sure_sn": 156.2,
+     "ornek": 79
+    },
+    "browser:CompositorTileW": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 156.2,
+     "ornek": 79
+    },
+    "zygote:TOPLAM": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 156.2,
+     "ornek": 79
+    },
+    "zygote:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 156.2,
+     "ornek": 79
+    },
+    "utility:TOPLAM": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": 0,
+     "sure_sn": 156.2,
+     "ornek": 79
+    },
+    "utility:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": 0,
+     "sure_sn": 156.2,
+     "ornek": 79
+    },
+    "utility:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 156.2,
+     "ornek": 79
+    },
+    "utility:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 156.2,
+     "ornek": 79
+    },
+    "renderer:TOPLAM": {
+     "cpu_yuzde_ort": 98.6,
+     "cpu_yuzde_tepe10sn": 121,
+     "uyanma_sn": 9993,
+     "sure_sn": 156.2,
+     "ornek": 79
+    },
+    "renderer:ANA": {
+     "cpu_yuzde_ort": 20.6,
+     "cpu_yuzde_tepe10sn": 38.1,
+     "uyanma_sn": 121,
+     "sure_sn": 156.2,
+     "ornek": 79
+    },
+    "renderer:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 156.2,
+     "ornek": 79
+    },
+    "renderer:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 4.1,
+     "cpu_yuzde_tepe10sn": 12.6,
+     "uyanma_sn": 112,
+     "sure_sn": 156.2,
+     "ornek": 79
+    },
+    "renderer:Compositor": {
+     "cpu_yuzde_ort": 72.5,
+     "cpu_yuzde_tepe10sn": 83.7,
+     "uyanma_sn": 9728,
+     "sure_sn": 156.2,
+     "ornek": 79
+    },
+    "renderer:Media": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 156.2,
+     "ornek": 79
+    },
+    "gpu-process:TOPLAM": {
+     "cpu_yuzde_ort": 110.1,
+     "cpu_yuzde_tepe10sn": 227.4,
+     "uyanma_sn": 12447,
+     "sure_sn": 156.2,
+     "ornek": 79
+    },
+    "gpu-process:ANA": {
+     "cpu_yuzde_ort": 2.3,
+     "cpu_yuzde_tepe10sn": 11.9,
+     "uyanma_sn": 49,
+     "sure_sn": 156.2,
+     "ornek": 79
+    },
+    "gpu-process:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 156.2,
+     "ornek": 79
+    },
+    "gpu-process:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 3,
+     "cpu_yuzde_tepe10sn": 41.2,
+     "uyanma_sn": 177,
+     "sure_sn": 156.2,
+     "ornek": 79
+    }
+   }
+  },
+  {
+   "ad": "11_17v04_T",
+   "durum": "GECTI",
+   "kontrol": "13/13",
+   "neden": [],
+   "kip": "taklit",
+   "isaretciSayac": {
+    "istek": 1,
+    "verildi": 1,
+    "hedefDegisti": 0,
+    "red": 0,
+    "jestsiz": 0,
+    "kisitli": 0,
+    "birakma": 0,
+    "birakildi": 0,
+    "iptal": 0,
+    "degisimOlayi": 1,
+    "hataOlayi": 0,
+    "yonlendirilen": 0,
+    "susturulan": 0
+   },
+   "kopma": null,
+   "hataSayfa": [],
+   "toplam_sn": 66.1,
+   "K05_sn": 13.1,
+   "K08_sn": 23.7,
+   "browser_VmHWM_MB": 96.5,
+   "renderer_VmHWM_MB": 476,
+   "gpu_VmHWM_MB": 517,
+   "chrome_toplam_tepe_MB": 1247.1,
+   "cgroup_tepe_MB": 1429,
+   "arka_plan_baslangic_MB": 216,
+   "oom_artislari": [],
+   "kaybolan_surecler": [],
+   "browser_rss_tepe_MB": 96.5,
+   "browser_rss_tepe_t_sn": 125.2,
+   "renderer_rss_toplam_tepe_MB": 474.3,
+   "iplik": {
+    "browser:TOPLAM": {
+     "cpu_yuzde_ort": 0.6,
+     "cpu_yuzde_tepe10sn": 1,
+     "uyanma_sn": 259,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "browser:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": 5,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "browser:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "browser:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": 1,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "browser:Chrome_IOThread": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.2,
+     "uyanma_sn": 10,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "browser:CompositorTileW": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "zygote:TOPLAM": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "zygote:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "utility:TOPLAM": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "utility:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "utility:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "utility:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "renderer:TOPLAM": {
+     "cpu_yuzde_ort": 14.8,
+     "cpu_yuzde_tepe10sn": 28.4,
+     "uyanma_sn": 294,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "renderer:ANA": {
+     "cpu_yuzde_ort": 7.5,
+     "cpu_yuzde_tepe10sn": 12.8,
+     "uyanma_sn": 31,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "renderer:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "renderer:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 3.9,
+     "cpu_yuzde_tepe10sn": 10.3,
+     "uyanma_sn": 125,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "renderer:Compositor": {
+     "cpu_yuzde_ort": 0.5,
+     "cpu_yuzde_tepe10sn": 0.6,
+     "uyanma_sn": 64,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "renderer:Media": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "gpu-process:TOPLAM": {
+     "cpu_yuzde_ort": 282.2,
+     "cpu_yuzde_tepe10sn": 324.8,
+     "uyanma_sn": 15303,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "gpu-process:ANA": {
+     "cpu_yuzde_ort": 5.2,
+     "cpu_yuzde_tepe10sn": 11.1,
+     "uyanma_sn": 110,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "gpu-process:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "gpu-process:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 7.6,
+     "cpu_yuzde_tepe10sn": 43.6,
+     "uyanma_sn": 431,
+     "sure_sn": 64.1,
+     "ornek": 33
+    }
+   }
+  },
+  {
+   "ad": "12_17v04_G",
+   "durum": "GECTI",
+   "kontrol": "13/13",
+   "neden": [],
+   "kip": "gercek",
+   "isaretciSayac": null,
+   "kopma": null,
+   "hataSayfa": [],
+   "toplam_sn": 168.1,
+   "K05_sn": 30.9,
+   "K08_sn": 70.4,
+   "browser_VmHWM_MB": 1100.9,
+   "renderer_VmHWM_MB": 3140.3,
+   "gpu_VmHWM_MB": 508.8,
+   "chrome_toplam_tepe_MB": 4273.6,
+   "cgroup_tepe_MB": 4465,
+   "arka_plan_baslangic_MB": 215,
+   "oom_artislari": [],
+   "kaybolan_surecler": [],
+   "browser_rss_tepe_MB": 1100.4,
+   "browser_rss_tepe_t_sn": 345.5,
+   "renderer_rss_toplam_tepe_MB": 3051.6,
+   "iplik": {
+    "browser:TOPLAM": {
+     "cpu_yuzde_ort": 111.7,
+     "cpu_yuzde_tepe10sn": 143.6,
+     "uyanma_sn": 6637,
+     "sure_sn": 166.2,
+     "ornek": 84
+    },
+    "browser:ANA": {
+     "cpu_yuzde_ort": 90.7,
+     "cpu_yuzde_tepe10sn": 98.2,
+     "uyanma_sn": 811,
+     "sure_sn": 166.2,
+     "ornek": 84
+    },
+    "browser:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 166.2,
+     "ornek": 84
+    },
+    "browser:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.2,
+     "uyanma_sn": 1,
+     "sure_sn": 166.2,
+     "ornek": 84
+    },
+    "browser:Chrome_IOThread": {
+     "cpu_yuzde_ort": 20.5,
+     "cpu_yuzde_tepe10sn": 48.4,
+     "uyanma_sn": 5580,
+     "sure_sn": 166.2,
+     "ornek": 84
+    },
+    "browser:CompositorTileW": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 166.2,
+     "ornek": 84
+    },
+    "zygote:TOPLAM": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 166.2,
+     "ornek": 84
+    },
+    "zygote:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 166.2,
+     "ornek": 84
+    },
+    "utility:TOPLAM": {
+     "cpu_yuzde_ort": 0.1,
+     "cpu_yuzde_tepe10sn": 1.8,
+     "uyanma_sn": 1,
+     "sure_sn": 166.2,
+     "ornek": 84
+    },
+    "utility:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": 0,
+     "sure_sn": 166.2,
+     "ornek": 84
+    },
+    "utility:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 166.2,
+     "ornek": 84
+    },
+    "utility:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 166.2,
+     "ornek": 84
+    },
+    "gpu-process:TOPLAM": {
+     "cpu_yuzde_ort": 110.7,
+     "cpu_yuzde_tepe10sn": 226.8,
+     "uyanma_sn": 11559,
+     "sure_sn": 166.2,
+     "ornek": 84
+    },
+    "gpu-process:ANA": {
+     "cpu_yuzde_ort": 2.4,
+     "cpu_yuzde_tepe10sn": 12.7,
+     "uyanma_sn": 56,
+     "sure_sn": 166.2,
+     "ornek": 84
+    },
+    "gpu-process:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 166.2,
+     "ornek": 84
+    },
+    "gpu-process:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 3.1,
+     "cpu_yuzde_tepe10sn": 45.1,
+     "uyanma_sn": 171,
+     "sure_sn": 166.2,
+     "ornek": 84
+    },
+    "renderer:TOPLAM": {
+     "cpu_yuzde_ort": 99.9,
+     "cpu_yuzde_tepe10sn": 132,
+     "uyanma_sn": 8367,
+     "sure_sn": 164.2,
+     "ornek": 83
+    },
+    "renderer:ANA": {
+     "cpu_yuzde_ort": 21.2,
+     "cpu_yuzde_tepe10sn": 37.6,
+     "uyanma_sn": 119,
+     "sure_sn": 164.2,
+     "ornek": 83
+    },
+    "renderer:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 164.2,
+     "ornek": 83
+    },
+    "renderer:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 3.8,
+     "cpu_yuzde_tepe10sn": 11.6,
+     "uyanma_sn": 96,
+     "sure_sn": 164.2,
+     "ornek": 83
+    },
+    "renderer:Compositor": {
+     "cpu_yuzde_ort": 73.9,
+     "cpu_yuzde_tepe10sn": 89.9,
+     "uyanma_sn": 8122,
+     "sure_sn": 164.2,
+     "ornek": 83
+    },
+    "renderer:Media": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 164.2,
+     "ornek": 83
+    }
+   }
+  },
+  {
+   "ad": "22_02yasam_T",
+   "durum": "KALDI",
+   "kontrol": "13/18",
+   "neden": [
+    "başarısız kontrol ya da adım: 5"
+   ],
+   "kip": "taklit",
+   "isaretciSayac": {
+    "istek": 1,
+    "verildi": 1,
+    "hedefDegisti": 0,
+    "red": 0,
+    "jestsiz": 0,
+    "kisitli": 0,
+    "birakma": 0,
+    "birakildi": 0,
+    "iptal": 0,
+    "degisimOlayi": 1,
+    "hataOlayi": 0,
+    "yonlendirilen": 0,
+    "susturulan": 0
+   },
+   "kopma": null,
+   "hataSayfa": [],
+   "toplam_sn": 65.1,
+   "K05_sn": null,
+   "K08_sn": null,
+   "browser_VmHWM_MB": 100.5,
+   "renderer_VmHWM_MB": 589.3,
+   "gpu_VmHWM_MB": 531.1,
+   "chrome_toplam_tepe_MB": 1269.5,
+   "cgroup_tepe_MB": 1357,
+   "arka_plan_baslangic_MB": 119,
+   "oom_artislari": [],
+   "kaybolan_surecler": [
+    "renderer:387.1MB@65.6s",
+    "browser:98.2MB@74.6s",
+    "utility:73.3MB@74.6s",
+    "gpu-process:510.1MB@74.6s"
+   ],
+   "browser_rss_tepe_MB": 99.2,
+   "browser_rss_tepe_t_sn": 34.1,
+   "renderer_rss_toplam_tepe_MB": 587.4,
+   "iplik": {
+    "browser:TOPLAM": {
+     "cpu_yuzde_ort": 0.8,
+     "cpu_yuzde_tepe10sn": 1.7,
+     "uyanma_sn": 301,
+     "sure_sn": 72.1,
+     "ornek": 37
+    },
+    "browser:ANA": {
+     "cpu_yuzde_ort": 0.2,
+     "cpu_yuzde_tepe10sn": 0.7,
+     "uyanma_sn": 19,
+     "sure_sn": 72.1,
+     "ornek": 37
+    },
+    "browser:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 72.1,
+     "ornek": 37
+    },
+    "browser:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.2,
+     "uyanma_sn": 1,
+     "sure_sn": 72.1,
+     "ornek": 37
+    },
+    "browser:Chrome_IOThread": {
+     "cpu_yuzde_ort": 0.1,
+     "cpu_yuzde_tepe10sn": 0.6,
+     "uyanma_sn": 32,
+     "sure_sn": 72.1,
+     "ornek": 37
+    },
+    "browser:CompositorTileW": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 72.1,
+     "ornek": 37
+    },
+    "zygote:TOPLAM": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 72.1,
+     "ornek": 37
+    },
+    "zygote:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 72.1,
+     "ornek": 37
+    },
+    "utility:TOPLAM": {
+     "cpu_yuzde_ort": 0.1,
+     "cpu_yuzde_tepe10sn": 0.4,
+     "uyanma_sn": 2,
+     "sure_sn": 72.1,
+     "ornek": 37
+    },
+    "utility:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": 0,
+     "sure_sn": 72.1,
+     "ornek": 37
+    },
+    "utility:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 72.1,
+     "ornek": 37
+    },
+    "utility:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 72.1,
+     "ornek": 37
+    },
+    "renderer:TOPLAM": {
+     "cpu_yuzde_ort": 17.2,
+     "cpu_yuzde_tepe10sn": 46.3,
+     "uyanma_sn": 439,
+     "sure_sn": 62.1,
+     "ornek": 32
+    },
+    "renderer:ANA": {
+     "cpu_yuzde_ort": 7.3,
+     "cpu_yuzde_tepe10sn": 15.6,
+     "uyanma_sn": 76,
+     "sure_sn": 62.1,
+     "ornek": 32
+    },
+    "renderer:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 1,
+     "sure_sn": 62.1,
+     "ornek": 32
+    },
+    "renderer:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 6.9,
+     "cpu_yuzde_tepe10sn": 17.9,
+     "uyanma_sn": 208,
+     "sure_sn": 62.1,
+     "ornek": 32
+    },
+    "renderer:Compositor": {
+     "cpu_yuzde_ort": 0.5,
+     "cpu_yuzde_tepe10sn": 1,
+     "uyanma_sn": 67,
+     "sure_sn": 62.1,
+     "ornek": 32
+    },
+    "renderer:Media": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 62.1,
+     "ornek": 32
+    },
+    "gpu-process:TOPLAM": {
+     "cpu_yuzde_ort": 300.5,
+     "cpu_yuzde_tepe10sn": 373.6,
+     "uyanma_sn": 14541,
+     "sure_sn": 72.1,
+     "ornek": 37
+    },
+    "gpu-process:ANA": {
+     "cpu_yuzde_ort": 6.7,
+     "cpu_yuzde_tepe10sn": 20.4,
+     "uyanma_sn": 101,
+     "sure_sn": 72.1,
+     "ornek": 37
+    },
+    "gpu-process:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 72.1,
+     "ornek": 37
+    },
+    "gpu-process:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 6.5,
+     "cpu_yuzde_tepe10sn": 40.4,
+     "uyanma_sn": 395,
+     "sure_sn": 72.1,
+     "ornek": 37
+    }
+   }
+  },
+  {
+   "ad": "23_02yasam_G",
+   "durum": "KALDI",
+   "kontrol": "12/18",
+   "neden": [
+    "başarısız kontrol ya da adım: 6"
+   ],
+   "kip": "gercek",
+   "isaretciSayac": null,
+   "kopma": null,
+   "hataSayfa": [],
+   "toplam_sn": 91.3,
+   "K05_sn": null,
+   "K08_sn": null,
+   "browser_VmHWM_MB": 1044.9,
+   "renderer_VmHWM_MB": 2154.3,
+   "gpu_VmHWM_MB": 529.8,
+   "chrome_toplam_tepe_MB": 3139.8,
+   "cgroup_tepe_MB": 3246,
+   "arka_plan_baslangic_MB": 127.4,
+   "oom_artislari": [],
+   "kaybolan_surecler": [
+    "renderer:1622.7MB@91.6s"
+   ],
+   "browser_rss_tepe_MB": 1033.9,
+   "browser_rss_tepe_t_sn": 29.6,
+   "renderer_rss_toplam_tepe_MB": 2034.7,
+   "iplik": {
+    "browser:TOPLAM": {
+     "cpu_yuzde_ort": 74.4,
+     "cpu_yuzde_tepe10sn": 130.3,
+     "uyanma_sn": 10027,
+     "sure_sn": 98.1,
+     "ornek": 50
+    },
+    "browser:ANA": {
+     "cpu_yuzde_ort": 59.2,
+     "cpu_yuzde_tepe10sn": 95.5,
+     "uyanma_sn": 570,
+     "sure_sn": 98.1,
+     "ornek": 50
+    },
+    "browser:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 98.1,
+     "ornek": 50
+    },
+    "browser:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.2,
+     "uyanma_sn": 1,
+     "sure_sn": 98.1,
+     "ornek": 50
+    },
+    "browser:Chrome_IOThread": {
+     "cpu_yuzde_ort": 14.6,
+     "cpu_yuzde_tepe10sn": 38.6,
+     "uyanma_sn": 9212,
+     "sure_sn": 98.1,
+     "ornek": 50
+    },
+    "browser:CompositorTileW": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 98.1,
+     "ornek": 50
+    },
+    "zygote:TOPLAM": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 98.1,
+     "ornek": 50
+    },
+    "zygote:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 98.1,
+     "ornek": 50
+    },
+    "utility:TOPLAM": {
+     "cpu_yuzde_ort": 0.1,
+     "cpu_yuzde_tepe10sn": 0.4,
+     "uyanma_sn": 1,
+     "sure_sn": 98.1,
+     "ornek": 50
+    },
+    "utility:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": 0,
+     "sure_sn": 98.1,
+     "ornek": 50
+    },
+    "utility:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 98.1,
+     "ornek": 50
+    },
+    "utility:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 98.1,
+     "ornek": 50
+    },
+    "renderer:TOPLAM": {
+     "cpu_yuzde_ort": 76,
+     "cpu_yuzde_tepe10sn": 119.2,
+     "uyanma_sn": 5871,
+     "sure_sn": 88.1,
+     "ornek": 45
+    },
+    "renderer:ANA": {
+     "cpu_yuzde_ort": 17.6,
+     "cpu_yuzde_tepe10sn": 32.3,
+     "uyanma_sn": 109,
+     "sure_sn": 88.1,
+     "ornek": 45
+    },
+    "renderer:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 1,
+     "sure_sn": 88.1,
+     "ornek": 45
+    },
+    "renderer:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 6.6,
+     "cpu_yuzde_tepe10sn": 17.4,
+     "uyanma_sn": 201,
+     "sure_sn": 88.1,
+     "ornek": 45
+    },
+    "renderer:Compositor": {
+     "cpu_yuzde_ort": 50.1,
+     "cpu_yuzde_tepe10sn": 85.4,
+     "uyanma_sn": 5494,
+     "sure_sn": 88.1,
+     "ornek": 45
+    },
+    "renderer:Media": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 88.1,
+     "ornek": 45
+    },
+    "gpu-process:TOPLAM": {
+     "cpu_yuzde_ort": 199.1,
+     "cpu_yuzde_tepe10sn": 348.1,
+     "uyanma_sn": 13881,
+     "sure_sn": 98.1,
+     "ornek": 50
+    },
+    "gpu-process:ANA": {
+     "cpu_yuzde_ort": 4.8,
+     "cpu_yuzde_tepe10sn": 18.7,
+     "uyanma_sn": 81,
+     "sure_sn": 98.1,
+     "ornek": 50
+    },
+    "gpu-process:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 98.1,
+     "ornek": 50
+    },
+    "gpu-process:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 4.6,
+     "cpu_yuzde_tepe10sn": 39.3,
+     "uyanma_sn": 248,
+     "sure_sn": 98.1,
+     "ornek": 50
+    }
+   }
+  },
+  {
+   "ad": "24_02yasam_T",
+   "durum": "KALDI",
+   "kontrol": "13/18",
+   "neden": [
+    "başarısız kontrol ya da adım: 5"
+   ],
+   "kip": "taklit",
+   "isaretciSayac": {
+    "istek": 1,
+    "verildi": 1,
+    "hedefDegisti": 0,
+    "red": 0,
+    "jestsiz": 0,
+    "kisitli": 0,
+    "birakma": 0,
+    "birakildi": 0,
+    "iptal": 0,
+    "degisimOlayi": 1,
+    "hataOlayi": 0,
+    "yonlendirilen": 0,
+    "susturulan": 0
+   },
+   "kopma": null,
+   "hataSayfa": [],
+   "toplam_sn": 65.6,
+   "K05_sn": null,
+   "K08_sn": null,
+   "browser_VmHWM_MB": 100,
+   "renderer_VmHWM_MB": 591.6,
+   "gpu_VmHWM_MB": 549.6,
+   "chrome_toplam_tepe_MB": 1364.8,
+   "cgroup_tepe_MB": 1455,
+   "arka_plan_baslangic_MB": 127.7,
+   "oom_artislari": [],
+   "kaybolan_surecler": [
+    "renderer:379.7MB@66.1s"
+   ],
+   "browser_rss_tepe_MB": 99,
+   "browser_rss_tepe_t_sn": 37.1,
+   "renderer_rss_toplam_tepe_MB": 585.3,
+   "iplik": {
+    "browser:TOPLAM": {
+     "cpu_yuzde_ort": 0.8,
+     "cpu_yuzde_tepe10sn": 1.8,
+     "uyanma_sn": 298,
+     "sure_sn": 72.1,
+     "ornek": 37
+    },
+    "browser:ANA": {
+     "cpu_yuzde_ort": 0.2,
+     "cpu_yuzde_tepe10sn": 0.7,
+     "uyanma_sn": 16,
+     "sure_sn": 72.1,
+     "ornek": 37
+    },
+    "browser:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 72.1,
+     "ornek": 37
+    },
+    "browser:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 1,
+     "sure_sn": 72.1,
+     "ornek": 37
+    },
+    "browser:Chrome_IOThread": {
+     "cpu_yuzde_ort": 0.1,
+     "cpu_yuzde_tepe10sn": 0.5,
+     "uyanma_sn": 33,
+     "sure_sn": 72.1,
+     "ornek": 37
+    },
+    "browser:CompositorTileW": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 72.1,
+     "ornek": 37
+    },
+    "zygote:TOPLAM": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 72.1,
+     "ornek": 37
+    },
+    "zygote:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 72.1,
+     "ornek": 37
+    },
+    "utility:TOPLAM": {
+     "cpu_yuzde_ort": 0.1,
+     "cpu_yuzde_tepe10sn": 0.3,
+     "uyanma_sn": 2,
+     "sure_sn": 72.1,
+     "ornek": 37
+    },
+    "utility:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": 0,
+     "sure_sn": 72.1,
+     "ornek": 37
+    },
+    "utility:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 72.1,
+     "ornek": 37
+    },
+    "utility:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 72.1,
+     "ornek": 37
+    },
+    "renderer:TOPLAM": {
+     "cpu_yuzde_ort": 17,
+     "cpu_yuzde_tepe10sn": 45.5,
+     "uyanma_sn": 432,
+     "sure_sn": 62.1,
+     "ornek": 32
+    },
+    "renderer:ANA": {
+     "cpu_yuzde_ort": 7.2,
+     "cpu_yuzde_tepe10sn": 14.8,
+     "uyanma_sn": 68,
+     "sure_sn": 62.1,
+     "ornek": 32
+    },
+    "renderer:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 1,
+     "sure_sn": 62.1,
+     "ornek": 32
+    },
+    "renderer:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 7,
+     "cpu_yuzde_tepe10sn": 18.5,
+     "uyanma_sn": 201,
+     "sure_sn": 62.1,
+     "ornek": 32
+    },
+    "renderer:Compositor": {
+     "cpu_yuzde_ort": 0.5,
+     "cpu_yuzde_tepe10sn": 0.8,
+     "uyanma_sn": 68,
+     "sure_sn": 62.1,
+     "ornek": 32
+    },
+    "renderer:Media": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 62.1,
+     "ornek": 32
+    },
+    "gpu-process:TOPLAM": {
+     "cpu_yuzde_ort": 301.4,
+     "cpu_yuzde_tepe10sn": 370.5,
+     "uyanma_sn": 14274,
+     "sure_sn": 72.1,
+     "ornek": 37
+    },
+    "gpu-process:ANA": {
+     "cpu_yuzde_ort": 6.3,
+     "cpu_yuzde_tepe10sn": 19.1,
+     "uyanma_sn": 90,
+     "sure_sn": 72.1,
+     "ornek": 37
+    },
+    "gpu-process:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 72.1,
+     "ornek": 37
+    },
+    "gpu-process:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 6,
+     "cpu_yuzde_tepe10sn": 36.4,
+     "uyanma_sn": 296,
+     "sure_sn": 72.1,
+     "ornek": 37
+    }
+   }
+  },
+  {
+   "ad": "25_17v04_T",
+   "durum": "GECTI",
+   "kontrol": "13/13",
+   "neden": [],
+   "kip": "taklit",
+   "isaretciSayac": {
+    "istek": 1,
+    "verildi": 1,
+    "hedefDegisti": 0,
+    "red": 0,
+    "jestsiz": 0,
+    "kisitli": 0,
+    "birakma": 0,
+    "birakildi": 0,
+    "iptal": 0,
+    "degisimOlayi": 1,
+    "hataOlayi": 0,
+    "yonlendirilen": 0,
+    "susturulan": 0
+   },
+   "kopma": null,
+   "hataSayfa": [],
+   "toplam_sn": 72.2,
+   "K05_sn": 13.2,
+   "K08_sn": 28.7,
+   "browser_VmHWM_MB": 96.3,
+   "renderer_VmHWM_MB": 453.5,
+   "gpu_VmHWM_MB": 522.1,
+   "chrome_toplam_tepe_MB": 1227,
+   "cgroup_tepe_MB": 1327,
+   "arka_plan_baslangic_MB": 138,
+   "oom_artislari": [],
+   "kaybolan_surecler": [],
+   "browser_rss_tepe_MB": 96.2,
+   "browser_rss_tepe_t_sn": 9.5,
+   "renderer_rss_toplam_tepe_MB": 452.2,
+   "iplik": {
+    "browser:TOPLAM": {
+     "cpu_yuzde_ort": 0.6,
+     "cpu_yuzde_tepe10sn": 0.8,
+     "uyanma_sn": 257,
+     "sure_sn": 70.1,
+     "ornek": 36
+    },
+    "browser:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": 5,
+     "sure_sn": 70.1,
+     "ornek": 36
+    },
+    "browser:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 70.1,
+     "ornek": 36
+    },
+    "browser:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": 1,
+     "sure_sn": 70.1,
+     "ornek": 36
+    },
+    "browser:Chrome_IOThread": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.2,
+     "uyanma_sn": 8,
+     "sure_sn": 70.1,
+     "ornek": 36
+    },
+    "browser:CompositorTileW": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 70.1,
+     "ornek": 36
+    },
+    "zygote:TOPLAM": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 70.1,
+     "ornek": 36
+    },
+    "zygote:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 70.1,
+     "ornek": 36
+    },
+    "utility:TOPLAM": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 70.1,
+     "ornek": 36
+    },
+    "utility:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 70.1,
+     "ornek": 36
+    },
+    "utility:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 70.1,
+     "ornek": 36
+    },
+    "utility:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 70.1,
+     "ornek": 36
+    },
+    "renderer:TOPLAM": {
+     "cpu_yuzde_ort": 14.2,
+     "cpu_yuzde_tepe10sn": 27.8,
+     "uyanma_sn": 255,
+     "sure_sn": 70.1,
+     "ornek": 36
+    },
+    "renderer:ANA": {
+     "cpu_yuzde_ort": 7.8,
+     "cpu_yuzde_tepe10sn": 15.9,
+     "uyanma_sn": 26,
+     "sure_sn": 70.1,
+     "ornek": 36
+    },
+    "renderer:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 1,
+     "sure_sn": 70.1,
+     "ornek": 36
+    },
+    "renderer:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 3.4,
+     "cpu_yuzde_tepe10sn": 8.6,
+     "uyanma_sn": 100,
+     "sure_sn": 70.1,
+     "ornek": 36
+    },
+    "renderer:Compositor": {
+     "cpu_yuzde_ort": 0.6,
+     "cpu_yuzde_tepe10sn": 0.8,
+     "uyanma_sn": 62,
+     "sure_sn": 70.1,
+     "ornek": 36
+    },
+    "renderer:Media": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 70.1,
+     "ornek": 36
+    },
+    "gpu-process:TOPLAM": {
+     "cpu_yuzde_ort": 278.6,
+     "cpu_yuzde_tepe10sn": 330.9,
+     "uyanma_sn": 14815,
+     "sure_sn": 70.1,
+     "ornek": 36
+    },
+    "gpu-process:ANA": {
+     "cpu_yuzde_ort": 4.8,
+     "cpu_yuzde_tepe10sn": 10.6,
+     "uyanma_sn": 92,
+     "sure_sn": 70.1,
+     "ornek": 36
+    },
+    "gpu-process:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 70.1,
+     "ornek": 36
+    },
+    "gpu-process:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 7.3,
+     "cpu_yuzde_tepe10sn": 45.7,
+     "uyanma_sn": 480,
+     "sure_sn": 70.1,
+     "ornek": 36
+    }
+   }
+  },
+  {
+   "ad": "26_17w2_T",
+   "durum": "GECTI",
+   "kontrol": "13/13",
+   "neden": [],
+   "kip": "taklit",
+   "isaretciSayac": {
+    "istek": 1,
+    "verildi": 1,
+    "hedefDegisti": 0,
+    "red": 0,
+    "jestsiz": 0,
+    "kisitli": 0,
+    "birakma": 0,
+    "birakildi": 0,
+    "iptal": 0,
+    "degisimOlayi": 1,
+    "hataOlayi": 0,
+    "yonlendirilen": 0,
+    "susturulan": 0
+   },
+   "kopma": null,
+   "hataSayfa": [],
+   "toplam_sn": 66,
+   "K05_sn": 11.5,
+   "K08_sn": 26.7,
+   "browser_VmHWM_MB": 96.7,
+   "renderer_VmHWM_MB": 471.2,
+   "gpu_VmHWM_MB": 509.9,
+   "chrome_toplam_tepe_MB": 1221.3,
+   "cgroup_tepe_MB": 1324,
+   "arka_plan_baslangic_MB": 139.3,
+   "oom_artislari": [],
+   "kaybolan_surecler": [],
+   "browser_rss_tepe_MB": 96.7,
+   "browser_rss_tepe_t_sn": 10,
+   "renderer_rss_toplam_tepe_MB": 471.1,
+   "iplik": {
+    "browser:TOPLAM": {
+     "cpu_yuzde_ort": 0.6,
+     "cpu_yuzde_tepe10sn": 0.7,
+     "uyanma_sn": 259,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "browser:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": 5,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "browser:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "browser:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": 1,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "browser:Chrome_IOThread": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": 10,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "browser:CompositorTileW": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "zygote:TOPLAM": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "zygote:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "utility:TOPLAM": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "utility:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "utility:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "utility:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "renderer:TOPLAM": {
+     "cpu_yuzde_ort": 14.6,
+     "cpu_yuzde_tepe10sn": 27.3,
+     "uyanma_sn": 289,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "renderer:ANA": {
+     "cpu_yuzde_ort": 7.5,
+     "cpu_yuzde_tepe10sn": 13.2,
+     "uyanma_sn": 29,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "renderer:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 1,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "renderer:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 3.7,
+     "cpu_yuzde_tepe10sn": 9.4,
+     "uyanma_sn": 126,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "renderer:Compositor": {
+     "cpu_yuzde_ort": 0.5,
+     "cpu_yuzde_tepe10sn": 0.7,
+     "uyanma_sn": 64,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "renderer:Media": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "gpu-process:TOPLAM": {
+     "cpu_yuzde_ort": 279.8,
+     "cpu_yuzde_tepe10sn": 330.2,
+     "uyanma_sn": 15833,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "gpu-process:ANA": {
+     "cpu_yuzde_ort": 5.5,
+     "cpu_yuzde_tepe10sn": 12.4,
+     "uyanma_sn": 108,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "gpu-process:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": 0,
+     "sure_sn": 64.1,
+     "ornek": 33
+    },
+    "gpu-process:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 7.1,
+     "cpu_yuzde_tepe10sn": 41.7,
+     "uyanma_sn": 395,
+     "sure_sn": 64.1,
+     "ornek": 33
+    }
+   }
+  }
+ ],
+ "olcumAjaniN": [
+  {
+   "ad": "02_N",
+   "durum": "KALDI",
+   "kontrol": "8/13",
+   "neden": [
+    "başarısız kontrol ya da adım: 10",
+    "adım istisnası (evalErrors): 5"
+   ],
+   "kip": null,
+   "isaretciSayac": null,
+   "kopma": null,
+   "hataSayfa": [],
+   "toplam_sn": 176.8,
+   "K05_sn": 88.9,
+   "K08_sn": 22.2,
+   "browser_VmHWM_MB": 8861.3,
+   "renderer_VmHWM_MB": 4817,
+   "gpu_VmHWM_MB": 491,
+   "chrome_toplam_tepe_MB": 13571.4,
+   "cgroup_tepe_MB": 13675,
+   "arka_plan_baslangic_MB": 190.3,
+   "oom_artislari": [
+    {
+     "zaman": "2026-11-14T16:20:48.154Z",
+     "t_ms": 836882,
+     "onceki": 16,
+     "yeni": 17
+    }
+   ],
+   "kaybolan_surecler": [
+    "browser:8848.5MB@836.9s"
+   ],
+   "browser_rss_tepe_MB": 8856.9,
+   "browser_rss_tepe_t_sn": 835.9,
+   "renderer_rss_toplam_tepe_MB": 4801.9,
+   "iplik": null
+  },
+  {
+   "ad": "04_N",
+   "durum": "GECTI",
+   "kontrol": "13/13",
+   "neden": [],
+   "kip": null,
+   "isaretciSayac": null,
+   "kopma": null,
+   "hataSayfa": [],
+   "toplam_sn": 222,
+   "K05_sn": 39,
+   "K08_sn": 103.7,
+   "browser_VmHWM_MB": 1092.8,
+   "renderer_VmHWM_MB": 2279.9,
+   "gpu_VmHWM_MB": 514.6,
+   "chrome_toplam_tepe_MB": 3460.7,
+   "cgroup_tepe_MB": 3593,
+   "arka_plan_baslangic_MB": 133.7,
+   "oom_artislari": [],
+   "kaybolan_surecler": [],
+   "browser_rss_tepe_MB": 1074.7,
+   "browser_rss_tepe_t_sn": 99.2,
+   "renderer_rss_toplam_tepe_MB": 2230,
+   "iplik": {
+    "browser:ANA": {
+     "cpu_yuzde_ort": 86,
+     "cpu_yuzde_tepe10sn": 95.7,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "browser:TOPLAM": {
+     "cpu_yuzde_ort": 109.3,
+     "cpu_yuzde_tepe10sn": 134.5,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "browser:sandbox_ipc_thr": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "browser:PerfettoTrace": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "browser:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "browser:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "browser:ThreadPoolSingl": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "browser:Chrome_IOThread": {
+     "cpu_yuzde_ort": 22.3,
+     "cpu_yuzde_tepe10sn": 40.2,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "browser:MemoryInfra": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "browser:inotify_reader": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "browser:CompositorTileW": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "browser:VideoCaptureThr": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "browser:DevToolsPipeHan": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "browser:Gamepad polling": {
+     "cpu_yuzde_ort": 0.9,
+     "cpu_yuzde_tepe10sn": 1.1,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "zygote:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "zygote:TOPLAM": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "utility:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.2,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "utility:TOPLAM": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.2,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "utility:PerfettoTrace": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "utility:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "utility:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "utility:Chrome_ChildIOT": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.2,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "utility:inotify_reader": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "renderer:ANA": {
+     "cpu_yuzde_ort": 21.6,
+     "cpu_yuzde_tepe10sn": 42.1,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "renderer:TOPLAM": {
+     "cpu_yuzde_ort": 96.7,
+     "cpu_yuzde_tepe10sn": 130.9,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "renderer:PerfettoTrace": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "renderer:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "renderer:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 4.5,
+     "cpu_yuzde_tepe10sn": 15.4,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "renderer:Chrome_ChildIOT": {
+     "cpu_yuzde_ort": 0.1,
+     "cpu_yuzde_tepe10sn": 0.3,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "renderer:Compositor": {
+     "cpu_yuzde_ort": 69.2,
+     "cpu_yuzde_tepe10sn": 87.8,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "renderer:ThreadPoolSingl": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "renderer:WebRTC_Signalin": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "renderer:WebRTC_W_and_N": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "renderer:Media": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "gpu-process:ANA": {
+     "cpu_yuzde_ort": 2.6,
+     "cpu_yuzde_tepe10sn": 13.6,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "gpu-process:TOPLAM": {
+     "cpu_yuzde_ort": 107.9,
+     "cpu_yuzde_tepe10sn": 256.1,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "gpu-process:Thread<00>": {
+     "cpu_yuzde_ort": 18.7,
+     "cpu_yuzde_tepe10sn": 35.1,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "gpu-process:Thread<01>": {
+     "cpu_yuzde_ort": 18.7,
+     "cpu_yuzde_tepe10sn": 34.7,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "gpu-process:Thread<02>": {
+     "cpu_yuzde_ort": 18.7,
+     "cpu_yuzde_tepe10sn": 35.7,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "gpu-process:Thread<03>": {
+     "cpu_yuzde_ort": 18.8,
+     "cpu_yuzde_tepe10sn": 35,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "gpu-process:chrome-headless": {
+     "cpu_yuzde_ort": 25.7,
+     "cpu_yuzde_tepe10sn": 76.8,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "gpu-process:ANGLE-GC": {
+     "cpu_yuzde_ort": 0.1,
+     "cpu_yuzde_tepe10sn": 0.3,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "gpu-process:PerfettoTrace": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "gpu-process:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "gpu-process:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 3.4,
+     "cpu_yuzde_tepe10sn": 66.5,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "gpu-process:Chrome_ChildIOT": {
+     "cpu_yuzde_ort": 0.3,
+     "cpu_yuzde_tepe10sn": 0.6,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "gpu-process:VizCompositorTh": {
+     "cpu_yuzde_ort": 0.8,
+     "cpu_yuzde_tepe10sn": 1.3,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "gpu-process:ThreadPoolSingl": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 220.2,
+     "ornek": 111
+    },
+    "renderer:DedicatedWorker": {
+     "cpu_yuzde_ort": 1,
+     "cpu_yuzde_tepe10sn": 8.5,
+     "uyanma_sn": null,
+     "sure_sn": 218.2,
+     "ornek": 110
+    }
+   }
+  },
+  {
+   "ad": "06_N",
+   "durum": "GECTI",
+   "kontrol": "13/13",
+   "neden": [],
+   "kip": null,
+   "isaretciSayac": null,
+   "kopma": null,
+   "hataSayfa": [],
+   "toplam_sn": 192.2,
+   "K05_sn": 38.7,
+   "K08_sn": 78.1,
+   "browser_VmHWM_MB": 1291.1,
+   "renderer_VmHWM_MB": 4059,
+   "gpu_VmHWM_MB": 526.6,
+   "chrome_toplam_tepe_MB": 5186.2,
+   "cgroup_tepe_MB": 5392,
+   "arka_plan_baslangic_MB": 205.5,
+   "oom_artislari": [],
+   "kaybolan_surecler": [],
+   "browser_rss_tepe_MB": 1291,
+   "browser_rss_tepe_t_sn": 341.5,
+   "renderer_rss_toplam_tepe_MB": 3932.1,
+   "iplik": {
+    "browser:ANA": {
+     "cpu_yuzde_ort": 87.8,
+     "cpu_yuzde_tepe10sn": 95.6,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "browser:TOPLAM": {
+     "cpu_yuzde_ort": 109.6,
+     "cpu_yuzde_tepe10sn": 143.9,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "browser:sandbox_ipc_thr": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "browser:PerfettoTrace": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "browser:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "browser:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "browser:ThreadPoolSingl": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "browser:Chrome_IOThread": {
+     "cpu_yuzde_ort": 20.9,
+     "cpu_yuzde_tepe10sn": 51,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "browser:MemoryInfra": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "browser:inotify_reader": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "browser:CompositorTileW": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "browser:VideoCaptureThr": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "browser:DevToolsPipeHan": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "browser:Gamepad polling": {
+     "cpu_yuzde_ort": 0.8,
+     "cpu_yuzde_tepe10sn": 1.1,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "zygote:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "zygote:TOPLAM": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "utility:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "utility:TOPLAM": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "utility:PerfettoTrace": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "utility:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "utility:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "utility:Chrome_ChildIOT": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "utility:inotify_reader": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "renderer:ANA": {
+     "cpu_yuzde_ort": 21.6,
+     "cpu_yuzde_tepe10sn": 50.2,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "renderer:TOPLAM": {
+     "cpu_yuzde_ort": 96.1,
+     "cpu_yuzde_tepe10sn": 146.9,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "renderer:PerfettoTrace": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "renderer:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "renderer:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 4,
+     "cpu_yuzde_tepe10sn": 15.6,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "renderer:Chrome_ChildIOT": {
+     "cpu_yuzde_ort": 0.1,
+     "cpu_yuzde_tepe10sn": 0.3,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "renderer:Compositor": {
+     "cpu_yuzde_ort": 69.2,
+     "cpu_yuzde_tepe10sn": 89.7,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "renderer:ThreadPoolSingl": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "renderer:WebRTC_Signalin": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "renderer:WebRTC_W_and_N": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "renderer:Media": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "gpu-process:ANA": {
+     "cpu_yuzde_ort": 2.8,
+     "cpu_yuzde_tepe10sn": 17.4,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "gpu-process:TOPLAM": {
+     "cpu_yuzde_ort": 113.3,
+     "cpu_yuzde_tepe10sn": 240.6,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "gpu-process:Thread<00>": {
+     "cpu_yuzde_ort": 19.8,
+     "cpu_yuzde_tepe10sn": 29.9,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "gpu-process:Thread<01>": {
+     "cpu_yuzde_ort": 19.8,
+     "cpu_yuzde_tepe10sn": 32.8,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "gpu-process:Thread<02>": {
+     "cpu_yuzde_ort": 19.9,
+     "cpu_yuzde_tepe10sn": 32.1,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "gpu-process:Thread<03>": {
+     "cpu_yuzde_ort": 20.3,
+     "cpu_yuzde_tepe10sn": 32.5,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "gpu-process:chrome-headless": {
+     "cpu_yuzde_ort": 26.2,
+     "cpu_yuzde_tepe10sn": 59.9,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "gpu-process:ANGLE-GC": {
+     "cpu_yuzde_ort": 0.1,
+     "cpu_yuzde_tepe10sn": 0.2,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "gpu-process:PerfettoTrace": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "gpu-process:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "gpu-process:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 3.4,
+     "cpu_yuzde_tepe10sn": 56.7,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "gpu-process:Chrome_ChildIOT": {
+     "cpu_yuzde_ort": 0.3,
+     "cpu_yuzde_tepe10sn": 0.5,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "gpu-process:VizCompositorTh": {
+     "cpu_yuzde_ort": 0.7,
+     "cpu_yuzde_tepe10sn": 1.2,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "gpu-process:ThreadPoolSingl": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 190.2,
+     "ornek": 96
+    },
+    "renderer:DedicatedWorker": {
+     "cpu_yuzde_ort": 0.8,
+     "cpu_yuzde_tepe10sn": 6.1,
+     "uyanma_sn": null,
+     "sure_sn": 188.2,
+     "ornek": 95
+    }
+   }
+  },
+  {
+   "ad": "08_N",
+   "durum": "GECTI",
+   "kontrol": "13/13",
+   "neden": [],
+   "kip": null,
+   "isaretciSayac": null,
+   "kopma": null,
+   "hataSayfa": [],
+   "toplam_sn": 200.8,
+   "K05_sn": 43,
+   "K08_sn": 82.3,
+   "browser_VmHWM_MB": 1305.6,
+   "renderer_VmHWM_MB": 2614.9,
+   "gpu_VmHWM_MB": 516.8,
+   "chrome_toplam_tepe_MB": 4262.3,
+   "cgroup_tepe_MB": 4445,
+   "arka_plan_baslangic_MB": 201,
+   "oom_artislari": [
+    {
+     "zaman": "2026-11-14T17:04:05.514Z",
+     "t_ms": 363281,
+     "onceki": 20,
+     "yeni": 21
+    }
+   ],
+   "kaybolan_surecler": [
+    "renderer:1787.3MB@579.7s"
+   ],
+   "browser_rss_tepe_MB": 1283.7,
+   "browser_rss_tepe_t_sn": 428.4,
+   "renderer_rss_toplam_tepe_MB": 2480.6,
+   "iplik": {
+    "browser:ANA": {
+     "cpu_yuzde_ort": 87.6,
+     "cpu_yuzde_tepe10sn": 95.1,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "browser:TOPLAM": {
+     "cpu_yuzde_ort": 109.7,
+     "cpu_yuzde_tepe10sn": 154.8,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "browser:sandbox_ipc_thr": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "browser:PerfettoTrace": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "browser:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "browser:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.2,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "browser:ThreadPoolSingl": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.1,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "browser:Chrome_IOThread": {
+     "cpu_yuzde_ort": 21.3,
+     "cpu_yuzde_tepe10sn": 61.8,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "browser:MemoryInfra": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "browser:inotify_reader": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "browser:CompositorTileW": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "browser:VideoCaptureThr": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "browser:DevToolsPipeHan": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0.2,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "zygote:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "zygote:TOPLAM": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "utility:ANA": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "utility:TOPLAM": {
+     "cpu_yuzde_ort": 0.1,
+     "cpu_yuzde_tepe10sn": 2.3,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "utility:PerfettoTrace": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "utility:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "utility:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "utility:Chrome_ChildIOT": {
+     "cpu_yuzde_ort": 0.1,
+     "cpu_yuzde_tepe10sn": 2.3,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "utility:inotify_reader": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "renderer:ANA": {
+     "cpu_yuzde_ort": 21.5,
+     "cpu_yuzde_tepe10sn": 53.9,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "renderer:TOPLAM": {
+     "cpu_yuzde_ort": 97.5,
+     "cpu_yuzde_tepe10sn": 147.8,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "renderer:PerfettoTrace": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "renderer:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "renderer:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 4.8,
+     "cpu_yuzde_tepe10sn": 17.8,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "renderer:Chrome_ChildIOT": {
+     "cpu_yuzde_ort": 0.1,
+     "cpu_yuzde_tepe10sn": 0.8,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "renderer:Compositor": {
+     "cpu_yuzde_ort": 69.9,
+     "cpu_yuzde_tepe10sn": 93.7,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "renderer:ThreadPoolSingl": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "renderer:WebRTC_Signalin": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "renderer:WebRTC_W_and_N": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "renderer:Media": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "gpu-process:ANA": {
+     "cpu_yuzde_ort": 2.7,
+     "cpu_yuzde_tepe10sn": 15.2,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "gpu-process:TOPLAM": {
+     "cpu_yuzde_ort": 114,
+     "cpu_yuzde_tepe10sn": 241.4,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "gpu-process:Thread<00>": {
+     "cpu_yuzde_ort": 20.5,
+     "cpu_yuzde_tepe10sn": 32.8,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "gpu-process:Thread<01>": {
+     "cpu_yuzde_ort": 19.8,
+     "cpu_yuzde_tepe10sn": 32.7,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "gpu-process:Thread<02>": {
+     "cpu_yuzde_ort": 20.4,
+     "cpu_yuzde_tepe10sn": 33.4,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "gpu-process:Thread<03>": {
+     "cpu_yuzde_ort": 20.1,
+     "cpu_yuzde_tepe10sn": 31.5,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "gpu-process:chrome-headless": {
+     "cpu_yuzde_ort": 26.3,
+     "cpu_yuzde_tepe10sn": 58.1,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "gpu-process:ANGLE-GC": {
+     "cpu_yuzde_ort": 0.1,
+     "cpu_yuzde_tepe10sn": 0.2,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "gpu-process:PerfettoTrace": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "gpu-process:ThreadPoolServi": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "gpu-process:ThreadPoolForeg": {
+     "cpu_yuzde_ort": 3.1,
+     "cpu_yuzde_tepe10sn": 54.5,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "gpu-process:Chrome_ChildIOT": {
+     "cpu_yuzde_ort": 0.3,
+     "cpu_yuzde_tepe10sn": 0.5,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "gpu-process:VizCompositorTh": {
+     "cpu_yuzde_ort": 0.7,
+     "cpu_yuzde_tepe10sn": 1.2,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "gpu-process:ThreadPoolSingl": {
+     "cpu_yuzde_ort": 0,
+     "cpu_yuzde_tepe10sn": 0,
+     "uyanma_sn": null,
+     "sure_sn": 200.2,
+     "ornek": 101
+    },
+    "browser:Gamepad polling": {
+     "cpu_yuzde_ort": 0.8,
+     "cpu_yuzde_tepe10sn": 1.1,
+     "uyanma_sn": null,
+     "sure_sn": 198.2,
+     "ornek": 100
+    },
+    "renderer:DedicatedWorker": {
+     "cpu_yuzde_ort": 1,
+     "cpu_yuzde_tepe10sn": 9,
+     "uyanma_sn": null,
+     "sure_sn": 198.2,
+     "ornek": 100
+    }
+   }
+  }
+ ]
+}

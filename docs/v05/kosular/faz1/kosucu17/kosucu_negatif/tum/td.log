@@ -1,0 +1,13 @@
+$ node /home/user/SON-HAZ-NE-k17/tests/harness/run.cjs tests/fixtures/kosucu/td_tarayici_olur_bekleme.js --size 320x200 --timeout 90 --url http://127.0.0.1:46833/temiz.html --report /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/kn5/tum/td.json
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+ready in 0.2 s
+PASS TD01 Sabit sayfa açıldı → "object"
+[test] KOSUCU_NEGATIF_OLDUR
+R: "işaret verildi"
+KOPMA TARAYICI ÇÖKTÜ/KOPTU: tarayıcı süreciyle bağlantı koptu (süreç öldürüldü ya da çöktü; ör. bellek sınırında OOM) — adım 3, 0.2 sn
+(kopma yüzünden yarıda kalan adım 3: page.waitForTimeout: Target page, context or browser has been closed; kalan 1 adım koşmadı)
+errors: 0 pageErrors: 1 fails: 0 (0.2 s)
+SONUC: KALDI (çıkış 1) kontrol 1/1, onay 2 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: sayfa hatası (pageerror): 1; tarayıcı çöktü/koptu (adım 3; 1 adım koşmadı)
+
+[çıkış 1]
+[tarayıcı öldürme: {"durum":"öldürüldü","pid":1040,"ms":407}]

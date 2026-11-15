@@ -1,0 +1,18 @@
+== blok_T evreler (sn, bos_bas göre): {'bos_bas': 0.0, 'mesgul_bas': 15.0, 'mesgul_bit': 35.0, 'son': 47.0}
+   cgroup tepe (0,25 sn örnek) 1431 MB; oom_kill 0 -> 0
+   browser     anon MB: bos_bas    15  mesgul_bas    15  mesgul_bit    15  son    14 | eğim MB/sn: boşta    0.0  meşgul    0.0  sonra   -0.1 | VmHWM son    96
+   renderer    anon MB: bos_bas   297  mesgul_bas   224  mesgul_bit   216  son   213 | eğim MB/sn: boşta   -5.8  meşgul   -0.5  sonra   -0.4 | VmHWM son   434
+   gpu-process anon MB: bos_bas   333  mesgul_bas   350  mesgul_bit   350  son   348 | eğim MB/sn: boşta    0.1  meşgul    0.0  sonra   -0.1 | VmHWM son   438
+   browser  ANA              CPU%/uyanma: boşta (0.0, 1)  meşgul (0.0, 0)  sonra (0.1, 1)
+   browser  Chrome_IOThread  CPU%/uyanma: boşta (0.0, 1)  meşgul (0.0, 0)  sonra (0.0, 1)
+   renderer Compositor       CPU%/uyanma: boşta (1.2, 176)  meşgul (0.8, 60)  sonra (1.1, 161)
+   renderer ANA              CPU%/uyanma: boşta (1.7, 70)  meşgul (99.1, 0)  sonra (1.0, 61)
+== blok_G evreler (sn, bos_bas göre): {'bos_bas': 0.0, 'mesgul_bas': 15.0, 'mesgul_bit': 35.0, 'son': 58.2}
+   cgroup tepe (0,25 sn örnek) 7420 MB; oom_kill 0 -> 0
+   browser     anon MB: bos_bas    58  mesgul_bas    61  mesgul_bit  1259  son   284 | eğim MB/sn: boşta   -0.3  meşgul   59.0  sonra  -17.8 | VmHWM son  1835
+   renderer    anon MB: bos_bas   913  mesgul_bas  1535  mesgul_bit  2348  son  2685 | eğim MB/sn: boşta   40.8  meşgul   40.4  sonra  -40.0 | VmHWM son  4594
+   gpu-process anon MB: bos_bas   338  mesgul_bas   349  mesgul_bit   349  son   348 | eğim MB/sn: boşta    0.3  meşgul    0.0  sonra   -0.1 | VmHWM son   439
+   browser  ANA              CPU%/uyanma: boşta (92.9, 467)  meşgul (96.6, 58)  sonra (93.2, 1453)
+   browser  Chrome_IOThread  CPU%/uyanma: boşta (28.6, 13798)  meşgul (1.6, 90)  sonra (40.0, 9594)
+   renderer Compositor       CPU%/uyanma: boşta (82.7, 4255)  meşgul (77.4, 14722)  sonra (76.3, 2811)
+   renderer ANA              CPU%/uyanma: boşta (14.5, 96)  meşgul (98.4, 0)  sonra (36.8, 259)

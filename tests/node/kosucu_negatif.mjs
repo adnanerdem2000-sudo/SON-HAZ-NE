@@ -21,6 +21,22 @@
 // karşılaştırıcılar), z (tür ölçümü: rAF, doğrudan game.update, DK.sim, sayfanın kendi yeniden yüklemesi), ka (kanıt adımları),
 // aa (co-op check()'e söz), ab/ac (son adımdan sonra gelen hata), ad/ae/af/ag/ag2/ah (izin listesi), ai (co-op aynı adla mk()).
 //
+// Faz 1, 17 bellek çökmesi düzeltmesi (kosucu17): pk/pk2/pk3/pk4 (işaretçi kilidi taklidi: anlam, sel yok, kilitliyken fare olayları
+// kilitli öğeye, gerçek kilitle aynı senaryoda yalnız sel kontrolü kalır, geçersiz seçenek, co-op'ta her sekme), pk5/pk6 (kilitliyken
+// arayüz düğmesine tikla: taklitte ve gerçek kilitte aynı zaman aşımı, düğme etkinleşmez), tc/td/te (tarayıcı süreci senaryo sürerken SIGKILL ile
+// öldürülür: js adımı, bekleme adımı, co-op; hatalar.sayfa'da 'TARAYICI ÇÖKTÜ/KOPTU', durum KALDI, süreç kendiliğinden biter).
+// Son düzeltici (inceleme DOG-1..3): ia/ib (kilit tikla beklerken alınır: taklitte de gerçek kilitteki gibi zaman aşımı, tuval tık
+// almaz), ia2/ia3 (kilit tikla sürerken bırakılınca tıklama yapılır), ic/id (taklidin olay dinleyicisi istisnaları sayfa hatası),
+// ie/ie2 (sayaç okuması sürerken gelen sayfa hatası: rapor tutarlı, KALDI), pk7/pk8 (co-op tikla yardımcısı: taklit ve gerçek kilit).
+// Son düzeltici 2 (inceleme KC-1..3, GZ-2): rk/rw/rm (sayfanın renderer süreci js adımı, bekleme adımı ve metrics adımının CDP isteği
+// sürerken öldürülür: SAYFA ÇÖKTÜ, kopma.tur renderer, kalan adımlar koşmaz, asılı kalma yok, KALDI), tm (tarayıcı metrics sürerken), rc/rg (co-op: oda sahibinin
+// renderer'ı ev() sürerken, konuğunki senaryo beklerken öldürülür; senaryo durur, kopmadan sonraki check() sayılmaz), rd (co-op: tarayıcı
+// ilk onaydan önce öldürülür; neden "onaysız" değil), te (artık: kopmadan sonra tick() senaryoyu durdurur, TE02 koşmaz), ig/ih
+// (sandbox'lı alt çerçevede kilit isteği: taklitte ve gerçek kilitte SecurityError, pointerlockerror, konsolda güvenlik hatası).
+// Öldürme durumlarında bu betik koşucunun çıktısında '[test] KOSUCU_NEGATIF_OLDUR' satırını görünce koşucunun alt ağacındaki
+// hedef süreci (tarayıcı ana süreci: komut satırında --type= olmayan chrome süreci; ya da renderer) /proc üzerinden bulur ve öldürür
+// (yalnız Linux).
+//
 // Rapor kuralı (A1-05): rapor beklenen bir durumda rapor yoksa durum KALIR ("rapor yazılmadı"): çıkış kodu tek başına yetmez,
 // çünkü hiçbir şey yapmadan 1 ile çıkan bir koşucu KALDI beklenen her durumu geçerdi. Şema 1 raporu (eski koşucu) yalnız
 // --eski-kosucu ile kabul edilir ve o zaman yalnız çıkış kodu denetlenir ("yalnız çıkış kodu" notu); bayraksız şema 1 de KALIR.
@@ -210,17 +226,181 @@ const D = [
                 ['yeni sekmenin anahtarı Tayfa#2', Array.isArray(r.pageErrors?.['Tayfa#2']), Object.keys(r.pageErrors || {})],
                 ['hatalar.sayfa: oyuncu Tayfa', (r.hatalar?.sayfa || []).some((x) => x.oyuncu === 'Tayfa' && /kosucu_negatif ai/.test(x.ileti)), r.hatalar?.sayfa],
                 ['AI01 geçti', kontrol(r, 'AI01')?.ok === true, kontrol(r, 'AI01')]] },
+  // Faz 1, 17 bellek çökmesi düzeltmesi (kosucu17)
+  { ad: 'pk', kosucu: 'run', aciklama: 'işaretçi kilidi taklidi (varsayılan): gerçek kilidin anlamı, sentetik fare olayı seli yok, kilitliyken fare olayları kilitli öğeye', sayfa: 'pk_isaretci.html', senaryo: 'pk_isaretci.js', cikis: 0, durum: 'GECTI',
+    ek: (r) => [['PK01–PK08 geçti', ['PK01', 'PK02', 'PK03', 'PK04', 'PK05', 'PK06', 'PK07', 'PK08'].every((id) => kontrol(r, id)?.ok === true), (r.kontroller || []).map((k) => [k.id, k.ok, k.deger])],
+                ['rapor: isaretciKilidi taklit; sayaç: 3 kilit verildi, 2 red (ayrık öğe, jestsiz), fare olayları yönlendirildi', r.isaretciKilidi?.kip === 'taklit' && r.isaretciKilidi?.sayac?.verildi === 3 && r.isaretciKilidi?.sayac?.red === 2 && r.isaretciKilidi?.sayac?.jestsiz === 1 && r.isaretciKilidi?.sayac?.yonlendirilen >= 10, r.isaretciKilidi]] },
+  { ad: 'pk2', kosucu: 'run', aciklama: 'aynı senaryo gerçek kilitle (--isaretci-kilidi gercek): yalnız PK02 (sel) kalır', sayfa: 'pk_isaretci.html', senaryo: 'pk_isaretci.js', cikis: 1, durum: 'KALDI', arg: ['--isaretci-kilidi', 'gercek'],
+    ek: (r) => [['PK02 kaldı (gerçek kilitte sayfaya mousemove seli: > 5)', kontrol(r, 'PK02')?.ok === false && kontrol(r, 'PK02')?.deger > 5, kontrol(r, 'PK02')],
+                ['PK01, PK03–PK08 geçti (taklitle aynı anlam)', ['PK01', 'PK03', 'PK04', 'PK05', 'PK06', 'PK07', 'PK08'].every((id) => kontrol(r, id)?.ok === true), (r.kontroller || []).map((k) => [k.id, k.ok, k.deger])],
+                ['yalnız 1 kontrol kaldı, adım hatası yok', (r.kontroller || []).filter((k) => !k.ok).length === 1 && r.evalErrors === 0, { kalan: (r.kontroller || []).filter((k) => !k.ok).map((k) => k.id), evalErrors: r.evalErrors }],
+                ['rapor: isaretciKilidi gercek, sayaç yok', r.isaretciKilidi?.kip === 'gercek' && r.isaretciKilidi?.sayac === null, r.isaretciKilidi]] },
+  // (2. deneme) kilitliyken arayüz düğmesine tikla: gerçek kilitte zaman aşımı (yoklama5); taklitte de aynı (gizlenmez)
+  ...[['pk5', 'taklit', []], ['pk6', 'gercek', ['--isaretci-kilidi', 'gercek']]].map(([ad, kip, arg]) => ({
+    ad, kosucu: 'run', aciklama: `kilitliyken düğmeye tikla (${kip}): isabet denetimi zaman aşımı, düğme etkinleşmez → KALDI`, sayfa: 'pk_isaretci.html', senaryo: 'pk5_kilitli_tikla.js', cikis: 1, durum: 'KALDI', arg, enCokMs: 90000,
+    ek: (r) => [['tikla adımı (5) zaman aşımı hatası', /Timeout/i.test(adim(r, 5).error || '') && r.evalErrors === 1, { adim5: adim(r, 5).error, evalErrors: r.evalErrors }],
+                ['PK5-01 ve PK5-02 geçti (düğme etkinleşmedi, kilit sürüyor)', kontrol(r, 'PK5-01')?.ok === true && kontrol(r, 'PK5-02')?.ok === true, (r.kontroller || []).map((k) => [k.id, k.ok, k.deger])],
+                ['neden yalnız adım hatası', (r.sonuc?.neden || []).every((n) => /başarısız kontrol ya da adım: 1|adım istisnası \(evalErrors\): 1/.test(n)), r.sonuc?.neden],
+                [`rapor: isaretciKilidi ${kip}`, r.isaretciKilidi?.kip === kip, r.isaretciKilidi]] })),
+  { ad: 'pk3', kosucu: 'run', aciklama: 'geçersiz --isaretci-kilidi değeri: kullanım hatası (çıkış 2)', sayfa: 'temiz.html', senaryo: 'c_onaysiz.js', cikis: 2, durum: null, raporYok: true, enCokMs: 15000,
+    arg: ['--isaretci-kilidi', 'kapali'], gunluk: (g) => [['ileti: --isaretci-kilidi taklit|gercek', /--isaretci-kilidi taklit\|gercek olmalı/.test(g), null]] },
+  { ad: 'pk4', kosucu: 'coop', aciklama: 'co-op: işaretçi kilidi taklidi her oyuncu sekmesinde kurulu', sayfa: 'coop.html', senaryo: 'pk4_coop_isaretci.cjs', cikis: 0, durum: 'GECTI',
+    ek: (r) => [['PK4-01 (Kaptan) ve PK4-02 (Tayfa) geçti', kontrol(r, 'PK4-01')?.ok === true && kontrol(r, 'PK4-02')?.ok === true, (r.kontroller || []).map((k) => [k.id, k.ok, k.deger])],
+                ['rapor: isaretciKilidi taklit, her oyuncunun sayacı', r.isaretciKilidi?.kip === 'taklit' && r.isaretciKilidi?.sayac?.Kaptan?.verildi === 1 && r.isaretciKilidi?.sayac?.Tayfa?.verildi === 1, r.isaretciKilidi]] },
+  { ad: 'tc', kosucu: 'run', aciklama: 'tarayıcı süreci js adımı sürerken öldürülür (SIGKILL; OOM benzeri)', sayfa: 'temiz.html', senaryo: 'tc_tarayici_olur.js', cikis: 1, durum: 'KALDI', oldur: true, enCokMs: 60000,
+    ek: (r) => [['hatalar.sayfa: TARAYICI ÇÖKTÜ/KOPTU', (r.hatalar?.sayfa || []).some((x) => /^TARAYICI ÇÖKTÜ\/KOPTU/.test(x)), r.hatalar?.sayfa],
+                ['neden: tarayıcı çöktü/koptu', nedenVar(r, /tarayıcı çöktü\/koptu/), r.sonuc?.neden],
+                ['kopma: tür tarayici, adım 2; TC02 koşmadı (kosmayanAdim 2)', r.kopma?.tur === 'tarayici' && r.kopma?.adim === 2 && r.kopma?.kosmayanAdim === 2 && !kontrol(r, 'TC02'), { kopma: r.kopma, kontroller: (r.kontroller || []).map((k) => k.id) }],
+                ['sonuc.tarayiciKoptu', r.sonuc?.tarayiciKoptu === true, r.sonuc]] },
+  { ad: 'td', kosucu: 'run', aciklama: 'tarayıcı süreci bekleme adımı sürerken öldürülür: KOSUCU_HATASI değil KALDI', sayfa: 'temiz.html', senaryo: 'td_tarayici_olur_bekleme.js', cikis: 1, durum: 'KALDI', oldur: true, enCokMs: 60000,
+    ek: (r) => [['hatalar.sayfa: TARAYICI ÇÖKTÜ/KOPTU', (r.hatalar?.sayfa || []).some((x) => /^TARAYICI ÇÖKTÜ\/KOPTU/.test(x)), r.hatalar?.sayfa],
+                ['koşucu hatası yok (harnessError boş)', !r.harnessError, r.harnessError],
+                ['kopma: tür tarayici; TD02 koşmadı', r.kopma?.tur === 'tarayici' && !kontrol(r, 'TD02'), r.kopma]] },
+  // (son düzeltici 2, inceleme KC-3) kopmadan sonra senaryo sürmez: tick() kopma hatası atar, TE02 hiç kaydedilmez (eskiden TE02
+  // undefined değerle "boşuna" geçiyordu ve bu durum onu bekliyordu)
+  { ad: 'te', kosucu: 'coop', aciklama: 'co-op: tarayıcı süreci senaryo sürerken öldürülür; sonraki tick() senaryoyu durdurur, kalan onay koşmaz → KALDI', sayfa: 'coop.html', senaryo: 'te_coop_tarayici_olur.cjs', cikis: 1, durum: 'KALDI', oldur: true, enCokMs: 90000,
+    ek: (r) => [['hatalar.sayfa: {oyuncu: null, TARAYICI ÇÖKTÜ/KOPTU}', (r.hatalar?.sayfa || []).some((x) => x.oyuncu === null && /^TARAYICI ÇÖKTÜ\/KOPTU/.test(x.ileti)), r.hatalar?.sayfa],
+                ['neden: tarayıcı çöktü/koptu', nedenVar(r, /tarayıcı çöktü\/koptu/), r.sonuc?.neden],
+                ['TE01 geçti; TE02 koşmadı (kopmadan sonra senaryo durdu)', kontrol(r, 'TE01')?.ok === true && !kontrol(r, 'TE02') && (r.kontroller || []).length === 1, (r.kontroller || []).map((k) => [k.id, k.ok])],
+                ['kopma.senaryoHatasi: tick() kopma hatası', /koşu koptu .*tick\(\)/.test(r.kopma?.senaryoHatasi || ''), r.kopma],
+                ['koşucu hatası yok', !r.harnessError, r.harnessError],
+                ['sonuc.tarayiciKoptu', r.sonuc?.tarayiciKoptu === true, r.sonuc]] },
+  // (son düzeltici 2, inceleme KC-1) sayfanın renderer süreci öldürülür (OOM'un sık kurbanı): js adımında, bekleme adımında, metrics
+  // adımının CDP isteği sürerken; co-op'ta oda sahibinin isteği sürerken ve konuğunki senaryo beklerken
+  { ad: 'rk', kosucu: 'run', aciklama: 'renderer süreci js adımı sürerken öldürülür: SAYFA ÇÖKTÜ, kalan adımlar koşmaz → KALDI', sayfa: 'temiz.html', senaryo: 'rk_renderer_olur.js', cikis: 1, durum: 'KALDI', oldur: 'renderer', enCokMs: 60000,
+    ek: (r) => [['hatalar.sayfa: SAYFA ÇÖKTÜ (renderer crash)', (r.hatalar?.sayfa || []).some((x) => /^SAYFA ÇÖKTÜ \(renderer crash\)/.test(x)), r.hatalar?.sayfa],
+                ['neden: sayfa (renderer) çöktü', nedenVar(r, /sayfa \(renderer\) çöktü/), r.sonuc?.neden],
+                ['kopma: tür renderer, adım 2, 4 adım koşmadı; RK02/RK03 yok', r.kopma?.tur === 'renderer' && r.kopma?.adim === 2 && r.kopma?.kosmayanAdim === 4 && !kontrol(r, 'RK02') && !kontrol(r, 'RK03'), { kopma: r.kopma, kontroller: (r.kontroller || []).map((k) => k.id) }],
+                ['zaman aşımı ve koşucu hatası yok; sonuc.kopma renderer', !r.timeout && !r.harnessError && r.sonuc?.kopma === 'renderer' && r.sonuc?.tarayiciKoptu === false, { timeout: r.timeout, harnessError: r.harnessError, sonuc: r.sonuc }]] },
+  { ad: 'rw', kosucu: 'run', aciklama: 'renderer süreci bekleme adımı sürerken öldürülür: KOSUCU_HATASI değil KALDI', sayfa: 'temiz.html', senaryo: 'rw_renderer_olur_bekleme.js', cikis: 1, durum: 'KALDI', oldur: 'renderer', enCokMs: 60000,
+    ek: (r) => [['hatalar.sayfa: SAYFA ÇÖKTÜ (renderer crash)', (r.hatalar?.sayfa || []).some((x) => /^SAYFA ÇÖKTÜ \(renderer crash\)/.test(x)), r.hatalar?.sayfa],
+                ['koşucu hatası yok (harnessError boş)', !r.harnessError, r.harnessError],
+                ['kopma: tür renderer, yarıda kalan bekleme adımı 3; RW02 yok', r.kopma?.tur === 'renderer' && r.kopma?.yaridaKalan?.adim === 3 && /crashed/i.test(r.kopma?.yaridaKalan?.hata || '') && !kontrol(r, 'RW02'), r.kopma]] },
+  { ad: 'rm', kosucu: 'run', aciklama: 'renderer süreci metrics adımının CDP isteği sürerken öldürülür: asılı kalmaz → KALDI', sayfa: 'temiz.html', senaryo: 'rm_renderer_olur_metrics.js', cikis: 1, durum: 'KALDI', oldur: 'renderer', enCokMs: 60000,
+    ek: (r) => [['kopma: tür renderer, adım 3 (metrics); RM02 yok', r.kopma?.tur === 'renderer' && r.kopma?.adim === 3 && !kontrol(r, 'RM02'), { kopma: r.kopma, kontroller: (r.kontroller || []).map((k) => k.id) }],
+                ['metrics adımı kanıt uyarısıyla bitti (sayılmadı)', (adim(r, 3).kanitUyarisi || []).some((k) => k.tur === 'metrics') && !adim(r, 3).metrics, adim(r, 3)],
+                ['zaman aşımı ve koşucu hatası yok', !r.timeout && !r.harnessError, { timeout: r.timeout, harnessError: r.harnessError }]] },
+  // (son düzeltici 2) aynı senaryoda TARAYICI süreci öldürülür: değişiklik öncesi koşucuda metrics adımının CDP isteği --timeout dolana
+  // dek asılı kalıp koşu ZAMAN_ASIMI oluyordu (bu turda yanlışlıkla tarayıcı öldürülen ilk deneme koşusunda görüldü: sd2/kosu/N1_kn_once/rm)
+  { ad: 'tm', kosucu: 'run', aciklama: 'tarayıcı süreci metrics adımının CDP isteği sürerken öldürülür: asılı kalmaz → KALDI', sayfa: 'temiz.html', senaryo: 'rm_renderer_olur_metrics.js', cikis: 1, durum: 'KALDI', oldur: true, enCokMs: 60000,
+    ek: (r) => [['kopma: tür tarayici, adım 3 (metrics); RM02 yok', r.kopma?.tur === 'tarayici' && r.kopma?.adim === 3 && !kontrol(r, 'RM02'), { kopma: r.kopma, kontroller: (r.kontroller || []).map((k) => k.id) }],
+                ['hatalar.sayfa: TARAYICI ÇÖKTÜ/KOPTU', (r.hatalar?.sayfa || []).some((x) => /^TARAYICI ÇÖKTÜ\/KOPTU/.test(x)), r.hatalar?.sayfa],
+                ['zaman aşımı ve koşucu hatası yok', !r.timeout && !r.harnessError, { timeout: r.timeout, harnessError: r.harnessError }]] },
+  { ad: 'rc', kosucu: 'coop', aciklama: "co-op: oda sahibinin renderer'ı ev() isteği sürerken öldürülür: SAYFA ÇÖKTÜ (Kaptan), senaryo durur → KALDI", sayfa: 'coop.html', senaryo: 'rc_coop_renderer_olur.cjs', cikis: 1, durum: 'KALDI', oldur: 'renderer', enCokMs: 90000,
+    ek: (r) => [['hatalar.sayfa: Kaptan, SAYFA ÇÖKTÜ (renderer crash)', (r.hatalar?.sayfa || []).some((x) => x.oyuncu === 'Kaptan' && /^SAYFA ÇÖKTÜ \(renderer crash\)/.test(x.ileti)), r.hatalar?.sayfa],
+                ['kopma: tür renderer, çöken Kaptan; senaryo durdu (kopma hatası)', r.kopma?.tur === 'renderer' && (r.kopma?.cokenler || []).map((c) => c.oyuncu).join() === 'Kaptan' && /koşu koptu/.test(r.kopma?.senaryoHatasi || ''), r.kopma],
+                ['RC01 geçti, RC02 koşmadı; yarıdaki istek hata sayılmadı (evalErrors 0)', kontrol(r, 'RC01')?.ok === true && !kontrol(r, 'RC02') && Array.isArray(r.evalErrors) && r.evalErrors.length === 0, { kontroller: (r.kontroller || []).map((k) => [k.id, k.ok]), evalErrors: r.evalErrors }],
+                ['neden: sayfa (renderer) çöktü: Kaptan; koşucu hatası yok', nedenVar(r, /sayfa \(renderer\) çöktü: Kaptan/) && !r.harnessError, { neden: r.sonuc?.neden, harnessError: r.harnessError }]] },
+  { ad: 'rg', kosucu: 'coop', aciklama: "co-op: konuğun renderer'ı öldürülür; tick() kopma hatası atar, kopmadan sonraki check() sayılmaz → KALDI", sayfa: 'coop.html', senaryo: 'rg_coop_konuk_renderer_olur.cjs', cikis: 1, durum: 'KALDI', oldur: 'renderer2', enCokMs: 90000,
+    ek: (r) => [['hatalar.sayfa: Tayfa, SAYFA ÇÖKTÜ (renderer crash)', (r.hatalar?.sayfa || []).some((x) => x.oyuncu === 'Tayfa' && /^SAYFA ÇÖKTÜ \(renderer crash\)/.test(x.ileti)), r.hatalar?.sayfa],
+                ['kopma: tür renderer, çöken Tayfa; RG02 sayılmadı', r.kopma?.tur === 'renderer' && (r.kopma?.cokenler || []).map((c) => c.oyuncu).join() === 'Tayfa' && (r.kopma?.sayilmayanKontrol || []).some((x) => /^RG02/.test(x)), r.kopma],
+                ['RG01 geçti; RG02 kontrollerde yok', kontrol(r, 'RG01')?.ok === true && !kontrol(r, 'RG02') && (r.kontroller || []).length === 1, (r.kontroller || []).map((k) => [k.id, k.ok])],
+                ['koşucu hatası yok', !r.harnessError, r.harnessError]],
+    gunluk: (g) => [["tick() kopma hatası attı ('koşu koptu … tick()')", /\[test\] tick hatası: koşu koptu .*tick\(\)/.test(g), null]] },
+  // (son düzeltici 2, inceleme KC-2) co-op'ta ilk check()'ten önce tarayıcı ölünce neden'e "hiç onay içermiyor … meta.olcum" eklenmez
+  { ad: 'rd', kosucu: 'coop', aciklama: 'co-op: tarayıcı ilk onaydan önce öldürülür: neden "ilk onaydan önce yarıda kaldı" (onaysız değil) → KALDI', sayfa: 'coop.html', senaryo: 'rd_coop_onaysiz_kopma.cjs', cikis: 1, durum: 'KALDI', oldur: true, enCokMs: 90000,
+    ek: (r) => [['neden: tarayıcı çöktü/koptu ve ilk onaydan önce yarıda kaldı', nedenVar(r, /tarayıcı çöktü\/koptu/) && nedenVar(r, /ilk onaydan önce yarıda kaldı/), r.sonuc?.neden],
+                ["neden'de 'hiç onay içermiyor' yok", !nedenVar(r, /hiç onay içermiyor/), r.sonuc?.neden],
+                ['kontrol yok, koşucu hatası yok', (r.kontroller || []).length === 0 && !r.harnessError, { kontroller: r.kontroller, harnessError: r.harnessError }]] },
+  // (son düzeltici 2, inceleme GZ-2) sandbox'lı alt çerçevede (allow-pointer-lock yok) kilit isteği: taklitte (ig) gerçek kilitteki (ih)
+  // gibi SecurityError + pointerlockerror + konsolda güvenlik hatası (izinsiz konsol hatası → KALDI); sandbox'sız çerçeve kilitlenir
+  ...[['ig', 'taklit', []], ['ih', 'gercek', ['--isaretci-kilidi', 'gercek']]].map(([ad, kip, arg]) => ({
+    ad, kosucu: 'run', aciklama: `sandbox'lı alt çerçevede kilit isteği (${kip}): SecurityError, pointerlockerror, konsolda güvenlik hatası → KALDI`, sayfa: 'ig_sandbox.html', senaryo: 'ig_sandbox_cerceve.js', cikis: 1, durum: 'KALDI', arg, enCokMs: 60000,
+    ek: (r) => [['IG00 ve IG01 geçti', kontrol(r, 'IG00')?.ok === true && kontrol(r, 'IG01')?.ok === true, (r.kontroller || []).map((k) => [k.id, k.ok, k.deger])],
+                ["konsolda 2 güvenlik hatası ('Blocked pointer lock … sandboxed …', izinsiz)", say((r.hatalar?.konsol || []).filter((k) => /Blocked pointer lock on an element because the element's frame is sandboxed/.test(k.ileti))) === 2, r.hatalar?.konsol],
+                ['neden yalnız izinsiz konsol hatası; adım hatası yok', (r.sonuc?.neden || []).length > 0 && (r.sonuc?.neden || []).every((n) => /izinsiz konsol hatası/.test(n)) && r.evalErrors === 0, { neden: r.sonuc?.neden, evalErrors: r.evalErrors }],
+                [`rapor: isaretciKilidi ${kip}`, r.isaretciKilidi?.kip === kip, r.isaretciKilidi]] })),
+  // (son düzeltici, inceleme DOG-1) kilit tikla adımı başladıktan SONRA (düğme görünürlük beklenirken) alınır: karar tıklamanın
+  // gönderildiği anda verilmeli; taklitte (ia) de gerçek kilitteki (ib) gibi zaman aşımı, tuval ve düğme tık almaz
+  ...[['ia', 'taklit', []], ['ib', 'gercek', ['--isaretci-kilidi', 'gercek']]].map(([ad, kip, arg]) => ({
+    ad, kosucu: 'run', aciklama: `kilit tikla beklerken alınır (${kip}): tıklama engellenir → zaman aşımı, tuval ve düğme tık almaz → KALDI`, sayfa: 'pk_isaretci.html', senaryo: 'ia_gec_kilit_tikla.js', cikis: 1, durum: 'KALDI', arg, enCokMs: 90000,
+    ek: (r) => { let s4 = null; try { s4 = JSON.parse(adim(r, 4).result); } catch (e) { s4 = null; } return [
+      ['tikla adımı (3) zaman aşımı hatası', /Timeout/i.test(adim(r, 3).error || '') && r.evalErrors === 1, { adim3: adim(r, 3).error, evalErrors: r.evalErrors }],
+      ['adım 4: tuval ve düğme tık almadı, kilit sürüyor', !!s4 && s4.gec === 0 && Array.isArray(s4.tuval) && s4.tuval.length === 0 && s4.kilitli === true, s4],
+      ['IA01 geçti', kontrol(r, 'IA01')?.ok === true, kontrol(r, 'IA01')],
+      ['neden yalnız adım hatası', (r.sonuc?.neden || []).every((n) => /başarısız kontrol ya da adım: 1|adım istisnası \(evalErrors\): 1/.test(n)), r.sonuc?.neden],
+      [`rapor: isaretciKilidi ${kip}${kip === 'taklit' ? ', tikEngel > 0' : ''}`, r.isaretciKilidi?.kip === kip && (kip !== 'taklit' || r.isaretciKilidi?.sayac?.tikEngel > 0), r.isaretciKilidi]]; } })),
+  // (son düzeltici) olumlu karşılığı: kilitliyken başlayan tikla, kilit süre dolmadan bırakılınca düğmeye ulaşır (Playwright yeniden
+  // denemesi); taklitte (ia2) ve gerçek kilitte (ia3) aynı: GECTI, düğme bir kez, tuval hiç
+  ...[['ia2', 'taklit', []], ['ia3', 'gercek', ['--isaretci-kilidi', 'gercek']]].map(([ad, kip, arg]) => ({
+    ad, kosucu: 'run', aciklama: `kilitliyken başlayan tikla, kilit bırakılınca düğmeye ulaşır (${kip}) → GECTI`, sayfa: 'pk_isaretci.html', senaryo: 'ia2_kilit_birakilinca_tikla.js', cikis: 0, durum: 'GECTI', arg, enCokMs: 90000,
+    ek: (r) => [['IA2-01 geçti (düğme 1 kez, tuval 0, kilit yok)', kontrol(r, 'IA2-01')?.ok === true, kontrol(r, 'IA2-01')],
+                ['tikla adımı (5) hatasız', !adim(r, 5).error && !!adim(r, 5).tikla, adim(r, 5)],
+                ...(kip === 'taklit' ? [['adım kaydı: kilit engeline takılan deneme ≥ 1 (kilitEngeli)', adim(r, 5).tikla?.kilitEngeli?.engellenenDeneme >= 1, adim(r, 5).tikla]] : [])] })),
+  // (inceleyicinin ek durumları) taklidin gönderdiği olayların dinleyici istisnaları sayfa hatasıdır
+  { ad: 'ic', kosucu: 'run', aciklama: 'taklidin pointerlockchange olayındaki dinleyici istisnası sayfa hatası olarak kaydedilir', sayfa: 'pk_isaretci.html', senaryo: 'ic_kilit_dinleyici_hatasi.js', cikis: 1, durum: 'KALDI',
+    ek: (r) => [['hatalar.sayfa: kosucu_negatif ic', (r.hatalar?.sayfa || []).some((x) => /kosucu_negatif ic/.test(x)), r.hatalar?.sayfa], ['IC01 geçti', kontrol(r, 'IC01')?.ok === true, kontrol(r, 'IC01')]] },
+  { ad: 'id', kosucu: 'run', aciklama: 'yönlendirilen fare olayının (kopya) dinleyici istisnası sayfa hatası olarak kaydedilir', sayfa: 'pk_isaretci.html', senaryo: 'id_yonlenen_dinleyici_hatasi.js', cikis: 1, durum: 'KALDI',
+    ek: (r) => [['hatalar.sayfa: kosucu_negatif id', (r.hatalar?.sayfa || []).some((x) => /kosucu_negatif id/.test(x)), r.hatalar?.sayfa], ['ID01 geçti', kontrol(r, 'ID01')?.ok === true, kontrol(r, 'ID01')]] },
+  // (son düzeltici, inceleme DOG-2) rapor tutarlılığı: sayaç okuması sürerken gelen sayfa hatası durumu KALDI yapar
+  { ad: 'ie', kosucu: 'run', aciklama: 'yerleşmeden sonra, taklit sayacı okunurken gelen sayfa hatası: hatalar.sayfa dolu → KALDI (rapor tutarlı)', sayfa: 'temiz.html', senaryo: 'ie_sayac_sirasinda_hata.js', cikis: 1, durum: 'KALDI',
+    ek: (r) => [['hatalar.sayfa: kosucu_negatif ie', (r.hatalar?.sayfa || []).some((x) => /kosucu_negatif ie/.test(x)), r.hatalar?.sayfa],
+                ['neden: sayfa hatası', nedenVar(r, /pageerror/), r.sonuc?.neden], ['IE01 geçti', kontrol(r, 'IE01')?.ok === true, kontrol(r, 'IE01')]] },
+  { ad: 'ie2', kosucu: 'coop', aciklama: 'co-op: yerleşmeden sonra, taklit sayaçları okunurken gelen sayfa hatası: KALDI (rapor tutarlı)', sayfa: 'coop.html', senaryo: 'ie2_coop_sayac_sirasinda_hata.cjs', cikis: 1, durum: 'KALDI',
+    ek: (r) => [['hatalar.sayfa: Kaptan, kosucu_negatif ie2', (r.hatalar?.sayfa || []).some((x) => x.oyuncu === 'Kaptan' && /kosucu_negatif ie2/.test(x.ileti)), r.hatalar?.sayfa],
+                ['neden: sayfa hatası', nedenVar(r, /pageerror/), r.sonuc?.neden], ['IE2-01 geçti', kontrol(r, 'IE2-01')?.ok === true, kontrol(r, 'IE2-01')]] },
+  // (son düzeltici, inceleme DOG-3) co-op tikla yardımcısı: kilitsizken tıklar, kilitliyken taklitte (pk7) ve gerçek kilitte (pk8) aynı
+  // zaman aşımı; başarısızlık evalErrors'a yazılır, false döner
+  ...[['pk7', 'taklit', []], ['pk8', 'gercek', ['--isaretci-kilidi', 'gercek']]].map(([ad, kip, arg]) => ({
+    ad, kosucu: 'coop', aciklama: `co-op tikla yardımcısı (${kip}): kilitsiz tıklar; kilitliyken zaman aşımı, düğme/tuval tık almaz → KALDI`, sayfa: 'pk_isaretci.html', senaryo: 'pk7_coop_tikla.cjs', cikis: 1, durum: 'KALDI', arg, enCokMs: 120000,
+    ek: (r) => [['PK7-01, PK7-02, PK7-03 geçti', ['PK7-01', 'PK7-02', 'PK7-03'].every((id) => kontrol(r, id)?.ok === true), (r.kontroller || []).map((k) => [k.id, k.ok, k.deger])],
+                ['evalErrors: 2 tikla zaman aşımı (kilitli, yanlis-hedef)', Array.isArray(r.evalErrors) && r.evalErrors.length === 2 && r.evalErrors.every((x) => /^tikla /.test(x.js) && /Timeout/.test(x.hata)) && r.evalErrors.map((x) => x.etiket).join(',') === 'kilitli,yanlis-hedef', r.evalErrors],
+                ['neden yalnız ev()/tikla istisnası', (r.sonuc?.neden || []).every((n) => /başarısız kontrol ya da ev\(\) istisnası: 2|ev\(\) istisnası \(evalErrors\): 2/.test(n)), r.sonuc?.neden],
+                [`rapor: isaretciKilidi ${kip}${kip === 'taklit' ? ', Kaptan tikEngel > 0' : ''}`, r.isaretciKilidi?.kip === kip && (kip !== 'taklit' || r.isaretciKilidi?.sayac?.Kaptan?.tikEngel > 0), r.isaretciKilidi]] })),
 ];
 
 // ---- koşu
+// (kosucu17) Öldürme durumları için: koşucunun (pid) alt ağacındaki chrome süreci. hedef 'tarayici': tarayıcı ana süreci (komut
+// satırında --type= yok); (son düzeltici 2, KC-1) 'renderer': en eski canlı renderer (--type=renderer; tek sayfada sayfanınki, co-op'ta
+// ilk açılan oyuncunun, Kaptan), 'renderer2': ikinci en eski (co-op'ta Tayfa). Sıra: süreç başlangıç zamanı (/proc/<pid>/stat 22. alan),
+// eşitse --renderer-client-id. /proc okunur (yalnız Linux); bulunamazsa null. Öldürülenin hangi oyuncu olduğu durumların kendi
+// denetimlerinde (hatalar.sayfa'daki oyuncu) ayrıca doğrulanır.
+const procOku = (f) => { try { return fs.readFileSync(f, 'utf8'); } catch (e) { return null; } };
+function chromeSureci(kokPid, hedef = 'tarayici') {
+  const tablo = new Map();
+  let girdiler = [];
+  try { girdiler = fs.readdirSync('/proc'); } catch (e) { return null; }
+  for (const d of girdiler) {
+    if (!/^\d+$/.test(d)) continue;
+    const s = procOku(`/proc/${d}/stat`); if (!s) continue;
+    const b = s.lastIndexOf(')');
+    const alan = s.slice(b + 2).split(' ');
+    tablo.set(Number(d), { ppid: Number(alan[1]), basla: Number(alan[19]), comm: s.slice(s.indexOf('(') + 1, b) });
+  }
+  const cocuk = new Map(); for (const [p, x] of tablo) { if (!cocuk.has(x.ppid)) cocuk.set(x.ppid, []); cocuk.get(x.ppid).push(p); }
+  const yigin = [kokPid]; const agac = [];
+  while (yigin.length) { const p = yigin.pop(); for (const q of cocuk.get(p) || []) { agac.push(q); yigin.push(q); } }
+  const rendererlar = [];
+  for (const p of agac) {
+    if (!tablo.get(p).comm.startsWith('chrome')) continue;
+    const cmd = (procOku(`/proc/${p}/cmdline`) || '').replace(/\0/g, ' ');
+    if (hedef === 'tarayici') { if (!/--type=/.test(cmd)) return p; continue; }
+    if (/--type=renderer/.test(cmd)) rendererlar.push({ pid: p, basla: tablo.get(p).basla, id: Number((cmd.match(/--renderer-client-id=(\d+)/) || [])[1] || 0) });
+  }
+  if (hedef === 'tarayici') return null;
+  rendererlar.sort((a, b) => a.basla - b.basla || a.id - b.id);
+  const r = rendererlar[hedef === 'renderer2' ? 1 : 0];
+  return r ? r.pid : null;
+}
 // Alt süreç eşzamansız başlatılır: sabit sayfa sunucusu bu süreçtedir ve spawnSync olay döngüsünü kilitleyip sayfaları yanıtsız bırakır.
-const kos = (args, sureMs) => new Promise((coz) => {
+// oldur: koşucu çıktısında '[test] KOSUCU_NEGATIF_OLDUR' görülünce hedef süreç SIGKILL ile öldürülür (true: tarayıcı ana süreci;
+// 'renderer'/'renderer2': chromeSureci) (sonuç: oldurme alanı).
+const kos = (args, sureMs, { oldur = false } = {}) => new Promise((coz) => {
+  const t0 = Date.now();
   const c = spawn(process.execPath, args, { cwd: AGAC, env: process.env });
-  let stdout = '', stderr = '', signal = null;
-  c.stdout.on('data', (b) => { stdout += b; });
+  const hedef = oldur === true ? 'tarayici' : oldur || null;
+  let stdout = '', stderr = '', signal = null, oldurme = oldur ? { durum: 'işaret gelmedi', hedef } : null;
+  c.stdout.on('data', (b) => {
+    stdout += b;
+    if (oldurme && oldurme.durum === 'işaret gelmedi' && /\[test\] KOSUCU_NEGATIF_OLDUR/.test(stdout)) {
+      const pid = chromeSureci(c.pid, hedef);
+      if (!pid) { oldurme = { durum: `${hedef} süreci bulunamadı`, hedef }; return; }
+      try { process.kill(pid, 'SIGKILL'); oldurme = { durum: 'öldürüldü', hedef, pid, ms: Date.now() - t0 }; } catch (e) { oldurme = { durum: 'öldürülemedi: ' + e.message, hedef, pid }; }
+    }
+  });
   c.stderr.on('data', (b) => { stderr += b; });
   const k = setTimeout(() => { signal = 'SIGKILL (araç süresi doldu)'; c.kill('SIGKILL'); }, sureMs);
-  c.on('close', (status, sig) => { clearTimeout(k); coz({ status, signal: signal || sig, stdout, stderr }); });
+  c.on('close', (status, sig) => { clearTimeout(k); coz({ status, signal: signal || sig, stdout, stderr, oldurme }); });
 });
 const sonuclar = [];
 for (const d of D) {
@@ -235,9 +415,9 @@ for (const d of D) {
     ? [kosucu, senaryo, '--players', '2', '--size', '320x200', '--timeout', sure, '--url', `${KOK}/${d.sayfa}`, '--report', rapor, ...(d.arg || [])]
     : [kosucu, senaryo, '--size', '320x200', '--timeout', sure, '--url', `${KOK}/${d.sayfa}`, '--report', rapor, ...(d.arg || [])];
   const t0 = Date.now();
-  const p = await kos(args, 240000);
+  const p = await kos(args, 240000, { oldur: d.oldur || false });   // true: tarayıcı; "renderer"/"renderer2": renderer (KC-1)
   const sureMs = Date.now() - t0;
-  fs.writeFileSync(gunluk, `$ node ${args.join(' ')}\n${p.stdout || ''}${p.stderr ? '\n[stderr]\n' + p.stderr : ''}\n[çıkış ${p.status}${p.signal ? ' sinyal ' + p.signal : ''}]\n`);
+  fs.writeFileSync(gunluk, `$ node ${args.join(' ')}\n${p.stdout || ''}${p.stderr ? '\n[stderr]\n' + p.stderr : ''}\n[çıkış ${p.status}${p.signal ? ' sinyal ' + p.signal : ''}]${p.oldurme ? `\n[tarayıcı öldürme: ${JSON.stringify(p.oldurme)}]` : ''}\n`);
   d._cikis = p.status;
   const raporVar = fs.existsSync(rapor);
   let r = null;
@@ -245,6 +425,8 @@ for (const d of D) {
   const sema2 = !!(r && r.sema === 'dk-test-raporu/2');
   const durum = sema2 ? r.sonuc?.durum : null;
   const denetimler = [['çıkış kodu', p.status === d.cikis, p.status], ['süreç kendiliğinden bitti (asılı kalmadı)', !p.signal, p.signal]];
+  // (kosucu17) öldürme durumlarında öldürmenin gerçekten yapıldığı da denetlenir (yapılmadıysa durum kanıtsızdır)
+  if (d.oldur) denetimler.push([`${d.oldur === true ? 'tarayıcı ana süreci' : `renderer süreci (${d.oldur})`} senaryo sürerken öldürüldü`, p.oldurme?.durum === 'öldürüldü', p.oldurme]);
   if (d.enCokMs) denetimler.push([`süre ≤ ${d.enCokMs} ms`, sureMs <= d.enCokMs, sureMs]);
   let yalnizCikis = false;
   if (d.raporYok) denetimler.push(['rapor yazılmadı (beklenen)', !raporVar, raporVar]);

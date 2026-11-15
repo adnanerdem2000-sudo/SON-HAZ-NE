@@ -1,0 +1,17 @@
+$ node /home/user/SON-HAZ-NE-k17/tests/harness/coop.cjs tests/fixtures/kosucu/pk7_coop_tikla.cjs --players 2 --size 320x200 --timeout 120 --url http://127.0.0.1:40581/pk_isaretci.html --report /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/son2/kn/tum/pk7.json
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+Kaptan/kilitsiz tıklandı: #dugme
+PASS PK7-01 Kilitsiz tikla düğmeyi etkinleştirdi → {"donus":true,"tik":1}
+EVALERR Kaptan kilitli locator.click: Timeout 3000ms exceeded. (işaretçi kilidi taklidi: 9 denemede tıklama engellendi — canvas#tuval kilitli; kilit anındaki imleç konumunda (200, 150) canvas#tuval var, hedef button#dugme değil. Gerçek kilitte Playwright'ın isabet denetimi tıklamayı burada engeller: "canvas#tuval intercep
+PASS PK7-02 Kilitliyken tikla false döndü; düğme ve tuval tık almadı, kilit sürüyor → {"donus":false,"durum":[0,0,true]}
+GORUNTU /home/user/SON-HAZ-NE-k17/tests/out/goruntu/pk7_coop_tikla_2026-11-15T03-57-01-147Z_10343/ilk_kalan_Kaptan.png
+GORUNTU /home/user/SON-HAZ-NE-k17/tests/out/goruntu/pk7_coop_tikla_2026-11-15T03-57-01-147Z_10343/ilk_kalan_Tayfa.png
+EVALERR Kaptan yanlis-hedef locator.click: Timeout 500ms exceeded. (koşucu: tıklanacak öğe bekleniyordu)
+Call log:
+  - waiting for locator('#yok-boyle-bir-oge')
+
+PASS PK7-03 Olmayan öğeye tikla false döndü → false
+checks: 3 fails: 2 pageErrors: 0 (5.2 s)
+SONUC: KALDI (çıkış 1) kontrol 3/3 | ev() istisnası 2, kapalı sayfa atlama 0, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: başarısız kontrol ya da ev() istisnası: 2; ev() istisnası (evalErrors): 2
+
+[çıkış 1]

@@ -1,0 +1,5867 @@
+{
+ "gercek": {
+  "surum": "153.0.8010.12",
+  "00_kilitsiz_tik_dugme": {
+   "olaylar": {
+    "click@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "focusin@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": -1,
+      "y": -1,
+      "mx": null,
+      "my": null,
+      "btn": null
+     }
+    },
+    "mousedown@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousemove@b": {
+     "n": 1,
+     "mxToplam": 50,
+     "myToplam": 25,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 50,
+      "my": 25,
+      "btn": 0
+     }
+    },
+    "mouseout@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseover@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerdown@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@b": {
+     "n": 1,
+     "mxToplam": 50,
+     "myToplam": 25,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 50,
+      "my": 25,
+      "btn": -1
+     }
+    },
+    "pointerout@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerover@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerup@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    }
+   },
+   "olaylarKabarma": {
+    "click@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "focusin@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": -1,
+      "y": -1,
+      "mx": null,
+      "my": null,
+      "btn": null
+     }
+    },
+    "mousedown@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousemove@b": {
+     "n": 1,
+     "mxToplam": 50,
+     "myToplam": 25,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 50,
+      "my": 25,
+      "btn": 0
+     }
+    },
+    "mouseout@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseover@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerdown@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@b": {
+     "n": 1,
+     "mxToplam": 50,
+     "myToplam": 25,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 50,
+      "my": 25,
+      "btn": -1
+     }
+    },
+    "pointerout@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerover@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerup@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    }
+   },
+   "tik": 1,
+   "odak": "b",
+   "onay": false,
+   "ple": null
+  },
+  "01_kilitle": {
+   "olaylar": {
+    "mousemove@c": {
+     "n": 24,
+     "mxToplam": -50,
+     "myToplam": -25,
+     "sifirHareket": 22,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 150,
+      "my": 125,
+      "btn": 0
+     }
+    },
+    "mouseout@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseover@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@c": {
+     "n": 24,
+     "mxToplam": -50,
+     "myToplam": -25,
+     "sifirHareket": 22,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 150,
+      "my": 125,
+      "btn": -1
+     }
+    },
+    "pointerout@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerover@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    }
+   },
+   "olaylarKabarma": {
+    "mousemove@c": {
+     "n": 24,
+     "mxToplam": -50,
+     "myToplam": -25,
+     "sifirHareket": 22,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 150,
+      "my": 125,
+      "btn": 0
+     }
+    },
+    "mouseout@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseover@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@c": {
+     "n": 24,
+     "mxToplam": -50,
+     "myToplam": -25,
+     "sifirHareket": 22,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 150,
+      "my": 125,
+      "btn": -1
+     }
+    },
+    "pointerout@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerover@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    }
+   },
+   "tik": 0,
+   "odak": "BODY",
+   "onay": false,
+   "ple": "c",
+   "ek": "ok"
+  },
+  "02_kilitli_bekle_1sn": {
+   "olaylar": {
+    "mousemove@c": {
+     "n": 55,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 55,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@c": {
+     "n": 55,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 55,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    }
+   },
+   "olaylarKabarma": {
+    "mousemove@c": {
+     "n": 55,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 55,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@c": {
+     "n": 55,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 55,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    }
+   },
+   "tik": 0,
+   "odak": "BODY",
+   "onay": false,
+   "ple": "c"
+  },
+  "03_kilitli_move_dugme": {
+   "olaylar": {
+    "mousemove@c": {
+     "n": 27,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 19,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@c": {
+     "n": 27,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 19,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    }
+   },
+   "olaylarKabarma": {
+    "mousemove@c": {
+     "n": 27,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 19,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@c": {
+     "n": 27,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 19,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    }
+   },
+   "tik": 0,
+   "odak": "BODY",
+   "onay": false,
+   "ple": "c"
+  },
+  "04_kilitli_tik_dugme": {
+   "olaylar": {
+    "click@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousedown@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousemove@c": {
+     "n": 20,
+     "mxToplam": -100,
+     "myToplam": -50,
+     "sifirHareket": 16,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerdown@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@c": {
+     "n": 20,
+     "mxToplam": -100,
+     "myToplam": -50,
+     "sifirHareket": 16,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerup@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    }
+   },
+   "olaylarKabarma": {
+    "click@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousedown@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousemove@c": {
+     "n": 20,
+     "mxToplam": -100,
+     "myToplam": -50,
+     "sifirHareket": 16,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerdown@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@c": {
+     "n": 20,
+     "mxToplam": -100,
+     "myToplam": -50,
+     "sifirHareket": 16,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerup@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    }
+   },
+   "tik": 0,
+   "odak": "BODY",
+   "onay": false,
+   "ple": "c"
+  },
+  "05_kilitli_tik_metin": {
+   "olaylar": {
+    "click@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousedown@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousemove@c": {
+     "n": 19,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 17,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerdown@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@c": {
+     "n": 19,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 17,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerup@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    }
+   },
+   "olaylarKabarma": {
+    "click@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousedown@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousemove@c": {
+     "n": 19,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 17,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerdown@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@c": {
+     "n": 19,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 17,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerup@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    }
+   },
+   "tik": 0,
+   "odak": "BODY",
+   "onay": false,
+   "ple": "c"
+  },
+  "06_kilitli_tik_onay": {
+   "olaylar": {
+    "click@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousedown@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousemove@c": {
+     "n": 20,
+     "mxToplam": -40,
+     "myToplam": -146,
+     "sifirHareket": 16,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerdown@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@c": {
+     "n": 20,
+     "mxToplam": -40,
+     "myToplam": -146,
+     "sifirHareket": 16,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerup@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    }
+   },
+   "olaylarKabarma": {
+    "click@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousedown@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousemove@c": {
+     "n": 20,
+     "mxToplam": -40,
+     "myToplam": -146,
+     "sifirHareket": 16,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerdown@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@c": {
+     "n": 20,
+     "mxToplam": -40,
+     "myToplam": -146,
+     "sifirHareket": 16,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerup@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    }
+   },
+   "tik": 0,
+   "odak": "BODY",
+   "onay": false,
+   "ple": "c"
+  },
+  "07_kilitli_cifttik_dugme": {
+   "olaylar": {
+    "click@c": {
+     "n": 2,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 2,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "dblclick@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousedown@c": {
+     "n": 2,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 2,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousemove@c": {
+     "n": 17,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 15,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@c": {
+     "n": 2,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 2,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerdown@c": {
+     "n": 2,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 2,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@c": {
+     "n": 17,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 15,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerup@c": {
+     "n": 2,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 2,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    }
+   },
+   "olaylarKabarma": {
+    "click@c": {
+     "n": 2,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 2,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "dblclick@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousedown@c": {
+     "n": 2,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 2,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousemove@c": {
+     "n": 17,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 15,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@c": {
+     "n": 2,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 2,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerdown@c": {
+     "n": 2,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 2,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@c": {
+     "n": 17,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 15,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerup@c": {
+     "n": 2,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 2,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    }
+   },
+   "tik": 0,
+   "odak": "BODY",
+   "onay": false,
+   "ple": "c"
+  },
+  "08_kilitli_sagtik_dugme": {
+   "olaylar": {
+    "click@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 2
+     }
+    },
+    "mousedown@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 2
+     }
+    },
+    "mousemove@c": {
+     "n": 18,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 16,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 2
+     }
+    },
+    "pointerdown@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 2
+     }
+    },
+    "pointermove@c": {
+     "n": 18,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 16,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerup@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 2
+     }
+    }
+   },
+   "olaylarKabarma": {
+    "click@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 2
+     }
+    },
+    "mousedown@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 2
+     }
+    },
+    "mousemove@c": {
+     "n": 18,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 16,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 2
+     }
+    },
+    "pointerdown@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 2
+     }
+    },
+    "pointermove@c": {
+     "n": 18,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 16,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerup@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 2
+     }
+    }
+   },
+   "tik": 0,
+   "odak": "BODY",
+   "onay": false,
+   "ple": "c"
+  },
+  "09_kilitli_orta_dugme": {
+   "olaylar": {
+    "click@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 1
+     }
+    },
+    "mousedown@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 1
+     }
+    },
+    "mousemove@c": {
+     "n": 19,
+     "mxToplam": -50,
+     "myToplam": -25,
+     "sifirHareket": 16,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 1
+     }
+    },
+    "pointerdown@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 1
+     }
+    },
+    "pointermove@c": {
+     "n": 19,
+     "mxToplam": -50,
+     "myToplam": -25,
+     "sifirHareket": 16,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerup@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 1
+     }
+    }
+   },
+   "olaylarKabarma": {
+    "click@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 1
+     }
+    },
+    "mousedown@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 1
+     }
+    },
+    "mousemove@c": {
+     "n": 19,
+     "mxToplam": -50,
+     "myToplam": -25,
+     "sifirHareket": 16,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 1
+     }
+    },
+    "pointerdown@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 1
+     }
+    },
+    "pointermove@c": {
+     "n": 19,
+     "mxToplam": -50,
+     "myToplam": -25,
+     "sifirHareket": 16,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerup@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 1
+     }
+    }
+   },
+   "tik": 0,
+   "odak": "BODY",
+   "onay": false,
+   "ple": "c"
+  },
+  "10_kilitli_wheel_dugme": {
+   "olaylar": {
+    "mousemove@c": {
+     "n": 16,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 14,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@c": {
+     "n": 16,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 14,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "wheel@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    }
+   },
+   "olaylarKabarma": {
+    "mousemove@c": {
+     "n": 16,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 14,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@c": {
+     "n": 16,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 14,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "wheel@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    }
+   },
+   "tik": 0,
+   "odak": "BODY",
+   "onay": false,
+   "ple": "c"
+  },
+  "11_kilitli_locator_click": {
+   "olaylar": {
+    "click@c": {
+     "n": 13,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 13,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousedown@c": {
+     "n": 13,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 13,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousemove@c": {
+     "n": 346,
+     "mxToplam": -780,
+     "myToplam": -325,
+     "sifirHareket": 307,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@c": {
+     "n": 13,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 13,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerdown@c": {
+     "n": 13,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 13,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@c": {
+     "n": 346,
+     "mxToplam": -780,
+     "myToplam": -325,
+     "sifirHareket": 307,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerup@c": {
+     "n": 13,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 13,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    }
+   },
+   "olaylarKabarma": {
+    "mousemove@c": {
+     "n": 346,
+     "mxToplam": -780,
+     "myToplam": -325,
+     "sifirHareket": 307,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@c": {
+     "n": 346,
+     "mxToplam": -780,
+     "myToplam": -325,
+     "sifirHareket": 307,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    }
+   },
+   "tik": 0,
+   "odak": "BODY",
+   "onay": false,
+   "ple": "c",
+   "ek": {
+    "r": "red locator.click: Timeout 5000ms exceeded.",
+    "ms": 5004
+   }
+  },
+  "12_kilitli_move_tuval": {
+   "olaylar": {
+    "mousemove@c": {
+     "n": 28,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 18,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@c": {
+     "n": 28,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 18,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    }
+   },
+   "olaylarKabarma": {
+    "mousemove@c": {
+     "n": 28,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 18,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@c": {
+     "n": 28,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 18,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    }
+   },
+   "tik": 0,
+   "odak": "BODY",
+   "onay": false,
+   "ple": "c"
+  },
+  "12b_kilitli_klavye_click": {
+   "olaylar": {
+    "click@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 0,
+      "y": 0,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "focusin@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": -1,
+      "y": -1,
+      "mx": null,
+      "my": null,
+      "btn": null
+     }
+    },
+    "mousemove@c": {
+     "n": 18,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 18,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@c": {
+     "n": 18,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 18,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    }
+   },
+   "olaylarKabarma": {
+    "click@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 0,
+      "y": 0,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "focusin@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": -1,
+      "y": -1,
+      "mx": null,
+      "my": null,
+      "btn": null
+     }
+    },
+    "mousemove@c": {
+     "n": 18,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 18,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@c": {
+     "n": 18,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 18,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    }
+   },
+   "tik": 1,
+   "odak": "b",
+   "onay": false,
+   "ple": "c"
+  },
+  "13_birak_ve_tik": {
+   "olaylar": {
+    "click@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousedown@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousemove@b": {
+     "n": 1,
+     "mxToplam": 50,
+     "myToplam": 25,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 50,
+      "my": 25,
+      "btn": 0
+     }
+    },
+    "mousemove@c": {
+     "n": 2,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 2,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseout@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseover@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerdown@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@b": {
+     "n": 1,
+     "mxToplam": 50,
+     "myToplam": 25,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 50,
+      "my": 25,
+      "btn": -1
+     }
+    },
+    "pointermove@c": {
+     "n": 2,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 2,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerout@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerover@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerup@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    }
+   },
+   "olaylarKabarma": {
+    "click@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousedown@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousemove@b": {
+     "n": 1,
+     "mxToplam": 50,
+     "myToplam": 25,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 50,
+      "my": 25,
+      "btn": 0
+     }
+    },
+    "mousemove@c": {
+     "n": 2,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 2,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseout@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseover@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerdown@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@b": {
+     "n": 1,
+     "mxToplam": 50,
+     "myToplam": 25,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 50,
+      "my": 25,
+      "btn": -1
+     }
+    },
+    "pointermove@c": {
+     "n": 2,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 2,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerout@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerover@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerup@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    }
+   },
+   "tik": 2,
+   "odak": "b",
+   "onay": false,
+   "ple": null
+  }
+ },
+ "taklit": {
+  "surum": "153.0.8010.12",
+  "00_kilitsiz_tik_dugme": {
+   "olaylar": {
+    "click@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "focusin@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": -1,
+      "y": -1,
+      "mx": null,
+      "my": null,
+      "btn": null
+     }
+    },
+    "mousedown@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousemove@b": {
+     "n": 1,
+     "mxToplam": 50,
+     "myToplam": 25,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 50,
+      "my": 25,
+      "btn": 0
+     }
+    },
+    "mouseout@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseover@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerdown@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@b": {
+     "n": 1,
+     "mxToplam": 50,
+     "myToplam": 25,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 50,
+      "my": 25,
+      "btn": -1
+     }
+    },
+    "pointerout@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerover@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerup@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    }
+   },
+   "olaylarKabarma": {
+    "click@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "focusin@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": -1,
+      "y": -1,
+      "mx": null,
+      "my": null,
+      "btn": null
+     }
+    },
+    "mousedown@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousemove@b": {
+     "n": 1,
+     "mxToplam": 50,
+     "myToplam": 25,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 50,
+      "my": 25,
+      "btn": 0
+     }
+    },
+    "mouseout@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseover@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerdown@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@b": {
+     "n": 1,
+     "mxToplam": 50,
+     "myToplam": 25,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 50,
+      "my": 25,
+      "btn": -1
+     }
+    },
+    "pointerout@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerover@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerup@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    }
+   },
+   "tik": 1,
+   "odak": "b",
+   "onay": false,
+   "ple": null
+  },
+  "01_kilitle": {
+   "olaylar": {
+    "mousemove@c": {
+     "n": 1,
+     "mxToplam": 150,
+     "myToplam": 125,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 150,
+      "my": 125,
+      "btn": 0
+     }
+    },
+    "mouseout@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseover@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@c": {
+     "n": 1,
+     "mxToplam": 150,
+     "myToplam": 125,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 150,
+      "my": 125,
+      "btn": -1
+     }
+    },
+    "pointerout@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerover@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    }
+   },
+   "olaylarKabarma": {
+    "mousemove@c": {
+     "n": 1,
+     "mxToplam": 150,
+     "myToplam": 125,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 150,
+      "my": 125,
+      "btn": 0
+     }
+    },
+    "mouseout@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseover@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@c": {
+     "n": 1,
+     "mxToplam": 150,
+     "myToplam": 125,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 150,
+      "my": 125,
+      "btn": -1
+     }
+    },
+    "pointerout@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerover@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    }
+   },
+   "tik": 0,
+   "odak": "BODY",
+   "onay": false,
+   "ple": "c",
+   "ek": "ok"
+  },
+  "02_kilitli_bekle_1sn": {
+   "olaylar": {},
+   "olaylarKabarma": {},
+   "tik": 0,
+   "odak": "BODY",
+   "onay": false,
+   "ple": "c"
+  },
+  "03_kilitli_move_dugme": {
+   "olaylar": {
+    "mousemove@b": {
+     "n": 1,
+     "mxToplam": -37,
+     "myToplam": -31,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": -37,
+      "my": -31,
+      "btn": 0
+     }
+    },
+    "mousemove@c(sentetik)": {
+     "n": 2,
+     "mxToplam": -75,
+     "myToplam": -62,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": -38,
+      "my": -31,
+      "btn": 0
+     }
+    },
+    "mousemove@c": {
+     "n": 2,
+     "mxToplam": -75,
+     "myToplam": -63,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": -38,
+      "my": -32,
+      "btn": 0
+     }
+    },
+    "mousemove@t": {
+     "n": 1,
+     "mxToplam": -38,
+     "myToplam": -31,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": -38,
+      "my": -31,
+      "btn": 0
+     }
+    },
+    "pointermove@b": {
+     "n": 1,
+     "mxToplam": -37,
+     "myToplam": -31,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": -37,
+      "my": -31,
+      "btn": -1
+     }
+    },
+    "pointermove@c(sentetik)": {
+     "n": 2,
+     "mxToplam": -75,
+     "myToplam": -62,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": -38,
+      "my": -31,
+      "btn": -1
+     }
+    },
+    "pointermove@c": {
+     "n": 2,
+     "mxToplam": -75,
+     "myToplam": -63,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": -38,
+      "my": -32,
+      "btn": -1
+     }
+    },
+    "pointermove@t": {
+     "n": 1,
+     "mxToplam": -38,
+     "myToplam": -31,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": -38,
+      "my": -31,
+      "btn": -1
+     }
+    }
+   },
+   "olaylarKabarma": {
+    "mousemove@c(sentetik)": {
+     "n": 2,
+     "mxToplam": -75,
+     "myToplam": -62,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": -38,
+      "my": -31,
+      "btn": 0
+     }
+    },
+    "mousemove@c": {
+     "n": 2,
+     "mxToplam": -75,
+     "myToplam": -63,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": -38,
+      "my": -32,
+      "btn": 0
+     }
+    },
+    "pointermove@c(sentetik)": {
+     "n": 2,
+     "mxToplam": -75,
+     "myToplam": -62,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": -38,
+      "my": -31,
+      "btn": -1
+     }
+    },
+    "pointermove@c": {
+     "n": 2,
+     "mxToplam": -75,
+     "myToplam": -63,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": -38,
+      "my": -32,
+      "btn": -1
+     }
+    }
+   },
+   "tik": 0,
+   "odak": "BODY",
+   "onay": false,
+   "ple": "c"
+  },
+  "04_kilitli_tik_dugme": {
+   "olaylar": {
+    "click@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "click@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousedown@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousedown@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousemove@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousemove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerdown@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerdown@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointermove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerup@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerup@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    }
+   },
+   "olaylarKabarma": {
+    "click@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousedown@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousemove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerdown@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerup@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    }
+   },
+   "tik": 0,
+   "odak": "BODY",
+   "onay": false,
+   "ple": "c"
+  },
+  "05_kilitli_tik_metin": {
+   "olaylar": {
+    "click@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "click@t": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousedown@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousedown@t": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousemove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 27,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 27,
+      "btn": 0
+     }
+    },
+    "mousemove@t": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 27,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 27,
+      "btn": 0
+     }
+    },
+    "mouseup@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@t": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerdown@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerdown@t": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 27,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 27,
+      "btn": -1
+     }
+    },
+    "pointermove@t": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 27,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 27,
+      "btn": -1
+     }
+    },
+    "pointerup@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerup@t": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    }
+   },
+   "olaylarKabarma": {
+    "click@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousedown@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousemove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 27,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 27,
+      "btn": 0
+     }
+    },
+    "mouseup@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerdown@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 27,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 27,
+      "btn": -1
+     }
+    },
+    "pointerup@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    }
+   },
+   "tik": 0,
+   "odak": "BODY",
+   "onay": false,
+   "ple": "c"
+  },
+  "06_kilitli_tik_onay": {
+   "olaylar": {
+    "click@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "click@k": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousedown@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousedown@k": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousemove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": -30,
+     "myToplam": 21,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": -30,
+      "my": 21,
+      "btn": 0
+     }
+    },
+    "mousemove@k": {
+     "n": 1,
+     "mxToplam": -30,
+     "myToplam": 21,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": -30,
+      "my": 21,
+      "btn": 0
+     }
+    },
+    "mouseup@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@k": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerdown@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerdown@k": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": -30,
+     "myToplam": 21,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": -30,
+      "my": 21,
+      "btn": -1
+     }
+    },
+    "pointermove@k": {
+     "n": 1,
+     "mxToplam": -30,
+     "myToplam": 21,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": -30,
+      "my": 21,
+      "btn": -1
+     }
+    },
+    "pointerup@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerup@k": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    }
+   },
+   "olaylarKabarma": {
+    "click@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousedown@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousemove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": -30,
+     "myToplam": 21,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": -30,
+      "my": 21,
+      "btn": 0
+     }
+    },
+    "mouseup@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerdown@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": -30,
+     "myToplam": 21,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": -30,
+      "my": 21,
+      "btn": -1
+     }
+    },
+    "pointerup@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    }
+   },
+   "tik": 0,
+   "odak": "BODY",
+   "onay": false,
+   "ple": "c"
+  },
+  "07_kilitli_cifttik_dugme": {
+   "olaylar": {
+    "click@b": {
+     "n": 2,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 2,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "click@c(sentetik)": {
+     "n": 2,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 2,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "dblclick@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "dblclick@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousedown@b": {
+     "n": 2,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 2,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousedown@c(sentetik)": {
+     "n": 2,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 2,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousemove@b": {
+     "n": 1,
+     "mxToplam": 30,
+     "myToplam": -48,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 30,
+      "my": -48,
+      "btn": 0
+     }
+    },
+    "mousemove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 30,
+     "myToplam": -48,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 30,
+      "my": -48,
+      "btn": 0
+     }
+    },
+    "mouseup@b": {
+     "n": 2,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 2,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@c(sentetik)": {
+     "n": 2,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 2,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerdown@b": {
+     "n": 2,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 2,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerdown@c(sentetik)": {
+     "n": 2,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 2,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@b": {
+     "n": 1,
+     "mxToplam": 30,
+     "myToplam": -48,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 30,
+      "my": -48,
+      "btn": -1
+     }
+    },
+    "pointermove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 30,
+     "myToplam": -48,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 30,
+      "my": -48,
+      "btn": -1
+     }
+    },
+    "pointerup@b": {
+     "n": 2,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 2,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerup@c(sentetik)": {
+     "n": 2,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 2,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    }
+   },
+   "olaylarKabarma": {
+    "click@c(sentetik)": {
+     "n": 2,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 2,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "dblclick@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousedown@c(sentetik)": {
+     "n": 2,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 2,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousemove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 30,
+     "myToplam": -48,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 30,
+      "my": -48,
+      "btn": 0
+     }
+    },
+    "mouseup@c(sentetik)": {
+     "n": 2,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 2,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerdown@c(sentetik)": {
+     "n": 2,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 2,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 30,
+     "myToplam": -48,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 30,
+      "my": -48,
+      "btn": -1
+     }
+    },
+    "pointerup@c(sentetik)": {
+     "n": 2,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 2,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    }
+   },
+   "tik": 0,
+   "odak": "BODY",
+   "onay": false,
+   "ple": "c"
+  },
+  "08_kilitli_sagtik_dugme": {
+   "olaylar": {
+    "auxclick@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 2
+     }
+    },
+    "click@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 2
+     }
+    },
+    "contextmenu@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 2
+     }
+    },
+    "mousedown@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 2
+     }
+    },
+    "mousedown@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 2
+     }
+    },
+    "mousemove@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousemove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 2
+     }
+    },
+    "mouseup@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 2
+     }
+    },
+    "pointerdown@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 2
+     }
+    },
+    "pointerdown@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 2
+     }
+    },
+    "pointermove@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointermove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerup@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 2
+     }
+    },
+    "pointerup@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 2
+     }
+    }
+   },
+   "olaylarKabarma": {
+    "click@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 2
+     }
+    },
+    "mousedown@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 2
+     }
+    },
+    "mousemove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 2
+     }
+    },
+    "pointerdown@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 2
+     }
+    },
+    "pointermove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerup@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 2
+     }
+    }
+   },
+   "tik": 0,
+   "odak": "BODY",
+   "onay": false,
+   "ple": "c"
+  },
+  "09_kilitli_orta_dugme": {
+   "olaylar": {
+    "auxclick@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 1
+     }
+    },
+    "click@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 1
+     }
+    },
+    "mousedown@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 1
+     }
+    },
+    "mousedown@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 1
+     }
+    },
+    "mousemove@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousemove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 1
+     }
+    },
+    "mouseup@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 1
+     }
+    },
+    "pointerdown@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 1
+     }
+    },
+    "pointerdown@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 1
+     }
+    },
+    "pointermove@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointermove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerup@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 1
+     }
+    },
+    "pointerup@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 1
+     }
+    }
+   },
+   "olaylarKabarma": {
+    "click@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 1
+     }
+    },
+    "mousedown@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 1
+     }
+    },
+    "mousemove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 1
+     }
+    },
+    "pointerdown@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 1
+     }
+    },
+    "pointermove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerup@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 1
+     }
+    }
+   },
+   "tik": 0,
+   "odak": "BODY",
+   "onay": false,
+   "ple": "c"
+  },
+  "10_kilitli_wheel_dugme": {
+   "olaylar": {
+    "mousemove@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousemove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointermove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "wheel@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "wheel@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    }
+   },
+   "olaylarKabarma": {
+    "mousemove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "wheel@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    }
+   },
+   "tik": 0,
+   "odak": "BODY",
+   "onay": false,
+   "ple": "c"
+  },
+  "11_kilitli_locator_click": {
+   "olaylar": {
+    "click@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "click@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousedown@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousedown@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousemove@b": {
+     "n": 1,
+     "mxToplam": 10,
+     "myToplam": 0,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 10,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousemove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 10,
+     "myToplam": 0,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 10,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerdown@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerdown@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@b": {
+     "n": 1,
+     "mxToplam": 10,
+     "myToplam": 0,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 10,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointermove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 10,
+     "myToplam": 0,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 10,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerup@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerup@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    }
+   },
+   "olaylarKabarma": {
+    "click@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousedown@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousemove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 10,
+     "myToplam": 0,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 10,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerdown@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 10,
+     "myToplam": 0,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 10,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerup@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    }
+   },
+   "tik": 0,
+   "odak": "BODY",
+   "onay": false,
+   "ple": "c",
+   "ek": {
+    "r": "çözüldü",
+    "ms": 34
+   }
+  },
+  "12_kilitli_move_tuval": {
+   "olaylar": {
+    "mousemove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 38,
+     "myToplam": 25,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 38,
+      "my": 25,
+      "btn": 0
+     }
+    },
+    "mousemove@c": {
+     "n": 4,
+     "mxToplam": 152,
+     "myToplam": 100,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 38,
+      "my": 25,
+      "btn": 0
+     }
+    },
+    "mousemove@t": {
+     "n": 1,
+     "mxToplam": 38,
+     "myToplam": 25,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 38,
+      "my": 25,
+      "btn": 0
+     }
+    },
+    "pointermove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 38,
+     "myToplam": 25,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 38,
+      "my": 25,
+      "btn": -1
+     }
+    },
+    "pointermove@c": {
+     "n": 4,
+     "mxToplam": 152,
+     "myToplam": 100,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 38,
+      "my": 25,
+      "btn": -1
+     }
+    },
+    "pointermove@t": {
+     "n": 1,
+     "mxToplam": 38,
+     "myToplam": 25,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 38,
+      "my": 25,
+      "btn": -1
+     }
+    }
+   },
+   "olaylarKabarma": {
+    "mousemove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 38,
+     "myToplam": 25,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 38,
+      "my": 25,
+      "btn": 0
+     }
+    },
+    "mousemove@c": {
+     "n": 4,
+     "mxToplam": 152,
+     "myToplam": 100,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 38,
+      "my": 25,
+      "btn": 0
+     }
+    },
+    "pointermove@c(sentetik)": {
+     "n": 1,
+     "mxToplam": 38,
+     "myToplam": 25,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 38,
+      "my": 25,
+      "btn": -1
+     }
+    },
+    "pointermove@c": {
+     "n": 4,
+     "mxToplam": 152,
+     "myToplam": 100,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 200,
+      "y": 150,
+      "mx": 38,
+      "my": 25,
+      "btn": -1
+     }
+    }
+   },
+   "tik": 0,
+   "odak": "BODY",
+   "onay": false,
+   "ple": "c"
+  },
+  "12b_kilitli_klavye_click": {
+   "olaylar": {
+    "click@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 0,
+      "y": 0,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "focusin@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": -1,
+      "y": -1,
+      "mx": null,
+      "my": null,
+      "btn": null
+     }
+    }
+   },
+   "olaylarKabarma": {
+    "click@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 0,
+      "y": 0,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "focusin@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": -1,
+      "y": -1,
+      "mx": null,
+      "my": null,
+      "btn": null
+     }
+    }
+   },
+   "tik": 1,
+   "odak": "b",
+   "onay": false,
+   "ple": "c"
+  },
+  "13_birak_ve_tik": {
+   "olaylar": {
+    "click@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousedown@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousemove@b": {
+     "n": 1,
+     "mxToplam": -200,
+     "myToplam": -125,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": -200,
+      "my": -125,
+      "btn": 0
+     }
+    },
+    "mouseout@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseover@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerdown@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@b": {
+     "n": 1,
+     "mxToplam": -200,
+     "myToplam": -125,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": -200,
+      "my": -125,
+      "btn": -1
+     }
+    },
+    "pointerout@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerover@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerup@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    }
+   },
+   "olaylarKabarma": {
+    "click@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousedown@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mousemove@b": {
+     "n": 1,
+     "mxToplam": -200,
+     "myToplam": -125,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": -200,
+      "my": -125,
+      "btn": 0
+     }
+    },
+    "mouseout@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseover@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "mouseup@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointerdown@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    },
+    "pointermove@b": {
+     "n": 1,
+     "mxToplam": -200,
+     "myToplam": -125,
+     "sifirHareket": 0,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": -200,
+      "my": -125,
+      "btn": -1
+     }
+    },
+    "pointerout@c": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerover@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": -1
+     }
+    },
+    "pointerup@b": {
+     "n": 1,
+     "mxToplam": 0,
+     "myToplam": 0,
+     "sifirHareket": 1,
+     "ilk": {
+      "x": 50,
+      "y": 25,
+      "mx": 0,
+      "my": 0,
+      "btn": 0
+     }
+    }
+   },
+   "tik": 2,
+   "odak": "b",
+   "onay": false,
+   "ple": null
+  }
+ }
+}

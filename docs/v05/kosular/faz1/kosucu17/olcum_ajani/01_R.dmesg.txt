@@ -1,0 +1,7 @@
+# 01_R dmesg (koşu sonunda son 6 'Killed process' satırı)
+[Sat Nov 14 14:40:33 2026] Memory cgroup out of memory: Killed process 31475 (chrome-headless) total-vm:1524420204kB, anon-rss:6256652kB, file-rss:2060kB, shmem-rss:0kB, UID:0 pgtables:20972kB oom_score_adj:300
+[Sat Nov 14 14:47:36 2026] Memory cgroup out of memory: Killed process 1750 (chrome-headless) total-vm:1524408332kB, anon-rss:6197000kB, file-rss:2136kB, shmem-rss:0kB, UID:0 pgtables:21092kB oom_score_adj:300
+[Sat Nov 14 14:59:16 2026] Memory cgroup out of memory: Killed process 6771 (chrome-headless) total-vm:1524404232kB, anon-rss:5982572kB, file-rss:2064kB, shmem-rss:0kB, UID:0 pgtables:20736kB oom_score_adj:300
+[Sat Nov 14 15:35:08 2026] Memory cgroup out of memory: Killed process 24395 (chrome-headless) total-vm:1518489608kB, anon-rss:6162448kB, file-rss:2272kB, shmem-rss:0kB, UID:0 pgtables:20924kB oom_score_adj:300
+[Sat Nov 14 15:40:08 2026] Memory cgroup out of memory: Killed process 25463 (chrome-headless) total-vm:1518496696kB, anon-rss:4965944kB, file-rss:2056kB, shmem-rss:0kB, UID:0 pgtables:19128kB oom_score_adj:300
+[Sat Nov 14 15:44:57 2026] Memory cgroup out of memory: Killed process 26551 (chrome-headless) total-vm:1518501544kB, anon-rss:5396400kB, file-rss:2204kB, shmem-rss:0kB, UID:0 pgtables:20076kB oom_score_adj:300

@@ -1,0 +1,12 @@
+$ node /home/user/SON-HAZ-NE-k17/tests/harness/run.cjs tests/fixtures/kosucu/id_yonlenen_dinleyici_hatasi.js --size 320x200 --timeout 90 --url http://127.0.0.1:38307/pk_isaretci.html --report /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/kosu/V1_kn/id.json
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+ready in 0.3 s
+R: "istendi"
+R: "kuruldu"
+PAGEERR: kosucu_negatif id: yönlendirilen olayın dinleyicisinde hata | Error: kosucu_negatif id: yönlendirilen olayın dinleyicisinde hata |     at HTMLCanvasElement.eval (eval at evaluate (:311:30), <anonymous>:1:54) |     at kopyala (<anonymous>:189:18) |     at HTMLDocument.belgede (<anonymous>:243:5)
+PASS ID01 Tuval kilitli → true
+GORUNTU /home/user/SON-HAZ-NE-k17/tests/out/goruntu/id_yonlenen_dinleyici_hatasi_2026-11-15T06-12-58-990Z_22769/son.png
+errors: 0 pageErrors: 1 fails: 0 (1.9 s)
+SONUC: KALDI (çıkış 1) kontrol 1/1, onay 1 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: sayfa hatası (pageerror): 1
+
+[çıkış 1]

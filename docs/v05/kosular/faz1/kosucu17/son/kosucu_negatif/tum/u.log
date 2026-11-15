@@ -1,0 +1,10 @@
+$ node /home/user/SON-HAZ-NE-k17/tests/harness/run.cjs tests/fixtures/kosucu/u_sayfa_hatasi.js --size 320x200 --timeout 90 --url http://127.0.0.1:40581/u_sayfa_hatasi.html --report /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/son2/kn/tum/u.json
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+PAGEERR: kosucu_negatif u: yakalanmamış sayfa hatası | Error: kosucu_negatif u: yakalanmamış sayfa hatası |     at http://127.0.0.1:40581/u_sayfa_hatasi.html?test=1:8:28
+ready in 0.2 s
+PASS U01 Sabit sayfa açıldı → "object"
+GORUNTU /home/user/SON-HAZ-NE-k17/tests/out/goruntu/u_sayfa_hatasi_2026-11-15T03-55-25-484Z_7226/son.png
+errors: 0 pageErrors: 1 fails: 0 (1.5 s)
+SONUC: KALDI (çıkış 1) kontrol 1/1, onay 1 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: sayfa hatası (pageerror): 1
+
+[çıkış 1]

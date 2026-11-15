@@ -1,0 +1,13 @@
+$ node /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/once_kosucu/run.cjs tests/fixtures/kosucu/rm_renderer_olur_metrics.js --size 320x200 --timeout 90 --url http://127.0.0.1:46101/temiz.html --report /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/kosu/N1_kn_once/rm.json
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+ready in 0.2 s
+PASS RM01 Sabit sayfa açıldı → "object"
+[test] KOSUCU_NEGATIF_OLDUR
+R: "işaret verildi; ana iplik 8 sn meşgul olacak"
+KOPMA TARAYICI ÇÖKTÜ/KOPTU: tarayıcı süreciyle bağlantı koptu (süreç öldürüldü ya da çöktü; ör. bellek sınırında OOM) — adım 3, 0.3 sn
+TIMEOUT
+errors: 0 pageErrors: 1 fails: 0 TIMEOUT (90.3 s)
+SONUC: ZAMAN_ASIMI (çıkış 1) kontrol 1/1, onay 2 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: sayfa hatası (pageerror): 1; zaman aşımı (90 sn); tarayıcı çöktü/koptu (adım 3)
+
+[çıkış 1]
+[tarayıcı öldürme: {"durum":"öldürüldü","hedef":"tarayici","pid":15107,"ms":561}]

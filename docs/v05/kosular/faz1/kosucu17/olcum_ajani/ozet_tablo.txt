@@ -1,0 +1,66 @@
+17_kamera_kararma bellek ölçümü — 2026-11-14T17:23:58.461Z
+
+koşu     başlangıç            süre   durum   kontrol  çökme  OOM  K05s  K08s  rend.HWM  gpu HWM  brow.HWM  chrome∑  cg tepe  bg(rss)  bg(anon)  tepe kontrol (chrome/rend/brow/gpu)
+01_R     2026-11-14T16:03:45  185.3  GECTI   13/13    -      0    37    80    2910.8    519.3    1453.7    4262.7   4440     194.5    566.9     K04/K08/K04/K12
+02_N     2026-11-14T16:17:51  175.8  KALDI   8/13     EVET   1    90    23    4817      491      8861.3    13571.4  13675    190.3    565.1     K08/K05/K08/K08  OOM: browser pid 2745 anon-rss 8846 MB @Sat Nov 14 16:20:47 2026
+03_R     2026-11-14T16:26:40  179.3  KALDI   5/13     EVET   1    116   -     5784.4    468.4    7141.1    13422    13674    85.3     440.6     K05/K05/K05/K05  OOM: renderer pid 4977 anon-rss 5794 MB @Sat Nov 14 16:29:24 2026
+04_N     2026-11-14T16:30:31  221.9  GECTI   13/13    -      0    41    106   2279.9    514.6    1092.8    3460.7   3593     133.7    505.1     K08/K08/K04/K12
+05_R     2026-11-14T16:38:33  188.3  GECTI   13/13    -      0    38    85    2567.3    515      1393.5    4124.5   4262     147.9    503.6     K04/K04/K04/K12
+06_N     2026-11-14T16:46:32  191.8  GECTI   13/13    -      0    39    79    4059      526.6    1291.1    5186.2   5392     205.5    578.4     K12/K08/K04/K12
+07_R     2026-11-14T16:54:33  207.9  GECTI   13/13    -      0    40    94    3083.5    517.2    1234.2    4413.3   4623     207.3    580.3     K12/K12/K04/K12
+08_N     2026-11-14T17:04:21  200.3  GECTI   13/13    -      0    44    84    2614.9    516.8    1305.6    4262.3   4445     201      557.5     K04/K04/K04/K12
+09_E     2026-11-14T17:10:31  174.8  PASS    13/13    -      0    36    78    3440.6    512.8    965.8     4552.9   4738     190      559.3     K12/K08/K04/K12
+
+Varyant karşılaştırması (ort ± sd [min–max], MB):
+  R: 4 koşu, 3 geçti, 1 çöktü, 1 koşuda bu koşunun süreci OOM ile öldürüldü
+     k05_s                        57.9 ± 38.9 [37–116.2] (n=4)
+     k08_s                        86 ± 7.1 [79.7–93.7] (n=3)
+     renderer_hwm_MB              3586.5 ± 1480.9 [2567.3–5784.4] (n=4)
+     gpu_hwm_MB                   505 ± 24.4 [468.4–519.3] (n=4)
+     browser_hwm_MB               2805.6 ± 2891.8 [1234.2–7141.1] (n=4)
+     utility_hwm_MB               90.6 ± 1.5 [88.9–92.1] (n=4)
+     chrome_toplam_tepe_MB        6555.6 ± 4579.1 [4124.5–13422] (n=4)
+     chrome_anon_tepe_MB          6207.2 ± 4691.4 [3731.4–13242.4] (n=4)
+     cg_tepe_MB                   6749.8 ± 4618.5 [4262–13674] (n=4)
+     arka_plan_baslangic_MB       158.8 ± 55.2 [85.3–207.3] (n=4)
+     arka_plan_anon_baslangic_MB  522.8 ± 64.2 [440.6–580.3] (n=4)
+     arka_plan_tepe_MB            1736.7 ± 2587.5 [196.1–5591.6] (n=4)
+     sure_s                       190.2 ± 12.4 [179.3–207.9] (n=4)
+  N: 4 koşu, 3 geçti, 1 çöktü, 1 koşuda bu koşunun süreci OOM ile öldürüldü
+     k05_s                        53.3 ± 24.4 [38.6–89.7] (n=4)
+     k08_s                        72.7 ± 35.4 [22.5–105.6] (n=4)
+     renderer_hwm_MB              3442.7 ± 1198 [2279.9–4817] (n=4)
+     gpu_hwm_MB                   512.3 ± 15.1 [491–526.6] (n=4)
+     browser_hwm_MB               3137.7 ± 3817 [1092.8–8861.3] (n=4)
+     utility_hwm_MB               90.8 ± 1.2 [89.2–92] (n=4)
+     chrome_toplam_tepe_MB        6620.2 ± 4687.5 [3460.7–13571.4] (n=4)
+     chrome_anon_tepe_MB          6270.1 ± 4799.6 [3048.4–13391.6] (n=4)
+     cg_tepe_MB                   6776.3 ± 4657.5 [3593–13675] (n=4)
+     arka_plan_baslangic_MB       182.6 ± 33.2 [133.7–205.5] (n=4)
+     arka_plan_anon_baslangic_MB  551.5 ± 32.1 [505.1–578.4] (n=4)
+     arka_plan_tepe_MB            2504.6 ± 3547.1 [188.1–7710] (n=4)
+     sure_s                       197.5 ± 19.2 [175.8–221.9] (n=4)
+  E: 1 koşu, 1 geçti, 0 çöktü, 0 koşuda bu koşunun süreci OOM ile öldürüldü
+     k05_s                        36.5 ± 0 [36.5–36.5] (n=1)
+     k08_s                        78.2 ± 0 [78.2–78.2] (n=1)
+     renderer_hwm_MB              3440.6 ± 0 [3440.6–3440.6] (n=1)
+     gpu_hwm_MB                   512.8 ± 0 [512.8–512.8] (n=1)
+     browser_hwm_MB               965.8 ± 0 [965.8–965.8] (n=1)
+     utility_hwm_MB               89.8 ± 0 [89.8–89.8] (n=1)
+     chrome_toplam_tepe_MB        4552.9 ± 0 [4552.9–4552.9] (n=1)
+     chrome_anon_tepe_MB          4145.2 ± 0 [4145.2–4145.2] (n=1)
+     cg_tepe_MB                   4738 ± 0 [4738–4738] (n=1)
+     arka_plan_baslangic_MB       190 ± 0 [190–190] (n=1)
+     arka_plan_anon_baslangic_MB  559.3 ± 0 [559.3–559.3] (n=1)
+     arka_plan_tepe_MB            211.5 ± 0 [211.5–211.5] (n=1)
+     sure_s                       174.8 ± 0 [174.8–174.8] (n=1)
+
+Notlar
+- bg(rss) = cgroup − Σ VmRSS(chrome) (paylaşılan dosya sayfaları çift sayıldığından düşük çıkar); bg(anon) = cgroup − Σ RssAnon(chrome) (sayfa önbelleği dahil, üst sınır). İkisi de koşu başında, chrome göründükten sonraki ilk 10 örneğin ortancası.
+- OOM sütunu: kilit alındıktan sonra cgroup oom_kill sayacındaki artış. Bu koşuların sürecine ait öldürmeler (dmesg pid ↔ _surec.csv): 02_N pid 2745 = browser (anon-rss 9.058.588 kB, total-vm 54.948.780 kB, oom_score_adj 0, 16:20:47); 03_R pid 4977 = renderer (anon-rss 5.932.840 kB, total-vm 1.524.410.312 kB, oom_score_adj 300, 16:29:24; o anda browser VmHWM 7141 MB). Kilit beklenirken olan öldürmeler (16:26:22 pid 4340, 16:38:19 pid 6925, 17:04:05 pid 3698) başka işlerin süreçleridir.
+- 02_N raporunda hatalar.sayfa boş: sayfa değil bütün tarayıcı süreci öldürüldü ("Target page, context or browser has been closed").
+- İplik CPU ortalaması (gozlem.mjs, koşu boyunca; 01–02'de gözlemci yoktu): browser ana iplik %82–88, browser IO %20–27, renderer Compositor %69–81, renderer ana %21–22 — R, N ve E'de aynı.
+
+Ek deneyler (koşucusuz, başlatma betiği yok; v0.4, 640x360)
+- X1 (17:16–17:18): oyun başlayınca browser ana %93 CPU, IO ipliği 4637 uyanma/sn, renderer Compositor %73 / 7463 uyanma/sn (menüde ikisi de ~%0–1). 2,41 sn'lik izde CrBrowserMain'de 98.630 'ui/aura/window_event_dispatcher.cc:PostSynthesizeMouseMove' görevi (~41 bin/sn) ve 99.970 blink.mojom.WidgetInputHandler yanıtı; renderer Compositor'da 98.747 blink.mojom.WidgetInputHandler iletisi (568 bayt, MouseMove). Ayrıntı: X1_iz_ozet.txt, ham iz X1_iz.json.gz.
+- X2 (17:22–17:23): pointerLockElement=game-canvas iken browser ana %88/%98 CPU; document.exitPointerLock() sonrası %0 (iki kez aç/kapa, her seferinde aynı). Ayrıntı: X2.log.

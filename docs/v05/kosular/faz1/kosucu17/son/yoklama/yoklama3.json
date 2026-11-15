@@ -1,0 +1,1163 @@
+{
+ "gercek": {
+  "surum": "153.0.8010.12",
+  "sel_kilitli": {
+   "istek": "ok",
+   "ple": "c",
+   "mousemoveSn": 51.8,
+   "cpuYuzde": {
+    "browser:ANA": 97,
+    "browser:Chrome_IOThread": 23,
+    "renderer:ANA": 19,
+    "renderer:Compositor": 79
+   }
+  },
+  "escape": "c",
+  "sel_kilitsiz": {
+   "ple": null,
+   "mousemoveSn": 0,
+   "cpuYuzde": {
+    "browser:ANA": 0,
+    "browser:Chrome_IOThread": 0,
+    "renderer:ANA": 0,
+    "renderer:Compositor": 0
+   }
+  },
+  "anlam": {
+   "info": {
+    "ogeTanim": {
+     "get": "function",
+     "getAd": "get pointerLockElement",
+     "set": "undefined",
+     "enumerable": true,
+     "configurable": true
+    },
+    "srTanim": true,
+    "istekUzunluk": 0,
+    "istekAd": "requestPointerLock",
+    "cikUzunluk": 0,
+    "cikAd": "exitPointerLock",
+    "odak": true,
+    "etkin": true
+   },
+   "kayit": [
+    {
+     "ad": "1 istek: eşzamanlı",
+     "ple": null,
+     "donus": "[object Promise]"
+    },
+    {
+     "ad": "1 istek: mikrogörev",
+     "ple": null
+    },
+    {
+     "ad": "1 istek: söz",
+     "r1": "çözüldü",
+     "ple": "c",
+     "olay": 0
+    },
+    {
+     "ad": "1 istek: 100 ms",
+     "ple": "c",
+     "olay": 1
+    },
+    {
+     "ad": "2 kilitliyken istek: eşzamanlı",
+     "ple": "c"
+    },
+    {
+     "ad": "2 kilitliyken istek",
+     "r2": "çözüldü",
+     "ple": "c",
+     "yeni": [
+      "pointerlockchange(c)"
+     ]
+    },
+    {
+     "ad": "3 bırak: eşzamanlı",
+     "donus": "undefined",
+     "ple": null
+    },
+    {
+     "ad": "3 bırak: mikrogörev",
+     "ple": null,
+     "yeni": 0
+    },
+    {
+     "ad": "3 bırak: 0 ms",
+     "ple": null,
+     "yeni": 1
+    },
+    {
+     "ad": "3 bırak: 100 ms",
+     "ple": null,
+     "yeni": 1
+    },
+    {
+     "ad": "4 kilitsizken bırak",
+     "ple": null,
+     "yeni": 0
+    },
+    {
+     "ad": "5 ayrık öğe",
+     "r5": "döndü; red WrongDocumentError: Failed to execute 'requestPointerLock' on 'Element': Target Element removed from DOM",
+     "ple": null,
+     "yeni": [
+      "pointerlockerror"
+     ]
+    },
+    {
+     "ad": "6 iki istek: eşzamanlı",
+     "ple": null
+    },
+    {
+     "ad": "6 iki istek",
+     "r6": [
+      "çözüldü",
+      "çözüldü"
+     ],
+     "ple": "c",
+     "yeni": [
+      "pointerlockchange(null)",
+      "pointerlockchange(c)"
+     ]
+    },
+    {
+     "ad": "7 yanlış this",
+     "r7": "döndü; red TypeError: Failed to execute 'requestPointerLock' on 'Element': Illegal invocation",
+     "r7b": "eşzamanlı istisna TypeError: Illegal invocation"
+    },
+    {
+     "ad": "8 istek sürerken bırak",
+     "r8": "çözüldü",
+     "ple": null,
+     "yeni": [
+      "pointerlockchange(null)"
+     ]
+    },
+    {
+     "ad": "9 öğe çıkarıldı",
+     "esz": null,
+     "ms100": null,
+     "yeni": [
+      "pointerlockchange(null)"
+     ]
+    }
+   ],
+   "olaylar": [
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": "c",
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": "c",
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": null,
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockerror",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": null,
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": null,
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": "c",
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": null,
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": null,
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": "c",
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": null,
+     "sinif": "Event"
+    }
+   ],
+   "pencere": []
+  },
+  "jestsiz": {
+   "r": "red NotAllowedError: A user gesture is required to request Pointer Lock.",
+   "ple": null,
+   "etkin": false
+  },
+  "kilitliyken_jestsiz": {
+   "r0": "ok",
+   "r": "çözüldü",
+   "ple": "c"
+  },
+  "dizi_20ms": [
+   [
+    0,
+    0,
+    "ok",
+    true
+   ],
+   [
+    1,
+    27,
+    "ok",
+    true
+   ],
+   [
+    2,
+    53,
+    "ok",
+    true
+   ],
+   [
+    3,
+    79,
+    "ok",
+    true
+   ],
+   [
+    4,
+    105,
+    "ok",
+    true
+   ],
+   [
+    5,
+    131,
+    "NotAllowedError: Too many pointer lock requests in a short window of time.",
+    false
+   ],
+   [
+    6,
+    157,
+    "NotAllowedError: Too many pointer lock requests in a short window of time.",
+    false
+   ],
+   [
+    7,
+    182,
+    "NotAllowedError: Too many pointer lock requests in a short window of time.",
+    false
+   ],
+   [
+    8,
+    208,
+    "NotAllowedError: Too many pointer lock requests in a short window of time.",
+    false
+   ]
+  ],
+  "dizi_600ms": [
+   [
+    0,
+    0,
+    "ok",
+    true
+   ],
+   [
+    1,
+    610,
+    "ok",
+    true
+   ],
+   [
+    2,
+    1217,
+    "ok",
+    true
+   ],
+   [
+    3,
+    1823,
+    "ok",
+    true
+   ],
+   [
+    4,
+    2430,
+    "ok",
+    true
+   ],
+   [
+    5,
+    3036,
+    "NotAllowedError: Too many pointer lock requests in a short window of time.",
+    false
+   ],
+   [
+    6,
+    3642,
+    "NotAllowedError: Too many pointer lock requests in a short window of time.",
+    false
+   ]
+  ],
+  "kilitliyken_8": [
+   [
+    0,
+    0,
+    "ok",
+    true
+   ],
+   [
+    1,
+    26,
+    "ok",
+    true
+   ],
+   [
+    2,
+    51,
+    "ok",
+    true
+   ],
+   [
+    3,
+    79,
+    "ok",
+    true
+   ],
+   [
+    4,
+    105,
+    "ok",
+    true
+   ],
+   [
+    5,
+    130,
+    "ok",
+    true
+   ],
+   [
+    6,
+    158,
+    "ok",
+    true
+   ],
+   [
+    7,
+    185,
+    "ok",
+    true
+   ]
+  ],
+  "ayri_1500ms": [
+   [
+    0,
+    0,
+    "ok",
+    true
+   ],
+   [
+    1,
+    1512,
+    "ok",
+    true
+   ],
+   [
+    2,
+    3024,
+    "ok",
+    true
+   ],
+   [
+    3,
+    4534,
+    "ok",
+    true
+   ],
+   [
+    4,
+    6045,
+    "ok",
+    true
+   ],
+   [
+    5,
+    7559,
+    "NotAllowedError: Too many pointer lock requests in a short window of time.",
+    false
+   ],
+   [
+    6,
+    9069,
+    "ok",
+    true
+   ]
+  ],
+  "ayri_3x100_bosluk3sn_3x100": [
+   [
+    [
+     0,
+     0,
+     "ok",
+     true
+    ],
+    [
+     1,
+     110,
+     "ok",
+     true
+    ],
+    [
+     2,
+     218,
+     "ok",
+     true
+    ]
+   ],
+   [
+    [
+     0,
+     0,
+     "ok",
+     true
+    ],
+    [
+     1,
+     108,
+     "ok",
+     true
+    ],
+    [
+     2,
+     217,
+     "ok",
+     true
+    ]
+   ]
+  ],
+  "ayri_3x100_bosluk8sn_3x100": [
+   [
+    [
+     0,
+     0,
+     "ok",
+     true
+    ],
+    [
+     1,
+     112,
+     "ok",
+     true
+    ],
+    [
+     2,
+     220,
+     "ok",
+     true
+    ]
+   ],
+   [
+    [
+     0,
+     0,
+     "ok",
+     true
+    ],
+    [
+     1,
+     109,
+     "ok",
+     true
+    ],
+    [
+     2,
+     217,
+     "ok",
+     true
+    ]
+   ]
+  ],
+  "ayri_2500ms": [
+   [
+    0,
+    0,
+    "ok",
+    true
+   ],
+   [
+    1,
+    2511,
+    "ok",
+    true
+   ],
+   [
+    2,
+    5022,
+    "ok",
+    true
+   ],
+   [
+    3,
+    7533,
+    "ok",
+    true
+   ],
+   [
+    4,
+    10045,
+    "ok",
+    true
+   ],
+   [
+    5,
+    12556,
+    "ok",
+    true
+   ],
+   [
+    6,
+    15066,
+    "ok",
+    true
+   ]
+  ],
+  "sayac": null
+ },
+ "taklit": {
+  "surum": "153.0.8010.12",
+  "sel_kilitli": {
+   "istek": "ok",
+   "ple": "c",
+   "mousemoveSn": 0,
+   "cpuYuzde": {
+    "browser:ANA": 0,
+    "browser:Chrome_IOThread": 0,
+    "renderer:ANA": 0,
+    "renderer:Compositor": 0
+   }
+  },
+  "escape": "c",
+  "sel_kilitsiz": {
+   "ple": null,
+   "mousemoveSn": 0,
+   "cpuYuzde": {
+    "browser:ANA": 0,
+    "browser:Chrome_IOThread": 0,
+    "renderer:ANA": 0,
+    "renderer:Compositor": 0
+   }
+  },
+  "anlam": {
+   "info": {
+    "ogeTanim": {
+     "get": "function",
+     "getAd": "get pointerLockElement",
+     "set": "undefined",
+     "enumerable": true,
+     "configurable": true
+    },
+    "srTanim": true,
+    "istekUzunluk": 0,
+    "istekAd": "requestPointerLock",
+    "cikUzunluk": 0,
+    "cikAd": "exitPointerLock",
+    "odak": true,
+    "etkin": true
+   },
+   "kayit": [
+    {
+     "ad": "1 istek: eşzamanlı",
+     "ple": null,
+     "donus": "[object Promise]"
+    },
+    {
+     "ad": "1 istek: mikrogörev",
+     "ple": null
+    },
+    {
+     "ad": "1 istek: söz",
+     "r1": "çözüldü",
+     "ple": "c",
+     "olay": 0
+    },
+    {
+     "ad": "1 istek: 100 ms",
+     "ple": "c",
+     "olay": 1
+    },
+    {
+     "ad": "2 kilitliyken istek: eşzamanlı",
+     "ple": "c"
+    },
+    {
+     "ad": "2 kilitliyken istek",
+     "r2": "çözüldü",
+     "ple": "c",
+     "yeni": [
+      "pointerlockchange(c)"
+     ]
+    },
+    {
+     "ad": "3 bırak: eşzamanlı",
+     "donus": "undefined",
+     "ple": null
+    },
+    {
+     "ad": "3 bırak: mikrogörev",
+     "ple": null,
+     "yeni": 0
+    },
+    {
+     "ad": "3 bırak: 0 ms",
+     "ple": null,
+     "yeni": 1
+    },
+    {
+     "ad": "3 bırak: 100 ms",
+     "ple": null,
+     "yeni": 1
+    },
+    {
+     "ad": "4 kilitsizken bırak",
+     "ple": null,
+     "yeni": 0
+    },
+    {
+     "ad": "5 ayrık öğe",
+     "r5": "döndü; red WrongDocumentError: Failed to execute 'requestPointerLock' on 'Element': Target Element removed from DOM",
+     "ple": null,
+     "yeni": [
+      "pointerlockerror"
+     ]
+    },
+    {
+     "ad": "6 iki istek: eşzamanlı",
+     "ple": null
+    },
+    {
+     "ad": "6 iki istek",
+     "r6": [
+      "çözüldü",
+      "çözüldü"
+     ],
+     "ple": "c",
+     "yeni": [
+      "pointerlockchange(null)",
+      "pointerlockchange(c)"
+     ]
+    },
+    {
+     "ad": "7 yanlış this",
+     "r7": "döndü; red TypeError: Failed to execute 'requestPointerLock' on 'Element': Illegal invocation",
+     "r7b": "eşzamanlı istisna TypeError: Illegal invocation"
+    },
+    {
+     "ad": "8 istek sürerken bırak",
+     "r8": "çözüldü",
+     "ple": null,
+     "yeni": [
+      "pointerlockchange(null)"
+     ]
+    },
+    {
+     "ad": "9 öğe çıkarıldı",
+     "esz": null,
+     "ms100": null,
+     "yeni": [
+      "pointerlockchange(null)"
+     ]
+    }
+   ],
+   "olaylar": [
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": "c",
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": "c",
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": null,
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockerror",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": null,
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": null,
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": "c",
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": null,
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": null,
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": "c",
+     "sinif": "Event"
+    },
+    {
+     "tur": "pointerlockchange",
+     "bubbles": false,
+     "cancelable": false,
+     "composed": false,
+     "hedef": "document",
+     "ple": null,
+     "sinif": "Event"
+    }
+   ],
+   "pencere": []
+  },
+  "jestsiz": {
+   "r": "red NotAllowedError: A user gesture is required to request Pointer Lock.",
+   "ple": null,
+   "etkin": false
+  },
+  "kilitliyken_jestsiz": {
+   "r0": "ok",
+   "r": "çözüldü",
+   "ple": "c"
+  },
+  "dizi_20ms": [
+   [
+    0,
+    0,
+    "ok",
+    true
+   ],
+   [
+    1,
+    26,
+    "ok",
+    true
+   ],
+   [
+    2,
+    51,
+    "ok",
+    true
+   ],
+   [
+    3,
+    85,
+    "ok",
+    true
+   ],
+   [
+    4,
+    119,
+    "ok",
+    true
+   ],
+   [
+    5,
+    153,
+    "NotAllowedError: Too many pointer lock requests in a short window of time.",
+    false
+   ],
+   [
+    6,
+    179,
+    "NotAllowedError: Too many pointer lock requests in a short window of time.",
+    false
+   ],
+   [
+    7,
+    205,
+    "NotAllowedError: Too many pointer lock requests in a short window of time.",
+    false
+   ],
+   [
+    8,
+    230,
+    "NotAllowedError: Too many pointer lock requests in a short window of time.",
+    false
+   ]
+  ],
+  "dizi_600ms": [
+   [
+    0,
+    0,
+    "ok",
+    true
+   ],
+   [
+    1,
+    606,
+    "ok",
+    true
+   ],
+   [
+    2,
+    1211,
+    "ok",
+    true
+   ],
+   [
+    3,
+    1825,
+    "ok",
+    true
+   ],
+   [
+    4,
+    2439,
+    "ok",
+    true
+   ],
+   [
+    5,
+    3053,
+    "NotAllowedError: Too many pointer lock requests in a short window of time.",
+    false
+   ],
+   [
+    6,
+    3659,
+    "NotAllowedError: Too many pointer lock requests in a short window of time.",
+    false
+   ]
+  ],
+  "kilitliyken_8": [
+   [
+    0,
+    0,
+    "ok",
+    true
+   ],
+   [
+    1,
+    26,
+    "ok",
+    true
+   ],
+   [
+    2,
+    51,
+    "ok",
+    true
+   ],
+   [
+    3,
+    76,
+    "ok",
+    true
+   ],
+   [
+    4,
+    102,
+    "ok",
+    true
+   ],
+   [
+    5,
+    127,
+    "ok",
+    true
+   ],
+   [
+    6,
+    153,
+    "ok",
+    true
+   ],
+   [
+    7,
+    178,
+    "ok",
+    true
+   ]
+  ],
+  "ayri_1500ms": [
+   [
+    0,
+    0,
+    "ok",
+    true
+   ],
+   [
+    1,
+    1510,
+    "ok",
+    true
+   ],
+   [
+    2,
+    3020,
+    "ok",
+    true
+   ],
+   [
+    3,
+    4531,
+    "ok",
+    true
+   ],
+   [
+    4,
+    6042,
+    "ok",
+    true
+   ],
+   [
+    5,
+    7553,
+    "NotAllowedError: Too many pointer lock requests in a short window of time.",
+    false
+   ],
+   [
+    6,
+    9063,
+    "ok",
+    true
+   ]
+  ],
+  "ayri_3x100_bosluk3sn_3x100": [
+   [
+    [
+     0,
+     0,
+     "ok",
+     true
+    ],
+    [
+     1,
+     108,
+     "ok",
+     true
+    ],
+    [
+     2,
+     216,
+     "ok",
+     true
+    ]
+   ],
+   [
+    [
+     0,
+     0,
+     "ok",
+     true
+    ],
+    [
+     1,
+     109,
+     "ok",
+     true
+    ],
+    [
+     2,
+     217,
+     "ok",
+     true
+    ]
+   ]
+  ],
+  "ayri_3x100_bosluk8sn_3x100": [
+   [
+    [
+     0,
+     0,
+     "ok",
+     true
+    ],
+    [
+     1,
+     108,
+     "ok",
+     true
+    ],
+    [
+     2,
+     217,
+     "ok",
+     true
+    ]
+   ],
+   [
+    [
+     0,
+     0,
+     "ok",
+     true
+    ],
+    [
+     1,
+     109,
+     "ok",
+     true
+    ],
+    [
+     2,
+     218,
+     "ok",
+     true
+    ]
+   ]
+  ],
+  "ayri_2500ms": [
+   [
+    0,
+    0,
+    "ok",
+    true
+   ],
+   [
+    1,
+    2511,
+    "ok",
+    true
+   ],
+   [
+    2,
+    5022,
+    "ok",
+    true
+   ],
+   [
+    3,
+    7533,
+    "ok",
+    true
+   ],
+   [
+    4,
+    10046,
+    "ok",
+    true
+   ],
+   [
+    5,
+    12557,
+    "ok",
+    true
+   ],
+   [
+    6,
+    15068,
+    "ok",
+    true
+   ]
+  ],
+  "sayac": {
+   "istek": 61,
+   "verildi": 41,
+   "hedefDegisti": 10,
+   "red": 9,
+   "jestsiz": 1,
+   "kisitli": 7,
+   "birakma": 41,
+   "birakildi": 42,
+   "iptal": 1,
+   "degisimOlayi": 93,
+   "hataOlayi": 9,
+   "yonlendirilen": 0,
+   "susturulan": 0,
+   "tikEngel": 0
+  }
+ }
+}

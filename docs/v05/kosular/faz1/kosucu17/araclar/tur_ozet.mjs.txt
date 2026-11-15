@@ -1,0 +1,37 @@
+// Doğrulama koşularının kontrol türü özeti: her raporda kontrol başına tür (tarayici / tarayici+benzetim) ve benzetim farkı
+// (sim, adim, press, tap, frames, simSteps, update); döngü dışı DK.game.update (benzetim.update > 0) sayılan kontroller; taban
+// raporla (varsa) kontrol etiketi ve tür eşleşmesi.   node tur_ozet.mjs <çıktı.json> <çıktı.txt> <rapor.json[=taban.json]>...
+import fs from 'node:fs';
+import path from 'node:path';
+const [CJSON, CTXT, ...girdiler] = process.argv.slice(2);
+const oku = (f) => { try { return JSON.parse(fs.readFileSync(f, 'utf8')); } catch (e) { return null; } };
+const out = []; const sat = [];
+for (const g of girdiler) {
+  const [f, t] = g.split('=');
+  const r = oku(f), tb = t ? oku(t) : null;
+  if (!r) { sat.push(`${path.basename(f)}: rapor okunamadı`); continue; }
+  const k = r.kontroller || [];
+  const ozet = { rapor: path.basename(f), hedef: r.hedef && r.hedef.url, durum: r.sonuc && r.sonuc.durum, kontrol: `${k.filter((x) => x.ok).length}/${k.length}`, turSayim: r.sonuc && r.sonuc.turSayim,
+    sayacKaynagi: [...new Set(k.map((x) => x.sayacKaynak).filter(Boolean))], updateSayilan: k.filter((x) => x.benzetim && x.benzetim.update > 0).map((x) => `${x.id} (update ${x.benzetim.update})`),
+    updateAnahtariVar: k.some((x) => x.benzetim && 'update' in x.benzetim), turNot: k.filter((x) => x.turNot).map((x) => `${x.id}: ${x.turNot}`),
+    isaretciKilidi: r.isaretciKilidi, kopma: r.kopma, neden: r.sonuc && r.sonuc.neden,
+    kontroller: k.map((x) => ({ id: x.id, ok: x.ok, tur: x.tur, benzetim: x.benzetim })) };
+  if (tb) {
+    const tk = tb.kontroller || [];
+    const fark = [];
+    for (const x of k) {
+      const y = tk.find((z) => z.etiket === x.etiket);
+      if (!y) { fark.push(`${x.id}: tabanda yok`); continue; }
+      if (y.ok !== x.ok) fark.push(`${x.id}: ok ${y.ok} → ${x.ok}`);
+      if (y.tur !== x.tur) fark.push(`${x.id}: tür ${y.tur} → ${x.tur}`);
+    }
+    for (const y of tk) if (!k.find((x) => x.etiket === y.etiket)) fark.push(`${y.id}: yeni raporda yok`);
+    ozet.taban = { rapor: t, durum: tb.sonuc && tb.sonuc.durum, kontrol: `${tk.filter((x) => x.ok).length}/${tk.length}`, turSayim: tb.sonuc && tb.sonuc.turSayim, fark };
+  }
+  out.push(ozet);
+  sat.push(`${ozet.rapor}: ${ozet.durum} ${ozet.kontrol} | tür ${JSON.stringify(ozet.turSayim)} | sayaç kaynağı ${ozet.sayacKaynagi.join(',') || '-'} | update anahtarı ${ozet.updateAnahtariVar ? 'var' : 'yok'} | döngü dışı update sayılan: ${ozet.updateSayilan.length ? ozet.updateSayilan.join(', ') : 'yok'}${ozet.turNot.length ? ' | turNot: ' + ozet.turNot.join('; ') : ''}`);
+  if (ozet.taban) sat.push(`   taban ${path.relative('/home/user', ozet.taban.rapor)}: ${ozet.taban.durum} ${ozet.taban.kontrol} | tür ${JSON.stringify(ozet.taban.turSayim)} | fark: ${ozet.taban.fark.length ? ozet.taban.fark.join('; ') : 'yok (etiket, ok, tür aynı)'}`);
+}
+fs.writeFileSync(CJSON, JSON.stringify(out, null, 1));
+fs.writeFileSync(CTXT, sat.join('\n') + '\n');
+console.log(sat.join('\n'));

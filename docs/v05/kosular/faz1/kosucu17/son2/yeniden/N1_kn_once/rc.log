@@ -1,0 +1,18 @@
+$ node /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/once_kosucu/coop.cjs tests/fixtures/kosucu/rc_coop_renderer_olur.cjs --players 2 --size 320x200 --timeout 120 --url http://127.0.0.1:46101/coop.html --report /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/kosu/N1_kn_once/rc.json
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+Kaptan/sim 30
+PASS RC01 Ev sahibi ilerledi → 30
+[test] KOSUCU_NEGATIF_OLDUR
+Kaptan sekme kapandı (senaryo kapatmadı)
+Tayfa sekme kapandı (senaryo kapatmadı)
+KOPMA TARAYICI ÇÖKTÜ/KOPTU: tarayıcı süreciyle bağlantı koptu (süreç öldürüldü ya da çöktü; ör. bellek sınırında OOM) — 0.3 sn, 1 kontrolden sonra
+EV-KAPALI Kaptan öldürme sırasında page.evaluate: Target page, context or browser has been closed
+Browser logs:
+
+<launching> /opt/pw-browsers/chromium_head
+FAIL RC02 Öldürmeden sonraki kontrol (koşmamalı)
+checks: 2 fails: 1 pageErrors: 1 (0.5 s)
+SONUC: KALDI (çıkış 1) kontrol 1/2 | ev() istisnası 0, kapalı sayfa atlama 11, kapanışta istisna 1 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: başarısız kontrol ya da ev() istisnası: 1; sayfa hatası (pageerror): 1; tarayıcı çöktü/koptu
+
+[çıkış 1]
+[tarayıcı öldürme: {"durum":"öldürüldü","hedef":"tarayici","pid":15315,"ms":640}]

@@ -1,0 +1,484 @@
+{
+ "scenario": "tests/scenarios/coop/06d_ganimet_canta.cjs",
+ "players": 2,
+ "checks": [
+  {
+   "label": "Konuk odaya bağlandı",
+   "ok": true,
+   "detail": {
+    "room": "Ganimet Odası"
+   }
+  },
+  {
+   "label": "2 oyuncu oyunda ve bağlı",
+   "ok": true
+  },
+  {
+   "label": "C01 Konuğun \"Yere bırak\"ı ev sahibinde kese olarak doğar (fizikli, uzun ömürlü) ve konukta aynı kimlikle görünür",
+   "ok": false,
+   "detail": {
+    "hostPk": null,
+    "guestSees": false
+   }
+  },
+  {
+   "label": "C03 Konuğun açtığı sandığın altını doğrudan konuğun çantasına gider; ev sahibinde kese doğmaz; sandık iki tarafta da kalkar",
+   "ok": true,
+   "detail": {
+    "g0": "req",
+    "gGot": 81,
+    "coins": 81,
+    "hSacks": 0,
+    "chestGone": true
+   }
+  },
+  {
+   "label": "C04 Ev sahibinde kısmen sığan kese yerinde kalır (1 post alındı, 2 kaldı); konuktaki kopya da 2 post gösterir",
+   "ok": true,
+   "detail": {
+    "hp": {
+     "alive": true,
+     "items": [
+      [
+       "hayvan_postu",
+       2
+      ]
+     ]
+    },
+    "gp": {
+     "alive": true,
+     "items": [
+      [
+       "hayvan_postu",
+       2
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "label": "C05 Güverteye düşen kese konukta da gemiye bağlıdır (suya düşmez, ev sahibiyle aynı yerde)",
+   "ok": true,
+   "detail": {
+    "deck": {
+     "id": "pkj09j54b",
+     "ship": "ship_main",
+     "att": true,
+     "pos": [
+      10.42,
+      1.26,
+      285.18
+     ]
+    },
+    "gDeck": {
+     "ship": "ship_main",
+     "parent": true,
+     "dy": 1.47,
+     "d": 0.02
+    }
+   }
+  },
+  {
+   "label": "C06 Konuğun öldürdüğü hayvan ev sahibinde öldüren olarak konuğu taşır (XP konuğa)",
+   "ok": true,
+   "detail": {
+    "by": "28e4c152-2491-49ea-9b4e-4d5a9b4a0f5e",
+    "gid": "28e4c152-2491-49ea-9b4e-4d5a9b4a0f5e"
+   }
+  },
+  {
+   "label": "Senaryo sonunda iki taraf da oyunda",
+   "ok": true,
+   "detail": [
+    "playing",
+    "playing"
+   ]
+  }
+ ],
+ "errors": {
+  "Kaptan": [],
+  "Tayfa": []
+ },
+ "pageErrors": {
+  "Kaptan": [],
+  "Tayfa": []
+ },
+ "fails": 2,
+ "evalErrors": [
+  {
+   "oyuncu": "Tayfa",
+   "etiket": "g-drop",
+   "js": "(async()=>{ const p=DK.G.player; const {panels}=DK.mod('ui/panels'); p.inv.add('ekmek', 2); const st=p.inv.stacks.find(s=>s.id==='ekmek'); window.__nE=p.inv.count('ekmek'); panels._itemMenu(st, null); const btn=[...document.querySelectorAll('button')].find(b=>b.textContent==='Yere bırak'); if (btn) btn.click(); DK.ui.closeAll && DK.ui.closeAll(); return {btn:!!btn, n:window.__nE, left:p.inv.count(",
+   "hata": "page.evaluate: TypeError: DK.mod is not a function\n    at eval (eval at evaluate (:311:30), <anonymous>:1:52)\n    at eval (eval at evaluate (:311:30), <anonymous>:1:414)\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:311:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+  }
+ ],
+ "kapaliAtlama": 0,
+ "kapaliIstisna": 0,
+ "kapananlar": [],
+ "ms": 115318,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/scenarios/coop/06d_ganimet_canta.cjs",
+ "meta": {},
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8080/index.html?peerhost=127.0.0.1&peerport=9000&test=1",
+  "verilenUrl": "http://localhost:8080/index.html?peerhost=127.0.0.1&peerport=9000",
+  "gorunum": [
+   640,
+   360
+  ],
+  "oyuncu": 2
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "03b5c973bcc65adf48b63a1bd7746d43ee88ae6d",
+  "dal": "claude/v0.5-saglamlastirma",
+  "kirli": true,
+  "tarih": "2026-11-15T07:03:46.409Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-w2/tests/harness/coop.cjs /home/user/SON-HAZ-NE-w2/tests/scenarios/coop/06d_ganimet_canta.cjs --players 2 --size 640x360 --timeout 900 --url 'http://localhost:8080/index.html?peerhost=127.0.0.1&peerport=9000' --report docs/v05/kosular/faz1/kosucu17/w2_dogrulama/coop_06d.json",
+  "cwd": "/home/user/SON-HAZ-NE-w2",
+  "sunucular": [
+   "statik sunucu http://localhost:8080 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8080",
+   "PeerJS sinyal sunucusu 127.0.0.1:9000 — node tests/peer-server.cjs (peer modülü NODE_PATH'te)"
+  ],
+  "commit": "03b5c973bcc65adf48b63a1bd7746d43ee88ae6d-kirli",
+  "senaryoSha256": "95f0af57126edcad108212a871af90b69e4823a6625a6a6ad624807cd61e8d29",
+  "adim": {
+   "n": 2,
+   "js": null,
+   "neden": "EVALERR Tayfa/g-drop: page.evaluate: TypeError: DK.mod is not a function\n    at eval (eval at evaluate (:311:30), <anonymous>:1:52)\n    at eval (eval at evaluate (:311:30), <anonymous>:1:414)\n    at eval (<anonymous>)\n    "
+  },
+  "url": "http://localhost:8080/index.html?peerhost=127.0.0.1&peerport=9000&test=1"
+ },
+ "kontroller": [
+  {
+   "n": 1,
+   "id": "Konuk odaya bağlandı",
+   "etiket": "Konuk odaya bağlandı",
+   "ok": true,
+   "deger": {
+    "room": "Ganimet Odası"
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 101,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 2,
+   "id": "2 oyuncu oyunda ve bağlı",
+   "etiket": "2 oyuncu oyunda ve bağlı",
+   "ok": true,
+   "deger": null,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 20022,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 3,
+   "id": "C01",
+   "etiket": "C01 Konuğun \"Yere bırak\"ı ev sahibinde kese olarak doğar (fizikli, uzun ömürlü) ve konukta aynı kimlikle görünür",
+   "ok": false,
+   "deger": {
+    "hostPk": null,
+    "guestSees": false
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1855,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": "kontrol yanlış (false) döndü",
+   "goruntu": null
+  },
+  {
+   "n": 4,
+   "id": "C03",
+   "etiket": "C03 Konuğun açtığı sandığın altını doğrudan konuğun çantasına gider; ev sahibinde kese doğmaz; sandık iki tarafta da kalkar",
+   "ok": true,
+   "deger": {
+    "g0": "req",
+    "gGot": 81,
+    "coins": 81,
+    "hSacks": 0,
+    "chestGone": true
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1499,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 5,
+   "id": "C04",
+   "etiket": "C04 Ev sahibinde kısmen sığan kese yerinde kalır (1 post alındı, 2 kaldı); konuktaki kopya da 2 post gösterir",
+   "ok": true,
+   "deger": {
+    "hp": {
+     "alive": true,
+     "items": [
+      [
+       "hayvan_postu",
+       2
+      ]
+     ]
+    },
+    "gp": {
+     "alive": true,
+     "items": [
+      [
+       "hayvan_postu",
+       2
+      ]
+     ]
+    }
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1168,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 6,
+   "id": "C05",
+   "etiket": "C05 Güverteye düşen kese konukta da gemiye bağlıdır (suya düşmez, ev sahibiyle aynı yerde)",
+   "ok": true,
+   "deger": {
+    "deck": {
+     "id": "pkj09j54b",
+     "ship": "ship_main",
+     "att": true,
+     "pos": [
+      10.42,
+      1.26,
+      285.18
+     ]
+    },
+    "gDeck": {
+     "ship": "ship_main",
+     "parent": true,
+     "dy": 1.47,
+     "d": 0.02
+    }
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 717,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 7,
+   "id": "C06",
+   "etiket": "C06 Konuğun öldürdüğü hayvan ev sahibinde öldüren olarak konuğu taşır (XP konuğa)",
+   "ok": true,
+   "deger": {
+    "by": "28e4c152-2491-49ea-9b4e-4d5a9b4a0f5e",
+    "gid": "28e4c152-2491-49ea-9b4e-4d5a9b4a0f5e"
+   },
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1660,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 8,
+   "id": "Senaryo sonunda iki taraf da oyunda",
+   "etiket": "Senaryo sonunda iki taraf da oyunda",
+   "ok": true,
+   "deger": [
+    "playing",
+    "playing"
+   ],
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 3,
+   "benzetim": null,
+   "tur": "tarayici+webrtc",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [
+   {
+    "oyuncu": "Tayfa",
+    "etiket": "g-drop",
+    "js": "(async()=>{ const p=DK.G.player; const {panels}=DK.mod('ui/panels'); p.inv.add('ekmek', 2); const st=p.inv.stacks.find(s=>s.id==='ekmek'); window.__nE=p.inv.count('ekmek'); panels._itemMenu(st, null); const btn=[...document.querySelectorAll('button')].find(b=>b.textContent==='Yere bırak'); if (btn) btn.click(); DK.ui.closeAll && DK.ui.closeAll(); return {btn:!!btn, n:window.__nE, left:p.inv.count(",
+    "hata": "page.evaluate: TypeError: DK.mod is not a function\n    at eval (eval at evaluate (:311:30), <anonymous>:1:52)\n    at eval (eval at evaluate (:311:30), <anonymous>:1:414)\n    at eval (<anonymous>)\n    at UtilityScript.evaluate (<anonymous>:311:30)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+   }
+  ],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": "Kaptan",
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 33
+  },
+  {
+   "oyuncu": "Kaptan",
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 1
+  },
+  {
+   "oyuncu": "Tayfa",
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 33
+  },
+  {
+   "oyuncu": "Tayfa",
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8080/vendor/three/three.core.js",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 4,
+  "toplam": 68,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "goruntuler": [
+  {
+   "ad": "ilk_kalan",
+   "oyuncular": [
+    {
+     "oyuncu": "Kaptan",
+     "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/06d_ganimet_canta_2026-11-15T07-03-46-247Z_13299/ilk_kalan_Kaptan.png"
+    },
+    {
+     "oyuncu": "Tayfa",
+     "sayfa": "/home/user/SON-HAZ-NE-w2/tests/out/goruntu/06d_ganimet_canta_2026-11-15T07-03-46-247Z_13299/ilk_kalan_Tayfa.png"
+    }
+   ]
+  }
+ ],
+ "isaretciKilidi": {
+  "kip": "taklit",
+  "sayac": {
+   "Kaptan": {
+    "istek": 1,
+    "verildi": 1,
+    "hedefDegisti": 0,
+    "red": 0,
+    "jestsiz": 0,
+    "kisitli": 0,
+    "sandbox": 0,
+    "birakma": 0,
+    "birakildi": 0,
+    "iptal": 0,
+    "degisimOlayi": 1,
+    "hataOlayi": 0,
+    "yonlendirilen": 0,
+    "susturulan": 4,
+    "tikEngel": 0
+   },
+   "Tayfa": {
+    "istek": 1,
+    "verildi": 1,
+    "hedefDegisti": 0,
+    "red": 0,
+    "jestsiz": 0,
+    "kisitli": 0,
+    "sandbox": 0,
+    "birakma": 0,
+    "birakildi": 0,
+    "iptal": 0,
+    "degisimOlayi": 1,
+    "hataOlayi": 0,
+    "yonlendirilen": 0,
+    "susturulan": 0,
+    "tikEngel": 0
+   }
+  }
+ },
+ "kopma": null,
+ "sonuc": {
+  "durum": "KALDI",
+  "cikisKodu": 1,
+  "neden": [
+   "başarısız kontrol ya da ev() istisnası: 2",
+   "ev() istisnası (evalErrors): 1"
+  ],
+  "onaySayisi": 8,
+  "kontrolSayisi": 8,
+  "gecen": 7,
+  "kalan": 1,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "evalErrors": 1,
+  "kapaliAtlama": 0,
+  "kapaliIstisna": 0,
+  "tur": "tarayici+webrtc",
+  "tarayiciKoptu": false,
+  "kopma": null
+ },
+ "sure": {
+  "hazirMs": 87286,
+  "toplamMs": 115318,
+  "yerlesmeMs": 1000
+ }
+}

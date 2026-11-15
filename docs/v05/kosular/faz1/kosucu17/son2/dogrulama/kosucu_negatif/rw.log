@@ -1,0 +1,14 @@
+$ node /home/user/SON-HAZ-NE-k17/tests/harness/run.cjs tests/fixtures/kosucu/rw_renderer_olur_bekleme.js --size 320x200 --timeout 90 --url http://127.0.0.1:38307/temiz.html --report /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/kosu/V1_kn/rw.json
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+ready in 0.2 s
+PASS RW01 Sabit sayfa açıldı → "object"
+[test] KOSUCU_NEGATIF_OLDUR
+R: "işaret verildi"
+PAGECRASH
+KOPMA SAYFA ÇÖKTÜ (renderer crash): sayfanın renderer süreci öldü ya da çöktü (ör. bellek sınırında OOM; renderer oom_score_adj +300 aldığından OOM'un sık kurbanıdır) — adım 3, 0.3 sn
+(kopma yüzünden yarıda kalan adım 3: page.waitForTimeout: Page crashed; kalan 1 adım koşmadı)
+errors: 0 pageErrors: 1 fails: 0 (0.3 s)
+SONUC: KALDI (çıkış 1) kontrol 1/1, onay 2 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: sayfa hatası (pageerror): 1; sayfa (renderer) çöktü (adım 3; 1 adım koşmadı)
+
+[çıkış 1]
+[tarayıcı öldürme: {"durum":"öldürüldü","hedef":"renderer","pid":21675,"ms":504}]

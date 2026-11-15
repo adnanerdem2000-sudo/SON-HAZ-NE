@@ -1,0 +1,52 @@
+#!/bin/bash
+# 3. deneme: kosucu17 ham kayıtlarını k17 docs/v05/kosular/faz1/kosucu17/ altına taşınabilir boyutta kopyalar ve özetleri üretir.
+#   bash belge3.sh      (zincir3 bittikten sonra; yalnız biten öğeler kopyalanır)
+set -u
+K=/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17
+D=$K/duzeltici; D2=$K/duzeltici2; D3=$K/duzeltici3; O=$K/kosucu17b; A=/home/user/SON-HAZ-NE-k17
+DOC=$A/docs/v05/kosular/faz1/kosucu17; F=$A/docs/v05/kosular/faz1
+mkdir -p $DOC/olcum $DOC/tur $DOC/coop $DOC/yoklama $DOC/kosucu_negatif $DOC/araclar
+bitti() { grep -qx "$1" $D3/bitti.txt; }
+ANA=""; TUR=""; COOP=""
+for a in 01_17v04_T 02_17v04_G 03_17w2_T 04_17w2_G 05_02yasam_T 06_02yasam_G 07_17v04_T 08_17v04_G 09_17w2_T 10_17w2_G 11_17v04_T 12_17v04_G 22_02yasam_T 23_02yasam_G 24_02yasam_T 25_17v04_T 26_17w2_T; do bitti $a && ANA="$ANA $a"; done
+for a in 13_w2-04_karakter_T 14_w2-05_dusman_ai_T 15_w2-13_donma_T 16_w2-03_fizik_duzeltmeler_T 17_w2kok-53_test_kipi_T 18_w2-08_kalicilik_T 19_v04-04_karakter_T; do bitti $a && TUR="$TUR $a"; done
+for a in 20_coop-06b_esitlik_senkron_T 21_coop-06b_esitlik_senkron_G; do bitti $a && COOP="$COOP $a"; done
+[ -n "$ANA" ] && node $D/belgele.mjs $O $DOC/olcum $ANA && node $D/ozet17.mjs $O $DOC/olcum/ozet17.json $DOC/olcum/ozet17.txt $ANA > /dev/null
+[ -n "$TUR" ] && node $D/belgele.mjs $O $DOC/tur $TUR
+[ -n "$COOP" ] && node $D/belgele.mjs $O $DOC/coop $COOP && node $D/ozet17.mjs $O $DOC/coop/ozet_coop.json $DOC/coop/ozet_coop.txt $COOP > /dev/null
+cp $O/surucu.log $DOC/olcum/surucu.log 2>/dev/null; cp $D3/zincir.log $DOC/olcum/zincir3.log; cp $O/senaryo_sha.txt $DOC/olcum/ 2>/dev/null
+# tür özeti: rapor=taban
+G=""
+t() { [ -f "$1" ] && G="$G $1${2:+=$2}"; }
+t $O/13_w2-04_karakter_T.json $F/once_v04_tam/04_karakter.json
+t $O/14_w2-05_dusman_ai_T.json $F/once_v04_tam/05_dusman_ai.json
+t $O/15_w2-13_donma_T.json $F/once_v04_tam/13_donma.json
+t $O/16_w2-03_fizik_duzeltmeler_T.json $F/a1_duzeltme/sonra/03_fizik_duzeltmeler_w2.json
+t $O/17_w2kok-53_test_kipi_T.json $F/a2/duzeltme/son/53_test_kipi.json
+t $O/18_w2-08_kalicilik_T.json $F/a2/sonra/08_kalicilik.json
+t $O/19_v04-04_karakter_T.json $F/once_v04_tam/04_karakter.json
+for a in 03_17w2_T 04_17w2_G 09_17w2_T 10_17w2_G 26_17w2_T; do t $O/$a.json $F/a2/sonra/17_kamera_kararma.json; done
+for a in 01_17v04_T 02_17v04_G 07_17v04_T 08_17v04_G 11_17v04_T 12_17v04_G 25_17v04_T; do t $O/$a.json $F/once_v04_tam/17_kamera_kararma.json; done
+for a in 20_coop-06b_esitlik_senkron_T 21_coop-06b_esitlik_senkron_G; do t $O/$a.json $F/a2/sonra/coop_06b.json; done
+[ -n "$G" ] && node $D/tur_ozet.mjs $DOC/tur/tur_ozet.json $DOC/tur/tur_ozet.txt $G > /dev/null
+# yoklamalar
+if bitti y3 && bitti y4 && bitti y5; then
+  node $D3/karsilastir_yoklama3.mjs $D2/yoklama3_son3.json $D2/yoklama4_son3.json $D2/yoklama5_son3.json $DOC/isaretci_yoklama.json > $DOC/yoklama/karsilastirma_ozet.txt
+  for y in 3 4 5; do cp $D2/yoklama${y}_son3.json $DOC/yoklama/yoklama${y}.json; cp $D2/yoklama${y}_son3.log $DOC/yoklama/yoklama${y}.log; done
+fi
+cp $D/yoklama3.cjs $DOC/yoklama/yoklama3.cjs.txt; cp $D/yoklama4.cjs $DOC/yoklama/yoklama4.cjs.txt; cp $D2/yoklama5.cjs $DOC/yoklama/yoklama5.cjs.txt
+cp $D3/karsilastir_yoklama3.mjs $DOC/yoklama/karsilastir_yoklama3.mjs.txt
+# kosucu_negatif (son kodla son koşu)
+# son sha'larla son koşu (kn5) asıl kayıt; kn4 (yorum düzeltmesinden önceki sha'larla) yalnız özet günlüğüyle
+SON=kn4; bitti kn5 && SON=kn5
+if bitti $SON; then rm -rf $DOC/kosucu_negatif/tum; cp -r $K/$SON/tum $DOC/kosucu_negatif/tum; cp $K/$SON/tum.log $K/$SON/tum_ozet.json $DOC/kosucu_negatif/; echo "$SON" > $DOC/kosucu_negatif/KOSU_ADI.txt; fi
+if [ "$SON" = kn5 ] && bitti kn4; then cp $K/kn4/tum.log $DOC/kosucu_negatif/kn4_yorum_oncesi_tum.log; fi
+cp $D3/yorum_farki.diff $DOC/yorum_farki.diff
+# ölçüm ajanının kök neden kanıtları (küçük dosyalar; 28 MB'lık X1_iz.json.gz ve ham CSV'ler scratch'te kalır)
+mkdir -p $DOC/olcum_ajani
+for f in X1_iz_ozet.txt X1.log X2.log ozet_tablo.txt kopyalar.txt surucu.log; do cp $K/olcum/$f $DOC/olcum_ajani/; done
+for a in 01_R 02_N 03_R 04_N 05_R 06_N 07_R 08_N 09_E; do for uz in .json .log .dmesg.txt _ozet.json; do [ -f $K/olcum/$a$uz ] && cp $K/olcum/$a$uz $DOC/olcum_ajani/; done; done
+# araçlar
+for f in $D2/ornekle2.mjs $D/iplik.mjs $D2/surucu17b.sh $D3/zincir3.sh $D3/belge3.sh $D/ozet17.mjs $D/tur_ozet.mjs $D/belgele.mjs; do cp $f $DOC/araclar/$(basename $f).txt; done
+(cd $A && sha256sum tests/harness/run.cjs tests/harness/coop.cjs tests/harness/ortak.cjs tests/node/kosucu_negatif.mjs tests/fixtures/kosucu/pk_isaretci.html tests/fixtures/kosucu/pk_isaretci.js tests/fixtures/kosucu/pk5_kilitli_tikla.js tests/fixtures/kosucu/pk4_coop_isaretci.cjs tests/fixtures/kosucu/tc_tarayici_olur.js tests/fixtures/kosucu/td_tarayici_olur_bekleme.js tests/fixtures/kosucu/te_coop_tarayici_olur.cjs) > $DOC/kod_sha.txt
+du -sh $DOC; find $DOC -name "*.png" | head

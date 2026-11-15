@@ -1,0 +1,34 @@
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+Kaptan/host {"code":"K64S43"}
+Tayfa/join {"room":"Ganimet Odası"}
+PASS Konuk odaya bağlandı → {"room":"Ganimet Odası"}
+Kaptan/hs "host-started"
+Tayfa/gs "guest-started"
+PASS 2 oyuncu oyunda ve bağlı
+[test] 1 yere bırak @ 22.1s
+Tayfa/g-drop {"btn":true,"n":4,"left":0}
+Kaptan/h-drop {"id":"pkti8me2o","keep":true,"body":true,"n":4}
+PASS C01 Konuğun "Yere bırak"ı ev sahibinde kese olarak doğar (fizikli, uzun ömürlü) ve konukta aynı kimlikle görünür → {"drop":{"btn":true,"n":4,"left":0},"hostPk":{"id":"pkti8me2o","keep":true,"body":true,"n":4},"guestSees":true}
+PASS C02 Konuk bıraktığı keseyi geri alır: eşya konuğun çantasına döner, kese ev sahibinde kalkar → {"back":4,"goneH":true}
+[test] 2 sandık @ 24.2s
+Kaptan/h-chest {"id":"chzzhkp8i","coins":109}
+Tayfa/g-open "req"
+PASS C03 Konuğun açtığı sandığın altını doğrudan konuğun çantasına gider; ev sahibinde kese doğmaz; sandık iki tarafta da kalkar → {"g0":"req","gGot":109,"coins":109,"hSacks":0,"chestGone":true}
+[test] 3 kısmi @ 25.7s
+Kaptan/h-part "pkhqmuisn"
+Kaptan/h-part2 {"alive":true,"items":[["hayvan_postu",2]]}
+Tayfa/g-part {"alive":true,"items":[["hayvan_postu",2]]}
+PASS C04 Ev sahibinde kısmen sığan kese yerinde kalır (1 post alındı, 2 kaldı); konuktaki kopya da 2 post gösterir → {"hp":{"alive":true,"items":[["hayvan_postu",2]]},"gp":{"alive":true,"items":[["hayvan_postu",2]]}}
+[test] 4 güverte @ 26.9s
+Kaptan/h-deck {"id":"pkctefd9j","ship":"ship_main","att":true,"pos":[10.4,1.22,285.19]}
+Tayfa/g-deck {"ship":"ship_main","parent":true,"dy":1.51,"d":0.02}
+PASS C05 Güverteye düşen kese konukta da gemiye bağlıdır (suya düşmez, ev sahibiyle aynı yerde) → {"deck":{"id":"pkctefd9j","ship":"ship_main","att":true,"pos":[10.4,1.22,285.19]},"gDeck":{"ship":"ship_main","parent":true,"dy":1.51,"d":0.02}}
+[test] 5 av @ 27.6s
+Kaptan/h-animal {"id":"an2","x":-3.3923575463576214,"z":64.47681192125548}
+Tayfa/g-move "ok"
+Tayfa/g-hit "hit"
+PASS C06 Konuğun öldürdüğü hayvan ev sahibinde öldüren olarak konuğu taşır (XP konuğa) → {"by":"ac1ea074-5e51-4c19-b130-5f105ecf109c","gid":"ac1ea074-5e51-4c19-b130-5f105ecf109c"}
+PASS Senaryo sonunda iki taraf da oyunda → ["playing","playing"]
+[test] 06d tamam @ 29.5s
+checks: 9 fails: 0 pageErrors: 0 (116.6 s)
+SONUC: GECTI (çıkış 0) kontrol 9/9 | ev() istisnası 0, kapalı sayfa atlama 0, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 4 farklı/68

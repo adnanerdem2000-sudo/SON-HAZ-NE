@@ -1,0 +1,137 @@
+olay 2953145, süre 2.41 sn
+
+== Renderer / Compositor: 2103117 olay (871267/sn)
+     297465  input,benchmark,latencyInfo:LatencyInfo.Flow:X
+     198717  input,benchmark,latencyInfo:LatencyInfo.Flow:f
+     197493  input,benchmark,latencyInfo:LatencyInfo.Flow:s
+     100080  toplevel:ThreadControllerImpl::RunTask:X
+      98891  toplevel:SimpleWatcher::OnHandleReady:X
+      98891  toplevel,mojom:Receive mojo message:X
+      98739  cc,benchmark,input,input.scrolling:EventLatency:b
+      98739  cc,benchmark,input,input.scrolling:GenerationToBrowserMain:b
+      98739  cc,benchmark,input,input.scrolling:GenerationToBrowserMain:e
+      98739  cc,benchmark,input,input.scrolling:BrowserMainToRendererCompositor:b
+      98739  cc,benchmark,input,input.scrolling:BrowserMainToRendererCompositor:e
+      98739  cc,benchmark,input,input.scrolling:RendererCompositorFinishedToTermination:b
+      98739  cc,benchmark,input,input.scrolling:RendererCompositorFinishedToTermination:e
+      98739  cc,benchmark,input,input.scrolling:EventLatency:e
+      99970  [ek] ThreadControllerImpl::RunTask third_party/blink/renderer/platform/widget/input/widget_input_handler_manager.cc:DidHandleInputEventSentToMain
+      98747  [ek] SimpleWatcher::OnHandleReady {"watcher_notify_interface_tag":"blink.mojom.WidgetInputHandler"}
+      98747  [ek] Receive mojo message {"data_num_bytes":568,"ipc_hash":2170962340,"mojo_interface_method":{"native_symbol":{"mapping_id":0,"rel_pc":82149672}},"mojo_interface_tag":"blink.mojom.Widge
+        144  [ek] SimpleWatcher::OnHandleReady {"watcher_notify_interface_tag":"viz.mojom.CompositorFrameSinkClient"}
+        144  [ek] Receive mojo message {"data_num_bytes":328,"ipc_hash":2378294256,"mojo_interface_method":{"native_symbol":{"mapping_id":0,"rel_pc":82128800}},"mojo_interface_tag":"viz.mojom.Composi
+         40  [ek] ThreadControllerImpl::RunTask cc/scheduler/scheduler.cc:ScheduleBeginImplFrameDeadline
+         25  [ek] ThreadControllerImpl::RunTask cc/scheduler/scheduler.cc:PostPendingBeginFrameTask
+         19  [ek] ThreadControllerImpl::RunTask cc/trees/proxy_main.cc:SendCommitRequestToImplThreadIfNeeded
+         19  [ek] ThreadControllerImpl::RunTask cc/trees/proxy_main.cc:BeginMainFrame
+          7  [ek] ThreadControllerImpl::RunTask cc/base/delayed_unique_notifier.cc:NotifyIfTime
+
+== Browser / CrBrowserMain: 506344 olay (209765/sn)
+     198603  toplevel:ThreadControllerImpl::RunTask:X
+      99970  toplevel,mojom:Receive mojo reply:X
+      98629  benchmark,latencyInfo,rail,input.scrolling:InputLatency::MouseMove:b
+      98566  benchmark,latencyInfo,rail,input.scrolling:InputLatency::MouseMove:e
+      10575  toplevel:SimpleWatcher::OnHandleReady:X
+          1  toplevel:ThreadControllerImpl::RunTask:B
+      99970  [ek] Receive mojo reply {"data_num_bytes":296,"ipc_hash":2170962340,"mojo_interface_method":{"native_symbol":{"mapping_id":1,"rel_pc":82136288}},"mojo_interface_tag":"blink.mojom.Widge
+      98630  [ek] ThreadControllerImpl::RunTask ui/aura/window_event_dispatcher.cc:PostSynthesizeMouseMove
+      89395  [ek] ThreadControllerImpl::RunTask mojo/public/cpp/bindings/lib/connector.cc:PostDispatchNextMessageFromPipe
+      10575  [ek] SimpleWatcher::OnHandleReady {"watcher_notify_interface_tag":"blink.mojom.WidgetInputHandler"}
+      10361  [ek] ThreadControllerImpl::RunTask mojo/public/cpp/system/simple_watcher.cc:Notify
+        214  [ek] ThreadControllerImpl::RunTask mojo/public/cpp/system/simple_watcher.cc:ArmOrNotify
+          1  [ek] ThreadControllerImpl::RunTask base/trace_event/trace_session_observer.cc:OnStart
+          1  [ek] ThreadControllerImpl::RunTask services/tracing/public/cpp/perfetto/metadata_data_source.cc:OnStart
+          1  [ek] ThreadControllerImpl::RunTask content/browser/devtools/protocol/tracing_handler.cc:operator()
+          1  [ek] ThreadControllerImpl::RunTask content/browser/devtools/devtools_pipe_handler.cc:HandleMessage
+
+== Renderer / CrRendererMain: 299445 olay (124052/sn)
+      99979  input,benchmark,latencyInfo:LatencyInfo.Flow:s
+      98755  input,benchmark,latencyInfo:LatencyInfo.Flow:f
+      83146  input,benchmark,latencyInfo:LatencyInfo.Flow:X
+      16833  input,benchmark,latencyInfo:LatencyInfo.Flow:I
+         47  renderer.scheduler:BlinkScheduler_OnTaskCompleted:X
+         46  toplevel:ThreadControllerImpl::RunTask:X
+         40  toplevel:BlinkScheduler_PerformMicrotaskCheckpoint:X
+         38  cc:LocalFrameView::ScheduleAnimation:X
+         19  cc:ProxyMain::SetNeedsAnimate:I
+         19  blink,benchmark:LocalFrameView::RunStyleAndLayoutLifecyclePhases:X
+         19  blink,benchmark:LocalFrameView::RunCompositingInputsLifecyclePhase:X
+         19  blink,benchmark:LocalFrameView::RunPrePaintLifecyclePhase:X
+         19  blink,benchmark:LocalFrameView::RunPaintLifecyclePhase:X
+         19  blink,benchmark:LocalFrameView::RunAccessibilitySteps:X
+         18  [ek] ThreadControllerImpl::RunTask cc/trees/proxy_impl.cc:ScheduledActionSendBeginMainFrame
+         10  [ek] ThreadControllerImpl::RunTask third_party/blink/renderer/platform/widget/input/main_thread_event_queue.cc:SetNeedsMainFrame
+          7  [ek] ThreadControllerImpl::RunTask third_party/blink/renderer/core/frame/web_frame_widget_impl.cc:ReportSwapAndPresentationFailureOnTaskRunner
+          7  [ek] ThreadControllerImpl::RunTask third_party/blink/renderer/core/paint/timing/paint_timing.cc:operator()
+          3  [ek] ThreadControllerImpl::RunTask third_party/blink/renderer/controller/memory_usage_monitor.cc:StartMonitoringIfNeeded
+          1  [ek] ThreadControllerImpl::RunTask base/trace_event/trace_session_observer.cc:OnStart
+
+== Browser / Chrome_IOThread: 41427 olay (17162/sn)
+      41412  toplevel:EpollEvent:X
+          7  toplevel:SimpleWatcher::OnHandleReady:X
+          7  toplevel,mojom:Receive mojo message:X
+          1  toplevel:ThreadControllerImpl::RunTask:X
+          7  [ek] SimpleWatcher::OnHandleReady {"watcher_notify_interface_tag":"ukm.mojom.UkmRecorderInterface"}
+          7  [ek] Receive mojo message {"data_num_bytes":352,"ipc_hash":248338566,"mojo_interface_method":{"native_symbol":{"mapping_id":1,"rel_pc":82125848}},"mojo_interface_tag":"ukm.mojom.UkmRecor
+          1  [ek] ThreadControllerImpl::RunTask mojo/core/channel_posix.cc:WaitForWriteOnIOThreadNoLock
+
+== GPU Process / VizCompositorThread: 1445 olay (599/sn)
+        289  toplevel:ThreadControllerImpl::RunTask:X
+        289  viz,benchmark,graphics.pipeline:Graphics.Pipeline:X
+        145  toplevel:SimpleWatcher::OnHandleReady:X
+        145  toplevel,mojom:Receive mojo message:X
+        145  viz,benchmark,graphics.pipeline:Graphics.Pipeline:f
+        144  viz:DelayBasedBeginFrameSource::OnTimerTick:X
+        144  viz:SendBeginFrameDecision:X
+        144  viz,benchmark,graphics.pipeline:Graphics.Pipeline:s
+        145  [ek] ThreadControllerImpl::RunTask mojo/public/cpp/system/simple_watcher.cc:Notify
+        145  [ek] SimpleWatcher::OnHandleReady {"watcher_notify_interface_tag":"viz.mojom.CompositorFrameSink"}
+        145  [ek] Receive mojo message {"data_num_bytes":112,"ipc_hash":16648248,"mojo_interface_method":{"native_symbol":{"mapping_id":2,"rel_pc":82128768}},"mojo_interface_tag":"viz.mojom.Composito
+        144  [ek] ThreadControllerImpl::RunTask components/viz/common/frame_sinks/delay_based_time_source.cc:PostNextTickTask
+
+== Browser / Gamepad polling thread: 566 olay (234/sn)
+        566  toplevel:ThreadControllerImpl::RunTask:X
+        566  [ek] ThreadControllerImpl::RunTask device/gamepad/gamepad_provider.cc:ScheduleDoPoll
+
+== Renderer / PerfettoTrace: 356 olay (147/sn)
+        213  toplevel:ThreadControllerImpl::RunTask:X
+         70  toplevel:SimpleWatcher::OnHandleReady:X
+         65  toplevel,mojom:Receive mojo reply:X
+          5  toplevel,mojom:Receive mojo message:X
+          1  toplevel:ThreadControllerImpl::RunTask:B
+          1  toplevel:SimpleWatcher::OnHandleReady:B
+          1  toplevel,mojom:Receive mojo message:B
+         77  [ek] ThreadControllerImpl::RunTask base/tracing/perfetto_task_runner.cc:PostDelayedTask
+         71  [ek] ThreadControllerImpl::RunTask mojo/public/cpp/system/simple_watcher.cc:Notify
+         66  [ek] ThreadControllerImpl::RunTask base/task/sequence_manager/task_queue_impl.cc:PushOntoDelayedIncomingQueue
+         65  [ek] SimpleWatcher::OnHandleReady {"watcher_notify_interface_tag":"tracing.mojom.ProducerHost"}
+         65  [ek] Receive mojo reply {"data_num_bytes":64,"ipc_hash":2490734520,"mojo_interface_method":{"native_symbol":{"mapping_id":0,"rel_pc":82155736}},"mojo_interface_tag":"tracing.mojom.Prod
+          6  [ek] SimpleWatcher::OnHandleReady {"watcher_notify_interface_tag":"tracing.mojom.ProducerClient"}
+          5  [ek] Receive mojo message {"data_num_bytes":64,"ipc_hash":1465404895,"mojo_interface_method":{"native_symbol":{"mapping_id":0,"rel_pc":82155808}},"mojo_interface_tag":"tracing.mojom.Prod
+          1  [ek] Receive mojo message {"data_num_bytes":72,"ipc_hash":1182013728,"mojo_interface_method":{"native_symbol":{"mapping_id":0,"rel_pc":82155792}},"mojo_interface_tag":"tracing.mojom.Prod
+
+== Browser / PerfettoTrace: 179 olay (74/sn)
+        105  toplevel:ThreadControllerImpl::RunTask:X
+         33  toplevel:SimpleWatcher::OnHandleReady:X
+         31  toplevel,mojom:Receive mojo reply:X
+          7  toplevel,mojom:Receive mojo message:X
+          1  toplevel:ThreadControllerImpl::RunTask:B
+          1  toplevel:SimpleWatcher::OnHandleReady:B
+          1  toplevel,mojom:Receive mojo message:B
+         40  [ek] ThreadControllerImpl::RunTask base/tracing/perfetto_task_runner.cc:PostDelayedTask
+         34  [ek] ThreadControllerImpl::RunTask mojo/public/cpp/system/simple_watcher.cc:Notify
+         31  [ek] Receive mojo reply {"data_num_bytes":64,"ipc_hash":2490734520,"mojo_interface_method":{"native_symbol":{"mapping_id":1,"rel_pc":82155736}},"mojo_interface_tag":"tracing.mojom.Prod
+         27  [ek] ThreadControllerImpl::RunTask base/task/sequence_manager/task_queue_impl.cc:PushOntoDelayedIncomingQueue
+         27  [ek] SimpleWatcher::OnHandleReady {"watcher_notify_interface_tag":"tracing.mojom.ProducerHost"}
+          6  [ek] SimpleWatcher::OnHandleReady {"watcher_notify_interface_tag":"tracing.mojom.ProducerClient"}
+          5  [ek] ThreadControllerImpl::RunTask mojo/public/cpp/bindings/lib/connector.cc:PostDispatchNextMessageFromPipe
+          5  [ek] Receive mojo message {"data_num_bytes":64,"ipc_hash":1465404895,"mojo_interface_method":{"native_symbol":{"mapping_id":1,"rel_pc":82155808}},"mojo_interface_tag":"tracing.mojom.Prod
+          1  [ek] Receive mojo message {"data_num_bytes":344,"ipc_hash":273907759,"mojo_interface_method":{"native_symbol":{"mapping_id":1,"rel_pc":82155784}},"mojo_interface_tag":"tracing.mojom.Prod
+          1  [ek] SimpleWatcher::OnHandleReady {"watcher_notify_interface_tag":"tracing.mojom.TracingSessionClient"}
+
+== GPU Process / Chrome_ChildIOThread: 153 olay (63/sn)
+        153  toplevel:EpollEvent:X
+
+== Renderer / Chrome_ChildIOThread: 71 olay (29/sn)
+         70  toplevel:EpollEvent:X
+          1  toplevel:EpollEvent:B

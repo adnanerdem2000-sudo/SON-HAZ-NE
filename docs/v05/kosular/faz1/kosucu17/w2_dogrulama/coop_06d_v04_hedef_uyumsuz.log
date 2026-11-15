@@ -1,0 +1,40 @@
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+Kaptan/host {"code":"PTPV26"}
+Tayfa/join {"room":"Ganimet Odası"}
+PASS Konuk odaya bağlandı → {"room":"Ganimet Odası"}
+Kaptan/hs "host-started"
+Tayfa/gs "guest-started"
+PASS 2 oyuncu oyunda ve bağlı
+[test] 1 yere bırak @ 20.9s
+EVALERR Tayfa g-drop page.evaluate: TypeError: DK.mod is not a function
+    at eval (eval at evaluate (:311:30), <anonymous>:1:52)
+    at eval (eval at evaluate (:311:30), <anonymous>:1:414)
+    at eval (<anonymous>)
+    at UtilityScript.evaluate (<anonymous>:311:30)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+Kaptan/h-drop null
+FAIL C01 Konuğun "Yere bırak"ı ev sahibinde kese olarak doğar (fizikli, uzun ömürlü) ve konukta aynı kimlikle görünür → {"hostPk":null,"guestSees":false}
+[test] 2 sandık @ 22.0s
+Kaptan/h-chest {"id":"ch8k93n0x","coins":81}
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/goruntu/06d_ganimet_canta_2026-11-15T07-03-46-247Z_13299/ilk_kalan_Kaptan.png
+GORUNTU /home/user/SON-HAZ-NE-w2/tests/out/goruntu/06d_ganimet_canta_2026-11-15T07-03-46-247Z_13299/ilk_kalan_Tayfa.png
+Tayfa/g-open "req"
+PASS C03 Konuğun açtığı sandığın altını doğrudan konuğun çantasına gider; ev sahibinde kese doğmaz; sandık iki tarafta da kalkar → {"g0":"req","gGot":81,"coins":81,"hSacks":0,"chestGone":true}
+[test] 3 kısmi @ 23.5s
+Kaptan/h-part "pkxo65sgc"
+Kaptan/h-part2 {"alive":true,"items":[["hayvan_postu",2]]}
+Tayfa/g-part {"alive":true,"items":[["hayvan_postu",2]]}
+PASS C04 Ev sahibinde kısmen sığan kese yerinde kalır (1 post alındı, 2 kaldı); konuktaki kopya da 2 post gösterir → {"hp":{"alive":true,"items":[["hayvan_postu",2]]},"gp":{"alive":true,"items":[["hayvan_postu",2]]}}
+[test] 4 güverte @ 24.6s
+Kaptan/h-deck {"id":"pkj09j54b","ship":"ship_main","att":true,"pos":[10.42,1.26,285.18]}
+Tayfa/g-deck {"ship":"ship_main","parent":true,"dy":1.47,"d":0.02}
+PASS C05 Güverteye düşen kese konukta da gemiye bağlıdır (suya düşmez, ev sahibiyle aynı yerde) → {"deck":{"id":"pkj09j54b","ship":"ship_main","att":true,"pos":[10.42,1.26,285.18]},"gDeck":{"ship":"ship_main","parent":true,"dy":1.47,"d":0.02}}
+[test] 5 av @ 25.4s
+Kaptan/h-animal {"id":"an1","x":-29.576946251698843,"z":-21.81123122155423}
+Tayfa/g-move "ok"
+Tayfa/g-hit "hit"
+PASS C06 Konuğun öldürdüğü hayvan ev sahibinde öldüren olarak konuğu taşır (XP konuğa) → {"by":"28e4c152-2491-49ea-9b4e-4d5a9b4a0f5e","gid":"28e4c152-2491-49ea-9b4e-4d5a9b4a0f5e"}
+PASS Senaryo sonunda iki taraf da oyunda → ["playing","playing"]
+[test] 06d tamam @ 27.0s
+checks: 8 fails: 2 pageErrors: 0 (115.3 s)
+SONUC: KALDI (çıkış 1) kontrol 7/8 | ev() istisnası 1, kapalı sayfa atlama 0, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 4 farklı/68 | neden: başarısız kontrol ya da ev() istisnası: 2; ev() istisnası (evalErrors): 1

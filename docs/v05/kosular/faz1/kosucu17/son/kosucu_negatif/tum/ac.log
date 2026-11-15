@@ -1,0 +1,13 @@
+$ node /home/user/SON-HAZ-NE-k17/tests/harness/coop.cjs tests/fixtures/kosucu/ac_coop_gec_hata.cjs --players 2 --size 320x200 --timeout 120 --url http://127.0.0.1:40581/coop.html --report /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/son2/kn/tum/ac.json
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+Kaptan/dk "object"
+PASS AC01 Sayfa açıldı
+Kaptan/gec-hata "planlandı"
+Kaptan PAGEERR: kosucu_negatif ac: senaryodan 300 ms sonra gelen hata | Error: kosucu_negatif ac: senaryodan 300 ms sonra gelen hata |     at eval (eval at evaluate (:311:30), <anonymous>:1:26)
+YERLESME: senaryodan sonraki 1000 ms içinde 1 yeni hata kaydı geldi
+GORUNTU /home/user/SON-HAZ-NE-k17/tests/out/goruntu/ac_coop_gec_hata_2026-11-15T03-55-46-136Z_8430/son_Kaptan.png
+GORUNTU /home/user/SON-HAZ-NE-k17/tests/out/goruntu/ac_coop_gec_hata_2026-11-15T03-55-46-136Z_8430/son_Tayfa.png
+checks: 1 fails: 0 pageErrors: 1 (1.4 s)
+SONUC: KALDI (çıkış 1) kontrol 1/1 | ev() istisnası 0, kapalı sayfa atlama 0, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: sayfa hatası (pageerror): 1
+
+[çıkış 1]

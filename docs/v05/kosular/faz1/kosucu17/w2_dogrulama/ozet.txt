@@ -1,0 +1,8 @@
+koşucu: run 285211cf coop 9292115d ortak 53358e1c negatif 8d84ec85
+06:44:43 kosucu_negatif rc=1 sure=256s oom_kill=0->0 | 
+06:52:01 coop_06a2 rc=0 sure=438s oom_kill=0->0 | SONUC: GECTI (çıkış 0) kontrol 3/3 | ev() istisnası 0, kapalı sayfa atlama 17, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 7 farklı/103
+06:59:50 coop_06a rc=0 sure=469s oom_kill=0->0 | SONUC: GECTI (çıkış 0) kontrol 10/10 | ev() istisnası 0, kapalı sayfa atlama 19, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 8 farklı/104
+07:05:41 coop_06d rc=1 sure=351s oom_kill=0->0 | SONUC: KALDI (çıkış 1) kontrol 7/8 | ev() istisnası 1, kapalı sayfa atlama 0, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 4 farklı/68 | neden: başarısız kontrol ya da ev() istisnası: 2; ev() istisnası (evalErrors): 1
+07:19:10 coop_06c rc=0 sure=809s oom_kill=0->0 | SONUC: GECTI (çıkış 0) kontrol 7/7 | ev() istisnası 0, kapalı sayfa atlama 18, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 9 farklı/137
+BITTI
+07:21:07 coop_06d_w2 rc=0 | SONUC: GECTI (çıkış 0) kontrol 9/9 | ev() istisnası 0, kapalı sayfa atlama 0, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 4 farklı/68

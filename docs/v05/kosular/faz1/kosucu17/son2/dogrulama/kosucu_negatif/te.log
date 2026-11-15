@@ -1,0 +1,14 @@
+$ node /home/user/SON-HAZ-NE-k17/tests/harness/coop.cjs tests/fixtures/kosucu/te_coop_tarayici_olur.cjs --players 2 --size 320x200 --timeout 120 --url http://127.0.0.1:38307/coop.html --report /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/kosu/V1_kn/te.json
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+Kaptan/sim 30
+PASS TE01 Ev sahibi ilerledi → 30
+[test] KOSUCU_NEGATIF_OLDUR
+Kaptan sekme kapandı (senaryo kapatmadı)
+Tayfa sekme kapandı (senaryo kapatmadı)
+KOPMA TARAYICI ÇÖKTÜ/KOPTU: tarayıcı süreciyle bağlantı koptu (süreç öldürüldü ya da çöktü; ör. bellek sınırında OOM) — 0.4 sn, 1 kontrolden sonra
+(koşu koptuğu için yarıda kalan senaryo: koşu koptu (tarayıcı çöktü/koptu); tick() tamamlanamadı, senaryo durduruldu)
+checks: 1 fails: 0 pageErrors: 1 (4.4 s)
+SONUC: KALDI (çıkış 1) kontrol 1/1 | ev() istisnası 0, kapalı sayfa atlama 0, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: sayfa hatası (pageerror): 1; tarayıcı çöktü/koptu (senaryo yarıda kaldı: koşu koptu (tarayıcı çöktü/koptu); tick() tamamlanamadı, senaryo durduruldu)
+
+[çıkış 1]
+[tarayıcı öldürme: {"durum":"öldürüldü","hedef":"tarayici","pid":21430,"ms":704}]

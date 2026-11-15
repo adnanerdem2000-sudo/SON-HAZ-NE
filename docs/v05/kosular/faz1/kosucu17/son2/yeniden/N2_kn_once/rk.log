@@ -1,0 +1,16 @@
+$ node /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/once_kosucu/run.cjs tests/fixtures/kosucu/rk_renderer_olur.js --size 320x200 --timeout 90 --url http://127.0.0.1:36961/temiz.html --report /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/kosu/N2_kn_once/rk.json
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+ready in 0.2 s
+PASS RK01 Sabit sayfa açıldı → "object"
+[test] KOSUCU_NEGATIF_OLDUR
+PAGECRASH
+EVALERR page.evaluate: Target crashed 
+FAIL (hata) RK02 Öldürmeden sonraki kontrol (koşmamalı) page.evaluate: Target crashed 
+TIMEOUT
+errors: 0 pageErrors: 1 fails: 2 evalErrors: 1 TIMEOUT (90.3 s)
+SONUC: ZAMAN_ASIMI (çıkış 1) kontrol 1/2, onay 3 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: başarısız kontrol ya da adım: 2; sayfa hatası (pageerror): 1; adım istisnası (evalErrors): 1; zaman aşımı (90 sn)
+METRICSFAIL cdpSession.send: Target page, context or browser has been closed
+KANIT UYARISI metrics cdpSession.send: Target page, context or browser has been closed
+
+[çıkış 1]
+[tarayıcı öldürme: {"durum":"öldürüldü","hedef":"renderer","pid":16423,"ms":558}]

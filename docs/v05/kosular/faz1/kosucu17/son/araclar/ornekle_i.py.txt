@@ -1,0 +1,63 @@
+# Bağımsız örnekleyici (yalnız /proc ve cgroup okur): kök pid'in alt ağacındaki chrome süreçleri.
+#   python3 -I ornekle_i.py <kok_pid> <cikti_taban> [aralik_sn=0.25]
+import os, sys, time, glob
+kok = int(sys.argv[1]); taban = sys.argv[2]; aralik = float(sys.argv[3]) if len(sys.argv) > 3 else 0.25
+CG = glob.glob('/sys/fs/cgroup/memory/process_api/*/claude-code-bash')[0]
+def oku(f):
+    try:
+        with open(f) as h: return h.read()
+    except Exception: return None
+fb = open(taban + '_bellek.csv', 'w'); fb.write('t,cg_MB,oom_kill,pid,tur,rss_kB,hwm_kB,anon_kB\n')
+fi = open(taban + '_iplik.csv', 'w'); fi.write('t,pid,tur,iplik,tik,gonullu\n')
+def oom():
+    s = oku(CG + '/memory.oom_control') or ''
+    for l in s.splitlines():
+        if l.startswith('oom_kill '): return int(l.split()[1])
+    return -1
+i = 0
+while True:
+    t = time.time()
+    ppid = {}
+    for d in os.listdir('/proc'):
+        if not d.isdigit(): continue
+        s = oku('/proc/%s/stat' % d)
+        if not s: continue
+        b = s.rfind(')'); ppid[int(d)] = (int(s[b+2:].split()[1]), s[s.find('(')+1:b])
+    if kok not in ppid: break
+    cocuk = {}
+    for p, (pp, c) in ppid.items(): cocuk.setdefault(pp, []).append(p)
+    agac, yig = [], [kok]
+    while yig:
+        p = yig.pop()
+        for q in cocuk.get(p, []): agac.append(q); yig.append(q)
+    cg = int(oku(CG + '/memory.usage_in_bytes') or 0) // 1048576
+    ok = oom()
+    for p in agac:
+        if not ppid[p][1].startswith('chrome'): continue
+        cmd = (oku('/proc/%d/cmdline' % p) or '').replace('\0', ' ')
+        tur = 'browser'
+        if '--type=' in cmd: tur = cmd.split('--type=')[1].split()[0]
+        st = oku('/proc/%d/status' % p)
+        if not st: continue
+        v = {}
+        for l in st.splitlines():
+            k = l.split(':')[0]
+            if k in ('VmRSS', 'VmHWM', 'RssAnon'): v[k] = int(l.split()[1])
+        fb.write('%.3f,%d,%d,%d,%s,%d,%d,%d\n' % (t, cg, ok, p, tur, v.get('VmRSS', 0), v.get('VmHWM', 0), v.get('RssAnon', 0)))
+        if i % 4 == 0:
+            try: tids = os.listdir('/proc/%d/task' % p)
+            except Exception: tids = []
+            for tid in tids:
+                ss = oku('/proc/%d/task/%s/stat' % (p, tid)); sst = oku('/proc/%d/task/%s/status' % (p, tid))
+                if not ss or not sst: continue
+                b = ss.rfind(')'); f = ss[b+2:].split()
+                ad = 'ANA' if str(p) == tid else ss[ss.find('(')+1:b]
+                if ad not in ('ANA', 'Compositor', 'Chrome_IOThread'): continue
+                gon = 0
+                for l in sst.splitlines():
+                    if l.startswith('voluntary_ctxt_switches:'): gon = int(l.split()[1])
+                fi.write('%.3f,%d,%s,%s,%d,%d\n' % (t, p, tur, ad, int(f[11]) + int(f[12]), gon))
+    fb.flush(); fi.flush()
+    i += 1
+    time.sleep(max(0, aralik - (time.time() - t)))
+fb.close(); fi.close()

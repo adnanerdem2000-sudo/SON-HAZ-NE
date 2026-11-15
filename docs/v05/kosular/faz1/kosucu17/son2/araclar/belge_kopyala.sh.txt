@@ -1,0 +1,30 @@
+#!/bin/bash
+# Son düzeltici 2'nin ham kayıtlarını k17 docs/v05/kosular/faz1/kosucu17/son2/ altına kopyalar (PNG yok; büyük örnek dizileri seyreltilmiş).
+set -eu
+K=/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17; S=$K/sd2; O=$S/kosu
+A=/home/user/SON-HAZ-NE-k17; H=$A/docs/v05/kosular/faz1/kosucu17/son2
+rm -rf $H; mkdir -p $H/yeniden $H/dogrulama $H/araclar
+# yeniden üretim (değişiklik öncesi koşucu)
+(cd $S/once_kosucu && sha256sum run.cjs coop.cjs ortak.cjs kosucu_negatif.mjs README.md KOSUCU17.md) > $H/yeniden/once_kosucu_sha.txt
+mkdir -p $H/yeniden/once_kosucu; for f in run.cjs coop.cjs ortak.cjs kosucu_negatif.mjs; do cp $S/once_kosucu/$f $H/yeniden/once_kosucu/$f.txt; done
+for f in R1_gk_karsilastir_once R2_gk_kamera_once; do cp $O/$f.json $O/$f.log $H/yeniden/; done
+for n in N1_kn_once N2_kn_once; do mkdir -p $H/yeniden/$n; cp $O/$n/*.json $O/$n/*.log $H/yeniden/$n/; done
+cp $O/N1_kn_once.log $H/yeniden/N1_kn_once_ozet.log; cp $O/N1_kn_once_ozet.json $H/yeniden/; cp $O/N2_kn_once_renderer.log $H/yeniden/N2_kn_once_ozet.log; cp $O/N2_kn_once_ozet.json $H/yeniden/
+# doğrulama (son kod)
+mkdir -p $H/dogrulama/kosucu_negatif; cp $O/V1_kn/*.json $O/V1_kn/*.log $H/dogrulama/kosucu_negatif/; cp $O/V1_kn_tum.log $H/dogrulama/kosucu_negatif/tum.log; cp $O/V1_kn_ozet.json $H/dogrulama/kosucu_negatif/tum_ozet.json
+for it in 17v04_T acilis_T coop06b_T acilis_G; do
+  b=$O/V_$it; [ -f $b.json ] || continue
+  cp $b.json $b.log $H/dogrulama/; [ -f $b.dmesg.txt ] && cp $b.dmesg.txt $H/dogrulama/
+  [ -f ${b}_ozet.json ] && cp ${b}_ozet.json $H/dogrulama/
+  [ -f ${b}_ornek.csv ] && awk -F, 'NR==1 || (NR%4==2)' ${b}_ornek.csv > $H/dogrulama/V_${it}_ornek_2sn.csv
+  [ -f ${b}_iplik.csv ] && awk -F, 'NR==1 || (NR%5==2)' ${b}_iplik.csv > $H/dogrulama/V_${it}_iplik_10sn.csv
+done
+[ -f $O/V_gkY.json ] && cp $O/V_gkY.json $O/V_gkY.log $H/dogrulama/
+# araçlar ve günlükler
+for f in zincir.sh zincir_v.sh belge_kopyala.sh belge_kosucu17.py gk_karsilastir.cjs gk_kamera.cjs kamera_ozet.py iplik_ozet.py; do [ -f $S/araclar/$f ] && cp $S/araclar/$f $H/araclar/$f.txt; done
+cp $S/plan_R.tsv $S/plan_N.tsv $S/plan_N2.tsv $H/araclar/ 2>/dev/null || true
+cp $S/zincir.log $H/zincir.log
+(cd $A && sha256sum tests/harness/run.cjs tests/harness/coop.cjs tests/harness/ortak.cjs tests/node/kosucu_negatif.mjs tests/README.md $(git -C $A diff --name-only 0d57650 -- tests/fixtures | sort)) > $H/kod_sha.txt
+cp $H/kod_sha.txt $A/docs/v05/kosular/faz1/kosucu17/kod_sha.txt
+find $H -name '*.png' -delete
+du -sh $H; find $H -type f | wc -l

@@ -1,0 +1,876 @@
+{
+ "scenario": "/home/user/SON-HAZ-NE-k17/tests/scenarios/05_dusman_ai.js",
+ "url": "http://localhost:8081/index.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "result": "ok",
+   "ms": 29
+  },
+  {
+   "n": 2,
+   "label": null,
+   "expect": {
+    "label": "Oyun başladı",
+    "ok": true,
+    "value": "playing"
+   },
+   "ms": 7216
+  },
+  {
+   "n": 3,
+   "label": null,
+   "result": {
+    "hour": 12.008333333333308,
+    "night": false,
+    "weather": "acik",
+    "fog": 0,
+    "rain": 0
+   },
+   "ms": 119
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "Algı: açık görüş hattında düşman 3 sn içinde oyuncuyu fark eder",
+    "ok": true,
+    "value": true
+   },
+   "ms": 362
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": {
+    "d": 15,
+    "vision": 24,
+    "awareness": 1.2,
+    "state": "strafe",
+    "target": true,
+    "fog": 0,
+    "yawErr": 0,
+    "inList": true
+   },
+   "ms": 22
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "Algı: 1 m kalın duvar arkasındaki oyuncu görülmez",
+    "ok": true,
+    "value": true
+   },
+   "ms": 277
+  },
+  {
+   "n": 7,
+   "label": null,
+   "result": {
+    "awareness": 0,
+    "state": "patrol",
+    "target": false
+   },
+   "ms": 17
+  },
+  {
+   "n": 8,
+   "label": null,
+   "expect": {
+    "label": "Duyma: sırtı dönük düşman silah sesine tepki verir",
+    "ok": true,
+    "value": true
+   },
+   "ms": 172
+  },
+  {
+   "n": 9,
+   "label": null,
+   "result": {
+    "before": {
+     "a": 0,
+     "s": "patrol"
+    },
+    "after": {
+     "a": 1.2,
+     "s": "strafe",
+     "lastKnown": true
+    }
+   },
+   "ms": 23
+  },
+  {
+   "n": 10,
+   "label": null,
+   "expect": {
+    "label": "Yığılma yok: aynı noktada doğan 4 düşman 2 sn içinde ayrılır (min mesafe > 0.6 m)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 151
+  },
+  {
+   "n": 11,
+   "label": null,
+   "result": {
+    "minD": 0.84
+   },
+   "ms": 10
+  },
+  {
+   "n": 12,
+   "label": null,
+   "expect": {
+    "label": "Saldırı telgrafı: hazırlık ≥0.35 sn, vuruş hazırlıktan önce işlenmez",
+    "ok": true,
+    "value": true
+   },
+   "ms": 327
+  },
+  {
+   "n": 13,
+   "label": null,
+   "result": {
+    "started": 0,
+    "hitAt": 0.42,
+    "hitFrame": null,
+    "hp": 76
+   },
+   "ms": 16
+  },
+  {
+   "n": 14,
+   "label": null,
+   "expect": {
+    "label": "F-03 Sersemlik hafif vuruşla iptal olmaz",
+    "ok": true,
+    "value": true
+   },
+   "ms": 407
+  },
+  {
+   "n": 15,
+   "label": null,
+   "expect": {
+    "label": "F-05 Çağırma hazırlığı hafif vuruşla bozulmaz",
+    "ok": true,
+    "value": true
+   },
+   "ms": 39
+  },
+  {
+   "n": 16,
+   "label": null,
+   "expect": {
+    "label": "F-07 Kamp bekleme süresi kayıt/yükleme ile korunur",
+    "ok": true,
+    "value": true
+   },
+   "ms": 3
+  },
+  {
+   "n": 17,
+   "label": null,
+   "expect": {
+    "label": "F-07 Tümü öldürülmüş kamp uzaklaşınca tam yenilenme süresine girer (anında yeniden doğma yok)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 2
+  },
+  {
+   "n": 18,
+   "label": null,
+   "result": {
+    "camp": {
+     "savedCd": 123,
+     "restoredCd": 123
+    },
+    "camp2": {
+     "cooldown": 300,
+     "respawn": 300,
+     "spawned": false
+    }
+   },
+   "ms": 1
+  },
+  {
+   "n": 19,
+   "label": null,
+   "expect": {
+    "label": "F-16 Tabanca ışını duvar arkasındaki düşmana isabet etmez",
+    "ok": true,
+    "value": true
+   },
+   "ms": 4
+  },
+  {
+   "n": 20,
+   "label": null,
+   "result": {
+    "free": true,
+    "blocked": null,
+    "terrain": {
+     "gy": 11.44,
+     "maxBetween": 11.64
+    },
+    "inTargets": true
+   },
+   "ms": 1
+  },
+  {
+   "n": 21,
+   "label": null,
+   "expect": {
+    "label": "ek-110 Boğulmuş denizci yakalaması oyuncuyu gerçekten yavaşlatır",
+    "ok": true,
+    "value": true
+   },
+   "ms": 3
+  },
+  {
+   "n": 22,
+   "label": null,
+   "expect": {
+    "label": "F-10 noLoot düşmanı ganimet/XP vermez, normal düşman verir",
+    "ok": true,
+    "value": true
+   },
+   "ms": 8
+  },
+  {
+   "n": 23,
+   "label": null,
+   "result": {
+    "noLoot": {
+     "loots": 0,
+     "kills": 0
+    },
+    "normal": {
+     "loots": 1,
+     "kills": 1
+    }
+   },
+   "ms": 2
+  },
+  {
+   "n": 24,
+   "label": null,
+   "expect": {
+    "label": "F-08 100 m uzaktaki düşman hedefi varsa her adım güncellenir (seyreltme yok)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 4
+  },
+  {
+   "n": 25,
+   "label": null,
+   "result": {
+    "accNoTarget": 0.217,
+    "accTarget": 0
+   },
+   "ms": 1
+  },
+  {
+   "n": 26,
+   "label": null,
+   "expect": {
+    "label": "ek-109 Gemi batınca güvertedeki canlı tayfa boğulur (kalıcı deniz dibi düşmanı yok)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 5
+  },
+  {
+   "n": 27,
+   "label": null,
+   "result": {
+    "alive": false,
+    "ship": false
+   },
+   "ms": 1
+  },
+  {
+   "n": 28,
+   "label": null,
+   "expect": {
+    "label": "Zayıf nokta: zırhlı düşman arkadan 1.6× hasar alır (önden 1×)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 4
+  },
+  {
+   "n": 29,
+   "label": null,
+   "result": {
+    "front": 10,
+    "back": 16,
+    "mult": 1.6
+   },
+   "ms": 1
+  },
+  {
+   "n": 30,
+   "label": null,
+   "expect": {
+    "label": "Boss evreleri: can eşiklerinde çağırma ve öfke tetiklenir",
+    "ok": true,
+    "value": true
+   },
+   "ms": 9
+  },
+  {
+   "n": 31,
+   "label": null,
+   "result": {
+    "kizil": {
+     "state": "summon",
+     "summoned": 1,
+     "hpFrac": 0.5
+    },
+    "kaptan": {
+     "enraged": true,
+     "summoned": 2,
+     "hpFrac": 0.3
+    }
+   },
+   "ms": 0
+  },
+  {
+   "n": 32,
+   "label": null,
+   "expect": {
+    "label": "Oyun döngüsü Aşama 5 sonrası hatasız sürüyor",
+    "ok": true,
+    "value": true
+   },
+   "ms": 138
+  }
+ ],
+ "errors": [],
+ "pageErrors": [],
+ "fails": 0,
+ "evalErrors": 0,
+ "readyMs": 5866,
+ "ms": 19839,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/scenarios/05_dusman_ai.js",
+ "meta": {},
+ "hedef": {
+  "tip": "moduler",
+  "url": "http://localhost:8081/index.html?test=1",
+  "verilenUrl": "http://localhost:8081/index.html",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "0d5765004d45995ceb8b36feeb9ce241dffcbd02",
+  "dal": "HEAD",
+  "kirli": true,
+  "tarih": "2026-11-15T02:03:20.171Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-k17/tests/harness/run.cjs /home/user/SON-HAZ-NE-k17/tests/scenarios/05_dusman_ai.js --url http://localhost:8081/index.html --size 640x360 --timeout 1800 --report /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/kosucu17b/14_w2-05_dusman_ai_T.json",
+  "cwd": "/home/user/SON-HAZ-NE-k17",
+  "sunucular": [
+   "statik sunucu http://localhost:8081 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8081"
+  ],
+  "commit": "0d5765004d45995ceb8b36feeb9ce241dffcbd02-kirli",
+  "senaryoSha256": "0113e47e766ae6ef74bfb594c1cacc6a744740a82a43a55ef06b0dd70e5134b8",
+  "adim": null,
+  "url": "http://localhost:8081/index.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 2,
+   "id": "Oyun başladı",
+   "etiket": "Oyun başladı",
+   "ok": true,
+   "deger": "playing",
+   "beklenen": {
+    "eq": "playing"
+   },
+   "sure_ms": 2721,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 4,
+   "id": "Algı: açık görüş hattında düşman 3",
+   "etiket": "Algı: açık görüş hattında düşman 3 sn içinde oyuncuyu fark eder",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 326,
+   "benzetim": {
+    "sim": 1,
+    "adim": 30,
+    "press": 0,
+    "tap": 0,
+    "update": 180
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 6,
+   "id": "Algı: 1 m kalın duvar arkasındaki",
+   "etiket": "Algı: 1 m kalın duvar arkasındaki oyuncu görülmez",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 255,
+   "benzetim": {
+    "sim": 1,
+    "adim": 30,
+    "press": 0,
+    "tap": 0,
+    "update": 360
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 8,
+   "id": "Duyma: sırtı dönük düşman silah sesine",
+   "etiket": "Duyma: sırtı dönük düşman silah sesine tepki verir",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 157,
+   "benzetim": {
+    "sim": 2,
+    "adim": 48,
+    "press": 0,
+    "tap": 0,
+    "update": 450
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 10,
+   "id": "Yığılma yok: aynı noktada doğan 4",
+   "etiket": "Yığılma yok: aynı noktada doğan 4 düşman 2 sn içinde ayrılır (min mesafe > 0.6 m)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 133,
+   "benzetim": {
+    "sim": 2,
+    "adim": 48,
+    "press": 0,
+    "tap": 0,
+    "update": 570
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 12,
+   "id": "Saldırı telgrafı: hazırlık ≥0.35 sn, vuruş",
+   "etiket": "Saldırı telgrafı: hazırlık ≥0.35 sn, vuruş hazırlıktan önce işlenmez",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 310,
+   "benzetim": {
+    "sim": 2,
+    "adim": 48,
+    "press": 0,
+    "tap": 0,
+    "update": 810
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 14,
+   "id": "F-03",
+   "etiket": "F-03 Sersemlik hafif vuruşla iptal olmaz",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 31,
+   "benzetim": {
+    "sim": 2,
+    "adim": 48,
+    "press": 0,
+    "tap": 0,
+    "update": 810
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 15,
+   "id": "F-05",
+   "etiket": "F-05 Çağırma hazırlığı hafif vuruşla bozulmaz",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 24,
+   "benzetim": {
+    "sim": 2,
+    "adim": 48,
+    "press": 0,
+    "tap": 0,
+    "update": 810
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 16,
+   "id": "F-07",
+   "etiket": "F-07 Kamp bekleme süresi kayıt/yükleme ile korunur",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 2,
+    "adim": 48,
+    "press": 0,
+    "tap": 0,
+    "update": 810
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 17,
+   "id": "F-07",
+   "etiket": "F-07 Tümü öldürülmüş kamp uzaklaşınca tam yenilenme süresine girer (anında yeniden doğma yok)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 1,
+   "benzetim": {
+    "sim": 2,
+    "adim": 48,
+    "press": 0,
+    "tap": 0,
+    "update": 810
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 19,
+   "id": "F-16",
+   "etiket": "F-16 Tabanca ışını duvar arkasındaki düşmana isabet etmez",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 3,
+   "benzetim": {
+    "sim": 2,
+    "adim": 48,
+    "press": 0,
+    "tap": 0,
+    "update": 810
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 21,
+   "id": "ek-110",
+   "etiket": "ek-110 Boğulmuş denizci yakalaması oyuncuyu gerçekten yavaşlatır",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 2,
+    "adim": 48,
+    "press": 0,
+    "tap": 0,
+    "update": 810
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 22,
+   "id": "F-10",
+   "etiket": "F-10 noLoot düşmanı ganimet/XP vermez, normal düşman verir",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 7,
+   "benzetim": {
+    "sim": 2,
+    "adim": 48,
+    "press": 0,
+    "tap": 0,
+    "update": 810
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 24,
+   "id": "F-08",
+   "etiket": "F-08 100 m uzaktaki düşman hedefi varsa her adım güncellenir (seyreltme yok)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 2,
+    "adim": 48,
+    "press": 0,
+    "tap": 0,
+    "update": 810
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 26,
+   "id": "ek-109",
+   "etiket": "ek-109 Gemi batınca güvertedeki canlı tayfa boğulur (kalıcı deniz dibi düşmanı yok)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 4,
+   "benzetim": {
+    "sim": 2,
+    "adim": 48,
+    "press": 0,
+    "tap": 0,
+    "update": 810
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 28,
+   "id": "Zayıf nokta: zırhlı düşman arkadan 1.6×",
+   "etiket": "Zayıf nokta: zırhlı düşman arkadan 1.6× hasar alır (önden 1×)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 3,
+   "benzetim": {
+    "sim": 2,
+    "adim": 48,
+    "press": 0,
+    "tap": 0,
+    "update": 810
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 30,
+   "id": "Boss evreleri: can eşiklerinde çağırma ve",
+   "etiket": "Boss evreleri: can eşiklerinde çağırma ve öfke tetiklenir",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 7,
+   "benzetim": {
+    "sim": 2,
+    "adim": 48,
+    "press": 0,
+    "tap": 0,
+    "update": 810
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 32,
+   "id": "Oyun döngüsü Aşama 5 sonrası hatasız",
+   "etiket": "Oyun döngüsü Aşama 5 sonrası hatasız sürüyor",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 133,
+   "benzetim": {
+    "sim": 3,
+    "adim": 108,
+    "press": 0,
+    "tap": 0,
+    "update": 810
+   },
+   "tur": "tarayici+benzetim",
+   "hata": null,
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8081/vendor/three/three.core.js",
+   "sayi": 33
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8081/vendor/three/three.core.js",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 2,
+  "toplam": 34,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 219,
+ "isaretciKilidi": {
+  "kip": "taklit",
+  "sayac": {
+   "istek": 1,
+   "verildi": 1,
+   "hedefDegisti": 0,
+   "red": 0,
+   "jestsiz": 0,
+   "kisitli": 0,
+   "birakma": 0,
+   "birakildi": 0,
+   "iptal": 0,
+   "degisimOlayi": 1,
+   "hataOlayi": 0,
+   "yonlendirilen": 0,
+   "susturulan": 4
+  }
+ },
+ "kopma": null,
+ "sonuc": {
+  "durum": "GECTI",
+  "cikisKodu": 0,
+  "neden": [],
+  "onaySayisi": 18,
+  "kontrolSayisi": 18,
+  "gecen": 18,
+  "kalan": 0,
+  "izinsizKonsol": 0,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": "tarayici+benzetim",
+  "turSayim": {
+   "tarayici": 1,
+   "tarayici+benzetim": 17
+  },
+  "tarayiciKoptu": false,
+  "kopma": null
+ },
+ "sure": {
+  "hazirMs": 5866,
+  "toplamMs": 19839,
+  "yerlesmeMs": 1000
+ }
+}

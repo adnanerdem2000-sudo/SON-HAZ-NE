@@ -1,0 +1,27 @@
+== B1_blok_T evreler (sn, bos_bas göre): {'bos_bas': 0.0, 'mesgul_bas': 15.0, 'mesgul_bit': 35.0, 'son': 47.0}
+   cgroup tepe (0,25 sn örnek) 1942 MB; oom_kill 1 -> 1
+   browser     anon MB: bos_bas    16  mesgul_bas    16  mesgul_bit    16  son    15 | eğim MB/sn: boşta    0.0  meşgul    0.0  sonra   -0.0 | VmHWM son    96
+   renderer    anon MB: bos_bas   305  mesgul_bas   307  mesgul_bit   300  son   217 | eğim MB/sn: boşta    0.0  meşgul   -0.4  sonra   -0.2 | VmHWM son   434
+   gpu-process anon MB: bos_bas   327  mesgul_bas   344  mesgul_bit   344  son   343 | eğim MB/sn: boşta    0.1  meşgul   -0.0  sonra   -0.0 | VmHWM son   428
+   browser  ANA              CPU%/uyanma: boşta (0.0, 0)  meşgul (0.0, 0)  sonra (0.0, 0)
+   browser  Chrome_IOThread  CPU%/uyanma: boşta (0.0, 0)  meşgul (0.0, 0)  sonra (0.0, 0)
+   renderer Compositor       CPU%/uyanma: boşta (0.7, 185)  meşgul (0.8, 60)  sonra (0.8, 172)
+   renderer ANA              CPU%/uyanma: boşta (0.8, 67)  meşgul (99.4, 0)  sonra (1.0, 61)
+== B2_blok_G evreler (sn, bos_bas göre): {'bos_bas': 0.0, 'mesgul_bas': 15.0, 'mesgul_bit': 35.0, 'son': 57.4}
+   cgroup tepe (0,25 sn örnek) 7067 MB; oom_kill 1 -> 1
+   browser     anon MB: bos_bas    80  mesgul_bas    55  mesgul_bit  1439  son   119 | eğim MB/sn: boşta   -0.1  meşgul   68.9  sonra  -29.0 | VmHWM son  1940
+   renderer    anon MB: bos_bas   821  mesgul_bas  1521  mesgul_bit  2394  son  1921 | eğim MB/sn: boşta   50.6  meşgul   41.9  sonra  -70.1 | VmHWM son  3827
+   gpu-process anon MB: bos_bas   332  mesgul_bas   359  mesgul_bit   359  son   357 | eğim MB/sn: boşta    0.1  meşgul    0.0  sonra   -0.1 | VmHWM son   447
+   browser  ANA              CPU%/uyanma: boşta (94.8, 383)  meşgul (99.2, 31)  sonra (95.2, 1361)
+   browser  Chrome_IOThread  CPU%/uyanma: boşta (25.2, 15755)  meşgul (0.5, 36)  sonra (45.0, 11185)
+   renderer Compositor       CPU%/uyanma: boşta (79.4, 5641)  meşgul (80.5, 17772)  sonra (80.6, 3756)
+   renderer ANA              CPU%/uyanma: boşta (14.3, 95)  meşgul (99.7, 0)  sonra (35.0, 284)
+== B3_blok2_G evreler (sn, bos_bas göre): {'bos_bas': 0.0, 'mesgul_bas': 25.0, 'mesgul_bit': 35.0, 'son': 53.7}
+   cgroup tepe (0,25 sn örnek) 4543 MB; oom_kill 1 -> 1
+   browser     anon MB: bos_bas    57  mesgul_bas    59  mesgul_bit   759  son    95 | eğim MB/sn: boşta    0.1  meşgul   70.6  sonra  -68.7 | VmHWM son  1347
+   renderer    anon MB: bos_bas   989  mesgul_bas   872  mesgul_bit  1351  son   393 | eğim MB/sn: boşta   -4.0  meşgul   48.6  sonra -101.2 | VmHWM son  2102
+   gpu-process anon MB: bos_bas   363  mesgul_bas   381  mesgul_bit   381  son   379 | eğim MB/sn: boşta    0.4  meşgul    0.0  sonra   -0.1 | VmHWM son   467
+   browser  ANA              CPU%/uyanma: boşta (93.3, 382)  meşgul (98.9, 27)  sonra (94.3, 1558)
+   browser  Chrome_IOThread  CPU%/uyanma: boşta (26.5, 14619)  meşgul (0.5, 29)  sonra (37.5, 11111)
+   renderer Compositor       CPU%/uyanma: boşta (80.8, 6532)  meşgul (83.4, 13476)  sonra (76.2, 1887)
+   renderer ANA              CPU%/uyanma: boşta (13.9, 101)  meşgul (99.4, 0)  sonra (25.2, 224)

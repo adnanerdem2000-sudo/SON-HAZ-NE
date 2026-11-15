@@ -1,0 +1,14 @@
+$ node /home/user/SON-HAZ-NE-k17/tests/harness/coop.cjs tests/fixtures/kosucu/rg_coop_konuk_renderer_olur.cjs --players 2 --size 320x200 --timeout 120 --url http://127.0.0.1:38307/coop.html --report /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/sd2/kosu/V1_kn/rg.json
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+Tayfa/konuk sim 30
+PASS RG01 Konuk ilerledi → 30
+[test] KOSUCU_NEGATIF_OLDUR
+Tayfa PAGECRASH
+[test] tick hatası: koşu koptu (sayfa (renderer) çöktü: Tayfa); tick() tamamlanamadı, senaryo durduruldu
+KOPMADAN SONRA KONTROL (sayılmadı): RG02 Kopmadan sonraki kontrol (sayılmamalı)
+GORUNTU /home/user/SON-HAZ-NE-k17/tests/out/goruntu/rg_coop_konuk_renderer_olur_2026-11-15T06-12-27-566Z_21954/son_Kaptan.png
+checks: 1 fails: 0 pageErrors: 1 (4.4 s)
+SONUC: KALDI (çıkış 1) kontrol 1/1 | ev() istisnası 0, kapalı sayfa atlama 0, kapanışta istisna 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 0 farklı/0 | neden: sayfa hatası (pageerror): 1; sayfa (renderer) çöktü: Tayfa
+
+[çıkış 1]
+[tarayıcı öldürme: {"durum":"öldürüldü","hedef":"renderer2","pid":22040,"ms":653}]

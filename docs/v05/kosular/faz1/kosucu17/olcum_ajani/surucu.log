@@ -1,0 +1,29 @@
+2026-11-14T15:51:00+00:00 SÜRÜCÜ BAŞLADI pid=28739 SIRA='R N R N R N R N E' BASLA=1 ONEK='' SCEN=/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/17_v04.js URL=http://localhost:8080/index.html
+2026-11-14T15:51:00+00:00 01_R kuyruğa girdi (kilit bekleniyor) koşucu=/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/kosucu/R/run.cjs oom_kill=16
+2026-11-14T16:06:51+00:00 01_R bitti çıkış=0 oom_kill 16 -> 16 son: SONUC: GECTI (çıkış 0) kontrol 13/13, onay 13 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34
+2026-11-14T16:06:51+00:00 02_N kuyruğa girdi (kilit bekleniyor) koşucu=/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/kosucu/N/run.cjs oom_kill=16
+2026-11-14T16:20:49+00:00 02_N bitti çıkış=1 oom_kill 16 -> 17 son: SONUC: KALDI (çıkış 1) kontrol 8/13, onay 13 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34 | neden: başarısız kontrol ya da adım: 10; adım istisnası (evalErrors): 
+2026-11-14T16:20:49+00:00 03_R kuyruğa girdi (kilit bekleniyor) koşucu=/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/kosucu/R/run.cjs oom_kill=17
+2026-11-14T16:23:30+00:00 edilgen gözlemci (gozlem.mjs: iplik CPU + browser smaps) başlatıldı pid=4656 — 03'ten itibaren koşularda
+2026-11-14T16:29:40+00:00 03_R bitti çıkış=1 oom_kill 17 -> 19 son: SONUC: KALDI (çıkış 1) kontrol 5/13, onay 13 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34 | neden: başarısız kontrol ya da adım: 16; sayfa hatası (pageerror): 1; a
+2026-11-14T16:29:40+00:00 04_N kuyruğa girdi (kilit bekleniyor) koşucu=/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/kosucu/N/run.cjs oom_kill=19
+2026-11-14T16:31:56+00:00 edilgen bellek içeriği örneklemesi (bellek_ornek.mjs) 04_N için başlatıldı (eşik 2500 MB)
+2026-11-14T16:34:14+00:00 04_N bitti çıkış=0 oom_kill 19 -> 19 son: SONUC: GECTI (çıkış 0) kontrol 13/13, onay 13 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34
+2026-11-14T16:34:14+00:00 05_R kuyruğa girdi (kilit bekleniyor) koşucu=/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/kosucu/R/run.cjs oom_kill=19
+2026-11-14T16:34:49+00:00 bellek_ornek.mjs 05_R için bekliyor (eşik 2500 MB)
+2026-11-14T16:41:42+00:00 05_R bitti çıkış=0 oom_kill 19 -> 20 son: SONUC: GECTI (çıkış 0) kontrol 13/13, onay 13 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34
+2026-11-14T16:41:43+00:00 06_N kuyruğa girdi (kilit bekleniyor) koşucu=/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/kosucu/N/run.cjs oom_kill=20
+2026-11-14T16:42:01+00:00 bellek_ornek.mjs 06_N 07_R 08_N için bekliyor (eşik 2500 MB)
+2026-11-14T16:49:45+00:00 06_N bitti çıkış=0 oom_kill 20 -> 20 son: SONUC: GECTI (çıkış 0) kontrol 13/13, onay 13 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34
+2026-11-14T16:49:45+00:00 07_R kuyruğa girdi (kilit bekleniyor) koşucu=/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/kosucu/R/run.cjs oom_kill=20
+2026-11-14T16:50:23+00:00 edilgen sistem CPU kaydı (sistem.mjs) başlatıldı pid=24619 — 07'den itibaren
+2026-11-14T16:58:02+00:00 07_R bitti çıkış=0 oom_kill 20 -> 20 son: SONUC: GECTI (çıkış 0) kontrol 13/13, onay 13 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34
+2026-11-14T16:58:02+00:00 08_N kuyruğa girdi (kilit bekleniyor) koşucu=/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/kosucu/N/run.cjs oom_kill=20
+2026-11-14T16:58:41+00:00 08_N ve 09_E için bellek_ornek.mjs (eşik 900 MB) ve ctx.mjs (bağlam değişimi) bekliyor
+2026-11-14T17:07:42+00:00 08_N bitti çıkış=0 oom_kill 20 -> 21 son: SONUC: GECTI (çıkış 0) kontrol 13/13, onay 13 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34
+2026-11-14T17:07:42+00:00 09_E kuyruğa girdi (kilit bekleniyor) koşucu=/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/kosucu_eski/run.cjs oom_kill=21
+2026-11-14T17:13:27+00:00 09_E bitti çıkış=0 oom_kill 21 -> 21 son: errors: 0 pageErrors: 0 fails: 0 (175.3 s)
+2026-11-14T17:13:27+00:00 SÜRÜCÜ BİTTİ
+2026-11-14T17:14:12+00:00 EK DENEY X1 (iz.cjs: rAF hızı + iplik uyanma + 2 sn Chrome izi; başlatma betiği yok) kuyruğa
+2026-11-14T17:19:59+00:00 EK DENEY X2 (iz2.cjs: işaretçi kilidi aç/kapa ↔ iplik CPU/uyanma; başlatma betiği yok) kuyruğa
+2026-11-14T17:24:03+00:00 X1_iz.json gzip ile sıkıştırıldı (X1_iz.json.gz)

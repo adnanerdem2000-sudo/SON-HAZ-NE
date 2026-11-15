@@ -1,0 +1,45 @@
+#!/bin/bash
+# Son düzelticinin ham kayıtlarını k17 docs/v05/kosular/faz1/kosucu17/son/ altına taşınabilir boyutta kopyalar ve özetleri üretir.
+#   bash belge_son.sh   (zincirler bittikten sonra; yalnız biten öğeler kopyalanır; tekrar koşulabilir)
+set -u
+K=/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17
+S=$K/son2; O=$S/kosu; D=$K/duzeltici; A=/home/user/SON-HAZ-NE-k17
+DOC=$A/docs/v05/kosular/faz1/kosucu17; SD=$DOC/son; B0=/home/user/SON-HAZ-NE-w2/docs/v05/kosular/faz1/b/once_v04
+mkdir -p $SD/olcum $SD/b0 $SD/coop $SD/blok $SD/yoklama $SD/kosucu_negatif $SD/kosucu_negatif_eski_kosucu $SD/araclar
+bitti() { grep -qx "$1" $S/bitti.txt $S/bitti_ek.txt 2>/dev/null; }
+OL=""; for a in 17v04_T 17w2_T; do bitti $a && OL="$OL $a"; done
+[ -n "$OL" ] && node $D/belgele.mjs $O $SD/olcum $OL && node $D/ozet17.mjs $O $SD/olcum/ozet_son.json $SD/olcum/ozet_son.txt $OL > /dev/null
+BB=""; for a in acilis_T acilis_G b0v04-02_ayar_lod_T b0v04-02_yukleme_bekleme_T b0v04-02_depolama_kapali_T b0v04-02_hizli_yolculuk_T b0v04-02_hizli_yolculuk_G; do bitti $a && BB="$BB $a"; done
+[ -n "$BB" ] && node $D/belgele.mjs $O $SD/b0 $BB && node $D/ozet17.mjs $O $SD/b0/ozet_b0.json $SD/b0/ozet_b0.txt $BB > /dev/null
+bitti coop06b_T && node $D/belgele.mjs $O $SD/coop coop06b_T && node $D/ozet17.mjs $O $SD/coop/ozet_coop.json $SD/coop/ozet_coop.txt coop06b_T > /dev/null
+# B0 tabanlarıyla kontrol kontrol karşılaştırma
+{
+  echo "# B0'ın senaryoları (w2 tests/scenarios, c255563), v0.4 :8080: B0'ın 'önce' kaydı (w2 koşucusu, gerçek kilit) ↔ son kodun koşucusu (T: taklit, G: --isaretci-kilidi gercek)"
+  k() { [ -f "$O/$2.json" ] && bitti $2 && echo "$1=$O/$2.json"; }
+  set -- $(echo "B0=$B0/son/02_acilis_akisi.json" "B0_14Kasim=$B0/duzeltme/son_1deneme/02_acilis_akisi.json"; k T acilis_T; k G acilis_G); python3 -I $S/araclar/karsilastir_rapor.py "$@"; echo
+  for ad in 02_ayar_lod 02_yukleme_bekleme 02_depolama_kapali; do set -- $(echo "B0=$B0/son/$ad.json"; k T b0v04-${ad}_T; k G b0v04-${ad}_G); [ $# -gt 1 ] && python3 -I $S/araclar/karsilastir_rapor.py "$@" && echo; done
+  set -- $(echo "B0=$B0/son/02_hizli_yolculuk_normal.json" "B0_birak=$B0/duzeltme3/isaretci/02_hizli_yolculuk_normal_birak.json"; k T b0v04-02_hizli_yolculuk_T; k G b0v04-02_hizli_yolculuk_G); [ $# -gt 2 ] && python3 -I $S/araclar/karsilastir_rapor.py "$@"
+} > $SD/b0/karsilastirma.txt 2>&1
+# blok deneyi: son kodla (blok_T, blok_G) ve inceleyicinin önceki kodla koşuları (B1–B3, yalnız çözümleme çıktısı)
+BL=""; for a in blok_T blok_G blok2_T blok2_G; do bitti $a && BL="$BL $a"; done
+if [ -n "$BL" ]; then
+  for a in $BL; do for uz in .json .log .dmesg.txt _iplik.csv; do [ -f $O/$a$uz ] && cp $O/$a$uz $SD/blok/; done
+    awk -F, 'NR==1 {print; next} { b = int($1*2); if (b != sonb) { sonb = b; sont = $1 } if ($1 == sont) print }' $O/${a}_bellek.csv > $SD/blok/${a}_bellek_05sn.csv; done
+  (cd /tmp && python3 -I $S/araclar/blok_analiz.py $O $BL) > $SD/blok/blok_analiz_son.txt 2>&1
+fi
+(cd /tmp && python3 -I $K/inceleme_istatistik/blok_analiz.py $K/inceleme_istatistik/kosu B1_blok_T B2_blok_G B3_blok2_G) > $SD/blok/blok_analiz_inceleme_onceki_kod.txt 2>&1
+# yoklamalar (son kodla) ve karşılaştırma → üst dizindeki isaretci_yoklama.json yenilenir (3. denemenin girdileri yoklama/'da kalır)
+if bitti y3 && bitti y4 && bitti y5; then
+  for y in 3 4 5; do cp $O/y$y.json $SD/yoklama/yoklama$y.json; cp $O/y$y.log $SD/yoklama/yoklama$y.log; done
+  node $S/araclar/karsilastir_yoklama_son.mjs $O/y3.json $O/y4.json $O/y5.json $DOC/isaretci_yoklama.json > $SD/yoklama/karsilastirma_ozet.txt
+fi
+# kosucu_negatif: son kodla tam koşu; yeni durumların eski koşucuya karşı denetimi
+if bitti kn; then rm -rf $SD/kosucu_negatif/tum; cp -r $S/kn/tum $SD/kosucu_negatif/tum; cp $S/kn/tum.log $S/kn/tum_ozet.json $SD/kosucu_negatif/; fi
+if [ -f $S/kn_eski.log ]; then rm -rf $SD/kosucu_negatif_eski_kosucu/tum; cp -r $S/kn_eski $SD/kosucu_negatif_eski_kosucu/tum; cp $S/kn_eski.log $SD/kosucu_negatif_eski_kosucu/tum.log; cp $S/kn_eski_ozet.json $SD/kosucu_negatif_eski_kosucu/tum_ozet.json 2>/dev/null
+  (cd $S/eski_kosucu && sha256sum run.cjs coop.cjs ortak.cjs) > $SD/kosucu_negatif_eski_kosucu/eski_kosucu_sha.txt; fi
+# araçlar ve günlükler
+for f in $S/araclar/zincir_son.sh $S/araclar/zincir_ek.sh $S/araclar/belge_son.sh $S/araclar/karsilastir_rapor.py $S/araclar/karsilastir_yoklama_son.mjs $S/araclar/ornekle_i.py $S/araclar/blok_analiz.py $S/araclar/blok.js $S/araclar/blok2.js; do [ -f $f ] && cp $f $SD/araclar/$(basename $f).txt; done
+for f in zincir.log zincir_ek.log; do [ -f $S/$f ] && cp $S/$f $SD/$f; done
+(cd $A && sha256sum tests/harness/run.cjs tests/harness/coop.cjs tests/harness/ortak.cjs tests/node/kosucu_negatif.mjs tests/README.md tests/fixtures/kosucu/*.html tests/fixtures/kosucu/pk*.js tests/fixtures/kosucu/pk*.cjs tests/fixtures/kosucu/i[a-e]*.js tests/fixtures/kosucu/ie2*.cjs tests/fixtures/kosucu/t[cde]_*) > $SD/kod_sha.txt
+cp $SD/kod_sha.txt $DOC/kod_sha.txt
+du -sh $SD $DOC; find $DOC -name "*.png" | head

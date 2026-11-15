@@ -1,0 +1,14 @@
+# kopya kimlikleri 2026-11-14T15:49:15+00:00
+591dff27aa01267eac15b113ce91db320cb1a9c086ba537b1e06108a68cd31dd  /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/kosucu/R/run.cjs
+df191a99737582179be90753afc329d022fdf713694e487d115f0a92961af995  /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/kosucu/R/ortak.cjs
+2d0ba7ee24064f5813da7ce7467eb0fddad133e1147b78f60e6109d4a0b492ce  /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/kosucu/N/run.cjs
+df191a99737582179be90753afc329d022fdf713694e487d115f0a92961af995  /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/kosucu/N/ortak.cjs
+cf2c01b782d9b9b38e1d809e7d93dedd2ede818b9d59d6263b4bc413fba49242  /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/kosucu_eski/run.cjs
+87fe3a63ec05b1f6a180b3599edfeb0a1e27d8b255bae58faac549d9dc97a8a0  /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/k17/17_v04.js
+# kaynak: git -C /home/user/SON-HAZ-NE-w2 show 0d57650:tests/harness/{run,ortak}.cjs; E = 44d548c run.cjs; senaryo = git -C /home/user/SON-HAZ-NE show 44d548c:tests/scenarios/17_kamera_kararma.js
+# diff R N:
+198c198
+<     if (typeof ham === 'function') {
+---
+>     if (false && typeof ham === 'function') {
+# 17_v04.js == tani17/17_orj.js (A2 tanısının kullandığı senaryo)

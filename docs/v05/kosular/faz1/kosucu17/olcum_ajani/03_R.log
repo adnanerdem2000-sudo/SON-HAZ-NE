@@ -1,0 +1,31 @@
+ready in 7.6 s
+R: "ok"
+PASS Oyun başladı → "playing"
+R: "ok"
+PASS K01 Kenney ağaç/çalı/kaya/yapı modellerinde tam metal malzeme yok (18 model; önce hepsi metalness 1) → true
+R: {"n":18,"bad":[]}
+PASS K02 Yakın-kamera silinmesi: bitki örtüsü (≥ 4 örnekli çizim), yelken+küpeşte/direk, oyuncu (self), NPC ve hayvan (char) → true
+R: {"vegMeshes":11,"ship":["rail","sail"],"self":["self"],"npc":["char"],"animal":["char"]}
+PASS K03 Silinme gölgelendiricisi: 0,3 m uzaktaki siyah düzlem çizilmez (görüntü düzlemsizle aynı), 4 m uzaktaki çizilir (> %97 siyah), 1,1 m uzaktaki kısmen → true
+R: {"base":0.027,"near":0.027,"mid":0.533,"far":1}
+PASS K04 Güvertede 4 noktada 2 eğim × 24 açıda baş→kamera doğrusu gemi gövdesini kesmez, kamera gövdeye girmez → true
+R: [{"name":"ambar","n":48,"viol":0},{"name":"baş","n":48,"viol":0},{"name":"kıç direk","n":48,"viol":0},{"name":"yelken açık","n":48,"viol":0}]
+PAGECRASH
+FAIL (hata) K05 Güvertede alttan bakışta (−0,25) 3 noktada 16 açıda karanlık kare yok (önce kıç direkte en düşük 17, medyan 98) page.evaluate: Target crashed 
+EVALERR page.evaluate: Target crashed 
+FAIL (hata) K06 İskelede gemi yanında 2 eğim × 24 açıda kamera gövdeye girmez, gövde görüşü kesmez page.evaluate: Target crashed 
+EVALERR page.evaluate: Target crashed 
+FAIL (hata) K07 Mağara tünelinde (2 nokta + duvar dibi) ve odasında 3 eğim × 24 açıda kamera tünel kesitinin dışına çıkmaz, başa yapışmaz (medyan ≥ 0,9 m; duvara doğru açılarda duvar çarpıştırıcısı kamerayı zaten yaklaştırır) page.evaluate: Target crashed 
+EVALERR page.evaluate: Target crashed 
+FAIL (hata) K08 Ormanda (2 eğim × 32 açı) ve palmiyelerin arasında (2 × 16) karanlık kare yok page.evaluate: Target crashed 
+EVALERR page.evaluate: Target crashed 
+FAIL (hata) K09 Su altı geçişi histerezisli (−6 cm: açılmaz, −20 cm: açılır, −2 cm: kapanmaz, +5 cm: kapanır) page.evaluate: Target crashed 
+EVALERR page.evaluate: Target crashed 
+FAIL (hata) K10 Tek bir NaN/Inf yazan yüzey parlamayla tüm ekrana yayılıp kareyi karartmaz (parlaklık temel değerin ≥ %80'i) page.evaluate: Target crashed 
+EVALERR page.evaluate: Target crashed 
+FAIL (hata) K11 Sıfır normalli yüzey (yumuşak ve düz gölgeli) yarım kayan noktalı hedefte NaN/Inf piksel üretmez page.evaluate: Target crashed 
+EVALERR page.evaluate: Target crashed 
+FAIL (hata) K12 Kamerayla oyuncu arasındaki bitki örtüsü görüş çizgisi çevresinde seyrelir (2,6 m uzaktaki siyah düzlem: ekran ortası silindir açıkken görünür, kapalıyken > %97 siyah) page.evaluate: Target crashed 
+EVALERR page.evaluate: Target crashed 
+errors: 0 pageErrors: 1 fails: 16 evalErrors: 8 (179.6 s)
+SONUC: KALDI (çıkış 1) kontrol 5/13, onay 13 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34 | neden: başarısız kontrol ya da adım: 16; sayfa hatası (pageerror): 1; adım istisnası (evalErrors): 8
