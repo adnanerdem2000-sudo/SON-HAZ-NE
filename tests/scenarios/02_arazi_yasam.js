@@ -1,0 +1,243 @@
+// Faz 1 Adım B — arazi karo yaşam döngüsü, LOD yarışı, uzun dolaşım ve kiplerde açılış (62 test listesi 1–4; KI-154/A-06,
+// KI-155/A-07, KI-156/A-08, KI-157/A-09, KI-159/A-11, KI-160/A-12, KI-161/A-13, KI-165/A-17; brief madde 3, 4, 7, 8, 9, 11, 12, 17).
+// Her kipte koşulabilir: '' (normal), noworker, badurl, crash ve Faz 1'in yeni kipleri ctorthrow, noready, hang, crash1 (v0.4'te
+// yeni kipler yok: o koşularda LY00 kip denetimi uygulanamaz). Bütün kontroller her kipte anlamlıdır; yalnız işçi gerektiren hata
+// enjeksiyonları (MAX_TRIES, 'error' iletisi, kalıcı karo hatası, kısmi kurucu hatası) ayrı senaryoda: 02_arazi_isci_hata.js.
+//
+// Başlatma betiği (meta.baslatma): window.Worker'ı saran ince bir katman. window.__isciKanca(ileti) bir işlevse her iletide çağrılır ve
+// {gecikme: ms} döndürürse ileti işçiye o kadar geç gönderilir (işçi gecikmesi enjeksiyonu: LOD yarışı, silinen karonun geç sonucu).
+// Kanca yokken davranış değişmez. İşçiye giden her ileti window.__isciIleti'ye (t, key, seg, res) yazılır.
+//
+// İç adlar (v0.4): _apply, _requestTile, _drop, _finish, _queue, _lanes, _localSlice, _land, _jobs, workers[].jobs, _gridCache (focus yalnız tanı). Bulunamazsa ilgili
+// kontrol "iç ad yok" diye KALIR (sessizce geçmez).
+// B0 düzeltmesi (inceleme B0-I06, I08, I13, I14, I15):
+//  - LY00 crash/hang beklentisi gözlenebilir sonuçla: hata kaydı var, iş alıp hiç yanıt vermeyen her işçi sonlandırılmış, kurulan işçi
+//    ≤ 9 (başlatma betiğindeki işçi izleyicisi); "işçi 0 + yedek açık" boşta yeniden başlatılmış işçi bırakan doğru A-15'te sağlanmaz.
+//  - LY08 artık düşürülen karonun geç sonucunun o karo nesnesine yeni geometri yazmadığını da ölçer (mutasyonla gösterildi: v0.4'te
+//    _drop t.mesh'i null yapmaz; geç _apply gruptan çıkmış ağın geometrisini değiştirir, sahipsiz ağ oluşmaz). Yalnız düşürmeden SONRA
+//    gelen _apply sayılır ve önkoşul denetlenir: sonuç düşürmeden önce uygulanmamış, düşürmeden sonra gelmiş olmalı (işçili kipte işçi
+//    gecikmesi 1 sn; işçisiz kipte o işin _finish'i 1 sn geciktirilir). FB0 noworker koşusunda eski sayaç, düşürmeden ÖNCE tamamlanan
+//    işin uygulamasını da saydı (iş tek dilimde bitti, şeritte yakalanamadı) ve LY08'i yanlış kırmızı yaptı. LY07'de aynı kusur (FB0 crash
+//    kipi koşusu: seg-32 işi seg-80 istenmeden bitti, "ezildi" yanlış kırmızısı) aynı yöntemle giderildi: işçisiz kipte seg-32 işinin
+//    _finish'i 1,5 sn geciktirilir; önkoşul: seg-80 istendiğinde seg-32 işi kuyruktan çıkmış ve sonuçlanmamış.
+//  - LY09 işçili kiplerde gözlenebilir: B bölgesinin (Kuzeyfener, ~5,2 km) ilk üç karo işi işçide 14 sn geciktirilir; A bittikten sonra
+//    B'nin odağı korunuyorsa B bitince B bölgesinde ≥ 6 karo ağı ve derinlik penceresi B'de olur (Node KY18 ile aynı yöntem). İşçisiz
+//    kiplerde gecikme enjekte edilemediği için eski iç ölçüm (focus.until) kalır; iç ad yoksa "iç ad yok" diye KALIR.
+//    B0 düzeltici (2. deneme): işçisiz kipte de gözlenebilir — B'nin üç karo işinin sonucu (_finish) 14 sn geciktirilir (LY07/LY08
+//    yöntemi); focus.until yalnız tanı. Karar B bittikten 5 sn sonra verilir (v0.4'te kısalan odak bitince kameranın derinlik isteği
+//    yarışsız görülsün; doğru bir düzeltmede odak bitişten sonra 12 sn korunur). LY13'ün p99 sırası ⌊(n−1)·0,99⌋ oldu (önceki ⌈0,99·n⌉
+//    sırası n < 100 dilimde en uzun dilime eşitti, tek GC duraklamasına dayanıklı değildi).
+//  - LY10: _gridCache yoksa -1 yerine "iç ad yok" (lte yalnız sonlu sayıyla geçer). LY12: işçi kaydı/_jobs tanınmazsa "iç ad yok".
+//  - LY13 sağlamlaştırıldı: tek bir GC/zamanlayıcı duraklaması geçerli bir düzeltmeyi düşürmesin diye dağılım ölçülür: dilimlerin
+//    p99'u ≤ bütçe + 4 ms VE en uzun dilim ≤ bütçe + 15 ms (v0.4: 143–161 dilimin %9–14'ü aşıyor, en uzun 27,8–34,2 ms → yine KIRMIZI).
+//    Bütçe: uygulama açık bir alan verirse (terrain.dilimButcesi sayı/işlev) ondan, yoksa v0.4 kuralından (terrain.js:162) okunur.
+//  - FB0 koşularında dolaşımda görülen "Target crashed" sayfa çökmeleri senaryodan değil ortamdan: her biri çekirdek günlüğünde
+//    "Memory cgroup out of memory: Killed process … (chrome-headless)" (cgroup sınırı 14,3 GB; öldürülen renderer anon-rss 5–6 GB, tarayıcı
+//    süreci de GB'larca); bellek tanılı koşuda sayfanın JS yığını 93–133 MB idi. Aynı olgu koşucu/ortam incelemesinde ("17 bellek
+//    çökmesi") araştırılıyor. Çöken koşuda kalan kontroller o kip için KOSULAMADI sayılır (kanıt: once_v04/duzeltme/*sayfa_coktu*,
+//    *_oom*, oom_dmesg_son.txt, bellek_ornek_*). Bellek örneklemesi büyümenin dolaşım sırasında olduğunu gösterdi; dolaşımlar artık çizim
+//    durdurulmuş olarak koşar, LY15/LY16 dahil (ölçülen arazi davranışı çizimden bağımsız). LY07'de sonuç bekleme 15 → 45 sn (duraklamalı ortamda seg-32
+//    sonucu 15 sn'den geç gelince "ezildi" yanlış kırmızısı veriyordu); sonuç gelmezse ayrı neden ("sonuç gelmedi") döner.
+[
+ {meta: {testler: ['1 Normal Worker açılışı', '2 Worker bulunamadığında', '3 Worker çöktüğünde', '4 Arazi mesh oluşturulması', '5 Harita derinliği', 'KI-154', 'KI-155', 'KI-156', 'KI-157', 'KI-159', 'KI-160', 'KI-161', 'KI-165', 'A-06', 'A-07', 'A-08', 'A-09', 'A-11', 'A-12', 'A-13', 'A-17'],
+   dosyalar: ['js/world/terrain.js', 'js/world/terrainGen.js', 'js/world/terrainWorker.js', 'js/game/game.js', 'js/world/ocean.js'],
+   baslatma: [`(() => { try { const q = new URLSearchParams(location.search); const k = q.get('terrain'); if (k !== null) sessionStorage.setItem('__fb0_arazi_kipi', k); else { const s = sessionStorage.getItem('__fb0_arazi_kipi'); if (s) { q.set('terrain', s); history.replaceState(history.state, '', location.pathname + '?' + q.toString() + location.hash); window.__kipKorundu = s; } } } catch (e) { /* oturum deposu yok: kip korunamaz, HYK/LYK kontrolleri yakalar */ } })();`, `(() => { const W = window.Worker; if (typeof W !== 'function') return;
+     const kayit = window.__isciIleti = []; const I = window.__isciler = [];
+     function Sarili(url, opts) { const w = new W(url, opts); const post = w.postMessage.bind(w);
+       const ik = { no: I.length, is: 0, yanit: 0, hata: 0, sonlandi: false }; I.push(ik);
+       const son = w.terminate.bind(w); w.terminate = function () { ik.sonlandi = true; return son(); };
+       // yanıt/hata sayımı ek dinleyiciyle değil, oyunun kendi onmessage/onerror işleyicisi sarılarak yapılır (iletiye ikinci dinleyici
+       // eklenmez). FB0'daki sayfa çökmeleri izleyiciyle ilgili değil (izleyicisiz de çöktü; cgroup OOM, aşağıdaki başlık notu).
+       for (const [ad, say] of [['onmessage', (e) => { if (e && e.data && e.data.t && e.data.t !== 'ready') ik.yanit++; }], ['onerror', () => { ik.hata++; }]]) {
+         const d = Object.getOwnPropertyDescriptor(W.prototype, ad); if (!d || !d.set) continue;
+         Object.defineProperty(w, ad, { configurable: true, get() { return d.get.call(w); }, set(fn) { d.set.call(w, typeof fn === 'function' ? function (e) { try { say(e); } catch (x) { /* yoksay */ } return fn.call(this, e); } : fn); } });
+       }
+       w.postMessage = function (m, tr) { try { if (m && m.t && m.id != null) ik.is++; if (m && m.t && kayit.length < 50000) kayit.push({ t: m.t, key: m.key, seg: m.seg, res: m.res, id: m.id }); } catch (e) { /* yoksay */ }
+         const k = typeof window.__isciKanca === 'function' ? window.__isciKanca(m) : null;
+         if (k && k.gecikme > 0) { setTimeout(() => { try { post(m, tr); } catch (e) { /* işçi kapatılmış */ } }, k.gecikme); return; }
+         return post(m, tr); };
+       return w; }
+     Sarili.prototype = W.prototype; window.Worker = Sarili; })();`]}},
+ // ---- yardımcılar (sayfada)
+ {js: `(()=>{ const T = DK.terrain; const Y = window.__Y = {};
+   Y.bekle = (ms) => new Promise((r) => setTimeout(r, ms));
+   Y.kosul = async (f, ms, ara = 50) => { const t0 = performance.now(); for (;;) { let v = false; try { v = f(); } catch (e) { v = false; } if (v) return Math.round(performance.now() - t0); if (performance.now() - t0 > ms) return null; await Y.bekle(ara); } };
+   Y.agYakin = (x, z, r) => [...T.tiles.values()].filter((t) => t.mesh && Math.hypot(t.x0 + 80 - x, t.z0 + 80 - z) < r).length;
+   Y.hayalet = () => { if (!(T._jobs instanceof Map) || !Array.isArray(T.workers)) throw new Error('iç ad yok: _jobs/workers'); return T.workers.reduce((n, r) => { if (!r || !(r.jobs instanceof Map)) throw new Error('iç ad yok: workers[].jobs'); return n + [...r.jobs.keys()].filter((id) => !T._jobs.has(id)).length; }, 0); };
+   Y.sessizIsci = () => (window.__isciler || []).filter((w) => w.is > 0 && w.yanit === 0 && !w.sonlandi).length;
+   Y.derinMi = (t) => (typeof T._land === 'function' ? !T._land(t.i, t.j) : t.maxH < -1);
+   Y.gemiyleGit = (x, z) => { const s = DK.G.ship, p = DK.G.player; s.x = x; s.z = z; s.vx = 0; s.vz = 0; s.speed = 0; s.anchored = true; s.anchorPt = null; s.updateTransform(0); if (p.ship !== s || p.mode !== 'helm') p.boardShip(s, s.model.stations.helm.clone()); T.update(x, z, true); };
+   return Object.keys(Y); })()`},
+ {degisken: {ad: 'kip', js: `new URLSearchParams(location.search).get('terrain') || ''`}},
+ // ---- LY00–LY04 açılış (her kipte)
+ {expect: {js: `(async()=>{ const k = new URLSearchParams(location.search).get('terrain') || ''; window.__kip = k; const T = DK.terrain, Y = window.__Y;
+   const kipte = { '': () => T.workers.length >= 1 && T.fallback === false && T.failures.length === 0,
+     noworker: () => T.workers.length === 0 && T.fallback === true,
+     ctorthrow: () => T.workers.length === 0 && T.fallback === true && T.failures.length >= 1,
+     badurl: () => T.workers.length === 0 && T.fallback === true && T.failures.length > 0,
+     crash: () => T.failures.length >= 1 && Y.sessizIsci() === 0 && (window.__isciler || []).length >= 1 && (window.__isciler || []).length <= 9,
+     crash1: () => T.failures.length >= 1 && T.fallback === false && T.workers.length >= 1,
+     hang: () => T.failures.length >= 1 && Y.sessizIsci() === 0 && (window.__isciler || []).length >= 1 && (window.__isciler || []).length <= 9,
+     noready: () => T.failures.length >= 1 && T.fallback === true }[k];
+   const ms = kipte ? await Y.kosul(kipte, 45000, 200) : null;
+   window.__kipDurum = { k, mode: T.mode, workers: T.workers.length, fallback: T.fallback, failures: T.failures.slice(0, 3), beklemeMs: ms, isciler: (window.__isciler || []).map((w) => [w.no, w.is, w.yanit, w.hata, w.sonlandi ? 'son' : 'canli']) };
+   return T.mode === k && ms !== null; })()`, truthy: true, label: 'LY00 Kip denetimi: URL ?terrain = DK.terrain.mode ve kipin beklenen işçi/yedek durumu (normal: işçi ≥ 1; noworker/ctorthrow/badurl: işçi 0 + yedek; crash/hang: hata kaydı, iş alıp yanıt vermeyen her işçi sonlandırılmış, kurulan işçi ≤ 9; crash1: yedek kapalı + çökme kaydı; noready: zaman aşımı kaydı + yedek)'}},
+ {js: `window.__kipDurum`},
+ {expect: {js: `!!window.__ready && typeof window.DK === 'object' && !document.getElementById('loading')?.classList.contains('active')`, truthy: true, label: 'LY01 Açılış tamamlandı (window.__ready, yükleme ekranı kapalı)'}},
+ {expect: {js: `DK.terrain.stats().meshes`, gte: 20, label: 'LY02 Menü sahnesinde ≥ 20 karo ağı'}},
+ {expect: {js: `(()=>{ const w = DK.terrain.depthWin; return w ? Math.round(Math.hypot(w.x0 + w.size / 2 - 160, w.z0 + w.size / 2 - 470)) : 1e9; })()`, lte: 600, label: 'LY03 Okyanus derinlik penceresi hazır ve açılış noktasında (≤ 600 m)'}},
+ {expect: {js: `(async()=>{ const r = await Promise.race([DK.terrain.requestGrid(-10000, -10000, 20000, 256, -500).then((m) => (m && m.heights && m.heights.length === 65536 && m.biomes.length === 65536 ? 'tamam' : 'eksik'), (e) => 'RED: ' + e.message), new Promise((r) => setTimeout(() => r('60 sn içinde sonuçlanmadı'), 60000))]); window.__izgara = r; return r; })()`, eq: 'tamam', label: 'LY04 Harita ızgarası (256²) isteği sonuçlanıyor'}},
+ {expect: {js: `(async()=>{ const r = await DK.terrain.prepare(160, 470, { radius: 300 }); window.__prepDonus = r === undefined ? 'undefined' : r; return window.__prepDonus; })()`, eq: 'ok', label: "LY05 prepare dönüş değeri 'ok' (A-11: sonuç çağırana iletilir)"}},
+ // ---- oyun başlar; karo geometrisi izleyicisi kurulur (_apply)
+ {js: `DK.G.noAutoPause = true; window.__bas = DK.handlers.startGame({ kind: 'solo', slot: 2, data: null }); 'başlatıldı'`},
+ {expect: {js: `(async()=>{ await window.__bas; return await window.__Y.kosul(() => DK.G.state === 'playing' && !!DK.G.player, 60000, 100) !== null; })()`, truthy: true, label: 'LY06 Oyun başladı'}},
+ {js: `(()=>{ const T = DK.terrain; const G = window.__geo = { izlenen: 0, atilan: 0, canli: new Set(), kur: false };
+   if (typeof T._apply !== 'function') return 'iç ad yok: _apply';
+   const izle = (g) => { if (!g || g.__izlendi) return; g.__izlendi = true; G.izlenen++; G.canli.add(g); g.addEventListener('dispose', () => { G.atilan++; G.canli.delete(g); }); };
+   for (const t of T.tiles.values()) if (t.mesh) izle(t.mesh.geometry);
+   const o = T._apply; T._apply = function (t, m) { const g0 = t && t.mesh ? t.mesh.geometry : null; const r = o.apply(this, arguments); const g1 = t && t.mesh ? t.mesh.geometry : null; if (t && t.mesh) izle(g1); const L8 = window.__ly08; if (L8 && t === L8.t) { if (L8.dusuruldu) { L8.cagri++; if (g1 !== g0) L8.yeniGeo++; } else L8.onceki++; } return r; }; G.kur = true;
+   return { izlenen: G.izlenen }; })()`},
+ // ---- LY07 LOD yarışı: eski (seg 32) istek yavaş, yeni (seg 80) hızlı; eski sonuç yeni geometriyi ezmez
+ {expect: {js: `(async()=>{ const T = DK.terrain, Y = window.__Y, p = DK.G.player;
+   if (typeof T._requestTile !== 'function') return 'iç ad yok: _requestTile';
+   const t = [...T.tiles.values()].filter((x) => x.mesh && x.seg === 80 && !x.pending).sort((a, b) => Math.hypot(a.x0 + 80 - p.pos.x, a.z0 + 80 - p.pos.z) - Math.hypot(b.x0 + 80 - p.pos.x, b.z0 + 80 - p.pos.z))[0];
+   if (!t) return 'seg 80 karo yok';
+   const R = window.__yaris = { key: t.k, isci: T.workers.length > 0 };
+   if (!R.isci && typeof T._finish !== 'function') return 'iç ad yok: _finish';
+   if (!Array.isArray(T._queue)) return 'iç ad yok: _queue';
+   window.__isciKanca = (m) => (m.t === 'tile' && m.key === t.k && m.seg === 32 ? { gecikme: 1500 } : null);
+   const p32 = T._requestTile(t, 32, 0).then(() => { R.p32 = performance.now(); R.segP32 = t.seg; }); const job32 = t.job;
+   if (!R.isci && !job32) { window.__isciKanca = null; return 'iç ad yok: karo.job'; }
+   // işçisiz kipte işçi gecikmesi enjekte edilemez: seg-32 işinin sonucu (_finish) 1,5 sn geciktirilir (FB0: iş tek dilimde bitip
+   // seg-80 istenmeden uygulanınca LY07 yanlış kırmızı oluyordu); önkoşul: seg-80 istendiğinde seg-32 işi kuyruktan çıkmış ve sonuçlanmamış
+   let oF = null; if (!R.isci) { oF = T._finish; T._finish = function (j, r, e) { if (j === job32) { setTimeout(() => oF.call(T, j, r, e), 1500); return; } return oF.apply(this, arguments); }; }
+   if (job32) await Y.kosul(() => !T._queue.includes(job32), 3000, 0); else await Y.bekle(100);
+   R.ucusta32 = !!job32 && !T._queue.includes(job32) && R.p32 === undefined;
+   const p80 = T._requestTile(t, 80, 0).then(() => { R.p80 = performance.now(); });
+   await Promise.race([Promise.all([p32, p80]), Y.bekle(45000)]);
+   window.__isciKanca = null; if (oF) T._finish = oF;
+   const g = T.tiles.get(t.k);
+   R.sonSeg = g && g.seg; R.idx = g && g.mesh ? g.mesh.geometry.index.count : null; R.eskiSonraBitti = R.p32 > R.p80;
+   if (!R.ucusta32) return 'önkoşul sağlanmadı: seg-80 istendiğinde seg-32 işi uçuşta değildi (kuyrukta ya da sonuçlanmış)';
+   if (R.p32 === undefined || R.p80 === undefined) return 'sonuç gelmedi: 45 sn içinde ' + (R.p32 === undefined ? 'seg-32 ' : '') + (R.p80 === undefined ? 'seg-80' : '');
+   return R.segP32 === 80 && R.sonSeg === 80 && R.idx === 80 * 80 * 6 + 4 * 80 * 6 ? 'tamam' : 'ezildi ya da eksik'; })()`, eq: 'tamam', label: 'LY07 LOD yarışı: yavaşlatılan eski seg-32 sonucu, yeni seg-80 geometriyi ezmez (önkoşul: seg-80 istendiğinde seg-32 işi uçuşta; son seg 80, indeks 40 320)'}},
+ {js: `window.__yaris`},
+ // ---- LY08 silinen karonun geç sonucu yok sayılır
+ {expect: {js: `(async()=>{ const T = DK.terrain, Y = window.__Y, p = DK.G.player;
+   if (typeof T._requestTile !== 'function' || typeof T._drop !== 'function') return 'iç ad yok: _requestTile/_drop';
+   const t = [...T.tiles.values()].filter((x) => x.mesh && x.seg === 80 && !x.pending)[0];
+   if (!t) return 'seg 80 karo yok';
+   if (!T.workers.length && typeof T._finish !== 'function') return 'iç ad yok: _finish';
+   if (!Array.isArray(T._queue)) return 'iç ad yok: _queue';
+   const k = t.k, x0 = t.x0, z0 = t.z0; window.__isciKanca = (m) => (m.t === 'tile' && m.key === k ? { gecikme: 1000 } : null);
+   const L8 = window.__ly08 = { t, onceki: 0, cagri: 0, yeniGeo: 0, geo0: t.mesh ? t.mesh.geometry : null, dusuruldu: false, dusurmeAni: null, sozBitti: null, kuyruktaydi: null };
+   const p32 = T._requestTile(t, 32, 0); const job = t.job; Promise.resolve(p32).then(() => { L8.sozBitti = performance.now(); });
+   if (!T.workers.length && !job) { window.__isciKanca = null; window.__ly08 = null; return 'iç ad yok: karo.job'; }
+   // işçisiz kipte işçi gecikmesi enjekte edilemez: bu işin sonucu (_finish) 1 sn geciktirilir, sonuç düşürmeden SONRA gelir
+   let oF = null; if (!T.workers.length) { oF = T._finish; T._finish = function (j, r, e) { if (j === job) { setTimeout(() => oF.call(T, j, r, e), 1000); return; } return oF.apply(this, arguments); }; }
+   if (job) await Y.kosul(() => !T._queue.includes(job), 3000, 0); else await Y.bekle(50);
+   L8.kuyruktaydi = !!job && T._queue.includes(job); L8.dusuruldu = true; L8.dusurmeAni = performance.now(); T._drop(t);
+   await Y.kosul(() => L8.sozBitti !== null, 15000, 50); await Y.bekle(300); window.__isciKanca = null; if (oF) T._finish = oF;
+   const ag = T.group.children.filter((m) => m.geometry && m.geometry.boundingSphere && Math.abs(m.geometry.boundingSphere.center.x - (x0 + 80)) < 1 && Math.abs(m.geometry.boundingSphere.center.z - (z0 + 80)) < 1);
+   const yeniden = T.tiles.get(k);
+   const izliydi = !!(window.__geo && window.__geo.kur); const geoAyni = !t.mesh || t.mesh.geometry === L8.geo0; window.__ly08 = null;
+   const gecSonuc = L8.kuyruktaydi === false && L8.onceki === 0 && L8.sozBitti !== null && L8.sozBitti > L8.dusurmeAni;
+   window.__silinen = { key: k, isci: T.workers.length > 0, gecSonucOldu: gecSonuc, dusurmedeKuyruktaydi: L8.kuyruktaydi, dusurmedenOnceApply: L8.onceki, sonucDusurmedenSonraMs: L8.sozBitti !== null ? Math.round(L8.sozBitti - L8.dusurmeAni) : null, karoYenidenIstendi: !!yeniden, ilgiliAg: ag.length, ilgiliAgKarosu: ag.map((m) => !!yeniden && yeniden.mesh === m), silinenKaroyaApply: L8.cagri, silinenKaroyaYeniGeometri: L8.yeniGeo, silinenKaroGeometrisiAyni: geoAyni };
+   if (!izliydi) return 'iç ad yok: _apply';
+   if (!gecSonuc) return 'önkoşul sağlanmadı: geç sonuç oluşmadı (iş düşürmede hâlâ kuyruktaydı, sonuç düşürmeden önce uygulandı ya da 15 sn içinde gelmedi)';
+   return !ag.every((m) => !!yeniden && yeniden.mesh === m) ? 'sahipsiz ağ' : (L8.yeniGeo > 0 || !geoAyni) ? 'geç sonuç silinen karoya yazıldı' : 'tamam'; })()`, eq: 'tamam', label: 'LY08 Silinen karonun geç gelen sonucu yok sayılır (önkoşul: sonuç düşürmeden sonra geldi; sahne grubunda sahipsiz ağ kalmaz; düşürülen karo nesnesine yeni geometri yazılmaz)'}},
+ {js: `window.__silinen`},
+ // ---- LY10 ızgara önbelleği yalnız bekleyen sözleri (ya da en çok 2 çözülmüş kaydı) tutar (A-13; iç ad: _gridCache)
+ {expect: {js: `(async()=>{ const T = DK.terrain; const s = []; for (let i = 0; i < 26; i++) s.push(T.requestGrid(-9000 + i * 600, 8000, 500, 64, 300).catch(() => null)); await Promise.all(s); await window.__Y.bekle(200); return T._gridCache instanceof Map ? T._gridCache.size : 'iç ad yok: _gridCache'; })()`, lte: 2, label: 'LY10 26 farklı harita ızgarası çözüldükten sonra önbellekte ≤ 2 çözülmüş kayıt (A-13)'}},
+ // ---- dolaşımlar boyunca çizim oyunun kendi FPS sınırı ayarıyla durdurulur (engine.fpsLimit ≈ 0; post.render sayılır). Ölçülen arazi
+ // davranışı (karo kuyruğu, yerel dilimler, derin deniz karoları, sızıntı) çizimden bağımsızdır. FB0 bellek örneklemesinde işçili kipte
+ // dolaşım sırasında tarayıcı süreci 0,1 → 7,7 GB, renderer 1,5 → 5,8 GB büyüdü ve sayfa cgroup OOM ile öldürüldü (çizim açıkken; kanıt
+ // once_v04/duzeltme/bellek_ornek_*). Ayar yoksa çizim açık kalır ve bu kaydedilir (kontroller yine koşar).
+ {js: `(()=>{ const E = DK.engine, P = DK.post; const C = window.__cizim = { fpsLimitVar: !!E && 'fpsLimit' in E, fps0: E ? E.fpsLimit : null, render: 0, sarildi: false };
+   if (P && typeof P.render === 'function') { const o = P.render; C.oRender = o; P.render = function () { C.render++; return o.apply(this, arguments); }; C.sarildi = true; }
+   if (C.fpsLimitVar) E.fpsLimit = 1e-6; return { fpsLimitVar: C.fpsLimitVar, fps0: C.fps0, renderSayaci: C.sarildi }; })()`},
+ // ---- uzun dolaşım 1 (kipin kendi düzeninde): açık denizde x 0 → 8000 (z = -6200), 250 m adım, gemi + kamera
+ {js: `(async()=>{ const T = DK.terrain, Y = window.__Y; const D = window.__dol1 = { adim: 0, derinEnCok: 0, derinNokta: null, hayaletEnCok: 0, failuresEnCok: 0, beklemeMs: 0 };
+   const t0 = performance.now();
+   for (let x = 0; x <= 8000; x += 250) {
+     Y.gemiyleGit(x, -6200); await Y.bekle(150);
+     const ms = await Y.kosul(() => T.stats().jobs === 0, 4000, 50); D.beklemeMs += ms === null ? 4000 : ms;
+     const n = [...T.tiles.values()].filter((t) => t.mesh && Y.derinMi(t) && Math.hypot(t.x0 + 80 - x, t.z0 + 80 + 6200) > 600).length;
+     if (n > D.derinEnCok) { D.derinEnCok = n; D.derinNokta = x; }
+     try { D.hayaletEnCok = Math.max(D.hayaletEnCok, Y.hayalet()); } catch (e) { D.icAdYok = e.message; } D.failuresEnCok = Math.max(D.failuresEnCok, T.failures.length); D.adim++;
+   }
+   D.ms = Math.round(performance.now() - t0); D.stats = T.stats(); D.ic = typeof T._land === 'function' ? '_land' : 'maxH<-1'; return D; })()`},
+ {expect: {js: `window.__dol1.derinEnCok`, lte: 10, label: 'LY11 8 km açık deniz dolaşımında 600 m ötesindeki derin deniz karosu ≤ 10 (A-07)'}},
+ {expect: {js: `!window.__dol1.icAdYok && window.__dol1.hayaletEnCok === 0 && window.__dol1.failuresEnCok <= 50`, truthy: true, label: 'LY12 Dolaşım boyunca değişmezler: hayalet iş yuvası 0 (işçi kayıtlarının işleri _jobs içinde), failures ≤ 50'}},
+ // ---- uzun dolaşım 2 (ana iş parçacığı yedeği): işçi varsa öldürülür (killWorkers), x 8000 → 0, yerel dilim süreleri ölçülür
+ {js: `(()=>{ const T = DK.terrain; const S = window.__dilim = { dilim: 0, enUzun: 0, asim: 0, enUzunBut: null, ornek: [], isciVardi: T.workers.length };
+   if (T.workers.length && typeof T.killWorkers === 'function') T.killWorkers();
+   const o = T._localSlice; if (typeof o !== 'function') { S.hata = 'iç ad yok: _localSlice'; return S; }
+   S.fark = []; S.butceKaynagi = null; window.__dilimAsil = o;
+   T._localSlice = function () { const q = Array.isArray(this._queue) ? this._queue.length : 0; const acik = this.dilimButcesi; const but = typeof acik === 'function' ? acik.call(this) : typeof acik === 'number' ? acik : (q > 30 ? Math.max(this.localBudget, 20) : this.localBudget); S.butceKaynagi = acik === undefined ? 'v0.4 kuralı (terrain.js:162)' : 'terrain.dilimButcesi'; const s = performance.now(); try { return o.apply(this, arguments); } finally { const d = performance.now() - s; S.dilim++; if (S.fark && S.fark.length < 100000) S.fark.push(d - but); if (d > S.enUzun) { S.enUzun = d; S.enUzunBut = but; } if (d > but + 4) { S.asim++; if (S.ornek.length < 8) S.ornek.push([+d.toFixed(1), but]); } } };
+   return { isciVardi: S.isciVardi, workers: T.workers.length, fallback: T.fallback }; })()`},
+ {js: `(async()=>{ const T = DK.terrain, Y = window.__Y; const D = window.__dol2 = { adim: 0, derinEnCok: 0, failuresEnCok: 0 }; const t0 = performance.now();
+   for (let x = 8000; x >= 0; x -= 250) {
+     Y.gemiyleGit(x, -6200); await Y.bekle(150);
+     await Y.kosul(() => T.stats().jobs === 0, 5000, 50);
+     const n = [...T.tiles.values()].filter((t) => t.mesh && Y.derinMi(t) && Math.hypot(t.x0 + 80 - x, t.z0 + 80 + 6200) > 600).length;
+     D.derinEnCok = Math.max(D.derinEnCok, n); D.failuresEnCok = Math.max(D.failuresEnCok, T.failures.length); D.adim++;
+   }
+   D.ms = Math.round(performance.now() - t0); const S = window.__dilim; S.enUzun = +S.enUzun.toFixed(1);
+   const f = (S.fark || []).slice().sort((a, b) => a - b);
+   // p99 = alt sıra istatistiği f[⌊(n−1)·0,99⌋]: n ≤ 101 dilimde en uzun 1, n ≤ 201'de en uzun 2 dilim dışarıda kalır (B0 düzeltici 2. deneme:
+   // önceki ⌈0,99·n⌉ sırası n < 100'de EN UZUN dilimi veriyordu; çizim durdurulunca dilim sayısı 66–84'e indi ve "p99" tek GC duraklamasına dayanıksızdı)
+   S.p99Sira = f.length ? Math.floor((f.length - 1) * 0.99) : null; S.p99Fark = f.length ? +f[S.p99Sira].toFixed(1) : null; S.enBuyukFark = f.length ? +f[f.length - 1].toFixed(1) : null; S.asimOrani = f.length ? +(S.asim / f.length).toFixed(3) : null; delete S.fark;
+   // ölçüm bitti: özgün _localSlice geri konur (FB0: sarmalayıcı yerinde kalınca S.fark silindikten sonraki dilimler TypeError atıyordu)
+   if (window.__dilimAsil) { T._localSlice = window.__dilimAsil; window.__dilimAsil = null; }
+   return { dolasim: D, dilim: S }; })()`},
+ {expect: {js: `(()=>{ const S = window.__dilim; if (S.hata) return S.hata; if (!(S.dilim > 0)) return 'dilim ölçülmedi'; return S.p99Fark <= 4 && S.enBuyukFark <= 15 ? 'tamam' : 'p99 bütçe+' + S.p99Fark + ' ms, en uzun bütçe+' + S.enBuyukFark + ' ms'; })()`, eq: 'tamam', label: "LY13 Ana iş parçacığı yedeğinde 8 km dolaşım: yerel dilimlerin p99'u (⌊(n−1)·0,99⌋. sıra) bütçe + 4 ms'yi, en uzunu bütçe + 15 ms'yi aşmaz (A-06; tek GC duraklamasına dayanıklı dağılım ölçümü)"}},
+ {expect: {js: `window.__dol2.derinEnCok`, lte: 10, label: 'LY14 Yedek kipte 8 km dönüş dolaşımında 600 m ötesindeki derin deniz karosu ≤ 10 (A-07)'}},
+ // ---- yaşam döngüsü sonu: bütün işler sonuçlanır, geometri sızıntısı yok
+ {expect: {js: `(async()=>{ const ms = await window.__Y.kosul(() => DK.terrain.stats().jobs === 0, 30000, 100); window.__son = { ms, stats: DK.terrain.stats() }; return ms !== null; })()`, truthy: true, label: 'LY15 Dolaşımlardan sonra bütün arazi işleri 30 sn içinde sonuçlanır (askıda iş yok)'}},
+ {expect: {js: `(()=>{ const T = DK.terrain, G = window.__geo; if (!G || !G.kur) return 'iç ad yok: _apply'; const agGeo = new Set([...T.tiles.values()].filter((t) => t.mesh).map((t) => t.mesh.geometry)); const sahipsizCanli = [...G.canli].filter((g) => !agGeo.has(g)).length; const grupFazla = T.group.children.length - agGeo.size; window.__sizinti = { izlenen: G.izlenen, atilan: G.atilan, canli: G.canli.size, karoAgi: agGeo.size, grupCocuk: T.group.children.length, sahipsizCanli }; return sahipsizCanli === 0 && grupFazla === 0 && G.izlenen > 200 ? 'tamam' : 'sızıntı'; })()`, eq: 'tamam', label: 'LY16 Karo oluşturma/kaldırma döngüsünde geometri sızıntısı yok: canlı (atılmamış) karo geometrisi = karo ağı sayısı, grupta sahipsiz ağ yok'}},
+ {js: `window.__sizinti`},
+ // ---- çizim yeniden açılır (LY15/LY16 da çizim durdurulmuşken: LY15 dolaşımların işlerinin sonuçlanmasını ölçer; çizim açılınca oyunun
+ // kamera güncellemesinin yeni işleri bu ölçüme karışmasın — FB0 crash kipi koşusunda çizim LY15'ten önce açılınca yerel kuyruk 30 sn'de
+ // boşalmadı). Dolaşımlar ve LY15/LY16 sırasında çizilen kare sayısı kaydedilir.
+ {js: `(()=>{ const E = DK.engine, P = DK.post, C = window.__cizim; if (!C) return null; if (C.fpsLimitVar) E.fpsLimit = C.fps0; if (C.sarildi) P.render = C.oRender; return { dolasimdaCizilenKare: C.render, fpsLimit: C.fpsLimitVar ? E.fpsLimit : 'yok' }; })()`},
+ // ---- LY09 örtüşen prepare: önce biten çağrı, yeni odağın süresini kısaltmaz (A-12). B0 düzeltmesi: senaryonun SONUNA, AYRI bir
+ // sayfaya taşındı (işçi gecikmesi enjeksiyonunun yan etkileri dolaşım/sızıntı ölçümlerine karışmasın ve ikinci dolaşımın killWorkers'ı
+ // işçili kipteki gözlenebilir ölçümü engellemesin; LY09 dolaşımdan önceyken görülen çökmeler sonradan cgroup OOM çıktı). Yeni sayfada
+ // yeni oyun Kırlangıç'ta başlar: kamera B bölgesinden (Kuzeyfener) ~5,3 km uzakta.
+ {goto: 'index.html'},
+ {expect: {js: `DK.terrain.mode === window.__KOSUCU.kip && (new URLSearchParams(location.search).get('terrain') || '') === window.__KOSUCU.kip ? true : 'kip ' + JSON.stringify(DK.terrain.mode) + ', beklenen ' + JSON.stringify(window.__KOSUCU.kip)`, eq: true, label: 'LYK-09 (LY09 sayfası) Arazi kipi gezinmeden sonra korundu (ilk sayfanın ?terrain değeri)'}},
+ {js: `(()=>{ const T = DK.terrain; const Y = window.__Y = {};
+   Y.bekle = (ms) => new Promise((r) => setTimeout(r, ms));
+   Y.kosul = async (f, ms, ara = 50) => { const t0 = performance.now(); for (;;) { let v = false; try { v = f(); } catch (e) { v = false; } if (v) return Math.round(performance.now() - t0); if (performance.now() - t0 > ms) return null; await Y.bekle(ara); } };
+   Y.agYakin = (x, z, r) => [...T.tiles.values()].filter((t) => t.mesh && Math.hypot(t.x0 + 80 - x, t.z0 + 80 - z) < r).length;
+   Y.hayalet = () => { if (!(T._jobs instanceof Map) || !Array.isArray(T.workers)) throw new Error('iç ad yok: _jobs/workers'); return T.workers.reduce((n, r) => { if (!r || !(r.jobs instanceof Map)) throw new Error('iç ad yok: workers[].jobs'); return n + [...r.jobs.keys()].filter((id) => !T._jobs.has(id)).length; }, 0); };
+   Y.sessizIsci = () => (window.__isciler || []).filter((w) => w.is > 0 && w.yanit === 0 && !w.sonlandi).length;
+   Y.derinMi = (t) => (typeof T._land === 'function' ? !T._land(t.i, t.j) : t.maxH < -1);
+   Y.gemiyleGit = (x, z) => { const s = DK.G.ship, p = DK.G.player; s.x = x; s.z = z; s.vx = 0; s.vz = 0; s.speed = 0; s.anchored = true; s.anchorPt = null; s.updateTransform(0); if (p.ship !== s || p.mode !== 'helm') p.boardShip(s, s.model.stations.helm.clone()); T.update(x, z, true); };
+   return Object.keys(Y); })()`},
+ {js: `(async()=>{ DK.G.noAutoPause = true; await DK.handlers.startGame({ kind: 'solo', slot: 2, data: null }); const ok = await window.__Y.kosul(() => DK.G.state === 'playing' && !!DK.G.player, 60000, 100); await window.__Y.bekle(2000); const p = DK.G.player; return { basladi: ok !== null, oyuncu: p ? [Math.round(p.pos.x), Math.round(p.pos.z)] : null, workers: DK.terrain.workers.length }; })()`},
+ {expect: {js: `(async()=>{ const T = DK.terrain, Y = window.__Y, p = DK.G.player; const KF = { x: 282, z: -5006 };
+   const isci = T.workers.length > 0; let yavas = 0, oF = null;
+   if (isci) {
+     // işçili kip: gözlenebilir ölçüm (Node KY18 ile aynı): B bölgesinin ilk üç karo işi işçiye 14 sn geç gönderilir
+     window.__isciKanca = (m) => (m.t === 'tile' && Math.hypot(m.x0 + 80 - KF.x, m.z0 + 80 - KF.z) < 600 && yavas < 3 ? (yavas++, { gecikme: 14000 }) : null);
+   } else {
+     // işçisiz kip (B0 düzeltici 2. deneme, inceleme B0-I15): işçi gecikmesi enjekte edilemez; B bölgesinin (450 m) ilk üç karo işinin
+     // sonucu (_finish) 14 sn geciktirilir (LY07/LY08 ile aynı yöntem). Eski iç ölçüm (v0.4 focus.until) yalnız tanı olarak yazılır.
+     if (typeof T._finish !== 'function') return 'iç ad yok: _finish (işçisiz kipte gecikme enjeksiyonu)';
+     oF = T._finish; T._finish = function (j, r, e) { const m = j && j.msg; if (r && m && m.t === 'tile' && Math.hypot(m.x0 + 80 - KF.x, m.z0 + 80 - KF.z) < 450 && yavas < 3) { yavas++; setTimeout(() => oF.call(T, j, r, e), 14000); return; } return oF.apply(this, arguments); };
+   }
+   const derinlikUzak = () => { const w = T.depthWin; return w ? Math.round(Math.hypot(w.x0 + w.size / 2 - KF.x, w.z0 + w.size / 2 - KF.z)) : 1e9; };
+   let aMs = null, bMs = null, kalan = null;
+   try { const t0 = performance.now(); const pA = T.prepare(p.pos.x, p.pos.z, { radius: 200 }); const pB = T.prepare(KF.x, KF.z, { radius: 450 }); const FB = T.focus;
+     await pA; aMs = performance.now() - t0; kalan = FB && typeof FB.until === 'number' ? Math.round((FB.until - performance.now()) / 1000) : null;
+     await pB; bMs = performance.now() - t0; }
+   finally { window.__isciKanca = null; if (oF) T._finish = oF; }
+   const O = window.__odak = { yontem: isci ? 'gözlenebilir (işçi gecikmesi)' : 'gözlenebilir (_finish gecikmesi)', aMs: Math.round(aMs), bMs: Math.round(bMs), yavasIs: yavas, bitisteAg: Y.agYakin(KF.x, KF.z, 450), bitisteDerinlikUzak: derinlikUzak(), taniFocusKalanSn: kalan };
+   // karar B bittikten 5 sn sonra (odak hazırlıktan sonra 12 sn korunur): kısalan odağın etkisi (kameranın derinlik isteği) yarışsız görülür
+   await Y.bekle(5000); O.bAg = Y.agYakin(KF.x, KF.z, 450); O.bDerinlikUzak = derinlikUzak();
+   if (yavas < 1 || bMs - aMs < 12000) return 'önkoşul sağlanmadı: B, A bittikten 12 sn sonra bitmedi (' + JSON.stringify(O) + ')';
+   return O.bAg >= 6 && O.bDerinlikUzak < 80 ? 'tamam' : 'B odağı kısaldı: B bittikten 5 sn sonra B bölgesinde ' + O.bAg + ' ağ, derinlik ' + O.bDerinlikUzak + ' m'; })()`, eq: 'tamam', label: "LY09 Örtüşen iki prepare: önce biten A, sonra başlayan B'nin odağını kısaltmaz (B'nin üç karo işi 14 sn geciktirilir — işçili kipte işçiye gönderim, işçisiz kipte sonuç; önkoşul B, A'dan ≥ 12 sn sonra biter; B bittikten 5 sn sonra B bölgesinde ≥ 6 ağ ve derinlik penceresi B'de; A-12)"}},
+ {js: `window.__odak`},
+]
