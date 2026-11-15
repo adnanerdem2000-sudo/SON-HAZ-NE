@@ -1,0 +1,20 @@
+# B1 ağacı kod durumu (son koşular bu sürümle): 2026-11-15T05:58:05Z
+taban: 03b5c97 (dal faz1-b1); commit edilmemiş değişiklikler:
+ js/core/settings.js         |   7 +-
+ js/game/game.js             |  18 +-
+ js/world/sky.js             |   6 +-
+ js/world/terrain.js         | 533 +++++++++++++++++++++++++++++++++++---------
+ js/world/terrainGen.js      |  20 +-
+ js/world/terrainWorker.js   |  15 +-
+ tools/build-single-html.mjs |  13 +-
+ 7 files changed, 483 insertions(+), 129 deletions(-)
+
+# sha256 (ilk 12)
+3bb03d5a4c2e js/world/terrain.js
+73a26b5c95dc js/world/terrainGen.js
+f65f16fea47f js/world/terrainWorker.js
+8c1563e5245b js/game/game.js
+8d0363119274 js/core/settings.js
+eb43cf52a5fb js/world/sky.js
+92619e4f348f tools/build-single-html.mjs
+bafb14570466 dist/DenizKorsanlari-SonHazine.html

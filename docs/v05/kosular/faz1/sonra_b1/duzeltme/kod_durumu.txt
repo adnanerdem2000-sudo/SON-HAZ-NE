@@ -1,0 +1,18 @@
+# B1 düzeltici: son kod durumu (2026-11-15T11:37:08Z); tarayıcı zinciri bu sha'larla koşuldu (kod_durumu_zincir_basi.txt ile aynı olmalı)
+taban: 03b5c97 (dal faz1-b1); commit yok. Düzelticinin değiştirdiği dosyalar: js/world/terrain.js, tools/build-single-html.mjs (+ dist yeniden derlendi, git dışı)
+# sha256 (ilk 12) — önce (uygulayıcının son kodu) → sonra
+723b741e8d92 → 6d86edcca0ba js/world/terrain.js
+92619e4f348f → 08a62d7fa2f4 tools/build-single-html.mjs
+971ac5548bb1 → f0234898a883 dist/DenizKorsanlari-SonHazine.html
+778540e58c95 (değişmedi) js/world/terrainGen.js
+f65f16fea47f (değişmedi) js/world/terrainWorker.js
+8c1563e5245b (değişmedi) js/game/game.js
+8d0363119274 (değişmedi) js/core/settings.js
+eb43cf52a5fb (değişmedi) js/world/sky.js
+# koşucu (ana oturumun commit'siz k17 sürümü; dokunulmadı)
+ed8820b9 tests/harness/run.cjs
+b29886a4 tests/harness/ortak.cjs
+6243f043 tests/harness/coop.cjs
+# testler: git diff HEAD -- tests/scenarios tests/node (kosucu_negatif hariç) boş; düzeltici test değiştirmedi
+fark satırı: 0
+# fark (düzeltme öncesi kopyaya göre): tani/duzeltme_terrain.diff, tani/duzeltme_build.diff

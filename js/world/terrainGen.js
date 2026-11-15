@@ -6,6 +6,16 @@ import { computeHeight, colorSRGB, srgbToLinear, toHalf, biomeAt } from './geo.j
 
 export const BIOME_ID = { deniz: 0, tropik: 1, cangil: 2, hayalet: 3, buzul: 4, volkan: 5, col: 6 };
 const SKIRT = 4;
+// A-06: zaman tabanlı parçalama. Üreteçler 32 örnekte bir saati denetler ve en geç YIELD_N örnekte ya da son yield'den bu yana
+// YIELD_MS geçtiyse yield eder. Ana iş parçacığı yedeği her yield'de dilim süresini denetler; böylece bir dilim bütçeyi en çok bir
+// parça kadar aşar. Süre sınırı, kodun yavaş koştuğu durumlarda da parçayı kısa tutar: yavaş cihaz, ana iş parçacığında ilk kez
+// koşan (henüz derlenmemiş) üreteç (Node ölçümü: soğuk ilk seg-80 karoda 256 örneklik parça 6,8 ms, ılıkta 0,35 ms). v0.4'te yield
+// satır sayısına bağlıydı (derinlikte 32 satır × 512 = 16 384, ızgarada 16 satır × 1024 örnek): dilim bütçenin katlarına çıkıyordu.
+// İşçide (runAll) yield yalnız bir döngü adımıdır; çıktı yield noktalarından bağımsızdır (işçi yolu ile dilimli yol bayt düzeyinde
+// aynı, tests/node/arazi_sozlesme.mjs SZ15/SZ16).
+export const YIELD_N = 256;
+export const YIELD_MS = 0.5;
+const zaman = typeof performance !== 'undefined' && typeof performance.now === 'function' ? () => performance.now() : () => Date.now();
 
 // Karo: konum/normal/renk + etek + (yüksek çözünürlükte) yükseklik ızgarası
 export function* tileGen(m) {
@@ -16,13 +26,14 @@ export function* tileGen(m) {
   // kenarlarda bir örnek taşma: normaller komşu karolarla aynı olsun
   const H = new Float32Array(W * W);
   let maxH = -1e9, minH = 1e9;
+  let say = 0, son = zaman();
   for (let j = -1; j <= n; j++) {
     for (let i = -1; i <= n; i++) {
       const h = computeHeight(x0 + i * step, z0 + j * step);
       H[(j + 1) * W + (i + 1)] = h;
       if (i >= 0 && j >= 0 && i < n && j < n) { if (h > maxH) maxH = h; if (h < minH) minH = h; }
+      if ((++say & 31) === 0 && (say >= YIELD_N || zaman() - son >= YIELD_MS)) { say = 0; yield; son = zaman(); }
     }
-    if ((j & 15) === 15) yield;
   }
   // ana ızgara + etek (çatlakları gizleyen dikey şerit)
   const ring = 4 * seg;
@@ -43,8 +54,8 @@ export function* tileGen(m) {
       colorSRGB(x, z, h, ny, c);
       col[k * 3] = srgbToLinear(c[0]); col[k * 3 + 1] = srgbToLinear(c[1]); col[k * 3 + 2] = srgbToLinear(c[2]);
       k++;
+      if ((++say & 31) === 0 && (say >= YIELD_N || zaman() - son >= YIELD_MS)) { say = 0; yield; son = zaman(); }
     }
-    if ((j & 15) === 15) yield;
   }
   // etek: kenar köşelerini sırayla dolaş (saat yönünde), her biri SKIRT metre aşağıda kopya
   const edge = [];
@@ -66,6 +77,7 @@ export function* tileGen(m) {
     const a = j * n + i, b = a + 1, d = a + n, e = d + 1;
     idx[q++] = a; idx[q++] = d; idx[q++] = b;
     idx[q++] = b; idx[q++] = d; idx[q++] = e;
+    if ((++say & 31) === 0 && (say >= 4 * YIELD_N || zaman() - son >= YIELD_MS)) { say = 0; yield; son = zaman(); }
   }
   for (let e = 0; e < ring; e++) {
     const a = edge[e], b = edge[(e + 1) % ring], a2 = base + e, b2 = base + (e + 1) % ring;
@@ -88,9 +100,12 @@ export function* tileGen(m) {
 export function* depthGen(m) {
   const { x0, z0, size, res } = m;
   const data = new Uint16Array(res * res);
+  let say = 0, son = zaman();
   for (let j = 0; j < res; j++) {
-    for (let i = 0; i < res; i++) data[j * res + i] = toHalf(computeHeight(x0 + (i + 0.5) / res * size, z0 + (j + 0.5) / res * size));
-    if ((j & 31) === 31) yield;
+    for (let i = 0; i < res; i++) {
+      data[j * res + i] = toHalf(computeHeight(x0 + (i + 0.5) / res * size, z0 + (j + 0.5) / res * size));
+      if ((++say & 31) === 0 && (say >= YIELD_N || zaman() - son >= YIELD_MS)) { say = 0; yield; son = zaman(); }
+    }
   }
   return { out: { t: 'depth', id: m.id, x0, z0, size, res, data }, transfer: [data.buffer] };
 }
@@ -99,13 +114,14 @@ export function* depthGen(m) {
 export function* gridGen(m) {
   const { x0, z0, size, res } = m;
   const heights = new Float32Array(res * res), biomes = new Uint8Array(res * res);
+  let say = 0, son = zaman();
   for (let j = 0; j < res; j++) {
     for (let i = 0; i < res; i++) {
       const x = x0 + (i + 0.5) / res * size, z = z0 + (j + 0.5) / res * size;
       heights[j * res + i] = computeHeight(x, z);
       biomes[j * res + i] = BIOME_ID[biomeAt(x, z)] || 0;
+      if (((say += 2) & 31) === 0 && (say >= YIELD_N || zaman() - son >= YIELD_MS)) { say = 0; yield; son = zaman(); }
     }
-    if ((j & 15) === 15) yield;
   }
   return { out: { t: 'grid', id: m.id, x0, z0, size, res, heights, biomes }, transfer: [heights.buffer, biomes.buffer] };
 }

@@ -1,0 +1,139 @@
+--- /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/faz1b_b1_duzeltme/once_kopya/js/world/terrain.js	2026-11-15 08:12:59.464525635 +0000
++++ js/world/terrain.js	2026-11-15 11:28:42.213223659 +0000
+@@ -61,16 +61,24 @@
+   return u.replace(/terrainWorker\.js(?=$|[?#])/, 'terrainWorker.missing.js');
+ }
+ const adresTuru = (u) => (/^blob:/i.test(u) ? 'blob' : /^data:/i.test(u) ? 'data' : 'modül');
++// İşçi adresinin yedek adayı (A-16). Modül sürümünde yedek aday yoktur (null). Tek dosya derlemesi (tools/build-single-html.mjs) bu
++// satırı, birincil adres ifadesinde olduğu gibi, derleme anında ön sözün yazdığı yedek adresle değiştirir (http'de blob: → data:,
++// kökeni 'null' olan bağlamda data: → blob:). Oyun kaynağı böylece hiçbir test kancası globalini (window.__DK_*) TEST koruması dışında
++// okumaz (tests/node/test_kipi.mjs K5; B1-D02). Satır derleme aracında birebir aranır: değiştirilirse derleme hata verir.
++const isciYedekAdresi = () => null;
+ 
+ export const terrain = {
+   HALF, TILE,
+   tiles: new Map(),
+   ready: false,
+   uniforms: null,
+-  // canlı işçi kayıtları: _isciler hepsi (yüklenmekte olan, hazır olmayan dahil; ayrıntı: _isciKur); workers yalnız HAZIR olanlar
+-  // (kullanılabilir işçiler: sayaçlar, tanı ve testler bunu okur; v0.4'te hazır olmayan işçiler de sayılıyordu)
++  // canlı işçi kayıtları: _isciler hepsi (yüklenmekte olan, hazır olmayan ve sınama kipindeki dahil; ölen işçi _workerFailed'da
++  // çıkarılır; ayrıntı: _isciKur). workers v0.4 anlamındadır: bütün canlı kayıtlar (testlerin değişmez örnekleyicileri, __dkDurum ve
++  // stats().workers bunu okur; hazır olmayan işçinin sınama işi de bu kayıtların jobs kümesindedir; B1-D03). hazirIsciler: yalnız
++  // HAZIR ve canlı olanlar (stats().isciHazir).
+   _isciler: [],
+-  get workers() { return this._isciler.filter((r) => r.ready && !r.dead); },
++  get workers() { return this._isciler.filter((r) => !r.dead); },
++  get hazirIsciler() { return this._isciler.filter((r) => r.ready && !r.dead); },
+   fallback: false,   // işçi kalmadı: üretim ana iş parçacığında
+   failures: [],      // teşhis: işçi hataları
+   // test kipleri (yalnız test kipinde, ?terrain=): '' | 'noworker' | 'crash' (her işte çöker) | 'badurl' (bozuk işçi adresi) |
+@@ -90,10 +98,12 @@
+ 
+   // ---- işçiler ----
+   // İşçi kaydı: { w, jobs: Map<id, job>, i (yuva), kusak, url (aday no), ready, ok, dead, olusturma, hazirAni, ilkIsAni,
+-  //   readyTimer, hazirUyariT, ilkIsT }. ok: işçiden ilk iş yanıtı geldi (işçi kanıtlandı).
++  //   hazirGecikti, yanitGecikti, readyTimer, hazirUyariT, ilkIsT, sessizT, gencT }. ok: işçiden ilk iş yanıtı geldi (işçi kanıtlandı).
+   // Kanıtlanmamış işçi (hazır değil ya da ilk işine henüz yanıt vermedi) sınama kipindedir (A-11): aynı anda tek iş alır ve bu iş
+   // kuyruğun en düşük öncelikli karo işidir; yakındaki karolar, derinlik penceresi ve ızgaralar ona bağlanıp beklemez. Bir işçi
+   // GECIKME_ESIK'ten uzun süredir hazır değilse ya da ilk işine yanıt vermiyorsa yerel şerit kuyruğu paralel işler (_yerelAktif).
++  // Bu karar zamanlayıcının kendisinindir: gencT/sessizT tetiklenince kayda hazirGecikti/yanitGecikti yazar; süre yeniden ölçülmez
++  // (bkz. _gecikme).
+   // Hazır olan işçi ilk işine ILK_IS_SURESI içinde yanıt vermezse devre dışı kalır ("kısa gözetim"); hazır sinyali HAZIR_UYARI'da
+   // gelmemişse teşhis kaydı yazılır, READY_TIMEOUT'ta işçi devre dışı kalır.
+   _workerUrl() {
+@@ -101,12 +111,12 @@
+     return String(new URL('./terrainWorker.js', import.meta.url));
+   },
+   // İşçi adresi adayları (A-16): birincisi kurulamazsa (kurucu hatası ya da hazır olmadan yükleme hatası) sonraki denenir; tek
+-  // dosyada blob: reddedilirse data: (window.__DK_WORKER_URL_YEDEK, derleme ön sözü yazar). badurl test kipinde (A-17) her aday
++  // dosyada blob: reddedilirse data: (isciYedekAdresi: derleme anında ön sözün yazdığı adres). badurl test kipinde (A-17) her aday
+   // gerçekten bozuk bir işçiye çevrilir.
+   _workerUrls() {
+     if (this._adresler) return this._adresler;
+     const L = [this._workerUrl()];
+-    const yedek = typeof window !== 'undefined' ? window.__DK_WORKER_URL_YEDEK : null;
++    const yedek = isciYedekAdresi();
+     if (yedek && !L.includes(String(yedek))) L.push(String(yedek));
+     return (this._adresler = this.mode === 'badurl' ? L.map(bozukIsciAdresi) : L);
+   },
+@@ -152,13 +162,15 @@
+       }
+       Y.url = u;
+       Y.kurulum++;
+-      const rec = { w, jobs: new Map(), i, kusak: (this._kusak = (this._kusak || 0) + 1), url: u, ready: false, ok: false, dead: false, olusturma: performance.now(), hazirAni: null, ilkIsAni: null, readyTimer: null, hazirUyariT: null, ilkIsT: null, sessizT: null, gencT: null };
++      const rec = { w, jobs: new Map(), i, kusak: (this._kusak = (this._kusak || 0) + 1), url: u, ready: false, ok: false, dead: false, olusturma: performance.now(), hazirAni: null, ilkIsAni: null, hazirGecikti: false, yanitGecikti: false, readyTimer: null, hazirUyariT: null, ilkIsT: null, sessizT: null, gencT: null };
+       w.onmessage = (e) => this._onMsg(rec, e.data);
+       w.onerror = (e) => { e.preventDefault?.(); this._workerFailed(rec, 'hata: ' + (e.message || 'yükleme/çalışma hatası'), 'cokme'); };
+       w.onmessageerror = () => this._workerFailed(rec, 'mesaj çözülemedi', 'cokme');
+       rec.hazirUyariT = setTimeout(() => { if (!rec.ready && !rec.dead) this._hataEkle(`işçi ${i}: hazır sinyali ${HAZIR_UYARI / 1000} sn içinde gelmedi (bekleniyor)`); }, HAZIR_UYARI);
+-      // GECIKME_ESIK'te hâlâ hazır değilse yerel şerit kuyruğu paralel işlemeye başlar (_yerelAktif)
+-      rec.gencT = setTimeout(() => { rec.gencT = null; if (!rec.ready && !rec.dead) this._pump(); }, GECIKME_ESIK);
++      // GECIKME_ESIK'te hâlâ hazır değilse yerel şerit kuyruğu paralel işlemeye başlar (_yerelAktif). Karar bayrakla verilir: zamanlayıcı
++      // performance.now()'a göre 1 ms'nin altında erken tetiklenebilir (Node/libuv ms saati, tarayıcıda kabalaştırılmış saat); süreyi
++      // yeniden ölçen bir denetim o zaman false verir ve şerit READY_TIMEOUT'a dek başlamazdı (B1-D01).
++      rec.gencT = setTimeout(() => { rec.gencT = null; if (!rec.ready && !rec.dead) { rec.hazirGecikti = true; this._pump(); } }, GECIKME_ESIK);
+       rec.readyTimer = setTimeout(() => { if (!rec.ready && !rec.dead) this._workerFailed(rec, 'hazır sinyali gelmedi', 'sessiz'); }, READY_TIMEOUT);
+       this._isciler.push(rec);
+       return null;
+@@ -269,8 +281,8 @@
+     if (rec.ilkIsT || rec.ok || rec.dead || !rec.ready) return;
+     rec.ilkIsAni = performance.now();
+     rec.ilkIsT = setTimeout(() => { rec.ilkIsT = null; if (!rec.ok && !rec.dead) this._workerFailed(rec, `ilk işe ${ILK_IS_SURESI / 1000} sn içinde yanıt vermedi`, 'ilk'); }, ILK_IS_SURESI);
+-    // GECIKME_ESIK'te hâlâ yanıt yoksa yerel şerit kuyruğu paralel işlemeye başlar (_yerelAktif)
+-    rec.sessizT = setTimeout(() => { rec.sessizT = null; if (!rec.ok && !rec.dead) this._pump(); }, GECIKME_ESIK);
++    // GECIKME_ESIK'te hâlâ yanıt yoksa yerel şerit kuyruğu paralel işlemeye başlar (_yerelAktif; karar bayrakla, bkz. gencT)
++    rec.sessizT = setTimeout(() => { rec.sessizT = null; if (!rec.ok && !rec.dead) { rec.yanitGecikti = true; this._pump(); } }, GECIKME_ESIK);
+   },
+   // İşi bitir: söz bir kez sonuçlanır; iş _jobs'tan ve (varsa) işçi yuvasından çıkar (A-09). İptal edilmiş işin sonucu yok
+   // sayılır: söz null ile çözülür (A-08).
+@@ -354,11 +366,17 @@
+   // değil ya da hazır olup ilk işine yanıt vermiyor (kısa gözetim/hazır zaman aşımı dolana dek kuyruk beklemesin). Sağlıklı işçi bu
+   // süreden çok önce hazır olup yanıt verir (ölçüm: ~50–70 ms); açılışta yerel şerit boşuna ana iş parçacığını meşgul etmez.
+   // Aksi hâlde yerel şerit yalnız yerel-yalnız işleri (MAX_TRIES'ı dolduran, işçide üretim hatası veren) alır.
++  _canliIsciler() { return this._isciler.filter((r) => !r.dead && !r.gonderimHatasi); },
++  // İşçinin gecikme durumu: 'hazir' (GECIKME_ESIK'te hâlâ hazır değildi), 'yanit' (hazır, ilk işine GECIKME_ESIK'te hâlâ yanıt yoktu)
++  // ya da null. Yalnız zamanlayıcıların yazdığı bayraklar okunur (B1-D01): _yerelAktif ve gecikmeNedeni aynı kararı verir.
++  _gecikme(r) {
++    if (!r.ready) return r.hazirGecikti ? 'hazir' : null;
++    return !r.ok && r.yanitGecikti ? 'yanit' : null;
++  },
+   _yerelAktif() {
+-    const canli = this._isciler.filter((r) => !r.dead && !r.gonderimHatasi);
++    const canli = this._canliIsciler();
+     if (!canli.length) return true;
+-    const simdi = performance.now();
+-    return canli.some((r) => (!r.ready && simdi - r.olusturma >= GECIKME_ESIK) || (r.ready && !r.ok && r.ilkIsAni !== null && simdi - r.ilkIsAni >= GECIKME_ESIK));
++    return canli.some((r) => this._gecikme(r) !== null);
+   },
+   _yerelIsVar() {
+     if (this._lanes[0] || this._lanes[1]) return true;
+@@ -676,14 +694,15 @@
+     }
+     return sonuc;
+   },
+-  // Açılış/yükleme metni için arazi üretimindeki gecikmenin nedeni (A-11; game.buildWorld yükleme metnine yazar); sorun yoksa null
++  // Açılış/yükleme metni için arazi üretimindeki gecikmenin nedeni (A-11; game.buildWorld yükleme metnine yazar); sorun yoksa null.
++  // "yedek üretim devrede" yalnız _yerelAktif'in de true verdiği durumda yazılır (aynı işçi kümesi, aynı bayraklar; B1-D01).
+   gecikmeNedeni() {
+     if (!this.ready) return null;
+-    const simdi = performance.now();
+-    const canli = this._isciler.filter((r) => !r.dead);
++    const canli = this._canliIsciler();
+     if (!canli.length) return this.fallback ? 'arazi işçisi yok; arazi ana iş parçacığında (yedek) üretiliyor' : null;
+-    if (canli.some((r) => !r.ready && simdi - r.olusturma >= GECIKME_ESIK)) return 'arazi işçileri hazır değil; yedek üretim devrede';
+-    if (canli.some((r) => r.ready && !r.ok && r.ilkIsAni !== null && simdi - r.ilkIsAni >= GECIKME_ESIK)) return 'arazi işçileri yanıt vermiyor; yedek üretim devrede';
++    const g = canli.map((r) => this._gecikme(r));
++    if (g.includes('hazir')) return 'arazi işçileri hazır değil; yedek üretim devrede';
++    if (g.includes('yanit')) return 'arazi işçileri yanıt vermiyor; yedek üretim devrede';
+     return null;
+   },
+ 
+@@ -779,6 +798,6 @@
+   stats() {
+     let meshes = 0, hires = 0, tris = 0;
+     for (const t of this.tiles.values()) { if (t.mesh) { meshes++; tris += t.mesh.geometry.index.count / 3; } if (t.heights) hires++; }
+-    return { tiles: this.tiles.size, meshes, hires, tris: Math.round(tris), queue: this._queue.length, jobs: this._jobs.size, workers: this.workers.length, fallback: this.fallback, failures: this.failures.length, mode: this.mode, isciKurulu: this._isciler.length, isciKanit: this._isciler.filter((r) => r.ok).length, hataToplam: this._hataSay || 0 };
++    return { tiles: this.tiles.size, meshes, hires, tris: Math.round(tris), queue: this._queue.length, jobs: this._jobs.size, workers: this.workers.length, fallback: this.fallback, failures: this.failures.length, mode: this.mode, isciKurulu: this._isciler.length, isciHazir: this.hazirIsciler.length, isciKanit: this._isciler.filter((r) => r.ok).length, hataToplam: this._hataSay || 0 };
+   },
+ };

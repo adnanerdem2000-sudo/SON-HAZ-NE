@@ -1,0 +1,23 @@
+--- /tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/faz1b_b1_duzeltme/once_kopya/tools/build-single-html.mjs	2026-11-15 04:22:14.963702677 +0000
++++ tools/build-single-html.mjs	2026-11-15 11:27:53.769220780 +0000
+@@ -14,6 +14,10 @@
+ const ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
+ const OUT = process.argv[2] || join(ROOT, 'dist', 'DenizKorsanlari-SonHazine.html');
+ const WORKER_URL = "new URL('./terrainWorker.js', import.meta.url)";
++// İşçi adresinin yedek adayı (A-16): terrain.js'te yer tutucu (modül sürümünde null); tek dosyada ön sözün yazdığı ikinci adres.
++// Oyun kaynağı window.__DK_* okumasın diye (test kipi kuralı K5) yer tutucu, birincil adres gibi derleme anında değiştirilir.
++const WORKER_URL_YEDEK = 'const isciYedekAdresi = () => null;';
++const WORKER_URL_YEDEK_TEK = 'const isciYedekAdresi = () => window.__DK_WORKER_URL_YEDEK;';
+ 
+ // 'three' ve 'three/addons/*' içe aktarmaları (tarayıcıdaki importmap'in karşılığı); arazi işçisi blob adresinden başlar
+ const plugin = {
+@@ -24,7 +28,8 @@
+     b.onLoad({ filter: /[\\/]world[\\/]terrain\.js$/ }, (a) => {
+       const src = readFileSync(a.path, 'utf8');
+       if (!src.includes(WORKER_URL)) throw new Error('terrain.js: işçi URL ifadesi bulunamadı');
+-      return { contents: src.split(WORKER_URL).join('window.__DK_WORKER_URL'), loader: 'js' };
++      if (src.split(WORKER_URL_YEDEK).length !== 2) throw new Error('terrain.js: işçi yedek adresi yer tutucusu bulunamadı ya da birden çok (' + WORKER_URL_YEDEK + ')');
++      return { contents: src.split(WORKER_URL).join('window.__DK_WORKER_URL').replace(WORKER_URL_YEDEK, () => WORKER_URL_YEDEK_TEK), loader: 'js' };
+     });
+   },
+ };

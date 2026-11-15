@@ -1,0 +1,42 @@
+KOMUT: /home/user/devtools/tk timeout 1000 node tests/harness/run.cjs tests/scenarios/02_arazi_yasam.js --url 'http://localhost:8084/index.html' --size 640x360 --timeout 950 --report /home/user/SON-HAZ-NE-b1/docs/v05/kosular/faz1/sonra_b1/02_arazi_yasam_normal_tekrar1.json 
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+başlatma betiği: 2 meta, 0 dosya
+ready in 6.2 s
+R: ["bekle","kosul","agYakin","hayalet","sessizIsci","derinMi","gemiyleGit"]
+DEGISKEN kip = ""
+PASS LY00 Kip denetimi: URL ?terrain = DK.terrain.mode ve kipin beklenen işçi/yedek durumu (normal: işçi ≥ 1; noworker/ctorthrow/badurl: işçi 0 + yedek; crash/hang: hata kaydı, iş alıp yanıt vermeyen her işçi sonlandırılmış, kurulan işçi ≤ 9; crash1: yedek kapalı + çökme kaydı; noready: zaman aşımı kaydı + yedek) → true
+R: {"k":"","mode":"","workers":3,"fallback":false,"failures":[],"beklemeMs":0,"isciler":[[0,71,71,0,"canli"],[1,53,53,0,"canli"],[2,3,3,0,"canli"]]}
+PASS LY01 Açılış tamamlandı (window.__ready, yükleme ekranı kapalı) → true
+PASS LY02 Menü sahnesinde ≥ 20 karo ağı → 125
+PASS LY03 Okyanus derinlik penceresi hazır ve açılış noktasında (≤ 600 m) → 10
+PASS LY04 Harita ızgarası (256²) isteği sonuçlanıyor → "tamam"
+PASS LY05 prepare dönüş değeri 'ok' (A-11: sonuç çağırana iletilir) → "ok"
+R: "başlatıldı"
+PASS LY06 Oyun başladı → true
+R: {"izlenen":125}
+PASS LY07 LOD yarışı: yavaşlatılan eski seg-32 sonucu, yeni seg-80 geometriyi ezmez (önkoşul: seg-80 istendiğinde seg-32 işi uçuşta; son seg 80, indeks 40 320) → "tamam"
+R: {"key":63551,"isci":true,"ucusta32":true,"p32":10566.699999999255,"segP32":80,"p80":10570.199999999255,"sonSeg":80,"idx":40320,"eskiSonraBitti":false}
+PASS LY08 Silinen karonun geç gelen sonucu yok sayılır (önkoşul: sonuç düşürmeden sonra geldi; sahne grubunda sahipsiz ağ kalmaz; düşürülen karo nesnesine yeni geometri yazılmaz) → "tamam"
+R: {"key":62525,"isci":true,"gecSonucOldu":true,"dusurmedeKuyruktaydi":false,"dusurmedenOnceApply":0,"sonucDusurmedenSonraMs":5,"karoYenidenIstendi":false,"ilgiliAg":0,"ilgiliAgKarosu":[],"silinenKaroyaApply":0,"silinenKaroyaYeniGeometri":0,"silinenKaroGeometrisiAyni":true}
+PASS LY10 26 farklı harita ızgarası çözüldükten sonra önbellekte ≤ 2 çözülmüş kayıt (A-13) → 0
+R: {"fpsLimitVar":true,"fps0":0,"renderSayaci":true}
+R: {"adim":33,"derinEnCok":3,"derinNokta":0,"hayaletEnCok":0,"failuresEnCok":0,"beklemeMs":0,"ms":5017,"stats":{"tiles":36,"meshes":36,"hires":0,"tris":10048,"queue":0,"jobs":0,"workers":3,"fallback":false,"failures":0,"mode":"","isciKurulu":3,"isciKanit":3,"hataToplam":0},"ic":"_land"}
+PASS LY11 8 km açık deniz dolaşımında 600 m ötesindeki derin deniz karosu ≤ 10 (A-07) → 3
+PASS LY12 Dolaşım boyunca değişmezler: hayalet iş yuvası 0 (işçi kayıtlarının işleri _jobs içinde), failures ≤ 50 → true
+R: {"isciVardi":3,"workers":0,"fallback":true}
+R: {"dolasim":{"adim":33,"derinEnCok":0,"failuresEnCok":4,"ms":4980},"dilim":{"dilim":65,"enUzun":20.1,"asim":0,"enUzunBut":20,"ornek":[],"isciVardi":3,"butceKaynagi":"terrain.dilimButcesi","p99Sira":63,"p99Fark":0.5,"enBuyukFark":0.7,"asimOrani":0}}
+PASS LY13 Ana iş parçacığı yedeğinde 8 km dolaşım: yerel dilimlerin p99'u (⌊(n−1)·0,99⌋. sıra) bütçe + 4 ms'yi, en uzunu bütçe + 15 ms'yi aşmaz (A-06; tek GC duraklamasına dayanıklı dağılım ölçümü) → "tamam"
+PASS LY14 Yedek kipte 8 km dönüş dolaşımında 600 m ötesindeki derin deniz karosu ≤ 10 (A-07) → 0
+PASS LY15 Dolaşımlardan sonra bütün arazi işleri 30 sn içinde sonuçlanır (askıda iş yok) → true
+PASS LY16 Karo oluşturma/kaldırma döngüsünde geometri sızıntısı yok: canlı (atılmamış) karo geometrisi = karo ağı sayısı, grupta sahipsiz ağ yok → "tamam"
+R: {"izlenen":1533,"atilan":1347,"canli":186,"karoAgi":186,"grupCocuk":186,"sahipsizCanli":0}
+R: {"dolasimdaCizilenKare":0,"fpsLimit":0}
+DIALOG beforeunload kabul edildi 
+GOTO http://localhost:8084/index.html?test=1
+PASS LYK-09 (LY09 sayfası) Arazi kipi gezinmeden sonra korundu (ilk sayfanın ?terrain değeri) → true
+R: ["bekle","kosul","agYakin","hayalet","sessizIsci","derinMi","gemiyleGit"]
+R: {"basladi":true,"oyuncu":[2,212],"workers":3}
+PASS LY09 Örtüşen iki prepare: önce biten A, sonra başlayan B'nin odağını kısaltmaz (B'nin üç karo işi 14 sn geciktirilir — işçili kipte işçiye gönderim, işçisiz kipte sonuç; önkoşul B, A'dan ≥ 12 sn sonra biter; B bittikten 5 sn sonra B bölgesinde ≥ 6 ağ ve derinlik penceresi B'de; A-12) → "tamam"
+R: {"yontem":"gözlenebilir (işçi gecikmesi)","aMs":30,"bMs":14041,"yavasIs":3,"bitisteAg":20,"bitisteDerinlikUzak":6,"taniFocusKalanSn":90,"bAg":20,"bDerinlikUzak":6}
+errors: 0 pageErrors: 0 fails: 0 (66.8 s)
+SONUC: GECTI (çıkış 0) kontrol 18/18, onay 18 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 6 farklı/72

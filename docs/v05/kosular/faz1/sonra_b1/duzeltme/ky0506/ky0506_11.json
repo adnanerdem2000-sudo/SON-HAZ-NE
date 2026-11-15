@@ -1,0 +1,167 @@
+{
+ "test": "arazi_kuyruk",
+ "kok": "/home/user/SON-HAZ-NE-b1",
+ "node": "v22.22.0",
+ "durum": "GECTI",
+ "cikis": 0,
+ "gecen": 14,
+ "kalan": 0,
+ "denetimler": [
+  {
+   "kimlik": "KY01a",
+   "aciklama": "normal açılış: prepare(160,470,r900) ≤ 10 sn içinde sonuçlanır",
+   "ok": true,
+   "deger": {
+    "ms": 419
+   }
+  },
+  {
+   "kimlik": "KY01b",
+   "aciklama": "normal açılış: ≥ 100 karo ağı, derinlik penceresi açılış noktasında, dünya ızgarası (256²) geldi",
+   "ok": true,
+   "deger": {
+    "meshes": 125,
+    "depth": {
+     "x": 160,
+     "z": 480
+    },
+    "izgara": "tamam"
+   }
+  },
+  {
+   "kimlik": "KY01c",
+   "aciklama": "normal açılış: 3 işçi canlı, yedek kip kapalı, failures boş",
+   "ok": true,
+   "deger": {
+    "workers": 3,
+    "fallback": false,
+    "failures": 0
+   }
+  },
+  {
+   "kimlik": "KY01d",
+   "aciklama": "prepare dönüş değeri 'ok' (A-11: sonuç çağırana iletilir)",
+   "ok": true,
+   "deger": {
+    "donus": "ok"
+   }
+  },
+  {
+   "kimlik": "KY01-D",
+   "aciklama": "değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50",
+   "ok": true,
+   "deger": {
+    "ornek": 12,
+    "ihlal": 0,
+    "ilk": [],
+    "enFazlaFailures": 0
+   }
+  },
+  {
+   "kimlik": "KY01-S",
+   "aciklama": "bütün iş sözleri 15 sn sınırı içinde sonuçlandı",
+   "ok": true,
+   "deger": {
+    "is": 127,
+    "acik": 0,
+    "acikOrnek": [],
+    "enUzunMs": 489,
+    "cozuldu": 127,
+    "reddedildi": 0
+   }
+  },
+  {
+   "kimlik": "KY05a",
+   "aciklama": "hazır sinyali yok (A-11): açılış hazırlığı ≤ normal + 5 sn (5419 ms)",
+   "ok": true,
+   "deger": {
+    "ms": 1334
+   }
+  },
+  {
+   "kimlik": "KY05b",
+   "aciklama": "hazır sinyali yok: açılış tamamlanır (≥ 100 ağ, derinlik, ızgara) ve hata kaydı var",
+   "ok": true,
+   "deger": {
+    "meshes": 125,
+    "izgara": "tamam",
+    "failures": [
+     "işçi 0: hazır sinyali 2.5 sn içinde gelmedi (bekleniyor)"
+    ]
+   }
+  },
+  {
+   "kimlik": "KY05-D",
+   "aciklama": "değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50",
+   "ok": true,
+   "deger": {
+    "ornek": 749,
+    "ihlal": 0,
+    "ilk": [],
+    "enFazlaFailures": 7
+   }
+  },
+  {
+   "kimlik": "KY05-S",
+   "aciklama": "bütün iş sözleri 45 sn sınırı içinde sonuçlandı",
+   "ok": true,
+   "deger": {
+    "is": 127,
+    "acik": 0,
+    "acikOrnek": [],
+    "enUzunMs": 8001,
+    "cozuldu": 127,
+    "reddedildi": 0
+   }
+  },
+  {
+   "kimlik": "KY06a",
+   "aciklama": "askıdaki işçi (A-11): açılış hazırlığı ≤ normal + 5 sn (5419 ms)",
+   "ok": true,
+   "deger": {
+    "ms": 1391
+   }
+  },
+  {
+   "kimlik": "KY06b",
+   "aciklama": "askıdaki işçi: açılış tamamlanır (≥ 100 ağ, derinlik, ızgara) ve hata kaydı var",
+   "ok": true,
+   "deger": {
+    "meshes": 125,
+    "izgara": "tamam",
+    "failures": [
+     "işçi 0: ilk işe 3 sn içinde yanıt vermedi"
+    ]
+   }
+  },
+  {
+   "kimlik": "KY06-D",
+   "aciklama": "değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50",
+   "ok": true,
+   "deger": {
+    "ornek": 256,
+    "ihlal": 0,
+    "ilk": [],
+    "enFazlaFailures": 4
+   }
+  },
+  {
+   "kimlik": "KY06-S",
+   "aciklama": "bütün iş sözleri 65 sn sınırı içinde sonuçlandı",
+   "ok": true,
+   "deger": {
+    "is": 127,
+    "acik": 0,
+    "acikOrnek": [],
+    "enUzunMs": 3004,
+    "cozuldu": 127,
+    "reddedildi": 0
+   }
+  }
+ ],
+ "islenmemisSozReddi": [],
+ "konsol": {
+  "uyari": 8,
+  "hata": 0
+ }
+}

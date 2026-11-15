@@ -1,0 +1,25 @@
+02_acilis_hatalari	tests/scenarios/02_acilis_hatalari.js	http://localhost:8084/index.html	1000	950	
+02_arazi_yedek_normal	tests/scenarios/02_arazi_yedek.js	http://localhost:8084/index.html	650	600	
+02_arazi_yedek_noworker	tests/scenarios/02_arazi_yedek.js	http://localhost:8084/index.html?terrain=noworker	650	600	
+02_arazi_yedek_badurl	tests/scenarios/02_arazi_yedek.js	http://localhost:8084/index.html?terrain=badurl	650	600	--izin-hata 'terrainWorker.missing.js$ # badurl kipi işçi adresini kasıtlı olarak var olmayan dosyaya çevirir (A-17); her işçi yuvası için 404 + requestfailed beklenir (B0 komutundaki izinle aynı desen)'
+02_arazi_yedek_crash	tests/scenarios/02_arazi_yedek.js	http://localhost:8084/index.html?terrain=crash	650	600	
+02_arazi_yedek_ctorthrow	tests/scenarios/02_arazi_yedek.js	http://localhost:8084/index.html?terrain=ctorthrow	650	600	
+02_arazi_yedek_noready	tests/scenarios/02_arazi_yedek.js	http://localhost:8084/index.html?terrain=noready	650	600	
+02_arazi_yedek_hang	tests/scenarios/02_arazi_yedek.js	http://localhost:8084/index.html?terrain=hang	650	600	
+02_arazi_yedek_crash1	tests/scenarios/02_arazi_yedek.js	http://localhost:8084/index.html?terrain=crash1	650	600	
+02_arazi_yasam_normal	tests/scenarios/02_arazi_yasam.js	http://localhost:8084/index.html	1000	950	
+02_arazi_yasam_noworker	tests/scenarios/02_arazi_yasam.js	http://localhost:8084/index.html?terrain=noworker	1000	950	
+02_arazi_yasam_crash	tests/scenarios/02_arazi_yasam.js	http://localhost:8084/index.html?terrain=crash	1000	950	
+02_arazi_yasam_ctorthrow	tests/scenarios/02_arazi_yasam.js	http://localhost:8084/index.html?terrain=ctorthrow	1000	950	
+02_arazi_yasam_noready	tests/scenarios/02_arazi_yasam.js	http://localhost:8084/index.html?terrain=noready	1000	950	
+02_arazi_yasam_hang	tests/scenarios/02_arazi_yasam.js	http://localhost:8084/index.html?terrain=hang	1000	950	
+02_arazi_yasam_crash1	tests/scenarios/02_arazi_yasam.js	http://localhost:8084/index.html?terrain=crash1	1000	950	
+02_arazi_isci_hata	tests/scenarios/02_arazi_isci_hata.js	http://localhost:8084/index.html	650	600	
+02_arazi_kurtarma	tests/scenarios/02_arazi_kurtarma.js	http://localhost:8084/index.html	650	600	
+00_acilis	tests/scenarios/00_acilis.js	http://localhost:8084/index.html	650	600	
+02_tek_dosya	tests/scenarios/02_tek_dosya.js	file:///home/user/SON-HAZ-NE-b1/dist/DenizKorsanlari-SonHazine.html	650	600	
+02_tek_dosya_kipler	tests/scenarios/02_tek_dosya_kipler.js	file:///home/user/SON-HAZ-NE-b1/dist/DenizKorsanlari-SonHazine.html	650	600	
+02_tek_dosya_blob	tests/scenarios/02_tek_dosya_blob.js	http://localhost:8084/dist/DenizKorsanlari-SonHazine.html	650	600	
+02_tek_dosya_cerceve	tests/scenarios/02_tek_dosya_cerceve.js	http://localhost:8084/dist/DenizKorsanlari-SonHazine.html	650	600	
+tani/02_tek_dosya_cerceve_tani_bellekdepo	tests/scenarios/02_tek_dosya_cerceve.js	http://localhost:8084/dist/DenizKorsanlari-SonHazine.html	650	600	--baslatma /home/user/SON-HAZ-NE-b1/docs/v05/kosular/faz1/sonra_b1/tani/tani_cerceve_bellek_depo.js
+02_hizli_yolculuk_normal	tests/scenarios/02_hizli_yolculuk.js	http://localhost:8084/index.html	650	600	

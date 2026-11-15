@@ -1,0 +1,18 @@
+BILGI kök /home/user/SON-HAZ-NE-b1; Node v22.22.0
+BILGI KY01 {"prepMs":419,"stats":{"tiles":125,"meshes":125,"hires":15,"tris":311168,"queue":0,"jobs":0,"workers":3,"fallback":false,"failures":0,"mode":"","isciKurulu":3,"isciHazir":3,"isciKanit":3,"hataToplam":0}}
+PASS KY01a normal açılış: prepare(160,470,r900) ≤ 10 sn içinde sonuçlanır → {"ms":419}
+PASS KY01b normal açılış: ≥ 100 karo ağı, derinlik penceresi açılış noktasında, dünya ızgarası (256²) geldi → {"meshes":125,"depth":{"x":160,"z":480},"izgara":"tamam"}
+PASS KY01c normal açılış: 3 işçi canlı, yedek kip kapalı, failures boş → {"workers":3,"fallback":false,"failures":0}
+PASS KY01d prepare dönüş değeri 'ok' (A-11: sonuç çağırana iletilir) → {"donus":"ok"}
+PASS KY01-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":12,"ihlal":0,"ilk":[],"enFazlaFailures":0}
+PASS KY01-S bütün iş sözleri 15 sn sınırı içinde sonuçlandı → {"is":127,"acik":0,"acikOrnek":[],"enUzunMs":489,"cozuldu":127,"reddedildi":0}
+PASS KY05a hazır sinyali yok (A-11): açılış hazırlığı ≤ normal + 5 sn (5419 ms) → {"ms":1334}
+PASS KY05b hazır sinyali yok: açılış tamamlanır (≥ 100 ağ, derinlik, ızgara) ve hata kaydı var → {"meshes":125,"izgara":"tamam","failures":["işçi 0: hazır sinyali 2.5 sn içinde gelmedi (bekleniyor)"]}
+PASS KY05-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":749,"ihlal":0,"ilk":[],"enFazlaFailures":7}
+PASS KY05-S bütün iş sözleri 45 sn sınırı içinde sonuçlandı → {"is":127,"acik":0,"acikOrnek":[],"enUzunMs":8001,"cozuldu":127,"reddedildi":0}
+PASS KY06a askıdaki işçi (A-11): açılış hazırlığı ≤ normal + 5 sn (5419 ms) → {"ms":1391}
+PASS KY06b askıdaki işçi: açılış tamamlanır (≥ 100 ağ, derinlik, ızgara) ve hata kaydı var → {"meshes":125,"izgara":"tamam","failures":["işçi 0: ilk işe 3 sn içinde yanıt vermedi"]}
+PASS KY06-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":256,"ihlal":0,"ilk":[],"enFazlaFailures":4}
+PASS KY06-S bütün iş sözleri 65 sn sınırı içinde sonuçlandı → {"is":127,"acik":0,"acikOrnek":[],"enUzunMs":3004,"cozuldu":127,"reddedildi":0}
+BILGI oyun konsolu: uyarı 8, hata 0
+SONUC: GECTI (çıkış 0) denetim 14/14 | kök /home/user/SON-HAZ-NE-b1

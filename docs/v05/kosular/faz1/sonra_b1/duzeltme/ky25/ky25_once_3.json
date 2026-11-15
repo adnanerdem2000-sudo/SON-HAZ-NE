@@ -1,0 +1,59 @@
+{
+ "test": "arazi_kuyruk",
+ "kok": "/tmp/claude-0/-home-user-SON-HAZ-NE/be41ef26-8ecd-56c1-9479-fc9d4b639d6f/scratchpad/faz1b_b1_duzeltme/once_kopya",
+ "node": "v22.22.0",
+ "durum": "GECTI",
+ "cikis": 0,
+ "gecen": 3,
+ "kalan": 0,
+ "denetimler": [
+  {
+   "kimlik": "KY25",
+   "aciklama": "yerel yedek, yükseklik işlevi çağrı başına 5 µs yavaşlatılmışken: dilimlerin p99'u ≤ bütçe + 4 ms ve en uzunu ≤ bütçe + 15 ms (A-06, KI-154: dilimi parça boyu değil süre keser; makine hızından bağımsız)",
+   "ok": true,
+   "deger": {
+    "dilim": 192,
+    "p99Fark": 0.7,
+    "enUzunFark": 0.8,
+    "asim": 0,
+    "ornek": [],
+    "butce": 10,
+    "butceKaynagi": "terrain.dilimButcesi",
+    "prepMs": 1985,
+    "donus": "ok",
+    "acilisMs": 561,
+    "workers": 0,
+    "fallback": true
+   }
+  },
+  {
+   "kimlik": "KY25-D",
+   "aciklama": "değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50",
+   "ok": true,
+   "deger": {
+    "ornek": 3,
+    "ihlal": 0,
+    "ilk": [],
+    "enFazlaFailures": 4
+   }
+  },
+  {
+   "kimlik": "KY25-S",
+   "aciklama": "bütün iş sözleri 180 sn sınırı içinde sonuçlandı",
+   "ok": true,
+   "deger": {
+    "is": 140,
+    "acik": 0,
+    "acikOrnek": [],
+    "enUzunMs": 1985,
+    "cozuldu": 140,
+    "reddedildi": 0
+   }
+  }
+ ],
+ "islenmemisSozReddi": [],
+ "konsol": {
+  "uyari": 1,
+  "hata": 0
+ }
+}

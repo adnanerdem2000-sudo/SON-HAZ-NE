@@ -1,0 +1,399 @@
+{
+ "scenario": "tests/scenarios/02_tek_dosya_cerceve.js",
+ "url": "http://localhost:8084/dist/DenizKorsanlari-SonHazine.html",
+ "size": [
+  640,
+  360
+ ],
+ "steps": [
+  {
+   "n": 1,
+   "label": null,
+   "expect": {
+    "label": "TC00 Tek dosya http(s) altında açıldı (üst sayfa, parametresiz)",
+    "ok": true,
+    "value": true
+   },
+   "ms": 20
+  },
+  {
+   "n": 2,
+   "label": null,
+   "result": {
+    "src": "http://localhost:8084/dist/DenizKorsanlari-SonHazine.html?test=1",
+    "sandbox": "allow-scripts"
+   },
+   "ms": 6
+  },
+  {
+   "n": 3,
+   "label": null,
+   "expect": {
+    "label": "TC01 Önkoşul: tek dosya sandbox'lı iframe'de (allow-scripts, allow-same-origin yok) yüklendi, köken 'null'",
+    "ok": true,
+    "value": "null"
+   },
+   "ms": 534
+  },
+  {
+   "n": 4,
+   "label": null,
+   "expect": {
+    "label": "TC02 Sandbox'lı iframe'de açılış tamamlanır (window.__ready, 120 sn içinde)",
+    "ok": false,
+    "value": false
+   },
+   "ms": 127462
+  },
+  {
+   "n": 5,
+   "label": null,
+   "result": {
+    "__fb0Cerceve": true,
+    "koken": "null",
+    "ready": false,
+    "dk": false,
+    "workers": null,
+    "fallback": null,
+    "failures": null,
+    "meshes": null,
+    "yukleme": "Oyun başlatılamadı: Failed to read the 'localStorage' property from 'Window': The document is sandboxed and lacks the 'allow-same-origin' flag.WebGL destekli gü",
+    "isci": {
+     "kurulan": [],
+     "kurucuHata": [],
+     "hazir": 0,
+     "yanit": 0,
+     "hata": []
+    },
+    "hatalar": []
+   },
+   "ms": 4
+  },
+  {
+   "n": 6,
+   "label": null,
+   "expect": {
+    "label": "TC03 Sandbox'lı iframe'de en az 1 arazi işçisi çalışır: işçiden 'ready' ve iş yanıtı geldi; DK varsa DK.terrain.workers ≥ 1 ve yedek kapalı (A-16)",
+    "ok": false,
+    "value": false
+   },
+   "ms": 30029
+  },
+  {
+   "n": 7,
+   "label": null,
+   "result": {
+    "__fb0Cerceve": true,
+    "koken": "null",
+    "ready": false,
+    "dk": false,
+    "workers": null,
+    "fallback": null,
+    "failures": null,
+    "meshes": null,
+    "yukleme": "Oyun başlatılamadı: Failed to read the 'localStorage' property from 'Window': The document is sandboxed and lacks the 'allow-same-origin' flag.WebGL destekli gü",
+    "isci": {
+     "kurulan": [],
+     "kurucuHata": [],
+     "hazir": 0,
+     "yanit": 0,
+     "hata": []
+    },
+    "hatalar": []
+   },
+   "ms": 3
+  },
+  {
+   "n": 8,
+   "label": null,
+   "expect": {
+    "label": "TC04 Sandbox'lı iframe'de arazi karoları üretildi (≥ 20 ağ)",
+    "ok": false,
+    "value": "çerçevede DK yok"
+   },
+   "ms": 4
+  }
+ ],
+ "errors": [
+  "SecurityError: Failed to read the 'localStorage' property from 'Window': The document is sandboxed and lacks the 'allow-same-origin' flag.\n    at kP (http://localhost:8084/dist/DenizKorsanlari-SonHazine.html?test=1:5663:13162)\n    at http://localhost:8084/dist/DenizKorsanlari-SonHazine.html?test=1:5663:25401\n    at http://localhost:8084/dist/DenizKorsanlari-SonHazine.html?test=1:5663:25620"
+ ],
+ "pageErrors": [],
+ "fails": 3,
+ "evalErrors": 0,
+ "readyMs": 8588,
+ "ms": 171288,
+ "sema": "dk-test-raporu/2",
+ "senaryo": "tests/scenarios/02_tek_dosya_cerceve.js",
+ "meta": {
+  "testler": [
+   "1 Normal Worker açılışı",
+   "tek dosya",
+   "A-16",
+   "brief madde 13"
+  ],
+  "dosyalar": [
+   "tools/build-single-html.mjs",
+   "js/world/terrain.js"
+  ],
+  "baslatma": "(() => {\n     if (window.top === window) {\n       const C = window.__cerceve = { ileti: 0, son: null };\n       window.addEventListener('message', (e) => { const d = e.data; if (d && d.__fb0Cerceve) { C.ileti++; C.son = d; } });\n       return;\n     }\n     const K = { kurulan: [], kurucuHata: [], hazir: 0, yanit: 0, hata: [] }; const H = [];\n     const W = window.Worker;\n     if (typeof W === 'function') {\n       function Sarili(url, opts) { const u = String(url).slice(0, 12); let w;\n         try { w = new W(url, opts); } catch (e) { K.kurucuHata.push(u + ': ' + (e && e.name)); throw e; }\n         K.kurulan.push(u);\n         w.addEventListener('message', (e) => { if (e && e.data && e.data.t === 'ready') K.hazir++; else K.yanit++; });\n         w.addEventListener('error', (e) => { if (K.hata.length < 5) K.hata.push(String((e && e.message) || 'error').slice(0, 100)); });\n         return w; }\n       Sarili.prototype = W.prototype; window.Worker = Sarili;\n     }\n     window.addEventListener('error', (e) => { if (H.length < 5) H.push(String(e && e.message).slice(0, 140)); });\n     window.addEventListener('unhandledrejection', (e) => { if (H.length < 5) H.push('red: ' + String(e && e.reason && (e.reason.message || e.reason)).slice(0, 140)); });\n     setInterval(() => { try {\n       const T = window.DK && window.DK.terrain;\n       parent.postMessage({ __fb0Cerceve: true, koken: String(self.origin), ready: !!window.__ready, dk: !!window.DK,\n         workers: T ? T.workers.length : null, fallback: T ? T.fallback : null, failures: T ? T.failures.slice(0, 3).map(String) : null,\n         meshes: T && typeof T.stats === 'function' ? T.stats().meshes : null,\n         yukleme: ((document.getElementById('load-text') || {}).textContent || '').trim().slice(0, 160),\n         isci: { kurulan: K.kurulan.slice(0, 6), kurucuHata: K.kurucuHata.slice(0, 6), hazir: K.hazir, yanit: K.yanit, hata: K.hata.slice() }, hatalar: H.slice() }, '*');\n     } catch (e) { /* yoksay */ } }, 500);\n   })();"
+ },
+ "hedef": {
+  "tip": "tek-test",
+  "url": "http://localhost:8084/dist/DenizKorsanlari-SonHazine.html?test=1",
+  "verilenUrl": "http://localhost:8084/dist/DenizKorsanlari-SonHazine.html",
+  "gorunum": [
+   640,
+   360
+  ],
+  "uretim": false
+ },
+ "ortam": {
+  "makine": "yerel",
+  "isletim": "linux 6.18.44-fc-v470",
+  "cekirdek": 4,
+  "bellekGB": 16,
+  "node": "v22.22.0",
+  "playwright": "1.63.0",
+  "tarayici": "chromium 153.0.8010.12",
+  "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "glSurum": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+  "gercekGPU": false,
+  "gorunum": [
+   640,
+   360
+  ],
+  "ci": false,
+  "commit": "03b5c973bcc65adf48b63a1bd7746d43ee88ae6d",
+  "dal": "faz1-b1",
+  "kirli": true,
+  "tarih": "2026-11-15T05:41:04.430Z"
+ },
+ "tekrar": {
+  "komut": "node /home/user/SON-HAZ-NE-b1/tests/harness/run.cjs /home/user/SON-HAZ-NE-b1/tests/scenarios/02_tek_dosya_cerceve.js --url http://localhost:8084/dist/DenizKorsanlari-SonHazine.html --size 640x360 --timeout 600 --report /home/user/SON-HAZ-NE-b1/docs/v05/kosular/faz1/sonra_b1/ara/02_tek_dosya_cerceve.json",
+  "cwd": "/home/user/SON-HAZ-NE-b1",
+  "sunucular": [
+   "statik sunucu http://localhost:8084 — sunulan ağacın kökünde: python3 -m http.server --bind 127.0.0.1 8084"
+  ],
+  "commit": "03b5c973bcc65adf48b63a1bd7746d43ee88ae6d-kirli",
+  "senaryoSha256": "93779e03fdf888a57b92935d88e7f112a876d87ebfc12a83916a5c872102536b",
+  "adim": {
+   "n": 4,
+   "js": "(async()=>{ const t0 = performance.now(); let s = null; while (performance.now() - t0 < 120000) { s = window.__cerceve && window.__cerceve.son; if (s && s.ready) break; await new Promise((r) => setTimeout(r, 500)); } window.__tc02 = s; return !!(s && s.ready); })()"
+  },
+  "url": "http://localhost:8084/dist/DenizKorsanlari-SonHazine.html?test=1"
+ },
+ "kontroller": [
+  {
+   "n": 1,
+   "id": "TC00",
+   "etiket": "TC00 Tek dosya http(s) altında açıldı (üst sayfa, parametresiz)",
+   "ok": true,
+   "deger": true,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 13,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 3,
+   "id": "TC01",
+   "etiket": "TC01 Önkoşul: tek dosya sandbox'lı iframe'de (allow-scripts, allow-same-origin yok) yüklendi, köken 'null'",
+   "ok": true,
+   "deger": "null",
+   "beklenen": {
+    "eq": "null"
+   },
+   "sure_ms": 530,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": null,
+   "goruntu": null
+  },
+  {
+   "n": 4,
+   "id": "TC02",
+   "etiket": "TC02 Sandbox'lı iframe'de açılış tamamlanır (window.__ready, 120 sn içinde)",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 120102,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": {
+    "sayfa": "/home/user/SON-HAZ-NE-b1/tests/out/goruntu/02_tek_dosya_cerceve_2026-11-15T05-41-03-934Z_9315/ilk_kalan.png",
+    "tuval": "/home/user/SON-HAZ-NE-b1/tests/out/goruntu/02_tek_dosya_cerceve_2026-11-15T05-41-03-934Z_9315/ilk_kalan_tuval.jpg"
+   }
+  },
+  {
+   "n": 6,
+   "id": "TC03",
+   "etiket": "TC03 Sandbox'lı iframe'de en az 1 arazi işçisi çalışır: işçiden 'ready' ve iş yanıtı geldi; DK varsa DK.terrain.workers ≥ 1 ve yedek kapalı (A-16)",
+   "ok": false,
+   "deger": false,
+   "beklenen": {
+    "truthy": true
+   },
+   "sure_ms": 30027,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"truthy\":true}, gelen false (sağlanmayan: truthy)",
+   "goruntu": null
+  },
+  {
+   "n": 8,
+   "id": "TC04",
+   "etiket": "TC04 Sandbox'lı iframe'de arazi karoları üretildi (≥ 20 ağ)",
+   "ok": false,
+   "deger": "çerçevede DK yok",
+   "beklenen": {
+    "gte": 20
+   },
+   "sure_ms": 2,
+   "benzetim": {
+    "sim": 0,
+    "adim": 0,
+    "press": 0,
+    "tap": 0,
+    "update": 0
+   },
+   "tur": "tarayici",
+   "hata": "beklenen {\"gte\":20}, gelen \"çerçevede DK yok\" (sağlanmayan: gte 20: değer sonlu bir sayı değil (string))",
+   "goruntu": null
+  }
+ ],
+ "hatalar": {
+  "konsol": [
+   {
+    "oyuncu": null,
+    "ileti": "SecurityError: Failed to read the 'localStorage' property from 'Window': The document is sandboxed and lacks the 'allow-same-origin' flag.\n    at kP (http://localhost:8084/dist/DenizKorsanlari-SonHazine.html?test=1:5663:13162)\n    at http://localhost:8084/dist/DenizKorsanlari-SonHazine.html?test=1:5663:25401\n    at http://localhost:8084/dist/DenizKorsanlari-SonHazine.html?test=1:5663:25620",
+    "url": "http://localhost:8084/dist/DenizKorsanlari-SonHazine.html?test=1",
+    "satir": 5662,
+    "isci": false,
+    "sayi": 1
+   }
+  ],
+  "konsolIzinli": [],
+  "konsolAgEslesen": 0,
+  "sayfa": [],
+  "ag": [],
+  "agIzinli": [],
+  "agIptal": [],
+  "degerlendirme": [],
+  "kesildi": false
+ },
+ "uyarilar": [
+  {
+   "oyuncu": null,
+   "ileti": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.",
+   "url": "http://localhost:8084/dist/DenizKorsanlari-SonHazine.html?test=1",
+   "sayi": 33
+  },
+  {
+   "oyuncu": null,
+   "ileti": "THREE.WebGLRenderer: KHR_parallel_shader_compile extension not supported.",
+   "url": "http://localhost:8084/dist/DenizKorsanlari-SonHazine.html?test=1",
+   "sayi": 1
+  }
+ ],
+ "uyariSayim": {
+  "farkli": 2,
+  "toplam": 34,
+  "sinirDisi": 0
+ },
+ "izinler": [
+  {
+   "desen": "favicon\\.ico(\\?|$)",
+   "gerekce": "Tarayıcının kendiliğinden istediği site simgesi; oyunun işleviyle ilgisiz.",
+   "tur": "ag",
+   "kaynak": "varsayilan",
+   "eslesme": 0
+  }
+ ],
+ "diyaloglar": [],
+ "goruntuler": [
+  {
+   "ad": "ilk_kalan",
+   "sayfa": "/home/user/SON-HAZ-NE-b1/tests/out/goruntu/02_tek_dosya_cerceve_2026-11-15T05-41-03-934Z_9315/ilk_kalan.png",
+   "tuval": "/home/user/SON-HAZ-NE-b1/tests/out/goruntu/02_tek_dosya_cerceve_2026-11-15T05-41-03-934Z_9315/ilk_kalan_tuval.jpg"
+  }
+ ],
+ "kanitUyarilari": [],
+ "agIstekSayisi": 31,
+ "isaretciKilidi": {
+  "kip": "taklit",
+  "sayac": {
+   "istek": 0,
+   "verildi": 0,
+   "hedefDegisti": 0,
+   "red": 0,
+   "jestsiz": 0,
+   "kisitli": 0,
+   "birakma": 0,
+   "birakildi": 0,
+   "iptal": 0,
+   "degisimOlayi": 0,
+   "hataOlayi": 0,
+   "yonlendirilen": 0,
+   "susturulan": 0
+  }
+ },
+ "kopma": null,
+ "sonuc": {
+  "durum": "KALDI",
+  "cikisKodu": 1,
+  "neden": [
+   "başarısız kontrol ya da adım: 3",
+   "izinsiz konsol hatası: 1"
+  ],
+  "onaySayisi": 5,
+  "kontrolSayisi": 5,
+  "gecen": 2,
+  "kalan": 3,
+  "izinsizKonsol": 1,
+  "izinsizAg": 0,
+  "izinliKonsol": 0,
+  "izinliAg": 0,
+  "tur": "tarayici",
+  "turSayim": {
+   "tarayici": 5
+  },
+  "tarayiciKoptu": false,
+  "kopma": null
+ },
+ "sure": {
+  "hazirMs": 8588,
+  "toplamMs": 171288,
+  "yerlesmeMs": 1002
+ }
+}

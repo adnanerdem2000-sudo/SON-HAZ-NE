@@ -1,0 +1,23 @@
+KOMUT: /home/user/devtools/tk timeout 650 node tests/harness/run.cjs tests/scenarios/13_donma.js --url 'http://localhost:8084/index.html' --size 640x360 --timeout 600 --report /home/user/SON-HAZ-NE-b1/docs/v05/kosular/faz1/sonra_b1/13_donma.json 
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+ready in 6.6 s
+R: "ok"
+PASS Oyun başladı → "playing"
+R: "ok"
+PASS P01 Gemiyle yaklaşınca ada birden çok karede kurulur; karedeki ada işi ≤ 35 ms (önce tek karede 55–58 ms; ölçülen tipik 6–11 ms, pay: bu ortamdaki GC/işlemci beklemesi) → true
+R: {"kurulduMu":true,"kare":409,"kareSayisi":16,"enUzunAdaKaresiMs":6.1,"isMs":54.4,"p99":3.3,"npc":5}
+PASS P02 Karelere bölünmüş kurulum eşzamanlı kurulumla birebir aynı adayı üretir (5 ada: liman, pazar, tapınak, hapishane, volkan) → true
+R: [{"id":"tuz_pazari","ayni":true,"kare":4,"enUzunMs":3.6,"npc":5},{"id":"gizli_pazar","ayni":true,"kare":2,"enUzunMs":3.8,"npc":2},{"id":"kadim_tapinak","ayni":true,"kare":5,"enUzunMs":3.1,"npc":0},{"id":"demirkapi","ayni":true,"kare":4,"enUzunMs":3.5,"npc":3},{"id":"ates_dagi","ayni":true,"kare":9,"enUzunMs":4.8,"npc":0}]
+PASS P03 Ada kurulurken uzaklaşılırsa yarım iş iptal edilir; çarpıştırıcı/NPC/sahne nesnesi kalmaz → true
+R: {"yarim":{"cols":799,"npcs":5,"built":false,"job":"tuz_pazari","sahnede":false,"adim":86,"evre":"batch"},"sonra":{"cols":0,"npcs":0,"built":false,"job":null,"sahnede":false}}
+PASS P04 _drop ve yeni oturum başlangıcı yarım kalan ada işini kaynaklarıyla temizler → true
+R: {"once":{"cols":169,"npcs":2,"built":false,"job":"gizli_pazar","sahnede":false},"drop":{"cols":0,"npcs":0,"built":false,"job":null,"sahnede":false},"once2":{"cols":55,"npcs":0,"built":false,"job":"gizli_pazar","sahnede":false},"start":{"cols":0,"npcs":0,"built":false,"job":null,"sahnede":false}}
+PASS P06 Bekleyen iş varken eşzamanlı kurulum işi tamamlar (tek grup, 5 liman NPC’si, çift kurulum yok) → true
+R: {"cols":799,"npcs":5,"built":true,"job":null,"sahnede":true,"bekleyen":true,"npcIds":5,"tekil":5,"grup":1}
+PASS P07 Balık sürüleri hareket eder; konum/hız geçerli, örnek sayısı > 0 → true
+R: {"suru":16,"ornek":333,"hareket":2.2,"nan":false}
+PASS P08 Tapınak bulmacası: çözüm yeniden kurulumda ve kayıt yüklemede korunur (kapı açık, boss koşulu), levye hata vermez, eski kayıt biçimi onarılır → true
+R: {"cozuldu":{"done":true,"hatalar":0,"sekil":"done,seq"},"yenidenKur":{"sekil":"done,seq","done":true,"levye":"ok","kapiAcik":true,"bossDurumu":true},"kayitYukle":{"kayittaki":"done,seq","sekil":"done,seq","done":true,"levye":"ok","kapiAcik":true},"eskiBicim":{"sekil":"done,seq","seq":"2","done":false,"levye":"ok"}}
+PASS Oyun döngüsü testlerden sonra hatasız → true
+errors: 0 pageErrors: 0 fails: 0 (27.5 s)
+SONUC: GECTI (çıkış 0) kontrol 9/9, onay 9 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/34

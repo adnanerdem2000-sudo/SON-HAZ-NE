@@ -1,0 +1,27 @@
+KOMUT: /home/user/devtools/tk timeout 650 node tests/harness/run.cjs tests/scenarios/02_arazi_isci_hata.js --url 'http://localhost:8084/index.html' --size 640x360 --timeout 600 --report /home/user/SON-HAZ-NE-b1/docs/v05/kosular/faz1/sonra_b1/ara/02_arazi_isci_hata.json 
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+başlatma betiği: 1 meta, 0 dosya
+ready in 5.6 s
+PASS HI00 Senaryo işçili kipte: en az bir arazi işçisi çalışıyor, yedek kip kapalı → true
+R: {"mode":"","workers":3,"fallback":false,"failures":0}
+ERR: Arazi işçisi: test: enjekte üretim hatası
+PASS HI01 İşçinin 'error' iletisi: ızgara sözü ≤ 3 sn içinde sonuçlanır, işçi ölmez, yedek kip açılmaz → true
+R: {"sonuc":"tamam","ms":9,"workersOnce":3,"workersSonra":3,"fallback":false}
+R: "başlatıldı"
+PASS HI02 Oyun başladı → true
+ERR: Arazi işçisi: test: enjekte üretim hatası
+PASS HI03 Kalıcı hatalı karo (A-05): 12 sn içinde (10 güncelleme/sn) aynı karo en çok 5 kez istenir (üstel geri çekilme) → 1
+R: {"key":63551,"istek12sn":1,"failuresArtis":1,"failures":2}
+PASS HI04 Kalıcı hatalı karodan sonra failures.length ≤ 50 (A-05) → 2
+PASS HI05 MAX_TRIES (A-05): ızgara işini alan her işçi çökse de iş yerel yedekte üretilir (söz reddedilmez) → "tamam"
+R: {"sonuc":"tamam","ms":27,"workers":0,"fallback":true,"gridGonderim":3,"failures":["işçi 0: hata: test: enjekte işçi çökmesi","işçi 1: hata: test: enjekte işçi çökmesi","işçi 2: hata: test: enjekte işçi çökmesi","hata: test: enjekte işçi çökmesi"]}
+PASS HI06 İşçiler çöktükten sonra kalan bütün arazi işleri 30 sn içinde sonuçlanır → 0
+DIALOG beforeunload kabul edildi 
+GOTO http://localhost:8084/index.html?kurucu2=1&test=1
+R: {"workers":2,"fallback":false,"failures":["işçi 1 oluşturulamadı (modül): Test: ikinci işçi kurulamadı"],"meshes":125}
+PASS HI07 Kısmi kurucu hatası (A-15): kurulabilen işçi çalışır ve yedek kip işareti KAPALI kalır (fallback=false) → true
+PASS HI08 Kısmi kurucu hatasında açılış tamamlanır (≥ 20 karo ağı) → 125
+errors: 2 pageErrors: 0 fails: 0 (50.4 s)
+IZINLI ×2 (Arazi işçisi: .*test: enjekte üretim hatası): Arazi işçisi: test: enjekte üretim hatası
+IZIN ×2 (meta, konsol) Arazi işçisi: .*test: enjekte üretim hatası — HI01/HI03 kasıtlı enjekte edilen işçi 'error' iletisi; v0.4 terrain._onMsg bunu console.error ile günlüğe yazar (beklenen tepki)
+SONUC: GECTI (çıkış 0) kontrol 9/9, onay 9 | izinsiz konsol 0, ağ 0 | izinli konsol 2, ağ 0 | uyarı 7 farklı/73

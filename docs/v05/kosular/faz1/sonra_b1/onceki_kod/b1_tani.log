@@ -1,0 +1,6 @@
+KOMUT: /home/user/devtools/tk timeout 300 node /home/user/SON-HAZ-NE-b1/docs/v05/kosular/faz1/sonra_b1/tani/b1_tani.mjs /home/user/SON-HAZ-NE-b1 /home/user/SON-HAZ-NE-b1/docs/v05/kosular/faz1/sonra_b1/tani/b1_tani.json
+T1 {"istekSayisi":7,"istekZamanlariMs":[4,1197,3214,7244,15300,31309,61329],"araliklarMs":[1193,2017,4030,8056,16009,30020],"sonAralikSn":30.02,"karoHata":{"n":7,"sonraki":91419.210653,"bozuk":true},"failures":14,"hataToplam":14,"karoAgi":false,"digerAg":118}
+T2 {"once":{"donus":"ok","workers":0,"fallback":true,"cokSay":3},"geriDonusMs":1715,"sonra":{"workers":3,"fallback":false,"kanitli":2,"kurulan":6},"failures":["işçi 0: hata: tanı: çökme","işçi 1: hata: tanı: çökme","işçi 2: hata: tanı: çökme","hata: tanı: çökme"]}
+T2b {"donus":"ok","workers":0,"fallback":true,"kurulan":3,"meshes":125}
+T3 {"initOncesi":"ok","normal":"ok","zamanAsimi":"timeout"}
+konsol {"w":9,"e":7,"i":4}

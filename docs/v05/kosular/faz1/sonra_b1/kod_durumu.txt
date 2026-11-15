@@ -1,0 +1,32 @@
+# B1 ağacı kod durumu (son koşular bu sürümle): 2026-11-15T10:33:34Z
+# (son toplu koşu 2: 08:15–10:26 UTC ve ek koşular 10:04–10:33 bu sha'larla; dosya 10:34'te yeniden üretildi, kod değişmedi)
+taban: 03b5c97 (dal faz1-b1); commit edilmemiş B1 değişiklikleri:
+ js/core/settings.js         |   7 +-
+ js/game/game.js             |  18 +-
+ js/world/sky.js             |   6 +-
+ js/world/terrain.js         | 534 +++++++++++++++++++++++++++++++++++---------
+ js/world/terrainGen.js      |  26 ++-
+ js/world/terrainWorker.js   |  15 +-
+ tools/build-single-html.mjs |  13 +-
+ 7 files changed, 490 insertions(+), 129 deletions(-)
+
+# sha256 (ilk 12)
+723b741e8d92 js/world/terrain.js
+778540e58c95 js/world/terrainGen.js
+f65f16fea47f js/world/terrainWorker.js
+8c1563e5245b js/game/game.js
+8d0363119274 js/core/settings.js
+eb43cf52a5fb js/world/sky.js
+92619e4f348f tools/build-single-html.mjs
+971ac5548bb1 dist/DenizKorsanlari-SonHazine.html
+
+# not: tests/harness/*, tests/node/kosucu_negatif.mjs, tests/README.md ve tests/fixtures/kosucu/* k17 düzelticisinin 02:44 koşucu sürümüdür (ana oturum ağaca commit'siz uyguladı, 03:33:48; ek not §5.2: run.cjs ed8820b9, ortak.cjs b29886a4, coop.cjs 6243f043); B1 bunlara dokunmadı.
+# önceki kod sürümüyle koşulanlar: onceki_kod/ (NEDEN.txt)
+# koşucu sha256:
+ed8820b954104f22f06be4aff52c51bb8f57befb246d48066bd70244be6e2f73  tests/harness/run.cjs
+6243f043f069b5ef93a2d37757e096be6e99c79b448ea85f175d87aeebf40e48  tests/harness/coop.cjs
+b29886a4a23a3f9089c1adca212e269144ebf0e513f1eb9765a4cd8edc999340  tests/harness/ortak.cjs
+0726e707c734192de8bbfd0f913b0a32d0c984ef8446389ea691f79dad684d9e  tests/node/kosucu_negatif.mjs
+727a158a4d622e05ef6e6303791defdff67ca33ae719bb1b07fc4e78beb232b7  tests/README.md
+# testler (B1 değiştirmedi; HEAD ile karşılaştırma):
+(yukarıda FARKLI satırı yoksa tests/scenarios/*.js ve iki Node testi HEAD ile aynı)

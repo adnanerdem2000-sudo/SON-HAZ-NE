@@ -1,0 +1,6 @@
+BILGI kök /home/user/SON-HAZ-NE-b1; Node v22.22.0
+PASS KY25 yerel yedek, yükseklik işlevi çağrı başına 5 µs yavaşlatılmışken: dilimlerin p99'u ≤ bütçe + 4 ms ve en uzunu ≤ bütçe + 15 ms (A-06, KI-154: dilimi parça boyu değil süre keser; makine hızından bağımsız) → {"dilim":195,"p99Fark":0.6,"enUzunFark":3.6,"asim":0,"ornek":[],"butce":10,"butceKaynagi":"terrain.dilimButcesi","prepMs":2015,"donus":"ok","acilisMs":585,"workers":0,"fallback":true}
+PASS KY25-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":3,"ihlal":0,"ilk":[],"enFazlaFailures":4}
+PASS KY25-S bütün iş sözleri 180 sn sınırı içinde sonuçlandı → {"is":140,"acik":0,"acikOrnek":[],"enUzunMs":2015,"cozuldu":140,"reddedildi":0}
+BILGI oyun konsolu: uyarı 1, hata 0
+SONUC: GECTI (çıkış 0) denetim 3/3 | kök /home/user/SON-HAZ-NE-b1

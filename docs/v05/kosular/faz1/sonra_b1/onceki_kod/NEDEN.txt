@@ -1,0 +1,8 @@
+Bu dizindeki kayıtlar B1'in ÖNCEKİ kod sürümüyle (onceki_kod/kod_durumu.txt: terrainGen.js 73a26b5c95dc, terrain.js 3bb03d5a4c2e,
+dist bafb14570466) 05:58–08:00 arasında koşulan son toplu koşunun tamamlanmış parçalarıdır (Node ×2 + b1_tani, 02_arazi_yedek ×8,
+02_arazi_yasam ×7). Silinmedi; yerlerine yeni kodla (terrainGen.js zaman tabanlı yield, sonra_b1/kod_durumu.txt) yeniden koşulanlar
+sonra_b1/ kökünde. Neden: 02_arazi_yasam_normal LY13 (p99 +4,9 ms / en uzun +8,2 ms; 60 dilimde 2 aşım) — soğuk (ana iş parçacığında
+ilk kez koşan) üreteçte 256 örneklik parça 5–7 ms sürebiliyordu (tani/parca_olc_*.txt, tani/tani_ly13c.json); parçalama örnek
+sayısının yanında süreye de bağlandı (A-06). v0.4 kodlu önce koşuları (arazi_kuyruk_v04_once, arazi_sozlesme_v04_once) kod
+değişikliğinden etkilenmediği için yerinde kaldı.
+Durdurulan toplu koşunun tarayıcı açmadan kesilen parçası: ../kesik/02_arazi_isci_hata_kilit_bekliyordu.log

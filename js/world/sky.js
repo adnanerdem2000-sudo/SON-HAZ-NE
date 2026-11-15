@@ -67,7 +67,9 @@ export const sky = {
   weatherName(k) { return (WEATHERS[ALIAS[k] || k] || WEATHERS.acik).name; },
   weatherIcon(k) { return (WEATHERS[ALIAS[k] || k] || WEATHERS.acik).icon; },
 
-  build(scene, renderer, quality = 'high') {
+  // shadows: gölge ayarı ('high' | 'medium' | 'low' | 'off'; settings.v.shadows). A-19: gölge haritası boyutu açılışta da ayardan
+  // alınır (settings.apply ile aynı kural: yüksek 2048, diğerleri 1024); verilmezse v0.4 gibi kaliteden.
+  build(scene, renderer, quality = 'high', shadows = quality === 'high' ? 'high' : 'medium') {
     this.scene = scene;
     const geo = new THREE.SphereGeometry(4000, 48, 24);
     this.uniforms = {
@@ -135,7 +137,7 @@ export const sky = {
 
     this.sun = new THREE.DirectionalLight(0xffffff, 2.5);
     this.sun.castShadow = quality !== 'low';
-    const sm = quality === 'high' ? 2048 : 1024;
+    const sm = shadows === 'high' ? 2048 : 1024;
     this.sun.shadow.mapSize.set(sm, sm);
     const sc = this.sun.shadow.camera;
     sc.left = -55; sc.right = 55; sc.top = 55; sc.bottom = -55; sc.near = 1; sc.far = 300;

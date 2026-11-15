@@ -40,6 +40,9 @@ export const game = {
   async buildWorld(quality, onProgress) {
     if (this.worldBuilt) return;
     const scene = engine.scene;
+    // A-11: arazi üretiminde gecikme nedeni varsa (işçi hazır değil / yanıt vermiyor / yok: yedek üretim) yükleme metni bunu da
+    // söyler; normal açılışta metinler değişmez
+    const asama = (f, t) => { const n = terrain.gecikmeNedeni(); onProgress?.(f, n ? `${t} (${n})` : t); };
     onProgress?.(0.05, 'Takımadalar oluşturuluyor…');
     await tick();
     terrain.init(scene, quality);
@@ -48,18 +51,23 @@ export const game = {
     await tick();
     ocean.build(scene, settings.v.water || quality);
     onProgress?.(0.3, 'Arazi örülüyor…');
-    await terrain.prepare(160, 470, { radius: 900 });
-    sky.build(scene, engine.renderer, quality);
+    let neden = null;
+    const izle = setInterval(() => { const n = terrain.gecikmeNedeni(); if (n && n !== neden) { neden = n; onProgress?.(0.3, `Arazi örülüyor… (${n})`); } }, 250);
+    let hazirlik;
+    try { hazirlik = await terrain.prepare(160, 470, { radius: 900 }); } finally { clearInterval(izle); }
+    if (hazirlik === 'timeout') onProgress?.(0.6, 'Arazi örülüyor… (süre doldu; kalan bölgeler arka planda tamamlanacak)');
+    // A-19: güneşin gölge haritası boyutu kayıtlı gölge ayarından (v0.4 kaliteden alıyordu: 'orta' açılışta uygulanmıyordu)
+    sky.build(scene, engine.renderer, quality, settings.v.shadows);
     sky.onThunder = () => audio.thunder();
     sky.timeRef = time;
-    onProgress?.(0.62, 'Ormanlar büyütülüyor…');
+    asama(0.62, 'Ormanlar büyütülüyor…');
     await tick();
     props.build(scene, quality);
-    onProgress?.(0.75, 'Kırlangıç Limanı kuruluyor…');
+    asama(0.75, 'Kırlangıç Limanı kuruluyor…');
     await tick();
     port.build(scene);
     cave.build(scene);
-    onProgress?.(0.85, 'Canlılar uyanıyor…');
+    asama(0.85, 'Canlılar uyanıyor…');
     await tick();
     for (const s of this.systems) if (s.init) await s.init(scene);
     shipControl.init();

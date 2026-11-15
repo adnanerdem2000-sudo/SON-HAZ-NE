@@ -1,0 +1,54 @@
+# parca_olc.mjs (tani/): tileGen/depthGen gen.next süreleri (ms), Node v22.22.0, yük: 4.56 4.26 4.07; kod b1 terrainGen.js sha 778540e58c95
+## koşu 1
+soğuk ilk karo seg80 {"parca":73,"enUzun":5.36,"son":0.32,"toplam":69}
+karo seg80 #1 {"parca":61,"enUzun":5.56,"son":0.19,"toplam":22.7}
+karo seg80 #2 {"parca":61,"enUzun":5.97,"son":0.15,"toplam":25.4}
+karo seg80 #3 {"parca":60,"enUzun":2.33,"son":0.2,"toplam":12.8}
+karo seg80 #4 {"parca":60,"enUzun":0.86,"son":0.19,"toplam":9.7}
+karo seg80 #5 {"parca":59,"enUzun":0.29,"son":0.16,"toplam":8.3}
+ılık karo seg80 {"parca":60,"enUzun":0.62,"son":0.02,"toplam":18}
+derinlik 512² {"parca":1030,"enUzun":6.34,"son":0.13,"toplam":202.3}
+## koşu 2
+soğuk ilk karo seg80 {"parca":74,"enUzun":5.41,"son":0.44,"toplam":55.5}
+karo seg80 #1 {"parca":63,"enUzun":5.4,"son":0.35,"toplam":38.8}
+karo seg80 #2 {"parca":61,"enUzun":6.13,"son":0.21,"toplam":23.4}
+karo seg80 #3 {"parca":62,"enUzun":4.4,"son":0.21,"toplam":29.3}
+karo seg80 #4 {"parca":61,"enUzun":2.02,"son":0.22,"toplam":15.3}
+karo seg80 #5 {"parca":59,"enUzun":1.03,"son":0.21,"toplam":12.1}
+ılık karo seg80 {"parca":60,"enUzun":1.65,"son":0.02,"toplam":12.6}
+derinlik 512² {"parca":1041,"enUzun":4.55,"son":0.16,"toplam":194.6}
+## koşu 3
+soğuk ilk karo seg80 {"parca":78,"enUzun":6.03,"son":0.21,"toplam":69.1}
+karo seg80 #1 {"parca":62,"enUzun":1.63,"son":0.21,"toplam":18.5}
+karo seg80 #2 {"parca":61,"enUzun":4.29,"son":0.2,"toplam":24.2}
+karo seg80 #3 {"parca":61,"enUzun":3.33,"son":0.4,"toplam":21.6}
+karo seg80 #4 {"parca":61,"enUzun":6.71,"son":0.18,"toplam":24.8}
+karo seg80 #5 {"parca":60,"enUzun":5.2,"son":0.03,"toplam":22.6}
+ılık karo seg80 {"parca":59,"enUzun":0.33,"son":0.02,"toplam":9.5}
+derinlik 512² {"parca":1037,"enUzun":8.37,"son":0.2,"toplam":204}
+## koşu 4 (--trace-gc: uzun parçalar Scavenge duraklamasıyla çakışıyor mu)
+[6357:0x17179000]       57 ms: Scavenge 6.6 (9.6) -> 4.6 (9.6) MB, pooled: 0 MB, 4.55 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[6357:0x17179000]       60 ms: Scavenge 6.6 (9.6) -> 4.6 (9.6) MB, pooled: 0 MB, 1.21 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[6357:0x17179000]       74 ms: Scavenge 6.6 (9.6) -> 4.6 (9.6) MB, pooled: 0 MB, 6.10 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[6357:0x17179000]       85 ms: Scavenge 6.7 (9.6) -> 4.7 (9.6) MB, pooled: 0 MB, 3.02 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[6357:0x17179000]       92 ms: Scavenge 6.7 (9.6) -> 4.7 (9.6) MB, pooled: 0 MB, 4.33 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+soğuk ilk karo seg80 {"parca":70,"enUzun":6.22,"son":0.24,"toplam":59.3}
+karo seg80 #1 {"parca":62,"enUzun":2.94,"son":0.25,"toplam":24.2}
+[6357:0x17179000]      142 ms: Scavenge 7.1 (10.1) -> 5.1 (10.1) MB, pooled: 0 MB, 1.62 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+karo seg80 #2 {"parca":60,"enUzun":2.48,"son":0.21,"toplam":15.7}
+karo seg80 #3 {"parca":61,"enUzun":2.09,"son":0.33,"toplam":14.8}
+karo seg80 #4 {"parca":59,"enUzun":2.42,"son":2.21,"toplam":15.1}
+[6357:0x17179000]      185 ms: Scavenge 7.2 (10.1) -> 5.3 (10.1) MB, pooled: 0 MB, 5.49 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[6357:0x17179000]      193 ms: Scavenge 7.2 (10.1) -> 5.3 (10.1) MB, pooled: 0 MB, 4.07 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+karo seg80 #5 {"parca":60,"enUzun":5.72,"son":0.17,"toplam":20.5}
+[6357:0x17179000]      198 ms: Scavenge 7.2 (10.1) -> 5.3 (10.1) MB, pooled: 0 MB, 2.57 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[6357:0x17179000]      218 ms: Scavenge 7.3 (10.1) -> 5.4 (10.1) MB, pooled: 0 MB, 3.63 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[6357:0x17179000]      651 ms: Scavenge 7.4 (10.1) -> 5.4 (10.1) MB, pooled: 0 MB, 2.59 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[6357:0x17179000]      982 ms: Scavenge 7.5 (10.1) -> 5.5 (10.1) MB, pooled: 0 MB, 1.31 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+ılık karo seg80 {"parca":59,"enUzun":0.39,"son":0.02,"toplam":10.7}
+[6357:0x17179000]     1207 ms: Scavenge 7.6 (10.1) -> 5.6 (10.1) MB, pooled: 0 MB, 1.13 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[6357:0x17179000]     1212 ms: Scavenge 7.6 (10.1) -> 5.6 (10.1) MB, pooled: 0 MB, 1.63 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[6357:0x17179000]     1215 ms: Scavenge 7.6 (10.1) -> 5.6 (10.1) MB, pooled: 0 MB, 1.06 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[6357:0x17179000]     1250 ms: Scavenge 7.6 (10.1) -> 5.7 (10.1) MB, pooled: 0 MB, 1.01 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[6357:0x17179000]     1264 ms: Scavenge 7.6 (10.1) -> 5.7 (10.1) MB, pooled: 0 MB, 1.64 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+derinlik 512² {"parca":1031,"enUzun":4.15,"son":0.09,"toplam":176.4}

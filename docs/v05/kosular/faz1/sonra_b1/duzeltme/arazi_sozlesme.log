@@ -1,0 +1,40 @@
+BILGI kök /home/user/SON-HAZ-NE-b1
+PASS SZ01a tileGen alanlar/tipler/uzunluklar — Kırlangıç Limanı (kara, seg 80, hires) → {"verts":6881,"tri":40320,"idx":"Uint16Array"}
+PASS SZ02a ana ızgara konumları adım 2 m ve yükseklikler computeHeight ile birebir — Kırlangıç Limanı (kara, seg 80, hires) → {"konumHata":0,"yukseklikHata":0,"enBuyukFark":0}
+PASS SZ03a normaller birim uzunlukta ve ana ızgarada ny > 0 — Kırlangıç Limanı (kara, seg 80, hires) → {"normalHata":0,"asagi":0}
+PASS SZ04a renkler sonlu ve [0,1] aralığında — Kırlangıç Limanı (kara, seg 80, hires) → {"renkHata":0}
+PASS SZ05a indeksler köşe sayısı içinde; ana ızgara üçgenlemesi (a,d,b)/(b,d,e) — Kırlangıç Limanı (kara, seg 80, hires) → {"indeksTasma":0,"desenHata":0}
+PASS SZ06a etek köşeleri kenarın 4 m altında, renk × 0,8 — Kırlangıç Limanı (kara, seg 80, hires) → {"etekHata":0,"etek":320}
+PASS SZ07a minH/maxH ana ızgaranın min/max'ı, sonlu, [-40, 500) içinde — Kırlangıç Limanı (kara, seg 80, hires) → {"minH":-2.071652831429277,"maxH":29.391903372016785,"gercekMin":-2.071652889251709,"gercekMax":29.391902923583984}
+PASS SZ08a heights Float32Array(n²) = ana ızgara yükseklikleri — Kırlangıç Limanı (kara, seg 80, hires) → {"tip":"Float32Array","uzunluk":6561}
+PASS SZ09a aktarım listesi tüm arabellekleri yinelemesiz içeriyor — Kırlangıç Limanı (kara, seg 80, hires) → {"transfer":5,"beklenen":5}
+PASS SZ01b tileGen alanlar/tipler/uzunluklar — Tuz Pazarı (kara, seg 32) → {"verts":1217,"tri":6912,"idx":"Uint16Array"}
+PASS SZ02b ana ızgara konumları adım 5 m ve yükseklikler computeHeight ile birebir — Tuz Pazarı (kara, seg 32) → {"konumHata":0,"yukseklikHata":0,"enBuyukFark":0}
+PASS SZ03b normaller birim uzunlukta ve ana ızgarada ny > 0 — Tuz Pazarı (kara, seg 32) → {"normalHata":0,"asagi":0}
+PASS SZ04b renkler sonlu ve [0,1] aralığında — Tuz Pazarı (kara, seg 32) → {"renkHata":0}
+PASS SZ05b indeksler köşe sayısı içinde; ana ızgara üçgenlemesi (a,d,b)/(b,d,e) — Tuz Pazarı (kara, seg 32) → {"indeksTasma":0,"desenHata":0}
+PASS SZ06b etek köşeleri kenarın 4 m altında, renk × 0,8 — Tuz Pazarı (kara, seg 32) → {"etekHata":0,"etek":128}
+PASS SZ07b minH/maxH ana ızgaranın min/max'ı, sonlu, [-40, 500) içinde — Tuz Pazarı (kara, seg 32) → {"minH":4.4730405086196345,"maxH":28.02651928002304,"gercekMin":4.473040580749512,"gercekMax":28.026519775390625}
+PASS SZ08b heights null (hires değil) — Tuz Pazarı (kara, seg 32) → null
+PASS SZ09b aktarım listesi tüm arabellekleri yinelemesiz içeriyor — Tuz Pazarı (kara, seg 32) → {"transfer":4,"beklenen":4}
+PASS SZ01c tileGen alanlar/tipler/uzunluklar — açık deniz z=-6200 (derin, seg 8) → {"verts":113,"tri":576,"idx":"Uint16Array"}
+PASS SZ02c ana ızgara konumları adım 20 m ve yükseklikler computeHeight ile birebir — açık deniz z=-6200 (derin, seg 8) → {"konumHata":0,"yukseklikHata":0,"enBuyukFark":0}
+PASS SZ03c normaller birim uzunlukta ve ana ızgarada ny > 0 — açık deniz z=-6200 (derin, seg 8) → {"normalHata":0,"asagi":0}
+PASS SZ04c renkler sonlu ve [0,1] aralığında — açık deniz z=-6200 (derin, seg 8) → {"renkHata":0}
+PASS SZ05c indeksler köşe sayısı içinde; ana ızgara üçgenlemesi (a,d,b)/(b,d,e) — açık deniz z=-6200 (derin, seg 8) → {"indeksTasma":0,"desenHata":0}
+PASS SZ06c etek köşeleri kenarın 4 m altında, renk × 0,8 — açık deniz z=-6200 (derin, seg 8) → {"etekHata":0,"etek":32}
+PASS SZ07c minH/maxH ana ızgaranın min/max'ı, sonlu, [-40, 500) içinde — açık deniz z=-6200 (derin, seg 8) → {"minH":-32.30776235161367,"maxH":-27.08959860294698,"gercekMin":-32.307762145996094,"gercekMax":-27.089597702026367}
+PASS SZ08c heights null (hires değil) — açık deniz z=-6200 (derin, seg 8) → null
+PASS SZ09c aktarım listesi tüm arabellekleri yinelemesiz içeriyor — açık deniz z=-6200 (derin, seg 8) → {"transfer":4,"beklenen":4}
+PASS SZ10 depthGen alanlar/tipler/uzunluk ve hücre merkezlerinde toHalf(computeHeight) birebir → {"kodHata":0}
+PASS SZ11 depthGen yarım duyarlıklı değerler çözülünce computeHeight ile yarım duyarlık sınırında aynı → {"sinirDisiEnBuyukFark":0}
+PASS SZ12 gridGen alanlar/tipler/uzunluklar; yükseklikler computeHeight ile birebir → {"hHata":0}
+PASS SZ13 gridGen biyom kimlikleri BIOME_ID[biomeAt] ile birebir ve 0..6 aralığında (dünya ızgarasında ≥ 3 farklı biyom) → {"bHata":0,"bAralik":0,"farkliBiyom":7}
+PASS SZ14 generate bilinmeyen iş türünde açık hata verir → Bilinmeyen arazi işi: bilinmeyen
+PASS SZ15 işçi yolu (runAll, tek seferde) ile dilimli yol (dönüşümlü next) çıktıları bayt düzeyinde aynı (5 iş) → {"is":5,"toplamAdim":266}
+BILGI terrain.js yerel kip: workers 0, fallback true, failures ["işçi 0 oluşturulamadı (modül): Worker is not defined","işçi 1 oluşturulamadı (modül): Worker is not defined","işçi 2 oluşturulamadı (modül): Worker is not defined","işçi oluşturulamadı: Worker is not defined"]
+BILGI yerel prepare + ızgara 475 ms; {"tiles":119,"meshes":119,"hires":22,"tris":397696,"queue":0,"jobs":0,"workers":0,"fallback":true,"failures":4,"mode":"","isciKurulu":0,"isciHazir":0,"isciKanit":0,"hataToplam":4}
+PASS SZ16 terrain.js yerel (dilimli şerit) yolunun her sonucu runAll çıktısıyla bayt düzeyinde aynı (karo + derinlik + ızgara) → {"karsilastirilan":121,"tur":{"tile":119,"depth":1,"grid":1},"fark":[],"hatali":[],"izgara":"tamam"}
+PASS SZ17 yerel yolda üretilen her karo ağı sahne grubunda ve ağ öznitelikleri üretilen dizilerin kendisi → {"ag":119,"hata":0}
+PASS SZ18 heightAt ile çizilen ağ üçgeninin düzlemi aynı (hires karolar, rastgele + köşe + hücre merkezi noktaları; fark < 1 mm) → {"karo":22,"nokta":1760,"bulunamayan":0,"enBuyukFark_m":1.5845103007450234e-12}
+SONUC: GECTI (çıkış 0) denetim 36/36 | kök /home/user/SON-HAZ-NE-b1

@@ -1,0 +1,18 @@
+KOMUT: /home/user/devtools/tk timeout 650 node tests/harness/run.cjs tests/scenarios/02_arazi_kurtarma.js --url 'http://localhost:8084/index.html' --size 640x360 --timeout 600 --report /home/user/SON-HAZ-NE-b1/docs/v05/kosular/faz1/sonra_b1/02_arazi_kurtarma.json 
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+ready in 5.8 s
+R: "ok"
+PASS Oyun başladı → "playing"
+PASS İşçiler çalışıyor → 3
+R: {"pendingAtKill":158,"inflightAtKill":6,"workers":0,"fallback":true,"failures":4}
+PASS Tüm işçiler düşünce yedek kipi açıldı → true
+PASS İşçisiz prepare() karo ağlarını üretti → 19
+R: {"ms":375,"stats":{"tiles":186,"meshes":186,"hires":25,"tris":421248,"queue":2,"jobs":3,"workers":0,"fallback":true,"failures":4,"mode":"","isciKurulu":0,"isciKanit":0,"hataToplam":4}}
+PASS Öksüz iş yok: her bekleyen iş ya kuyrukta ya bir şeritte ya da bir işçide (askıda söz yok) → 0
+R: {"orphans":[],"inflightLeftInQueue":0}
+R: "ok"
+PASS Kuyruk ana iş parçacığında ilerliyor (12 sn) → true
+R: {"jobsBefore":3,"jobsAfter12s":0}
+PASS Oyun döngüsü 4 sn hatasız sürdü → true
+errors: 0 pageErrors: 0 fails: 0 (34.5 s)
+SONUC: GECTI (çıkış 0) kontrol 7/7, onay 7 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 6 farklı/38

@@ -1,0 +1,15 @@
+tani/ — B1 tanı betikleri ve çıktıları (kontrol değil; testler değiştirilmedi). Hangi kodla koşuldukları:
+SON kod (kod_durumu.txt: terrainGen.js 778540e58c95, terrain.js 723b741e8d92):
+  b1_tani.{log,json}                 Node: T1 karo geri çekilme, T2/T2b yeniden başlatma, T3 prepare dönüşleri (ready=false iken 'ok')
+  tani_prepare_donus_{normal,noworker}  HYS-02/HY21'in B1 yarısı: doğrudan ve hızlı yolculuk yolunda prepare 'ok' / 'timeout'
+  02_tek_dosya_cerceve_tani_bellekdepo(_v04)  A-16: yalnız alt çerçevede bellek içi localStorage (A-18 B2'de) ile sandbox'lı iframe;
+                                     B1 5/5 (data: işçileri), v0.4 4/5 (blob:null işçileri yüklenemedi)
+  02_arazi_yasam_gc_b1zy_1           LY13 + dilim başına yığın düşüşü (tani_ly13_gc.js); TANI-DILIM uyarıları raporun uyarilar alanında
+  10_uzun_oturum_v04_1               v0.4'te (8080) aynı U02 kırmızısı (gemi doğumu, karo sayısı sabit) — U02'nin B1'den bağımsız olduğu
+  parca_olc_b1.txt / parca_olc_v04.txt  Node: üreteç parça (gen.next) süreleri, soğuk/ılık; --trace-gc ile Scavenge çakışması
+ÖNCEKİ kod (terrainGen.js 73a26b5c95dc, yalnız sayı tabanlı yield; onceki_kod/kod_durumu.txt):
+  tani_ly13*.{js,json} (tani_ly13c: tek gen.next 7,5 ms), tani_ly13d_b1_{1,2}, 02_arazi_yasam_gc_b1_1, olc_*.{js,json}, ky19_tani.mjs
+  tani_ly13d_v04_1: GEÇERSİZ (kopya betik v0.4'te olmayan dilimButcesi/_yerelAktif'i çağırıyor, 0 dilim)
+  02_arazi_yasam_gc_v04_1: v0.4 kodu (8080), 12/18
+  acilis_kars_{v04,b1}_{1,2}         normal kip açılış süresi, v0.4 (8080) ↔ B1 (8084) dönüşümlü, 00_acilis: readyMs v0.4 7097 / 7323,
+                                     B1 6022 / 6954 ms (AC01–03 her ikisinde B2 maddesi olarak KALDI; burada yalnız süre ölçülüyor)

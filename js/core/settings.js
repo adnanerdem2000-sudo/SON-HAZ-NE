@@ -60,9 +60,10 @@ export const settings = {
       });
       engine.camera.far = 1500 + 3500 * v.viewDistance;
       engine.camera.updateProjectionMatrix();
-      // görüş mesafesi: arazi akış/LOD yarıçapı (%30 → 0,79×, %100 → 1,0×)
-      if (terrain.baseLod === undefined) terrain.baseLod = terrain.lodScale || 1;
-      terrain.lodScale = terrain.baseLod * (0.7 + 0.3 * v.viewDistance);
+      // görüş mesafesi: arazi akış/LOD yarıçap çarpanı (%30 → 0,79×, %100 → 1,0×). Kalite ölçeğini (baseLod) terrain.init yazar;
+      // açılışta bu çağrı init'ten önce gelir, çarpan saklanır ve init'te uygulanır (A-19: v0.4'te burada baseLod kalıcı 1 oluyor,
+      // düşük/orta kalitenin LOD indirimi ilk ayar değişiminde kayboluyor, kayıtlı görüş mesafesi açılışta araziye uygulanmıyordu)
+      terrain.setViewDistance(v.viewDistance);
       post.setQuality(v.effects);
     }
     document.documentElement.style.setProperty('--ui-scale', v.uiScale);

@@ -1,0 +1,1093 @@
+{
+ "test": "arazi_kuyruk",
+ "kok": "/home/user/SON-HAZ-NE",
+ "node": "v22.22.0",
+ "durum": "KALDI",
+ "cikis": 1,
+ "gecen": 69,
+ "kalan": 23,
+ "denetimler": [
+  {
+   "kimlik": "KY01a",
+   "aciklama": "normal açılış: prepare(160,470,r900) ≤ 10 sn içinde sonuçlanır",
+   "ok": true,
+   "deger": {
+    "ms": 449
+   }
+  },
+  {
+   "kimlik": "KY01b",
+   "aciklama": "normal açılış: ≥ 100 karo ağı, derinlik penceresi açılış noktasında, dünya ızgarası (256²) geldi",
+   "ok": true,
+   "deger": {
+    "meshes": 125,
+    "depth": {
+     "x": 160,
+     "z": 480
+    },
+    "izgara": "tamam"
+   }
+  },
+  {
+   "kimlik": "KY01c",
+   "aciklama": "normal açılış: 3 işçi canlı, yedek kip kapalı, failures boş",
+   "ok": true,
+   "deger": {
+    "workers": 3,
+    "fallback": false,
+    "failures": 0
+   }
+  },
+  {
+   "kimlik": "KY01d",
+   "aciklama": "prepare dönüş değeri 'ok' (A-11: sonuç çağırana iletilir)",
+   "ok": false,
+   "deger": {
+    "donus": "undefined"
+   }
+  },
+  {
+   "kimlik": "KY01-D",
+   "aciklama": "değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50",
+   "ok": true,
+   "deger": {
+    "ornek": 12,
+    "ihlal": 0,
+    "ilk": [],
+    "enFazlaFailures": 0
+   }
+  },
+  {
+   "kimlik": "KY01-S",
+   "aciklama": "bütün iş sözleri 15 sn sınırı içinde sonuçlandı",
+   "ok": true,
+   "deger": {
+    "is": 127,
+    "acik": 0,
+    "acikOrnek": [],
+    "enUzunMs": 515,
+    "cozuldu": 127,
+    "reddedildi": 0
+   }
+  },
+  {
+   "kimlik": "KY02a",
+   "aciklama": "kurucu hatası: işçi yok, yedek kip açık, hata kaydı var",
+   "ok": true,
+   "deger": {
+    "workers": 0,
+    "fallback": true,
+    "failures": [
+     "işçi oluşturulamadı: Sahte: Worker oluşturulamadı"
+    ]
+   }
+  },
+  {
+   "kimlik": "KY02b",
+   "aciklama": "kurucu hatası: açılış hazırlığı ≤ normal + 5 sn (5449 ms)",
+   "ok": true,
+   "deger": {
+    "ms": 378
+   }
+  },
+  {
+   "kimlik": "KY02c",
+   "aciklama": "kurucu hatası: ≥ 100 karo ağı, derinlik penceresi, dünya ızgarası (yerel yedekte)",
+   "ok": true,
+   "deger": {
+    "meshes": 125,
+    "izgara": "tamam"
+   }
+  },
+  {
+   "kimlik": "KY02-D",
+   "aciklama": "değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50",
+   "ok": true,
+   "deger": {
+    "ornek": 2,
+    "ihlal": 0,
+    "ilk": [],
+    "enFazlaFailures": 1
+   }
+  },
+  {
+   "kimlik": "KY02-S",
+   "aciklama": "bütün iş sözleri 15 sn sınırı içinde sonuçlandı",
+   "ok": true,
+   "deger": {
+    "is": 127,
+    "acik": 0,
+    "acikOrnek": [],
+    "enUzunMs": 380,
+    "cozuldu": 127,
+    "reddedildi": 0
+   }
+  },
+  {
+   "kimlik": "KY03a",
+   "aciklama": "kısmi kurucu hatası (A-15): kurulabilen işçi çalışır, yedek kip işareti KAPALI (fallback=false, ≥ 1 işçi)",
+   "ok": false,
+   "deger": {
+    "workers": 1,
+    "fallback": true,
+    "failures": [
+     "işçi oluşturulamadı: Sahte: Worker oluşturulamadı"
+    ]
+   }
+  },
+  {
+   "kimlik": "KY03b",
+   "aciklama": "kısmi kurucu hatası: açılış tamamlanır (≥ 100 ağ, derinlik, ızgara)",
+   "ok": true,
+   "deger": {
+    "meshes": 125,
+    "izgara": "tamam",
+    "ms": 445
+   }
+  },
+  {
+   "kimlik": "KY03-D",
+   "aciklama": "değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50",
+   "ok": true,
+   "deger": {
+    "ornek": 27,
+    "ihlal": 0,
+    "ilk": [],
+    "enFazlaFailures": 1
+   }
+  },
+  {
+   "kimlik": "KY03-S",
+   "aciklama": "bütün iş sözleri 15 sn sınırı içinde sonuçlandı",
+   "ok": true,
+   "deger": {
+    "is": 127,
+    "acik": 0,
+    "acikOrnek": [],
+    "enUzunMs": 581,
+    "cozuldu": 127,
+    "reddedildi": 0
+   }
+  },
+  {
+   "kimlik": "KY04a",
+   "aciklama": "yükleme hatası (404): işçiler devre dışı, yedek kip açık, hata kaydı var",
+   "ok": true,
+   "deger": {
+    "workers": 0,
+    "fallback": true,
+    "failures": 4
+   }
+  },
+  {
+   "kimlik": "KY04b",
+   "aciklama": "yükleme hatası: açılış hazırlığı ≤ normal + 5 sn (5449 ms)",
+   "ok": true,
+   "deger": {
+    "ms": 345
+   }
+  },
+  {
+   "kimlik": "KY04c",
+   "aciklama": "yükleme hatası: ≥ 100 karo ağı, derinlik, dünya ızgarası",
+   "ok": true,
+   "deger": {
+    "meshes": 125,
+    "izgara": "tamam"
+   }
+  },
+  {
+   "kimlik": "KY04-D",
+   "aciklama": "değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50",
+   "ok": true,
+   "deger": {
+    "ornek": 2,
+    "ihlal": 0,
+    "ilk": [],
+    "enFazlaFailures": 4
+   }
+  },
+  {
+   "kimlik": "KY04-S",
+   "aciklama": "bütün iş sözleri 15 sn sınırı içinde sonuçlandı",
+   "ok": true,
+   "deger": {
+    "is": 127,
+    "acik": 0,
+    "acikOrnek": [],
+    "enUzunMs": 346,
+    "cozuldu": 127,
+    "reddedildi": 0
+   }
+  },
+  {
+   "kimlik": "KY05a",
+   "aciklama": "hazır sinyali yok (A-11): açılış hazırlığı ≤ normal + 5 sn (5449 ms)",
+   "ok": false,
+   "deger": {
+    "ms": 8361
+   }
+  },
+  {
+   "kimlik": "KY05b",
+   "aciklama": "hazır sinyali yok: açılış tamamlanır (≥ 100 ağ, derinlik, ızgara) ve hata kaydı var",
+   "ok": true,
+   "deger": {
+    "meshes": 125,
+    "izgara": "tamam",
+    "failures": [
+     "işçi 0: hazır sinyali gelmedi"
+    ]
+   }
+  },
+  {
+   "kimlik": "KY05-D",
+   "aciklama": "değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50",
+   "ok": true,
+   "deger": {
+    "ornek": 789,
+    "ihlal": 0,
+    "ilk": [],
+    "enFazlaFailures": 4
+   }
+  },
+  {
+   "kimlik": "KY05-S",
+   "aciklama": "bütün iş sözleri 45 sn sınırı içinde sonuçlandı",
+   "ok": true,
+   "deger": {
+    "is": 127,
+    "acik": 0,
+    "acikOrnek": [],
+    "enUzunMs": 8364,
+    "cozuldu": 127,
+    "reddedildi": 0
+   }
+  },
+  {
+   "kimlik": "KY06a",
+   "aciklama": "askıdaki işçi (A-11): açılış hazırlığı ≤ normal + 5 sn (5449 ms)",
+   "ok": false,
+   "deger": {
+    "ms": 20341
+   }
+  },
+  {
+   "kimlik": "KY06b",
+   "aciklama": "askıdaki işçi: açılış tamamlanır (≥ 100 ağ, derinlik, ızgara) ve hata kaydı var",
+   "ok": true,
+   "deger": {
+    "meshes": 125,
+    "izgara": "tamam",
+    "failures": [
+     "işçi 0: tile işi 20 sn içinde bitmedi"
+    ]
+   }
+  },
+  {
+   "kimlik": "KY06-D",
+   "aciklama": "değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50",
+   "ok": true,
+   "deger": {
+    "ornek": 1969,
+    "ihlal": 0,
+    "ilk": [],
+    "enFazlaFailures": 4
+   }
+  },
+  {
+   "kimlik": "KY06-S",
+   "aciklama": "bütün iş sözleri 65 sn sınırı içinde sonuçlandı",
+   "ok": true,
+   "deger": {
+    "is": 127,
+    "acik": 0,
+    "acikOrnek": [],
+    "enUzunMs": 20343,
+    "cozuldu": 127,
+    "reddedildi": 0
+   }
+  },
+  {
+   "kimlik": "KY07a",
+   "aciklama": "tek işçi çökmesi: işler kaybolmaz, açılış tamamlanır (≥ 100 ağ, derinlik, ızgara)",
+   "ok": true,
+   "deger": {
+    "coktu": true,
+    "meshes": 125,
+    "izgara": "tamam",
+    "ms": 367
+   }
+  },
+  {
+   "kimlik": "KY07b",
+   "aciklama": "tek işçi çökmesi: kalan işçiler çalışır, yedek kip açılmaz",
+   "ok": true,
+   "deger": {
+    "workers": 2,
+    "fallback": false
+   }
+  },
+  {
+   "kimlik": "KY07c",
+   "aciklama": "tek işçi çökmesi (A-15): ölen işçi 30 sn içinde yeniden başlatılır (işçi sayısı 3'e döner)",
+   "ok": false,
+   "deger": {
+    "ms": null,
+    "workers": 2,
+    "kurulan": 3
+   }
+  },
+  {
+   "kimlik": "KY07-D",
+   "aciklama": "değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50",
+   "ok": true,
+   "deger": {
+    "ornek": 2969,
+    "ihlal": 0,
+    "ilk": [],
+    "enFazlaFailures": 1
+   }
+  },
+  {
+   "kimlik": "KY07-S",
+   "aciklama": "bütün iş sözleri 15 sn sınırı içinde sonuçlandı",
+   "ok": true,
+   "deger": {
+    "is": 127,
+    "acik": 0,
+    "acikOrnek": [],
+    "enUzunMs": 467,
+    "cozuldu": 127,
+    "reddedildi": 0
+   }
+  },
+  {
+   "kimlik": "KY08a",
+   "aciklama": "bütün işçiler her işte çöker: iş alan her işçi sonlandırılmış, hiçbir iş 3 (MAX_TRIES) kezden fazla gönderilmemiş, kurulan işçi ≤ 9, hata kaydı var, açılış tamamlanır (≥ 100 ağ, derinlik, ızgara)",
+   "ok": true,
+   "deger": {
+    "isAlan": 3,
+    "isAlanCanli": 0,
+    "enCokGonderim": 1,
+    "kurulan": 3,
+    "workers": 0,
+    "fallback": true,
+    "failures": 4,
+    "meshes": 125,
+    "izgara": "tamam",
+    "ms": 344
+   }
+  },
+  {
+   "kimlik": "KY08b",
+   "aciklama": "bütün işçiler çöktükten sonra uzak bölge prepare(1900,950,r300) ≤ 3 sn (KI-234; işçisiz kipe yakın)",
+   "ok": true,
+   "deger": {
+    "ms": 158,
+    "isciSizMs": 162,
+    "ag": 21
+   }
+  },
+  {
+   "kimlik": "KY08-D",
+   "aciklama": "değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50",
+   "ok": true,
+   "deger": {
+    "ornek": 3,
+    "ihlal": 0,
+    "ilk": [],
+    "enFazlaFailures": 4
+   }
+  },
+  {
+   "kimlik": "KY08-S",
+   "aciklama": "bütün iş sözleri 20 sn sınırı içinde sonuçlandı",
+   "ok": true,
+   "deger": {
+    "is": 137,
+    "acik": 0,
+    "acikOrnek": [],
+    "enUzunMs": 345,
+    "cozuldu": 137,
+    "reddedildi": 0
+   }
+  },
+  {
+   "kimlik": "KY09a",
+   "aciklama": "MAX_TRIES (A-05): ızgara işini alan her işçi öldüğünde iş yerel yedekte üretilir (söz reddedilmez)",
+   "ok": false,
+   "deger": {
+    "izgara": "RED: Arazi işi grid tekrarlanan işçi hatası",
+    "ms": 17,
+    "workers": 0,
+    "fallback": true,
+    "gridDenemesi": 3
+   }
+  },
+  {
+   "kimlik": "KY09b",
+   "aciklama": "MAX_TRIES sonrası karo işleri sürer (≥ 100 ağ)",
+   "ok": true,
+   "deger": {
+    "meshes": 124
+   }
+  },
+  {
+   "kimlik": "KY09-D",
+   "aciklama": "değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50",
+   "ok": true,
+   "deger": {
+    "ornek": 10,
+    "ihlal": 0,
+    "ilk": [],
+    "enFazlaFailures": 5
+   }
+  },
+  {
+   "kimlik": "KY09-S",
+   "aciklama": "bütün iş sözleri 20 sn sınırı içinde sonuçlandı",
+   "ok": true,
+   "deger": {
+    "is": 127,
+    "acik": 0,
+    "acikOrnek": [],
+    "enUzunMs": 388,
+    "cozuldu": 125,
+    "reddedildi": 2
+   }
+  },
+  {
+   "kimlik": "KY10a",
+   "aciklama": "işçinin 'error' iletisi: ızgara sözü ≤ 2 sn içinde sonuçlanır (asılı kalmaz)",
+   "ok": true,
+   "deger": {
+    "izgara": "RED: sahte üretim hatası",
+    "ms": 8
+   }
+  },
+  {
+   "kimlik": "KY10b",
+   "aciklama": "işçinin 'error' iletisi işçiyi öldürmez: 3 işçi canlı, yedek kip kapalı, karo işleri sürer",
+   "ok": true,
+   "deger": {
+    "workers": 3,
+    "fallback": false,
+    "meshes": 125
+   }
+  },
+  {
+   "kimlik": "KY10-D",
+   "aciklama": "değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50",
+   "ok": true,
+   "deger": {
+    "ornek": 11,
+    "ihlal": 0,
+    "ilk": [],
+    "enFazlaFailures": 0
+   }
+  },
+  {
+   "kimlik": "KY10-S",
+   "aciklama": "bütün iş sözleri 20 sn sınırı içinde sonuçlandı",
+   "ok": true,
+   "deger": {
+    "is": 127,
+    "acik": 0,
+    "acikOrnek": [],
+    "enUzunMs": 379,
+    "cozuldu": 126,
+    "reddedildi": 1
+   }
+  },
+  {
+   "kimlik": "KY11a",
+   "aciklama": "kalıcı hatalı karo (A-05): 3 sn içinde aynı karo en çok 3 kez yeniden istenir (üstel geri çekilme)",
+   "ok": false,
+   "deger": {
+    "ilkIstek": 1,
+    "sonraki3snIstek": 60,
+    "konsolHatasi3sn": 60
+   }
+  },
+  {
+   "kimlik": "KY11b",
+   "aciklama": "kalıcı hatalı karo (A-05): failures.length ≤ 50",
+   "ok": false,
+   "deger": {
+    "failures": 61
+   }
+  },
+  {
+   "kimlik": "KY11c",
+   "aciklama": "kalıcı hatalı karo: diğer karolar tamamlanır (≥ 100 ağ)",
+   "ok": true,
+   "deger": {
+    "meshes": 118
+   }
+  },
+  {
+   "kimlik": "KY11-D",
+   "aciklama": "değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50",
+   "ok": false,
+   "deger": {
+    "ornek": 308,
+    "ihlal": 1,
+    "ilk": [
+     "failures 51 > 50"
+    ],
+    "enFazlaFailures": 61
+   }
+  },
+  {
+   "kimlik": "KY11-S",
+   "aciklama": "bütün iş sözleri 20 sn sınırı içinde sonuçlandı",
+   "ok": true,
+   "deger": {
+    "is": 179,
+    "acik": 0,
+    "acikOrnek": [],
+    "enUzunMs": 333,
+    "cozuldu": 118,
+    "reddedildi": 61
+   }
+  },
+  {
+   "kimlik": "KY12a",
+   "aciklama": "şeritteki iş (A-08): _drop sonrası iş sonuna kadar üretilmez, söz ilk dilimde sonuçsuz sonlanır",
+   "ok": false,
+   "deger": {
+    "seg": 80,
+    "sonucUretildi": true,
+    "durum": "cozuldu",
+    "sonlanmaDilim": 1
+   }
+  },
+  {
+   "kimlik": "KY12-D",
+   "aciklama": "değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50",
+   "ok": true,
+   "deger": {
+    "ornek": 3,
+    "ihlal": 0,
+    "ilk": [],
+    "enFazlaFailures": 1
+   }
+  },
+  {
+   "kimlik": "KY12-S",
+   "aciklama": "bütün iş sözleri 20 sn sınırı içinde sonuçlandı",
+   "ok": true,
+   "deger": {
+    "is": 245,
+    "acik": 0,
+    "acikOrnek": [],
+    "enUzunMs": 203,
+    "cozuldu": 245,
+    "reddedildi": 0
+   }
+  },
+  {
+   "kimlik": "KY13a",
+   "aciklama": "işçideki iş (A-08): karo düşürülünce iş sözü ≤ 50 ms içinde sonuçsuz sonlanır (işçinin geç sonucu kullanılmaz)",
+   "ok": false,
+   "deger": {
+    "isciTutuyor": true,
+    "sonlanmaMs": 381,
+    "sonucUretildi": true
+   }
+  },
+  {
+   "kimlik": "KY13-D",
+   "aciklama": "değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50",
+   "ok": true,
+   "deger": {
+    "ornek": 51,
+    "ihlal": 0,
+    "ilk": [],
+    "enFazlaFailures": 0
+   }
+  },
+  {
+   "kimlik": "KY13-S",
+   "aciklama": "bütün iş sözleri 20 sn sınırı içinde sonuçlandı",
+   "ok": true,
+   "deger": {
+    "is": 126,
+    "acik": 0,
+    "acikOrnek": [],
+    "enUzunMs": 402,
+    "cozuldu": 126,
+    "reddedildi": 0
+   }
+  },
+  {
+   "kimlik": "KY14a",
+   "aciklama": "requestDepth (A-08, işçi kipi): yeni zorunlu istek eski derinlik işini iptal eder (eski iş ≤ 50 ms içinde sonuçsuz sonlanır)",
+   "ok": false,
+   "deger": {
+    "sonlanmaMs": 403,
+    "eskiSonucUretildi": true
+   }
+  },
+  {
+   "kimlik": "KY15",
+   "aciklama": "_depthSeq: yavaş gelen eski derinlik yanıtı yeni pencereyi ezmez (depthWin ve son onDepth yeni bölgede)",
+   "ok": true,
+   "deger": {
+    "depthWin": {
+     "x": 1920,
+     "z": 960
+    },
+    "sonOnDepth": {
+     "x": 1920,
+     "z": 960
+    }
+   }
+  },
+  {
+   "kimlik": "KY14-D",
+   "aciklama": "değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 (işçi kipi)",
+   "ok": true,
+   "deger": {
+    "ornek": 22,
+    "ihlal": 0,
+    "ilk": [],
+    "enFazlaFailures": 0
+   }
+  },
+  {
+   "kimlik": "KY14-S",
+   "aciklama": "bütün iş sözleri 10 sn sınırı içinde sonuçlandı",
+   "ok": true,
+   "deger": {
+    "is": 2,
+    "acik": 0,
+    "acikOrnek": [],
+    "enUzunMs": 424,
+    "cozuldu": 2,
+    "reddedildi": 0
+   }
+  },
+  {
+   "kimlik": "KY14b",
+   "aciklama": "requestDepth (A-08, yerel şerit): eski derinlik işi şeritte yarımken yeni zorunlu istek gelince sonuna kadar hesaplanmaz (sonuçsuz sonlanır)",
+   "ok": false,
+   "deger": {
+    "eskiSonucUretildi": true,
+    "durum": "cozuldu",
+    "depthWin": {
+     "x": 1920,
+     "z": 960
+    }
+   }
+  },
+  {
+   "kimlik": "KY14y-D",
+   "aciklama": "değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 (yerel şerit)",
+   "ok": true,
+   "deger": {
+    "ornek": 2,
+    "ihlal": 0,
+    "ilk": [],
+    "enFazlaFailures": 1
+   }
+  },
+  {
+   "kimlik": "KY14y-S",
+   "aciklama": "bütün iş sözleri 10 sn sınırı içinde sonuçlandı",
+   "ok": true,
+   "deger": {
+    "is": 2,
+    "acik": 0,
+    "acikOrnek": [],
+    "enUzunMs": 193,
+    "cozuldu": 2,
+    "reddedildi": 0
+   }
+  },
+  {
+   "kimlik": "KY16",
+   "aciklama": "odak bastırması: prepare odağı etkinken uzak kameranın derinlik isteği yeni iş açmaz, pencere odakta kalır",
+   "ok": true,
+   "deger": {
+    "yeniDerinlikIsi": 0,
+    "depthWin": {
+     "x": 280,
+     "z": -5000
+    }
+   }
+  },
+  {
+   "kimlik": "KY17",
+   "aciklama": "prepare odak koruması: kamera ~5,5 km uzakta güncellenirken odak bölgesinde ≥ 6 karo ağı korunur, ≥ 1 karo seg 80",
+   "ok": true,
+   "deger": {
+    "odakAg": 20,
+    "odakHires": 15
+   }
+  },
+  {
+   "kimlik": "KY16-D",
+   "aciklama": "değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50",
+   "ok": true,
+   "deger": {
+    "ornek": 21,
+    "ihlal": 0,
+    "ilk": [],
+    "enFazlaFailures": 0
+   }
+  },
+  {
+   "kimlik": "KY16-S",
+   "aciklama": "bütün iş sözleri 15 sn sınırı içinde sonuçlandı",
+   "ok": true,
+   "deger": {
+    "is": 146,
+    "acik": 0,
+    "acikOrnek": [],
+    "enUzunMs": 280,
+    "cozuldu": 146,
+    "reddedildi": 0
+   }
+  },
+  {
+   "kimlik": "KY18",
+   "aciklama": "örtüşen prepare (A-12): önce biten A, B'nin odağını kısaltmaz; B bitince B bölgesinde ≥ 6 karo ağı ve derinlik penceresi B'de",
+   "ok": false,
+   "deger": {
+    "aMs": 112,
+    "bMs": 12296,
+    "odakAg": 0,
+    "yavasIs": 3,
+    "depthWin": {
+     "x": 280,
+     "z": -5000
+    }
+   }
+  },
+  {
+   "kimlik": "KY18-D",
+   "aciklama": "değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50",
+   "ok": true,
+   "deger": {
+    "ornek": 1263,
+    "ihlal": 0,
+    "ilk": [],
+    "enFazlaFailures": 0
+   }
+  },
+  {
+   "kimlik": "KY18-S",
+   "aciklama": "bütün iş sözleri 25 sn sınırı içinde sonuçlandı",
+   "ok": true,
+   "deger": {
+    "is": 147,
+    "acik": 0,
+    "acikOrnek": [],
+    "enUzunMs": 13033,
+    "cozuldu": 147,
+    "reddedildi": 0
+   }
+  },
+  {
+   "kimlik": "KY19a",
+   "aciklama": "prepare zaman aşımı dalı: askıdaki işçide 400 ms sınırıyla ≤ 1,5 sn içinde sonuçlanır (asılı kalmaz)",
+   "ok": true,
+   "deger": {
+    "ms": 401
+   }
+  },
+  {
+   "kimlik": "KY19b",
+   "aciklama": "prepare zaman aşımı dalı (A-11): dönüş değeri 'timeout' (çağırana bildirilir)",
+   "ok": false,
+   "deger": {
+    "donus": "undefined"
+   }
+  },
+  {
+   "kimlik": "KY20a",
+   "aciklama": "terminate sonrası geç ileti (A-09): işler bitince hayalet iş yuvası kalmaz",
+   "ok": false,
+   "deger": {
+    "hayalet": 2,
+    "isciYuvalari": [
+     [
+      1,
+      2
+     ],
+     [
+      2,
+      0
+     ]
+    ]
+   }
+  },
+  {
+   "kimlik": "KY20b",
+   "aciklama": "terminate sonrası geç ileti (A-09): sonraki iş dalgasında, dalgadan önce canlı olan her işçi ≥ 1 iş alır (paralellik düşmez)",
+   "ok": false,
+   "deger": {
+    "yeniIleti": [
+     [
+      1,
+      0
+     ],
+     [
+      2,
+      94
+     ]
+    ],
+    "dalgadaOlen": 0,
+    "dalgadaKurulan": 0
+   }
+  },
+  {
+   "kimlik": "KY20-D",
+   "aciklama": "değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50",
+   "ok": false,
+   "deger": {
+    "ornek": 49,
+    "ihlal": 138,
+    "ilk": [
+     "hayalet yuva: işçi 1 iş 127",
+     "hayalet yuva: işçi 1 iş 126",
+     "hayalet yuva: işçi 1 iş 127",
+     "hayalet yuva: işçi 1 iş 126",
+     "hayalet yuva: işçi 1 iş 127",
+     "hayalet yuva: işçi 1 iş 126"
+    ],
+    "enFazlaFailures": 1
+   }
+  },
+  {
+   "kimlik": "KY20-S",
+   "aciklama": "bütün iş sözleri 10 sn sınırı içinde sonuçlandı",
+   "ok": true,
+   "deger": {
+    "is": 221,
+    "acik": 0,
+    "acikOrnek": [],
+    "enUzunMs": 236,
+    "cozuldu": 221,
+    "reddedildi": 0
+   }
+  },
+  {
+   "kimlik": "KY21",
+   "aciklama": "_workerFailed (A-08): düşürülmüş karonun işi çöken işçiden sonra yeniden üretilmez (başka işçiye gönderilmez)",
+   "ok": false,
+   "deger": {
+    "seg32Gonderim": 3,
+    "workers": 0
+   }
+  },
+  {
+   "kimlik": "KY21-D",
+   "aciklama": "değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50",
+   "ok": true,
+   "deger": {
+    "ornek": 39,
+    "ihlal": 0,
+    "ilk": [],
+    "enFazlaFailures": 5
+   }
+  },
+  {
+   "kimlik": "KY21-S",
+   "aciklama": "bütün iş sözleri 10 sn sınırı içinde sonuçlandı",
+   "ok": true,
+   "deger": {
+    "is": 126,
+    "acik": 0,
+    "acikOrnek": [],
+    "enUzunMs": 254,
+    "cozuldu": 125,
+    "reddedildi": 1
+   }
+  },
+  {
+   "kimlik": "KY22",
+   "aciklama": "LOD histerezisi (A-07): 380 m LOD sınırında ±20 m salınımda (3 tur) karo yeniden üretilmez",
+   "ok": false,
+   "deger": {
+    "baslangicSeg": 80,
+    "salinimdakiIstek": 6,
+    "sonSeg": 80
+   }
+  },
+  {
+   "kimlik": "KY22-D",
+   "aciklama": "değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50",
+   "ok": true,
+   "deger": {
+    "ornek": 21,
+    "ihlal": 0,
+    "ilk": [],
+    "enFazlaFailures": 0
+   }
+  },
+  {
+   "kimlik": "KY22-S",
+   "aciklama": "bütün iş sözleri 10 sn sınırı içinde sonuçlandı",
+   "ok": true,
+   "deger": {
+    "is": 149,
+    "acik": 0,
+    "acikOrnek": [],
+    "enUzunMs": 284,
+    "cozuldu": 149,
+    "reddedildi": 0
+   }
+  },
+  {
+   "kimlik": "KY23",
+   "aciklama": "derin deniz karoları (A-07): 8 km açık deniz dolaşımında 600 m ötesindeki derin karo sayısı ≤ 10",
+   "ok": false,
+   "deger": {
+    "enCok": 81,
+    "enCokNokta_x": 6200,
+    "adim": 41,
+    "ic": "_land",
+    "toplamKaro": 110
+   }
+  },
+  {
+   "kimlik": "KY23-D",
+   "aciklama": "değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50",
+   "ok": true,
+   "deger": {
+    "ornek": 87,
+    "ihlal": 0,
+    "ilk": [],
+    "enFazlaFailures": 0
+   }
+  },
+  {
+   "kimlik": "KY23-S",
+   "aciklama": "bütün iş sözleri 15 sn sınırı içinde sonuçlandı",
+   "ok": true,
+   "deger": {
+    "is": 715,
+    "acik": 0,
+    "acikOrnek": [],
+    "enUzunMs": 94,
+    "cozuldu": 715,
+    "reddedildi": 0
+   }
+  },
+  {
+   "kimlik": "KY24a",
+   "aciklama": "ızgara önbelleği: bekleyen aynı istek tek sözde birleşir",
+   "ok": true,
+   "deger": {
+    "ayniSoz": true
+   }
+  },
+  {
+   "kimlik": "KY24b",
+   "aciklama": "ızgara önbelleği (A-13): 26 farklı ızgara çözüldükten sonra önbellekte çözülmüş kayıt ≤ 2",
+   "ok": false,
+   "deger": {
+    "onbellek": 24
+   }
+  },
+  {
+   "kimlik": "KY24-D",
+   "aciklama": "değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50",
+   "ok": true,
+   "deger": {
+    "ornek": 2,
+    "ihlal": 0,
+    "ilk": [],
+    "enFazlaFailures": 0
+   }
+  },
+  {
+   "kimlik": "KY24-S",
+   "aciklama": "bütün iş sözleri 10 sn sınırı içinde sonuçlandı",
+   "ok": true,
+   "deger": {
+    "is": 26,
+    "acik": 0,
+    "acikOrnek": [],
+    "enUzunMs": 17,
+    "cozuldu": 26,
+    "reddedildi": 0
+   }
+  },
+  {
+   "kimlik": "KY25",
+   "aciklama": "yerel yedek, yükseklik işlevi çağrı başına 5 µs yavaşlatılmışken: dilimlerin p99'u ≤ bütçe + 4 ms ve en uzunu ≤ bütçe + 15 ms (A-06, KI-154: dilimi parça boyu değil süre keser; makine hızından bağımsız)",
+   "ok": false,
+   "deger": {
+    "dilim": 39,
+    "p99Fark": 91.2,
+    "enUzunFark": 91.7,
+    "asim": 32,
+    "ornek": [
+     [
+      93.2,
+      10
+     ],
+     [
+      99.7,
+      10
+     ],
+     [
+      100.7,
+      10
+     ],
+     [
+      101.7,
+      10
+     ],
+     [
+      101.2,
+      10
+     ],
+     [
+      99.9,
+      10
+     ]
+    ],
+    "butce": 10,
+    "butceKaynagi": "v0.4 kuralı (terrain.js:162)",
+    "prepMs": 1887,
+    "acilisMs": 279,
+    "workers": 0,
+    "fallback": true
+   }
+  },
+  {
+   "kimlik": "KY25-D",
+   "aciklama": "değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50",
+   "ok": true,
+   "deger": {
+    "ornek": 3,
+    "ihlal": 0,
+    "ilk": [],
+    "enFazlaFailures": 1
+   }
+  },
+  {
+   "kimlik": "KY25-S",
+   "aciklama": "bütün iş sözleri 180 sn sınırı içinde sonuçlandı",
+   "ok": true,
+   "deger": {
+    "is": 140,
+    "acik": 0,
+    "acikOrnek": [],
+    "enUzunMs": 1887,
+    "cozuldu": 140,
+    "reddedildi": 0
+   }
+  }
+ ],
+ "islenmemisSozReddi": [],
+ "konsol": {
+  "uyari": 33,
+  "hata": 62
+ }
+}

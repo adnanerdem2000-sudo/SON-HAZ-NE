@@ -1,0 +1,734 @@
+[16495:0x349ac000]       25 ms: Scavenge 5.2 (6.0) -> 4.8 (7.0) MB, pooled: 0 MB, 0.53 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]       34 ms: Scavenge 5.8 (8.1) -> 5.8 (8.6) MB, pooled: 0 MB, 0.44 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]       46 ms: Scavenge 8.7 (11.4) -> 8.7 (13.4) MB, pooled: 0 MB, 0.24 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]       69 ms: Scavenge 14.4 (17.0) -> 13.4 (21.0) MB, pooled: 0 MB, 1.43 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+BILGI kök /home/user/SON-HAZ-NE-b1; Node v22.22.0
+[16495:0x349ac000]       84 ms: Scavenge 16.8 (21.5) -> 14.5 (23.0) MB, pooled: 0 MB, 0.90 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]       90 ms: Scavenge 17.7 (23.0) -> 14.6 (31.3) MB, pooled: 0 MB, 1.33 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]      101 ms: Scavenge 22.4 (31.3) -> 14.6 (31.3) MB, pooled: 0 MB, 0.50 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]      113 ms: Scavenge 22.4 (31.3) -> 14.6 (31.5) MB, pooled: 0 MB, 0.59 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]      121 ms: Scavenge 22.5 (31.5) -> 14.6 (31.5) MB, pooled: 0 MB, 0.35 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]      130 ms: Scavenge 22.5 (31.5) -> 14.6 (31.5) MB, pooled: 0 MB, 0.27 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]      136 ms: Scavenge 22.5 (31.5) -> 14.6 (31.5) MB, pooled: 0 MB, 0.21 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]      143 ms: Scavenge 22.5 (31.5) -> 14.7 (31.5) MB, pooled: 0 MB, 0.20 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]      150 ms: Scavenge 22.6 (31.5) -> 14.7 (31.5) MB, pooled: 0 MB, 0.18 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]      158 ms: Scavenge 22.6 (31.5) -> 14.7 (31.5) MB, pooled: 0 MB, 0.15 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]      166 ms: Scavenge 22.6 (31.5) -> 14.7 (31.5) MB, pooled: 0 MB, 0.12 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]      174 ms: Scavenge 22.6 (31.5) -> 14.7 (31.5) MB, pooled: 0 MB, 0.36 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]      181 ms: Scavenge 22.6 (31.5) -> 14.7 (31.5) MB, pooled: 0 MB, 0.18 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]      188 ms: Scavenge 22.6 (31.5) -> 14.7 (31.5) MB, pooled: 0 MB, 0.17 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]      196 ms: Scavenge 22.6 (31.5) -> 14.8 (31.5) MB, pooled: 0 MB, 0.35 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]      203 ms: Scavenge 22.6 (31.5) -> 14.8 (31.5) MB, pooled: 0 MB, 0.34 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]      210 ms: Scavenge 22.6 (31.5) -> 14.8 (31.5) MB, pooled: 0 MB, 0.12 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]      218 ms: Scavenge 22.6 (31.5) -> 14.8 (31.5) MB, pooled: 0 MB, 0.14 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]      224 ms: Scavenge 22.6 (31.5) -> 14.8 (31.5) MB, pooled: 0 MB, 0.12 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]      230 ms: Scavenge 22.6 (31.5) -> 14.8 (31.5) MB, pooled: 0 MB, 0.11 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]      236 ms: Scavenge 22.6 (31.5) -> 14.8 (31.5) MB, pooled: 0 MB, 0.12 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]      243 ms: Scavenge 22.6 (31.5) -> 14.8 (31.5) MB, pooled: 0 MB, 0.18 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]      251 ms: Scavenge 22.7 (31.5) -> 14.8 (31.5) MB, pooled: 0 MB, 0.36 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]      261 ms: Scavenge 22.7 (31.5) -> 14.8 (31.5) MB, pooled: 0 MB, 0.24 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]      272 ms: Scavenge 22.7 (31.5) -> 14.9 (31.5) MB, pooled: 0 MB, 0.41 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]      284 ms: Scavenge 22.7 (31.5) -> 14.9 (31.5) MB, pooled: 0 MB, 0.32 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]      296 ms: Scavenge 22.7 (31.5) -> 14.9 (31.5) MB, pooled: 0 MB, 0.32 / 0.00 ms  (average mu = 1.000, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]      304 ms: Mark-Compact 18.2 (31.8) -> 10.7 (28.3) MB, pooled: 0 MB, 1.49 / 0.00 ms  (+ 1.2 ms in 0 steps since start of marking, biggest step 0.0 ms, walltime since start of marking 7 ms) (average mu = 0.992, current mu = 0.992) finalize incremental marking via stack guard; GC in old space requested
+[16495:0x349ac000]      314 ms: Scavenge 18.6 (28.3) -> 10.8 (28.3) MB, pooled: 0 MB, 0.33 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      324 ms: Scavenge 18.6 (28.3) -> 10.8 (28.3) MB, pooled: 0 MB, 0.34 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      334 ms: Scavenge 18.6 (28.3) -> 10.8 (28.3) MB, pooled: 0 MB, 0.38 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      343 ms: Scavenge 18.6 (28.3) -> 10.8 (28.3) MB, pooled: 0 MB, 0.39 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      352 ms: Scavenge 17.5 (28.3) -> 10.8 (28.3) MB, pooled: 0 MB, 0.25 / 0.00 ms  (average mu = 0.992, current mu = 0.992) task; 
+[16495:0x349ac000]      361 ms: Scavenge 18.7 (28.3) -> 10.8 (28.3) MB, pooled: 0 MB, 0.32 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      367 ms: Scavenge 18.7 (28.3) -> 10.8 (28.3) MB, pooled: 0 MB, 0.17 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      375 ms: Scavenge 18.7 (28.3) -> 10.8 (28.3) MB, pooled: 0 MB, 0.31 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      385 ms: Scavenge 18.7 (28.3) -> 10.8 (28.3) MB, pooled: 0 MB, 1.89 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      395 ms: Scavenge 18.7 (28.3) -> 10.8 (28.3) MB, pooled: 0 MB, 0.48 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      406 ms: Scavenge 18.7 (28.3) -> 10.8 (28.3) MB, pooled: 0 MB, 1.19 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      416 ms: Scavenge 18.7 (28.3) -> 10.8 (28.3) MB, pooled: 0 MB, 0.39 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      426 ms: Scavenge 18.6 (28.3) -> 10.8 (28.3) MB, pooled: 0 MB, 0.46 / 0.00 ms  (average mu = 0.992, current mu = 0.992) task; 
+[16495:0x349ac000]      440 ms: Scavenge 18.7 (28.3) -> 11.0 (28.3) MB, pooled: 0 MB, 0.61 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      452 ms: Scavenge 18.8 (28.3) -> 11.0 (28.3) MB, pooled: 0 MB, 0.45 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      464 ms: Scavenge 18.8 (28.3) -> 11.0 (28.3) MB, pooled: 0 MB, 0.47 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      476 ms: Scavenge 18.9 (28.3) -> 11.1 (28.3) MB, pooled: 0 MB, 0.58 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      486 ms: Scavenge 18.9 (28.3) -> 11.1 (28.3) MB, pooled: 0 MB, 0.50 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      497 ms: Scavenge 18.9 (28.3) -> 11.1 (28.3) MB, pooled: 0 MB, 0.41 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      507 ms: Scavenge 17.6 (28.3) -> 11.1 (28.3) MB, pooled: 0 MB, 0.47 / 0.00 ms  (average mu = 0.992, current mu = 0.992) task; 
+[16495:0x349ac000]      518 ms: Scavenge 19.0 (28.3) -> 11.2 (28.3) MB, pooled: 0 MB, 0.34 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      525 ms: Scavenge 19.1 (28.3) -> 11.2 (28.3) MB, pooled: 0 MB, 0.28 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      532 ms: Scavenge 19.1 (28.3) -> 11.3 (28.3) MB, pooled: 0 MB, 0.22 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      538 ms: Scavenge 19.1 (28.3) -> 11.3 (28.3) MB, pooled: 0 MB, 0.18 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      548 ms: Scavenge 19.1 (28.3) -> 11.3 (28.3) MB, pooled: 0 MB, 0.22 / 0.00 ms  (average mu = 0.992, current mu = 0.992) task; 
+[16495:0x349ac000]      567 ms: Scavenge 18.0 (28.3) -> 11.6 (28.3) MB, pooled: 0 MB, 0.53 / 0.00 ms  (average mu = 0.992, current mu = 0.992) task; 
+BILGI KY01 {"prepMs":423,"stats":{"tiles":125,"meshes":125,"hires":15,"tris":311168,"queue":0,"jobs":0,"workers":3,"fallback":false,"failures":0,"mode":"","isciKurulu":3,"isciKanit":3,"hataToplam":0}}
+PASS KY01a normal açılış: prepare(160,470,r900) ≤ 10 sn içinde sonuçlanır → {"ms":423}
+PASS KY01b normal açılış: ≥ 100 karo ağı, derinlik penceresi açılış noktasında, dünya ızgarası (256²) geldi → {"meshes":125,"depth":{"x":160,"z":480},"izgara":"tamam"}
+PASS KY01c normal açılış: 3 işçi canlı, yedek kip kapalı, failures boş → {"workers":3,"fallback":false,"failures":0}
+PASS KY01d prepare dönüş değeri 'ok' (A-11: sonuç çağırana iletilir) → {"donus":"ok"}
+PASS KY01-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":12,"ihlal":0,"ilk":[],"enFazlaFailures":0}
+PASS KY01-S bütün iş sözleri 15 sn sınırı içinde sonuçlandı → {"is":127,"acik":0,"acikOrnek":[],"enUzunMs":490,"cozuldu":127,"reddedildi":0}
+[16495:0x349ac000]      625 ms: Scavenge 20.9 (29.8) -> 14.5 (30.3) MB, pooled: 0 MB, 0.99 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      633 ms: Scavenge 21.1 (30.3) -> 14.4 (31.1) MB, pooled: 0 MB, 0.91 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      642 ms: Scavenge 22.3 (31.1) -> 14.4 (31.1) MB, pooled: 0 MB, 0.64 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      649 ms: Scavenge 22.3 (31.1) -> 14.4 (31.1) MB, pooled: 0 MB, 0.44 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      657 ms: Scavenge 22.3 (31.1) -> 14.4 (31.1) MB, pooled: 0 MB, 0.24 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      665 ms: Scavenge 22.3 (31.1) -> 14.5 (31.1) MB, pooled: 0 MB, 0.25 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      674 ms: Scavenge 22.4 (31.3) -> 14.5 (31.3) MB, pooled: 0 MB, 0.40 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      681 ms: Scavenge 22.4 (31.3) -> 14.5 (31.3) MB, pooled: 0 MB, 0.31 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      688 ms: Scavenge 22.4 (31.3) -> 14.5 (31.3) MB, pooled: 0 MB, 0.33 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      696 ms: Scavenge 22.4 (31.3) -> 14.5 (31.3) MB, pooled: 0 MB, 0.19 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      703 ms: Scavenge 22.4 (31.3) -> 14.5 (31.3) MB, pooled: 0 MB, 0.16 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      711 ms: Scavenge 22.4 (31.3) -> 14.5 (31.3) MB, pooled: 0 MB, 0.18 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      718 ms: Scavenge 22.4 (31.3) -> 14.5 (31.3) MB, pooled: 0 MB, 0.29 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      725 ms: Scavenge 22.4 (31.3) -> 14.5 (31.3) MB, pooled: 0 MB, 0.25 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      731 ms: Scavenge 22.4 (31.3) -> 14.5 (31.3) MB, pooled: 0 MB, 0.18 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      738 ms: Scavenge 22.4 (31.3) -> 14.5 (31.3) MB, pooled: 0 MB, 0.16 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      745 ms: Scavenge 22.4 (31.3) -> 14.6 (31.3) MB, pooled: 0 MB, 0.34 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      752 ms: Scavenge 22.4 (31.3) -> 14.5 (31.3) MB, pooled: 0 MB, 0.17 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      759 ms: Scavenge 22.4 (31.3) -> 14.6 (31.3) MB, pooled: 0 MB, 0.13 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      766 ms: Scavenge 22.4 (31.3) -> 14.6 (31.3) MB, pooled: 0 MB, 0.33 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      773 ms: Scavenge 22.4 (31.3) -> 14.6 (31.3) MB, pooled: 0 MB, 0.18 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      780 ms: Scavenge 22.4 (31.3) -> 14.6 (31.3) MB, pooled: 0 MB, 0.16 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      787 ms: Scavenge 22.4 (31.3) -> 14.6 (31.3) MB, pooled: 0 MB, 0.17 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      793 ms: Scavenge 22.4 (31.3) -> 14.6 (31.3) MB, pooled: 0 MB, 0.17 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      800 ms: Scavenge 22.4 (31.3) -> 14.6 (31.3) MB, pooled: 0 MB, 0.17 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      807 ms: Scavenge 22.4 (31.3) -> 14.6 (31.3) MB, pooled: 0 MB, 0.41 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      814 ms: Scavenge 22.4 (31.3) -> 14.6 (31.6) MB, pooled: 0 MB, 0.39 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      821 ms: Scavenge 22.5 (31.6) -> 14.6 (31.6) MB, pooled: 0 MB, 0.36 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      827 ms: Scavenge 22.5 (31.6) -> 14.6 (31.6) MB, pooled: 0 MB, 0.18 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      834 ms: Scavenge 22.5 (31.6) -> 14.6 (31.6) MB, pooled: 0 MB, 0.17 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      841 ms: Scavenge 22.5 (31.6) -> 14.6 (31.6) MB, pooled: 0 MB, 0.15 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      849 ms: Scavenge 22.5 (31.6) -> 14.6 (31.6) MB, pooled: 0 MB, 0.28 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      858 ms: Scavenge 22.5 (31.6) -> 14.6 (31.8) MB, pooled: 0 MB, 0.36 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      866 ms: Scavenge 22.5 (31.8) -> 14.7 (31.8) MB, pooled: 0 MB, 0.39 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      873 ms: Scavenge 22.5 (31.8) -> 14.7 (31.8) MB, pooled: 0 MB, 0.30 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      881 ms: Scavenge 22.6 (31.8) -> 14.7 (31.8) MB, pooled: 0 MB, 0.35 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      890 ms: Scavenge 22.6 (31.8) -> 14.7 (31.8) MB, pooled: 0 MB, 0.29 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      898 ms: Scavenge 22.6 (31.8) -> 14.8 (31.8) MB, pooled: 0 MB, 0.34 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      907 ms: Scavenge 22.6 (31.8) -> 14.8 (31.8) MB, pooled: 0 MB, 0.32 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      916 ms: Scavenge 22.6 (31.8) -> 14.8 (31.8) MB, pooled: 0 MB, 0.35 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      924 ms: Scavenge 22.7 (31.8) -> 14.8 (31.8) MB, pooled: 0 MB, 0.22 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      934 ms: Scavenge 22.7 (31.8) -> 15.1 (32.1) MB, pooled: 0 MB, 0.46 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      942 ms: Scavenge 22.7 (32.1) -> 15.1 (32.3) MB, pooled: 0 MB, 0.54 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      950 ms: Scavenge 22.9 (32.3) -> 15.1 (32.3) MB, pooled: 0 MB, 0.26 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+PASS KY02a kurucu hatası: işçi yok, yedek kip açık, hata kaydı var → {"workers":0,"fallback":true,"failures":["işçi 0 oluşturulamadı (modül): Sahte: Worker oluşturulamadı","işçi 1 oluşturulamadı (modül): Sahte: Worker oluşturulamadı"]}
+PASS KY02b kurucu hatası: açılış hazırlığı ≤ normal + 5 sn (5423 ms) → {"ms":339}
+PASS KY02c kurucu hatası: ≥ 100 karo ağı, derinlik penceresi, dünya ızgarası (yerel yedekte) → {"meshes":125,"izgara":"tamam"}
+PASS KY02-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":2,"ihlal":0,"ilk":[],"enFazlaFailures":4}
+PASS KY02-S bütün iş sözleri 15 sn sınırı içinde sonuçlandı → {"is":127,"acik":0,"acikOrnek":[],"enUzunMs":340,"cozuldu":127,"reddedildi":0}
+[16495:0x349ac000]      969 ms: Scavenge 23.1 (32.3) -> 15.9 (32.3) MB, pooled: 0 MB, 0.76 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      977 ms: Scavenge 23.1 (32.3) -> 15.8 (32.8) MB, pooled: 0 MB, 0.81 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      986 ms: Scavenge 23.6 (32.8) -> 15.7 (32.8) MB, pooled: 0 MB, 0.25 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]      996 ms: Scavenge 23.6 (32.8) -> 15.7 (32.8) MB, pooled: 0 MB, 0.15 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1005 ms: Scavenge 23.6 (32.8) -> 15.7 (32.8) MB, pooled: 0 MB, 0.15 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1015 ms: Scavenge 23.6 (32.8) -> 15.7 (32.8) MB, pooled: 0 MB, 0.18 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1024 ms: Scavenge 23.6 (32.8) -> 15.7 (32.8) MB, pooled: 0 MB, 0.18 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1032 ms: Scavenge 23.6 (32.8) -> 15.7 (32.8) MB, pooled: 0 MB, 0.15 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1041 ms: Scavenge 23.6 (32.8) -> 15.7 (32.8) MB, pooled: 0 MB, 0.17 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1050 ms: Scavenge 23.6 (32.8) -> 15.7 (32.8) MB, pooled: 0 MB, 0.15 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1058 ms: Scavenge 23.6 (32.8) -> 15.7 (32.8) MB, pooled: 0 MB, 0.19 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1067 ms: Scavenge 23.6 (32.8) -> 15.7 (32.8) MB, pooled: 0 MB, 0.16 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1076 ms: Scavenge 23.6 (32.8) -> 15.7 (32.8) MB, pooled: 0 MB, 0.16 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1084 ms: Scavenge 23.6 (32.8) -> 15.7 (32.8) MB, pooled: 0 MB, 0.18 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1091 ms: Scavenge 23.6 (32.8) -> 15.7 (32.8) MB, pooled: 0 MB, 0.14 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1099 ms: Scavenge 23.6 (32.8) -> 15.7 (32.8) MB, pooled: 0 MB, 0.15 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1108 ms: Scavenge 23.6 (32.8) -> 15.7 (32.8) MB, pooled: 0 MB, 0.21 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1119 ms: Scavenge 23.6 (32.8) -> 15.7 (32.8) MB, pooled: 0 MB, 0.24 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1134 ms: Scavenge 23.6 (32.8) -> 15.7 (32.8) MB, pooled: 0 MB, 0.32 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1148 ms: Scavenge 23.6 (32.8) -> 15.8 (32.8) MB, pooled: 0 MB, 0.40 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1161 ms: Scavenge 23.2 (32.8) -> 15.8 (32.8) MB, pooled: 0 MB, 0.59 / 0.00 ms  (average mu = 0.992, current mu = 0.992) task; 
+[16495:0x349ac000]     1175 ms: Scavenge 23.6 (32.8) -> 15.8 (32.8) MB, pooled: 0 MB, 0.57 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1188 ms: Scavenge 23.6 (32.8) -> 15.8 (32.8) MB, pooled: 0 MB, 0.47 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1201 ms: Scavenge 23.6 (32.8) -> 15.8 (32.8) MB, pooled: 0 MB, 0.62 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1215 ms: Scavenge 23.6 (32.8) -> 15.8 (32.8) MB, pooled: 0 MB, 0.54 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1229 ms: Scavenge 23.6 (32.8) -> 15.8 (32.8) MB, pooled: 0 MB, 0.55 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1240 ms: Scavenge 23.6 (32.8) -> 15.8 (32.8) MB, pooled: 0 MB, 0.50 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1253 ms: Scavenge 23.7 (32.8) -> 15.8 (32.8) MB, pooled: 0 MB, 0.38 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1264 ms: Scavenge 23.7 (32.8) -> 15.8 (32.8) MB, pooled: 0 MB, 0.24 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1273 ms: Scavenge 23.7 (32.8) -> 15.8 (32.8) MB, pooled: 0 MB, 0.24 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1283 ms: Scavenge 23.7 (32.8) -> 15.8 (32.8) MB, pooled: 0 MB, 0.32 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1290 ms: Scavenge 22.4 (32.8) -> 15.8 (32.8) MB, pooled: 0 MB, 0.31 / 0.00 ms  (average mu = 0.992, current mu = 0.992) task; 
+[16495:0x349ac000]     1309 ms: Scavenge 23.7 (32.8) -> 15.8 (32.8) MB, pooled: 0 MB, 0.44 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1325 ms: Scavenge 23.7 (32.8) -> 15.9 (32.8) MB, pooled: 0 MB, 0.54 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1339 ms: Scavenge 23.7 (32.8) -> 16.0 (32.8) MB, pooled: 0 MB, 0.72 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1350 ms: Scavenge 23.7 (32.8) -> 15.9 (32.8) MB, pooled: 0 MB, 0.42 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1363 ms: Scavenge 23.8 (32.8) -> 15.9 (32.8) MB, pooled: 0 MB, 0.49 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1376 ms: Scavenge 23.8 (32.8) -> 16.0 (32.8) MB, pooled: 0 MB, 0.48 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1389 ms: Scavenge 23.8 (32.8) -> 16.0 (32.8) MB, pooled: 0 MB, 0.51 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1401 ms: Scavenge 23.8 (32.8) -> 16.0 (32.8) MB, pooled: 0 MB, 0.70 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1411 ms: Scavenge 23.9 (32.8) -> 16.0 (32.8) MB, pooled: 0 MB, 0.44 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1422 ms: Scavenge 23.9 (32.8) -> 16.0 (32.8) MB, pooled: 0 MB, 0.42 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1440 ms: Scavenge 23.1 (32.8) -> 16.1 (32.8) MB, pooled: 0 MB, 0.45 / 0.00 ms  (average mu = 0.992, current mu = 0.992) task; 
+[16495:0x349ac000]     1473 ms: Scavenge 22.6 (32.8) -> 16.3 (32.8) MB, pooled: 0 MB, 0.62 / 0.00 ms  (average mu = 0.992, current mu = 0.992) task; 
+PASS KY03a kısmi kurucu hatası (A-15): kurulabilen işçi çalışır, yedek kip işareti KAPALI (fallback=false, ≥ 1 işçi) → {"workers":2,"fallback":false,"failures":["işçi 1 oluşturulamadı (modül): Sahte: Worker oluşturulamadı"]}
+PASS KY03b kısmi kurucu hatası: açılış tamamlanır (≥ 100 ağ, derinlik, ızgara) → {"meshes":125,"izgara":"tamam","ms":425}
+PASS KY03-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":15,"ihlal":0,"ilk":[],"enFazlaFailures":1}
+PASS KY03-S bütün iş sözleri 15 sn sınırı içinde sonuçlandı → {"is":127,"acik":0,"acikOrnek":[],"enUzunMs":523,"cozuldu":127,"reddedildi":0}
+[16495:0x349ac000]     1505 ms: Scavenge 24.1 (33.1) -> 16.9 (33.6) MB, pooled: 0 MB, 0.81 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1515 ms: Scavenge 24.2 (33.6) -> 16.9 (33.8) MB, pooled: 0 MB, 0.86 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1524 ms: Scavenge 24.7 (33.8) -> 16.8 (33.8) MB, pooled: 0 MB, 0.33 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1533 ms: Scavenge 24.7 (33.8) -> 16.8 (33.8) MB, pooled: 0 MB, 0.31 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1542 ms: Scavenge 24.7 (33.8) -> 16.8 (33.8) MB, pooled: 0 MB, 0.25 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1551 ms: Scavenge 24.7 (33.8) -> 16.8 (33.8) MB, pooled: 0 MB, 0.32 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1560 ms: Scavenge 24.7 (33.8) -> 16.8 (33.8) MB, pooled: 0 MB, 0.31 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1571 ms: Scavenge 24.7 (33.8) -> 16.8 (33.8) MB, pooled: 0 MB, 0.30 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1581 ms: Scavenge 24.7 (33.8) -> 16.8 (33.8) MB, pooled: 0 MB, 0.19 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1590 ms: Scavenge 24.7 (33.8) -> 16.8 (33.8) MB, pooled: 0 MB, 0.19 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1600 ms: Scavenge 24.7 (33.8) -> 16.8 (33.8) MB, pooled: 0 MB, 0.17 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1609 ms: Scavenge 24.7 (33.8) -> 16.8 (33.8) MB, pooled: 0 MB, 0.31 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1617 ms: Scavenge 24.7 (33.8) -> 16.8 (33.8) MB, pooled: 0 MB, 0.25 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1626 ms: Scavenge 24.7 (33.8) -> 16.9 (33.8) MB, pooled: 0 MB, 0.26 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1634 ms: Scavenge 24.7 (33.8) -> 16.9 (33.8) MB, pooled: 0 MB, 0.27 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1642 ms: Scavenge 24.7 (33.8) -> 16.9 (33.8) MB, pooled: 0 MB, 0.32 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1651 ms: Scavenge 24.7 (33.8) -> 16.9 (33.8) MB, pooled: 0 MB, 0.25 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1660 ms: Scavenge 24.7 (33.8) -> 16.9 (33.8) MB, pooled: 0 MB, 0.20 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1668 ms: Scavenge 24.7 (33.8) -> 16.9 (33.8) MB, pooled: 0 MB, 0.22 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1677 ms: Scavenge 24.7 (33.8) -> 16.9 (33.8) MB, pooled: 0 MB, 0.29 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1686 ms: Scavenge 24.7 (33.8) -> 16.9 (33.8) MB, pooled: 0 MB, 0.24 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1693 ms: Scavenge 24.7 (33.8) -> 16.9 (33.8) MB, pooled: 0 MB, 0.26 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1701 ms: Scavenge 24.7 (33.8) -> 16.9 (33.8) MB, pooled: 0 MB, 0.15 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1710 ms: Scavenge 24.7 (33.8) -> 16.9 (33.8) MB, pooled: 0 MB, 0.33 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1719 ms: Scavenge 24.7 (33.8) -> 16.9 (33.8) MB, pooled: 0 MB, 0.24 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1727 ms: Scavenge 24.7 (33.8) -> 16.9 (33.8) MB, pooled: 0 MB, 0.26 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1735 ms: Scavenge 24.7 (33.8) -> 16.9 (33.8) MB, pooled: 0 MB, 0.26 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1744 ms: Scavenge 24.8 (33.8) -> 16.9 (33.8) MB, pooled: 0 MB, 0.28 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1753 ms: Scavenge 24.8 (33.8) -> 16.9 (33.8) MB, pooled: 0 MB, 0.28 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1761 ms: Scavenge 24.8 (33.8) -> 16.9 (33.8) MB, pooled: 0 MB, 0.20 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1771 ms: Scavenge 24.8 (33.8) -> 16.9 (33.8) MB, pooled: 0 MB, 0.29 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1781 ms: Scavenge 24.8 (33.8) -> 16.9 (33.8) MB, pooled: 0 MB, 0.26 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1791 ms: Scavenge 24.8 (33.8) -> 17.0 (33.8) MB, pooled: 0 MB, 0.31 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1800 ms: Scavenge 24.8 (33.8) -> 17.0 (34.1) MB, pooled: 0 MB, 0.35 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1811 ms: Scavenge 24.8 (34.1) -> 17.0 (50.1) MB, pooled: 0 MB, 1.43 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1839 ms: Scavenge 32.7 (50.1) -> 17.1 (50.1) MB, pooled: 0 MB, 0.41 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1864 ms: Scavenge 32.7 (50.1) -> 17.1 (50.1) MB, pooled: 0 MB, 0.63 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1889 ms: Scavenge (interleaved) 32.8 (50.1) -> 17.3 (50.6) MB, pooled: 0 MB, 0.95 / 0.00 ms  (average mu = 0.992, current mu = 0.992) allocation failure; 
+[16495:0x349ac000]     1891 ms: Mark-Compact 17.5 (50.6) -> 15.8 (50.8) MB, pooled: 0 MB, 1.45 / 0.00 ms  (+ 1.0 ms in 0 steps since start of marking, biggest step 0.0 ms, walltime since start of marking 10 ms) (average mu = 0.997, current mu = 0.999) finalize incremental marking via stack guard; GC in old space requested
+PASS KY04a yükleme hatası (404): işçiler devre dışı, yedek kip açık, hata kaydı var → {"workers":0,"fallback":true,"failures":4}
+PASS KY04b yükleme hatası: açılış hazırlığı ≤ normal + 5 sn (5423 ms) → {"ms":386}
+PASS KY04c yükleme hatası: ≥ 100 karo ağı, derinlik, dünya ızgarası → {"meshes":125,"izgara":"tamam"}
+PASS KY04-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":2,"ihlal":0,"ilk":[],"enFazlaFailures":4}
+PASS KY04-S bütün iş sözleri 15 sn sınırı içinde sonuçlandı → {"is":127,"acik":0,"acikOrnek":[],"enUzunMs":387,"cozuldu":127,"reddedildi":0}
+[16495:0x349ac000]     1918 ms: Scavenge 31.6 (50.8) -> 16.2 (50.8) MB, pooled: 0 MB, 0.50 / 0.00 ms  (average mu = 0.997, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]     2934 ms: Scavenge 31.7 (50.8) -> 16.5 (50.8) MB, pooled: 0 MB, 1.00 / 0.00 ms  (average mu = 0.997, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]     2954 ms: Scavenge 31.9 (50.8) -> 16.4 (50.8) MB, pooled: 0 MB, 0.94 / 0.00 ms  (average mu = 0.997, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]     2971 ms: Scavenge 32.1 (50.8) -> 16.4 (50.8) MB, pooled: 0 MB, 0.32 / 0.00 ms  (average mu = 0.997, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]     2988 ms: Scavenge 32.2 (50.8) -> 16.4 (50.8) MB, pooled: 0 MB, 0.33 / 0.00 ms  (average mu = 0.997, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]     3006 ms: Scavenge 32.2 (50.8) -> 16.4 (50.8) MB, pooled: 0 MB, 0.31 / 0.00 ms  (average mu = 0.997, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]     3023 ms: Scavenge 32.2 (50.8) -> 16.4 (50.8) MB, pooled: 0 MB, 0.34 / 0.00 ms  (average mu = 0.997, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]     3040 ms: Scavenge 32.2 (50.8) -> 16.4 (50.8) MB, pooled: 0 MB, 0.48 / 0.00 ms  (average mu = 0.997, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]     3056 ms: Scavenge 32.2 (50.8) -> 16.4 (50.8) MB, pooled: 0 MB, 0.28 / 0.00 ms  (average mu = 0.997, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]     3076 ms: Scavenge 32.2 (50.8) -> 16.4 (50.8) MB, pooled: 0 MB, 0.56 / 0.00 ms  (average mu = 0.997, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]     3097 ms: Scavenge 32.2 (50.8) -> 16.4 (50.8) MB, pooled: 0 MB, 0.31 / 0.00 ms  (average mu = 0.997, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]     3113 ms: Scavenge 32.2 (50.8) -> 16.5 (50.8) MB, pooled: 0 MB, 0.29 / 0.00 ms  (average mu = 0.997, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]     3129 ms: Scavenge 32.2 (50.8) -> 16.5 (50.8) MB, pooled: 0 MB, 0.28 / 0.00 ms  (average mu = 0.997, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]     3146 ms: Scavenge 32.2 (50.8) -> 16.5 (50.8) MB, pooled: 0 MB, 0.38 / 0.00 ms  (average mu = 0.997, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]     3162 ms: Scavenge 32.2 (50.8) -> 16.5 (50.8) MB, pooled: 0 MB, 0.36 / 0.00 ms  (average mu = 0.997, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]     3179 ms: Scavenge 32.2 (50.8) -> 16.5 (50.8) MB, pooled: 0 MB, 0.42 / 0.00 ms  (average mu = 0.997, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]     3198 ms: Scavenge 32.2 (50.8) -> 16.5 (50.8) MB, pooled: 0 MB, 0.46 / 0.00 ms  (average mu = 0.997, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]     3216 ms: Scavenge 32.2 (50.8) -> 16.6 (50.8) MB, pooled: 0 MB, 0.50 / 0.00 ms  (average mu = 0.997, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]     3238 ms: Scavenge 32.2 (50.8) -> 16.6 (50.8) MB, pooled: 0 MB, 0.62 / 0.00 ms  (average mu = 0.997, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]     3259 ms: Scavenge 32.3 (50.8) -> 16.7 (50.8) MB, pooled: 0 MB, 0.56 / 0.00 ms  (average mu = 0.997, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]     3281 ms: Scavenge 32.3 (50.8) -> 16.7 (50.8) MB, pooled: 0 MB, 0.71 / 0.00 ms  (average mu = 0.997, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]     3294 ms: Mark-Compact 23.5 (50.8) -> 16.7 (50.1) MB, pooled: 1 MB, 2.49 / 0.00 ms  (+ 0.8 ms in 0 steps since start of marking, biggest step 0.0 ms, walltime since start of marking 10 ms) (average mu = 0.998, current mu = 0.998) finalize incremental marking via stack guard; GC in old space requested
+[16495:0x349ac000]     3313 ms: Scavenge 31.0 (50.1) -> 16.7 (50.1) MB, pooled: 1 MB, 0.23 / 0.00 ms  (average mu = 0.998, current mu = 0.998) task; 
+PASS KY05a hazır sinyali yok (A-11): açılış hazırlığı ≤ normal + 5 sn (5423 ms) → {"ms":1364}
+PASS KY05b hazır sinyali yok: açılış tamamlanır (≥ 100 ağ, derinlik, ızgara) ve hata kaydı var → {"meshes":125,"izgara":"tamam","failures":["işçi 0: hazır sinyali 2.5 sn içinde gelmedi (bekleniyor)"]}
+PASS KY05-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":748,"ihlal":0,"ilk":[],"enFazlaFailures":7}
+PASS KY05-S bütün iş sözleri 45 sn sınırı içinde sonuçlandı → {"is":127,"acik":0,"acikOrnek":[],"enUzunMs":7999,"cozuldu":127,"reddedildi":0}
+[16495:0x349ac000]    10947 ms: Scavenge 32.5 (50.1) -> 17.4 (50.1) MB, pooled: 1 MB, 0.97 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    10966 ms: Scavenge 32.6 (50.1) -> 17.4 (50.6) MB, pooled: 0 MB, 0.89 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    10984 ms: Scavenge 33.0 (50.6) -> 17.3 (50.6) MB, pooled: 0 MB, 0.59 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    11002 ms: Scavenge 33.0 (50.6) -> 17.3 (50.6) MB, pooled: 0 MB, 0.51 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    11021 ms: Scavenge 33.0 (50.6) -> 17.3 (50.6) MB, pooled: 0 MB, 0.40 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    11038 ms: Scavenge 33.0 (50.6) -> 17.3 (50.6) MB, pooled: 0 MB, 0.31 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    11054 ms: Scavenge 33.0 (50.6) -> 17.3 (50.6) MB, pooled: 0 MB, 0.37 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    11071 ms: Scavenge 33.0 (50.6) -> 17.3 (50.6) MB, pooled: 0 MB, 0.56 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    11089 ms: Scavenge 33.0 (50.6) -> 17.3 (50.6) MB, pooled: 0 MB, 1.09 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    11106 ms: Scavenge 33.0 (50.6) -> 17.3 (50.6) MB, pooled: 0 MB, 0.78 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    11123 ms: Scavenge 33.0 (50.6) -> 17.4 (50.6) MB, pooled: 0 MB, 0.52 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    11139 ms: Scavenge 33.0 (50.6) -> 17.4 (50.6) MB, pooled: 0 MB, 0.49 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    11156 ms: Scavenge 33.1 (50.6) -> 17.4 (50.6) MB, pooled: 0 MB, 0.44 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    11172 ms: Scavenge 33.1 (50.6) -> 17.3 (50.6) MB, pooled: 0 MB, 0.54 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    11190 ms: Scavenge 33.1 (50.6) -> 17.4 (50.6) MB, pooled: 0 MB, 0.41 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    11208 ms: Scavenge 33.1 (50.6) -> 17.4 (50.6) MB, pooled: 0 MB, 0.57 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    11226 ms: Scavenge 33.1 (50.6) -> 17.5 (50.6) MB, pooled: 0 MB, 0.53 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    11246 ms: Scavenge 33.1 (50.6) -> 17.5 (50.6) MB, pooled: 0 MB, 0.56 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    11267 ms: Scavenge 33.1 (50.6) -> 17.5 (50.6) MB, pooled: 0 MB, 0.61 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    11288 ms: Scavenge 33.2 (50.6) -> 17.6 (50.6) MB, pooled: 0 MB, 0.63 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    11313 ms: Scavenge (interleaved) 33.2 (50.6) -> 17.8 (50.6) MB, pooled: 0 MB, 1.08 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    11325 ms: Mark-Compact 25.8 (50.6) -> 17.6 (51.1) MB, pooled: 0 MB, 1.31 / 0.00 ms  (+ 1.7 ms in 0 steps since start of marking, biggest step 0.0 ms, walltime since start of marking 30 ms) (average mu = 0.999, current mu = 1.000) finalize incremental marking via task; GC in old space requested
+PASS KY06a askıdaki işçi (A-11): açılış hazırlığı ≤ normal + 5 sn (5423 ms) → {"ms":1364}
+PASS KY06b askıdaki işçi: açılış tamamlanır (≥ 100 ağ, derinlik, ızgara) ve hata kaydı var → {"meshes":125,"izgara":"tamam","failures":["işçi 0: ilk işe 3 sn içinde yanıt vermedi"]}
+PASS KY06-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":260,"ihlal":0,"ilk":[],"enFazlaFailures":4}
+PASS KY06-S bütün iş sözleri 65 sn sınırı içinde sonuçlandı → {"is":127,"acik":0,"acikOrnek":[],"enUzunMs":3003,"cozuldu":127,"reddedildi":0}
+[16495:0x349ac000]    12979 ms: Scavenge 33.4 (51.1) -> 18.2 (51.1) MB, pooled: 0 MB, 0.81 / 0.00 ms  (average mu = 0.999, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]    12995 ms: Scavenge 33.4 (51.1) -> 18.2 (51.1) MB, pooled: 0 MB, 1.08 / 0.00 ms  (average mu = 0.999, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]    13009 ms: Scavenge 33.9 (51.1) -> 18.2 (51.1) MB, pooled: 0 MB, 0.54 / 0.00 ms  (average mu = 0.999, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]    13023 ms: Scavenge 33.9 (51.1) -> 18.2 (51.1) MB, pooled: 0 MB, 0.51 / 0.00 ms  (average mu = 0.999, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]    13035 ms: Scavenge 33.9 (51.1) -> 18.2 (51.1) MB, pooled: 0 MB, 0.23 / 0.00 ms  (average mu = 0.999, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]    13047 ms: Scavenge 33.9 (51.1) -> 18.2 (51.1) MB, pooled: 0 MB, 0.24 / 0.00 ms  (average mu = 0.999, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]    13059 ms: Scavenge 33.9 (51.1) -> 18.2 (51.1) MB, pooled: 0 MB, 0.18 / 0.00 ms  (average mu = 0.999, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]    13071 ms: Scavenge 33.9 (51.1) -> 18.2 (51.1) MB, pooled: 0 MB, 0.19 / 0.00 ms  (average mu = 0.999, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]    13081 ms: Scavenge 33.9 (51.1) -> 18.2 (51.1) MB, pooled: 0 MB, 0.18 / 0.00 ms  (average mu = 0.999, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]    13091 ms: Scavenge 33.9 (51.1) -> 18.2 (51.1) MB, pooled: 0 MB, 0.17 / 0.00 ms  (average mu = 0.999, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]    13106 ms: Scavenge 33.9 (51.1) -> 18.2 (51.1) MB, pooled: 0 MB, 0.49 / 0.00 ms  (average mu = 0.999, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]    13121 ms: Scavenge 33.9 (51.1) -> 18.2 (51.1) MB, pooled: 0 MB, 0.38 / 0.00 ms  (average mu = 0.999, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]    13136 ms: Scavenge 32.7 (51.1) -> 18.2 (51.1) MB, pooled: 0 MB, 0.45 / 0.00 ms  (average mu = 0.999, current mu = 1.000) task; 
+[16495:0x349ac000]    13151 ms: Scavenge 33.9 (51.1) -> 18.3 (51.1) MB, pooled: 0 MB, 0.52 / 0.00 ms  (average mu = 0.999, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]    13170 ms: Scavenge 34.0 (51.1) -> 18.3 (51.1) MB, pooled: 0 MB, 0.50 / 0.00 ms  (average mu = 0.999, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]    13189 ms: Scavenge 34.0 (51.1) -> 18.3 (51.1) MB, pooled: 0 MB, 0.53 / 0.00 ms  (average mu = 0.999, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]    13215 ms: Scavenge 32.5 (51.1) -> 18.3 (51.1) MB, pooled: 0 MB, 0.62 / 0.00 ms  (average mu = 0.999, current mu = 1.000) task; 
+[16495:0x349ac000]    13235 ms: Scavenge 32.5 (51.1) -> 18.4 (51.1) MB, pooled: 0 MB, 0.55 / 0.00 ms  (average mu = 0.999, current mu = 1.000) task; 
+[16495:0x349ac000]    13257 ms: Scavenge 33.3 (51.1) -> 18.4 (51.1) MB, pooled: 0 MB, 0.56 / 0.00 ms  (average mu = 0.999, current mu = 1.000) task; 
+[16495:0x349ac000]    13275 ms: Mark-Compact 29.1 (51.1) -> 18.2 (51.3) MB, pooled: 0 MB, 1.33 / 0.00 ms  (+ 2.1 ms in 0 steps since start of marking, biggest step 0.0 ms, walltime since start of marking 14 ms) (average mu = 0.999, current mu = 0.998) finalize incremental marking via task; GC in old space requested
+[16495:0x349ac000]    13291 ms: Scavenge 34.0 (51.3) -> 18.3 (51.3) MB, pooled: 0 MB, 0.28 / 0.00 ms  (average mu = 0.999, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    13322 ms: Scavenge 31.3 (51.3) -> 18.4 (51.3) MB, pooled: 0 MB, 1.70 / 0.00 ms  (average mu = 0.999, current mu = 0.998) task; 
+PASS KY07a tek işçi çökmesi: işler kaybolmaz, açılış tamamlanır (≥ 100 ağ, derinlik, ızgara) → {"coktu":true,"meshes":125,"izgara":"tamam","ms":309}
+PASS KY07b tek işçi çökmesi: kalan işçiler çalışır, yedek kip açılmaz → {"workers":2,"fallback":false}
+Arazi işçisi 0 yeniden başlatıldı
+PASS KY07c tek işçi çökmesi (A-15): ölen işçi 30 sn içinde yeniden başlatılır (işçi sayısı 3'e döner) → {"ms":1752,"workers":3,"kurulan":4}
+PASS KY07-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":189,"ihlal":0,"ilk":[],"enFazlaFailures":1}
+PASS KY07-S bütün iş sözleri 15 sn sınırı içinde sonuçlandı → {"is":127,"acik":0,"acikOrnek":[],"enUzunMs":400,"cozuldu":127,"reddedildi":0}
+[16495:0x349ac000]    15145 ms: Scavenge 34.1 (51.6) -> 19.2 (51.6) MB, pooled: 0 MB, 0.89 / 0.00 ms  (average mu = 0.999, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    15161 ms: Scavenge 34.2 (51.6) -> 19.1 (52.6) MB, pooled: 0 MB, 1.25 / 0.00 ms  (average mu = 0.999, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    15175 ms: Scavenge 34.8 (52.6) -> 19.1 (52.6) MB, pooled: 0 MB, 0.29 / 0.00 ms  (average mu = 0.999, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    15189 ms: Scavenge 34.8 (52.6) -> 19.1 (52.6) MB, pooled: 0 MB, 0.50 / 0.00 ms  (average mu = 0.999, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    15203 ms: Scavenge 34.8 (52.6) -> 19.1 (52.6) MB, pooled: 0 MB, 0.46 / 0.00 ms  (average mu = 0.999, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    15217 ms: Scavenge 34.8 (52.6) -> 19.1 (52.6) MB, pooled: 0 MB, 0.50 / 0.00 ms  (average mu = 0.999, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    15231 ms: Scavenge 34.8 (52.6) -> 19.1 (52.6) MB, pooled: 0 MB, 0.28 / 0.00 ms  (average mu = 0.999, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    15243 ms: Scavenge 34.8 (52.6) -> 19.1 (52.6) MB, pooled: 0 MB, 0.43 / 0.00 ms  (average mu = 0.999, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    15257 ms: Scavenge 34.8 (52.6) -> 19.1 (52.6) MB, pooled: 0 MB, 0.40 / 0.00 ms  (average mu = 0.999, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    15270 ms: Scavenge 34.8 (52.6) -> 19.1 (52.6) MB, pooled: 0 MB, 0.27 / 0.00 ms  (average mu = 0.999, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    15283 ms: Scavenge 34.8 (52.6) -> 19.1 (52.6) MB, pooled: 0 MB, 0.32 / 0.00 ms  (average mu = 0.999, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    15296 ms: Scavenge 34.8 (52.6) -> 19.1 (52.6) MB, pooled: 0 MB, 0.25 / 0.00 ms  (average mu = 0.999, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    15310 ms: Scavenge 34.9 (52.6) -> 19.1 (52.6) MB, pooled: 0 MB, 1.18 / 0.00 ms  (average mu = 0.999, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    15327 ms: Scavenge 34.9 (52.6) -> 19.1 (52.6) MB, pooled: 0 MB, 0.33 / 0.00 ms  (average mu = 0.999, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    15344 ms: Scavenge 34.9 (52.6) -> 19.1 (52.6) MB, pooled: 0 MB, 0.37 / 0.00 ms  (average mu = 0.999, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    15362 ms: Scavenge 34.9 (52.6) -> 19.2 (52.6) MB, pooled: 0 MB, 0.46 / 0.00 ms  (average mu = 0.999, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    15381 ms: Scavenge 34.9 (52.6) -> 19.3 (52.6) MB, pooled: 0 MB, 0.82 / 0.00 ms  (average mu = 0.999, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    15400 ms: Scavenge 34.9 (52.6) -> 19.3 (52.6) MB, pooled: 0 MB, 0.46 / 0.00 ms  (average mu = 0.999, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    15422 ms: Scavenge 35.0 (52.6) -> 19.3 (52.6) MB, pooled: 0 MB, 0.46 / 0.00 ms  (average mu = 0.999, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    15444 ms: Scavenge 35.0 (52.6) -> 19.4 (52.6) MB, pooled: 0 MB, 0.78 / 0.00 ms  (average mu = 0.999, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    15473 ms: Scavenge (interleaved) 35.1 (52.6) -> 19.6 (52.6) MB, pooled: 0 MB, 0.89 / 0.00 ms  (average mu = 0.999, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    15493 ms: Scavenge (interleaved) 35.1 (52.6) -> 19.7 (52.6) MB, pooled: 0 MB, 1.01 / 0.00 ms  (average mu = 0.999, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    15508 ms: Mark-Compact 30.2 (52.6) -> 18.6 (52.8) MB, pooled: 0 MB, 1.98 / 0.00 ms  (+ 2.0 ms in 0 steps since start of marking, biggest step 0.0 ms, walltime since start of marking 53 ms) (average mu = 0.999, current mu = 0.999) finalize incremental marking via stack guard; GC in old space requested
+[16495:0x349ac000]    15525 ms: Scavenge 34.3 (52.8) -> 18.6 (52.8) MB, pooled: 0 MB, 0.75 / 0.00 ms  (average mu = 0.999, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]    15544 ms: Scavenge 34.3 (52.8) -> 18.6 (52.8) MB, pooled: 0 MB, 0.38 / 0.00 ms  (average mu = 0.999, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]    15562 ms: Scavenge 34.3 (52.8) -> 18.6 (52.8) MB, pooled: 0 MB, 0.39 / 0.00 ms  (average mu = 0.999, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]    15580 ms: Scavenge 34.3 (52.8) -> 18.6 (52.8) MB, pooled: 0 MB, 0.47 / 0.00 ms  (average mu = 0.999, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]    15598 ms: Scavenge 34.3 (52.8) -> 18.6 (52.8) MB, pooled: 0 MB, 0.43 / 0.00 ms  (average mu = 0.999, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]    15617 ms: Scavenge 34.3 (52.8) -> 18.6 (52.8) MB, pooled: 0 MB, 0.28 / 0.00 ms  (average mu = 0.999, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]    15635 ms: Scavenge 34.3 (52.8) -> 18.6 (52.8) MB, pooled: 0 MB, 0.30 / 0.00 ms  (average mu = 0.999, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]    15653 ms: Scavenge 34.3 (52.8) -> 18.6 (52.8) MB, pooled: 0 MB, 0.26 / 0.00 ms  (average mu = 0.999, current mu = 0.999) allocation failure; 
+BILGI KY08 karşılaştırma: işçisiz kipte uzak prepare(1900,950,r300) 172 ms
+[16495:0x349ac000]    15675 ms: Scavenge 34.5 (52.8) -> 19.2 (52.8) MB, pooled: 0 MB, 0.64 / 0.00 ms  (average mu = 0.999, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]    15694 ms: Scavenge 34.5 (52.8) -> 19.3 (53.3) MB, pooled: 0 MB, 1.06 / 0.00 ms  (average mu = 0.999, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]    15711 ms: Scavenge 34.9 (53.3) -> 19.2 (53.3) MB, pooled: 0 MB, 0.43 / 0.00 ms  (average mu = 0.999, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]    15728 ms: Scavenge 34.9 (53.3) -> 19.2 (53.3) MB, pooled: 0 MB, 0.41 / 0.00 ms  (average mu = 0.999, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]    15748 ms: Scavenge 34.9 (53.3) -> 19.2 (53.3) MB, pooled: 0 MB, 0.26 / 0.00 ms  (average mu = 0.999, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]    15765 ms: Scavenge 34.9 (53.3) -> 19.2 (53.3) MB, pooled: 0 MB, 0.43 / 0.00 ms  (average mu = 0.999, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]    15784 ms: Scavenge 34.9 (53.3) -> 19.3 (53.3) MB, pooled: 0 MB, 0.55 / 0.00 ms  (average mu = 0.999, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]    15800 ms: Scavenge 35.0 (53.3) -> 19.2 (53.3) MB, pooled: 0 MB, 0.43 / 0.00 ms  (average mu = 0.999, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]    15818 ms: Scavenge 35.0 (53.3) -> 19.2 (53.3) MB, pooled: 0 MB, 0.36 / 0.00 ms  (average mu = 0.999, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]    15835 ms: Scavenge 35.0 (53.3) -> 19.2 (53.3) MB, pooled: 0 MB, 0.42 / 0.00 ms  (average mu = 0.999, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]    15851 ms: Scavenge 35.0 (53.3) -> 19.2 (53.3) MB, pooled: 0 MB, 0.39 / 0.00 ms  (average mu = 0.999, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]    15867 ms: Scavenge 35.0 (53.3) -> 19.2 (53.3) MB, pooled: 0 MB, 0.47 / 0.00 ms  (average mu = 0.999, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]    15884 ms: Scavenge 35.0 (53.3) -> 19.3 (53.3) MB, pooled: 0 MB, 0.57 / 0.00 ms  (average mu = 0.999, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]    15901 ms: Scavenge 35.0 (53.3) -> 19.3 (53.3) MB, pooled: 0 MB, 0.58 / 0.00 ms  (average mu = 0.999, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]    15921 ms: Scavenge 35.0 (53.3) -> 19.3 (53.3) MB, pooled: 0 MB, 0.39 / 0.00 ms  (average mu = 0.999, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]    15939 ms: Scavenge 35.0 (53.3) -> 19.3 (53.3) MB, pooled: 0 MB, 0.31 / 0.00 ms  (average mu = 0.999, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]    15959 ms: Scavenge 35.0 (53.3) -> 19.3 (53.3) MB, pooled: 0 MB, 0.39 / 0.00 ms  (average mu = 0.999, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]    15984 ms: Scavenge 35.0 (53.3) -> 19.4 (53.3) MB, pooled: 0 MB, 0.44 / 0.00 ms  (average mu = 0.999, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]    16002 ms: Scavenge 35.1 (53.3) -> 19.4 (53.3) MB, pooled: 0 MB, 0.63 / 0.00 ms  (average mu = 0.999, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]    16022 ms: Scavenge 35.1 (53.3) -> 19.5 (53.3) MB, pooled: 0 MB, 0.57 / 0.00 ms  (average mu = 0.999, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]    16044 ms: Scavenge (interleaved) 35.2 (53.3) -> 19.7 (53.3) MB, pooled: 0 MB, 0.85 / 0.00 ms  (average mu = 0.999, current mu = 0.999) allocation failure; 
+[16495:0x349ac000]    16047 ms: Mark-Compact 21.1 (53.3) -> 18.9 (53.6) MB, pooled: 0 MB, 1.31 / 0.00 ms  (+ 1.8 ms in 0 steps since start of marking, biggest step 0.0 ms, walltime since start of marking 12 ms) (average mu = 0.998, current mu = 0.994) finalize incremental marking via stack guard; GC in old space requested
+PASS KY08a bütün işçiler her işte çöker: iş alan her işçi sonlandırılmış, hiçbir iş 3 (MAX_TRIES) kezden fazla gönderilmemiş, kurulan işçi ≤ 9, hata kaydı var, açılış tamamlanır (≥ 100 ağ, derinlik, ızgara) → {"isAlan":3,"isAlanCanli":0,"enCokGonderim":1,"kurulan":3,"workers":0,"fallback":true,"failures":4,"meshes":125,"izgara":"tamam","ms":369}
+[16495:0x349ac000]    16065 ms: Scavenge 34.6 (53.6) -> 19.0 (53.6) MB, pooled: 0 MB, 0.42 / 0.00 ms  (average mu = 0.998, current mu = 0.994) allocation failure; 
+[16495:0x349ac000]    16080 ms: Scavenge 34.6 (53.6) -> 19.0 (53.6) MB, pooled: 0 MB, 0.60 / 0.00 ms  (average mu = 0.998, current mu = 0.994) allocation failure; 
+[16495:0x349ac000]    16095 ms: Scavenge 34.7 (53.6) -> 19.0 (53.6) MB, pooled: 0 MB, 0.41 / 0.00 ms  (average mu = 0.998, current mu = 0.994) allocation failure; 
+[16495:0x349ac000]    16111 ms: Scavenge 34.7 (53.6) -> 19.0 (53.6) MB, pooled: 0 MB, 0.53 / 0.00 ms  (average mu = 0.998, current mu = 0.994) allocation failure; 
+[16495:0x349ac000]    16128 ms: Scavenge 34.7 (53.6) -> 19.0 (53.6) MB, pooled: 0 MB, 0.32 / 0.00 ms  (average mu = 0.998, current mu = 0.994) allocation failure; 
+[16495:0x349ac000]    16148 ms: Scavenge 34.7 (53.6) -> 19.0 (53.6) MB, pooled: 0 MB, 0.42 / 0.00 ms  (average mu = 0.998, current mu = 0.994) allocation failure; 
+[16495:0x349ac000]    16166 ms: Scavenge 34.7 (53.6) -> 19.0 (53.6) MB, pooled: 0 MB, 0.31 / 0.00 ms  (average mu = 0.998, current mu = 0.994) allocation failure; 
+[16495:0x349ac000]    16184 ms: Scavenge 34.7 (53.6) -> 19.0 (53.6) MB, pooled: 0 MB, 0.40 / 0.00 ms  (average mu = 0.998, current mu = 0.994) allocation failure; 
+[16495:0x349ac000]    16203 ms: Scavenge 34.7 (53.6) -> 19.0 (53.6) MB, pooled: 0 MB, 0.30 / 0.00 ms  (average mu = 0.998, current mu = 0.994) allocation failure; 
+[16495:0x349ac000]    16221 ms: Scavenge 34.7 (53.6) -> 19.0 (53.6) MB, pooled: 0 MB, 0.31 / 0.00 ms  (average mu = 0.998, current mu = 0.994) allocation failure; 
+PASS KY08b bütün işçiler çöktükten sonra uzak bölge prepare(1900,950,r300) ≤ 3 sn (KI-234; işçisiz kipe yakın) → {"ms":163,"isciSizMs":172,"ag":21}
+PASS KY08-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":3,"ihlal":0,"ilk":[],"enFazlaFailures":4}
+PASS KY08-S bütün iş sözleri 20 sn sınırı içinde sonuçlandı → {"is":137,"acik":0,"acikOrnek":[],"enUzunMs":370,"cozuldu":137,"reddedildi":0}
+[16495:0x349ac000]    16245 ms: Scavenge 34.8 (53.6) -> 19.6 (53.6) MB, pooled: 0 MB, 0.74 / 0.00 ms  (average mu = 0.998, current mu = 0.994) allocation failure; 
+[16495:0x349ac000]    16258 ms: Scavenge 34.8 (53.6) -> 19.6 (53.6) MB, pooled: 0 MB, 1.27 / 0.00 ms  (average mu = 0.998, current mu = 0.994) allocation failure; 
+[16495:0x349ac000]    16271 ms: Scavenge 35.3 (53.6) -> 19.6 (53.6) MB, pooled: 0 MB, 0.19 / 0.00 ms  (average mu = 0.998, current mu = 0.994) allocation failure; 
+[16495:0x349ac000]    16283 ms: Scavenge 35.3 (53.6) -> 19.6 (53.6) MB, pooled: 0 MB, 0.19 / 0.00 ms  (average mu = 0.998, current mu = 0.994) allocation failure; 
+[16495:0x349ac000]    16297 ms: Scavenge 35.3 (53.6) -> 19.6 (53.6) MB, pooled: 0 MB, 0.17 / 0.00 ms  (average mu = 0.998, current mu = 0.994) allocation failure; 
+[16495:0x349ac000]    16312 ms: Scavenge 35.3 (53.6) -> 19.6 (53.6) MB, pooled: 0 MB, 0.23 / 0.00 ms  (average mu = 0.998, current mu = 0.994) allocation failure; 
+[16495:0x349ac000]    16327 ms: Scavenge 35.3 (53.6) -> 19.6 (53.6) MB, pooled: 0 MB, 0.22 / 0.00 ms  (average mu = 0.998, current mu = 0.994) allocation failure; 
+[16495:0x349ac000]    16341 ms: Scavenge 35.3 (53.6) -> 19.6 (53.6) MB, pooled: 0 MB, 0.17 / 0.00 ms  (average mu = 0.998, current mu = 0.994) allocation failure; 
+[16495:0x349ac000]    16356 ms: Scavenge 35.3 (53.6) -> 19.6 (53.6) MB, pooled: 0 MB, 0.43 / 0.00 ms  (average mu = 0.998, current mu = 0.994) allocation failure; 
+[16495:0x349ac000]    16374 ms: Scavenge 35.3 (53.6) -> 19.6 (53.6) MB, pooled: 0 MB, 0.28 / 0.00 ms  (average mu = 0.998, current mu = 0.994) allocation failure; 
+[16495:0x349ac000]    16394 ms: Scavenge 35.3 (53.6) -> 19.6 (53.6) MB, pooled: 0 MB, 0.34 / 0.00 ms  (average mu = 0.998, current mu = 0.994) allocation failure; 
+[16495:0x349ac000]    16415 ms: Scavenge 35.3 (53.6) -> 19.6 (53.6) MB, pooled: 0 MB, 0.65 / 0.00 ms  (average mu = 0.998, current mu = 0.994) allocation failure; 
+[16495:0x349ac000]    16436 ms: Scavenge 35.3 (53.6) -> 19.6 (53.6) MB, pooled: 0 MB, 0.55 / 0.00 ms  (average mu = 0.998, current mu = 0.994) allocation failure; 
+[16495:0x349ac000]    16455 ms: Scavenge 35.3 (53.6) -> 19.6 (53.6) MB, pooled: 0 MB, 0.44 / 0.00 ms  (average mu = 0.998, current mu = 0.994) allocation failure; 
+[16495:0x349ac000]    16475 ms: Scavenge 35.3 (53.6) -> 19.7 (53.6) MB, pooled: 0 MB, 0.57 / 0.00 ms  (average mu = 0.998, current mu = 0.994) allocation failure; 
+[16495:0x349ac000]    16497 ms: Scavenge (interleaved) 35.4 (53.6) -> 19.7 (53.6) MB, pooled: 0 MB, 0.45 / 0.00 ms  (average mu = 0.998, current mu = 0.994) allocation failure; 
+[16495:0x349ac000]    16509 ms: Mark-Compact 27.8 (53.6) -> 19.5 (53.8) MB, pooled: 0 MB, 1.53 / 0.00 ms  (+ 1.8 ms in 0 steps since start of marking, biggest step 0.0 ms, walltime since start of marking 26 ms) (average mu = 0.997, current mu = 0.993) finalize incremental marking via task; GC in old space requested
+[16495:0x349ac000]    16533 ms: Scavenge 35.2 (53.8) -> 19.5 (53.8) MB, pooled: 0 MB, 0.57 / 0.00 ms  (average mu = 0.997, current mu = 0.993) allocation failure; 
+[16495:0x349ac000]    16556 ms: Scavenge 33.0 (53.8) -> 19.6 (53.8) MB, pooled: 0 MB, 1.11 / 0.00 ms  (average mu = 0.997, current mu = 0.993) task; 
+[16495:0x349ac000]    16577 ms: Scavenge 33.7 (53.8) -> 19.7 (53.8) MB, pooled: 0 MB, 0.65 / 0.00 ms  (average mu = 0.997, current mu = 0.993) task; 
+[16495:0x349ac000]    16601 ms: Scavenge 33.1 (53.8) -> 19.7 (53.8) MB, pooled: 0 MB, 0.76 / 0.00 ms  (average mu = 0.997, current mu = 0.993) task; 
+[16495:0x349ac000]    16621 ms: Scavenge 35.4 (53.8) -> 19.8 (53.8) MB, pooled: 0 MB, 0.70 / 0.00 ms  (average mu = 0.997, current mu = 0.993) allocation failure; 
+[16495:0x349ac000]    16637 ms: Scavenge 35.5 (53.8) -> 19.9 (53.8) MB, pooled: 0 MB, 0.85 / 0.00 ms  (average mu = 0.997, current mu = 0.993) allocation failure; 
+[16495:0x349ac000]    16656 ms: Scavenge 35.5 (53.8) -> 19.9 (53.8) MB, pooled: 0 MB, 0.50 / 0.00 ms  (average mu = 0.997, current mu = 0.993) allocation failure; 
+[16495:0x349ac000]    16674 ms: Scavenge 35.6 (53.8) -> 19.9 (53.8) MB, pooled: 0 MB, 0.26 / 0.00 ms  (average mu = 0.997, current mu = 0.993) allocation failure; 
+[16495:0x349ac000]    16694 ms: Scavenge 35.6 (53.8) -> 19.9 (53.8) MB, pooled: 0 MB, 0.22 / 0.00 ms  (average mu = 0.997, current mu = 0.993) allocation failure; 
+PASS KY09a MAX_TRIES (A-05): ızgara işini alan her işçi öldüğünde iş yerel yedekte üretilir (söz reddedilmez) → {"izgara":"tamam","ms":109,"workers":0,"fallback":true,"gridDenemesi":3}
+PASS KY09b MAX_TRIES sonrası karo işleri sürer (≥ 100 ağ) → {"meshes":125}
+PASS KY09-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":8,"ihlal":0,"ilk":[],"enFazlaFailures":4}
+PASS KY09-S bütün iş sözleri 20 sn sınırı içinde sonuçlandı → {"is":127,"acik":0,"acikOrnek":[],"enUzunMs":395,"cozuldu":127,"reddedildi":0}
+[16495:0x349ac000]    16718 ms: Scavenge 35.8 (53.8) -> 20.5 (53.8) MB, pooled: 0 MB, 0.83 / 0.00 ms  (average mu = 0.997, current mu = 0.993) allocation failure; 
+[16495:0x349ac000]    16734 ms: Scavenge 35.8 (53.8) -> 20.5 (54.3) MB, pooled: 0 MB, 0.83 / 0.00 ms  (average mu = 0.997, current mu = 0.993) allocation failure; 
+[16495:0x349ac000]    16750 ms: Scavenge 36.2 (54.3) -> 20.5 (54.3) MB, pooled: 0 MB, 0.22 / 0.00 ms  (average mu = 0.997, current mu = 0.993) allocation failure; 
+[16495:0x349ac000]    16764 ms: Scavenge 36.2 (54.3) -> 20.5 (54.3) MB, pooled: 0 MB, 0.20 / 0.00 ms  (average mu = 0.997, current mu = 0.993) allocation failure; 
+[16495:0x349ac000]    16778 ms: Scavenge 36.2 (54.3) -> 20.5 (54.3) MB, pooled: 0 MB, 0.22 / 0.00 ms  (average mu = 0.997, current mu = 0.993) allocation failure; 
+[16495:0x349ac000]    16792 ms: Scavenge 36.2 (54.3) -> 20.5 (54.3) MB, pooled: 0 MB, 0.21 / 0.00 ms  (average mu = 0.997, current mu = 0.993) allocation failure; 
+[16495:0x349ac000]    16806 ms: Scavenge 36.2 (54.3) -> 20.5 (54.3) MB, pooled: 0 MB, 0.18 / 0.00 ms  (average mu = 0.997, current mu = 0.993) allocation failure; 
+[16495:0x349ac000]    16819 ms: Scavenge 36.2 (54.3) -> 20.5 (54.3) MB, pooled: 0 MB, 0.19 / 0.00 ms  (average mu = 0.997, current mu = 0.993) allocation failure; 
+[16495:0x349ac000]    16835 ms: Scavenge 36.2 (54.3) -> 20.5 (54.3) MB, pooled: 0 MB, 0.34 / 0.00 ms  (average mu = 0.997, current mu = 0.993) allocation failure; 
+[16495:0x349ac000]    16856 ms: Scavenge 36.2 (54.3) -> 20.5 (54.3) MB, pooled: 0 MB, 0.40 / 0.00 ms  (average mu = 0.997, current mu = 0.993) task; 
+[16495:0x349ac000]    16876 ms: Scavenge 36.2 (54.3) -> 20.5 (54.3) MB, pooled: 0 MB, 0.58 / 0.00 ms  (average mu = 0.997, current mu = 0.993) allocation failure; 
+[16495:0x349ac000]    16896 ms: Scavenge 36.3 (54.3) -> 20.5 (54.3) MB, pooled: 0 MB, 0.51 / 0.00 ms  (average mu = 0.997, current mu = 0.993) allocation failure; 
+[16495:0x349ac000]    16918 ms: Scavenge (interleaved) 36.3 (54.3) -> 20.6 (54.3) MB, pooled: 0 MB, 0.43 / 0.00 ms  (average mu = 0.997, current mu = 0.993) allocation failure; 
+[16495:0x349ac000]    16939 ms: Scavenge (interleaved) 36.3 (54.3) -> 20.6 (54.3) MB, pooled: 0 MB, 0.94 / 0.00 ms  (average mu = 0.997, current mu = 0.993) allocation failure; 
+[16495:0x349ac000]    16959 ms: Mark-Compact 34.1 (54.3) -> 20.3 (54.6) MB, pooled: 0 MB, 1.44 / 0.00 ms  (+ 2.2 ms in 0 steps since start of marking, biggest step 0.0 ms, walltime since start of marking 52 ms) (average mu = 0.996, current mu = 0.993) finalize incremental marking via stack guard; GC in old space requested
+[16495:0x349ac000]    16978 ms: Scavenge 36.1 (54.6) -> 20.3 (54.6) MB, pooled: 0 MB, 0.55 / 0.00 ms  (average mu = 0.996, current mu = 0.993) allocation failure; 
+[16495:0x349ac000]    17002 ms: Scavenge 36.1 (54.6) -> 20.5 (54.6) MB, pooled: 0 MB, 0.56 / 0.00 ms  (average mu = 0.996, current mu = 0.993) allocation failure; 
+[16495:0x349ac000]    17025 ms: Scavenge 36.1 (54.6) -> 20.5 (54.6) MB, pooled: 0 MB, 0.86 / 0.00 ms  (average mu = 0.996, current mu = 0.993) allocation failure; 
+[16495:0x349ac000]    17045 ms: Scavenge 33.4 (54.6) -> 20.5 (54.6) MB, pooled: 0 MB, 0.69 / 0.00 ms  (average mu = 0.996, current mu = 0.993) task; 
+[16495:0x349ac000]    17068 ms: Scavenge 35.4 (54.6) -> 20.5 (54.6) MB, pooled: 0 MB, 0.63 / 0.00 ms  (average mu = 0.996, current mu = 0.993) task; 
+[16495:0x349ac000]    17094 ms: Scavenge 33.8 (54.6) -> 20.7 (54.6) MB, pooled: 0 MB, 0.96 / 0.00 ms  (average mu = 0.996, current mu = 0.993) task; 
+PASS KY10a işçinin 'error' iletisi: ızgara sözü ≤ 2 sn içinde sonuçlanır (asılı kalmaz) → {"izgara":"tamam","ms":14}
+PASS KY10b işçinin 'error' iletisi işçiyi öldürmez: 3 işçi canlı, yedek kip kapalı, karo işleri sürer → {"workers":3,"fallback":false,"meshes":125}
+PASS KY10-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":11,"ihlal":0,"ilk":[],"enFazlaFailures":1}
+PASS KY10-S bütün iş sözleri 20 sn sınırı içinde sonuçlandı → {"is":127,"acik":0,"acikOrnek":[],"enUzunMs":409,"cozuldu":127,"reddedildi":0}
+[16495:0x349ac000]    17150 ms: Scavenge 36.4 (54.8) -> 21.5 (54.8) MB, pooled: 0 MB, 1.20 / 0.00 ms  (average mu = 0.996, current mu = 0.993) allocation failure; 
+[16495:0x349ac000]    17170 ms: Scavenge 35.1 (54.8) -> 21.4 (55.3) MB, pooled: 0 MB, 1.48 / 0.00 ms  (average mu = 0.996, current mu = 0.993) task; 
+[16495:0x349ac000]    17190 ms: Scavenge 37.1 (55.3) -> 21.4 (55.3) MB, pooled: 0 MB, 0.66 / 0.00 ms  (average mu = 0.996, current mu = 0.993) allocation failure; 
+[16495:0x349ac000]    17211 ms: Scavenge 37.1 (55.3) -> 21.4 (55.3) MB, pooled: 0 MB, 0.81 / 0.00 ms  (average mu = 0.996, current mu = 0.993) allocation failure; 
+[16495:0x349ac000]    17233 ms: Scavenge 37.1 (55.3) -> 21.4 (55.3) MB, pooled: 0 MB, 0.68 / 0.00 ms  (average mu = 0.996, current mu = 0.993) allocation failure; 
+[16495:0x349ac000]    17251 ms: Scavenge 37.1 (55.3) -> 21.4 (55.3) MB, pooled: 0 MB, 0.40 / 0.00 ms  (average mu = 0.996, current mu = 0.993) allocation failure; 
+[16495:0x349ac000]    17276 ms: Scavenge (interleaved) 37.1 (55.3) -> 21.5 (55.3) MB, pooled: 0 MB, 0.69 / 0.00 ms  (average mu = 0.996, current mu = 0.993) allocation failure; 
+[16495:0x349ac000]    17300 ms: Scavenge (interleaved) 37.1 (55.3) -> 21.4 (55.3) MB, pooled: 0 MB, 3.43 / 0.00 ms  (average mu = 0.996, current mu = 0.993) allocation failure; 
+[16495:0x349ac000]    17304 ms: Mark-Compact 23.8 (55.3) -> 21.2 (55.6) MB, pooled: 0 MB, 1.52 / 0.00 ms  (+ 2.9 ms in 0 steps since start of marking, biggest step 0.0 ms, walltime since start of marking 52 ms) (average mu = 0.994, current mu = 0.990) finalize incremental marking via stack guard; GC in old space requested
+[16495:0x349ac000]    17326 ms: Scavenge 36.9 (55.6) -> 21.2 (55.6) MB, pooled: 0 MB, 0.35 / 0.00 ms  (average mu = 0.994, current mu = 0.990) allocation failure; 
+[16495:0x349ac000]    17344 ms: Scavenge 36.9 (55.6) -> 21.2 (55.6) MB, pooled: 0 MB, 0.34 / 0.00 ms  (average mu = 0.994, current mu = 0.990) allocation failure; 
+[16495:0x349ac000]    17361 ms: Scavenge 36.9 (55.6) -> 21.2 (55.6) MB, pooled: 0 MB, 0.51 / 0.00 ms  (average mu = 0.994, current mu = 0.990) allocation failure; 
+[16495:0x349ac000]    17380 ms: Scavenge 36.9 (55.6) -> 21.3 (55.6) MB, pooled: 0 MB, 0.57 / 0.00 ms  (average mu = 0.994, current mu = 0.990) allocation failure; 
+[16495:0x349ac000]    17404 ms: Scavenge 36.9 (55.6) -> 21.3 (55.6) MB, pooled: 0 MB, 0.70 / 0.00 ms  (average mu = 0.994, current mu = 0.990) allocation failure; 
+[16495:0x349ac000]    17429 ms: Scavenge 36.9 (55.6) -> 21.4 (55.6) MB, pooled: 0 MB, 0.65 / 0.00 ms  (average mu = 0.994, current mu = 0.990) allocation failure; 
+[16495:0x349ac000]    17451 ms: Scavenge 36.0 (55.6) -> 21.4 (55.6) MB, pooled: 0 MB, 0.75 / 0.00 ms  (average mu = 0.994, current mu = 0.990) task; 
+[16495:0x349ac000]    17603 ms: Scavenge 34.4 (55.6) -> 21.6 (55.6) MB, pooled: 0 MB, 0.93 / 0.00 ms  (average mu = 0.994, current mu = 0.990) task; 
+PASS KY11a kalıcı hatalı karo (A-05): 3 sn içinde aynı karo en çok 3 kez yeniden istenir (üstel geri çekilme) → {"ilkIstek":1,"sonraki3snIstek":0,"konsolHatasi3sn":0}
+PASS KY11b kalıcı hatalı karo (A-05): failures.length ≤ 50 → {"failures":1}
+PASS KY11c kalıcı hatalı karo: diğer karolar tamamlanır (≥ 100 ağ) → {"meshes":119}
+PASS KY11-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":307,"ihlal":0,"ilk":[],"enFazlaFailures":1}
+PASS KY11-S bütün iş sözleri 20 sn sınırı içinde sonuçlandı → {"is":119,"acik":0,"acikOrnek":[],"enUzunMs":350,"cozuldu":119,"reddedildi":0}
+[16495:0x349ac000]    20536 ms: Scavenge 34.9 (55.6) -> 22.4 (55.6) MB, pooled: 0 MB, 0.90 / 0.00 ms  (average mu = 0.994, current mu = 0.990) task; 
+[16495:0x349ac000]    20558 ms: Scavenge 37.5 (55.6) -> 22.2 (56.3) MB, pooled: 0 MB, 1.32 / 0.00 ms  (average mu = 0.994, current mu = 0.990) allocation failure; 
+[16495:0x349ac000]    20578 ms: Scavenge 37.9 (56.3) -> 22.2 (56.3) MB, pooled: 0 MB, 0.62 / 0.00 ms  (average mu = 0.994, current mu = 0.990) allocation failure; 
+[16495:0x349ac000]    20594 ms: Scavenge 37.9 (56.3) -> 22.2 (56.3) MB, pooled: 0 MB, 0.44 / 0.00 ms  (average mu = 0.994, current mu = 0.990) allocation failure; 
+[16495:0x349ac000]    20610 ms: Scavenge 37.9 (56.3) -> 22.2 (56.3) MB, pooled: 0 MB, 0.34 / 0.00 ms  (average mu = 0.994, current mu = 0.990) allocation failure; 
+[16495:0x349ac000]    20630 ms: Scavenge 38.0 (56.3) -> 22.2 (56.3) MB, pooled: 0 MB, 2.11 / 0.00 ms  (average mu = 0.994, current mu = 0.990) allocation failure; 
+[16495:0x349ac000]    20653 ms: Scavenge 38.0 (56.3) -> 22.3 (56.3) MB, pooled: 0 MB, 0.73 / 0.00 ms  (average mu = 0.994, current mu = 0.990) allocation failure; 
+[16495:0x349ac000]    20668 ms: Scavenge 38.0 (56.3) -> 22.3 (56.3) MB, pooled: 0 MB, 0.43 / 0.00 ms  (average mu = 0.994, current mu = 0.990) allocation failure; 
+[16495:0x349ac000]    20690 ms: Scavenge 38.0 (56.3) -> 22.3 (56.3) MB, pooled: 0 MB, 0.56 / 0.00 ms  (average mu = 0.994, current mu = 0.990) allocation failure; 
+[16495:0x349ac000]    20707 ms: Scavenge 38.0 (56.3) -> 22.4 (56.3) MB, pooled: 0 MB, 0.47 / 0.00 ms  (average mu = 0.994, current mu = 0.990) allocation failure; 
+[16495:0x349ac000]    20726 ms: Scavenge 38.0 (56.3) -> 22.4 (56.3) MB, pooled: 0 MB, 0.75 / 0.00 ms  (average mu = 0.994, current mu = 0.990) allocation failure; 
+[16495:0x349ac000]    20747 ms: Scavenge 38.1 (56.3) -> 22.5 (56.3) MB, pooled: 0 MB, 0.67 / 0.00 ms  (average mu = 0.994, current mu = 0.990) allocation failure; 
+[16495:0x349ac000]    20767 ms: Scavenge (interleaved) 35.8 (56.3) -> 22.9 (56.3) MB, pooled: 0 MB, 0.78 / 0.00 ms  (average mu = 0.994, current mu = 0.990) task; 
+[16495:0x349ac000]    20780 ms: Mark-Compact 30.0 (56.3) -> 22.4 (56.8) MB, pooled: 0 MB, 1.69 / 0.00 ms  (+ 3.9 ms in 0 steps since start of marking, biggest step 0.0 ms, walltime since start of marking 15 ms) (average mu = 0.998, current mu = 0.998) finalize incremental marking via stack guard; GC in old space requested
+[16495:0x349ac000]    20794 ms: Scavenge 38.2 (56.8) -> 22.4 (56.8) MB, pooled: 0 MB, 0.31 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    20809 ms: Scavenge 38.2 (56.8) -> 22.4 (56.8) MB, pooled: 0 MB, 0.36 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    20826 ms: Scavenge 38.2 (56.8) -> 22.5 (56.8) MB, pooled: 0 MB, 0.46 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    20844 ms: Scavenge 38.2 (56.8) -> 22.5 (56.8) MB, pooled: 0 MB, 0.37 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    20863 ms: Scavenge 38.2 (56.8) -> 22.5 (56.8) MB, pooled: 0 MB, 0.36 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    20881 ms: Scavenge 38.2 (56.8) -> 22.5 (56.8) MB, pooled: 0 MB, 0.45 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    20905 ms: Scavenge 38.2 (56.8) -> 22.5 (56.8) MB, pooled: 0 MB, 0.43 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    20924 ms: Scavenge 38.2 (56.8) -> 22.5 (56.8) MB, pooled: 0 MB, 0.51 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    20944 ms: Scavenge 38.2 (56.8) -> 22.6 (56.8) MB, pooled: 0 MB, 0.46 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    20970 ms: Scavenge 38.3 (56.8) -> 22.8 (56.8) MB, pooled: 0 MB, 0.87 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+PASS KY12a şeritteki iş (A-08): _drop sonrası iş sonuna kadar üretilmez, söz ilk dilimde sonuçsuz sonlanır → {"seg":80,"sonucUretildi":false,"durum":"cozuldu","sonlanmaDilim":1}
+PASS KY12-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":3,"ihlal":0,"ilk":[],"enFazlaFailures":4}
+PASS KY12-S bütün iş sözleri 20 sn sınırı içinde sonuçlandı → {"is":244,"acik":0,"acikOrnek":[],"enUzunMs":229,"cozuldu":244,"reddedildi":0}
+[16495:0x349ac000]    21001 ms: Scavenge (interleaved) 38.4 (56.8) -> 23.5 (57.1) MB, pooled: 0 MB, 1.03 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    21021 ms: Scavenge (interleaved) 38.6 (57.1) -> 23.5 (58.1) MB, pooled: 0 MB, 1.11 / 0.00 ms  (average mu = 0.998, current mu = 0.998) allocation failure; 
+[16495:0x349ac000]    21025 ms: Mark-Compact 25.4 (58.1) -> 23.0 (57.6) MB, pooled: 0 MB, 1.36 / 0.00 ms  (+ 2.5 ms in 0 steps since start of marking, biggest step 0.0 ms, walltime since start of marking 42 ms) (average mu = 0.997, current mu = 0.986) finalize incremental marking via task; GC in old space requested
+[16495:0x349ac000]    21045 ms: Scavenge 38.7 (57.6) -> 23.0 (57.6) MB, pooled: 0 MB, 0.43 / 0.00 ms  (average mu = 0.997, current mu = 0.986) allocation failure; 
+[16495:0x349ac000]    21064 ms: Scavenge 38.8 (57.6) -> 23.1 (57.6) MB, pooled: 0 MB, 0.56 / 0.00 ms  (average mu = 0.997, current mu = 0.986) allocation failure; 
+[16495:0x349ac000]    21084 ms: Scavenge 38.8 (57.6) -> 23.1 (57.6) MB, pooled: 0 MB, 0.59 / 0.00 ms  (average mu = 0.997, current mu = 0.986) allocation failure; 
+[16495:0x349ac000]    21105 ms: Scavenge 38.8 (57.6) -> 23.1 (57.6) MB, pooled: 0 MB, 0.51 / 0.00 ms  (average mu = 0.997, current mu = 0.986) allocation failure; 
+[16495:0x349ac000]    21126 ms: Scavenge 38.8 (57.6) -> 23.1 (57.6) MB, pooled: 0 MB, 0.47 / 0.00 ms  (average mu = 0.997, current mu = 0.986) allocation failure; 
+[16495:0x349ac000]    21144 ms: Scavenge 37.6 (57.6) -> 23.1 (57.6) MB, pooled: 0 MB, 0.49 / 0.00 ms  (average mu = 0.997, current mu = 0.986) task; 
+[16495:0x349ac000]    21166 ms: Scavenge 38.8 (57.6) -> 23.2 (57.6) MB, pooled: 0 MB, 0.56 / 0.00 ms  (average mu = 0.997, current mu = 0.986) allocation failure; 
+[16495:0x349ac000]    21188 ms: Scavenge 38.8 (57.6) -> 23.3 (57.6) MB, pooled: 0 MB, 0.79 / 0.00 ms  (average mu = 0.997, current mu = 0.986) allocation failure; 
+[16495:0x349ac000]    21211 ms: Scavenge 37.9 (57.6) -> 23.3 (57.6) MB, pooled: 0 MB, 0.58 / 0.00 ms  (average mu = 0.997, current mu = 0.986) task; 
+[16495:0x349ac000]    21240 ms: Scavenge 36.5 (57.6) -> 23.4 (57.6) MB, pooled: 0 MB, 0.73 / 0.00 ms  (average mu = 0.997, current mu = 0.986) task; 
+PASS KY13a işçideki iş (A-08): karo düşürülünce iş sözü ≤ 50 ms içinde sonuçsuz sonlanır (işçinin geç sonucu kullanılmaz) → {"isciTutuyor":true,"sonlanmaMs":5,"sonucUretildi":false}
+PASS KY13-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":14,"ihlal":0,"ilk":[],"enFazlaFailures":0}
+PASS KY13-S bütün iş sözleri 20 sn sınırı içinde sonuçlandı → {"is":126,"acik":0,"acikOrnek":[],"enUzunMs":273,"cozuldu":126,"reddedildi":0}
+[16495:0x349ac000]    21348 ms: Scavenge 39.0 (57.6) -> 23.8 (57.6) MB, pooled: 0 MB, 2.02 / 0.00 ms  (average mu = 0.997, current mu = 0.986) allocation failure; 
+[16495:0x349ac000]    21364 ms: Scavenge 39.1 (57.6) -> 23.7 (58.1) MB, pooled: 0 MB, 1.06 / 0.00 ms  (average mu = 0.997, current mu = 0.986) allocation failure; 
+[16495:0x349ac000]    21381 ms: Scavenge 39.5 (58.1) -> 23.7 (58.1) MB, pooled: 0 MB, 0.33 / 0.00 ms  (average mu = 0.997, current mu = 0.986) allocation failure; 
+[16495:0x349ac000]    21399 ms: Scavenge 39.5 (58.1) -> 23.7 (58.1) MB, pooled: 0 MB, 0.26 / 0.00 ms  (average mu = 0.997, current mu = 0.986) allocation failure; 
+[16495:0x349ac000]    21418 ms: Scavenge 39.5 (58.1) -> 23.7 (58.1) MB, pooled: 0 MB, 0.25 / 0.00 ms  (average mu = 0.997, current mu = 0.986) allocation failure; 
+PASS KY14a requestDepth (A-08, işçi kipi): yeni zorunlu istek eski derinlik işini iptal eder (eski iş ≤ 50 ms içinde sonuçsuz sonlanır) → {"sonlanmaMs":6,"eskiSonucUretildi":false}
+PASS KY15 _depthSeq: yavaş gelen eski derinlik yanıtı yeni pencereyi ezmez (depthWin ve son onDepth yeni bölgede) → {"depthWin":{"x":1920,"z":960},"sonOnDepth":{"x":1920,"z":960}}
+PASS KY14-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 (işçi kipi) → {"ornek":4,"ihlal":0,"ilk":[],"enFazlaFailures":0}
+PASS KY14-S bütün iş sözleri 10 sn sınırı içinde sonuçlandı → {"is":2,"acik":0,"acikOrnek":[],"enUzunMs":97,"cozuldu":2,"reddedildi":0}
+[16495:0x349ac000]    21439 ms: Scavenge 39.5 (58.1) -> 24.1 (58.1) MB, pooled: 0 MB, 0.97 / 0.00 ms  (average mu = 0.997, current mu = 0.986) allocation failure; 
+[16495:0x349ac000]    21454 ms: Scavenge 39.5 (58.1) -> 24.0 (58.1) MB, pooled: 0 MB, 0.72 / 0.00 ms  (average mu = 0.997, current mu = 0.986) allocation failure; 
+[16495:0x349ac000]    21471 ms: Scavenge 39.7 (58.1) -> 24.0 (58.1) MB, pooled: 0 MB, 0.23 / 0.00 ms  (average mu = 0.997, current mu = 0.986) allocation failure; 
+[16495:0x349ac000]    21488 ms: Scavenge 39.7 (58.1) -> 24.0 (58.1) MB, pooled: 0 MB, 0.28 / 0.00 ms  (average mu = 0.997, current mu = 0.986) allocation failure; 
+[16495:0x349ac000]    21507 ms: Scavenge 39.7 (58.1) -> 24.0 (58.1) MB, pooled: 0 MB, 0.23 / 0.00 ms  (average mu = 0.997, current mu = 0.986) allocation failure; 
+PASS KY14b requestDepth (A-08, yerel şerit): eski derinlik işi şeritte yarımken yeni zorunlu istek gelince sonuna kadar hesaplanmaz (sonuçsuz sonlanır) → {"eskiSonucUretildi":false,"durum":"cozuldu","depthWin":{"x":1920,"z":960}}
+PASS KY14y-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 (yerel şerit) → {"ornek":2,"ihlal":0,"ilk":[],"enFazlaFailures":4}
+PASS KY14y-S bütün iş sözleri 10 sn sınırı içinde sonuçlandı → {"is":2,"acik":0,"acikOrnek":[],"enUzunMs":86,"cozuldu":2,"reddedildi":0}
+[16495:0x349ac000]    21528 ms: Scavenge 38.9 (58.1) -> 24.6 (58.1) MB, pooled: 0 MB, 0.59 / 0.00 ms  (average mu = 0.997, current mu = 0.986) task; 
+[16495:0x349ac000]    21555 ms: Scavenge 39.9 (58.1) -> 24.6 (58.3) MB, pooled: 0 MB, 0.87 / 0.00 ms  (average mu = 0.997, current mu = 0.986) allocation failure; 
+[16495:0x349ac000]    21579 ms: Scavenge 40.3 (58.3) -> 24.6 (58.3) MB, pooled: 0 MB, 0.48 / 0.00 ms  (average mu = 0.997, current mu = 0.986) allocation failure; 
+[16495:0x349ac000]    21601 ms: Scavenge 39.0 (58.3) -> 24.7 (58.3) MB, pooled: 0 MB, 0.67 / 0.00 ms  (average mu = 0.997, current mu = 0.986) task; 
+[16495:0x349ac000]    21625 ms: Scavenge 40.3 (58.3) -> 24.6 (58.3) MB, pooled: 0 MB, 0.53 / 0.00 ms  (average mu = 0.997, current mu = 0.986) allocation failure; 
+[16495:0x349ac000]    21642 ms: Scavenge 40.3 (58.3) -> 24.6 (58.3) MB, pooled: 0 MB, 0.40 / 0.00 ms  (average mu = 0.997, current mu = 0.986) allocation failure; 
+[16495:0x349ac000]    21669 ms: Scavenge (interleaved) 40.3 (58.3) -> 24.7 (58.3) MB, pooled: 0 MB, 0.61 / 0.00 ms  (average mu = 0.997, current mu = 0.986) allocation failure; 
+[16495:0x349ac000]    21697 ms: Scavenge (interleaved) 40.4 (58.3) -> 24.7 (58.3) MB, pooled: 0 MB, 1.36 / 0.00 ms  (average mu = 0.997, current mu = 0.986) allocation failure; 
+[16495:0x349ac000]    21711 ms: Mark-Compact 32.1 (58.3) -> 24.2 (58.6) MB, pooled: 0 MB, 1.59 / 0.00 ms  (+ 1.2 ms in 0 steps since start of marking, biggest step 0.0 ms, walltime since start of marking 52 ms) (average mu = 0.997, current mu = 0.997) finalize incremental marking via stack guard; GC in old space requested
+[16495:0x349ac000]    21743 ms: Scavenge 39.6 (58.6) -> 24.3 (58.6) MB, pooled: 0 MB, 0.78 / 0.00 ms  (average mu = 0.997, current mu = 0.997) task; 
+[16495:0x349ac000]    21770 ms: Scavenge 38.5 (58.6) -> 24.3 (58.6) MB, pooled: 0 MB, 0.79 / 0.00 ms  (average mu = 0.997, current mu = 0.997) task; 
+[16495:0x349ac000]    21801 ms: Scavenge 40.0 (58.6) -> 24.4 (58.6) MB, pooled: 0 MB, 0.73 / 0.00 ms  (average mu = 0.997, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    21820 ms: Scavenge 37.4 (58.6) -> 24.4 (58.6) MB, pooled: 0 MB, 0.62 / 0.00 ms  (average mu = 0.997, current mu = 0.997) task; 
+[16495:0x349ac000]    21879 ms: Scavenge 40.1 (58.8) -> 24.7 (58.8) MB, pooled: 0 MB, 0.81 / 0.00 ms  (average mu = 0.997, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    21902 ms: Scavenge 40.2 (58.8) -> 24.8 (58.8) MB, pooled: 0 MB, 0.87 / 0.00 ms  (average mu = 0.997, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    21922 ms: Scavenge 40.5 (58.8) -> 24.8 (58.8) MB, pooled: 0 MB, 0.53 / 0.00 ms  (average mu = 0.997, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    21941 ms: Scavenge 39.5 (58.8) -> 24.8 (58.8) MB, pooled: 0 MB, 0.47 / 0.00 ms  (average mu = 0.997, current mu = 0.997) task; 
+[16495:0x349ac000]    21959 ms: Scavenge 40.5 (58.8) -> 24.9 (58.8) MB, pooled: 0 MB, 0.74 / 0.00 ms  (average mu = 0.997, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    21976 ms: Scavenge 40.5 (58.8) -> 24.8 (58.8) MB, pooled: 0 MB, 0.51 / 0.00 ms  (average mu = 0.997, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    21993 ms: Scavenge 40.5 (58.8) -> 24.8 (58.8) MB, pooled: 0 MB, 0.24 / 0.00 ms  (average mu = 0.997, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    22010 ms: Scavenge 40.5 (58.8) -> 24.8 (58.8) MB, pooled: 0 MB, 0.21 / 0.00 ms  (average mu = 0.997, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    22027 ms: Scavenge 40.5 (58.8) -> 24.8 (58.8) MB, pooled: 0 MB, 0.30 / 0.00 ms  (average mu = 0.997, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    22045 ms: Scavenge 40.5 (58.8) -> 24.8 (58.8) MB, pooled: 0 MB, 0.55 / 0.00 ms  (average mu = 0.997, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    22064 ms: Scavenge 40.5 (58.8) -> 24.8 (58.8) MB, pooled: 0 MB, 0.46 / 0.00 ms  (average mu = 0.997, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    22084 ms: Scavenge 40.6 (58.8) -> 24.9 (58.8) MB, pooled: 0 MB, 0.42 / 0.00 ms  (average mu = 0.997, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    22105 ms: Scavenge 40.6 (58.8) -> 24.9 (58.8) MB, pooled: 0 MB, 0.58 / 0.00 ms  (average mu = 0.997, current mu = 0.997) allocation failure; 
+PASS KY16 odak bastırması: prepare odağı etkinken uzak kameranın derinlik isteği yeni iş açmaz, pencere odakta kalır → {"yeniDerinlikIsi":0,"depthWin":{"x":280,"z":-5000}}
+[16495:0x349ac000]    22126 ms: Mark-Compact 35.1 (58.8) -> 24.6 (59.1) MB, pooled: 0 MB, 1.43 / 0.00 ms  (+ 6.6 ms in 0 steps since start of marking, biggest step 0.0 ms, walltime since start of marking 11 ms) (average mu = 0.992, current mu = 0.981) finalize incremental marking via task; GC in old space requested
+PASS KY17 prepare odak koruması: kamera ~5,5 km uzakta güncellenirken odak bölgesinde ≥ 6 karo ağı korunur, ≥ 1 karo seg 80 → {"odakAg":20,"odakHires":15}
+PASS KY16-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":23,"ihlal":0,"ilk":[],"enFazlaFailures":0}
+PASS KY16-S bütün iş sözleri 15 sn sınırı içinde sonuçlandı → {"is":146,"acik":0,"acikOrnek":[],"enUzunMs":323,"cozuldu":146,"reddedildi":0}
+[16495:0x349ac000]    22236 ms: Scavenge 40.5 (59.1) -> 25.2 (59.1) MB, pooled: 0 MB, 1.10 / 0.00 ms  (average mu = 0.992, current mu = 0.981) allocation failure; 
+[16495:0x349ac000]    22256 ms: Scavenge 40.5 (59.1) -> 25.3 (59.1) MB, pooled: 0 MB, 1.05 / 0.00 ms  (average mu = 0.992, current mu = 0.981) allocation failure; 
+[16495:0x349ac000]    22275 ms: Scavenge 40.9 (59.1) -> 25.2 (59.1) MB, pooled: 0 MB, 0.49 / 0.00 ms  (average mu = 0.992, current mu = 0.981) allocation failure; 
+[16495:0x349ac000]    22293 ms: Scavenge 41.0 (59.1) -> 25.3 (59.1) MB, pooled: 0 MB, 0.50 / 0.00 ms  (average mu = 0.992, current mu = 0.981) allocation failure; 
+[16495:0x349ac000]    22310 ms: Scavenge 41.0 (59.1) -> 25.3 (59.1) MB, pooled: 0 MB, 0.52 / 0.00 ms  (average mu = 0.992, current mu = 0.981) allocation failure; 
+[16495:0x349ac000]    22327 ms: Scavenge 41.0 (59.1) -> 25.3 (59.1) MB, pooled: 0 MB, 0.46 / 0.00 ms  (average mu = 0.992, current mu = 0.981) allocation failure; 
+[16495:0x349ac000]    22347 ms: Scavenge 41.0 (59.1) -> 25.3 (59.1) MB, pooled: 0 MB, 0.61 / 0.00 ms  (average mu = 0.992, current mu = 0.981) allocation failure; 
+[16495:0x349ac000]    22365 ms: Scavenge 40.7 (59.1) -> 25.3 (59.1) MB, pooled: 0 MB, 0.64 / 0.00 ms  (average mu = 0.992, current mu = 0.981) task; 
+[16495:0x349ac000]    22388 ms: Scavenge 41.0 (59.1) -> 25.4 (59.1) MB, pooled: 0 MB, 0.56 / 0.00 ms  (average mu = 0.992, current mu = 0.981) allocation failure; 
+[16495:0x349ac000]    22409 ms: Scavenge 38.8 (59.1) -> 25.4 (59.1) MB, pooled: 0 MB, 0.61 / 0.00 ms  (average mu = 0.992, current mu = 0.981) task; 
+[16495:0x349ac000]    22428 ms: Scavenge 38.3 (59.1) -> 25.4 (59.1) MB, pooled: 0 MB, 0.56 / 0.00 ms  (average mu = 0.992, current mu = 0.981) task; 
+[16495:0x349ac000]    22451 ms: Scavenge 39.3 (59.1) -> 25.6 (59.3) MB, pooled: 0 MB, 0.96 / 0.00 ms  (average mu = 0.992, current mu = 0.981) task; 
+[16495:0x349ac000]    22468 ms: Mark-Compact 31.2 (59.3) -> 25.5 (59.6) MB, pooled: 0 MB, 1.87 / 0.00 ms  (+ 4.2 ms in 0 steps since start of marking, biggest step 0.0 ms, walltime since start of marking 13 ms) (average mu = 0.989, current mu = 0.983) finalize incremental marking via task; GC in old space requested
+[16495:0x349ac000]    22508 ms: Scavenge 41.2 (59.6) -> 25.6 (59.6) MB, pooled: 0 MB, 1.35 / 0.00 ms  (average mu = 0.989, current mu = 0.983) allocation failure; 
+[16495:0x349ac000]    22525 ms: Scavenge 41.2 (59.6) -> 25.6 (59.6) MB, pooled: 0 MB, 0.99 / 0.00 ms  (average mu = 0.989, current mu = 0.983) allocation failure; 
+[16495:0x349ac000]    22542 ms: Scavenge 41.3 (59.6) -> 25.6 (59.6) MB, pooled: 0 MB, 0.24 / 0.00 ms  (average mu = 0.989, current mu = 0.983) allocation failure; 
+[16495:0x349ac000]    22557 ms: Scavenge 41.3 (59.6) -> 25.6 (59.6) MB, pooled: 0 MB, 0.22 / 0.00 ms  (average mu = 0.989, current mu = 0.983) allocation failure; 
+[16495:0x349ac000]    22572 ms: Scavenge 41.3 (59.6) -> 25.6 (59.6) MB, pooled: 0 MB, 0.29 / 0.00 ms  (average mu = 0.989, current mu = 0.983) allocation failure; 
+[16495:0x349ac000]    22588 ms: Scavenge 41.3 (59.6) -> 25.6 (59.6) MB, pooled: 0 MB, 0.21 / 0.00 ms  (average mu = 0.989, current mu = 0.983) allocation failure; 
+[16495:0x349ac000]    22601 ms: Scavenge 41.3 (59.6) -> 25.6 (59.6) MB, pooled: 0 MB, 0.23 / 0.00 ms  (average mu = 0.989, current mu = 0.983) allocation failure; 
+[16495:0x349ac000]    22614 ms: Scavenge 41.3 (59.6) -> 25.6 (59.6) MB, pooled: 0 MB, 0.20 / 0.00 ms  (average mu = 0.989, current mu = 0.983) allocation failure; 
+[16495:0x349ac000]    22633 ms: Scavenge 41.3 (59.6) -> 25.6 (59.6) MB, pooled: 0 MB, 0.65 / 0.00 ms  (average mu = 0.989, current mu = 0.983) allocation failure; 
+[16495:0x349ac000]    22653 ms: Scavenge 41.3 (59.6) -> 25.6 (59.6) MB, pooled: 0 MB, 0.57 / 0.00 ms  (average mu = 0.989, current mu = 0.983) allocation failure; 
+[16495:0x349ac000]    22671 ms: Scavenge 41.3 (59.6) -> 25.6 (59.6) MB, pooled: 0 MB, 0.46 / 0.00 ms  (average mu = 0.989, current mu = 0.983) allocation failure; 
+[16495:0x349ac000]    22688 ms: Scavenge 41.3 (59.6) -> 25.6 (59.6) MB, pooled: 0 MB, 0.20 / 0.00 ms  (average mu = 0.989, current mu = 0.983) allocation failure; 
+[16495:0x349ac000]    22705 ms: Scavenge 41.3 (59.6) -> 25.6 (59.6) MB, pooled: 0 MB, 0.21 / 0.00 ms  (average mu = 0.989, current mu = 0.983) allocation failure; 
+[16495:0x349ac000]    22722 ms: Scavenge 41.3 (59.6) -> 25.6 (59.6) MB, pooled: 0 MB, 0.21 / 0.00 ms  (average mu = 0.989, current mu = 0.983) allocation failure; 
+[16495:0x349ac000]    22740 ms: Scavenge 41.3 (59.6) -> 25.6 (59.6) MB, pooled: 0 MB, 0.50 / 0.00 ms  (average mu = 0.989, current mu = 0.983) allocation failure; 
+[16495:0x349ac000]    22760 ms: Scavenge 41.3 (59.6) -> 25.6 (59.6) MB, pooled: 0 MB, 0.41 / 0.00 ms  (average mu = 0.989, current mu = 0.983) allocation failure; 
+[16495:0x349ac000]    22780 ms: Scavenge 41.4 (59.6) -> 25.6 (59.6) MB, pooled: 0 MB, 0.44 / 0.00 ms  (average mu = 0.989, current mu = 0.983) allocation failure; 
+[16495:0x349ac000]    22800 ms: Scavenge 41.4 (59.6) -> 25.7 (59.6) MB, pooled: 0 MB, 1.25 / 0.00 ms  (average mu = 0.989, current mu = 0.983) allocation failure; 
+[16495:0x349ac000]    22822 ms: Scavenge 41.4 (59.6) -> 25.7 (59.6) MB, pooled: 0 MB, 0.56 / 0.00 ms  (average mu = 0.989, current mu = 0.983) allocation failure; 
+[16495:0x349ac000]    26450 ms: Scavenge 38.7 (59.6) -> 25.7 (59.6) MB, pooled: 0 MB, 0.82 / 0.00 ms  (average mu = 0.989, current mu = 0.983) task; 
+[16495:0x349ac000]    35502 ms: Scavenge 41.5 (59.6) -> 25.8 (59.6) MB, pooled: 0 MB, 0.75 / 0.00 ms  (average mu = 0.989, current mu = 0.983) allocation failure; 
+[16495:0x349ac000]    35523 ms: Scavenge 41.5 (59.6) -> 25.8 (59.6) MB, pooled: 0 MB, 0.68 / 0.00 ms  (average mu = 0.989, current mu = 0.983) allocation failure; 
+PASS KY18 örtüşen prepare (A-12): önce biten A, B'nin odağını kısaltmaz; B bitince B bölgesinde ≥ 6 karo ağı ve derinlik penceresi B'de → {"aMs":131,"bMs":13033,"odakAg":20,"yavasIs":3,"depthWin":{"x":280,"z":-5000}}
+PASS KY18-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":1261,"ihlal":0,"ilk":[],"enFazlaFailures":0}
+PASS KY18-S bütün iş sözleri 25 sn sınırı içinde sonuçlandı → {"is":147,"acik":0,"acikOrnek":[],"enUzunMs":13031,"cozuldu":147,"reddedildi":0}
+PASS KY19a prepare zaman aşımı dalı: askıdaki işçide 400 ms sınırıyla ≤ 1,5 sn içinde sonuçlanır (asılı kalmaz) → {"ms":401}
+PASS KY19b prepare zaman aşımı dalı (A-11): dönüş değeri 'timeout' (çağırana bildirilir) → {"donus":"timeout"}
+[16495:0x349ac000]    35957 ms: Scavenge 41.7 (59.6) -> 26.9 (59.6) MB, pooled: 0 MB, 1.08 / 0.00 ms  (average mu = 0.989, current mu = 0.983) allocation failure; 
+[16495:0x349ac000]    35977 ms: Scavenge 41.7 (59.6) -> 26.9 (61.1) MB, pooled: 0 MB, 1.02 / 0.00 ms  (average mu = 0.989, current mu = 0.983) allocation failure; 
+[16495:0x349ac000]    35997 ms: Scavenge 42.6 (61.1) -> 26.9 (61.1) MB, pooled: 0 MB, 0.46 / 0.00 ms  (average mu = 0.989, current mu = 0.983) allocation failure; 
+[16495:0x349ac000]    36016 ms: Scavenge 42.6 (61.1) -> 26.9 (61.1) MB, pooled: 0 MB, 0.68 / 0.00 ms  (average mu = 0.989, current mu = 0.983) allocation failure; 
+[16495:0x349ac000]    36035 ms: Scavenge (interleaved) 42.6 (61.3) -> 26.9 (61.3) MB, pooled: 0 MB, 0.59 / 0.00 ms  (average mu = 0.989, current mu = 0.983) allocation failure; 
+[16495:0x349ac000]    36054 ms: Scavenge (interleaved) 42.6 (61.3) -> 26.9 (61.3) MB, pooled: 0 MB, 0.69 / 0.00 ms  (average mu = 0.989, current mu = 0.983) allocation failure; 
+[16495:0x349ac000]    36071 ms: Mark-Compact 40.1 (61.3) -> 26.6 (60.6) MB, pooled: 1 MB, 1.92 / 0.00 ms  (+ 3.4 ms in 0 steps since start of marking, biggest step 0.0 ms, walltime since start of marking 52 ms) (average mu = 0.999, current mu = 1.000) finalize incremental marking via stack guard; GC in old space requested
+[16495:0x349ac000]    36091 ms: Scavenge 42.3 (60.6) -> 26.6 (60.6) MB, pooled: 1 MB, 0.37 / 0.00 ms  (average mu = 0.999, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]    36116 ms: Scavenge 42.3 (60.6) -> 26.7 (60.6) MB, pooled: 1 MB, 0.67 / 0.00 ms  (average mu = 0.999, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]    36143 ms: Scavenge 42.3 (60.6) -> 26.8 (60.6) MB, pooled: 1 MB, 1.10 / 0.00 ms  (average mu = 0.999, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]    36171 ms: Scavenge 41.6 (60.6) -> 26.7 (60.6) MB, pooled: 1 MB, 0.81 / 0.00 ms  (average mu = 0.999, current mu = 1.000) task; 
+[16495:0x349ac000]    36199 ms: Scavenge 40.8 (60.6) -> 26.9 (60.6) MB, pooled: 1 MB, 0.68 / 0.00 ms  (average mu = 0.999, current mu = 1.000) task; 
+PASS KY20a terminate sonrası geç ileti (A-09): işler bitince hayalet iş yuvası kalmaz → {"hayalet":0,"isciYuvalari":[[1,0],[2,0]]}
+[16495:0x349ac000]    36617 ms: Scavenge 41.1 (60.6) -> 27.3 (60.8) MB, pooled: 1 MB, 1.30 / 0.00 ms  (average mu = 0.999, current mu = 1.000) task; 
+[16495:0x349ac000]    36657 ms: Scavenge 40.3 (60.8) -> 27.3 (61.1) MB, pooled: 0 MB, 1.21 / 0.00 ms  (average mu = 0.999, current mu = 1.000) task; 
+PASS KY20b terminate sonrası geç ileti (A-09): sonraki iş dalgasında, dalgadan önce canlı olan her işçi ≥ 1 iş alır (paralellik düşmez) → {"yeniIleti":[[1,47],[2,46]],"dalgadaOlen":0,"dalgadaKurulan":0}
+PASS KY20-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":54,"ihlal":0,"ilk":[],"enFazlaFailures":1}
+PASS KY20-S bütün iş sözleri 10 sn sınırı içinde sonuçlandı → {"is":220,"acik":0,"acikOrnek":[],"enUzunMs":282,"cozuldu":220,"reddedildi":0}
+[16495:0x349ac000]    36715 ms: Scavenge 43.0 (61.1) -> 28.1 (61.1) MB, pooled: 0 MB, 1.23 / 0.00 ms  (average mu = 0.999, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]    36742 ms: Scavenge 43.1 (61.1) -> 28.0 (61.8) MB, pooled: 0 MB, 1.29 / 0.00 ms  (average mu = 0.999, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]    36768 ms: Scavenge 43.7 (61.8) -> 28.0 (61.8) MB, pooled: 0 MB, 0.62 / 0.00 ms  (average mu = 0.999, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]    36791 ms: Scavenge (interleaved) 41.3 (61.8) -> 28.0 (62.3) MB, pooled: 0 MB, 0.80 / 0.00 ms  (average mu = 0.999, current mu = 1.000) task; 
+[16495:0x349ac000]    36819 ms: Scavenge (interleaved) 43.7 (62.3) -> 28.0 (62.3) MB, pooled: 0 MB, 0.84 / 0.00 ms  (average mu = 0.999, current mu = 1.000) allocation failure; 
+[16495:0x349ac000]    36843 ms: Mark-Compact 42.1 (62.3) -> 27.5 (62.1) MB, pooled: 0 MB, 2.06 / 0.00 ms  (+ 1.5 ms in 0 steps since start of marking, biggest step 0.0 ms, walltime since start of marking 53 ms) (average mu = 0.999, current mu = 0.996) finalize incremental marking via stack guard; GC in old space requested
+[16495:0x349ac000]    36869 ms: Scavenge 43.3 (62.1) -> 27.5 (62.1) MB, pooled: 0 MB, 0.65 / 0.00 ms  (average mu = 0.999, current mu = 0.996) allocation failure; 
+[16495:0x349ac000]    36895 ms: Scavenge 43.3 (62.1) -> 27.6 (62.1) MB, pooled: 0 MB, 0.73 / 0.00 ms  (average mu = 0.999, current mu = 0.996) allocation failure; 
+[16495:0x349ac000]    36927 ms: Scavenge 43.3 (62.1) -> 27.7 (62.1) MB, pooled: 0 MB, 0.75 / 0.00 ms  (average mu = 0.999, current mu = 0.996) allocation failure; 
+[16495:0x349ac000]    36956 ms: Scavenge 43.0 (62.1) -> 27.7 (62.1) MB, pooled: 0 MB, 0.96 / 0.00 ms  (average mu = 0.999, current mu = 0.996) task; 
+[16495:0x349ac000]    36981 ms: Scavenge 41.5 (62.1) -> 27.7 (62.1) MB, pooled: 0 MB, 0.64 / 0.00 ms  (average mu = 0.999, current mu = 0.996) task; 
+[16495:0x349ac000]    37003 ms: Scavenge 42.2 (62.1) -> 27.8 (62.1) MB, pooled: 0 MB, 0.54 / 0.00 ms  (average mu = 0.999, current mu = 0.996) task; 
+PASS KY21 _workerFailed (A-08): düşürülmüş karonun işi çöken işçiden sonra yeniden üretilmez (başka işçiye gönderilmez) → {"seg32Gonderim":1,"workers":2}
+PASS KY21-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":43,"ihlal":0,"ilk":[],"enFazlaFailures":1}
+PASS KY21-S bütün iş sözleri 10 sn sınırı içinde sonuçlandı → {"is":126,"acik":0,"acikOrnek":[],"enUzunMs":339,"cozuldu":126,"reddedildi":0}
+[16495:0x349ac000]    37374 ms: Scavenge 43.6 (62.3) -> 28.6 (62.3) MB, pooled: 0 MB, 1.22 / 0.00 ms  (average mu = 0.999, current mu = 0.996) allocation failure; 
+[16495:0x349ac000]    37402 ms: Scavenge 43.6 (62.3) -> 28.6 (62.8) MB, pooled: 0 MB, 1.38 / 0.00 ms  (average mu = 0.999, current mu = 0.996) allocation failure; 
+[16495:0x349ac000]    37426 ms: Scavenge 44.2 (62.8) -> 28.5 (62.8) MB, pooled: 0 MB, 0.46 / 0.00 ms  (average mu = 0.999, current mu = 0.996) allocation failure; 
+[16495:0x349ac000]    37447 ms: Scavenge 44.3 (62.8) -> 28.6 (62.8) MB, pooled: 0 MB, 0.57 / 0.00 ms  (average mu = 0.999, current mu = 0.996) allocation failure; 
+[16495:0x349ac000]    37469 ms: Scavenge (interleaved) 44.3 (62.8) -> 28.6 (62.8) MB, pooled: 0 MB, 0.74 / 0.00 ms  (average mu = 0.999, current mu = 0.996) allocation failure; 
+[16495:0x349ac000]    37488 ms: Scavenge (interleaved) 44.3 (62.8) -> 28.6 (62.8) MB, pooled: 0 MB, 0.58 / 0.00 ms  (average mu = 0.999, current mu = 0.996) allocation failure; 
+[16495:0x349ac000]    37509 ms: Mark-Compact 43.5 (62.8) -> 28.3 (63.1) MB, pooled: 0 MB, 1.59 / 0.00 ms  (+ 2.4 ms in 0 steps since start of marking, biggest step 0.0 ms, walltime since start of marking 53 ms) (average mu = 0.998, current mu = 0.995) finalize incremental marking via stack guard; GC in old space requested
+[16495:0x349ac000]    37530 ms: Scavenge 44.1 (63.1) -> 28.3 (63.1) MB, pooled: 0 MB, 0.48 / 0.00 ms  (average mu = 0.998, current mu = 0.995) allocation failure; 
+[16495:0x349ac000]    37549 ms: Scavenge 44.1 (63.1) -> 28.4 (63.1) MB, pooled: 0 MB, 0.58 / 0.00 ms  (average mu = 0.998, current mu = 0.995) allocation failure; 
+[16495:0x349ac000]    37566 ms: Scavenge 42.0 (63.1) -> 28.4 (63.1) MB, pooled: 0 MB, 0.56 / 0.00 ms  (average mu = 0.998, current mu = 0.995) task; 
+[16495:0x349ac000]    37590 ms: Scavenge 43.3 (63.1) -> 28.4 (63.1) MB, pooled: 0 MB, 0.69 / 0.00 ms  (average mu = 0.998, current mu = 0.995) task; 
+[16495:0x349ac000]    37612 ms: Scavenge 42.5 (63.1) -> 28.5 (63.1) MB, pooled: 0 MB, 0.60 / 0.00 ms  (average mu = 0.998, current mu = 0.995) task; 
+[16495:0x349ac000]    37631 ms: Scavenge 41.3 (63.1) -> 28.5 (63.1) MB, pooled: 0 MB, 0.57 / 0.00 ms  (average mu = 0.998, current mu = 0.995) task; 
+[16495:0x349ac000]    37654 ms: Scavenge 41.8 (63.1) -> 28.6 (63.1) MB, pooled: 0 MB, 0.63 / 0.00 ms  (average mu = 0.998, current mu = 0.995) task; 
+PASS KY22 LOD histerezisi (A-07): 380 m LOD sınırında ±20 m salınımda (3 tur) karo yeniden üretilmez → {"baslangicSeg":80,"salinimdakiIstek":0,"sonSeg":80}
+PASS KY22-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":12,"ihlal":0,"ilk":[],"enFazlaFailures":0}
+PASS KY22-S bütün iş sözleri 10 sn sınırı içinde sonuçlandı → {"is":128,"acik":0,"acikOrnek":[],"enUzunMs":310,"cozuldu":128,"reddedildi":0}
+[16495:0x349ac000]    37711 ms: Scavenge 41.6 (63.1) -> 29.5 (63.1) MB, pooled: 0 MB, 1.50 / 0.00 ms  (average mu = 0.998, current mu = 0.995) task; 
+[16495:0x349ac000]    37732 ms: Scavenge 42.3 (63.1) -> 29.6 (63.6) MB, pooled: 0 MB, 1.12 / 0.00 ms  (average mu = 0.998, current mu = 0.995) task; 
+[16495:0x349ac000]    37757 ms: Scavenge 44.0 (63.6) -> 29.6 (63.6) MB, pooled: 0 MB, 0.57 / 0.00 ms  (average mu = 0.998, current mu = 0.995) task; 
+[16495:0x349ac000]    37788 ms: Scavenge 43.0 (63.6) -> 29.8 (63.6) MB, pooled: 0 MB, 0.67 / 0.00 ms  (average mu = 0.998, current mu = 0.995) task; 
+[16495:0x349ac000]    37837 ms: Scavenge (interleaved) 45.3 (63.6) -> 30.1 (63.8) MB, pooled: 0 MB, 1.23 / 0.00 ms  (average mu = 0.998, current mu = 0.995) allocation failure; 
+[16495:0x349ac000]    37844 ms: Mark-Compact 33.3 (63.8) -> 29.7 (64.3) MB, pooled: 0 MB, 1.82 / 0.00 ms  (+ 2.8 ms in 0 steps since start of marking, biggest step 0.0 ms, walltime since start of marking 23 ms) (average mu = 0.997, current mu = 0.987) finalize incremental marking via task; GC in old space requested
+[16495:0x349ac000]    37894 ms: Scavenge 42.7 (64.3) -> 29.9 (64.3) MB, pooled: 0 MB, 0.72 / 0.00 ms  (average mu = 0.997, current mu = 0.987) task; 
+[16495:0x349ac000]    37942 ms: Scavenge 44.2 (64.3) -> 30.1 (64.3) MB, pooled: 0 MB, 0.98 / 0.00 ms  (average mu = 0.997, current mu = 0.987) task; 
+[16495:0x349ac000]    37992 ms: Scavenge 44.2 (64.3) -> 30.3 (64.3) MB, pooled: 0 MB, 1.13 / 0.00 ms  (average mu = 0.997, current mu = 0.987) task; 
+[16495:0x349ac000]    38049 ms: Scavenge 45.9 (64.3) -> 30.4 (64.3) MB, pooled: 0 MB, 0.82 / 0.00 ms  (average mu = 0.997, current mu = 0.987) allocation failure; 
+[16495:0x349ac000]    38073 ms: Scavenge 46.0 (64.3) -> 30.5 (64.3) MB, pooled: 0 MB, 0.67 / 0.00 ms  (average mu = 0.997, current mu = 0.987) allocation failure; 
+[16495:0x349ac000]    38094 ms: Scavenge 46.1 (64.3) -> 30.5 (64.6) MB, pooled: 0 MB, 0.98 / 0.00 ms  (average mu = 0.997, current mu = 0.987) allocation failure; 
+[16495:0x349ac000]    38134 ms: Scavenge 46.2 (64.6) -> 30.6 (64.6) MB, pooled: 0 MB, 0.70 / 0.00 ms  (average mu = 0.997, current mu = 0.987) allocation failure; 
+[16495:0x349ac000]    38153 ms: Scavenge 46.2 (64.6) -> 30.6 (64.6) MB, pooled: 0 MB, 0.68 / 0.00 ms  (average mu = 0.997, current mu = 0.987) allocation failure; 
+[16495:0x349ac000]    38173 ms: Scavenge 46.3 (64.6) -> 30.5 (64.6) MB, pooled: 0 MB, 0.53 / 0.00 ms  (average mu = 0.997, current mu = 0.987) allocation failure; 
+[16495:0x349ac000]    38221 ms: Scavenge 46.3 (64.6) -> 30.6 (64.6) MB, pooled: 0 MB, 0.79 / 0.00 ms  (average mu = 0.997, current mu = 0.987) allocation failure; 
+[16495:0x349ac000]    38250 ms: Scavenge 46.3 (64.6) -> 30.6 (64.6) MB, pooled: 0 MB, 0.74 / 0.00 ms  (average mu = 0.997, current mu = 0.987) allocation failure; 
+[16495:0x349ac000]    38307 ms: Scavenge 46.3 (64.6) -> 30.7 (64.6) MB, pooled: 0 MB, 1.00 / 0.00 ms  (average mu = 0.997, current mu = 0.987) allocation failure; 
+[16495:0x349ac000]    38342 ms: Scavenge 46.3 (64.6) -> 30.7 (64.6) MB, pooled: 0 MB, 1.06 / 0.00 ms  (average mu = 0.997, current mu = 0.987) allocation failure; 
+[16495:0x349ac000]    38375 ms: Scavenge 46.4 (64.6) -> 30.7 (64.6) MB, pooled: 0 MB, 0.70 / 0.00 ms  (average mu = 0.997, current mu = 0.987) allocation failure; 
+[16495:0x349ac000]    38409 ms: Scavenge 45.4 (64.6) -> 30.7 (64.6) MB, pooled: 0 MB, 0.63 / 0.00 ms  (average mu = 0.997, current mu = 0.987) task; 
+[16495:0x349ac000]    38458 ms: Scavenge 44.5 (64.6) -> 30.7 (64.6) MB, pooled: 0 MB, 0.71 / 0.00 ms  (average mu = 0.997, current mu = 0.987) task; 
+[16495:0x349ac000]    38496 ms: Scavenge 45.3 (64.6) -> 30.9 (64.6) MB, pooled: 0 MB, 0.88 / 0.00 ms  (average mu = 0.997, current mu = 0.987) task; 
+[16495:0x349ac000]    38539 ms: Scavenge 45.5 (64.6) -> 31.0 (64.8) MB, pooled: 0 MB, 1.00 / 0.00 ms  (average mu = 0.997, current mu = 0.987) task; 
+[16495:0x349ac000]    38635 ms: Scavenge 44.2 (64.8) -> 31.3 (64.8) MB, pooled: 0 MB, 0.88 / 0.00 ms  (average mu = 0.997, current mu = 0.987) task; 
+[16495:0x349ac000]    38650 ms: Mark-Compact 32.0 (64.8) -> 30.2 (65.3) MB, pooled: 0 MB, 1.76 / 0.00 ms  (+ 10.7 ms in 0 steps since start of marking, biggest step 0.0 ms, walltime since start of marking 14 ms) (average mu = 0.992, current mu = 0.985) finalize incremental marking via task; GC in old space requested
+[16495:0x349ac000]    38761 ms: Scavenge 45.9 (65.3) -> 30.5 (65.3) MB, pooled: 0 MB, 1.16 / 0.00 ms  (average mu = 0.992, current mu = 0.985) allocation failure; 
+[16495:0x349ac000]    38804 ms: Scavenge 46.0 (65.3) -> 30.5 (65.3) MB, pooled: 0 MB, 1.45 / 0.00 ms  (average mu = 0.992, current mu = 0.985) allocation failure; 
+[16495:0x349ac000]    38826 ms: Scavenge 46.1 (65.3) -> 30.5 (65.3) MB, pooled: 0 MB, 1.01 / 0.00 ms  (average mu = 0.992, current mu = 0.985) allocation failure; 
+[16495:0x349ac000]    38964 ms: Scavenge 43.6 (65.3) -> 30.7 (65.3) MB, pooled: 0 MB, 0.86 / 0.00 ms  (average mu = 0.992, current mu = 0.985) task; 
+PASS KY23 derin deniz karoları (A-07): 8 km açık deniz dolaşımında 600 m ötesindeki derin karo sayısı ≤ 10 → {"enCok":0,"enCokNokta_x":null,"adim":41,"ic":"_land","toplamKaro":36}
+PASS KY23-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":89,"ihlal":0,"ilk":[],"enFazlaFailures":0}
+PASS KY23-S bütün iş sözleri 15 sn sınırı içinde sonuçlandı → {"is":715,"acik":0,"acikOrnek":[],"enUzunMs":111,"cozuldu":715,"reddedildi":0}
+PASS KY24a ızgara önbelleği: bekleyen aynı istek tek sözde birleşir → {"ayniSoz":true}
+PASS KY24b ızgara önbelleği (A-13): 26 farklı ızgara çözüldükten sonra önbellekte çözülmüş kayıt ≤ 2 → {"onbellek":0}
+PASS KY24-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":2,"ihlal":0,"ilk":[],"enFazlaFailures":0}
+PASS KY24-S bütün iş sözleri 10 sn sınırı içinde sonuçlandı → {"is":26,"acik":0,"acikOrnek":[],"enUzunMs":15,"cozuldu":26,"reddedildi":0}
+[16495:0x349ac000]    39046 ms: Scavenge 46.5 (65.3) -> 31.7 (65.3) MB, pooled: 0 MB, 0.80 / 0.00 ms  (average mu = 0.992, current mu = 0.985) allocation failure; 
+[16495:0x349ac000]    39062 ms: Scavenge 46.7 (65.3) -> 31.7 (65.8) MB, pooled: 0 MB, 1.06 / 0.00 ms  (average mu = 0.992, current mu = 0.985) allocation failure; 
+[16495:0x349ac000]    39079 ms: Scavenge 47.4 (65.8) -> 31.6 (65.8) MB, pooled: 0 MB, 0.48 / 0.00 ms  (average mu = 0.992, current mu = 0.985) allocation failure; 
+[16495:0x349ac000]    39095 ms: Scavenge 47.4 (65.8) -> 31.6 (65.8) MB, pooled: 0 MB, 0.49 / 0.00 ms  (average mu = 0.992, current mu = 0.985) allocation failure; 
+[16495:0x349ac000]    39111 ms: Scavenge 47.4 (65.8) -> 31.6 (65.8) MB, pooled: 0 MB, 0.30 / 0.00 ms  (average mu = 0.992, current mu = 0.985) allocation failure; 
+[16495:0x349ac000]    39126 ms: Scavenge 47.4 (65.8) -> 31.6 (65.8) MB, pooled: 0 MB, 0.28 / 0.00 ms  (average mu = 0.992, current mu = 0.985) allocation failure; 
+[16495:0x349ac000]    39141 ms: Scavenge 47.4 (65.8) -> 31.6 (65.8) MB, pooled: 0 MB, 0.26 / 0.00 ms  (average mu = 0.992, current mu = 0.985) allocation failure; 
+[16495:0x349ac000]    39156 ms: Scavenge 47.4 (65.8) -> 31.7 (65.8) MB, pooled: 0 MB, 0.29 / 0.00 ms  (average mu = 0.992, current mu = 0.985) allocation failure; 
+[16495:0x349ac000]    39171 ms: Scavenge 47.4 (65.8) -> 31.7 (65.8) MB, pooled: 0 MB, 0.29 / 0.00 ms  (average mu = 0.992, current mu = 0.985) allocation failure; 
+[16495:0x349ac000]    39185 ms: Scavenge 47.4 (65.8) -> 31.7 (65.8) MB, pooled: 0 MB, 0.26 / 0.00 ms  (average mu = 0.992, current mu = 0.985) allocation failure; 
+[16495:0x349ac000]    39199 ms: Scavenge 47.4 (65.8) -> 31.7 (65.8) MB, pooled: 0 MB, 0.27 / 0.00 ms  (average mu = 0.992, current mu = 0.985) allocation failure; 
+[16495:0x349ac000]    39212 ms: Scavenge 47.4 (65.8) -> 31.7 (65.8) MB, pooled: 0 MB, 0.25 / 0.00 ms  (average mu = 0.992, current mu = 0.985) allocation failure; 
+[16495:0x349ac000]    39225 ms: Scavenge 47.4 (65.8) -> 31.7 (65.8) MB, pooled: 0 MB, 0.24 / 0.00 ms  (average mu = 0.992, current mu = 0.985) allocation failure; 
+[16495:0x349ac000]    39239 ms: Scavenge 47.4 (65.8) -> 31.7 (65.8) MB, pooled: 0 MB, 0.24 / 0.00 ms  (average mu = 0.992, current mu = 0.985) allocation failure; 
+[16495:0x349ac000]    39254 ms: Scavenge 47.4 (65.8) -> 31.7 (65.8) MB, pooled: 0 MB, 0.29 / 0.00 ms  (average mu = 0.992, current mu = 0.985) allocation failure; 
+[16495:0x349ac000]    39268 ms: Scavenge 47.4 (65.8) -> 31.7 (65.8) MB, pooled: 0 MB, 0.29 / 0.00 ms  (average mu = 0.992, current mu = 0.985) allocation failure; 
+[16495:0x349ac000]    39283 ms: Scavenge 47.4 (65.8) -> 31.7 (65.8) MB, pooled: 0 MB, 0.36 / 0.00 ms  (average mu = 0.992, current mu = 0.985) allocation failure; 
+[16495:0x349ac000]    39299 ms: Scavenge 47.5 (65.8) -> 31.8 (65.8) MB, pooled: 0 MB, 0.44 / 0.00 ms  (average mu = 0.992, current mu = 0.985) allocation failure; 
+[16495:0x349ac000]    39317 ms: Scavenge 47.5 (65.8) -> 31.9 (65.8) MB, pooled: 0 MB, 0.47 / 0.00 ms  (average mu = 0.992, current mu = 0.985) allocation failure; 
+[16495:0x349ac000]    39335 ms: Scavenge 47.5 (65.8) -> 31.9 (65.8) MB, pooled: 0 MB, 0.45 / 0.00 ms  (average mu = 0.992, current mu = 0.985) allocation failure; 
+[16495:0x349ac000]    39356 ms: Scavenge (interleaved) 46.0 (65.8) -> 32.2 (65.8) MB, pooled: 0 MB, 1.94 / 0.00 ms  (average mu = 0.992, current mu = 0.985) task; 
+[16495:0x349ac000]    39370 ms: Mark-Compact 34.9 (65.8) -> 31.3 (66.3) MB, pooled: 0 MB, 2.12 / 0.00 ms  (+ 0.2 ms in 0 steps since start of marking, biggest step 0.0 ms, walltime since start of marking 17 ms) (average mu = 0.994, current mu = 0.997) finalize incremental marking via stack guard; GC in old space requested
+[16495:0x349ac000]    39408 ms: Scavenge 47.1 (66.3) -> 31.3 (66.3) MB, pooled: 0 MB, 0.34 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    39456 ms: Scavenge 47.1 (66.3) -> 31.4 (66.3) MB, pooled: 0 MB, 0.71 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    39507 ms: Scavenge 47.1 (66.3) -> 31.5 (66.3) MB, pooled: 0 MB, 0.69 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    39547 ms: Scavenge 47.2 (66.3) -> 31.5 (66.3) MB, pooled: 0 MB, 0.52 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    39570 ms: Scavenge 47.2 (66.3) -> 31.5 (66.3) MB, pooled: 0 MB, 0.52 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    39592 ms: Scavenge 47.2 (66.3) -> 31.5 (66.3) MB, pooled: 0 MB, 0.28 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    39623 ms: Scavenge 47.2 (66.3) -> 31.5 (66.3) MB, pooled: 0 MB, 0.37 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    39652 ms: Scavenge 47.2 (66.3) -> 31.5 (66.3) MB, pooled: 0 MB, 0.57 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    39677 ms: Scavenge 47.3 (66.6) -> 31.5 (66.6) MB, pooled: 0 MB, 0.30 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    39701 ms: Scavenge 47.3 (66.6) -> 31.5 (66.6) MB, pooled: 0 MB, 0.41 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    39732 ms: Scavenge 47.3 (66.6) -> 31.6 (66.6) MB, pooled: 0 MB, 0.55 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    39757 ms: Scavenge 47.3 (66.6) -> 31.5 (66.6) MB, pooled: 0 MB, 0.59 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    39779 ms: Scavenge 47.3 (66.6) -> 31.5 (66.6) MB, pooled: 0 MB, 0.30 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    39803 ms: Scavenge 47.3 (66.6) -> 31.5 (66.6) MB, pooled: 0 MB, 0.32 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    39834 ms: Scavenge 47.3 (66.6) -> 31.6 (66.6) MB, pooled: 0 MB, 0.56 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    39862 ms: Scavenge 47.3 (66.6) -> 31.5 (66.6) MB, pooled: 0 MB, 0.50 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    39885 ms: Scavenge 47.3 (66.6) -> 31.5 (66.6) MB, pooled: 0 MB, 0.31 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    39910 ms: Scavenge 47.3 (66.6) -> 31.5 (66.6) MB, pooled: 0 MB, 0.48 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    39943 ms: Scavenge 47.3 (66.6) -> 31.6 (66.6) MB, pooled: 0 MB, 0.62 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    39977 ms: Scavenge 47.3 (66.6) -> 31.5 (66.6) MB, pooled: 0 MB, 0.63 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    40006 ms: Scavenge 47.3 (66.6) -> 31.5 (66.6) MB, pooled: 0 MB, 0.39 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    40039 ms: Scavenge 47.3 (66.6) -> 31.5 (66.6) MB, pooled: 0 MB, 0.75 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    40063 ms: Scavenge 47.3 (66.6) -> 31.5 (66.6) MB, pooled: 0 MB, 0.43 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    40087 ms: Scavenge 47.3 (66.6) -> 31.5 (66.6) MB, pooled: 0 MB, 0.41 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    40110 ms: Scavenge 47.3 (66.6) -> 31.5 (66.6) MB, pooled: 0 MB, 0.34 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    40143 ms: Scavenge 47.3 (66.6) -> 31.5 (66.6) MB, pooled: 0 MB, 0.59 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    40167 ms: Scavenge 47.3 (66.6) -> 31.6 (66.6) MB, pooled: 0 MB, 0.58 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    40194 ms: Scavenge 47.3 (66.6) -> 31.5 (66.6) MB, pooled: 0 MB, 0.54 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    40220 ms: Scavenge 47.3 (66.6) -> 31.5 (66.6) MB, pooled: 0 MB, 0.34 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    40256 ms: Scavenge 47.3 (66.6) -> 31.6 (66.6) MB, pooled: 0 MB, 0.53 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    40282 ms: Scavenge 47.3 (66.6) -> 31.5 (66.6) MB, pooled: 0 MB, 0.73 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    40304 ms: Scavenge 47.3 (66.6) -> 31.5 (66.6) MB, pooled: 0 MB, 0.35 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    40327 ms: Scavenge 47.3 (66.6) -> 31.5 (66.6) MB, pooled: 0 MB, 0.31 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    40359 ms: Scavenge 47.3 (66.6) -> 31.6 (66.6) MB, pooled: 0 MB, 0.44 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    40404 ms: Scavenge 47.3 (66.6) -> 31.6 (66.6) MB, pooled: 0 MB, 0.58 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    40447 ms: Scavenge 47.3 (66.6) -> 31.6 (66.6) MB, pooled: 0 MB, 0.55 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    40489 ms: Scavenge 47.3 (66.6) -> 31.6 (66.6) MB, pooled: 0 MB, 0.35 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    40532 ms: Scavenge 47.3 (66.6) -> 31.6 (66.6) MB, pooled: 0 MB, 0.34 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    40584 ms: Scavenge 47.3 (66.6) -> 31.6 (66.6) MB, pooled: 0 MB, 0.40 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    40629 ms: Scavenge 47.3 (66.6) -> 31.6 (66.6) MB, pooled: 0 MB, 0.40 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    40679 ms: Scavenge 47.3 (66.6) -> 31.6 (66.6) MB, pooled: 0 MB, 0.38 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    40725 ms: Scavenge 47.3 (66.6) -> 31.6 (66.6) MB, pooled: 0 MB, 0.34 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    40771 ms: Scavenge 47.3 (66.6) -> 31.6 (66.6) MB, pooled: 0 MB, 0.34 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    40816 ms: Scavenge 47.3 (66.6) -> 31.6 (66.6) MB, pooled: 0 MB, 0.40 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    40861 ms: Scavenge 47.3 (66.6) -> 31.6 (66.6) MB, pooled: 0 MB, 0.38 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    40907 ms: Scavenge 47.3 (66.6) -> 31.6 (66.6) MB, pooled: 0 MB, 0.37 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    40953 ms: Scavenge 47.3 (66.6) -> 31.6 (66.6) MB, pooled: 0 MB, 0.40 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    41000 ms: Scavenge 47.3 (66.6) -> 31.6 (66.6) MB, pooled: 0 MB, 0.33 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    41051 ms: Scavenge 47.3 (66.6) -> 31.6 (66.6) MB, pooled: 0 MB, 0.35 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    41089 ms: Scavenge 47.3 (66.6) -> 31.6 (66.6) MB, pooled: 0 MB, 0.38 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    41129 ms: Scavenge 47.3 (66.6) -> 31.6 (66.6) MB, pooled: 0 MB, 0.33 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    41173 ms: Scavenge 47.3 (66.6) -> 31.6 (66.6) MB, pooled: 0 MB, 0.38 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    41218 ms: Scavenge 47.3 (66.6) -> 31.6 (66.6) MB, pooled: 0 MB, 0.31 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    41262 ms: Scavenge 47.3 (66.6) -> 31.6 (66.6) MB, pooled: 0 MB, 0.32 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    41305 ms: Scavenge 47.3 (66.6) -> 31.6 (66.6) MB, pooled: 0 MB, 0.33 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+[16495:0x349ac000]    41348 ms: Scavenge 47.3 (66.6) -> 31.6 (66.6) MB, pooled: 0 MB, 0.30 / 0.00 ms  (average mu = 0.994, current mu = 0.997) allocation failure; 
+PASS KY25 yerel yedek, yükseklik işlevi çağrı başına 5 µs yavaşlatılmışken: dilimlerin p99'u ≤ bütçe + 4 ms ve en uzunu ≤ bütçe + 15 ms (A-06, KI-154: dilimi parça boyu değil süre keser; makine hızından bağımsız) → {"dilim":188,"p99Fark":0.6,"enUzunFark":1.4,"asim":0,"ornek":[],"butce":10,"butceKaynagi":"terrain.dilimButcesi","prepMs":1946,"donus":"ok","acilisMs":311,"workers":0,"fallback":true}
+PASS KY25-D değişmezler: hayalet yuva yok, uçuştaki sayaç doğru, failures ≤ 50 → {"ornek":3,"ihlal":0,"ilk":[],"enFazlaFailures":4}
+PASS KY25-S bütün iş sözleri 180 sn sınırı içinde sonuçlandı → {"is":140,"acik":0,"acikOrnek":[],"enUzunMs":1946,"cozuldu":140,"reddedildi":0}
+BILGI oyun konsolu: uyarı 35, hata 2
+SONUC: GECTI (çıkış 0) denetim 92/92 | kök /home/user/SON-HAZ-NE-b1

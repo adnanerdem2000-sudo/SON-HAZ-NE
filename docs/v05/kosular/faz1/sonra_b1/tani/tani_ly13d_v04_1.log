@@ -1,0 +1,12 @@
+KOMUT: tk timeout 650 node tests/harness/run.cjs /home/user/SON-HAZ-NE-b1/docs/v05/kosular/faz1/sonra_b1/tani/tani_ly13d.js --url http://localhost:8080/index.html --size 640x360 --timeout 600 --report /home/user/SON-HAZ-NE-b1/docs/v05/kosular/faz1/sonra_b1/tani/tani_ly13d_v04_1.json
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+ready in 6.5 s
+R: "ok"
+R: {"durum":"playing","isci":3}
+R: {"dolasim1":"tamam","stats":{"tiles":110,"meshes":110,"hires":0,"tris":24256,"queue":0,"jobs":0,"workers":3,"fallback":false,"failures":0,"mode":""}}
+PAGEERR: this.dilimButcesi is not a function | TypeError: this.dilimButcesi is not a function |     at T._localSlice (eval at evaluate (:311:30), <anonymous>:6:56) |     at schedule._localStep._localStep (http://localhost:8080/js/world/terrain.js:158:63) |     at _mc.port1.onmessage (http://localhost:8080/js/world/terrain.js:34:75)
+R: {"dilim":0,"asan":[],"ilk12":[]}
+R: "ok"
+GORUNTU /home/user/SON-HAZ-NE-b1/tests/out/goruntu/tani_ly13d_2026-11-15T07-29-21-013Z_26247/son.png
+errors: 0 pageErrors: 1 fails: 0 (194.8 s)
+SONUC: KALDI (çıkış 1) kontrol 0/0, onay 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 6 farklı/38 | neden: sayfa hatası (pageerror): 1

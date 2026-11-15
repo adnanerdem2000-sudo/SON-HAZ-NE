@@ -1,0 +1,8 @@
+KOMUT: /home/user/devtools/tk timeout 650 node tests/harness/run.cjs /home/user/SON-HAZ-NE-b1/docs/v05/kosular/faz1/sonra_b1/tani/tani_prepare_donus.js --url 'http://localhost:8084/index.html' --size 640x360 --timeout 600 --report /home/user/SON-HAZ-NE-b1/docs/v05/kosular/faz1/sonra_b1/tani/tani_prepare_donus_normal.json 
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+ready in 7.0 s
+R: {"mode":"","ready":true,"kumsaati_zamanAsimi30":{"donus":"timeout","ms":35,"hata":null},"kumsaati_varsayilan":{"donus":"ok","ms":277,"hata":null},"kulLimani_varsayilan":{"donus":"ok","ms":152,"hata":null},"workers":3,"fallback":false}
+R: {"durum":"playing","oyuncu":true}
+R: {"normal":{"kayit":[{"x":1682,"z":808,"op":{"radius":450},"donus":"ok","ms":779}],"zorlanan":false,"vardi":true,"bildirimler":[{"text":"Keşfedildi: Kırlangıç Adası","kind":"discover"},{"text":"Keşfedildi: Kırlangıç Limanı","kind":"discover"},{"text":"Hedef: Hanın önündeki Yaşlı Kaptan Tuzla ile konuş. (J: Korsan Defteri)","kind":"quest"},{"text":"Tuz Pazarı Limanı limanına vardın.","kind":"good"},{"text":"Keşfedildi: Tuz Pazarı","kind":"discover"}]},"zorlanmis":{"kayit":[{"x":10,"z":285,"op":{"radius":450},"donus":"timeout","ms":31}],"zorlanan":true,"vardi":true,"bildirimler":[{"text":"Kırlangıç Limanı limanına vardın.","kind":"good"}]}}
+errors: 0 pageErrors: 0 fails: 0 (34.5 s)
+SONUC: OLCUM (çıkış 0) kontrol 0/0, onay 0 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 3 farklı/36

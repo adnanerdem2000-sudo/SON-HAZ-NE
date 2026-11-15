@@ -1,0 +1,13 @@
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+başlatma betiği: 1 meta, 1 dosya
+ready in 6.9 s
+PASS TC00 Tek dosya http(s) altında açıldı (üst sayfa, parametresiz) → true
+R: {"src":"http://localhost:8084/dist/DenizKorsanlari-SonHazine.html?test=1","sandbox":"allow-scripts"}
+PASS TC01 Önkoşul: tek dosya sandbox'lı iframe'de (allow-scripts, allow-same-origin yok) yüklendi, köken 'null' → "null"
+PASS TC02 Sandbox'lı iframe'de açılış tamamlanır (window.__ready, 120 sn içinde) → true
+R: {"__fb0Cerceve":true,"koken":"null","ready":true,"dk":true,"workers":3,"fallback":false,"failures":[],"meshes":125,"yukleme":"Hazır!","isci":{"kurulan":["data:text/ja","data:text/ja","data:text/ja"],"kurucuHata":[],"hazir":3,"yanit":127,"hata":[]},"hatalar":[]}
+PASS TC03 Sandbox'lı iframe'de en az 1 arazi işçisi çalışır: işçiden 'ready' ve iş yanıtı geldi; DK varsa DK.terrain.workers ≥ 1 ve yedek kapalı (A-16) → true
+R: {"__fb0Cerceve":true,"koken":"null","ready":true,"dk":true,"workers":3,"fallback":false,"failures":[],"meshes":125,"yukleme":"Hazır!","isci":{"kurulan":["data:text/ja","data:text/ja","data:text/ja"],"kurucuHata":[],"hazir":3,"yanit":127,"hata":[]},"hatalar":[]}
+PASS TC04 Sandbox'lı iframe'de arazi karoları üretildi (≥ 20 ağ) → 125
+errors: 0 pageErrors: 0 fails: 0 (23.1 s)
+SONUC: GECTI (çıkış 0) kontrol 5/5, onay 5 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/68

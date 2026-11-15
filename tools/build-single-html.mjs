@@ -14,6 +14,10 @@ const esbuild = require('esbuild');
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
 const OUT = process.argv[2] || join(ROOT, 'dist', 'DenizKorsanlari-SonHazine.html');
 const WORKER_URL = "new URL('./terrainWorker.js', import.meta.url)";
+// İşçi adresinin yedek adayı (A-16): terrain.js'te yer tutucu (modül sürümünde null); tek dosyada ön sözün yazdığı ikinci adres.
+// Oyun kaynağı window.__DK_* okumasın diye (test kipi kuralı K5) yer tutucu, birincil adres gibi derleme anında değiştirilir.
+const WORKER_URL_YEDEK = 'const isciYedekAdresi = () => null;';
+const WORKER_URL_YEDEK_TEK = 'const isciYedekAdresi = () => window.__DK_WORKER_URL_YEDEK;';
 
 // 'three' ve 'three/addons/*' içe aktarmaları (tarayıcıdaki importmap'in karşılığı); arazi işçisi blob adresinden başlar
 const plugin = {
@@ -24,7 +28,8 @@ const plugin = {
     b.onLoad({ filter: /[\\/]world[\\/]terrain\.js$/ }, (a) => {
       const src = readFileSync(a.path, 'utf8');
       if (!src.includes(WORKER_URL)) throw new Error('terrain.js: işçi URL ifadesi bulunamadı');
-      return { contents: src.split(WORKER_URL).join('window.__DK_WORKER_URL'), loader: 'js' };
+      if (src.split(WORKER_URL_YEDEK).length !== 2) throw new Error('terrain.js: işçi yedek adresi yer tutucusu bulunamadı ya da birden çok (' + WORKER_URL_YEDEK + ')');
+      return { contents: src.split(WORKER_URL).join('window.__DK_WORKER_URL').replace(WORKER_URL_YEDEK, () => WORKER_URL_YEDEK_TEK), loader: 'js' };
     });
   },
 };
@@ -97,10 +102,15 @@ async function main() {
     }
     return real ? real(input, init) : Promise.reject(new Error('fetch yok'));
   };
-  // file:// altında köken 'null' olduğu için blob: işçisi reddedilir; data: URL her kökenden çalışır (yedek: blob)
-  window.__DK_WORKER_URL = location.protocol === 'file:'
-    ? 'data:text/javascript;charset=utf-8,' + encodeURIComponent(window.__DK_WORKER_SRC)
-    : URL.createObjectURL(new Blob([window.__DK_WORKER_SRC], { type: 'text/javascript' }));
+  // Arazi işçisinin adresi (A-16). Kökeni 'null' olan bağlamlarda (file://, sandbox'lı iframe, content:// görüntüleyiciler) blob:
+  // modül işçisi büyük olasılıkla reddedilir; data: adresi her kökenden çalışır. İkinci aday __DK_WORKER_URL_YEDEK'tir: birinci
+  // adresle işçi kurulamazsa (kurucu hatası ya da hazır olmadan yükleme hatası) terrain.js onu dener (http'de blob: → data:).
+  function veriAdresi() { return 'data:text/javascript;charset=utf-8,' + encodeURIComponent(window.__DK_WORKER_SRC); }
+  function blobAdresi() { try { return URL.createObjectURL(new Blob([window.__DK_WORKER_SRC], { type: 'text/javascript' })); } catch (e) { return null; } }
+  var opak = true;
+  try { opak = self.origin === 'null' || location.protocol === 'file:'; } catch (e) { /* köken okunamıyor: opak say */ }
+  if (opak) { window.__DK_WORKER_URL = veriAdresi(); window.__DK_WORKER_URL_YEDEK = blobAdresi(); }
+  else { window.__DK_WORKER_URL = blobAdresi() || veriAdresi(); window.__DK_WORKER_URL_YEDEK = veriAdresi(); }
   window.__DK_SINGLE_FILE = true;
 })();`;
 

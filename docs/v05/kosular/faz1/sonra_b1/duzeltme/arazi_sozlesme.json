@@ -1,0 +1,342 @@
+{
+ "test": "arazi_sozlesme",
+ "kok": "/home/user/SON-HAZ-NE-b1",
+ "node": "v22.22.0",
+ "durum": "GECTI",
+ "cikis": 0,
+ "gecen": 36,
+ "kalan": 0,
+ "denetimler": [
+  {
+   "kimlik": "SZ01a",
+   "aciklama": "tileGen alanlar/tipler/uzunluklar — Kırlangıç Limanı (kara, seg 80, hires)",
+   "ok": true,
+   "deger": {
+    "verts": 6881,
+    "tri": 40320,
+    "idx": "Uint16Array"
+   }
+  },
+  {
+   "kimlik": "SZ02a",
+   "aciklama": "ana ızgara konumları adım 2 m ve yükseklikler computeHeight ile birebir — Kırlangıç Limanı (kara, seg 80, hires)",
+   "ok": true,
+   "deger": {
+    "konumHata": 0,
+    "yukseklikHata": 0,
+    "enBuyukFark": 0
+   }
+  },
+  {
+   "kimlik": "SZ03a",
+   "aciklama": "normaller birim uzunlukta ve ana ızgarada ny > 0 — Kırlangıç Limanı (kara, seg 80, hires)",
+   "ok": true,
+   "deger": {
+    "normalHata": 0,
+    "asagi": 0
+   }
+  },
+  {
+   "kimlik": "SZ04a",
+   "aciklama": "renkler sonlu ve [0,1] aralığında — Kırlangıç Limanı (kara, seg 80, hires)",
+   "ok": true,
+   "deger": {
+    "renkHata": 0
+   }
+  },
+  {
+   "kimlik": "SZ05a",
+   "aciklama": "indeksler köşe sayısı içinde; ana ızgara üçgenlemesi (a,d,b)/(b,d,e) — Kırlangıç Limanı (kara, seg 80, hires)",
+   "ok": true,
+   "deger": {
+    "indeksTasma": 0,
+    "desenHata": 0
+   }
+  },
+  {
+   "kimlik": "SZ06a",
+   "aciklama": "etek köşeleri kenarın 4 m altında, renk × 0,8 — Kırlangıç Limanı (kara, seg 80, hires)",
+   "ok": true,
+   "deger": {
+    "etekHata": 0,
+    "etek": 320
+   }
+  },
+  {
+   "kimlik": "SZ07a",
+   "aciklama": "minH/maxH ana ızgaranın min/max'ı, sonlu, [-40, 500) içinde — Kırlangıç Limanı (kara, seg 80, hires)",
+   "ok": true,
+   "deger": {
+    "minH": -2.071652831429277,
+    "maxH": 29.391903372016785,
+    "gercekMin": -2.071652889251709,
+    "gercekMax": 29.391902923583984
+   }
+  },
+  {
+   "kimlik": "SZ08a",
+   "aciklama": "heights Float32Array(n²) = ana ızgara yükseklikleri — Kırlangıç Limanı (kara, seg 80, hires)",
+   "ok": true,
+   "deger": {
+    "tip": "Float32Array",
+    "uzunluk": 6561
+   }
+  },
+  {
+   "kimlik": "SZ09a",
+   "aciklama": "aktarım listesi tüm arabellekleri yinelemesiz içeriyor — Kırlangıç Limanı (kara, seg 80, hires)",
+   "ok": true,
+   "deger": {
+    "transfer": 5,
+    "beklenen": 5
+   }
+  },
+  {
+   "kimlik": "SZ01b",
+   "aciklama": "tileGen alanlar/tipler/uzunluklar — Tuz Pazarı (kara, seg 32)",
+   "ok": true,
+   "deger": {
+    "verts": 1217,
+    "tri": 6912,
+    "idx": "Uint16Array"
+   }
+  },
+  {
+   "kimlik": "SZ02b",
+   "aciklama": "ana ızgara konumları adım 5 m ve yükseklikler computeHeight ile birebir — Tuz Pazarı (kara, seg 32)",
+   "ok": true,
+   "deger": {
+    "konumHata": 0,
+    "yukseklikHata": 0,
+    "enBuyukFark": 0
+   }
+  },
+  {
+   "kimlik": "SZ03b",
+   "aciklama": "normaller birim uzunlukta ve ana ızgarada ny > 0 — Tuz Pazarı (kara, seg 32)",
+   "ok": true,
+   "deger": {
+    "normalHata": 0,
+    "asagi": 0
+   }
+  },
+  {
+   "kimlik": "SZ04b",
+   "aciklama": "renkler sonlu ve [0,1] aralığında — Tuz Pazarı (kara, seg 32)",
+   "ok": true,
+   "deger": {
+    "renkHata": 0
+   }
+  },
+  {
+   "kimlik": "SZ05b",
+   "aciklama": "indeksler köşe sayısı içinde; ana ızgara üçgenlemesi (a,d,b)/(b,d,e) — Tuz Pazarı (kara, seg 32)",
+   "ok": true,
+   "deger": {
+    "indeksTasma": 0,
+    "desenHata": 0
+   }
+  },
+  {
+   "kimlik": "SZ06b",
+   "aciklama": "etek köşeleri kenarın 4 m altında, renk × 0,8 — Tuz Pazarı (kara, seg 32)",
+   "ok": true,
+   "deger": {
+    "etekHata": 0,
+    "etek": 128
+   }
+  },
+  {
+   "kimlik": "SZ07b",
+   "aciklama": "minH/maxH ana ızgaranın min/max'ı, sonlu, [-40, 500) içinde — Tuz Pazarı (kara, seg 32)",
+   "ok": true,
+   "deger": {
+    "minH": 4.4730405086196345,
+    "maxH": 28.02651928002304,
+    "gercekMin": 4.473040580749512,
+    "gercekMax": 28.026519775390625
+   }
+  },
+  {
+   "kimlik": "SZ08b",
+   "aciklama": "heights null (hires değil) — Tuz Pazarı (kara, seg 32)",
+   "ok": true,
+   "deger": null
+  },
+  {
+   "kimlik": "SZ09b",
+   "aciklama": "aktarım listesi tüm arabellekleri yinelemesiz içeriyor — Tuz Pazarı (kara, seg 32)",
+   "ok": true,
+   "deger": {
+    "transfer": 4,
+    "beklenen": 4
+   }
+  },
+  {
+   "kimlik": "SZ01c",
+   "aciklama": "tileGen alanlar/tipler/uzunluklar — açık deniz z=-6200 (derin, seg 8)",
+   "ok": true,
+   "deger": {
+    "verts": 113,
+    "tri": 576,
+    "idx": "Uint16Array"
+   }
+  },
+  {
+   "kimlik": "SZ02c",
+   "aciklama": "ana ızgara konumları adım 20 m ve yükseklikler computeHeight ile birebir — açık deniz z=-6200 (derin, seg 8)",
+   "ok": true,
+   "deger": {
+    "konumHata": 0,
+    "yukseklikHata": 0,
+    "enBuyukFark": 0
+   }
+  },
+  {
+   "kimlik": "SZ03c",
+   "aciklama": "normaller birim uzunlukta ve ana ızgarada ny > 0 — açık deniz z=-6200 (derin, seg 8)",
+   "ok": true,
+   "deger": {
+    "normalHata": 0,
+    "asagi": 0
+   }
+  },
+  {
+   "kimlik": "SZ04c",
+   "aciklama": "renkler sonlu ve [0,1] aralığında — açık deniz z=-6200 (derin, seg 8)",
+   "ok": true,
+   "deger": {
+    "renkHata": 0
+   }
+  },
+  {
+   "kimlik": "SZ05c",
+   "aciklama": "indeksler köşe sayısı içinde; ana ızgara üçgenlemesi (a,d,b)/(b,d,e) — açık deniz z=-6200 (derin, seg 8)",
+   "ok": true,
+   "deger": {
+    "indeksTasma": 0,
+    "desenHata": 0
+   }
+  },
+  {
+   "kimlik": "SZ06c",
+   "aciklama": "etek köşeleri kenarın 4 m altında, renk × 0,8 — açık deniz z=-6200 (derin, seg 8)",
+   "ok": true,
+   "deger": {
+    "etekHata": 0,
+    "etek": 32
+   }
+  },
+  {
+   "kimlik": "SZ07c",
+   "aciklama": "minH/maxH ana ızgaranın min/max'ı, sonlu, [-40, 500) içinde — açık deniz z=-6200 (derin, seg 8)",
+   "ok": true,
+   "deger": {
+    "minH": -32.30776235161367,
+    "maxH": -27.08959860294698,
+    "gercekMin": -32.307762145996094,
+    "gercekMax": -27.089597702026367
+   }
+  },
+  {
+   "kimlik": "SZ08c",
+   "aciklama": "heights null (hires değil) — açık deniz z=-6200 (derin, seg 8)",
+   "ok": true,
+   "deger": null
+  },
+  {
+   "kimlik": "SZ09c",
+   "aciklama": "aktarım listesi tüm arabellekleri yinelemesiz içeriyor — açık deniz z=-6200 (derin, seg 8)",
+   "ok": true,
+   "deger": {
+    "transfer": 4,
+    "beklenen": 4
+   }
+  },
+  {
+   "kimlik": "SZ10",
+   "aciklama": "depthGen alanlar/tipler/uzunluk ve hücre merkezlerinde toHalf(computeHeight) birebir",
+   "ok": true,
+   "deger": {
+    "kodHata": 0
+   }
+  },
+  {
+   "kimlik": "SZ11",
+   "aciklama": "depthGen yarım duyarlıklı değerler çözülünce computeHeight ile yarım duyarlık sınırında aynı",
+   "ok": true,
+   "deger": {
+    "sinirDisiEnBuyukFark": 0
+   }
+  },
+  {
+   "kimlik": "SZ12",
+   "aciklama": "gridGen alanlar/tipler/uzunluklar; yükseklikler computeHeight ile birebir",
+   "ok": true,
+   "deger": {
+    "hHata": 0
+   }
+  },
+  {
+   "kimlik": "SZ13",
+   "aciklama": "gridGen biyom kimlikleri BIOME_ID[biomeAt] ile birebir ve 0..6 aralığında (dünya ızgarasında ≥ 3 farklı biyom)",
+   "ok": true,
+   "deger": {
+    "bHata": 0,
+    "bAralik": 0,
+    "farkliBiyom": 7
+   }
+  },
+  {
+   "kimlik": "SZ14",
+   "aciklama": "generate bilinmeyen iş türünde açık hata verir",
+   "ok": true,
+   "deger": "Bilinmeyen arazi işi: bilinmeyen"
+  },
+  {
+   "kimlik": "SZ15",
+   "aciklama": "işçi yolu (runAll, tek seferde) ile dilimli yol (dönüşümlü next) çıktıları bayt düzeyinde aynı (5 iş)",
+   "ok": true,
+   "deger": {
+    "is": 5,
+    "toplamAdim": 266
+   }
+  },
+  {
+   "kimlik": "SZ16",
+   "aciklama": "terrain.js yerel (dilimli şerit) yolunun her sonucu runAll çıktısıyla bayt düzeyinde aynı (karo + derinlik + ızgara)",
+   "ok": true,
+   "deger": {
+    "karsilastirilan": 121,
+    "tur": {
+     "tile": 119,
+     "depth": 1,
+     "grid": 1
+    },
+    "fark": [],
+    "hatali": [],
+    "izgara": "tamam"
+   }
+  },
+  {
+   "kimlik": "SZ17",
+   "aciklama": "yerel yolda üretilen her karo ağı sahne grubunda ve ağ öznitelikleri üretilen dizilerin kendisi",
+   "ok": true,
+   "deger": {
+    "ag": 119,
+    "hata": 0
+   }
+  },
+  {
+   "kimlik": "SZ18",
+   "aciklama": "heightAt ile çizilen ağ üçgeninin düzlemi aynı (hires karolar, rastgele + köşe + hücre merkezi noktaları; fark < 1 mm)",
+   "ok": true,
+   "deger": {
+    "karo": 22,
+    "nokta": 1760,
+    "bulunamayan": 0,
+    "enBuyukFark_m": 1.5845103007450234e-12
+   }
+  }
+ ]
+}

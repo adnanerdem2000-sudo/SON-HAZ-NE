@@ -1,0 +1,10 @@
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+ready in 6.1 s
+PASS TK00 Tek dosya file:// altında açıldı (parametresiz) → true
+GOTO file:///home/user/SON-HAZ-NE-b1/dist/DenizKorsanlari-SonHazine.html?terrain=badurl&test=1
+PASS TK01 Tek dosyada ?terrain=badurl ile açılış tamamlanır (window.__ready) → true
+PASS TK02 Tek dosya file:// altında badurl kipi gerçekten bozuk işçi içeriği verir: 0 işçi, yedek kip açık, hata kaydı var (A-17) → true
+R: {"proto":"file:","mode":"badurl","workers":0,"fallback":true,"failures":["işçi 0: hata: yükleme/çalışma hatası","işçi 1: hata: yükleme/çalışma hatası","işçi 2: hata: yükleme/çalışma hatası","işçi 1: hata: yükleme/çalışma hatası"],"url":"data:text/javascript;charset=utf-8,(()%3D%3E%7Bv"}
+PASS TK03 badurl kipinde tek dosyada arazi karoları üretilir (≥ 20 ağ; düzeltmeden sonra yerel yedekte, v0.4’te işçiler bozulmadığı için işçilerde) → 125
+errors: 0 pageErrors: 0 fails: 0 (21.9 s)
+SONUC: GECTI (çıkış 0) kontrol 4/4, onay 4 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 6 farklı/75

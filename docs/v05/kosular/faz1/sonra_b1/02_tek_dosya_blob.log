@@ -1,0 +1,14 @@
+KOMUT: /home/user/devtools/tk timeout 650 node tests/harness/run.cjs tests/scenarios/02_tek_dosya_blob.js --url 'http://localhost:8084/dist/DenizKorsanlari-SonHazine.html' --size 640x360 --timeout 600 --report /home/user/SON-HAZ-NE-b1/docs/v05/kosular/faz1/sonra_b1/02_tek_dosya_blob.json 
+işaretçi kilidi: taklit (gerçek kilit istenmez; başsız Chromium kilit açıkken sentetik fare olayı seli üretir)
+başlatma betiği: 1 meta, 0 dosya
+ready in 6.3 s
+PASS TB00 Tek dosya http(s) altında açıldı (parametresiz) → true
+R: {"url":"blob:http://localhost:8084/ab78b27b-cb1b","workers":3,"fallback":false}
+GOTO http://localhost:8084/dist/DenizKorsanlari-SonHazine.html?blob=red&test=1
+PASS TB03 blob: işçisi kurulamazken tek dosyanın açılışı tamamlanır (window.__ready, 120 sn içinde) → true
+R: {"ready":true,"ms":9818,"yukleme":"Hazır!","kurulum":["blob:http://loca","data:text/javasc","blob:http://loca","data:text/javasc","blob:http://loca","data:text/javasc"]}
+PASS TB01 blob: işçisi kurulamazsa data: ile ikinci deneme yapılır: en az 1 işçi çalışır, yedek kip kapalı (A-16) → true
+R: {"kurulum":["blob:http://loca","data:text/javasc","blob:http://loca","data:text/javasc","blob:http://loca","data:text/javasc"],"workers":3,"fallback":false,"failures":["işçi 0 oluşturulamadı (blob): Test: blob işçisi reddedildi","işçi 1 oluşturulamadı (blob): Test: blob işçisi reddedildi","işçi 2 oluşturulamadı (blob): Test: blob işçisi reddedildi"]}
+PASS TB02 Tek dosyada arazi karoları üretildi (≥ 20 ağ) → 125
+errors: 0 pageErrors: 0 fails: 0 (21.3 s)
+SONUC: GECTI (çıkış 0) kontrol 4/4, onay 4 | izinsiz konsol 0, ağ 0 | izinli konsol 0, ağ 0 | uyarı 2 farklı/68
